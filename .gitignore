@@ -1,2 +1,6 @@
 venv/
 __pycache__/
+dist/
+powerpi.egg-info/
+build/
+
