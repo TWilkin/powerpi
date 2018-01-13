@@ -19,6 +19,11 @@ setup(
         'test': ['nose']
     },
     package_data={
-        'templates': ['templates/']
+        'powerpi': ['templates/*.html']
+    },
+    entry_points={
+        'console_scripts': [
+            'powerpi=powerpi.webservice:main'
+        ]
     }
 )
