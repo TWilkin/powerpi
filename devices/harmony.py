@@ -22,6 +22,12 @@ class HarmonyHub(object):
         """Support with clause for connect/disconnect."""
         self.__disconnect()
 
+    def turn_on(self):
+        pass
+
+    def turn_off(self):
+        self.power_off()
+
     def start_activity(self, name):
         self.__client.start_activity(self.__activities[name])
 
@@ -69,4 +75,6 @@ class HarmonyDevice(object):
             self.status = 'on'
 
     def turn_off(self):
-        self.status = 'off'
+        with self.__hub:
+            self.__hub.power_off()
+            self.status = 'off'

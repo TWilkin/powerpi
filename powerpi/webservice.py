@@ -44,6 +44,7 @@ def main():
         config['port'] = 5000
     global test
     test = args.test
+    print('Testing %s' % test)
 
     # initialise DeviceManager
     if 'devices' in config:
@@ -85,7 +86,10 @@ def off():
 
 @app.route('/status', methods=['GET'])
 def status():
-    return __render('status', devices=DeviceManager.get())
+    show_all = False
+    if 'show_all' in request.args:
+        show_all = True
+    return __render('status', devices=DeviceManager.get(), show_all=show_all)
 
 
 def __render(template, html=False, **kws):

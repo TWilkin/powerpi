@@ -1,13 +1,19 @@
 <table>
     <tr>
         <th>Device</th>
+        {% if show_all %}
+        <th>Type</th>
+        {% endif %}
         <th>Status</th>
         <th></th>
     </tr>
     {% for device in devices %}
-    {% if device.visible %}
+    {% if show_all or device.visible %}
     <tr>
         <td>{{ device.name }}</td>
+        {% if show_all %}
+        <td>{{ device.device_type }}</td>
+        {% endif %}
         <td>{{ device.status }}</td>
         <td>
             {% if device.status != 'on' %}

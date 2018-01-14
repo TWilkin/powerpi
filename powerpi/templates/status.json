@@ -1,6 +1,6 @@
 [
   {% for device in devices %}
-  {% if device.visible %}
+  {% if show_all or device.visible %}
   {
     "device": "{{ device.name }}",
     "status": "{{ device.status }}"

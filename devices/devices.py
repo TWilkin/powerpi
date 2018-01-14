@@ -1,4 +1,5 @@
 import copy
+import time
 
 
 class Device(object):
@@ -13,6 +14,7 @@ class Device(object):
 
             def __init__(self, name, visible=True, **kws):
                 self.__name = name
+                self.__device_type = device_type
                 self.__status = 'unknown'
 
                 # set the visible flag
@@ -33,6 +35,10 @@ class Device(object):
             @property
             def name(self):
                 return self.__name
+
+            @property
+            def device_type(self):
+                return self.__device_type
 
             @property
             def status(self):
@@ -128,3 +134,34 @@ class DeviceManager(object):
         print('Created %s' % instance)
         return instance
 
+
+@Device(device_type='composite')
+class CompositeDevice(object):
+
+    def __init__(self, devices):
+        self.__devices = []
+        for device in devices:
+            d = DeviceManager.get_device(device)
+            self.__devices.append(d)
+
+    def turn_on(self):
+        for device in self.__devices:
+            device.turn_on()
+
+    def turn_off(self):
+        for device in reversed(self.__devices):
+            device.turn_off()
+
+
+@Device(device_type='delay')
+class DelayDevice(object):
+
+    def __init__(self, start=5, end=5):
+        self.__start = int(start)
+        self.__end = int(end)
+
+    def turn_on(self):
+        time.sleep(self.__start)
+
+    def turn_off(self):
+        time.sleep(self.__end)
