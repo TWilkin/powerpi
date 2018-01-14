@@ -10,8 +10,8 @@ class TestHarmony(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.__client = HarmonyHub()
-        cls.__client.connect('Tom\'s Hub')
+        cls.__client = HarmonyHub('Tom\'s Hub')
+        cls.__client.connect()
 
     @classmethod
     def tearDownClass(cls):
