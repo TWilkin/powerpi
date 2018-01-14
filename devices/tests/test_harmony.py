@@ -11,15 +11,10 @@ class TestHarmony(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.__client = HarmonyHub('Tom\'s Hub')
-        cls.__client.connect()
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.__client.disconnect()
 
     @skip(reason='Actually turns on/off the devices')
     def test_start_and_stop_activity(self):
-        device = HarmonyDevice(self.__client, 'CD')
+        device = HarmonyDevice(name='CD', hub=self.__client.name)
         device.turn_on()
         time.sleep(10)
         device.turn_off()

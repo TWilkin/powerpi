@@ -13,7 +13,22 @@ class HarmonyHub(object):
         self.__config = None
         self.__activities = {}
 
-    def connect(self):
+    def __enter__(self):
+        """Support with clause for connect/disconnect."""
+        self.__connect()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Support with clause for connect/disconnect."""
+        self.__disconnect()
+
+    def start_activity(self, name):
+        self.__client.start_activity(self.__activities[name])
+
+    def power_off(self):
+        self.__client.power_off()
+
+    def __connect(self):
         # try and find the hub on the local network
         if HarmonyHub.__hubs is None:
             HarmonyHub.__hubs = discover()
@@ -38,14 +53,8 @@ class HarmonyHub(object):
         for activity in self.__config['activity']:
             self.__activities[activity['label']] = activity['id']
 
-    def disconnect(self):
+    def __disconnect(self):
         self.__client.disconnect()
-
-    def start_activity(self, name):
-        self.__client.start_activity(self.__activities[name])
-
-    def power_off(self):
-        self.__client.power_off()
 
 
 @Device(device_type='harmony_activity')
@@ -55,7 +64,9 @@ class HarmonyDevice(object):
         self.__hub = DeviceManager.get_device(hub, device_cls=HarmonyHub)
 
     def turn_on(self):
-        self.__hub.start_activity(self.__name)
+        with self.__hub:
+            self.__hub.start_activity(self.name)
 
     def turn_off(self):
-        self.__hub.power_off()
+        with self.__hub:
+            self.__hub.power_off()
