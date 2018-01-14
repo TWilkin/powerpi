@@ -66,7 +66,7 @@ class HarmonyDevice(object):
     def turn_on(self):
         with self.__hub:
             self.__hub.start_activity(self.name)
+            self.status = 'on'
 
     def turn_off(self):
-        with self.__hub:
-            self.__hub.power_off()
+        self.status = 'off'

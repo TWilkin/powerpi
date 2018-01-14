@@ -13,6 +13,7 @@ class Device(object):
 
             def __init__(self, name, **kws):
                 self.__name = name
+                self.__status = 'unknown'
                 cls.__init__(self, **kws)
 
                 # register the device instance
@@ -24,6 +25,16 @@ class Device(object):
             @property
             def name(self):
                 return self.__name
+
+            @property
+            def status(self):
+                return self.__status
+
+            @status.setter
+            def status(self, value):
+                if value != 'on' and value != 'off':
+                    raise ValueError('Unrecognised status %s.' % value)
+                self.__status = value
 
         # register the device type
         DeviceManager.register_type(device_type, __Wrapper)
@@ -56,6 +67,13 @@ class DeviceManager(object):
         print('Registered %s as a %s' % (device, device_type))
 
     @classmethod
+    def get(cls):
+        devices = []
+        for _, device_list in cls.__devices.items():
+            devices.extend(device_list)
+        return devices
+
+    @classmethod
     def get_device(cls, name, device_type=None, device_cls=None):
         # if the class is set, find the device_type
         if device_cls is not None:
@@ -67,6 +85,13 @@ class DeviceManager(object):
         # if the type is set, search for the device by name
         if device_type is not None:
             for device in cls.__devices[device_type]:
+                if name == device.name:
+                    print('Found %s' % device)
+                    return device
+
+        # search all types
+        for _, devices in cls.__devices.items():
+            for device in devices:
                 if name == device.name:
                     print('Found %s' % device)
                     return device
