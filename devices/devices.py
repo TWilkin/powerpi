@@ -11,9 +11,17 @@ class Device(object):
 
         class __Wrapper(cls):
 
-            def __init__(self, name, **kws):
+            def __init__(self, name, visible=True, **kws):
                 self.__name = name
                 self.__status = 'unknown'
+
+                # set the visible flag
+                if visible == 'True' or visible == 'true':
+                    visible = True
+                elif visible == 'False' or visible == 'false':
+                    visible = False
+                self.__visible = visible
+
                 cls.__init__(self, **kws)
 
                 # register the device instance
@@ -35,6 +43,10 @@ class Device(object):
                 if value != 'on' and value != 'off':
                     raise ValueError('Unrecognised status %s.' % value)
                 self.__status = value
+
+            @property
+            def visible(self):
+                return self.__visible
 
         # register the device type
         DeviceManager.register_type(device_type, __Wrapper)

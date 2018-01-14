@@ -67,7 +67,7 @@ def on():
         device = __get_device()
         if not test:
             device.turn_on()
-        return status()
+        return status(show_device=device)
     except Exception as ex:
         return '{"error": "%s"}' % ex.args[0]
 
@@ -79,22 +79,28 @@ def off():
         device = __get_device()
         if not test:
             device.turn_off()
-        return status()
+        return status(show_device=device)
     except Exception as ex:
         return '{"error": "%s"}' % ex.args[0]
 
 
 @app.route('/status', methods=['GET'])
-def status():
+def status(show_device=None):
     try:
         response = '['
         first = True
         for device in DeviceManager.get():
+            # check this device is visible
+            if not device.visible and show_device != device:
+                continue
+
+            # add a comma if necessary
             if first:
                 first = False
             else:
                 response += ', '
 
+            # add this device's status
             response += '{"device": "%s", "status": "%s"}' % (device.name, device.status)
         response += ']'
 
