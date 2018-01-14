@@ -1,0 +1,10 @@
+[
+  {% for device in devices %}
+  {% if device.visible %}
+  {
+    "device": "{{ device.name }}",
+    "status": "{{ device.status }}"
+  },
+  {% endif %}
+  {% endfor %}
+]

@@ -19,7 +19,7 @@ setup(
         'test': ['nose']
     },
     package_data={
-        'powerpi': ['templates/*.html']
+        'powerpi': ['templates/*.html', 'templates/*.json']
     },
     entry_points={
         'console_scripts': [

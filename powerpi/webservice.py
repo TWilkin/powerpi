@@ -11,7 +11,7 @@ import sys
 app = Flask(__name__)
 env = Environment(
     loader=PackageLoader('powerpi', 'templates'),
-    autoescape=select_autoescape(['html'])
+    autoescape=select_autoescape(['html', 'json'])
 )
 
 
@@ -56,8 +56,7 @@ def main():
 # Flask routines
 @app.route('/', methods=['GET'])
 def index():
-    content = 'index.html'
-    return __render(content, something='This text!')
+    return __render('status', html=True, devices=DeviceManager.get())
 
 
 @app.route('/on', methods=['GET'])
@@ -67,7 +66,7 @@ def on():
         device = __get_device()
         if not test:
             device.turn_on()
-        return status(show_device=device)
+        return status()
     except Exception as ex:
         return '{"error": "%s"}' % ex.args[0]
 
@@ -79,39 +78,23 @@ def off():
         device = __get_device()
         if not test:
             device.turn_off()
-        return status(show_device=device)
+        return status()
     except Exception as ex:
         return '{"error": "%s"}' % ex.args[0]
 
 
 @app.route('/status', methods=['GET'])
-def status(show_device=None):
-    try:
-        response = '['
-        first = True
-        for device in DeviceManager.get():
-            # check this device is visible
-            if not device.visible and show_device != device:
-                continue
-
-            # add a comma if necessary
-            if first:
-                first = False
-            else:
-                response += ', '
-
-            # add this device's status
-            response += '{"device": "%s", "status": "%s"}' % (device.name, device.status)
-        response += ']'
-
-        return response
-    except Exception as ex:
-        return '{"error": "%s"}' % ex.args[0]
+def status():
+    return __render('status', devices=DeviceManager.get())
 
 
-def __render(content, **kws):
-    layout = env.get_template('layout.html')
-    return layout.render(content=content, **kws)
+def __render(template, html=False, **kws):
+    if html or request.args.get('format') == 'html':
+        layout = env.get_template('layout.html')
+        return layout.render(content='%s.html' % template, **kws)
+    else:
+        json_template = env.get_template('%s.json' % template)
+        return json_template.render(**kws)
 
 
 def __get_device():
