@@ -1,6 +1,5 @@
 from argparse import ArgumentParser
-from flask import Flask, request
-from jinja2 import Environment, PackageLoader, select_autoescape
+from flask import Flask, request, render_template
 from devices import DeviceManager
 
 import json
@@ -9,10 +8,6 @@ import sys
 
 # initialise globals
 app = Flask(__name__)
-env = Environment(
-    loader=PackageLoader('powerpi', 'templates'),
-    autoescape=select_autoescape(['html', 'json'])
-)
 
 
 class CustomArgumentParser(ArgumentParser):
@@ -94,11 +89,9 @@ def status():
 
 def __render(template, html=False, **kws):
     if html or request.args.get('format') == 'html':
-        layout = env.get_template('layout.html')
-        return layout.render(content='%s.html' % template, **kws)
+        return render_template('layout.html', content='%s.html' % template, **kws)
     else:
-        json_template = env.get_template('%s.json' % template)
-        return json_template.render(**kws)
+        return render_template('%s.json' % template, **kws)
 
 
 def __get_device():

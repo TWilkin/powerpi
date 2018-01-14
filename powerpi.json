@@ -1,0 +1,19 @@
+{
+	"devices": [
+		{"type": "harmony_hub", "name": "Tom's Hub", "visible": "false"},
+		
+		{"type": "socket", "name": "MediaCentreSocket", "id": 0, "visible": "false"},
+		{"type": "socket_gang", "name": "PlayStation2Socket", "id": 2, "socket": 1, "visible": "false"},
+		{"type": "socket", "name": "CabinetLight", "id": 4},
+		
+		{"type": "delay", "name": "10sDelay", "start": 10, "end": 10, "visible": "false"},
+		{"type": "composite", "name": "MediaCentre", "devices": ["MediaCentreSocket", "10sDelay", "Tom's Hub"]},
+
+		{"type": "harmony_activity", "name": "CD", "hub": "Tom's Hub", "visible": "false"},
+		{"type": "harmony_activity", "name": "PlayStation 2", "hub": "Tom's Hub", "visible": "false"},
+
+		{"type": "composite", "name": "CDPlayer", "devices": ["MediaCentre", "CD"]},
+		{"type": "composite", "name": "PlayStation2", "icon": "PlayStation2.png", "devices": ["PlayStation2Socket", "MediaCentre", "PlayStation 2"]}
+			
+	]
+}

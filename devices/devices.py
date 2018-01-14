@@ -12,8 +12,9 @@ class Device(object):
 
         class __Wrapper(cls):
 
-            def __init__(self, name, visible=True, **kws):
+            def __init__(self, name, icon=None, visible=True, **kws):
                 self.__name = name
+                self.__icon = icon
                 self.__device_type = device_type
                 self.__status = 'unknown'
 
@@ -35,6 +36,10 @@ class Device(object):
             @property
             def name(self):
                 return self.__name
+
+            @property
+            def icon(self):
+                return self.__icon
 
             @property
             def device_type(self):

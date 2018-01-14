@@ -1,6 +1,6 @@
 <table>
     <tr>
-        <th>Device</th>
+        <th colspan="2">Device</th>
         {% if show_all %}
         <th>Type</th>
         {% endif %}
@@ -10,6 +10,11 @@
     {% for device in devices %}
     {% if show_all or device.visible %}
     <tr>
+        <td>
+            {% if device.icon is not none %}
+            <img src="{{ url_for('static', filename='devices/%s' % device.icon) }}" class="device" />
+            {% endif %}
+        </td>
         <td>{{ device.name }}</td>
         {% if show_all %}
         <td>{{ device.device_type }}</td>
