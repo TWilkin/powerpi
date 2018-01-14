@@ -1,6 +1,7 @@
 from flask import Flask
 from jinja2 import Environment, PackageLoader, select_autoescape
 
+
 # initialise globals
 app = Flask(__name__)
 env = Environment(

@@ -1,3 +1,5 @@
 Flask
 jinja2
 pip
+pyharmony
+#git+https://git@github.com/whaleygeek/pyenergenie.git
