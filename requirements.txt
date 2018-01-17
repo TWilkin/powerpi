@@ -2,4 +2,4 @@ Flask
 jinja2
 pip
 pyharmony
-#git+https://git@github.com/whaleygeek/pyenergenie.git
+git+https://git@github.com/TWilkin/pyenergenie.git#egg=pyenergenie
