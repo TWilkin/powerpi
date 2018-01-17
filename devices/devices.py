@@ -30,6 +30,13 @@ class Device(object):
                 # register the device instance
                 DeviceManager.register(device_type, self)
 
+                # initialise the device
+                try:
+                    cls.initialise()
+                except AttributeError:
+                    # ignore as the Device does not implement this method
+                    pass
+
             def __str__(self):
                 return '%s(%s)' % (cls, self.name)
 

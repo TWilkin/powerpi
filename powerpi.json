@@ -2,9 +2,10 @@
 	"devices": [
 		{"type": "harmony_hub", "name": "Tom's Hub", "visible": "false"},
 		
-		{"type": "socket", "name": "MediaCentreSocket", "id": 0, "visible": "false"},
-		{"type": "socket_gang", "name": "PlayStation2Socket", "id": 2, "socket": 1, "visible": "false"},
-		{"type": "socket", "name": "CabinetLight", "id": 4},
+		{"type": "socket", "name": "MediaCentreSocket", "home_id": 0, "visible": "false"},
+		{"type": "socket", "name": "PlayStation2Socket", "home_id": 2, "device_id": 1, "visible": "false"},
+		{"type": "socket", "name": "CabinetLight", "home_id": 4},
+		{"type": "socket", "name": "Spare", "home_id": 9},
 		
 		{"type": "delay", "name": "10sDelay", "start": 10, "end": 10, "visible": "false"},
 		{"type": "composite", "name": "MediaCentre", "devices": ["MediaCentreSocket", "10sDelay", "Tom's Hub"]},
