@@ -1,7 +1,8 @@
-venv/
+venv27/
+venv36/
 __pycache__/
 dist/
 powerpi.egg-info/
 build/
 .idea/
-
+*.pyc

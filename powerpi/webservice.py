@@ -64,7 +64,7 @@ def on():
             device.turn_on()
         return status()
     except Exception as ex:
-        return '{"error": "%s"}' % ex.args[0]
+        return __create_error_message(ex)
 
 
 @app.route('/off', methods=['GET'])
@@ -76,7 +76,7 @@ def off():
             device.turn_off()
         return status()
     except Exception as ex:
-        return '{"error": "%s"}' % ex.args[0]
+        return __create_error_message(ex)
 
 
 @app.route('/status', methods=['GET'])
@@ -104,6 +104,15 @@ def __get_device():
         raise ValueError('Cannot find device %s.' % device)
 
     return instance
+
+
+def __create_error_message(ex):
+    try:
+        message = ex.args[0]
+    except IndexError:
+        message = ex
+
+    return __render('error', message=message)
 
 
 if __name__ == '__main__':

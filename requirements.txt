@@ -1,5 +1,6 @@
+dnspython
 Flask
 jinja2
 pip
-pyharmony
+git+https://git@github.com/TWilkin/pyharmony.git#egg=pyharmony
 git+https://git@github.com/TWilkin/pyenergenie.git#egg=pyenergenie
