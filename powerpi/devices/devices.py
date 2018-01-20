@@ -177,3 +177,29 @@ class DelayDevice(object):
 
     def turn_off(self):
         time.sleep(self.__end)
+
+
+@Device(device_type='mutex')
+class MutexDevice(object):
+
+    def __init__(self, on_devices, off_devices):
+        self.__on_devices = []
+        for device in on_devices:
+            d = DeviceManager.get_device(device)
+            self.__on_devices.append(d)
+
+        self.__off_devices = []
+        for device in off_devices:
+            d = DeviceManager.get_device(device)
+            self.__off_devices.append(d)
+
+    def turn_on(self):
+        for device in self.__off_devices:
+            device.turn_off()
+
+        for device in self.__on_devices:
+            device.turn_on()
+
+    def turn_off(self):
+        for device in self.__on_devices + self.__off_devices:
+            device.turn_off()

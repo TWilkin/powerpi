@@ -14,7 +14,7 @@ setup(
     author='Tom Wilkin',
     author_email='tom@xzi-xzone.com',
     classifiers=[
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 2.7',
     ],
     packages=find_packages(exclude=['tests']),
     install_requires=requirements,
