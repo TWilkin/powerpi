@@ -1,7 +1,7 @@
 {
 	"devices": [
 		{"type": "harmony_hub", "name": "Tom's Hub", "visible": "false"},
-		
+
 		{"type": "socket", "name": "MediaCentreSocket", "home_id": 0, "visible": "false"},
 		{"type": "socket", "name": "WiiSocket", "home_id": 1, "device_id": 1, "visible": "false"},
 		{"type": "socket", "name": "GameCubeSocket", "home_id": 1, "device_id": 2, "visible": "false"},

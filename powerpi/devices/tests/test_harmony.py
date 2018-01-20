@@ -1,7 +1,7 @@
 import time
 
 from unittest import TestCase, skip
-from devices import HarmonyHub, HarmonyDevice
+from powerpi.devices import HarmonyHub, HarmonyDevice
 
 
 class TestHarmony(TestCase):

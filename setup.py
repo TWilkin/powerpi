@@ -22,6 +22,7 @@ setup(
         'test': ['nose']
     },
     package_data={
+        ''
         'powerpi': [
             'templates/*.html',
             'templates/*.json',

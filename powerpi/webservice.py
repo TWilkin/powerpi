@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from flask import Flask, request, render_template
-from devices import DeviceManager
+from powerpi.devices import DeviceManager
 
 import json
 import sys

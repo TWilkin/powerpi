@@ -26,7 +26,8 @@ class HarmonyHub(object):
         pass
 
     def turn_off(self):
-        self.power_off()
+        with self:
+            self.power_off()
 
     def start_activity(self, name):
         self.__client.start_activity(self.__activities[name])

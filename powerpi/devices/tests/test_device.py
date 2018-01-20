@@ -1,5 +1,5 @@
 from unittest import TestCase
-from devices import DeviceManager
+from powerpi.devices import DeviceManager
 
 
 class TestDeviceManager(TestCase):
