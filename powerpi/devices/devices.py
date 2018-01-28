@@ -66,6 +66,14 @@ class Device(object):
             def visible(self):
                 return self.__visible
 
+            def turn_on(self):
+                cls.turn_on(self)
+                self.status = 'on'
+
+            def turn_off(self):
+                cls.turn_off(self)
+                self.status = 'off'
+
         # register the device type
         DeviceManager.register_type(device_type, __Wrapper)
 

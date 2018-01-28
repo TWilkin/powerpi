@@ -16,9 +16,9 @@
 
 		{"type": "socket", "name": "CabinetLight", "home_id": 4},
 		
-		{"type": "delay", "name": "10sDelay", "start": 10, "end": 10, "visible": "false"},
+		{"type": "delay", "name": "5sDelay", "start": 5, "end": 5, "visible": "false"},
         {"type": "mutex", "name": "MediaCentreMutex", "on_devices": ["MediaCentreSocket"], "off_devices": ["TopShelfSocketGroup", "BottomShelfSocketGroup"], "visible": "false"},
-		{"type": "composite", "name": "MediaCentre", "devices": ["MediaCentreMutex", "10sDelay", "Tom's Hub"]},
+		{"type": "composite", "name": "MediaCentre", "devices": ["MediaCentreMutex", "5sDelay", "Tom's Hub"]},
 
 		{"type": "harmony_activity", "name": "Blu-ray", "hub": "Tom's Hub", "visible": "false"},
 		{"type": "harmony_activity", "name": "CD", "hub": "Tom's Hub", "visible": "false"},

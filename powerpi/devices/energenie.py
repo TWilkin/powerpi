@@ -18,11 +18,9 @@ class SocketDevice(energenie.Devices.ENER002):
 
     def turn_on(self):
         self.__run(energenie.Devices.ENER002.turn_on, self)
-        self.status = 'on'
 
     def turn_off(self):
         self.__run(energenie.Devices.ENER002.turn_off, self)
-        self.status = 'off'
 
     def __run(self, func, *params):
         for i in range(0, self.__retries):
@@ -64,9 +62,5 @@ class SocketGroupDevice(energenie.Devices.ENER002):
             self.send_message(payload)
             time.sleep(self.__delay)
 
-        if on:
-            self.status = 'on'
-        else:
-            self.status = 'off'
         for device in self.__devices:
             device.status = self.status
