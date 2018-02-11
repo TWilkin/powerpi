@@ -42,7 +42,7 @@
 		{"type": "composite", "name": "NintendoGameCube", "icon": "GameCube.png", "devices": ["MediaCentre", "GameCubeSocket", "Retro Game"]},
 		{"type": "composite", "name": "NintendoWii", "icon": "Wii.png", "devices": ["MediaCentre", "WiiSocket", "Wii"]},
 		{"type": "composite", "name": "NintendoWiiU", "icon": "Wii.png", "devices": ["MediaCentre", "Wii U"]},
-		{"type": "composite", "name": "NitendoSwitch", "devices": ["MediaCentre", "Switch"]},
+		{"type": "composite", "name": "NintendoSwitch", "devices": ["MediaCentre", "Switch"]},
 		{"type": "composite", "name": "SegaSaturn", "icon": "Saturn.png", "devices": ["MediaCentre", "SaturnSocket", "Retro Game"]},
 		{"type": "composite", "name": "SegaDreamcast", "icon": "Dreamcast.png", "devices": ["MediaCentre", "DreamcastSocket", "Retro Game"]},
 		{"type": "composite", "name": "SonyPlayStation", "icon": "PlayStation.png", "devices": ["MediaCentre", "PlayStationSocket", "PlayStation"]},
