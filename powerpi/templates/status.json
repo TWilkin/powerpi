@@ -1,10 +1,12 @@
 [
+  {% set comma = joiner(",") %}
   {% for device in devices %}
   {% if show_all or device.visible %}
+  {{ comma() }}
   {
     "device": "{{ device.name }}",
     "status": "{{ device.status }}"
-  },
+  }
   {% endif %}
   {% endfor %}
 ]

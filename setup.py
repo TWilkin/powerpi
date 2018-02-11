@@ -9,7 +9,7 @@ setup(
     version='0.0.1',
     description='PowerPi Home Automation',
     long_description="""
-        Thanks for the icons from https://deleket.deviantart.com/art/Gaming-Icons-Pack-42723812.
+        Thanks for the console icons from https://deleket.deviantart.com/art/Gaming-Icons-Pack-42723812.
     """,
     author='Tom Wilkin',
     author_email='tom@xzi-xzone.com',
@@ -27,6 +27,7 @@ setup(
             'templates/*.html',
             'templates/*.json',
             'static/*.css',
+            'static/js/*.js',
             'static/devices/*.png'
         ]
     },

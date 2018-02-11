@@ -9,7 +9,7 @@
     </tr>
     {% for device in devices %}
     {% if show_all or device.visible %}
-    <tr>
+    <tr id="{{ device.name }}">
         <td>
             {% if device.icon is not none %}
             <img src="{{ url_for('static', filename='devices/%s' % device.icon) }}" class="device" />
@@ -19,14 +19,10 @@
         {% if show_all %}
         <td>{{ device.device_type }}</td>
         {% endif %}
-        <td>{{ device.status }}</td>
+        <td class="status">{{ device.status }}</td>
         <td>
-            {% if device.status != 'on' %}
-            <a href="{{ 'on?format=html&device=%s' % device.name }}">on</a>
-            {% endif %}
-            {% if device.status != 'off' %}
-            <a href="{{ 'off?format=html&device=%s' % device.name }}">off</a>
-            {% endif %}
+            <a href="{{ 'javascript:activate(\"%s\", \"on\")' % device.name }}">on</a>
+            <a href="{{ 'javascript:activate(\"%s\", \"off\")' % device.name }}">off</a>
         </td>
     </tr>
     {% endif %}
