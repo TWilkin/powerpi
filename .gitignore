@@ -6,3 +6,4 @@ powerpi.egg-info/
 build/
 .idea/
 *.pyc
+*.log

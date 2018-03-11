@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from flask import Flask, request, render_template
 from powerpi.devices import DeviceManager
+from powerpi.logger import Logger
 
 import json
 import sys
@@ -37,9 +38,20 @@ def main():
         config['ip'] = '0.0.0.0'
     if 'port' not in config:
         config['port'] = 5000
+
     global test
     test = args.test
-    print('Testing %s' % test)
+
+    # initialise logging
+    if 'log_path' not in config:
+        config['log_path'] = ''
+    if 'log_level' not in config:
+        config['log_level'] = 'DEBUG'
+    Logger.initialise(config['log_path'], config['log_level'])
+
+    # log out configuration
+    Logger.info('Starting PowerPi on http://%s:%s' % (config['ip'], config['port']))
+    Logger.info('Testing %s' % test)
 
     # initialise DeviceManager
     if 'devices' in config:

@@ -1,3 +1,5 @@
+from powerpi.logger import Logger
+
 import copy
 import time
 
@@ -94,7 +96,7 @@ class DeviceManager(object):
     @classmethod
     def register_type(cls, device_type, device_cls):
         cls.__types[device_type] = device_cls
-        print('Registered %s as %s' % (device_cls, device_type))
+        Logger.info('Registered %s as %s' % (device_cls, device_type))
 
     @classmethod
     def register(cls, device_type, device):
@@ -108,7 +110,7 @@ class DeviceManager(object):
         # add the device
         device_list.append(device)
 
-        print('Registered %s as a %s' % (device, device_type))
+        Logger.info('Registered %s as a %s' % (device, device_type))
 
     @classmethod
     def get(cls):
@@ -130,14 +132,14 @@ class DeviceManager(object):
         if device_type is not None:
             for device in cls.__devices[device_type]:
                 if name == device.name:
-                    print('Found %s' % device)
+                    Logger.info('Found %s' % device)
                     return device
 
         # search all types
         for _, devices in cls.__devices.items():
             for device in devices:
                 if name == device.name:
-                    print('Found %s' % device)
+                    Logger.info('Found %s' % device)
                     return device
 
         # the device could not be found
@@ -154,14 +156,14 @@ class DeviceManager(object):
             try:
                 cls.__instantiate(device_type, **args)
             except DeviceNotFoundException, e:
-                print(e.message)
+                Logger.error(e)
 
     @classmethod
     def __instantiate(cls, device_type, **kws):
         if device_type in cls.__types:
             device_cls = cls.__types[device_type]
             instance = device_cls(**kws)
-            print('Created %s' % instance)
+            Logger.info('Created %s' % instance)
             return instance
         else:
             raise DeviceNotFoundException(device_type, kws['name'])
