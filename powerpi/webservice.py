@@ -46,7 +46,7 @@ def main():
     if 'log_path' not in config:
         config['log_path'] = ''
     if 'log_level' not in config:
-        config['log_level'] = 'DEBUG'
+        config['log_level'] = 'INFO'
     Logger.initialise(config['log_path'], config['log_level'])
 
     # log out configuration

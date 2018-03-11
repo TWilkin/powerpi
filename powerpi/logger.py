@@ -5,7 +5,7 @@ import os
 
 class Logger(object):
 
-    __logger = logging.getLogger('PowerPi')
+    __logger = logging.getLogger('werkzeug')
 
     @classmethod
     def initialise(cls, log_path, log_level):
