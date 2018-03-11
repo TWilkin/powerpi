@@ -70,7 +70,10 @@ class Device(object):
 
             @property
             def loggers(self):
-                return []
+                if getattr(cls, 'loggers', None) is not None:
+                    return cls.loggers.fget(cls)
+                else:
+                    return []
 
             def turn_on(self):
                 cls.turn_on(self)
