@@ -2,6 +2,8 @@ from pyharmony.client import create_and_connect_client
 from pyharmony.discovery import discover
 from .devices import Device, DeviceManager, DeviceNotFoundException
 
+import pyharmony
+
 
 @Device(device_type='harmony_hub')
 class HarmonyHub(object):
@@ -21,6 +23,10 @@ class HarmonyHub(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Support with clause for connect/disconnect."""
         self.__disconnect()
+
+    @property
+    def loggers(self):
+        return [pyharmony.discovery.__name__, pyharmony.client.__name__]
 
     def turn_on(self):
         pass

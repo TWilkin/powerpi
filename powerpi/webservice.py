@@ -50,6 +50,7 @@ def main():
     Logger.initialise(config['log_path'], config['log_level'])
 
     # log out configuration
+    Logger.info('--------------------------------')
     Logger.info('Starting PowerPi on http://%s:%s' % (config['ip'], config['port']))
     Logger.info('Testing %s' % test)
 

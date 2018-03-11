@@ -68,6 +68,10 @@ class Device(object):
             def visible(self):
                 return self.__visible
 
+            @property
+            def loggers(self):
+                return []
+
             def turn_on(self):
                 cls.turn_on(self)
                 self.status = 'on'
@@ -164,6 +168,10 @@ class DeviceManager(object):
             device_cls = cls.__types[device_type]
             instance = device_cls(**kws)
             Logger.info('Created %s' % instance)
+
+            # ensure any log handlers are included in the output file
+            for logger in instance.loggers:
+                Logger.add_logger(logger)
             return instance
         else:
             raise DeviceNotFoundException(device_type, kws['name'])
