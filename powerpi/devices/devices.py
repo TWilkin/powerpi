@@ -80,6 +80,12 @@ class Device(object):
         return __Wrapper
 
 
+class DeviceNotFoundException(Exception):
+
+    def __init__(self, device_type, name):
+        Exception.__init__(self, 'Cannot find device "%s" of type "%s".' % (name, device_type))
+
+
 class DeviceManager(object):
 
     __types = {}
@@ -145,14 +151,20 @@ class DeviceManager(object):
             args = copy.deepcopy(device)
             args.pop('type')
 
-            cls.__instantiate(device_type, **args)
+            try:
+                cls.__instantiate(device_type, **args)
+            except DeviceNotFoundException, e:
+                print(e.message)
 
     @classmethod
     def __instantiate(cls, device_type, **kws):
-        device_cls = cls.__types[device_type]
-        instance = device_cls(**kws)
-        print('Created %s' % instance)
-        return instance
+        if device_type in cls.__types:
+            device_cls = cls.__types[device_type]
+            instance = device_cls(**kws)
+            print('Created %s' % instance)
+            return instance
+        else:
+            raise DeviceNotFoundException(device_type, kws['name'])
 
 
 @Device(device_type='composite')

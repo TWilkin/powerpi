@@ -1,6 +1,6 @@
 from pyharmony.client import create_and_connect_client
 from pyharmony.discovery import discover
-from .devices import Device, DeviceManager
+from .devices import Device, DeviceManager, DeviceNotFoundException
 
 
 @Device(device_type='harmony_hub')
@@ -50,7 +50,7 @@ class HarmonyHub(object):
 
         # check we found it
         if ip is None or port is None:
-            raise Exception('Could not find Harmony Hub %s.' % self.name)
+            raise DeviceNotFoundException('Harmony Hub', self.name)
 
         # connect to the hub and load the config
         self.__client = create_and_connect_client(ip, port)
