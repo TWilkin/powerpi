@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:1.6.7
+    ports:
+      - "1883:1883"
+    deploy:
+      replicas: 1
+  
+  mqtt-rest:
+    image: 127.0.0.1:5000/mqtt-rest:0.0.3
+    ports:
+      - "3000:3000"
+    deploy:
+      replicas: 1
+    depends_on:
+      - mosquitto
+    environment:
+      - MQTT_ADDRESS=mqtt://192.168.2.10:1883
+  
+  power-starter:
+    image: 127.0.0.1:5000/power-starter:0.1.0
+    deploy:
+      replicas: 1
+    depends_on:
+      - mosquitto
+    environment:
+      - MQTT_HOST=192.168.2.10
+      - MQTT_PORT=1883
