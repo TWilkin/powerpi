@@ -12,6 +12,7 @@
     "body-parser": "^1.19.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
+    "http-status-codes": "^1.4.0",
     "loggy": "^1.0.8",
     "mqtt": "^3.0.0"
   }

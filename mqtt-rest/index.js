@@ -1,5 +1,6 @@
 import bodyParser from 'body-parser';
 import express from 'express';
+const HttpStatus = require('http-status-codes');
 import loggy from 'loggy';
 import mqtt from 'mqtt';
 import os from 'os';
@@ -22,17 +23,39 @@ client.on('error', () => {
 
 // initialise Express
 let app = express();
-app.use(bodyParser.json())
+app.use((req, res, next) => {
+    bodyParser.json({
+        verify: (req, res, buf, encoding) => {
+            req.rawBody = buf.toString();
+        }
+    })(req, res, (err) => {
+        if(err) {
+            loggy.error(err);
+            res.sendStatus(HttpStatus.BAD_REQUEST);
+            return;
+        }
+        next();
+    });
+});
 
 // define the POST end point that will publish the messages to the topic
 app.post('/topic/:topicName', (req, res) => {
-    loggy.info(`Publishing to topic ${req.params.topicName}`);
-    if(config['DEBUG']) {
-        loggy.info(JSON.stringify(req.body));
+    // check we actually have a message
+    if(!req.rawBody) {
+        res.sendStatus(HttpStatus.BAD_REQUEST);
     }
 
-    client.publish(req.params.topicName, JSON.stringify(req.body));
-    res.sendStatus(200);
+    // log that we're doing something with the request
+    loggy.info(`Publishing to topic ${req.params.topicName}`);
+    if(config['DEBUG']) {
+        loggy.info(req.rawBody);
+    }
+
+    // publish to MQTT
+    client.publish(req.params.topicName, req.rawBody);
+
+    // tell the requestor we're done
+    res.sendStatus(HttpStatus.OK);
 });
 
 // start the application running
