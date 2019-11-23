@@ -1,0 +1,17 @@
+{
+  "name": "mqtt-rest",
+  "version": "0.0.2",
+  "description": "MQTT REST interface to support HTTP POST requests from Internet devices",
+  "main": "index.js",
+  "scripts": {
+    "start": "node -r esm index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tom Wilkin",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "mqtt": "^3.0.0"
+  }
+}
