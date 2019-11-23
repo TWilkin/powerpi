@@ -1,5 +1,6 @@
 import bodyParser from 'body-parser';
 import express from 'express';
+import loggy from 'loggy';
 import mqtt from 'mqtt';
 import os from 'os';
 
@@ -12,10 +13,10 @@ const options = {
 };
 const client = mqtt.connect(config['MQTT_ADDRESS'], options);
 client.on('connect', () => {
-    console.info(`MQTT client ${options.clientId} connected.`);
+    loggy.info(`MQTT client ${options.clientId} connected.`);
 });
 client.on('error', () => {
-    console.error(`MQTT client error: ${error}`);
+    loggy.error(`MQTT client error: ${error}`);
     process.exit(1);
 });
 
@@ -25,7 +26,11 @@ app.use(bodyParser.json())
 
 // define the POST end point that will publish the messages to the topic
 app.post('/topic/:topicName', (req, res) => {
-    console.log(`Sending to topic ${req.params.topicName} ${JSON.stringify(req.body)}`);
+    loggy.info(`Publishing to topic ${req.params.topicName}`);
+    if(config['DEBUG']) {
+        loggy.info(JSON.stringify(req.body));
+    }
+
     client.publish(req.params.topicName, JSON.stringify(req.body));
     res.sendStatus(200);
 });
@@ -33,11 +38,11 @@ app.post('/topic/:topicName', (req, res) => {
 // start the application running
 const port = 3000;
 app.listen(port, () => {
-    console.info(`Server running at http://localhost:${port}`);
+    loggy.info(`Server running at http://localhost:${port}`);
 });
 
 // add exit hook
 process.on('exit', () => {
-    console.info('Disconnecting from MQTT');
+    loggy.info('Disconnecting from MQTT');
     client.end();
 });
