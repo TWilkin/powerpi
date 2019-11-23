@@ -1,4 +1,4 @@
-FROM arm32v6l/node:10.17.0-alpine3.10
+FROM node:10.17.0-alpine3.10
 LABEL maintainer="tom@xzi-xzone.com"
 
 # install the dependencies

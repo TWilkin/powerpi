@@ -6,7 +6,7 @@ import mqtt from 'mqtt';
 import os from 'os';
 
 // read the config
-const config = require('./config.json') || process.env;
+const config = process.env;
 
 // connect to the MQTT queue
 const options = {
