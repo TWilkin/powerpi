@@ -27,3 +27,17 @@ services:
       - mosquitto
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
+  
+  freedns:
+    image: 127.0.0.1:5000/freedns:0.0.1
+    deploy:
+      replicas: 2
+    secrets:
+      - freedns
+    environment:
+      - FREEDNS_USER=lordxzi
+      - FREEDNS_PASSWORD=/var/run/secrets/freedns
+
+secrets:
+  freedns:
+    external: true

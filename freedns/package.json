@@ -1,0 +1,17 @@
+{
+  "name": "freedns",
+  "version": "0.0.1",
+  "description": "FreeDNS automatic updater service",
+  "main": "app.js",
+  "scripts": {
+    "start": "node -r esm app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tom Wilkin",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "esm": "^3.2.25",
+    "loggy": "^1.0.8",
+    "xml2js": "^0.4.22"
+  }
+}
