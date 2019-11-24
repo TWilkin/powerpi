@@ -26,5 +26,4 @@ services:
     depends_on:
       - mosquitto
     environment:
-      - MQTT_HOST=192.168.2.10
-      - MQTT_PORT=1883
+      - MQTT_ADDRESS=mqtt://192.168.2.10:1883

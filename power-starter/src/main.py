@@ -2,6 +2,8 @@ import json
 import paho.mqtt.client as mqtt
 import os
 
+from urllib.parse import urlparse
+
 # the MQTT topic we're reading/writing to
 topic = 'home'
 
@@ -38,10 +40,11 @@ def on_message(client, user_data, message):
         power(client, event['device'], event['state'])
 
 # initialise and connect to MQTT
+mqtt_url = urlparse(os.getenv('MQTT_ADDRESS'))
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect(os.getenv('MQTT_HOST'), int(os.getenv('MQTT_PORT')), 60)
+client.connect(mqtt_url.hostname, mqtt_url.port, 60)
 
 # loop while receiving messages
 client.loop_forever()
