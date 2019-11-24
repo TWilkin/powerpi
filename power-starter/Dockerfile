@@ -1,9 +1,12 @@
 FROM arm32v6/python:3.8.0-alpine3.10 AS compile-image
 LABEL maintainer="tom@xzi-xzone.com"
 
+# add qemu so we can build from x86
+COPY qemu-arm-static /usr/bin
+
 # ensure we have the dependencies to run pip
 RUN apk update && apk upgrade && \
-    apk add --no-cache git gcc musl-dev
+    apk add --no-cache gcc git musl-dev
 
 # make a virtual env
 ENV VENV=/opt/venv
