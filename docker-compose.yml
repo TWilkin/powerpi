@@ -17,7 +17,7 @@ services:
     depends_on:
       - mosquitto
     environment:
-      - MQTT_ADDRESS=mqtt://192.168.2.10:1883
+      - MQTT_ADDRESS=mqtt://mosquitto:1883
   
   power-starter:
     image: 127.0.0.1:5000/power-starter:0.1.0
@@ -26,4 +26,4 @@ services:
     depends_on:
       - mosquitto
     environment:
-      - MQTT_ADDRESS=mqtt://192.168.2.10:1883
+      - MQTT_ADDRESS=mqtt://mosquitto:1883
