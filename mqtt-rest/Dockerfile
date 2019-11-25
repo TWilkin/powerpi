@@ -1,8 +1,5 @@
-FROM arm32v6/node:10.17.0-alpine3.10
-LABEL maintainer="tom@xzi-xzone.com"
-
-# add qemu so we can build from x86
-COPY qemu-arm-static /usr/bin
+FROM 192.168.2.10:5000/arm32v6/node-qemu:10.17.0-alpine3.10
+LABEL maintainer="tom@xzi-xzone.com",description="Node.js application to accept incoming POST JSON and write it to MQTT"
 
 # install the dependencies
 WORKDIR /usr/src/app
