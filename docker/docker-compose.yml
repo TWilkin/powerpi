@@ -30,6 +30,10 @@ services:
       - mosquitto
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
+    volumes:
+      - type: bind
+        source: /sys
+        target: /sys
   
   freedns:
     image: 127.0.0.1:5000/powerpi/freedns:0.0.1

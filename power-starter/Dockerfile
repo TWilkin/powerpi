@@ -14,7 +14,7 @@ COPY requirements.txt ./
 RUN $VENV/bin/pip install -r requirements.txt
 
 # use multi-stage build to remove compile dependencies
-FROM arm32v6/python:3.8.0-alpine3.10 AS build-image
+FROM 192.168.2.10:5000/arm32v6/python-qemu:3.8.0-alpine3.10 AS build-image
 ENV VENV=/usr/src/app/venv
 COPY --from=compile-image /opt/venv $VENV
 
