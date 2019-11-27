@@ -10,4 +10,4 @@ RUN npm install
 COPY . .
 
 # start the application once the container is ready
-CMD node -r esm app.js
+CMD npm start

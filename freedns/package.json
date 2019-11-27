@@ -4,7 +4,7 @@
   "description": "FreeDNS automatic updater service",
   "main": "app.js",
   "scripts": {
-    "start": "node -r esm app.js",
+    "start": "node -r esm --harmony app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tom Wilkin",

@@ -21,43 +21,42 @@ function getPassword(file) {
     return file;
 }
 
-function updateDNS() {
+// update the DNS records for the specified account
+async function updateDNS() {
     // create the hashed credentials
     loggy.info(`Accessing account for ${username}.`);
     const hash = crypto.createHash('sha1');
     hash.update(`${username}|${password}`);
     let sha1 = hash.digest('hex');
     
-    // download the XML document
-    axios.get(`${urlBase}&sha=${sha1}`)
-        .then((response) => {
-            // convert from XML
-            return xml2js.parseStringPromise(response.data);
-        }).then((data) => {
-            // update all the records
-            return Promise.all(
-                data.xml.item.map((element) => {
-                    if(element.url && element.url[0]) {
-                        loggy.info(`Attempting to update host ${element.host}.`);
-                        return updateRecord(element.host, element.url[0]);
-                    }
-                    return null;
-                })
-            );
-        }).catch((error) => {
-            loggy.error(error);
-        });
+    try {
+        // download the XML document
+        const response = await axios.get(`${urlBase}&sha=${sha1}`);
+
+        // convert from XML
+        const data = await xml2js.parseStringPromise(response.data);
+
+        // update all the DNS entries
+        for await (const element of data.xml.item) {
+            if(element.url && element.url[0]) {
+                updateRecord(element.host, element.url[0]);
+            }
+        }
+    } catch(error) {
+        loggy.error(error);
+    }
     
     // now schedule it to run again
     loggy.info(`Waiting ${interval}ms.`);
     setTimeout(updateDNS, interval);
 }
 
-function updateRecord(host, url) {
-    return axios.get(url)
-        .then(() => {
-            loggy.info(`Updated host ${host}.`);
-        });
+// update the DNS record for the supplied record
+async function updateRecord(host, url) {
+    loggy.info(`Attempting to update host ${host}.`);
+    const response = await axios.get(url);
+    loggy.info(`Updated host ${host}.`);
+    return response;
 }
 
 // start the program
