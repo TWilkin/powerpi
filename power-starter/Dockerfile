@@ -26,4 +26,4 @@ COPY --from=compile-image /opt/venv $VENV
 
 # start the application once the container is ready
 WORKDIR $VENV
-CMD bin/python bin/power_starter
+CMD bin/python lib/python*/site-packages/power_starter/main.py

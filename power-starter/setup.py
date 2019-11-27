@@ -1,5 +1,5 @@
 from pip._internal.req import parse_requirements
-from setuptools import setup
+from setuptools import setup, find_packages
 
 # read the requirements.txt
 requirements = [str(r.req) for r in parse_requirements('requirements.txt', session='hack')]
@@ -11,21 +11,14 @@ setup(
     author='Tom Wilkin',
     author_email='tom@xzi-xzone.com',
     classifiers=[
-        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.6',
     ],
-    packages=['power_starter'],
-    package_dir={
-        'power_starter': 'src/'
-    },
+    packages=find_packages(),
+    python_requires='>=3.6',
     install_requires=requirements,
     extras_require={
         'test': [
             'nose'
-        ]
-    },
-    entry_points={
-        'console_scripts': [
-            'power_starter=power_starter.main:main'
         ]
     }
 )

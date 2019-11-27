@@ -2,8 +2,9 @@ import json
 import paho.mqtt.client as mqtt
 import os
 
-from logger import Logger
 from urllib.parse import urlparse
+
+from util.logger import Logger
 
 # initialise the logger
 Logger.initialise()
