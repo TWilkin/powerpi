@@ -13,14 +13,17 @@ RUN python -m venv $VENV
 COPY requirements.txt ./
 RUN $VENV/bin/pip install -r requirements.txt
 
+# build and install the wheel
+WORKDIR /usr/src/app
+COPY . .
+RUN python setup.py sdist bdist_wheel \
+    && $VENV/bin/pip install dist/power_starter-*.whl
+
 # use multi-stage build to remove compile dependencies
 FROM 192.168.2.10:5000/arm32v6/python-qemu:3.8.0-alpine3.10 AS build-image
 ENV VENV=/usr/src/app/venv
 COPY --from=compile-image /opt/venv $VENV
 
-# copy across the application code
-WORKDIR /usr/src/app
-COPY . .
-
 # start the application once the container is ready
-CMD $VENV/bin/python src/main.py
+WORKDIR $VENV
+CMD bin/python bin/power_starter
