@@ -45,10 +45,6 @@ async function updateDNS() {
     } catch(error) {
         loggy.error(error);
     }
-    
-    // now schedule it to run again
-    loggy.info(`Waiting ${interval}ms.`);
-    setTimeout(updateDNS, interval);
 }
 
 // update the DNS record for the supplied record
@@ -60,4 +56,4 @@ async function updateRecord(host, url) {
 }
 
 // start the program
-updateDNS();
+setInterval(updateDNS, interval);
