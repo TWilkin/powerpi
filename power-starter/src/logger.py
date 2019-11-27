@@ -1,24 +1,30 @@
 import logging
 import logging.handlers
 import os
+import sys
 
 
 class Logger(object):
 
-    __logger = logging.getLogger('PowerPi')
+    __logger = logging.getLogger('PowerStarter')
     __handler = None
 
     @classmethod
-    def initialise(cls, log_path, log_level):
-        log_file = os.path.join(log_path, 'powerpi.log')
-        cls.__handler = logging.handlers.RotatingFileHandler(log_file, maxBytes=1024*1024, backupCount=5)
-
-        formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    def initialise(cls, log_path='/dev/stdout', log_level='INFO'):
+        if log_path == '/dev/stdout':
+            # write to stdout
+            cls.__handler = logging.StreamHandler(stream=sys.stdout)
+            formatter = logging.Formatter('%(levelname)s:%(name)s: %(message)s')
+        else:
+            # write to a file
+            log_file = os.path.join(log_path, 'power_starter.log')
+            cls.__handler = logging.handlers.RotatingFileHandler(log_file, maxBytes=1024*1024, backupCount=5)
+            formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+        
         cls.__handler.setFormatter(formatter)
 
         cls.__logger.setLevel(logging.getLevelName(log_level))
         cls.__logger.addHandler(cls.__handler)
-        cls.add_logger('werkzeug')
 
     @classmethod
     def info(cls, msg, *args, **kwargs):

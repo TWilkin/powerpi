@@ -2,14 +2,18 @@ import json
 import paho.mqtt.client as mqtt
 import os
 
+from logger import Logger
 from urllib.parse import urlparse
+
+# initialise the logger
+Logger.initialise()
 
 # the MQTT topic we're reading/writing to
 topic = 'home'
 
 # change the power state of a device
 def power(client, device, state):
-    print('Turning device {:s} {:s}'.format(device, state))
+    Logger.info('Turning device {:s} {:s}'.format(device, state))
 
     # now publish that the state was changed
     message = {
@@ -21,19 +25,19 @@ def power(client, device, state):
 
 # MQTT connect callback
 def on_connect(client, user_data, flags, result_code):
-    print('MQTT Connect {:d}'.format(result_code))
+    Logger.info('MQTT Connect {:d}'.format(result_code))
     client.subscribe(topic)
 
 # MQTT message callback
 def on_message(client, user_data, message):
     # read the JSON
     event = json.loads(message.payload)
-    print(event)
+    Logger.debug('Received: {:s}'.format(event))
     
     # check if we should respond to this message
     if event['type'] == 'power':
         if event['state'] != 'on' and event['state'] != 'off':
-            print('Unrecognisable state {:s}'.format(event['state']))
+            Logger.error('Unrecognisable state {:s}'.format(event['state']))
             return
         
         # attempt to power the device on/off
