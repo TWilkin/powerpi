@@ -33,7 +33,7 @@ def on_connect(client, user_data, flags, result_code):
 def on_message(client, user_data, message):
     # read the JSON
     event = json.loads(message.payload)
-    Logger.debug('Received: {:s}'.format(event))
+    Logger.info('Received: {:s}'.format(json.dumps(event)))
     
     # check if we should respond to this message
     if event['type'] == 'power':

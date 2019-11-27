@@ -24,6 +24,8 @@ class Logger(object):
         cls.__handler.setFormatter(formatter)
 
         cls.__logger.setLevel(logging.getLevelName(log_level))
+        logging.root.setLevel(logging.getLevelName(log_level))
+
         cls.__logger.addHandler(cls.__handler)
 
     @classmethod
