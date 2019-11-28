@@ -68,6 +68,8 @@ def main():
 
     # initialise the DeviceManager
     DeviceManager.load([
+        {"type": "harmony_hub", "name": "Tom's Hub", "ip": "192.168.2.68", "visible": "false"},
+        {"type": "harmony_activity", "name": "CD", "hub": "Tom's Hub", "visible": "false"},
         {'type': 'socket', 'name': 'CabinetLight', 'home_id': 4}
     ])
 

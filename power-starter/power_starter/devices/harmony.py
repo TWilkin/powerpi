@@ -10,10 +10,12 @@ class HarmonyHub(object):
 
     __hubs = None
 
-    def __init__(self):
+    def __init__(self, ip=None, port=5222):
         self.__client = None
         self.__config = None
         self.__activities = {}
+        self.__ip = ip
+        self.__port = port
 
     def __enter__(self):
         """Support with clause for connect/disconnect."""
@@ -42,24 +44,26 @@ class HarmonyHub(object):
         self.__client.power_off()
 
     def __connect(self):
-        # try and find the hub on the local network
-        if HarmonyHub.__hubs is None:
-            HarmonyHub.__hubs = discover()
+        # scan for the address if we don't already have it
+        if self.__ip is None or self.__port is None:
+            # try and find the hub on the local network
+            if HarmonyHub.__hubs is None:
+                HarmonyHub.__hubs = discover()
 
-        # identify the hub we want
-        ip = None
-        port = None
-        for hub in HarmonyHub.__hubs:
-            if hub['host_name'] == self.name or hub['friendlyName'] == self.name:
-                ip = hub['ip']
-                port = hub['port']
+            # identify the hub we want
+            self.__ip = None
+            self.__port = None
+            for hub in HarmonyHub.__hubs:
+                if hub['host_name'] == self.name or hub['friendlyName'] == self.name:
+                    self.__ip = hub['ip']
+                    self.__port = hub['port']
 
         # check we found it
-        if ip is None or port is None:
+        if self.__ip is None or self.__port is None:
             raise DeviceNotFoundException('Harmony Hub', self.name)
 
         # connect to the hub and load the config
-        self.__client = create_and_connect_client(ip, port)
+        self.__client = create_and_connect_client(self.__ip, self.__port)
         self.__config = self.__client.get_config()
 
         # extract the activities from the config
