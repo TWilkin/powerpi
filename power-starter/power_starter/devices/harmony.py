@@ -1,8 +1,8 @@
+import pyharmony
 from pyharmony.client import create_and_connect_client
 from pyharmony.discovery import discover
-from .devices import Device, DeviceManager, DeviceNotFoundException
 
-import pyharmony
+from . devices import Device, DeviceManager, DeviceNotFoundException
 
 
 @Device(device_type='harmony_hub')
