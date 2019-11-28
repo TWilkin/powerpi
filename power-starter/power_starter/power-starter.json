@@ -1,6 +1,6 @@
 {
 	"devices": [
-		{"type": "harmony_hub", "name": "Tom's Hub", "visible": "false"},
+		{"type": "harmony_hub", "name": "Tom's Hub", "ip": "192.168.2.68", "visible": "false"},
 
 		{"type": "socket", "name": "MediaCentreSocket", "home_id": 0, "visible": "false"},
 		{"type": "socket", "name": "WiiSocket", "home_id": 1, "device_id": 1, "visible": "false"},
@@ -33,7 +33,6 @@
 		{"type": "harmony_activity", "name": "PlayStation 2", "hub": "Tom's Hub", "visible": "false"},
 		{"type": "harmony_activity", "name": "Steam", "hub": "Tom's Hub", "visible": "false"},
 		{"type": "harmony_activity", "name": "Smart TV", "hub": "Tom's Hub", "visible": "false"},
-		{"type": "harmony_activity", "name": "SNES Mini", "hub": "Tom's Hub", "visible": "false"},
 		{"type": "harmony_activity", "name": "Switch", "hub": "Tom's Hub", "visible": "false"},
 		{"type": "harmony_activity", "name": "Wii", "hub": "Tom's Hub", "visible": "false"},
 		{"type": "harmony_activity", "name": "Wii U", "hub": "Tom's Hub", "visible": "false"},
@@ -43,7 +42,6 @@
 		{"type": "composite", "name": "BlurayPlayer", "devices": ["MediaCentre", "Blu-ray"]},
 		{"type": "composite", "name": "SmartTV", "devices": ["MediaCentre", "Smart TV"]},
 		{"type": "composite", "name": "FireTV", "devices": ["MediaCentre", "SaturnSocket", "Fire TV Stick"]},
-		{"type": "composite", "name": "SNESMini", "icon": "SNES.png", "devices": ["MediaCentre", "SaturnSocket", "SNES Mini"]},
 		{"type": "composite", "name": "SNES", "icon": "SNES.png", "devices": ["MediaCentre", "SNESSocket", "Retro Game"]},
 		{"type": "composite", "name": "Nintendo64", "icon": "N64.png", "devices": ["MediaCentre", "N64Socket", "N64"]},
 		{"type": "composite", "name": "NintendoGameCube", "icon": "GameCube.png", "devices": ["MediaCentre", "GameCubeSocket", "Retro Game"]},

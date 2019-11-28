@@ -16,7 +16,8 @@ setup(
     packages=find_packages(),
     package_data={
         'power_starter': [
-            'pyenergenie/energenie/drv/radio_rpi.so'
+            'pyenergenie/energenie/drv/radio_rpi.so',
+            'power-starter.json'
         ]
     },
     python_requires='>=3.6',

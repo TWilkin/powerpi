@@ -1,5 +1,6 @@
 import json
 import os
+import pkg_resources
 from urllib.parse import urlparse
 
 import paho.mqtt.client as mqtt
@@ -67,11 +68,10 @@ def main():
     Logger.initialise()
 
     # initialise the DeviceManager
-    DeviceManager.load([
-        {"type": "harmony_hub", "name": "Tom's Hub", "ip": "192.168.2.68", "visible": "false"},
-        {"type": "harmony_activity", "name": "CD", "hub": "Tom's Hub", "visible": "false"},
-        {'type': 'socket', 'name': 'CabinetLight', 'home_id': 4}
-    ])
+    config_path = pkg_resources.resource_filename(__name__, 'power-starter.json')
+    with open(config_path, 'r') as config_file:
+        config = json.load(config_file)
+        DeviceManager.load(config['devices'])
 
     # initialise and connect to MQTT
     mqtt_url = urlparse(os.getenv('MQTT_ADDRESS'))
