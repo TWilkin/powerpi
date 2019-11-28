@@ -1,2 +1,1 @@
 paho-mqtt
-git+https://git@github.com/TWilkin/pyenergenie.git#egg=pyenergenie

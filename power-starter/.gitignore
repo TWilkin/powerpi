@@ -1,6 +1,7 @@
 build/
 dist/
 *.egg-info/
+pyenergenie/
 venv/
 *.pyc
 *.log

@@ -16,6 +16,10 @@ RUN $VENV/bin/pip install -r requirements.txt
 # build and install the wheel
 WORKDIR /usr/src/app
 COPY . .
+WORKDIR /usr/src/app/power_starter/pyenergenie/energenie/drv
+RUN rm radio_rpi.so \
+    && gcc -Wall -shared -o radio_rpi.so -fPIC radio.c hrfm69.c spis.c gpio_rpi.c delay_posix.c
+WORKDIR /usr/src/app
 RUN python setup.py sdist bdist_wheel \
     && $VENV/bin/pip install dist/power_starter-*.whl
 

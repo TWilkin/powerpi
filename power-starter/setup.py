@@ -6,7 +6,7 @@ requirements = [str(r.req) for r in parse_requirements('requirements.txt', sessi
 
 setup(
     name='power_starter',
-    version='0.1.0',
+    version='0.1.1',
     description='PowerPi Power Starter Home Automation service',
     author='Tom Wilkin',
     author_email='tom@xzi-xzone.com',
@@ -14,6 +14,11 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     packages=find_packages(),
+    package_data={
+        'power_starter': [
+            'pyenergenie/energenie/drv/radio_rpi.so'
+        ]
+    },
     python_requires='>=3.6',
     install_requires=requirements,
     extras_require={
