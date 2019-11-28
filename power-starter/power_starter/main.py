@@ -1,13 +1,10 @@
 import json
-import paho.mqtt.client as mqtt
 import os
-
 from urllib.parse import urlparse
 
-from util.logger import Logger
+import paho.mqtt.client as mqtt
 
-# initialise the logger
-Logger.initialise()
+from power_starter.util.logger import Logger
 
 # the MQTT topic we're reading/writing to
 topic = 'home'
@@ -44,12 +41,21 @@ def on_message(client, user_data, message):
         # attempt to power the device on/off
         power(client, event['device'], event['state'])
 
-# initialise and connect to MQTT
-mqtt_url = urlparse(os.getenv('MQTT_ADDRESS'))
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
-client.connect(mqtt_url.hostname, mqtt_url.port, 60)
+# main entry point for the application
+def main():
+    # initialise the logger
+    Logger.initialise()
 
-# loop while receiving messages
-client.loop_forever()
+    # initialise and connect to MQTT
+    mqtt_url = urlparse(os.getenv('MQTT_ADDRESS'))
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.connect(mqtt_url.hostname, mqtt_url.port, 60)
+
+    # loop while receiving messages
+    client.loop_forever()
+
+# start the application
+if __name__ == '__main__':
+    main()
