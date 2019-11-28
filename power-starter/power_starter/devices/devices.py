@@ -1,7 +1,7 @@
-from powerpi.logger import Logger
-
 import copy
 import time
+
+from power_starter.util.logger import Logger
 
 
 class Device(object):
@@ -162,7 +162,7 @@ class DeviceManager(object):
 
             try:
                 cls.__instantiate(device_type, **args)
-            except DeviceNotFoundException, e:
+            except DeviceNotFoundException as e:
                 Logger.error(e)
 
     @classmethod
