@@ -47,21 +47,15 @@ class SocketGroupDevice(energenie.Devices.ENER002):
         energenie.init()
 
     def turn_on(self):
-        self.__run(True)
+        self.__run(energenie.Devices.ENER002.turn_on, 'on', self)
 
     def turn_off(self):
-        self.__run(False)
+        self.__run(energenie.Devices.ENER002.turn_off, 'off', self)
 
-    def __run(self, on):
-        payload = {
-            "house_address": self.device_id[0],
-            "device_index": self.device_id[1],
-            "on": on
-        }
-
+    def __run(self, func, status, *params):
         for i in range(0, self.__retries):
-            self.send_message(payload)
+            func(*params)
             time.sleep(self.__delay)
 
         for device in self.__devices:
-            device.status = self.status
+            device.status = status
