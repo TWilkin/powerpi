@@ -1,58 +1,50 @@
 import json
 import os
 import pkg_resources
-from urllib.parse import urlparse
-
-import paho.mqtt.client as mqtt
 
 from power_starter.devices import DeviceManager
+from power_starter.mqtt import MQTTClient, MQTTConsumer
 from power_starter.util.logger import Logger
 
 
-# the MQTT topic we're reading/writing to
-topic = 'home'
+# the MQTT topics we're reading/writing to
+power_change_topic = 'home_change'
+power_status_topic = 'home_status'
 
-# change the power state of a device
-def power(client, device_name, state):
-    # get the device
-    device = DeviceManager.get_device(device_name)
-    if device is None:
-        Logger.error('No such device {:s}'.format(device_name))
-        return
+class PowerEventConsumer(MQTTConsumer):
+
+    # MQTT message callback
+    def on_message(self, client, user_data, message):      
+        # check if we should respond to this message
+        if message['type'] == 'power':
+            if message['state'] != 'on' and message['state'] != 'off':
+                Logger.error('Unrecognisable state {:s}'.format(message['state']))
+                return
+            if message['device'] is None or message['device'].strip() == '':
+                Logger.error('Device is a required field')
+                return
+            
+            # attempt to power the device on/off
+            self.__power(message['device'], message['state'])
     
-    # turn the device on/off
-    try:
-        Logger.info('Turning device {:s} {:s}'.format(device_name, state))
-        if state == 'on':
-            device.turn_on()
-        else:
-            device.turn_off()
-    except e:
-        Logger.exception(e)
-        return
-
-# MQTT connect callback
-def on_connect(client, user_data, flags, result_code):
-    Logger.info('MQTT Connect {:d}'.format(result_code))
-    client.subscribe(topic)
-
-# MQTT message callback
-def on_message(client, user_data, message):
-    # read the JSON
-    event = json.loads(message.payload)
-    Logger.info('Received: {:s}'.format(json.dumps(event)))
-    
-    # check if we should respond to this message
-    if event['type'] == 'power':
-        if event['state'] != 'on' and event['state'] != 'off':
-            Logger.error('Unrecognisable state {:s}'.format(event['state']))
-            return
-        if event['device'] is None or event['device'].strip() == '':
-            Logger.error('Device is a required field')
+    # change the power state of a device
+    def __power(self, device_name, state):
+        # get the device
+        device = DeviceManager.get_device(device_name)
+        if device is None:
+            Logger.error('No such device {:s}'.format(device_name))
             return
         
-        # attempt to power the device on/off
-        power(client, event['device'], event['state'])
+        # turn the device on/off
+        try:
+            Logger.info('Turning device {:s} {:s}'.format(device_name, state))
+            if state == 'on':
+                device.turn_on()
+            else:
+                device.turn_off()
+        except e:
+            Logger.exception(e)
+            return
 
 # main entry point for the application
 def main():
@@ -60,11 +52,10 @@ def main():
     Logger.initialise()
 
     # initialise and connect to MQTT
-    mqtt_url = urlparse(os.getenv('MQTT_ADDRESS'))
-    client = mqtt.Client()
-    client.on_connect = on_connect
-    client.on_message = on_message
-    client.connect(mqtt_url.hostname, mqtt_url.port, 60)
+    client = MQTTClient()
+    client.add_consumer(power_change_topic, PowerEventConsumer())
+    power_state_change_producer = client.add_producer(power_status_topic)
+    client.connect(os.getenv('MQTT_ADDRESS'))
 
     # create a callback for power change events
     def on_power_state_change(device, state):
@@ -74,7 +65,7 @@ def main():
             'device': device,
             'state': state
         }
-        client.publish(topic, json.dumps(message))
+        power_state_change_producer(message)
 
     # initialise the DeviceManager
     config_path = pkg_resources.resource_filename(__name__, 'power-starter.json')
@@ -83,7 +74,7 @@ def main():
         DeviceManager.load(config['devices'], on_power_state_change)
 
     # loop while receiving messages
-    client.loop_forever()
+    client.loop()
 
 # start the application
 if __name__ == '__main__':
