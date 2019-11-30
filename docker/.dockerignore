@@ -1,3 +1,4 @@
+config/
 *.Dockerfile
 docker-compose.yml
 .gitignore

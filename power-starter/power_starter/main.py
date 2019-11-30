@@ -1,6 +1,5 @@
 import json
 import os
-import pkg_resources
 
 from power_starter.devices import DeviceManager
 from power_starter.mqtt import MQTTClient, MQTTConsumer
@@ -68,8 +67,7 @@ def main():
         power_state_change_producer(message)
 
     # initialise the DeviceManager
-    config_path = pkg_resources.resource_filename(__name__, 'power-starter.json')
-    with open(config_path, 'r') as config_file:
+    with open(os.getenv('CONFIG_FILE'), 'r') as config_file:
         config = json.load(config_file)
         DeviceManager.load(config['devices'], on_power_state_change)
 

@@ -30,10 +30,13 @@ services:
       - mosquitto
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
+      - CONFIG_FILE=/devices
     volumes:
       - type: bind
         source: /dev/gpiomem
         target: /dev/gpiomem
+    configs:
+      - devices
   
   freedns:
     image: 127.0.0.1:5000/powerpi/freedns:0.0.2
@@ -48,3 +51,7 @@ services:
 secrets:
   freedns:
     external: true
+
+configs:
+  devices:
+    file: ./config/devices.json
