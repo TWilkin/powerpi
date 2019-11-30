@@ -14,19 +14,11 @@ class Device(object):
 
         class __Wrapper(cls):
 
-            def __init__(self, name, icon=None, visible=True, state_change_callback=None, **kws):
+            def __init__(self, name, icon=None, visible=None, state_change_callback=None, **kws):
                 self.__name = name
-                self.__icon = icon
                 self.__device_type = device_type
                 self.__status = 'unknown'
                 self.__state_change_callback = state_change_callback
-
-                # set the visible flag
-                if visible == 'True' or visible == 'true':
-                    visible = True
-                elif visible == 'False' or visible == 'false':
-                    visible = False
-                self.__visible = visible
 
                 cls.__init__(self, **kws)
 
@@ -48,10 +40,6 @@ class Device(object):
                 return self.__name
 
             @property
-            def icon(self):
-                return self.__icon
-
-            @property
             def device_type(self):
                 return self.__device_type
 
@@ -70,10 +58,6 @@ class Device(object):
                 # call the callback as the status has change
                 if old_value != value and self.__state_change_callback is not None:
                     self.__state_change_callback(self.__name, self.__status)
-
-            @property
-            def visible(self):
-                return self.__visible
 
             @property
             def loggers(self):
