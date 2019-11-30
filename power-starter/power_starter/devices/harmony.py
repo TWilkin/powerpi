@@ -43,6 +43,12 @@ class HarmonyHub(object):
     def power_off(self):
         self.__client.power_off()
 
+        # now set all activities as off
+        for name, _ in self.__activities.items():
+            device = DeviceManager.get_device(name)
+            if device is not None:
+                device.status = 'off'
+
     def __connect(self):
         # scan for the address if we don't already have it
         if self.__ip is None or self.__port is None:

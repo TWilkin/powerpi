@@ -63,7 +63,13 @@ class Device(object):
             def status(self, value):
                 if value != 'on' and value != 'off':
                     raise ValueError('Unrecognised status %s.' % value)
+
+                old_value = self.__status
                 self.__status = value
+
+                # call the callback as the status has change
+                if old_value != value and self.__state_change_callback is not None:
+                    self.__state_change_callback(self.__name, self.__status)
 
             @property
             def visible(self):
@@ -79,14 +85,10 @@ class Device(object):
             def turn_on(self):
                 cls.turn_on(self)
                 self.status = 'on'
-                if self.__state_change_callback is not None:
-                    self.__state_change_callback(self.__name, self.__status)
 
             def turn_off(self):
                 cls.turn_off(self)
                 self.status = 'off'
-                if self.__state_change_callback is not None:
-                    self.__state_change_callback(self.__name, self.__status)
 
         # register the device type
         DeviceManager.register_type(device_type, __Wrapper)
