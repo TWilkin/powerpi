@@ -28,16 +28,8 @@ def power(client, device_name, state):
         else:
             device.turn_off()
     except e:
-        Logger.error(e)
+        Logger.exception(e)
         return
-
-    # now publish that the state was changed
-    message = {
-        'type': 'update',
-        'device': device_name,
-        'state': state
-    }
-    client.publish(topic, json.dumps(message))
 
 # MQTT connect callback
 def on_connect(client, user_data, flags, result_code):
@@ -67,18 +59,28 @@ def main():
     # initialise the logger
     Logger.initialise()
 
-    # initialise the DeviceManager
-    config_path = pkg_resources.resource_filename(__name__, 'power-starter.json')
-    with open(config_path, 'r') as config_file:
-        config = json.load(config_file)
-        DeviceManager.load(config['devices'])
-
     # initialise and connect to MQTT
     mqtt_url = urlparse(os.getenv('MQTT_ADDRESS'))
     client = mqtt.Client()
     client.on_connect = on_connect
     client.on_message = on_message
     client.connect(mqtt_url.hostname, mqtt_url.port, 60)
+
+    # create a callback for power change events
+    def on_power_state_change(device, state):
+        # now publish that the state was changed
+        message = {
+            'type': 'update',
+            'device': device,
+            'state': state
+        }
+        client.publish(topic, json.dumps(message))
+
+    # initialise the DeviceManager
+    config_path = pkg_resources.resource_filename(__name__, 'power-starter.json')
+    with open(config_path, 'r') as config_file:
+        config = json.load(config_file)
+        DeviceManager.load(config['devices'], on_power_state_change)
 
     # loop while receiving messages
     client.loop_forever()

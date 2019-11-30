@@ -14,11 +14,12 @@ class Device(object):
 
         class __Wrapper(cls):
 
-            def __init__(self, name, icon=None, visible=True, **kws):
+            def __init__(self, name, icon=None, visible=True, state_change_callback=None, **kws):
                 self.__name = name
                 self.__icon = icon
                 self.__device_type = device_type
                 self.__status = 'unknown'
+                self.__state_change_callback = state_change_callback
 
                 # set the visible flag
                 if visible == 'True' or visible == 'true':
@@ -78,10 +79,14 @@ class Device(object):
             def turn_on(self):
                 cls.turn_on(self)
                 self.status = 'on'
+                if self.__state_change_callback is not None:
+                    self.__state_change_callback(self.__name, self.__status)
 
             def turn_off(self):
                 cls.turn_off(self)
                 self.status = 'off'
+                if self.__state_change_callback is not None:
+                    self.__state_change_callback(self.__name, self.__status)
 
         # register the device type
         DeviceManager.register_type(device_type, __Wrapper)
@@ -153,17 +158,18 @@ class DeviceManager(object):
         return None
 
     @classmethod
-    def load(cls, devices):
+    def load(cls, devices, state_change_callback=None):
         # iterate over the devices and create them
         for device in devices:
             device_type = device['type']
             args = copy.deepcopy(device)
             args.pop('type')
+            args['state_change_callback'] = state_change_callback
 
             try:
                 cls.__instantiate(device_type, **args)
             except DeviceNotFoundException as e:
-                Logger.error(e)
+                Logger.exception(e)
 
     @classmethod
     def __instantiate(cls, device_type, **kws):
