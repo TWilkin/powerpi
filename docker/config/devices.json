@@ -2,7 +2,7 @@
 	"devices": [
 		{"type": "harmony_hub", "name": "Tom's Hub", "ip": "192.168.2.68", "visible": "false"},
 
-		{"type": "socket", "name": "MediaCentreSocket", "home_id": 0, "visible": "false"},
+		{"type": "socket", "name": "MediaCentreSocket", "home_id": 4, "visible": "false"},
 		{"type": "socket", "name": "WiiSocket", "home_id": 1, "device_id": 1, "visible": "false"},
 		{"type": "socket", "name": "GameCubeSocket", "home_id": 1, "device_id": 2, "visible": "false"},
 		{"type": "socket", "name": "N64Socket", "home_id": 1, "device_id": 3, "visible": "false"},
@@ -19,7 +19,7 @@
 		{"type": "socket_group", "name": "TopShelfSocketGroup", "home_id": 2, "devices": ["SaturnSocket", "DreamcastSocket", "PlayStationSocket", "PlayStation2Socket"], "visible": "false"},
 		{"type": "socket_group", "name": "OtherSocketGroup", "home_id": 3, "devices": ["CDPlayerSocket", "WiiUSocket", "XboxSocket", "SteamLinkSocket"], "visible": "false"},
 
-		{"type": "socket", "name": "CabinetLight", "home_id": 4},
+		{"type": "socket", "name": "CabinetLight", "home_id": 0},
 		
 		{"type": "delay", "name": "5sDelay", "start": 5, "end": 5, "visible": "false"},
         {"type": "mutex", "name": "MediaCentreMutex", "on_devices": ["MediaCentreSocket"], "off_devices": ["TopShelfSocketGroup", "BottomShelfSocketGroup", "OtherSocketGroup"], "visible": "false"},
