@@ -20,6 +20,7 @@
 		{"type": "socket_group", "name": "OtherSocketGroup", "home_id": 3, "devices": ["CDPlayerSocket", "WiiUSocket", "XboxSocket", "SteamLinkSocket"], "visible": "false"},
 
 		{"type": "socket", "name": "CabinetLight", "home_id": 0},
+		{"type": "socket", "name": "DeskLight", "home_id": 5},
 		
 		{"type": "delay", "name": "5sDelay", "start": 5, "end": 5, "visible": "false"},
         {"type": "mutex", "name": "MediaCentreMutex", "on_devices": ["MediaCentreSocket"], "off_devices": ["TopShelfSocketGroup", "BottomShelfSocketGroup", "OtherSocketGroup"], "visible": "false"},
