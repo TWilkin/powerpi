@@ -18,6 +18,15 @@ services:
       - mosquitto
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
+
+  tick:
+    image: 127.0.0.1:5000/powerpi/tick:0.0.1
+    deploy:
+      replicas: 1
+    depends_on:
+      - mosquitto
+    environment:
+      - MQTT_HOST=mosquitto
   
   power-starter:
     image: 127.0.0.1:5000/powerpi/power-starter:0.1.1

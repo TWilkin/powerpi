@@ -1,0 +1,1 @@
+*   *   *   *   *   mosquitto_pub -h $MQTT_HOST -m "{\"type\": \"tick\", \"time\": \"`date -Is`\"}" -t time >> /var/log/cron.log 2>&1
