@@ -3,7 +3,7 @@ LABEL maintainer="tom@xzi-xzone.com",description="Python application to listen t
 
 # ensure we have the dependencies to run pip
 RUN apk update && apk upgrade && \
-    apk add --no-cache gcc git musl-dev
+    apk add --no-cache gcc git linux-headers musl-dev
 
 # make a virtual env
 ENV VENV=/opt/venv
