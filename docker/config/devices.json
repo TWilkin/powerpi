@@ -57,5 +57,10 @@
 		{"type": "composite", "name": "MicrosoftXbox", "icon": "Xbox.png", "devices": ["MediaCentre", "XboxSocket", "Xbox"]},
 		{"type": "composite", "name": "SteamLink", "devices": ["MediaCentre", "SteamLinkSocket", "Steam"]}
 			
+	],
+
+	"events": [
+		{"topic": "home", "action": {"device": "HallwayLight", "state": "on"}, "condition": {"type": "location", "state": "home"}},
+		{"topic": "home", "action": {"device": "HallwayLight", "state": "off"}, "condition": {"type": "location", "state": "away"}}
 	]
 }

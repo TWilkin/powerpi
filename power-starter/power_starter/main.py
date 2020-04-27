@@ -2,6 +2,7 @@ import json
 import os
 
 from power_starter.devices import DeviceManager
+from power_starter.events import EventManager
 from power_starter.mqtt import MQTTClient, MQTTConsumer
 from power_starter.util.logger import Logger
 
@@ -66,10 +67,11 @@ def main():
         }
         power_state_change_producer(message)
 
-    # initialise the DeviceManager
+    # initialise the DeviceManager and EventManager
     with open(os.getenv('CONFIG_FILE'), 'r') as config_file:
         config = json.load(config_file)
         DeviceManager.load(config['devices'], on_power_state_change)
+        EventManager.load(config['events'], client)
 
     # loop while receiving messages
     client.loop()
