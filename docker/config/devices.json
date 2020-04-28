@@ -61,6 +61,8 @@
 
 	"events": [
 		{"topic": "home", "action": {"device": "HallwayLight", "state": "on"}, "condition": {"type": "location", "state": "home"}},
-		{"topic": "home", "action": {"device": "HallwayLight", "state": "off"}, "condition": {"type": "location", "state": "away"}}
+		{"topic": "home", "action": {"device": "HallwayLight", "state": "off"}, "condition": {"type": "location", "state": "away"}},
+		{"topic": "motion", "action": {"device": "HallwayLight", "state": "on"}, "condition": {"type": "motion", "location": "hallway", "state": "detected"}},
+		{"topic": "motion", "action": {"device": "HallwayLight", "state": "off"}, "condition": {"type": "motion", "location": "hallway", "state": "undetected"}}
 	]
 }
