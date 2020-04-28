@@ -12,7 +12,6 @@
     "@types/node": "^13.13.4",
     "awaity": "^1.0.0",
     "loggy": "^1.0.8",
-    "mqtt": "^4.0.0",
     "node-lifx-lan": "^0.4.1",
     "ts-node": "^8.9.1",
     "typescript": "^3.8.3"
