@@ -2,14 +2,17 @@
   "name": "light-fantastic",
   "version": "0.0.1",
   "description": "LIFX brightness and temperature control service",
-  "main": "app.ts",
+  "main": "src/app.ts",
   "scripts": {
-    "start": "ts-node app.ts",
+    "start": "ts-node src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Tom Wilkin",
   "dependencies": {
+    "@types/node": "^13.13.4",
+    "loggy": "^1.0.8",
     "mqtt": "^4.0.0",
+    "node-lifx-lan": "^0.4.1",
     "ts-node": "^8.9.1",
     "typescript": "^3.8.3"
   }
