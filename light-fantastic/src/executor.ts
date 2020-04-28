@@ -1,3 +1,4 @@
+import Lifx from 'node-lifx-lan';
 import Logger from 'loggy';
 
 export interface Schedule {
@@ -12,14 +13,18 @@ export class ScheduleExecutor {
 
     private schedule: Schedule;
 
+    private light: Lifx.LifxLanDevice;
+
     private interval?: NodeJS.Timeout;
 
     private brightnessDelta: number;
 
     private counter: number = 0;
 
-    constructor(schedule: Schedule) {
+    constructor(schedule: Schedule, light: Lifx.LifxLanDevice) {
         this.schedule = schedule;
+        this.light = light;
+
         this.brightnessDelta = this.calculateIntervalDelta(schedule.brightness);
         Logger.info(this.toString());
     }
@@ -61,12 +66,20 @@ export class ScheduleExecutor {
             this.stop();
             return;
         }
-        
-        Logger.info('Executing');
 
         // calculate the offsets
         let brightness = this.calculateNewValue(this.brightnessDelta, this.schedule.brightness);
         Logger.info(`Setting brightness of ${this.schedule.device} to ${brightness}`);
+
+        // update the device
+        this.light.lightSetColor({
+            color: {
+                hue: 0,
+                saturation: 0,
+                brightness: brightness,
+                kelvin: 2700
+            }
+        });
 
         // increment the counter
         this.counter++;

@@ -1,3 +1,4 @@
+import { reduce } from 'awaity';
 import fs from 'fs';
 import Lifx from 'node-lifx-lan';
 import Logger from 'loggy';
@@ -21,13 +22,23 @@ async function main() {
     ).schedules;
 
     // create the light devices
-    let lights: Lifx.LifxLanDevice[] = await Promise.all(devices
-        .filter(device => device.type == 'light')
-        .map(device => Lifx.createDevice({mac: device.mac, ip: device.ip}))
+    let lights = await reduce(
+        devices.filter(device => device.type == 'light'),
+        async (acc, device) => {
+            const light = await Lifx.createDevice({mac: device.mac, ip: device.ip});
+            return {
+                ...acc,
+                [device.name]: light
+            };
+        }, 
+        {}
     );
-    Logger.info(`Found ${lights.length} light(s)`);
+    Logger.info(`Found ${Object.keys(lights).length} light(s)`);
 
     // create the schedule intervals
     Logger.info(`Found ${schedules.length} schedule(s)`);
-    schedules.forEach((schedule: Schedule) => new ScheduleExecutor(schedule).run());
+    schedules.forEach((schedule: Schedule) => new ScheduleExecutor(
+        schedule,
+        lights[schedule.device]
+    ).run());
 }
