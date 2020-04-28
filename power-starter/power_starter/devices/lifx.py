@@ -10,7 +10,7 @@ class LightDevice(Light):
         Light.__init__(self, mac, ip)
     
     def turn_on(self):
-        self.set_power(True)
+        self.set_power(True, 500)
     
     def turn_off(self):
-        self.set_power(False)
+        self.set_power(False, 500)
