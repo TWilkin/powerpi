@@ -47,6 +47,17 @@ services:
     configs:
       - devices
   
+  light-fantastic:
+    image: 127.0.0.1:5000/powerpi/light-fantastic:0.0.1
+    deploy:
+      replicas: 1
+    environment:
+      - DEVICES_FILE=/devices
+      - SCHEDULES_FILE=/schedules
+    configs:
+      - devices
+      - schedules
+  
   freedns:
     image: 127.0.0.1:5000/powerpi/freedns:0.0.2
     deploy:
@@ -64,3 +75,5 @@ secrets:
 configs:
   devices:
     file: ./config/devices.json
+  schedules:
+    file: ./config/schedules.json
