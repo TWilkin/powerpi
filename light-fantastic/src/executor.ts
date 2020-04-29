@@ -7,7 +7,10 @@ export interface Schedule {
     device: string;
     between: string[];
     interval: number;
-    brightness: number[];
+    hue?: number[];
+    saturation?: number[];
+    brightness?: number[];
+    kelvin?: number[];
 }
 
 export class ScheduleExecutor {
@@ -20,14 +23,22 @@ export class ScheduleExecutor {
 
     private interval?: NodeJS.Timeout;
 
-    private brightnessDelta: number;
+    private delta = {
+        hue: 0,
+        saturation: 0,
+        brightness: 0,
+        kelvin: 0
+    };
 
     constructor(schedule: Schedule, timezone: string, light: Lifx.LifxLanDevice) {
         this.schedule = schedule;
         this.timezone = timezone;
         this.light = light;
 
-        this.brightnessDelta = this.calculateIntervalDelta(schedule.brightness);
+        // calculate the interval deltas for each adjustable property
+        Object.keys(this.delta)
+            .forEach(key => this.delta[key] = this.calculateIntervalDelta(schedule[key]));
+
         Logger.info(this.toString());
     }
 
@@ -81,18 +92,26 @@ export class ScheduleExecutor {
     }
 
     private execute(): void {
+        // default colour values
+        let color = {
+            hue: 0,
+            saturation: 0,
+            brightness: 1,
+            kelvin: 2700
+        };
+        
         // calculate the offsets
-        let brightness = this.calculateNewValue(this.brightnessDelta, this.schedule.brightness);
-        Logger.info(`Setting brightness of ${this.schedule.device} to ${brightness}`);
+        color = Object.keys(this.delta).reduce((acc, key) => {
+            if(this.schedule[key]) {
+                acc[key] = this.calculateNewValue(this.delta[key], this.schedule[key]);
+                Logger.info(`Setting ${key} of ${this.schedule.device} to ${acc[key]}`);
+            }
+            return acc;
+        }, color);
 
         // update the device
         this.light.lightSetColor({
-            color: {
-                hue: 0,
-                saturation: 0,
-                brightness: brightness,
-                kelvin: 2700
-            }
+            color: color
         });
     }
 
@@ -113,7 +132,11 @@ export class ScheduleExecutor {
         return date;
     }
 
-    private calculateIntervalDelta(range: number[]): number {
+    private calculateIntervalDelta(range: number[] | null | undefined): number {
+        if(!range) {
+            return 0;
+        }
+
         // work out how many ms the between time covers
         const startTime = this.toDate(this.schedule.between[0], null);
         const endTime = this.toDate(this.schedule.between[1], startTime);
@@ -146,9 +169,13 @@ export class ScheduleExecutor {
     }
 
     public toString(): string {
-        return `Every ${this.schedule.interval}s between [${this.schedule.between}]
-                adjust ${this.schedule.device} 
-                brightness between [${this.schedule.brightness}]`;
+        let str = `Every ${this.schedule.interval}s between [${this.schedule.between}] adjust ${this.schedule.device}`;
+        Object.keys(this.delta).forEach(key => {
+            if(this.schedule[key]) {
+                str += ` ${key} between [${this.schedule[key]}]`;
+            }
+        });
+        return str;
     }
 
 }

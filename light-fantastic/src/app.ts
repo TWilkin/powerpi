@@ -36,7 +36,7 @@ async function main() {
     Logger.info(`Found ${Object.keys(lights).length} light(s)`);
 
     // create the schedule intervals
-    Logger.info(`Found ${schedules.length} schedule(s)`);
+    Logger.info(`Found ${schedules.schedules.length} schedule(s)`);
     schedules.schedules.forEach((schedule: Schedule) => new ScheduleExecutor(
         schedule,
         schedules.timezone,
