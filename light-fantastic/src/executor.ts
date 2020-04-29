@@ -31,11 +31,21 @@ export class ScheduleExecutor {
 
     // start the schedule running
     public run(): void {
-        // set a timeout until the start time
         const localThis = this;
+
+        // set a timeout until the start time
         const startTime = this.toDate(this.schedule.between[0]);
         setTimeout(() => localThis.start(), startTime.getTime() - new Date().getTime());
-        Logger.info(`Scheduling to run again at ${startTime}`);
+        Logger.info(`Scheduling to start at ${startTime}`);
+
+        // set a timeout until the stop time
+        const stopTime = this.toDate(this.schedule.between[1]);
+        if(stopTime <= startTime) {
+            // special case for end at midnight to make sure it happens tomorrow
+            stopTime.setDate(stopTime.getDate() + 1);
+        }
+        setTimeout(() => localThis.stop(), stopTime.getTime() - new Date().getTime());
+        Logger.info(`Scheduling to stop at ${stopTime}`);
     }
 
     // start the interval
@@ -52,21 +62,16 @@ export class ScheduleExecutor {
     // stop the interval
     private stop(): void {
         // clear the current interval
-        clearTimeout(this.interval as NodeJS.Timeout);
-        delete this.interval;
+        if(this.interval) {
+            clearTimeout(this.interval as NodeJS.Timeout);
+            delete this.interval;
+        }
 
         // now schedule to run it again
         this.run();
     }
 
     private execute(): void {
-        // check if the schedule should now stop
-        const endTime = this.toDate(this.schedule.between[1], false);
-        if(new Date() >= endTime) {
-            this.stop();
-            return;
-        }
-
         // calculate the offsets
         let brightness = this.calculateNewValue(this.brightnessDelta, this.schedule.brightness);
         Logger.info(`Setting brightness of ${this.schedule.device} to ${brightness}`);

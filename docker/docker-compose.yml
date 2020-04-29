@@ -39,7 +39,7 @@ services:
       - devices
   
   light-fantastic:
-    image: 127.0.0.1:5000/powerpi/light-fantastic:0.0.1
+    image: 127.0.0.1:5000/powerpi/light-fantastic:0.0.2
     deploy:
       replicas: 1
     environment:
