@@ -19,7 +19,7 @@ async function main() {
     ).devices;
     const schedules = JSON.parse(
         (await readFile(process.env['SCHEDULES_FILE'] as string)).toString()
-    ).schedules;
+    );
 
     // create the light devices
     let lights = await reduce(
@@ -37,8 +37,9 @@ async function main() {
 
     // create the schedule intervals
     Logger.info(`Found ${schedules.length} schedule(s)`);
-    schedules.forEach((schedule: Schedule) => new ScheduleExecutor(
+    schedules.schedules.forEach((schedule: Schedule) => new ScheduleExecutor(
         schedule,
+        schedules.timezone,
         lights[schedule.device]
     ).run());
 }

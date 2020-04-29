@@ -1,5 +1,6 @@
 import Lifx from 'node-lifx-lan';
 import Logger from 'loggy';
+import moment from 'moment-timezone';
 
 export interface Schedule {
 
@@ -13,6 +14,8 @@ export class ScheduleExecutor {
 
     private schedule: Schedule;
 
+    private timezone: string;
+
     private light: Lifx.LifxLanDevice;
 
     private interval?: NodeJS.Timeout;
@@ -21,8 +24,9 @@ export class ScheduleExecutor {
 
     private counter: number = 0;
 
-    constructor(schedule: Schedule, light: Lifx.LifxLanDevice) {
+    constructor(schedule: Schedule, timezone: string, light: Lifx.LifxLanDevice) {
         this.schedule = schedule;
+        this.timezone = timezone;
         this.light = light;
 
         this.brightnessDelta = this.calculateIntervalDelta(schedule.brightness);
@@ -93,7 +97,11 @@ export class ScheduleExecutor {
     private toDate(input: string, future=true): Date {
         const split = input.split(':').map(s => Number.parseInt(s));
         const date = new Date();
-        date.setHours(split[0], split[1], split[2], 0);
+        date.setUTCHours(split[0], split[1], split[2]);
+
+        // now add the timezone offset
+        const momentDate = moment.tz(date, this.timezone);
+        date.setTime(date.getTime() - momentDate.utcOffset() * 60 * 1000);
 
         // check this date is in the future
         if(future && new Date() > date) {

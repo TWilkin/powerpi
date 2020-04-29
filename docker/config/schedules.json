@@ -1,4 +1,5 @@
 {
+    "timezone": "Europe/London",
     "schedules": [
         {
             "device": "HallwayLight", 
