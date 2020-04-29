@@ -22,8 +22,6 @@ export class ScheduleExecutor {
 
     private brightnessDelta: number;
 
-    private counter: number = 0;
-
     constructor(schedule: Schedule, timezone: string, light: Lifx.LifxLanDevice) {
         this.schedule = schedule;
         this.timezone = timezone;
@@ -37,17 +35,22 @@ export class ScheduleExecutor {
     public run(): void {
         const localThis = this;
 
-        // set a timeout until the start time
-        const startTime = this.toDate(this.schedule.between[0]);
-        setTimeout(() => localThis.start(), startTime.getTime() - new Date().getTime());
-        Logger.info(`Scheduling to start at ${startTime}`);
+        // check if we're already within the time window
+        let startTime = this.toDate(this.schedule.between[0], null);
+        let stopTime = this.toDate(this.schedule.between[1], startTime);
+        let now = new Date();
+        if(now >= startTime && now < stopTime) {
+            // start the schedule running now
+            this.start();
+        } else {
+            // set a timeout until the start time
+            startTime = this.toDate(this.schedule.between[0]);
+            setTimeout(() => localThis.start(), startTime.getTime() - new Date().getTime());
+            Logger.info(`Scheduling to start at ${startTime}`);
+        }
 
         // set a timeout until the stop time
-        const stopTime = this.toDate(this.schedule.between[1]);
-        if(stopTime <= startTime) {
-            // special case for end at midnight to make sure it happens tomorrow
-            stopTime.setDate(stopTime.getDate() + 1);
-        }
+        stopTime = this.toDate(this.schedule.between[1], startTime);
         setTimeout(() => localThis.stop(), stopTime.getTime() - new Date().getTime());
         Logger.info(`Scheduling to stop at ${stopTime}`);
     }
@@ -55,7 +58,6 @@ export class ScheduleExecutor {
     // start the interval
     private start(): void {
         // first execute the schedule
-        this.counter = 1;
         this.execute();
 
         // then execute it for the next interval
@@ -70,6 +72,9 @@ export class ScheduleExecutor {
             clearTimeout(this.interval as NodeJS.Timeout);
             delete this.interval;
         }
+
+        // ensure we run one last time to force it to the end of the range
+        this.execute();
 
         // now schedule to run it again
         this.run();
@@ -89,12 +94,9 @@ export class ScheduleExecutor {
                 kelvin: 2700
             }
         });
-
-        // increment the counter
-        this.counter++;
     }
 
-    private toDate(input: string, future=true): Date {
+    private toDate(input: string, after: Date | null = new Date()): Date {
         const split = input.split(':').map(s => Number.parseInt(s));
         const date = new Date();
         date.setUTCHours(split[0], split[1], split[2]);
@@ -103,8 +105,8 @@ export class ScheduleExecutor {
         const momentDate = moment.tz(date, this.timezone);
         date.setTime(date.getTime() - momentDate.utcOffset() * 60 * 1000);
 
-        // check this date is in the future
-        if(future && new Date() > date) {
+        // check this date is after the specified date
+        if(after && after >= date) {
             date.setDate(date.getDate() + 1);
         }
 
@@ -113,8 +115,8 @@ export class ScheduleExecutor {
 
     private calculateIntervalDelta(range: number[]): number {
         // work out how many ms the between time covers
-        const startTime = this.toDate(this.schedule.between[0]);
-        const endTime = this.toDate(this.schedule.between[1]);
+        const startTime = this.toDate(this.schedule.between[0], null);
+        const endTime = this.toDate(this.schedule.between[1], startTime);
         const ms = endTime.getTime() - startTime.getTime();
 
         // calculate how many intervals we have
@@ -125,8 +127,13 @@ export class ScheduleExecutor {
     }
 
     private calculateNewValue(delta: number, range: number[]): number {
+        // calculate the number of times this has run thus far
+        const startTime = this.toDate(this.schedule.between[0], null);
+        const diff = (new Date().getTime() - startTime.getTime()) / 1000;
+        const counter = diff / this.schedule.interval;
+
         // calculate the new value with the delta
-        let value = range[0] + delta * this.counter;
+        let value = range[0] + delta * counter;
 
         // ensure it's constrained by the end range
         if(delta > 0) {
