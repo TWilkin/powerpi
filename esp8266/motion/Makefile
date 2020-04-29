@@ -1,5 +1,7 @@
-SKETCH = motion.ino
-TARGET_DIR = $(CURDIR)/bin
+ARDUINO_PATH=/opt/arduino/arduino-1.8.12
+SKETCH=motion.ino
+TARGET_DIR=$(CURDIR)/bin
+PORT?=/dev/ttyUSB0
 
 $(TARGET_DIR)/$(SKETCH).bin: $(SKETCH)
 	mkdir -p $(TARGET_DIR)
@@ -11,9 +13,17 @@ $(TARGET_DIR)/$(SKETCH).bin: $(SKETCH)
 		-built-in-libraries "$(ARDUINO_PATH)/libraries" \
 		-fqbn=esp8266com:esp8266:generic \
 		-build-path "${TARGET_DIR}" \
-		./$(SKETCH)
+		$<
+
+flash: $(TARGET_DIR)/$(SKETCH).bin
+	$(ARDUINO_PATH)/hardware/esp8266com/esp8266/tools/upload.py \
+		--port $(PORT) \
+		write_flash \
+		0x00000 \
+		$<
+
 
 clean:
 	rm -rf ${TARGET_DIR}
 
-all: $(TARGET_DIR)/$(SKETCH).bin
+all: flash
