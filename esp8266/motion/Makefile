@@ -2,8 +2,15 @@ ARDUINO_PATH=/opt/arduino/arduino-1.8.12
 SKETCH=motion.ino
 TARGET_DIR=$(CURDIR)/bin
 PORT?=/dev/ttyUSB0
+PUBSUBCLIENT_VERSION=2.7
 
-$(TARGET_DIR)/$(SKETCH).bin: $(SKETCH)
+# Download pubsubclient library
+pubsubclient-$(PUBSUBCLIENT_VERSION):
+	wget https://github.com/knolleary/pubsubclient/archive/v$(PUBSUBCLIENT_VERSION).tar.gz
+	tar xfz v$(PUBSUBCLIENT_VERSION).tar.gz
+	rm v$(PUBSUBCLIENT_VERSION).tar.gz
+
+$(TARGET_DIR)/$(SKETCH).bin: $(SKETCH) pubsubclient-$(PUBSUBCLIENT_VERSION)
 	mkdir -p $(TARGET_DIR)
 	$(ARDUINO_PATH)/arduino-builder \
 		-compile \
@@ -12,8 +19,11 @@ $(TARGET_DIR)/$(SKETCH).bin: $(SKETCH)
     	-tools "$(ARDUINO_PATH)/hardware/tools/avr" \
 		-built-in-libraries "$(ARDUINO_PATH)/libraries" \
 		-fqbn=esp8266com:esp8266:generic \
+		-libraries "$(CURDIR)/pubsubclient-$(PUBSUBCLIENT_VERSION)" \
 		-build-path "${TARGET_DIR}" \
 		$<
+
+compile: $(TARGET_DIR)/$(SKETCH).bin
 
 flash: $(TARGET_DIR)/$(SKETCH).bin
 	$(ARDUINO_PATH)/hardware/esp8266com/esp8266/tools/upload.py \
@@ -21,7 +31,6 @@ flash: $(TARGET_DIR)/$(SKETCH).bin
 		write_flash \
 		0x00000 \
 		$<
-
 
 clean:
 	rm -rf ${TARGET_DIR}
