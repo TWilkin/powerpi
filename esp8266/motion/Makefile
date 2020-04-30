@@ -4,6 +4,8 @@ TARGET_DIR=$(CURDIR)/bin
 PORT?=/dev/ttyUSB0
 PUBSUBCLIENT_VERSION=2.7
 
+LOCATION?=hallway
+
 all: clean compile flash monitor
 
 # Download pubsubclient library
@@ -12,7 +14,10 @@ pubsubclient-$(PUBSUBCLIENT_VERSION):
 	tar xfz v$(PUBSUBCLIENT_VERSION).tar.gz
 	rm v$(PUBSUBCLIENT_VERSION).tar.gz
 
-$(TARGET_DIR)/$(SKETCH).bin: $(SKETCH) pubsubclient-$(PUBSUBCLIENT_VERSION)
+location.h:
+	echo "const char* LOCATION = \"$(LOCATION)\";" > location.h
+
+$(TARGET_DIR)/$(SKETCH).bin: $(SKETCH) location.h pubsubclient-$(PUBSUBCLIENT_VERSION)
 	mkdir -p $(TARGET_DIR)
 	$(ARDUINO_PATH)/arduino-builder \
 		-compile \
@@ -38,4 +43,5 @@ monitor:
 	screen $(PORT) 115200
 
 clean:
+	rm location.h
 	rm -rf ${TARGET_DIR}

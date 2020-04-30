@@ -1,4 +1,5 @@
 **/bin
-**/wifi.h
+**/location.h
 **/mqtt.h
+**/wifi.h
 **/pubsubclient-*

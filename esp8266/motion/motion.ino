@@ -7,9 +7,12 @@
 // MQTT connection details MQTT_SERVER and MQTT_PORT
 #include "mqtt.h"
 
+// the location of this sensor LOCATION
+#include "location.h"
+
 // constants for the MQTT messages
 const char* MQTT_TOPIC = "motion";
-const char* MQTT_MESSAGE = "{\"type\": \"motion\", \"location\": \"hallway\", \"state\": \"%s\"}";
+const char* MQTT_MESSAGE = "{\"type\": \"motion\", \"location\": \"%s\", \"state\": \"%s\"}";
 const char* DETECTED = "detected";
 const char* UNDETECTED = "undetected";
 
@@ -47,10 +50,14 @@ void connectWiFi() {
 void connectMQTT() {
   // wait until it's connected
   while(!client.connected()) {
-    if(!client.connect("MotionSensor")) {
+    // generate the id
+    char clientId[10];
+    snprintf(clientId, 10, "%sMS", LOCATION);
+
+    if(!client.connect(clientId)) {
       Serial.print("MQTT connection failed ");
       Serial.println(client.state());
-      delay(5000);
+      delay(500);
     }
   }
 }
@@ -61,10 +68,10 @@ void eventHandler(int state) {
 
   // act for detected and undetected
   if(state == HIGH) {
-    snprintf(message, 70, MQTT_MESSAGE, DETECTED);
+    snprintf(message, 70, MQTT_MESSAGE, LOCATION, DETECTED);
     Serial.print("d");
   } else {
-    snprintf(message, 70, MQTT_MESSAGE, UNDETECTED);
+    snprintf(message, 70, MQTT_MESSAGE, LOCATION, UNDETECTED);
     Serial.print("u");
   }
 
@@ -84,6 +91,8 @@ void setup() {
   // intialise Serial for logging
   Serial.begin(115200);
   Serial.println("Motion Sensor");
+  Serial.print("Location: ");
+  Serial.println(LOCATION);
 
   // connect to WiFi
   connectWiFi();
