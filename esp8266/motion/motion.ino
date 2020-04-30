@@ -13,11 +13,17 @@ const char* MQTT_MESSAGE = "{\"type\": \"motion\", \"location\": \"hallway\", \"
 const char* DETECTED = "detected";
 const char* UNDETECTED = "undetected";
 
+// the pin used for the sensor input (GPIO5/D1)
+const int PIR_PIN = 5;
+
 // the WiFiClient for connecting to MQTT
 WiFiClient espClient;
 
 // the MQTT client
 PubSubClient client(espClient);
+
+// the previous state
+int previousState = LOW;
 
 // buffer for writing the MQTT messages to
 char message[70];
@@ -39,39 +45,71 @@ void connectWiFi() {
 }
 
 void connectMQTT() {
-  // initialise the MQTT connection
-  client.setServer(MQTT_SERVER, MQTT_PORT);
-  Serial.print("Connecting to ");
-  Serial.println(MQTT_SERVER);
-
   // wait until it's connected
   while(!client.connected()) {
-    if(client.connect("MotionSensor")) {
-      Serial.println("Connected");
-    } else {
-      Serial.println("Connection failed, retrying");
+    if(!client.connect("MotionSensor")) {
+      Serial.print("MQTT connection failed ");
       Serial.println(client.state());
       delay(5000);
     }
   }
 }
 
+void eventHandler(int state) {
+  // use the LED to indicate the current state (active LOW)
+  digitalWrite(BUILTIN_LED, !state);
+
+  // act for detected and undetected
+  if(state == HIGH) {
+    snprintf(message, 70, MQTT_MESSAGE, DETECTED);
+    Serial.print("d");
+  } else {
+    snprintf(message, 70, MQTT_MESSAGE, UNDETECTED);
+    Serial.print("u");
+  }
+
+  // publish the event
+  connectMQTT();
+  client.publish(MQTT_TOPIC, message);
+
+  // store the new state for the next comparison
+  previousState = state;
+}
+
 void setup() {
+  // initialise the pins
+  pinMode(BUILTIN_LED, OUTPUT);
+  pinMode(PIR_PIN, INPUT);
+
   // intialise Serial for logging
   Serial.begin(115200);
+  Serial.println("Motion Sensor");
 
   // connect to WiFi
   connectWiFi();
 
-  // connect to MQTT
-  connectMQTT();
+  // initialise the MQTT connection
+  client.setServer(MQTT_SERVER, MQTT_PORT);
+  Serial.print("Using MQTT: ");
+  Serial.print(MQTT_SERVER);
+  Serial.print(":");
+  Serial.println(MQTT_PORT);
 
-  // publish a detected event
-  snprintf(message, 70, MQTT_MESSAGE, DETECTED);
-  Serial.print("Publishing message ");
-  Serial.println(message);
-  client.publish(MQTT_TOPIC, message);
+  Serial.println("Ready");
+
+  // ensure MQTT matches the current state
+  eventHandler(digitalRead(PIR_PIN));
 }
 
 void loop() {
+  Serial.print(".");
+
+  // check if the pin has changed from last time
+  int state = digitalRead(PIR_PIN);
+  if(state != previousState) {
+    // we have a change
+    eventHandler(state);
+  }
+
+  delay(500);
 }
