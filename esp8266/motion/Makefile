@@ -4,6 +4,8 @@ TARGET_DIR=$(CURDIR)/bin
 PORT?=/dev/ttyUSB0
 PUBSUBCLIENT_VERSION=2.7
 
+all: clean compile flash monitor
+
 # Download pubsubclient library
 pubsubclient-$(PUBSUBCLIENT_VERSION):
 	wget https://github.com/knolleary/pubsubclient/archive/v$(PUBSUBCLIENT_VERSION).tar.gz
@@ -32,7 +34,8 @@ flash: $(TARGET_DIR)/$(SKETCH).bin
 		0x00000 \
 		$<
 
+monitor:
+	screen $(PORT) 115200
+
 clean:
 	rm -rf ${TARGET_DIR}
-
-all: flash
