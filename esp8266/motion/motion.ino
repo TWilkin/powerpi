@@ -104,6 +104,8 @@ void setup() {
   Serial.print(":");
   Serial.println(MQTT_PORT);
 
+  // wait for 1 minute for the sensor to initialise
+  delay(60 * 1000);
   Serial.println("Ready");
 
   // ensure MQTT matches the current state
@@ -118,6 +120,11 @@ void loop() {
   if(state != previousState) {
     // we have a change
     eventHandler(state);
+
+    // wait 5 seconds before checking again when transitioning HIGH->LOW
+    if(state == LOW) {
+      delay(5 * 1000);
+    }
   }
 
   delay(500);
