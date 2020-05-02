@@ -121,11 +121,18 @@ void loop() {
     // we have a change
     eventHandler(state);
 
-    // wait 5 seconds before checking again when transitioning HIGH->LOW
+    // wait before checking for another state change
     if(state == LOW) {
+      // after HIGH to LOW we need to allow the sensor 5s
+      // to acclimatise
       delay(5 * 1000);
+    } else {
+      // we don't want to detect more motion for a period
+      // after the motion was originally detected
+      delay(20 * 1000);
     }
+  } else {
+    // delay before checking the state again
+    delay(500);
   }
-
-  delay(500);
 }
