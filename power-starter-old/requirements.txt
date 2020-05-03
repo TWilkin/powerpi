@@ -1,6 +1,0 @@
-dnspython
-Flask
-jinja2
-pip
-git+https://git@github.com/TWilkin/pyharmony.git#egg=pyharmony
-git+https://git@github.com/TWilkin/pyenergenie.git#egg=pyenergenie
