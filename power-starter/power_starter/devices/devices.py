@@ -14,7 +14,7 @@ class Device(object):
 
         class __Wrapper(cls):
 
-            def __init__(self, name, icon=None, visible=None, state_change_callback=None, **kws):
+            def __init__(self, name, state_change_callback=None, **kws):
                 self.__name = name
                 self.__device_type = device_type
                 self.__status = 'unknown'
