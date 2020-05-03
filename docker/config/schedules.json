@@ -3,14 +3,14 @@
     "schedules": [
         {
             "device": "HallwayLight", 
-            "between": ["21:00:00", "00:00:00"], 
-            "interval": "600",
+            "between": ["21:00:00", "22:00:00"], 
+            "interval": "300",
             "brightness": [1.0, 0.4]
         },
         {
             "device": "HallwayLight", 
-            "between": ["06:00:00", "09:00:00"], 
-            "interval": "600",
+            "between": ["07:00:00", "08:00:00"], 
+            "interval": "300",
             "brightness": [0.4, 1.0]
         }
     ]
