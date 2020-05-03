@@ -2,9 +2,20 @@ import Lifx from 'node-lifx-lan';
 import Logger from 'loggy';
 import moment from 'moment-timezone';
 
+export enum Weekday {
+    Sunday,
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday
+};
+
 export interface Schedule {
 
     device: string;
+    days?: Weekday[];
     between: string[];
     interval: number;
     hue?: number[];
@@ -129,6 +140,14 @@ export class ScheduleExecutor {
             date.setDate(date.getDate() + 1);
         }
 
+        // check this date is on the correct day of the week
+        if(this.schedule.days) {
+            const days = this.schedule.days.map(day => parseInt(Weekday[day])); 
+            while(!days.includes(date.getDay())) {
+                date.setDate(date.getDate() + 1);
+            }
+        }
+
         return date;
     }
 
@@ -169,7 +188,16 @@ export class ScheduleExecutor {
     }
 
     public toString(): string {
-        let str = `Every ${this.schedule.interval}s between [${this.schedule.between}] adjust ${this.schedule.device}`;
+        let str = `Every ${this.schedule.interval}s between [${this.schedule.between}]`;
+        
+        // add the days
+        if(this.schedule.days) {
+            str += ' on ' + this.schedule.days.join(', ');
+        } else {
+            str += ' every day';
+        }
+
+        str += ` adjust ${this.schedule.device}`;
         Object.keys(this.delta).forEach(key => {
             if(this.schedule[key]) {
                 str += ` ${key} between [${this.schedule[key]}]`;
