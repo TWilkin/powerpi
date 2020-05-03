@@ -9,7 +9,7 @@ services:
       replicas: 1
   
   mqtt-rest:
-    image: 127.0.0.1:5000/powerpi/mqtt-rest:0.0.3
+    image: 127.0.0.1:5000/powerpi/mqtt-rest:0.0.4
     ports:
       - "3000:3000"
     deploy:
