@@ -6,7 +6,7 @@ requirements = [str(r.req) for r in parse_requirements('requirements.txt', sessi
 
 setup(
     name='power_starter',
-    version='0.1.1',
+    version='0.2.2',
     description='PowerPi Power Starter Home Automation service',
     author='Tom Wilkin',
     author_email='tom@xzi-xzone.com',
