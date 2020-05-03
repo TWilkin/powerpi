@@ -68,10 +68,12 @@ def main():
         power_state_change_producer(message)
 
     # initialise the DeviceManager and EventManager
-    with open(os.getenv('CONFIG_FILE'), 'r') as config_file:
-        config = json.load(config_file)
-        DeviceManager.load(config['devices'], on_power_state_change)
-        EventManager.load(config['events'], client)
+    with open(os.getenv('DEVICES_FILE'), 'r') as devices_file:
+        devices = json.load(devices_file)
+        DeviceManager.load(devices['devices'], on_power_state_change)
+    with open(os.getenv('EVENTS_FILE'), 'r') as events_file:
+        events = json.load(events_file)
+        EventManager.load(events['events'], client)
 
     # loop while receiving messages
     client.loop()

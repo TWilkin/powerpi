@@ -57,10 +57,5 @@
 		{"type": "composite", "name": "MicrosoftXbox", "icon": "Xbox.png", "devices": ["MediaCentre", "XboxSocket", "Xbox"]},
 		{"type": "composite", "name": "SteamLink", "devices": ["MediaCentre", "SteamLinkSocket", "Steam"]}
 			
-	],
-
-	"events": [
-		{"topic": "motion", "action": {"device": "HallwayLight", "state": "on"}, "condition": {"type": "motion", "location": "hallway", "state": "detected"}},
-		{"topic": "motion", "action": {"device": "HallwayLight", "state": "off"}, "condition": {"type": "motion", "location": "hallway", "state": "undetected"}}
 	]
 }

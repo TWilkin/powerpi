@@ -20,7 +20,7 @@ services:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
   
   power-starter:
-    image: 127.0.0.1:5000/powerpi/power-starter:0.2.1
+    image: 127.0.0.1:5000/powerpi/power-starter:0.2.2
     deploy:
       replicas: 1
       placement:
@@ -30,13 +30,15 @@ services:
       - mosquitto
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
-      - CONFIG_FILE=/devices
+      - DEVICES_FILE=/devices
+      - EVENTS_FILE=/events
     volumes:
       - type: bind
         source: /dev/gpiomem
         target: /dev/gpiomem
     configs:
       - devices
+      - events
   
   light-fantastic:
     image: 127.0.0.1:5000/powerpi/light-fantastic:0.1.1
@@ -66,5 +68,7 @@ secrets:
 configs:
   devices:
     file: ./config/devices.json
+  events:
+    file: ./config/events.json
   schedules:
     file: ./config/schedules.json
