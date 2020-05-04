@@ -7,6 +7,8 @@ void connectWiFi() {
   // initialise WiFi connection
   Serial.print("Connecting to ");
   Serial.println(WIFI_SSID);
+  WiFi.hostname(hostname);
+  WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   // wait until it's connected
@@ -22,11 +24,7 @@ void connectWiFi() {
 void connectMQTT() {
   // wait until it's connected
   while(!client.connected()) {
-    // generate the id
-    char clientId[10];
-    snprintf(clientId, 10, "%sMS", LOCATION);
-
-    if(!client.connect(clientId)) {
+    if(!client.connect(hostname)) {
       Serial.print("MQTT connection failed ");
       Serial.println(client.state());
       delay(500);
@@ -67,6 +65,7 @@ void setup() {
   Serial.println(LOCATION);
 
   // connect to WiFi
+  snprintf(hostname, 32, "%sMotionSensor", LOCATION);
   connectWiFi();
 
   // initialise the MQTT connection
@@ -81,6 +80,7 @@ void setup() {
   Serial.println("Ready");
 
   // ensure MQTT matches the current state
+  previousState = LOW;
   eventHandler(digitalRead(PIR_PIN));
 }
 

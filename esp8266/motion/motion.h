@@ -25,8 +25,11 @@ WiFiClient espClient;
 // the MQTT client
 PubSubClient client(espClient);
 
+// the device hostname
+char hostname[32];
+
 // the previous state
-int previousState = LOW;
+int previousState;
 
 // buffer for writing the MQTT messages to
 char message[70];
