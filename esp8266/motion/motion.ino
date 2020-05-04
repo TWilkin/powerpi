@@ -38,10 +38,10 @@ void eventHandler(int state) {
 
   // act for detected and undetected
   if(state == HIGH) {
-    snprintf(message, 70, MQTT_MESSAGE, LOCATION, DETECTED);
+    snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, LOCATION, DETECTED);
     Serial.print("d");
   } else {
-    snprintf(message, 70, MQTT_MESSAGE, LOCATION, UNDETECTED);
+    snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, LOCATION, UNDETECTED);
     Serial.print("u");
   }
 
@@ -65,7 +65,7 @@ void setup() {
   Serial.println(LOCATION);
 
   // connect to WiFi
-  snprintf(hostname, 32, "%sMotionSensor", LOCATION);
+  snprintf(hostname, HOSTNAME_LEN, "%sMotionSensor", LOCATION);
   connectWiFi();
 
   // initialise the MQTT connection
@@ -101,10 +101,10 @@ void loop() {
     } else {
       // we don't want to detect more motion for a period
       // after the motion was originally detected
-      delay(20 * 1000);
+      delay(POST_MOTION_DELAY);
     }
   } else {
     // delay before checking the state again
-    delay(500);
+    delay(POLL_DELAY);
   }
 }

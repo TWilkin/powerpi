@@ -16,6 +16,18 @@
 #define DETECTED "detected"
 #define UNDETECTED "undetected"
 
+// the maximum length of the hostname
+#define HOSTNAME_LEN 32
+
+// the maximum length of the message
+#define MESSAGE_LEN 100
+
+// the delay between normal state change polling
+#define POLL_DELAY 0.5 * 1000
+
+// the delay before checking for change after a motion event
+#define POST_MOTION_DELAY 20 * 1000
+
 // the pin used for the sensor input (GPIO5/D1)
 #define PIR_PIN 5
 
@@ -26,13 +38,13 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 
 // the device hostname
-char hostname[32];
+char hostname[HOSTNAME_LEN];
 
 // the previous state
 int previousState;
 
 // buffer for writing the MQTT messages to
-char message[70];
+char message[MESSAGE_LEN];
 
 void connectWiFi();
 void connectMQTT();
