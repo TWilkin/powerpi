@@ -15,7 +15,7 @@ pubsubclient-$(PUBSUBCLIENT_VERSION):
 	rm v$(PUBSUBCLIENT_VERSION).tar.gz
 
 location.h:
-	echo "const char* LOCATION = \"$(LOCATION)\";" > location.h
+	echo "#define LOCATION \"$(LOCATION)\"" > location.h
 
 $(TARGET_DIR)/$(SKETCH).bin: $(SKETCH) location.h pubsubclient-$(PUBSUBCLIENT_VERSION)
 	mkdir -p $(TARGET_DIR)

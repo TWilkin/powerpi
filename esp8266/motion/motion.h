@@ -11,13 +11,13 @@
 #include "location.h"
 
 // constants for the MQTT messages
-const char* MQTT_TOPIC = "motion";
-const char* MQTT_MESSAGE = "{\"type\": \"motion\", \"location\": \"%s\", \"state\": \"%s\"}";
-const char* DETECTED = "detected";
-const char* UNDETECTED = "undetected";
+#define MQTT_TOPIC "motion"
+#define MQTT_MESSAGE "{\"type\": \"motion\", \"location\": \"%s\", \"state\": \"%s\"}"
+#define DETECTED "detected"
+#define UNDETECTED "undetected"
 
 // the pin used for the sensor input (GPIO5/D1)
-const int PIR_PIN = 5;
+#define PIR_PIN 5
 
 // the WiFiClient for connecting to MQTT
 WiFiClient espClient;
