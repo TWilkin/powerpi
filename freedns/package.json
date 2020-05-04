@@ -1,0 +1,20 @@
+{
+  "name": "freedns",
+  "version": "0.0.3",
+  "description": "FreeDNS automatic updater service",
+  "main": "src/app.ts",
+  "scripts": {
+    "start": "ts-node src/app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tom Wilkin",
+  "dependencies": {
+    "@types/node": "^13.13.4",
+    "@types/xml2js": "^0.4.5",
+    "axios": "^0.19.0",
+    "loggy": "^1.0.8",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.8.3",
+    "xml2js": "^0.4.22"
+  }
+}

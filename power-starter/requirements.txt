@@ -1,0 +1,3 @@
+lifxlan
+paho-mqtt
+git+https://git@github.com/TWilkin/pyharmony.git#egg=pyharmony

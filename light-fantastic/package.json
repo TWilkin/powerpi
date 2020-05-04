@@ -1,0 +1,22 @@
+{
+  "name": "light-fantastic",
+  "version": "0.1.1",
+  "description": "LIFX brightness and temperature control service",
+  "main": "src/app.ts",
+  "scripts": {
+    "start": "ts-node src/app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tom Wilkin",
+  "dependencies": {
+    "@types/moment-timezone": "^0.5.13",
+    "@types/node": "^13.13.4",
+    "awaity": "^1.0.0",
+    "loggy": "^1.0.8",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.28",
+    "node-lifx-lan": "^0.4.1",
+    "ts-node": "^8.9.1",
+    "typescript": "^3.8.3"
+  }
+}

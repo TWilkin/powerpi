@@ -1,0 +1,25 @@
+{
+    "timezone": "Europe/London",
+    "schedules": [
+        {
+            "device": "HallwayLight", 
+            "between": ["21:00:00", "22:00:00"], 
+            "interval": "300",
+            "brightness": [1.0, 0.4]
+        },
+        {
+            "device": "HallwayLight",
+            "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "between": ["07:00:00", "08:00:00"], 
+            "interval": "300",
+            "brightness": [0.4, 1.0]
+        },
+        {
+            "device": "HallwayLight",
+            "days": ["Saturday", "Sunday"],
+            "between": ["08:00:00", "09:00:00"], 
+            "interval": "300",
+            "brightness": [0.4, 1.0]
+        }
+    ]
+}

@@ -1,0 +1,74 @@
+version: "3.7"
+
+services:
+  mosquitto:
+    image: arm32v6/eclipse-mosquitto:1.6.7
+    ports:
+      - "1883:1883"
+    deploy:
+      replicas: 1
+  
+  mqtt-rest:
+    image: 127.0.0.1:5000/powerpi/mqtt-rest:0.0.4
+    ports:
+      - "3000:3000"
+    deploy:
+      replicas: 1
+    depends_on:
+      - mosquitto
+    environment:
+      - MQTT_ADDRESS=mqtt://mosquitto:1883
+  
+  power-starter:
+    image: 127.0.0.1:5000/powerpi/power-starter:0.2.2
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+        - node.labels.energenie == true
+    depends_on:
+      - mosquitto
+    environment:
+      - MQTT_ADDRESS=mqtt://mosquitto:1883
+      - DEVICES_FILE=/devices
+      - EVENTS_FILE=/events
+    volumes:
+      - type: bind
+        source: /dev/gpiomem
+        target: /dev/gpiomem
+    configs:
+      - devices
+      - events
+  
+  light-fantastic:
+    image: 127.0.0.1:5000/powerpi/light-fantastic:0.1.1
+    deploy:
+      replicas: 1
+    environment:
+      - DEVICES_FILE=/devices
+      - SCHEDULES_FILE=/schedules
+    configs:
+      - devices
+      - schedules
+  
+  freedns:
+    image: 127.0.0.1:5000/powerpi/freedns:0.0.3
+    deploy:
+      replicas: 1
+    secrets:
+      - freedns
+    environment:
+      - FREEDNS_USER=lordxzi
+      - FREEDNS_PASSWORD=/var/run/secrets/freedns
+
+secrets:
+  freedns:
+    external: true
+
+configs:
+  devices:
+    file: ./config/devices.json
+  events:
+    file: ./config/events.json
+  schedules:
+    file: ./config/schedules.json
