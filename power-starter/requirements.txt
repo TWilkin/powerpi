@@ -1,4 +1,4 @@
 lifxlan
 paho-mqtt
 git+https://git@github.com/TWilkin/pyenergenie.git#egg=pyenergenie
-git+https://git@github.com/TWilkin/pyharmony.git#egg=pyharmony
+git+https://git@github.com/iandday/pyharmony.git#egg=pyharmony
