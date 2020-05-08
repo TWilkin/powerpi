@@ -10,6 +10,18 @@
 // the location of this sensor LOCATION
 #include "location.h"
 
+// enum for the three possible states
+typedef enum State {
+    // when the light was previously on
+    ON,
+
+    // when the light was previously off
+    OFF,
+
+    // in the check phase between on -> off transition
+    CHECK
+} State;
+
 // constants for the MQTT messages
 #define MQTT_TOPIC "motion"
 #define MQTT_MESSAGE "{\"type\": \"motion\", \"location\": \"%s\", \"state\": \"%s\"}"
@@ -25,7 +37,7 @@
 // the delay between normal state change polling
 #define POLL_DELAY 0.5 * 1000
 
-// the delay before checking for change after a motion event
+// the delay before checking for change after a on -> off transition
 #define POST_MOTION_DELAY 20 * 1000
 
 // the pin used for the sensor input (GPIO5/D1)
@@ -41,14 +53,14 @@ PubSubClient client(espClient);
 char hostname[HOSTNAME_LEN];
 
 // the previous state
-int previousState;
+State previousState;
 
 // buffer for writing the MQTT messages to
 char message[MESSAGE_LEN];
 
 void connectWiFi();
 void connectMQTT();
-void eventHandler(int state);
+void eventHandler(State state);
 void setup();
 void loop();
 
