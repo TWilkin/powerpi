@@ -32,12 +32,12 @@ void connectMQTT() {
   }
 }
 
-void eventHandler(int state) {
+void eventHandler(State state) {
   // use the LED to indicate the current state (active LOW)
-  digitalWrite(BUILTIN_LED, !state);
+  digitalWrite(BUILTIN_LED, state == ON ? LOW : HIGH);
 
   // act for detected and undetected
-  if(state == HIGH) {
+  if(state == ON) {
     snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, LOCATION, DETECTED);
     Serial.print("d");
   } else {
@@ -48,9 +48,6 @@ void eventHandler(int state) {
   // publish the event
   connectMQTT();
   client.publish(MQTT_TOPIC, message);
-
-  // store the new state for the next comparison
-  previousState = state;
 }
 
 void setup() {
@@ -80,8 +77,8 @@ void setup() {
   Serial.println("Ready");
 
   // ensure MQTT matches the current state
-  previousState = LOW;
-  eventHandler(digitalRead(PIR_PIN));
+  previousState = digitalRead(PIR_PIN) == HIGH ? ON : OFF;
+  eventHandler(previousState);
 }
 
 void loop() {
@@ -89,22 +86,34 @@ void loop() {
 
   // check if the pin has changed from last time
   int state = digitalRead(PIR_PIN);
-  if(state != previousState) {
-    // we have a change
-    eventHandler(state);
-
-    // wait before checking for another state change
+  if(previousState == OFF) {
+    if(state == HIGH) {
+      // turn the light on
+      previousState = ON;
+      eventHandler(ON);
+    }
+  } else if(previousState == ON) {
     if(state == LOW) {
+      // we've stopped detecting motion, so switch to the CHECK state and wait
+      previousState = CHECK;
+      delay(POST_MOTION_DELAY);
+    }
+  } else {
+    // we are in CHECK state, should we switch off?
+    if(state == LOW) {
+      // it's still low so switch off
+      previousState = OFF;
+      eventHandler(OFF);
+
       // after HIGH to LOW we need to allow the sensor 5s
       // to acclimatise
       delay(5 * 1000);
     } else {
-      // we don't want to detect more motion for a period
-      // after the motion was originally detected
-      delay(POST_MOTION_DELAY);
+      // it's now HIGH again, so switch back to the ON state
+      previousState = ON;
     }
-  } else {
-    // delay before checking the state again
-    delay(POLL_DELAY);
   }
+
+  // delay before checking the state again
+  delay(POLL_DELAY);
 }
