@@ -1,6 +1,7 @@
-from lifxlan import Light
+from lifxlan import Light, WorkflowException
 
 from . devices import Device, DeviceManager
+from power_starter.util.logger import Logger
 
 
 @Device(device_type='light')
@@ -8,6 +9,18 @@ class LightDevice(Light):
 
     def __init__(self, mac, ip):
         Light.__init__(self, mac, ip)
+    
+    def poll(self):
+        try:
+            status = self.get_power()
+
+            if status == 0:
+                return 'off'
+            return 'on'
+        except WorkflowException as ex:
+            Logger.error(ex)
+        
+        return 'unknown'
     
     def turn_on(self):
         self.set_power(True, 500)
