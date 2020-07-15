@@ -1,4 +1,5 @@
 from lifxlan import Light, WorkflowException
+import socket
 
 from . devices import Device, DeviceManager
 from power_starter.util.logger import Logger
@@ -8,7 +9,7 @@ from power_starter.util.logger import Logger
 class LightDevice(Light):
 
     def __init__(self, mac, ip):
-        Light.__init__(self, mac, ip)
+        Light.__init__(self, mac, ip, source_id=find_free_port())
     
     def poll(self):
         try:
@@ -33,3 +34,11 @@ class LightDevice(Light):
             self.set_power(on, 500)
         except WorkflowException as ex:
             Logger.error(ex)
+
+
+def find_free_port():
+    connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    connection.bind(('', 0))
+    _, port = connection.getsockname()
+    connection.close()
+    return port
