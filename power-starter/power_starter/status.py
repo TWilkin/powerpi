@@ -1,4 +1,5 @@
 import schedule
+from threading import Thread
 import time
 
 from power_starter.devices import DeviceManager
@@ -21,7 +22,12 @@ class StatusChecker:
 
         run()
     
-    def loop(self):
+    def loop_start(self):
+        thread = Thread(target=self.__loop, args=())
+        thread.daeomn = True
+        thread.start()
+    
+    def __loop(self):
         while True:
             schedule.run_pending()
             time.sleep(1)

@@ -79,10 +79,11 @@ def main():
     # start the StatusChecker
     status_checker = StatusChecker()
     status_checker.schedule()
-    status_checker.loop()
+    status_checker.loop_start()
 
     # loop while receiving messages
     client.loop()
+
 
 # start the application
 if __name__ == '__main__':
