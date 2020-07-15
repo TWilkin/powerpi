@@ -23,7 +23,13 @@ class LightDevice(Light):
         return 'unknown'
     
     def turn_on(self):
-        self.set_power(True, 500)
+        self.__set_power(True)
     
     def turn_off(self):
-        self.set_power(False, 500)
+        self.__set_power(False)
+    
+    def __set_power(self, on):
+        try:
+            self.set_power(on, 500)
+        except WorkflowException as ex:
+            Logger.error(ex)
