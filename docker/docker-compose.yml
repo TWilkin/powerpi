@@ -56,7 +56,7 @@ services:
     secrets:
       - freedns
     environment:
-      - FREEDNS_USER=lordxzi
+      - FREEDNS_USER=${FREEDNS_USER}
       - FREEDNS_PASSWORD=/var/run/secrets/freedns
   
   nginx:
