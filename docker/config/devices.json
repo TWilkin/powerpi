@@ -40,6 +40,7 @@
 		{"type": "harmony_activity", "name": "Wii U", "hub": "Tom's Hub"},
 		{"type": "harmony_activity", "name": "Xbox", "hub": "Tom's Hub"},
 
+		{"type": "composite", "name": "AtariJaguar", "devices": ["MediaCentre", "PlayStationSocket", "Retro Game"]},
 		{"type": "composite", "name": "CDPlayer", "devices": ["MediaCentre", "CDPlayerSocket", "CD"]},
 		{"type": "composite", "name": "BlurayPlayer", "devices": ["MediaCentre", "Blu-ray"]},
 		{"type": "composite", "name": "SmartTV", "devices": ["MediaCentre", "Smart TV"]},
@@ -50,6 +51,7 @@
 		{"type": "composite", "name": "NintendoWii", "devices": ["MediaCentre", "WiiSocket", "Wii"]},
 		{"type": "composite", "name": "NintendoWiiU", "devices": ["MediaCentre", "WiiUSocket", "Wii U"]},
 		{"type": "composite", "name": "NintendoSwitch", "devices": ["MediaCentre", "Switch"]},
+		{"type": "composite", "name": "SegaMegaDrive", "devices": ["MediaCentre", "SaturnSocket", "Retro Game"]},
 		{"type": "composite", "name": "SegaSaturn", "devices": ["MediaCentre", "SaturnSocket", "Retro Game"]},
 		{"type": "composite", "name": "SegaDreamcast", "devices": ["MediaCentre", "DreamcastSocket", "Dreamcast"]},
 		{"type": "composite", "name": "SonyPlayStation", "devices": ["MediaCentre", "PlayStationSocket", "Retro Game"]},
