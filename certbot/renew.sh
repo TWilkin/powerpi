@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# renew (or request a new) certificate
 certbot \
     certonly \
     --webroot --webroot-path=/var/www/html \
@@ -8,4 +9,6 @@ certbot \
     --non-interactive \
     -d $EXTERNAL_HOST_NAME
 
+# create a symlink as NGINX doesn't support environment variables in the config files
+rm -f /etc/letsencrypt/live/$EXTERNAL_HOST_NAME
 ln -s /etc/letsencrypt/live/$EXTERNAL_HOST_NAME /etc/letsencrypt/live/default
