@@ -69,9 +69,22 @@ services:
     depends_on:
       - mqtt-rest
     volumes:
-      - /var/lib/docker-volumes/certbot/conf/live/${EXTERNAL_HOST_NAME}:/etc/letsencrypt
+      - /var/lib/docker-volumes/certbot/conf:/etc/letsencrypt
       - /var/lib/docker-volumes/certbot/www:/var/www/certbot
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+  
+  certbot:
+    image: 127.0.0.1:5000/powerpi/certbot:0.0.1
+    deploy:
+      replicas: 1
+    depends_on:
+      - nginx
+    environment:
+      - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
+      - EMAIL=${EMAIL}
+    volumes:
+      - /var/lib/docker-volumes/certbot/conf:/etc/letsencrypt
+      - /var/lib/docker-volumes/certbot/www:/var/www/html
 
 secrets:
   freedns:
