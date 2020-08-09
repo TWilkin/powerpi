@@ -1,5 +1,5 @@
 FROM arm32v6/nginx:1.19-alpine
-LABEL maintainer="tom@twilkin.uk", description="SSL protected NGINX"
+LABEL description="NGINX reverse proxy to protect web accessible endpoints with SSL"
 
 # add qemu so we can build from x86
 COPY qemu-arm-static /usr/bin

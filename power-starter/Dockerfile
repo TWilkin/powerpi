@@ -1,5 +1,5 @@
 FROM 192.168.2.10:5000/arm32v6/python-qemu:3.8.0-alpine3.10 AS compile-image
-LABEL maintainer="tom@twilkin.uk", description="Python application to listen to the queue and start/stop devices as requested"
+LABEL description="Python application to listen to the queue and start/stop devices as requested"
 
 # ensure we have the dependencies to run pip
 RUN apk update && apk upgrade && \
