@@ -20,7 +20,7 @@ services:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
   
   power-starter:
-    image: 127.0.0.1:5000/powerpi/power-starter:0.3.0
+    image: 127.0.0.1:5000/powerpi/power-starter:0.4.0
     deploy:
       replicas: 1
       placement:

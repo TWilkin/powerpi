@@ -33,7 +33,7 @@ class Device(object):
                     pass
 
             def __str__(self):
-                return '%s(%s)' % (cls, self.name)
+                return '%s(%s, %s)' % (cls, self.name, self.status)
 
             @property
             def name(self):
@@ -49,7 +49,7 @@ class Device(object):
 
             @status.setter
             def status(self, value):
-                if value != 'on' and value != 'off':
+                if value != 'on' and value != 'off' and value != 'unknown':
                     raise ValueError('Unrecognised status %s.' % value)
 
                 old_value = self.__status
@@ -65,6 +65,14 @@ class Device(object):
                     return cls.loggers.fget(cls)
                 else:
                     return []
+            
+            @property
+            def pollable(self):
+                return getattr(cls, 'poll', None) is not None
+            
+            def poll(self):
+                if self.pollable:
+                    self.status = cls.poll(self)
 
             def turn_on(self):
                 cls.turn_on(self)

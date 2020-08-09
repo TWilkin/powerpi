@@ -4,6 +4,7 @@ import os
 from power_starter.devices import DeviceManager
 from power_starter.events import EventManager
 from power_starter.mqtt import MQTTClient, MQTTConsumer
+from power_starter.status import StatusChecker
 from power_starter.util.logger import Logger
 
 
@@ -74,9 +75,15 @@ def main():
     with open(os.getenv('EVENTS_FILE'), 'r') as events_file:
         events = json.load(events_file)
         EventManager.load(events['events'], client)
+    
+    # start the StatusChecker
+    status_checker = StatusChecker()
+    status_checker.schedule()
+    status_checker.loop_start()
 
     # loop while receiving messages
     client.loop()
+
 
 # start the application
 if __name__ == '__main__':

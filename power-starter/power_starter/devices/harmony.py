@@ -29,6 +29,14 @@ class HarmonyHub(object):
     @property
     def loggers(self):
         return [pyharmony.discovery.__name__, pyharmony.client.__name__]
+    
+    def poll(self):
+        with self:
+            activity = self.__client.get_current_activity()
+
+            if activity == -1:
+                return 'off'
+            return 'on'
 
     def turn_on(self):
         pass
