@@ -1,0 +1,12 @@
+[Unit]
+Description=Watcher to enable GPIO access in any deployed docker containers.
+After=network.target
+
+[Service]
+ExecStart=/bin/bash /usr/local/bin/docker-gpio.sh
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
+
