@@ -1,4 +1,4 @@
-FROM 192.168.2.10:5000/arm32v6/python-qemu:3.8.0-alpine3.10 AS compile-image
+FROM arm32v6/python-qemu:3.8.0-alpine3.10 AS compile-image
 LABEL description="Python application to listen to the queue and start/stop devices as requested"
 
 # ensure we have the dependencies to run pip
@@ -25,7 +25,7 @@ RUN python setup.py sdist bdist_wheel \
     && $VENV/bin/pip install dist/power_starter-*.whl
 
 # use multi-stage build to remove compile dependencies
-FROM 192.168.2.10:5000/arm32v6/python-qemu:3.8.0-alpine3.10 AS build-image
+FROM arm32v6/python-qemu:3.8.0-alpine3.10 AS build-image
 ENV VENV=/usr/src/app/venv
 COPY --from=compile-image /opt/venv $VENV
 
