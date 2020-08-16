@@ -1,6 +1,6 @@
 {
 	"devices": [
-		{"type": "harmony_hub", "name": "Tom's Hub", "ip": "HarmonyHub.home"},
+		{"type": "harmony_hub", "name": "LivingRoomHub", "ip": "HarmonyHub.home"},
 
 		{"type": "socket", "name": "MediaCentreSocket", "home_id": 4},
 		{"type": "socket", "name": "WiiSocket", "home_id": 1, "device_id": 1},
@@ -25,20 +25,20 @@
 		
 		{"type": "delay", "name": "5sDelay", "start": 5, "end": 5},
         {"type": "mutex", "name": "MediaCentreMutex", "on_devices": ["MediaCentreSocket"], "off_devices": ["TopShelfSocketGroup", "BottomShelfSocketGroup", "OtherSocketGroup"]},
-		{"type": "composite", "name": "MediaCentre", "devices": ["MediaCentreMutex", "5sDelay", "Tom's Hub"]},
+		{"type": "composite", "name": "MediaCentre", "devices": ["MediaCentreMutex", "5sDelay", "LivingRoomHub"]},
 
-		{"type": "harmony_activity", "name": "Blu-ray", "hub": "Tom's Hub"},
-		{"type": "harmony_activity", "name": "CD", "hub": "Tom's Hub"},
-		{"type": "harmony_activity", "name": "Dreamcast", "hub": "Tom's Hub"},
-		{"type": "harmony_activity", "name": "Fire TV Stick", "hub": "Tom's Hub"},
-		{"type": "harmony_activity", "name": "Retro Game", "hub": "Tom's Hub"},
-		{"type": "harmony_activity", "name": "PlayStation 2", "hub": "Tom's Hub"},
-		{"type": "harmony_activity", "name": "Steam", "hub": "Tom's Hub"},
-		{"type": "harmony_activity", "name": "Smart TV", "hub": "Tom's Hub"},
-		{"type": "harmony_activity", "name": "Switch", "hub": "Tom's Hub"},
-		{"type": "harmony_activity", "name": "Wii", "hub": "Tom's Hub"},
-		{"type": "harmony_activity", "name": "Wii U", "hub": "Tom's Hub"},
-		{"type": "harmony_activity", "name": "Xbox", "hub": "Tom's Hub"},
+		{"type": "harmony_activity", "name": "Blu-ray", "hub": "LivingRoomHub"},
+		{"type": "harmony_activity", "name": "CD", "hub": "LivingRoomHub"},
+		{"type": "harmony_activity", "name": "Dreamcast", "hub": "LivingRoomHub"},
+		{"type": "harmony_activity", "name": "Fire TV Stick", "hub": "LivingRoomHub"},
+		{"type": "harmony_activity", "name": "Retro Game", "hub": "LivingRoomHub"},
+		{"type": "harmony_activity", "name": "PlayStation 2", "hub": "LivingRoomHub"},
+		{"type": "harmony_activity", "name": "Steam", "hub": "LivingRoomHub"},
+		{"type": "harmony_activity", "name": "Smart TV", "hub": "LivingRoomHub"},
+		{"type": "harmony_activity", "name": "Switch", "hub": "LivingRoomHub"},
+		{"type": "harmony_activity", "name": "Wii", "hub": "LivingRoomHub"},
+		{"type": "harmony_activity", "name": "Wii U", "hub": "LivingRoomHub"},
+		{"type": "harmony_activity", "name": "Xbox", "hub": "LivingRoomHub"},
 
 		{"type": "composite", "name": "AtariJaguar", "devices": ["MediaCentre", "PlayStationSocket", "Retro Game"]},
 		{"type": "composite", "name": "CDPlayer", "devices": ["MediaCentre", "CDPlayerSocket", "CD"]},
