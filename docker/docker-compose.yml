@@ -51,7 +51,7 @@ services:
       - schedules
   
   freedns:
-    image: 127.0.0.1:5000/powerpi/freedns:0.0.3
+    image: 127.0.0.1:5000/powerpi/freedns:0.0.4
     deploy:
       replicas: 1
     secrets:
