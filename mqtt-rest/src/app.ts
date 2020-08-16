@@ -5,7 +5,7 @@ import loggy from 'loggy';
 import mqtt from 'mqtt';
 import os from 'os';
 
-import { BodyParserIncomingMessage, BodyParserRequest } from './message';
+import { BodyParserIncomingMessage, BodyParserRequest, TopicMessage } from './message';
 
 // read the config
 const config = process.env;
@@ -41,21 +41,25 @@ app.use((req, res, next) => {
 });
 
 // define the POST end point that will publish the messages to the topic
-app.post('/topic/:topicName', (req, res) => {
+app.post('/topic/:type/:entity/:action', (req, res) => {
     // check we actually have a message
     const body = (req as BodyParserRequest).rawBody;
     if(!body) {
         res.sendStatus(HttpStatus.BAD_REQUEST);
     }
 
+    // generate the topic name
+    const message = new TopicMessage(req.params);
+    const topicName = `${config['TOPIC_BASE']}/${message.topicName}`;
+
     // log that we're doing something with the request
-    loggy.info(`Publishing to topic ${req.params.topicName}`);
+    loggy.info(`Publishing to topic ${topicName}`);
     if(config['DEBUG']) {
         loggy.info(body);
     }
 
     // publish to MQTT
-    client.publish(req.params.topicName, body);
+    client.publish(topicName, body);
 
     // tell the requestor we're done
     res.sendStatus(HttpStatus.OK);
