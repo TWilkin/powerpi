@@ -60,7 +60,7 @@ services:
       - FREEDNS_PASSWORD=/var/run/secrets/freedns
   
   nginx:
-    image: 127.0.0.1:5000/powerpi/nginx:0.0.1
+    image: 127.0.0.1:5000/powerpi/nginx:0.0.2
     ports:
       - "80:80"
       - "3000:443"
@@ -68,13 +68,15 @@ services:
       replicas: 1
     depends_on:
       - mqtt-rest
+    secrets:
+      - powerpi_users
     volumes:
       - /var/lib/docker-volumes/certbot/conf:/etc/letsencrypt
       - /var/lib/docker-volumes/certbot/www:/var/www/certbot
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
   
   certbot:
-    image: 127.0.0.1:5000/powerpi/certbot:0.0.1
+    image: 127.0.0.1:5000/powerpi/certbot:0.0.2
     deploy:
       replicas: 1
     depends_on:
@@ -88,6 +90,8 @@ services:
 
 secrets:
   freedns:
+    external: true
+  powerpi_users:
     external: true
 
 configs:
