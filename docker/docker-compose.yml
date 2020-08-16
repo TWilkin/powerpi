@@ -76,7 +76,7 @@ services:
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
   
   certbot:
-    image: 127.0.0.1:5000/powerpi/certbot:0.0.1
+    image: 127.0.0.1:5000/powerpi/certbot:0.0.2
     deploy:
       replicas: 1
     depends_on:
