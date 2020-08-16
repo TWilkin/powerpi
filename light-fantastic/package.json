@@ -1,6 +1,6 @@
 {
   "name": "light-fantastic",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "LIFX brightness and temperature control service",
   "main": "src/app.ts",
   "scripts": {
