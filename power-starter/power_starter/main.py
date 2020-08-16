@@ -6,25 +6,24 @@ from power_starter.util.config import Config
 from power_starter.util.logger import Logger
 
 
-# the MQTT topics we're reading/writing to
-power_change_topic = 'home_change'
-power_status_topic = 'home_status'
-
 class PowerEventConsumer(MQTTConsumer):
 
+    def __init__(self, topic):
+        MQTTConsumer.__init__(self, topic)
+
     # MQTT message callback
-    def on_message(self, client, user_data, message):      
+    def on_message(self, client, user_data, message, entity, action):      
         # check if we should respond to this message
-        if message['type'] == 'power':
+        if action == 'change':
             if message['state'] != 'on' and message['state'] != 'off':
                 Logger.error('Unrecognisable state {:s}'.format(message['state']))
                 return
-            if message['device'] is None or message['device'].strip() == '':
+            if entity is None or entity.strip() == '':
                 Logger.error('Device is a required field')
                 return
             
             # attempt to power the device on/off
-            self.__power(message['device'], message['state'])
+            self.__power(entity, message['state'])
     
     # change the power state of a device
     def __power(self, device_name, state):
@@ -53,10 +52,14 @@ def main():
     # initialise the config
     config = Config()
 
+    # the MQTT topics we're reading/writing to
+    power_change_topic = '{}/device/+/change'.format(config.topic_base)
+    #power_status_topic = '{}/device/{deviceName}/status'.format(config.topic_base)
+
     # initialise and connect to MQTT
     client = MQTTClient()
-    client.add_consumer(power_change_topic, PowerEventConsumer())
-    power_state_change_producer = client.add_producer(power_status_topic)
+    client.add_consumer('device/change', PowerEventConsumer(power_change_topic))
+    #power_state_change_producer = client.add_producer(power_status_topic)
     client.connect(config.mqtt_address)
 
     # create a callback for power change events
@@ -67,7 +70,7 @@ def main():
             'device': device,
             'state': state
         }
-        power_state_change_producer(message)
+        #power_state_change_producer(message)
 
     # initialise the DeviceManager and EventManager
     DeviceManager.load(config.devices['devices'], on_power_state_change)

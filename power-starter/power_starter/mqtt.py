@@ -18,10 +18,10 @@ class MQTTClient:
         self.__client.on_message = self.__on_message
         self.__client.connect(url.hostname, url.port, 60)
     
-    def add_consumer(self, topic, consumer):
-        if not topic in self.__consumers:
-            self.__consumers[topic] = []
-        self.__consumers[topic].append(consumer)
+    def add_consumer(self, key, consumer):
+        if not key in self.__consumers:
+            self.__consumers[key] = []
+        self.__consumers[key].append(consumer)
     
     def add_producer(self, topic):
         def publish(message):
@@ -33,20 +33,26 @@ class MQTTClient:
     
     def __on_connect(self, _, __, ___, result_code):
         Logger.info('MQTT Connect {:d}'.format(result_code))
-        for topic, consumers in self.__consumers.items():
+        for _, consumers in self.__consumers.items():
             for consumer in consumers:
-                Logger.info('Subcribing to topic \'{:s}\''.format(topic))
-                self.__client.subscribe(topic)
+                Logger.info('Subcribing to topic \'{:s}\''.format(consumer.topic))
+                self.__client.subscribe(consumer.topic)
     
     def __on_message(self, client, user_data, message):
         # read the JSON
         event = json.loads(message.payload)
         Logger.info('Received: {:s}:{:s}'.format(message.topic, json.dumps(event)))
 
+        # split the topic
+        _, message_type, entity, action = message.topic.split('/', 3)
+        
+        # define the listener this was registered for
+        listener_key = '{}/{}'.format(message_type, action)
+
         # send the message to the correct consumers
-        if message.topic in self.__consumers:
-            for consumer in self.__consumers[message.topic]:
-                consumer.on_message(client, user_data, event)
+        if listener_key in self.__consumers:
+            for consumer in self.__consumers[listener_key]:
+                consumer.on_message(client, user_data, event, entity, action)
 
     def __publish(self, topic, message):
         message = json.dumps(message)
@@ -56,5 +62,8 @@ class MQTTClient:
 
 class MQTTConsumer:
 
-    def on_message(self, client, user_data, message):
+    def __init__(self, topic):
+        self.topic = topic
+
+    def on_message(self, client, user_data, message, entity, action):
         raise NotImplementedError
