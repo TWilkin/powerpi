@@ -23,8 +23,8 @@ class MQTTClient:
             self.__consumers[key] = []
         self.__consumers[key].append(consumer)
     
-    def add_producer(self, topic):
-        def publish(message):
+    def add_producer(self):
+        def publish(topic, message):
             return self.__publish(topic, message)
         return publish            
 

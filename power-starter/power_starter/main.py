@@ -54,23 +54,22 @@ def main():
 
     # the MQTT topics we're reading/writing to
     power_change_topic = '{}/device/+/change'.format(config.topic_base)
-    #power_status_topic = '{}/device/{deviceName}/status'.format(config.topic_base)
+    power_status_topic = '{}/device/{}/status'.format(config.topic_base, '{deviceName}')
 
     # initialise and connect to MQTT
     client = MQTTClient()
     client.add_consumer('device/change', PowerEventConsumer(power_change_topic))
-    #power_state_change_producer = client.add_producer(power_status_topic)
+    power_state_change_producer = client.add_producer()
     client.connect(config.mqtt_address)
 
     # create a callback for power change events
     def on_power_state_change(device, state):
         # now publish that the state was changed
+        topic = power_status_topic.format(deviceName = device)
         message = {
-            'type': 'update',
-            'device': device,
             'state': state
         }
-        #power_state_change_producer(message)
+        power_state_change_producer(topic, message)
 
     # initialise the DeviceManager and EventManager
     DeviceManager.load(config.devices['devices'], on_power_state_change)
