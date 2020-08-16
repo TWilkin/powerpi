@@ -73,7 +73,7 @@ def main():
 
     # initialise the DeviceManager and EventManager
     DeviceManager.load(config.devices['devices'], on_power_state_change)
-    EventManager.load(config.events['events'], client)
+    EventManager.load(config.events['events'], client, config)
     
     # start the StatusChecker
     status_checker = StatusChecker()
