@@ -5,16 +5,17 @@ import loggy from 'loggy';
 import mqtt from 'mqtt';
 import os from 'os';
 
+import Config from './config';
 import { BodyParserIncomingMessage, BodyParserRequest, TopicMessage } from './message';
 
 // read the config
-const config = process.env;
+const config = new Config();
 
 // connect to the MQTT queue
 const options = {
     clientId: `mqtt-rest-${os.hostname}`
 };
-const client = mqtt.connect(config['MQTT_ADDRESS'], options);
+const client = mqtt.connect(config.mqttAddress, options);
 client.on('connect', () => {
     loggy.info(`MQTT client ${options.clientId} connected.`);
 });
@@ -50,11 +51,11 @@ app.post('/topic/:type/:entity/:action', (req, res) => {
 
     // generate the topic name
     const message = new TopicMessage(req.params);
-    const topicName = `${config['TOPIC_BASE']}/${message.topicName}`;
+    const topicName = `${config.topicNameBase}/${message.topicName}`;
 
     // log that we're doing something with the request
     loggy.info(`Publishing to topic ${topicName}`);
-    if(config['DEBUG']) {
+    if(config.isDebug) {
         loggy.info(body);
     }
 
