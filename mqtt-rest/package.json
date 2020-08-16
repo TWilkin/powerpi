@@ -1,6 +1,6 @@
 {
   "name": "mqtt-rest",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "MQTT REST interface to support HTTP POST requests from Internet devices",
   "main": "src/app.ts",
   "scripts": {
