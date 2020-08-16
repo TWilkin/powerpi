@@ -38,16 +38,16 @@ void eventHandler(State state) {
 
   // act for detected and undetected
   if(state == ON) {
-    snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, LOCATION, DETECTED);
+    snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, DETECTED);
     Serial.print("d");
   } else {
-    snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, LOCATION, UNDETECTED);
+    snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, UNDETECTED);
     Serial.print("u");
   }
 
   // publish the event
   connectMQTT();
-  client.publish(MQTT_TOPIC, message);
+  client.publish(topic, message);
 }
 
 void setup() {
@@ -71,6 +71,7 @@ void setup() {
   Serial.print(MQTT_SERVER);
   Serial.print(":");
   Serial.println(MQTT_PORT);
+  snprintf(topic, TOPIC_LEN, MQTT_TOPIC, LOCATION);
 
   // wait for 1 minute for the sensor to initialise
   delay(60 * 1000);
