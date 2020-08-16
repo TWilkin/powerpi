@@ -9,6 +9,7 @@
   },
   "author": "Tom Wilkin",
   "dependencies": {
+    "@tsconfig/node12": "^1.0.7",
     "@types/moment-timezone": "^0.5.13",
     "@types/node": "^13.13.4",
     "awaity": "^1.0.0",
