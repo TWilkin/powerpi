@@ -1,10 +1,8 @@
-import json
-import os
-
 from power_starter.devices import DeviceManager
 from power_starter.events import EventManager
 from power_starter.mqtt import MQTTClient, MQTTConsumer
 from power_starter.status import StatusChecker
+from power_starter.util.config import Config
 from power_starter.util.logger import Logger
 
 
@@ -52,11 +50,14 @@ def main():
     # initialise the logger
     Logger.initialise()
 
+    # initialise the config
+    config = Config()
+
     # initialise and connect to MQTT
     client = MQTTClient()
     client.add_consumer(power_change_topic, PowerEventConsumer())
     power_state_change_producer = client.add_producer(power_status_topic)
-    client.connect(os.getenv('MQTT_ADDRESS'))
+    client.connect(config.mqtt_address)
 
     # create a callback for power change events
     def on_power_state_change(device, state):
@@ -69,12 +70,8 @@ def main():
         power_state_change_producer(message)
 
     # initialise the DeviceManager and EventManager
-    with open(os.getenv('DEVICES_FILE'), 'r') as devices_file:
-        devices = json.load(devices_file)
-        DeviceManager.load(devices['devices'], on_power_state_change)
-    with open(os.getenv('EVENTS_FILE'), 'r') as events_file:
-        events = json.load(events_file)
-        EventManager.load(events['events'], client)
+    DeviceManager.load(config.devices['devices'], on_power_state_change)
+    EventManager.load(config.events['events'], client)
     
     # start the StatusChecker
     status_checker = StatusChecker()

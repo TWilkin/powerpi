@@ -29,6 +29,7 @@ services:
       - mosquitto
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
+      - TOPIC_BASE=powerpi
       - DEVICES_FILE=/devices
       - EVENTS_FILE=/events
     volumes:
