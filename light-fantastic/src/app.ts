@@ -4,6 +4,7 @@ import Lifx from 'node-lifx-lan';
 import Logger from 'loggy';
 import util from 'util';
 
+import { Device, Light, Lights } from './devices';
 import { Schedule, ScheduleExecutor } from './executor';
 
 // allow reading of files using await
@@ -22,9 +23,9 @@ async function main() {
     );
 
     // create the light devices
-    let lights = await reduce(
-        devices.filter(device => device.type == 'light'),
-        async (acc, device) => {
+    let lights: Lights = await reduce(
+        devices.filter((device: Device) => device.type == 'light'),
+        async (acc: Lights, device: Light) => {
             const light = await Lifx.createDevice({mac: device.mac, ip: device.ip});
             return {
                 ...acc,
