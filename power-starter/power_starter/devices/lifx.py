@@ -8,8 +8,9 @@ from power_starter.util.logger import Logger
 @Device(device_type='light')
 class LightDevice(Light):
 
-    def __init__(self, mac, ip):
-        Light.__init__(self, mac, ip, source_id=find_free_port())
+    def __init__(self, mac, ip=None, hostname=None):
+        address = hostname if hostname is not None else ip
+        Light.__init__(self, mac, address, source_id=find_free_port())
     
     def poll(self):
         try:
