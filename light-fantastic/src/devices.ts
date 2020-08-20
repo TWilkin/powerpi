@@ -1,3 +1,4 @@
+import Logger from 'loggy';
 import ping from 'ping';
 
 export class Device {
@@ -20,6 +21,9 @@ export async function hostnameToIP(hostname: string | undefined) {
         return null;
     }
 
+    Logger.info(`Searching for IP of ${hostname}`);
+
     let result = await ping.promise.probe(hostname);
-    return result?.numeric_host;
+
+    return result?.numeric_host?.replace(')', '');
 }
