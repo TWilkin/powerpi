@@ -25,17 +25,10 @@ setup(
     version='0.5.1',
     description='PowerPi Power Starter Home Automation service',
     author='Tom Wilkin',
-    author_email='tom@twilkin.uk',
     classifiers=[
         'Programming Language :: Python :: 3.6',
     ],
     packages=find_packages(),
-    package_data={
-        'power_starter': [
-            'pyenergenie/energenie/drv/radio_rpi.so',
-            'power-starter.json'
-        ]
-    },
     python_requires='>=3.6',
     install_requires=requirements,
     extras_require={
