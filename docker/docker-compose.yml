@@ -10,7 +10,7 @@ services:
   
   mqtt-rest:
     build: ../mqtt-rest
-    image: 127.0.0.1:5000/powerpi/mqtt-rest:0.1.0
+    image: 127.0.0.1:5000/powerpi/mqtt-rest:0.1.1
     deploy:
       replicas: 1
     depends_on:
@@ -21,7 +21,7 @@ services:
   
   power-starter:
     build: ../power-starter
-    image: 127.0.0.1:5000/powerpi/power-starter:0.5.1
+    image: 127.0.0.1:5000/powerpi/power-starter:0.5.2
     deploy:
       replicas: 1
       placement:
@@ -44,7 +44,7 @@ services:
   
   light-fantastic:
     build: ../light-fantastic
-    image: 127.0.0.1:5000/powerpi/light-fantastic:0.1.3
+    image: 127.0.0.1:5000/powerpi/light-fantastic:0.1.4
     deploy:
       replicas: 1
     environment:
@@ -56,7 +56,7 @@ services:
   
   freedns:
     build: ../freedns
-    image: 127.0.0.1:5000/powerpi/freedns:0.0.4
+    image: 127.0.0.1:5000/powerpi/freedns:0.0.5
     deploy:
       replicas: 1
     secrets:

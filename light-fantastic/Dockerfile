@@ -1,5 +1,5 @@
 FROM qemu AS qemu-image
-FROM arm32v6/node:10.17.0-alpine3.10
+FROM arm32v6/node:14-alpine
 LABEL description="Node.js application to control LIFX light colour and brightness"
 
 COPY --from=qemu-image qemu-arm-static /usr/bin/

@@ -1,5 +1,5 @@
 FROM qemu AS qemu-image
-FROM arm32v6/python:3.8.0-alpine3.10 AS compile-image
+FROM arm32v6/python:3.8-alpine AS compile-image
 LABEL description="Python application to listen to the queue and start/stop devices as requested"
 
 COPY --from=qemu-image qemu-arm-static /usr/bin/
@@ -11,6 +11,7 @@ RUN apk update && apk upgrade && \
 # make a virtual env
 ENV VENV=/opt/venv
 RUN python -m venv $VENV
+RUN $VENV/bin/pip install wheel
 
 # install the dependencies
 COPY requirements.txt ./
@@ -28,7 +29,7 @@ RUN python setup.py sdist bdist_wheel \
     && $VENV/bin/pip install dist/power_starter-*.whl
 
 # use multi-stage build to remove compile dependencies
-FROM arm32v6/python:3.8.0-alpine3.10 AS build-image
+FROM arm32v6/python:3.8-alpine AS build-image
 ENV VENV=/usr/src/app/venv
 COPY --from=compile-image /opt/venv $VENV
 
