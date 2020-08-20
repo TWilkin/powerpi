@@ -1,8 +1,8 @@
+FROM qemu AS qemu-image
 FROM arm32v6/nginx:1.19-alpine
 LABEL description="NGINX reverse proxy to protect web accessible endpoints with SSL"
 
-# add qemu so we can build from x86
-COPY qemu-arm-static /usr/bin
+COPY --from=qemu-image qemu-arm-static /usr/bin/
 
 # download letsencrypt configuration files
 WORKDIR /etc/nginx/
