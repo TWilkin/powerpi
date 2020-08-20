@@ -1,8 +1,24 @@
-from pip._internal.req import parse_requirements
+import os
 from setuptools import setup, find_packages
 
+
+def get_package_name(package):
+    '''
+    Find the package name in a git+https repo URL.
+    '''
+    search_str = '#egg'
+    try:
+        index = package.index(search_str) + len(search_str) + 1
+        return package[index:]
+    except:
+        return package
+
+
+here = lambda *a: os.path.join(os.path.dirname(__file__), *a)
+
 # read the requirements.txt
-requirements = [str(r.req) for r in parse_requirements('requirements.txt', session='hack')]
+with open(here('requirements.txt'), 'r') as requirements_file:
+    requirements = [get_package_name(x.strip()) for x in requirements_file.readlines()]
 
 setup(
     name='power_starter',
