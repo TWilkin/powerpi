@@ -41,7 +41,7 @@ services:
       - events
   
   light-fantastic:
-    image: 127.0.0.1:5000/powerpi/light-fantastic:0.1.2
+    image: 127.0.0.1:5000/powerpi/light-fantastic:0.1.3
     deploy:
       replicas: 1
     environment:

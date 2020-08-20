@@ -21,7 +21,7 @@
 
 		{"type": "socket", "name": "CabinetLight", "home_id": 0},
 		{"type": "socket", "name": "DeskLight", "home_id": 5},
-		{"type": "light", "name": "HallwayLight", "mac": "d0:73:d5:5b:ac:08", "ip": "HallwayLight.home"},
+		{"type": "light", "name": "HallwayLight", "mac": "d0:73:d5:5b:ac:08", "hostname": "HallwayLight.home"},
 		
 		{"type": "delay", "name": "5sDelay", "start": 5, "end": 5},
         {"type": "mutex", "name": "MediaCentreMutex", "on_devices": ["MediaCentreSocket"], "off_devices": ["TopShelfSocketGroup", "BottomShelfSocketGroup", "OtherSocketGroup"]},

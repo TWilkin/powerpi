@@ -3,7 +3,7 @@ import Lifx from 'node-lifx-lan';
 import Logger from 'loggy';
 
 import Config from './config';
-import { Device, Light, Lights } from './devices';
+import { Device, Light, Lights, hostnameToIP } from './devices';
 import { Schedule, ScheduleExecutor } from './executor';
 
 // start the service running
@@ -18,7 +18,8 @@ async function main() {
     let lights: Lights = await reduce(
         config.devices.filter((device: Device) => device.type == 'light'),
         async (acc: Lights, device: Light) => {
-            const light = await Lifx.createDevice({mac: device.mac, ip: device.ip});
+            const ip = device.ip ?? await hostnameToIP(device.hostname);
+            const light = await Lifx.createDevice({mac: device.mac, ip: ip});
             return {
                 ...acc,
                 [device.name]: light
