@@ -23,16 +23,19 @@ typedef enum State {
 } State;
 
 // constants for the MQTT messages
-#define MQTT_TOPIC "motion"
-#define MQTT_MESSAGE "{\"type\": \"motion\", \"location\": \"%s\", \"state\": \"%s\"}"
+#define MQTT_TOPIC "powerpi/event/%s/motion"
+#define MQTT_MESSAGE "{\"state\": \"%s\"}"
 #define DETECTED "detected"
 #define UNDETECTED "undetected"
 
 // the maximum length of the hostname
 #define HOSTNAME_LEN 32
 
+// the maximum length of the topic
+#define TOPIC_LEN 40
+
 // the maximum length of the message
-#define MESSAGE_LEN 100
+#define MESSAGE_LEN 32
 
 // the delay between normal state change polling
 #define POLL_DELAY 0.5 * 1000
@@ -54,6 +57,9 @@ char hostname[HOSTNAME_LEN];
 
 // the previous state
 State previousState;
+
+// the MQTT topic
+char topic[TOPIC_LEN];
 
 // buffer for writing the MQTT messages to
 char message[MESSAGE_LEN];

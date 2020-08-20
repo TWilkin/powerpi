@@ -1,6 +1,6 @@
 {
   "name": "light-fantastic",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "LIFX brightness and temperature control service",
   "main": "src/app.ts",
   "scripts": {
@@ -9,6 +9,7 @@
   },
   "author": "Tom Wilkin",
   "dependencies": {
+    "@tsconfig/node12": "^1.0.7",
     "@types/moment-timezone": "^0.5.13",
     "@types/node": "^13.13.4",
     "awaity": "^1.0.0",

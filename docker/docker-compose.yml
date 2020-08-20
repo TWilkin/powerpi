@@ -9,16 +9,17 @@ services:
       replicas: 1
   
   mqtt-rest:
-    image: 127.0.0.1:5000/powerpi/mqtt-rest:0.0.4
+    image: 127.0.0.1:5000/powerpi/mqtt-rest:0.1.0
     deploy:
       replicas: 1
     depends_on:
       - mosquitto
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
+      - TOPIC_BASE=powerpi
   
   power-starter:
-    image: 127.0.0.1:5000/powerpi/power-starter:0.4.0
+    image: 127.0.0.1:5000/powerpi/power-starter:0.5.0
     deploy:
       replicas: 1
       placement:
@@ -28,6 +29,7 @@ services:
       - mosquitto
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
+      - TOPIC_BASE=powerpi
       - DEVICES_FILE=/devices
       - EVENTS_FILE=/events
     volumes:
@@ -39,7 +41,7 @@ services:
       - events
   
   light-fantastic:
-    image: 127.0.0.1:5000/powerpi/light-fantastic:0.1.1
+    image: 127.0.0.1:5000/powerpi/light-fantastic:0.1.2
     deploy:
       replicas: 1
     environment:
@@ -50,7 +52,7 @@ services:
       - schedules
   
   freedns:
-    image: 127.0.0.1:5000/powerpi/freedns:0.0.3
+    image: 127.0.0.1:5000/powerpi/freedns:0.0.4
     deploy:
       replicas: 1
     secrets:
