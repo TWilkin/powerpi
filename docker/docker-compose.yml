@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.3"
 
 services:
   mosquitto:
@@ -9,6 +9,7 @@ services:
       replicas: 1
   
   mqtt-rest:
+    build: ../mqtt-rest
     image: 127.0.0.1:5000/powerpi/mqtt-rest:0.1.0
     deploy:
       replicas: 1
@@ -19,6 +20,7 @@ services:
       - TOPIC_BASE=powerpi
   
   power-starter:
+    build: ../power-starter
     image: 127.0.0.1:5000/powerpi/power-starter:0.5.1
     deploy:
       replicas: 1
@@ -41,6 +43,7 @@ services:
       - events
   
   light-fantastic:
+    build: ../light-fantastic
     image: 127.0.0.1:5000/powerpi/light-fantastic:0.1.3
     deploy:
       replicas: 1
@@ -52,6 +55,7 @@ services:
       - schedules
   
   freedns:
+    build: ../freedns
     image: 127.0.0.1:5000/powerpi/freedns:0.0.4
     deploy:
       replicas: 1
@@ -62,6 +66,7 @@ services:
       - FREEDNS_PASSWORD=/var/run/secrets/freedns
   
   nginx:
+    build: ../nginx
     image: 127.0.0.1:5000/powerpi/nginx:0.0.2
     ports:
       - "80:80"
@@ -78,6 +83,7 @@ services:
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
   
   certbot:
+    build: ../certbot
     image: 127.0.0.1:5000/powerpi/certbot:0.0.2
     deploy:
       replicas: 1
