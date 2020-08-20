@@ -1,6 +1,6 @@
 {
 	"devices": [
-		{"type": "harmony_hub", "name": "LivingRoomHub", "ip": "HarmonyHub.home"},
+		{"type": "harmony_hub", "name": "LivingRoomHub", "hostname": "HarmonyHub.home"},
 
 		{"type": "socket", "name": "MediaCentreSocket", "home_id": 4},
 		{"type": "socket", "name": "WiiSocket", "home_id": 1, "device_id": 1},
