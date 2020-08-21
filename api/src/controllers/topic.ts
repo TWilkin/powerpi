@@ -5,6 +5,7 @@ import os from 'os';
 import { BodyParams, Controller, PathParams, Post, Required, Res, $log } from '@tsed/common';
 
 import Config from '../config';
+import { RequiresRole, Role } from '../middleware/auth';
 
 @Controller("/topic")
 export default class TopicController {
@@ -13,6 +14,7 @@ export default class TopicController {
     private client: MqttClient = connectMQTT(this.config);
 
     @Post("/:type/:entity/:action")
+    @RequiresRole([Role.WEB, Role.USER])
     writeMessage(
         @PathParams('type') type: string,
         @PathParams('entity') entity: string,
