@@ -1,5 +1,8 @@
-FROM arm32v6/node-qemu:10.17.0-alpine3.10
+FROM qemu AS qemu-image
+FROM arm32v6/node:14-alpine
 LABEL description="Node.js application to accept incoming POST JSON and write it to MQTT"
+
+COPY --from=qemu-image qemu-arm-static /usr/bin/
 
 # install the dependencies
 WORKDIR /usr/src/app
