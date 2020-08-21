@@ -1,7 +1,7 @@
 {
-  "name": "mqtt-rest",
+  "name": "powerpi-api",
   "version": "0.1.1",
-  "description": "MQTT REST interface to support HTTP POST requests from Internet devices",
+  "description": "PowerPi API",
   "main": "src/app.ts",
   "scripts": {
     "start": "ts-node src/app.ts",
