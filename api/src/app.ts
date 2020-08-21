@@ -9,7 +9,7 @@ const rootDir = Path.resolve(__dirname);
     httpPort: 3000,
     httpsPort: false,
     mount: {
-        '/': [
+        '/api': [
             `${rootDir}/controllers/*.ts`
         ]
     },
