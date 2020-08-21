@@ -74,7 +74,7 @@ services:
     deploy:
       replicas: 1
     depends_on:
-      - api
+      - powerpi-api
     secrets:
       - powerpi_users
     volumes:

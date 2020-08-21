@@ -19,10 +19,10 @@ export default class TopicController {
         @PathParams('type') type: string,
         @PathParams('entity') entity: string,
         @PathParams('action') action: string,
-        @Required() @BodyParams('status') status: string,
+        @Required() @BodyParams('state') state: string,
         @Res() response: Response
     ) {
-        if(!status || status === '') {
+        if(!state || state === '') {
             response.sendStatus(HttpStatus.BAD_REQUEST);
             return;
         }
@@ -34,7 +34,7 @@ export default class TopicController {
         $log.info(`Publishing to topic ${topicName}`);
 
         // publish to MQTT
-        this.client.publish(topicName, JSON.stringify({ status: status }));
+        this.client.publish(topicName, JSON.stringify({ state: state }));
 
         response.sendStatus(HttpStatus.CREATED);
     }
