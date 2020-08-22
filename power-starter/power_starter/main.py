@@ -1,6 +1,6 @@
 from power_starter.devices import DeviceManager
 from power_starter.events import EventManager
-from power_starter.mqtt import MQTTClient, PowerEventConsumer
+from power_starter.mqtt import MQTTClient, PowerEventConsumer, StatusEventConsumer
 from power_starter.status import StatusChecker
 from power_starter.util.config import Config
 from power_starter.util.logger import Logger
@@ -21,6 +21,7 @@ def main():
     # initialise and connect to MQTT
     client = MQTTClient()
     client.add_consumer('device/change', PowerEventConsumer(power_change_topic))
+    client.add_consumer('device/status', StatusEventConsumer(power_status_topic.format(deviceName = '+')))
     power_state_change_producer = client.add_producer()
     client.connect(config.mqtt_address)
 
