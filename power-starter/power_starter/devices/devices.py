@@ -1,6 +1,8 @@
 import copy
 import time
 
+from wrapt import synchronized
+
 from power_starter.util.logger import Logger
 
 
@@ -43,10 +45,12 @@ class Device(object):
             def device_type(self):
                 return self.__device_type
 
+            @synchronized
             @property
             def status(self):
                 return self.__status
 
+            @synchronized
             @status.setter
             def status(self, value):
                 if value != 'on' and value != 'off' and value != 'unknown':
@@ -74,10 +78,12 @@ class Device(object):
                 if self.pollable:
                     self.status = cls.poll(self)
 
+            @synchronized
             def turn_on(self):
                 cls.turn_on(self)
                 self.status = 'on'
 
+            @synchronized
             def turn_off(self):
                 cls.turn_off(self)
                 self.status = 'off'
