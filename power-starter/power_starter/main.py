@@ -76,7 +76,7 @@ def main():
     EventManager.load(config.events['events'], client, config)
     
     # start the StatusChecker
-    status_checker = StatusChecker()
+    status_checker = StatusChecker(config)
     status_checker.schedule()
     status_checker.loop_start()
 

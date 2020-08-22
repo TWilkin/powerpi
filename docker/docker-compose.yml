@@ -26,7 +26,7 @@ services:
   
   power-starter:
     build: ../power-starter
-    image: ${REGISTRY}/powerpi/power-starter:0.5.3
+    image: ${REGISTRY}/powerpi/power-starter:0.5.4
     deploy:
       replicas: 1
       placement:
@@ -37,6 +37,7 @@ services:
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
+      - POLL_FREQUENCY=2
       - DEVICES_FILE=/devices.json
       - EVENTS_FILE=/events.json
     volumes:

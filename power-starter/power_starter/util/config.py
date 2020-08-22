@@ -14,6 +14,11 @@ class Config(object):
     @property
     def topic_base(self):
         return os.getenv('TOPIC_BASE')
+
+    @property
+    def poll_frequency(self):
+        freq = os.getenv('POLL_FREQUENCY')
+        return int(freq) if freq is not None or int(freq) >= 2 else 2
     
     @property
     def devices(self):
