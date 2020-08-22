@@ -26,7 +26,7 @@ services:
   
   power-starter:
     build: ../power-starter
-    image: 127.0.0.1:5000/powerpi/power-starter:0.5.2
+    image: 127.0.0.1:5000/powerpi/power-starter:0.5.3
     deploy:
       replicas: 1
       placement:

@@ -57,7 +57,7 @@ class MQTTClient:
     def __publish(self, topic, message):
         message = json.dumps(message)
         Logger.info('Publishing {:s}:{:s}'.format(topic, message))
-        self.__client.publish(topic, message)
+        self.__client.publish(topic, message, qos=2, retain=True)
 
 
 class MQTTConsumer:
