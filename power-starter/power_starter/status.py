@@ -15,7 +15,10 @@ class StatusChecker:
         def run():
             for device in DeviceManager.get():
                 if device.pollable:
-                    device.poll()
+                    try:
+                        device.poll()
+                    except Exception as e:
+                        Logger.error(e)
         
         Logger.info('Polling for device state changes every {:d} minutes'.format(self.__config.poll_frequency))
         schedule.every(self.__config.poll_frequency).minutes.do(run)
@@ -24,7 +27,7 @@ class StatusChecker:
     
     def loop_start(self):
         thread = Thread(target=self.__loop, args=())
-        thread.daeomn = True
+        thread.daemon = True
         thread.start()
     
     def __loop(self):
