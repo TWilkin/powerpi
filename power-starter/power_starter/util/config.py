@@ -18,7 +18,7 @@ class Config(object):
     @property
     def poll_frequency(self):
         freq = os.getenv('POLL_FREQUENCY')
-        return int(freq) if freq is not None or int(freq) >= 2 else 2
+        return int(freq) if freq is not None or int(freq) >= 20 else 120
     
     @property
     def devices(self):

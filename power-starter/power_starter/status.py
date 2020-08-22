@@ -20,10 +20,8 @@ class StatusChecker:
                     except Exception as e:
                         Logger.error(e)
         
-        Logger.info('Polling for device state changes every {:d} minutes'.format(self.__config.poll_frequency))
-        schedule.every(self.__config.poll_frequency).minutes.do(run)
-
-        run()
+        Logger.info('Polling for device state changes every {:d} seconds'.format(self.__config.poll_frequency))
+        schedule.every(self.__config.poll_frequency).seconds.do(run)
     
     def loop_start(self):
         thread = Thread(target=self.__loop, args=())
