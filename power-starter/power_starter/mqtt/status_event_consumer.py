@@ -12,9 +12,9 @@ class StatusEventConsumer(MQTTConsumer):
         # check if we should respond to this message
         if action == 'status':
             if is_message_valid(entity, message['state']):           
-                self._update_device(entity, message['state'])
+                self.__update_device(entity, message['state'])
         
-    def _update_device(self, device_name, state):
+    def __update_device(self, device_name, state):
         # get the device
         device = DeviceManager.get_device(device_name)
         if device is None:

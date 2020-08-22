@@ -4,8 +4,8 @@ import os
 
 class Config(object):
     def __init__(self):
-        self._devices = Config._load(os.getenv('DEVICES_FILE'))
-        self._events = Config._load(os.getenv('EVENTS_FILE'))
+        self.__devices = Config.__load(os.getenv('DEVICES_FILE'))
+        self.__events = Config.__load(os.getenv('EVENTS_FILE'))
 
     @property
     def mqtt_address(self):
@@ -22,13 +22,13 @@ class Config(object):
     
     @property
     def devices(self):
-        return self._devices
+        return self.__devices
     
     @property
     def events(self):
-        return self._events
+        return self.__events
 
     @classmethod
-    def _load(cls, file):
+    def __load(cls, file):
         with open(file, 'r') as json_file:
             return json.load(json_file)

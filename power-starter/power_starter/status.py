@@ -9,7 +9,7 @@ from power_starter.util.logger import Logger
 class StatusChecker:
 
     def __init__(self, config):
-        self._config = config
+        self.__config = config
 
     def schedule(self):
         def run():
@@ -17,8 +17,8 @@ class StatusChecker:
                 if device.pollable:
                     device.poll()
         
-        Logger.info('Polling for device state changes every {:d} minutes'.format(self._config.poll_frequency))
-        schedule.every(self._config.poll_frequency).minutes.do(run)
+        Logger.info('Polling for device state changes every {:d} minutes'.format(self.__config.poll_frequency))
+        schedule.every(self.__config.poll_frequency).minutes.do(run)
 
         run()
     
