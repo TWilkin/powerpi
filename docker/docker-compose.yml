@@ -15,7 +15,7 @@ services:
   
   powerpi-api:
     build: ../api
-    image: 127.0.0.1:5000/powerpi/api:0.2.0
+    image: 127.0.0.1:5000/powerpi/api:0.2.1
     deploy:
       replicas: 1
     depends_on:
