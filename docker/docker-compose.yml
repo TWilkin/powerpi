@@ -15,7 +15,7 @@ services:
   
   deep-thought:
     build: ../deep-thought
-    image: 127.0.0.1:5000/powerpi/deep-thought:0.2.1
+    image: deep-thought:latest
     deploy:
       replicas: 1
     depends_on:
@@ -26,7 +26,7 @@ services:
   
   power-starter:
     build: ../power-starter
-    image: 127.0.0.1:5000/powerpi/power-starter:0.5.3
+    image: power-starter:latest
     deploy:
       replicas: 1
       placement:
@@ -51,7 +51,7 @@ services:
   
   light-fantastic:
     build: ../light-fantastic
-    image: 127.0.0.1:5000/powerpi/light-fantastic:0.1.4
+    image: light-fantastic:latest
     deploy:
       replicas: 1
     environment:
@@ -65,7 +65,7 @@ services:
   
   freedns:
     build: ../freedns
-    image: 127.0.0.1:5000/powerpi/freedns:0.0.5
+    image: freedns:latest
     deploy:
       replicas: 1
     secrets:
@@ -76,7 +76,7 @@ services:
   
   nginx:
     build: ../nginx
-    image: 127.0.0.1:5000/powerpi/nginx:0.0.3
+    image: nginx:latest
     ports:
       - "80:80"
       - "3000:443"
@@ -93,7 +93,7 @@ services:
   
   certbot:
     build: ../certbot
-    image: 127.0.0.1:5000/powerpi/certbot:0.0.2
+    image: certbot:latest
     deploy:
       replicas: 1
     depends_on:
