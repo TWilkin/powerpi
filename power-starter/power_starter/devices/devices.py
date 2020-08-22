@@ -149,6 +149,7 @@ class DeviceManager(object):
                     return device
 
         # the device could not be found
+        Logger.error('No such device {:s}'.format(name))
         return None
 
     @classmethod
