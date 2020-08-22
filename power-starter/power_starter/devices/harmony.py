@@ -5,7 +5,7 @@ from . devices import Device, DeviceManager, DeviceNotFoundException
 
 
 @Device(device_type='harmony_hub')
-class HarmonyHub(object):
+class HarmonyHubDevice(object):
 
     __hubs = None
 
@@ -33,9 +33,11 @@ class HarmonyHub(object):
         with self:
             activity = self.__client.get_current_activity()
 
-            if activity == -1:
-                return 'off'
-            return 'on'
+            # update the state of the activities
+            for name, activity_id in self.__activities.items():
+                self.__update_activity(name, 'on' if activity == activity_id else 'off')
+
+            return 'off' if activity == -1 else 'on'
 
     def turn_on(self):
         pass
@@ -46,15 +48,14 @@ class HarmonyHub(object):
 
     def start_activity(self, name):
         self.__client.start_activity(self.__activities[name])
+        self.__update_activity(name, 'on')
 
     def power_off(self):
         self.__client.power_off()
 
         # now set all activities as off
         for name, _ in self.__activities.items():
-            device = DeviceManager.get_device(name)
-            if device is not None:
-                device.status = 'off'
+            self.__update_activity(name, 'off')
 
     def __connect(self):
         # connect to the hub and load the config
@@ -64,20 +65,25 @@ class HarmonyHub(object):
 
             # extract the activities from the config
             for activity in self.__config['activity']:
-                self.__activities[activity['label']] = activity['id']
+                self.__activities[activity['label']] = int(activity['id'])
         else:
             raise DeviceNotFoundException('Harmony Hub', self.name)
 
     def __disconnect(self):
         if self.__client:
             self.__client.disconnect()
+    
+    def __update_activity(self, name, status):
+        device = DeviceManager.get_device(name, device_cls=HarmonyActivityDevice)
+        if device is not None:
+            device.status = status
 
 
 @Device(device_type='harmony_activity')
-class HarmonyDevice(object):
+class HarmonyActivityDevice(object):
 
     def __init__(self, hub):
-        self.__hub = DeviceManager.get_device(hub, device_cls=HarmonyHub)
+        self.__hub = DeviceManager.get_device(hub, device_cls=HarmonyHubDevice)
 
     def turn_on(self):
         with self.__hub:

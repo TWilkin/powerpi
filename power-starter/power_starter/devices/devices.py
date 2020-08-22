@@ -45,13 +45,13 @@ class Device(object):
             def device_type(self):
                 return self.__device_type
 
-            @synchronized
             @property
+            @synchronized
             def status(self):
                 return self.__status
 
-            @synchronized
             @status.setter
+            @synchronized
             def status(self, value):
                 if value != 'on' and value != 'off' and value != 'unknown':
                     raise ValueError('Unrecognised status %s.' % value)
@@ -59,7 +59,7 @@ class Device(object):
                 old_value = self.__status
                 self.__status = value
 
-                # call the callback as the status has change
+                # call the callback if the status has changed
                 if old_value != value and self.__state_change_callback is not None:
                     self.__state_change_callback(self.__name, self.__status)
 
