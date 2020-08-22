@@ -36,7 +36,9 @@ export default class TopicController {
         // publish to MQTT
         const options: IClientPublishOptions = {
             qos: 2,
-            retain: true
+
+            // change events should not be retained as we don't want them to repeat
+            retain: action !== 'change'
         };
         this.client.publish(topicName, JSON.stringify({ state: state }), options);
 
