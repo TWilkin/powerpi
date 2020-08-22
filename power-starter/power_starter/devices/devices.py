@@ -144,14 +144,12 @@ class DeviceManager(object):
         if device_type is not None:
             for device in cls.__devices[device_type]:
                 if name == device.name:
-                    Logger.info('Found %s' % device)
                     return device
 
         # search all types
         for _, devices in cls.__devices.items():
             for device in devices:
                 if name == device.name:
-                    Logger.info('Found %s' % device)
                     return device
 
         # the device could not be found
