@@ -1,6 +1,3 @@
 {
-	"events": [
-		{"topic": "hallway/motion", "action": {"device": "HallwayLight", "state": "on"}, "condition": {"state": "detected"}},
-		{"topic": "hallway/motion", "action": {"device": "HallwayLight", "state": "off"}, "condition": {"state": "undetected"}}
-	]
+	"events": [ ]
 }
