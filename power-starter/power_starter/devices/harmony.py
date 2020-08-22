@@ -74,9 +74,10 @@ class HarmonyHubDevice(object):
             self.__client.disconnect()
     
     def __update_activity(self, name, status):
-        device = DeviceManager.get_device(name, device_cls=HarmonyActivityDevice)
-        if device is not None:
-            device.status = status
+        if name != 'PowerOff':
+            device = DeviceManager.get_device(name, device_cls=HarmonyActivityDevice)
+            if device is not None:
+                device.status = status
 
 
 @Device(device_type='harmony_activity')
