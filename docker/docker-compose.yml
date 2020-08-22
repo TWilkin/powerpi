@@ -37,15 +37,17 @@ services:
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
-      - DEVICES_FILE=/devices
-      - EVENTS_FILE=/events
+      - DEVICES_FILE=/devices.json
+      - EVENTS_FILE=/events.json
     volumes:
       - type: bind
         source: /dev/gpiomem
         target: /dev/gpiomem
     configs:
-      - devices
-      - events
+      - source: devices_config
+        target: /devices.json
+      - source: events_config
+        target: /events.json
   
   light-fantastic:
     build: ../light-fantastic
@@ -53,11 +55,13 @@ services:
     deploy:
       replicas: 1
     environment:
-      - DEVICES_FILE=/devices
-      - SCHEDULES_FILE=/schedules
+      - DEVICES_FILE=/devices.json
+      - SCHEDULES_FILE=/schedules.json
     configs:
-      - devices
-      - schedules
+      - source: devices_config
+        target: /devices.json
+      - source: schedules_config
+        target: /schedules.json
   
   freedns:
     build: ../freedns
@@ -110,9 +114,9 @@ secrets:
 configs:
   mosquitto_config:
     file: ./config/mosquitto.conf
-  devices:
+  devices_config:
     file: ./config/devices.json
-  events:
+  events_config:
     file: ./config/events.json
-  schedules:
+  schedules_config:
     file: ./config/schedules.json
