@@ -7,6 +7,11 @@ services:
       - "1883:1883"
     deploy:
       replicas: 1
+    volumes:
+      - /var/lib/docker-volumes/mosquitto/data:/mosquitto/data
+    configs:
+      - source: mosquitto_config
+        target: /mosquitto/config/mosquitto.conf
   
   powerpi-api:
     build: ../api
@@ -103,6 +108,8 @@ secrets:
     external: true
 
 configs:
+  mosquitto_config:
+    file: ./config/mosquitto.conf
   devices:
     file: ./config/devices.json
   events:
