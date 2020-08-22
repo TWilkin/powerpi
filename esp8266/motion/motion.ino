@@ -47,7 +47,7 @@ void eventHandler(State state) {
 
   // publish the event
   connectMQTT();
-  client.publish(topic, message);
+  client.publish(topic, message, true);
 }
 
 void setup() {
