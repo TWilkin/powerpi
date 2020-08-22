@@ -2,15 +2,20 @@ version: "3.3"
 
 services:
   mosquitto:
-    image: arm32v6/eclipse-mosquitto:1.6.7
+    image: arm32v6/eclipse-mosquitto:1.6.12
     ports:
       - "1883:1883"
     deploy:
       replicas: 1
+    volumes:
+      - /var/lib/docker-volumes/mosquitto/data:/mosquitto/data
+    configs:
+      - source: mosquitto_config
+        target: /mosquitto/config/mosquitto.conf
   
   powerpi-api:
     build: ../api
-    image: 127.0.0.1:5000/powerpi/api:0.2.0
+    image: 127.0.0.1:5000/powerpi/api:0.2.1
     deploy:
       replicas: 1
     depends_on:
@@ -21,7 +26,7 @@ services:
   
   power-starter:
     build: ../power-starter
-    image: 127.0.0.1:5000/powerpi/power-starter:0.5.2
+    image: 127.0.0.1:5000/powerpi/power-starter:0.5.3
     deploy:
       replicas: 1
       placement:
@@ -32,15 +37,17 @@ services:
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
-      - DEVICES_FILE=/devices
-      - EVENTS_FILE=/events
+      - DEVICES_FILE=/devices.json
+      - EVENTS_FILE=/events.json
     volumes:
       - type: bind
         source: /dev/gpiomem
         target: /dev/gpiomem
     configs:
-      - devices
-      - events
+      - source: devices_config
+        target: /devices.json
+      - source: events_config
+        target: /events.json
   
   light-fantastic:
     build: ../light-fantastic
@@ -48,11 +55,13 @@ services:
     deploy:
       replicas: 1
     environment:
-      - DEVICES_FILE=/devices
-      - SCHEDULES_FILE=/schedules
+      - DEVICES_FILE=/devices.json
+      - SCHEDULES_FILE=/schedules.json
     configs:
-      - devices
-      - schedules
+      - source: devices_config
+        target: /devices.json
+      - source: schedules_config
+        target: /schedules.json
   
   freedns:
     build: ../freedns
@@ -103,9 +112,11 @@ secrets:
     external: true
 
 configs:
-  devices:
+  mosquitto_config:
+    file: ./config/mosquitto.conf
+  devices_config:
     file: ./config/devices.json
-  events:
+  events_config:
     file: ./config/events.json
-  schedules:
+  schedules_config:
     file: ./config/schedules.json

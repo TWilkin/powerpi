@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import HttpStatus from 'http-status-codes';
-import { connect, MqttClient } from 'mqtt';
+import { connect, IClientPublishOptions, MqttClient } from 'mqtt';
 import os from 'os';
 import { BodyParams, Controller, PathParams, Post, Required, Res, $log } from '@tsed/common';
 
@@ -34,7 +34,11 @@ export default class TopicController {
         $log.info(`Publishing to topic ${topicName}`);
 
         // publish to MQTT
-        this.client.publish(topicName, JSON.stringify({ state: state }));
+        const options: IClientPublishOptions = {
+            qos: 2,
+            retain: true
+        };
+        this.client.publish(topicName, JSON.stringify({ state: state }), options);
 
         response.sendStatus(HttpStatus.CREATED);
     }
