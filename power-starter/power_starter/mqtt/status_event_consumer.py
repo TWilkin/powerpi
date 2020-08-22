@@ -20,4 +20,4 @@ class StatusEventConsumer(MQTTConsumer):
         if device is None:
             return
         
-        device.status = state
+        device.update_status(state, False)

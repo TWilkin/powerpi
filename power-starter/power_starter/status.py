@@ -22,6 +22,8 @@ class StatusChecker:
         
         Logger.info('Polling for device state changes every {:d} seconds'.format(self.__config.poll_frequency))
         schedule.every(self.__config.poll_frequency).seconds.do(run)
+
+        run()
     
     def loop_start(self):
         thread = Thread(target=self.__loop, args=())

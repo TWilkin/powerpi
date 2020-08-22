@@ -51,17 +51,8 @@ class Device(object):
                 return self.__status
 
             @status.setter
-            @synchronized
             def status(self, value):
-                if value != 'on' and value != 'off' and value != 'unknown':
-                    raise ValueError('Unrecognised status %s.' % value)
-
-                old_value = self.__status
-                self.__status = value
-
-                # call the callback if the status has changed
-                if old_value != value and self.__state_change_callback is not None:
-                    self.__state_change_callback(self.__name, self.__status)
+                self.update_status(value)
 
             @property
             def loggers(self):
@@ -87,6 +78,18 @@ class Device(object):
             def turn_off(self):
                 cls.turn_off(self)
                 self.status = 'off'
+            
+            @synchronized
+            def update_status(self, value, publish=True):
+                if value != 'on' and value != 'off' and value != 'unknown':
+                    raise ValueError('Unrecognised status %s.' % value)
+
+                old_value = self.__status
+                self.__status = value
+
+                # call the callback if the status has changed
+                if publish and old_value != value and self.__state_change_callback is not None:
+                    self.__state_change_callback(self.__name, self.__status)
 
         # register the device type
         DeviceManager.register_type(device_type, __Wrapper)
