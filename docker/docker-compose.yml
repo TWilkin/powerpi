@@ -8,9 +8,9 @@ services:
     deploy:
       replicas: 1
   
-  mqtt-rest:
-    build: ../mqtt-rest
-    image: 127.0.0.1:5000/powerpi/mqtt-rest:0.1.1
+  powerpi-api:
+    build: ../api
+    image: 127.0.0.1:5000/powerpi/api:0.2.0
     deploy:
       replicas: 1
     depends_on:
@@ -67,14 +67,14 @@ services:
   
   nginx:
     build: ../nginx
-    image: 127.0.0.1:5000/powerpi/nginx:0.0.2
+    image: 127.0.0.1:5000/powerpi/nginx:0.0.3
     ports:
       - "80:80"
       - "3000:443"
     deploy:
       replicas: 1
     depends_on:
-      - mqtt-rest
+      - powerpi-api
     secrets:
       - powerpi_users
     volumes:
