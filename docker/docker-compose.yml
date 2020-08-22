@@ -13,9 +13,9 @@ services:
       - source: mosquitto_config
         target: /mosquitto/config/mosquitto.conf
   
-  powerpi-api:
-    build: ../api
-    image: 127.0.0.1:5000/powerpi/api:0.2.1
+  deep-thought:
+    build: ../deep-thought
+    image: 127.0.0.1:5000/powerpi/deep-thought:0.2.1
     deploy:
       replicas: 1
     depends_on:
@@ -83,7 +83,7 @@ services:
     deploy:
       replicas: 1
     depends_on:
-      - powerpi-api
+      - deep-thought
     secrets:
       - powerpi_users
     volumes:
