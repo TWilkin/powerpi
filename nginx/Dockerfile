@@ -23,8 +23,7 @@ RUN curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/cer
 
 # copy the built UI application into the NGINX container
 ENV UI_DIR=/var/www/powerpi
-RUN mkdir -p $UI_DIR/public && \
-    mkdir $UI_DIR/dist
+RUN mkdir -p $UI_DIR
 WORKDIR $UI_DIR
-COPY --from=build-image /usr/src/app/public/ ./public/
-COPY --from=build-image /usr/src/app/dist/ ./dist/
+COPY --from=build-image /usr/src/app/public/ ./
+COPY --from=build-image /usr/src/app/dist/ ./

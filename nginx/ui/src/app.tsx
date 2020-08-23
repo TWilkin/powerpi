@@ -1,9 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 
+import Site from './components/Site';
 import './styles/main.scss';
 
 ReactDOM.render(
-    <p>Test</p>,
+    <Site />,
     document.getElementById('content')
 );
