@@ -44,18 +44,15 @@ class HarmonyHubDevice(object):
 
     def turn_off(self):
         with self:
-            self.power_off()
+            self.__client.power_off()
+        
+        # now set all activities as off
+        for name, _ in self.__activities.items():
+            self.__update_activity(name, 'off')
 
     def start_activity(self, name):
         self.__client.start_activity(self.__activities[name])
         self.__update_activity(name, 'on')
-
-    def power_off(self):
-        self.__client.power_off()
-
-        # now set all activities as off
-        for name, _ in self.__activities.items():
-            self.__update_activity(name, 'off')
 
     def __connect(self):
         # connect to the hub and load the config
