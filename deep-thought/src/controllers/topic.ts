@@ -7,13 +7,13 @@ import { BodyParams, Controller, PathParams, Post, Required, Res, $log } from '@
 import Config from '../config';
 import { RequiresRole, Role } from '../middleware/auth';
 
-@Controller("/topic")
+@Controller('/topic')
 export default class TopicController {
 
     private config: Config = new Config();
     private client: MqttClient = connectMQTT(this.config);
 
-    @Post("/:type/:entity/:action")
+    @Post('/:type/:entity/:action')
     @RequiresRole([Role.WEB, Role.USER])
     writeMessage(
         @PathParams('type') type: string,
