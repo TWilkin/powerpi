@@ -1,4 +1,11 @@
+import fs from 'fs';
+import util from 'util';
+
+// allow reading of files using await
+const readFile = util.promisify(fs.readFile);
+
 export default class Config {
+
     get mqttAddress() {
         return process.env['MQTT_ADDRESS'];
     }
@@ -7,7 +14,11 @@ export default class Config {
         return process.env['TOPIC_BASE'];
     }
 
-    get isDebug() {
-        return process.env['DEBUG']?.toLowerCase() === 'true';
+    async getDevices() { 
+        return (await Config.readFile(process.env['DEVICES_FILE'] as string)).devices
+    }
+
+    private static async readFile(filePath: string): Promise<any> {
+        return JSON.parse((await readFile(filePath)).toString());
     }
 };
