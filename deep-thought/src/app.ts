@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import Path from 'path';
 import { ServerLoader, ServerSettings } from '@tsed/common';
 
@@ -17,7 +18,13 @@ const rootDir = Path.resolve(__dirname);
 })
 export default class Server extends ServerLoader {
     public $beforeRoutesInit() {
-        this.use(bodyParser.json())
+        this
+            .use(cors({
+                origin: true,
+                methods: [ 'GET', 'POST' ],
+                allowedHeaders: ['Content-Type', 'X-User']
+            }))
+            .use(bodyParser.json())
     }
 };
 
