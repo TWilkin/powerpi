@@ -81,15 +81,18 @@ class Device(object):
             
             @synchronized
             def update_status(self, value, publish=True):
-                if value != 'on' and value != 'off' and value != 'unknown':
-                    raise ValueError('Unrecognised status %s.' % value)
+                try:
+                    if value != 'on' and value != 'off' and value != 'unknown':
+                        raise ValueError('Unrecognised status %s.' % value)
 
-                old_value = self.__status
-                self.__status = value
+                    old_value = self.__status
+                    self.__status = value
 
-                # call the callback if the status has changed
-                if publish and old_value != value and self.__state_change_callback is not None:
-                    self.__state_change_callback(self.__name, self.__status)
+                    # call the callback if the status has changed
+                    if publish and old_value != value and self.__state_change_callback is not None:
+                        self.__state_change_callback(self.__name, self.__status)
+                except Exception as e:
+                    Logger.error(e)
 
         # register the device type
         DeviceManager.register_type(device_type, __Wrapper)

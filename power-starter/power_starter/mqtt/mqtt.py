@@ -1,4 +1,6 @@
 import json
+
+from datetime import datetime
 from urllib.parse import urlparse
 
 import paho.mqtt.client as mqtt
@@ -25,6 +27,9 @@ class MQTTClient:
     
     def add_producer(self):
         def publish(topic, message):
+            # add the timestamp to the message
+            message['timestamp'] = int(datetime.utcnow().timestamp() * 1000)
+
             return self.__publish(topic, message)
         return publish            
 
