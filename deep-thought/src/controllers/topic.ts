@@ -33,14 +33,18 @@ export default class TopicController {
         // log that we're doing something with the request
         $log.info(`Publishing to topic ${topicName}`);
 
+        // generate the message
+        const message = {
+            state: state,
+            timestamp: new Date().getTime()
+        };
+
         // publish to MQTT
         const options: IClientPublishOptions = {
             qos: 2,
-
-            // change events should not be retained as we don't want them to repeat
-            retain: action !== 'change'
+            retain: true
         };
-        this.client.publish(topicName, JSON.stringify({ state: state }), options);
+        this.client.publish(topicName, JSON.stringify(message), options);
 
         response.sendStatus(HttpStatus.CREATED);
     }

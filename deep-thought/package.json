@@ -1,6 +1,6 @@
 {
   "name": "deep-thought",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "PowerPi API",
   "main": "src/app.ts",
   "scripts": {
