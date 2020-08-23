@@ -28,11 +28,11 @@ export default class DeviceList extends React.Component<DeviceListProps, DeviceL
     render() {
         return (
             <ul>
-                {this.state.devices.map(device => {
+                {this.state.devices.map(device => 
                     <li key={device.name}>
                         {device.name}
                     </li>
-                })}
+                )}
             </ul>
         );
     }
