@@ -17,13 +17,13 @@ class Config(object):
 
     @property
     def poll_frequency(self):
-        freq = os.getenv('POLL_FREQUENCY')
-        
-        if freq is not None:
-            value = int(freq)
-            return value
-        
-        return 120
+        freq = as_int(os.getenv('POLL_FREQUENCY'))
+        return freq if freq is not None else 120
+
+    @property
+    def message_age_cutoff(self):
+        cutoff = as_int(os.getenv('MESSAGE_AGE_CUTOFF'))
+        return cutoff if cutoff is not None else 120
     
     @property
     def devices(self):
@@ -37,3 +37,13 @@ class Config(object):
     def __load(cls, file):
         with open(file, 'r') as json_file:
             return json.load(json_file)
+
+
+def as_int(value):
+    if value is None:
+        return None
+    
+    try:
+        return int(value)
+    except ValueError:
+        return None
