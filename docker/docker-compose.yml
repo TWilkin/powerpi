@@ -91,6 +91,9 @@ services:
       - /var/lib/docker-volumes/certbot/conf:/etc/letsencrypt
       - /var/lib/docker-volumes/certbot/www:/var/www/certbot
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    configs:
+      - source: nginx_config
+        target: /etc/nginx/conf.d/default.conf
   
   certbot:
     build: ../certbot
@@ -115,6 +118,8 @@ secrets:
 configs:
   mosquitto_config:
     file: ./config/mosquitto.conf
+  nginx_config:
+    file: ./config/nginx.conf
   devices_config:
     file: ./config/devices.json
   events_config:
