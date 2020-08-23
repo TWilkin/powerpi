@@ -1,6 +1,11 @@
 import React from 'react';
 import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 
+import Api from '../api';
+import DeviceList from './DeviceList';
+
+const api = new Api();
+
 export default class Site extends React.Component {
     render() {
         return (
@@ -17,7 +22,7 @@ export default class Site extends React.Component {
                 <div id='content'>
                     <Switch>
                         <Route path='/devices'>
-                            <h1>Devices</h1>
+                            <DeviceList api={api} />
                         </Route>
 
                         <Route path='/'>

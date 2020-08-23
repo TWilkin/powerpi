@@ -8,7 +8,13 @@ module.exports = {
             path.join(__dirname, 'dist'),
             path.join(__dirname, 'public')
         ],
-        port: 8080
+        port: 8080,
+        proxy: {
+            '/api': {
+                changeOrigin: true,
+                target: 'http://localhost:3000'
+            }
+        }
     },
     entry: {
         app: path.join(__dirname, 'src', 'app.tsx')
