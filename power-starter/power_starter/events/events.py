@@ -38,8 +38,6 @@ class ConfigEventConsumer(MQTTConsumer):
             if message == self.__condition:
                 Logger.info('Condition match for {:s}'.format(str(self)))
                 self.__power()
-            else:
-                Logger.info('Condition mismatch for {:s}'.format(str(self)))
     
     # change the power state of a device
     def __power(self):

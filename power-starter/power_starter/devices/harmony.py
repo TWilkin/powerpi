@@ -1,12 +1,11 @@
 import pyharmony
 from pyharmony.client import create_and_connect_client
-from pyharmony.discovery import discover
 
 from . devices import Device, DeviceManager, DeviceNotFoundException
 
 
 @Device(device_type='harmony_hub')
-class HarmonyHub(object):
+class HarmonyHubDevice(object):
 
     __hubs = None
 
@@ -15,7 +14,6 @@ class HarmonyHub(object):
         self.__config = None
         self.__activities = {}
         self.__address = hostname if hostname is not None else ip
-        self.__hostname = hostname
         self.__port = port
 
     def __enter__(self):
@@ -35,65 +33,55 @@ class HarmonyHub(object):
         with self:
             activity = self.__client.get_current_activity()
 
-            if activity == -1:
-                return 'off'
-            return 'on'
+            # update the state of the activities
+            for name, activity_id in self.__activities.items():
+                self.__update_activity(name, 'on' if activity == activity_id else 'off')
+
+            return 'off' if activity == -1 else 'on'
 
     def turn_on(self):
         pass
 
     def turn_off(self):
         with self:
-            self.power_off()
+            self.__client.power_off()
+        
+        # now set all activities as off
+        for name, _ in self.__activities.items():
+            self.__update_activity(name, 'off')
 
     def start_activity(self, name):
         self.__client.start_activity(self.__activities[name])
-
-    def power_off(self):
-        self.__client.power_off()
-
-        # now set all activities as off
-        for name, _ in self.__activities.items():
-            device = DeviceManager.get_device(name)
-            if device is not None:
-                device.status = 'off'
+        self.__update_activity(name, 'on')
 
     def __connect(self):
-        # scan for the address if we don't already have it
-        if self.__address is None or self.__port is None:
-            # try and find the hub on the local network
-            if HarmonyHub.__hubs is None:
-                HarmonyHub.__hubs = discover()
-
-            # identify the hub we want
-            self.__address = None
-            self.__port = None
-            for hub in HarmonyHub.__hubs:
-                if hub['host_name'] == self.name or hub['friendlyName'] == self.name:
-                    self.__address = hub['ip']
-                    self.__port = hub['port']
-
-        # check we found it
-        if self.__address is None or self.__port is None:
-            raise DeviceNotFoundException('Harmony Hub', self.name)
-
         # connect to the hub and load the config
         self.__client = create_and_connect_client(self.__address, self.__port)
-        self.__config = self.__client.get_config()
+        if self.__client:
+            self.__config = self.__client.get_config()
 
-        # extract the activities from the config
-        for activity in self.__config['activity']:
-            self.__activities[activity['label']] = activity['id']
+            # extract the activities from the config
+            for activity in self.__config['activity']:
+                self.__activities[activity['label']] = int(activity['id'])
+        else:
+            raise DeviceNotFoundException('Harmony Hub', self.name)
 
     def __disconnect(self):
-        self.__client.disconnect()
+        if self.__client:
+            self.__client.disconnect()
+    
+    def __update_activity(self, name, status):
+        if name != 'PowerOff':
+            device = DeviceManager.get_device(name, device_cls=HarmonyActivityDevice)
+            if device is not None:
+                device.status = status
 
 
 @Device(device_type='harmony_activity')
-class HarmonyDevice(object):
+class HarmonyActivityDevice(object):
 
     def __init__(self, hub):
-        self.__hub = DeviceManager.get_device(hub, device_cls=HarmonyHub)
+        self.__hub = DeviceManager.get_device(hub, device_cls=HarmonyHubDevice)
 
     def turn_on(self):
         with self.__hub:

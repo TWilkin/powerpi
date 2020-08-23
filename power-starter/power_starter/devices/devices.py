@@ -1,6 +1,8 @@
 import copy
 import time
 
+from wrapt import synchronized
+
 from power_starter.util.logger import Logger
 
 
@@ -44,20 +46,13 @@ class Device(object):
                 return self.__device_type
 
             @property
+            @synchronized
             def status(self):
                 return self.__status
 
             @status.setter
             def status(self, value):
-                if value != 'on' and value != 'off' and value != 'unknown':
-                    raise ValueError('Unrecognised status %s.' % value)
-
-                old_value = self.__status
-                self.__status = value
-
-                # call the callback as the status has change
-                if old_value != value and self.__state_change_callback is not None:
-                    self.__state_change_callback(self.__name, self.__status)
+                self.update_status(value)
 
             @property
             def loggers(self):
@@ -74,13 +69,30 @@ class Device(object):
                 if self.pollable:
                     self.status = cls.poll(self)
 
+            @synchronized
             def turn_on(self):
                 cls.turn_on(self)
                 self.status = 'on'
 
+            @synchronized
             def turn_off(self):
                 cls.turn_off(self)
                 self.status = 'off'
+            
+            @synchronized
+            def update_status(self, value, publish=True):
+                try:
+                    if value != 'on' and value != 'off' and value != 'unknown':
+                        raise ValueError('Unrecognised status %s.' % value)
+
+                    old_value = self.__status
+                    self.__status = value
+
+                    # call the callback if the status has changed
+                    if publish and old_value != value and self.__state_change_callback is not None:
+                        self.__state_change_callback(self.__name, self.__status)
+                except Exception as e:
+                    Logger.error(e)
 
         # register the device type
         DeviceManager.register_type(device_type, __Wrapper)
@@ -138,17 +150,16 @@ class DeviceManager(object):
         if device_type is not None:
             for device in cls.__devices[device_type]:
                 if name == device.name:
-                    Logger.info('Found %s' % device)
                     return device
 
         # search all types
         for _, devices in cls.__devices.items():
             for device in devices:
                 if name == device.name:
-                    Logger.info('Found %s' % device)
                     return device
 
         # the device could not be found
+        Logger.error('No such device {:s}'.format(name))
         return None
 
     @classmethod

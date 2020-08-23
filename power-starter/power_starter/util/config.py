@@ -4,8 +4,8 @@ import os
 
 class Config(object):
     def __init__(self):
-        self._devices = Config._load(os.getenv('DEVICES_FILE'))
-        self._events = Config._load(os.getenv('EVENTS_FILE'))
+        self.__devices = Config.__load(os.getenv('DEVICES_FILE'))
+        self.__events = Config.__load(os.getenv('EVENTS_FILE'))
 
     @property
     def mqtt_address(self):
@@ -14,16 +14,36 @@ class Config(object):
     @property
     def topic_base(self):
         return os.getenv('TOPIC_BASE')
+
+    @property
+    def poll_frequency(self):
+        freq = as_int(os.getenv('POLL_FREQUENCY'))
+        return freq if freq is not None else 120
+
+    @property
+    def message_age_cutoff(self):
+        cutoff = as_int(os.getenv('MESSAGE_AGE_CUTOFF'))
+        return cutoff if cutoff is not None else 120
     
     @property
     def devices(self):
-        return self._devices
+        return self.__devices
     
     @property
     def events(self):
-        return self._events
+        return self.__events
 
     @classmethod
-    def _load(cls, file):
+    def __load(cls, file):
         with open(file, 'r') as json_file:
             return json.load(json_file)
+
+
+def as_int(value):
+    if value is None:
+        return None
+    
+    try:
+        return int(value)
+    except ValueError:
+        return None
