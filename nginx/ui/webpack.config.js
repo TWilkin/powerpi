@@ -14,7 +14,8 @@ module.exports = {
                 changeOrigin: true,
                 target: 'http://localhost:3000'
             }
-        }
+        },
+        historyApiFallback: true
     },
     entry: {
         app: path.join(__dirname, 'src', 'app.tsx')
