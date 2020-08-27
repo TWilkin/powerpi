@@ -1,6 +1,13 @@
 import axios, { AxiosResponse } from 'axios';
 import HttpStatusCodes from 'http-status-codes';
 
+export interface Device {
+    name: string;
+    type: string;
+    state: 'on' | 'off' | 'unknown';
+    since: number;
+};
+
 export class ApiException extends Error {
 
     constructor(private _statusCode: number, message: string) {
@@ -10,11 +17,11 @@ export class ApiException extends Error {
     get statusCode() {
         return this._statusCode;
     }
-}
+};
 
-export default class Api {
+export class Api {
 
-    public getDevices = () => this.get('device');
+    public getDevices = () => this.get('device') as Promise<Device[]>;
 
     private async get(path: string): Promise<any> {
         let config = {

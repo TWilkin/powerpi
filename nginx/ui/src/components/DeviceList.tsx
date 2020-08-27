@@ -1,13 +1,15 @@
+import moment from 'moment';
 import React from 'react';
+import Moment from 'react-moment';
 
-import Api from '../api';
+import { Api, Device } from '../api';
 
 interface DeviceListProps {
     api: Api;
 }
 
 interface DeviceListModel {
-    devices: any[];
+    devices: Device[];
 }
 
 export default class DeviceList extends React.Component<DeviceListProps, DeviceListModel> {
@@ -27,13 +29,23 @@ export default class DeviceList extends React.Component<DeviceListProps, DeviceL
 
     render() {
         return (
-            <ul>
+            <div id='device-list'>
                 {this.state.devices.map(device => 
-                    <li key={device.name}>
-                        {device.name}
-                    </li>
+                    <div key={device.name} className='device'>
+                        <div className='device-name'>{device.name}</div>
+                        <div className='device-state'>{device.state}</div>
+                        <div className='device-since'>
+                            {device.since && device.since > -1 ? (
+                                <span title={moment(device.since).format('L LT')}>
+                                    <Moment date={device.since} fromNow />
+                                </span>
+                            ) : (
+                                <></>
+                            )}
+                        </div>
+                    </div>
                 )}
-            </ul>
+            </div>
         );
     }
 };

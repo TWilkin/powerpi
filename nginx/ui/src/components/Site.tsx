@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, NavLink, Route, Switch } from 'react-router-dom';
 
-import Api from '../api';
+import { Api } from '../api';
 import DeviceList from './DeviceList';
 
 const api = new Api();
