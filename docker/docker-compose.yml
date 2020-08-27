@@ -52,7 +52,7 @@ services:
   
   light-fantastic:
     build: ../light-fantastic
-    image: ${REGISTRY}/powerpi/light-fantastic:0.1.4
+    image: ${REGISTRY}/powerpi/light-fantastic:0.1.5
     deploy:
       replicas: 1
     environment:
