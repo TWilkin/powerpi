@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, NavLink, Route, Switch } from 'react-router-dom';
 
 import Api from '../api';
 import DeviceList from './DeviceList';
@@ -12,11 +12,9 @@ export default class Site extends React.Component {
             <BrowserRouter>
                 <div id='menu'>
                     <nav>
-                        <ul>
-                            <li><Link to='/devices'>Devices</Link></li>
-                        </ul>
+                        {this.renderMenuLink('/', 'Home')}
+                        {this.renderMenuLink('/devices', 'Devices')}
                     </nav>
-                    <hr />
                 </div>
 
                 <div id='content'>
@@ -32,5 +30,13 @@ export default class Site extends React.Component {
                 </div>
             </BrowserRouter>
         );
+    }
+
+    renderMenuLink(path: string, name: string) {
+        return (
+            <NavLink activeClassName='active' exact to={path}>
+                <div className='menu-element'>{name}</div>
+            </NavLink>
+        )
     }
 };
