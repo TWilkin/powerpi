@@ -10,8 +10,8 @@ export default class DeviceController {
 
     @Get('/')
     @RequiresRole([Role.USER])
-    async getAllDevices() {
-        return (await this.deviceService.getDevices())
+    getAllDevices() {
+        return this.deviceService.devices
             .sort((a, b) => {
                 let str1 = a.name.toUpperCase();
                 let str2 = b.name.toUpperCase();
