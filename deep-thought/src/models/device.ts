@@ -5,4 +5,5 @@ export interface DeviceConfig {
 
 export interface Device extends DeviceConfig {
     state: 'on' | 'off' | 'unknown';
+    since: number;
 };

@@ -38,6 +38,7 @@ export default class DeviceStateService implements MqttListener {
         
         if(device) { 
             device.state = message.state;
+            device.since = message.timestamp;
         }
     }
 
@@ -46,7 +47,8 @@ export default class DeviceStateService implements MqttListener {
             .map((device: DeviceConfig) => ({
                 name: device.name,
                 type: device.type,
-                state: 'unknown'
+                state: 'unknown',
+                since: -1
             }));
     }
 
