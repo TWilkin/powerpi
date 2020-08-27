@@ -1,27 +1,18 @@
 import { Controller, Get } from "@tsed/common";
 
-import Config from "../services/config";
+import DeviceStateService from "../services/deviceState";
 import { RequiresRole, Role } from "../middleware/auth";
-
-interface Device {
-    name: string;
-    type: string;
-}
 
 @Controller('/device')
 export default class DeviceController {
 
-    constructor(private readonly config: Config) { }
+    constructor(private readonly deviceService: DeviceStateService) { }
 
     @Get('/')
     @RequiresRole([Role.USER])
     async getAllDevices() {
-        return (await this.config.getDevices())
-            .map((device: any) => ({
-                name: device.name,
-                type: device.type
-            } as Device))
-            .sort((a: Device, b: Device) => {
+        return (await this.deviceService.getDevices())
+            .sort((a, b) => {
                 let str1 = a.name.toUpperCase();
                 let str2 = b.name.toUpperCase();
 
