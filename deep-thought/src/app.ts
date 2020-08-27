@@ -1,11 +1,12 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import Path from 'path';
-import { ServerLoader, ServerSettings } from '@tsed/common';
+import 'reflect-metadata';
+import { Configuration, ServerLoader } from '@tsed/common';
 
 const rootDir = Path.resolve(__dirname);
 
-@ServerSettings({
+@Configuration({
     rootDir: rootDir,
     httpPort: 3000,
     httpsPort: false,
@@ -14,6 +15,9 @@ const rootDir = Path.resolve(__dirname);
             `${rootDir}/controllers/*.ts`
         ]
     },
+    componentsScan: [
+        `${rootDir}/services/*.ts`
+    ],
     acceptMimes: ['application/json']
 })
 export default class Server extends ServerLoader {

@@ -1,17 +1,15 @@
 import { Response } from 'express';
 import HttpStatus from 'http-status-codes';
-import { connect, IClientPublishOptions, MqttClient } from 'mqtt';
-import os from 'os';
 import { BodyParams, Controller, PathParams, Post, Required, Res, $log } from '@tsed/common';
 
-import Config from '../config';
+import Config from '../services/config';
 import { RequiresRole, Role } from '../middleware/auth';
+import MqttService from '../services/mqtt';
 
 @Controller('/topic')
 export default class TopicController {
 
-    private config: Config = new Config();
-    private client: MqttClient = connectMQTT(this.config);
+    constructor(private readonly config: Config, private readonly mqttService: MqttService) { }
 
     @Post('/:type/:entity/:action')
     @RequiresRole([Role.WEB, Role.USER])
@@ -35,36 +33,12 @@ export default class TopicController {
 
         // generate the message
         const message = {
-            state: state,
-            timestamp: new Date().getTime()
+            state: state
         };
 
         // publish to MQTT
-        const options: IClientPublishOptions = {
-            qos: 2,
-            retain: true
-        };
-        this.client.publish(topicName, JSON.stringify(message), options);
+        this.mqttService.publish(topicName, message);
 
         response.sendStatus(HttpStatus.CREATED);
     }
 };
-
-function connectMQTT(config: Config): MqttClient {
-    const options = {
-        clientId: `api-${os.hostname}`
-    };
-
-    let client = connect(config.mqttAddress, options);
-    
-    client.on('connect', () => {
-        $log.info(`MQTT client ${options.clientId} connected.`);
-    });
-
-    client.on('error', (error) => {
-        $log.error(`MQTT client error: ${error}`);
-        process.exit(1);
-    });
-
-    return client;
-}

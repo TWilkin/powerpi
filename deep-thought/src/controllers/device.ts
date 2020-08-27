@@ -1,6 +1,6 @@
 import { Controller, Get } from "@tsed/common";
 
-import Config from "../config";
+import Config from "../services/config";
 import { RequiresRole, Role } from "../middleware/auth";
 
 interface Device {
@@ -11,7 +11,7 @@ interface Device {
 @Controller('/device')
 export default class DeviceController {
 
-    private config: Config = new Config();
+    constructor(private readonly config: Config) { }
 
     @Get('/')
     @RequiresRole([Role.USER])
