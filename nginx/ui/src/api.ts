@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import HttpStatusCodes from 'http-status-codes';
+import io from 'socket.io-client';
 
 export type DeviceState = 'on' | 'off' | 'unknown';
 
@@ -8,6 +9,10 @@ export interface Device {
     type: string;
     state: DeviceState;
     since: number;
+};
+
+export interface SocketListener {
+    onMessage(message: any): void;
 };
 
 export class ApiException extends Error {
@@ -29,6 +34,11 @@ export class Api {
 
     public postMessage = (device: Device, state: DeviceState) => 
             this.post(`topic/device/${device.name}/change`, { state: state });
+
+    public connectSocket(callback: SocketListener) {
+        const socket = io(this.apiBaseUrl);
+        socket.on('message', callback.onMessage);
+    }
 
     private async get(path: string): Promise<any> {
         let config = {

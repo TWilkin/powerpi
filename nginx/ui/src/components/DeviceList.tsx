@@ -13,6 +13,7 @@ interface DeviceListModel {
 }
 
 export default class DeviceList extends React.Component<DeviceListProps, DeviceListModel> {
+
     constructor(props: DeviceListProps) {
         super(props);
 
@@ -24,6 +25,25 @@ export default class DeviceList extends React.Component<DeviceListProps, DeviceL
     async componentDidMount() {
         this.setState({
             devices: await this.props.api.getDevices()
+        });
+
+        const localThis = this;
+        this.props.api.connectSocket({
+            onMessage(message: { device: string, state: DeviceState, timestamp: number }) {
+                let index = localThis.state.devices.findIndex(device => device.name === message.device);
+        
+                if(index) {
+                    let devices = [...localThis.state.devices];
+                    let device = devices[index];
+                    device.state = message.state;
+                    device.since = message.timestamp;
+                    devices[index] = device;
+        
+                    localThis.setState({
+                        devices: devices
+                    });
+                }
+            }
         });
     }
 
@@ -62,4 +82,5 @@ export default class DeviceList extends React.Component<DeviceListProps, DeviceL
             </button>
         );
     }
+
 };
