@@ -1,10 +1,12 @@
 import axios, { AxiosResponse } from 'axios';
 import HttpStatusCodes from 'http-status-codes';
 
+export type DeviceState = 'on' | 'off' | 'unknown';
+
 export interface Device {
     name: string;
     type: string;
-    state: 'on' | 'off' | 'unknown';
+    state: DeviceState;
     since: number;
 };
 
@@ -21,7 +23,12 @@ export class ApiException extends Error {
 
 export class Api {
 
+    private apiBaseUrl = 'http://localhost:3000/api';
+
     public getDevices = () => this.get('device') as Promise<Device[]>;
+
+    public postMessage = (device: Device, state: DeviceState) => 
+            this.post(`topic/device/${device.name}/change`, { state: state });
 
     private async get(path: string): Promise<any> {
         let config = {
@@ -29,7 +36,23 @@ export class Api {
                 'X-User': 'tom'
             }
         };
-        let result = await axios.get(`http://localhost:3000/api/${path}`, config);
+        let result = await axios.get(`${this.apiBaseUrl}/${path}`, config);
+        this.checkForError(result);
+        return result.data;
+    }
+
+    private async post(path: string, message: any): Promise<any> {
+        let config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-User': 'tom'
+            }
+        };
+        let result = await axios.post(
+            `${this.apiBaseUrl}/${path}`, 
+            JSON.stringify(message), 
+            config
+        );
         this.checkForError(result);
         return result.data;
     }
