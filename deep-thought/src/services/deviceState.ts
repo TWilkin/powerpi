@@ -1,44 +1,38 @@
 import { Service } from '@tsed/common';
 
 import Config from './config';
-import { Device, DeviceConfig } from '../models/device';
-import MqttService, { MqttListener } from './mqtt';
+import { Device, DeviceConfig, DeviceState } from '../models/device';
+import MqttService from './mqtt';
+import StateListener from './stateListener';
 
 @Service()
-export default class DeviceStateService implements MqttListener {
-
-    private topicMatcherRegex: RegExp;
+export default class DeviceStateService extends StateListener {
 
     private _devices: Device[] | undefined;
 
-    constructor(private readonly config: Config, private readonly mqttService: MqttService) {
+    constructor(config: Config, mqttService: MqttService) {
+        super(config, mqttService);
+
         this._devices = undefined;
-        this.topicMatcherRegex = new RegExp(this.topicName('.*')).compile();
     }
 
     public get devices() {
         return this._devices ?? [];
     }
 
-    public get topicMatcher() {
-        return this.topicMatcherRegex;
-    }
-
     public async $onInit() {
         await this.initialise();
 
-        this.mqttService.subscribe(this.topicName('+'), this);
+        super.$onInit();
     }
 
-    public async onMessage(topic: string, message: any) {
-        let [ , , deviceName, ] = topic.split('/', 4);
-
+    protected onStateMessage(deviceName: string, state: DeviceState, timestamp: number) {
         let device = this.devices
             .find(device => device.name === deviceName);
         
         if(device) { 
-            device.state = message.state;
-            device.since = message.timestamp;
+            device.state = state;
+            device.since = timestamp;
         }
     }
 
@@ -51,7 +45,5 @@ export default class DeviceStateService implements MqttListener {
                 since: -1
             }));
     }
-
-    private topicName = (placeholder: string) => `${this.config.topicNameBase}/device/${placeholder}/status`;
 
 };

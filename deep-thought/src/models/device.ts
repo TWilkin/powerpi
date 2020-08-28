@@ -3,7 +3,9 @@ export interface DeviceConfig {
     type: string;
 };
 
+export type DeviceState = 'on' | 'off' | 'unknown';
+
 export interface Device extends DeviceConfig {
-    state: 'on' | 'off' | 'unknown';
+    state: DeviceState;
     since: number;
 };
