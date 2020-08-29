@@ -4,7 +4,7 @@ import moment from 'moment';
 import React, { ChangeEvent } from 'react';
 import Moment from 'react-moment';
 
-import { Api, Device, DeviceState } from '../api';
+import { Api, Device, DeviceState, SocketListener } from '../api';
 
 interface DeviceListProps {
     api: Api;
@@ -15,7 +15,10 @@ interface DeviceListModel {
     filters: string[];
 }
 
-export default class DeviceList extends React.Component<DeviceListProps, DeviceListModel> {
+export default class DeviceList 
+        extends React.Component<DeviceListProps, DeviceListModel>
+        implements SocketListener
+{
 
     constructor(props: DeviceListProps) {
         super(props);
@@ -31,6 +34,7 @@ export default class DeviceList extends React.Component<DeviceListProps, DeviceL
         };
 
         this.handleFilterChange = this.handleFilterChange.bind(this);
+        this.onMessage = this.onMessage.bind(this);
     }
 
     async componentDidMount() {
@@ -38,24 +42,7 @@ export default class DeviceList extends React.Component<DeviceListProps, DeviceL
             devices: await this.props.api.getDevices()
         });
 
-        const localThis = this;
-        this.props.api.connectSocket({
-            onMessage(message: { device: string, state: DeviceState, timestamp: number }) {
-                let index = localThis.state.devices.findIndex(device => device.name === message.device);
-        
-                if(index) {
-                    let devices = [...localThis.state.devices];
-                    let device = devices[index];
-                    device.state = message.state;
-                    device.since = message.timestamp;
-                    devices[index] = device;
-        
-                    localThis.setState({
-                        devices: devices
-                    });
-                }
-            }
-        });
+        this.props.api.connectSocket(this);
     }
 
     render() {
@@ -143,6 +130,22 @@ export default class DeviceList extends React.Component<DeviceListProps, DeviceL
                 <FontAwesomeIcon icon={this.getDeviceTypeIcon(type)} />
             </div>
         );
+    }
+
+    public onMessage(message: { device: string, state: DeviceState, timestamp: number }) {
+        let index = this.state.devices.findIndex(device => device.name === message.device);
+
+        if(index) {
+            let devices = [...this.state.devices];
+            let device = devices[index];
+            device.state = message.state;
+            device.since = message.timestamp;
+            devices[index] = device;
+
+            this.setState({
+                devices: devices
+            });
+        }
     }
 
     private getDeviceTypeIcon(type: string) {
