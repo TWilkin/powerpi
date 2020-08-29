@@ -28,7 +28,7 @@ export class ApiException extends Error {
 
 export class Api {
 
-    private apiBaseUrl = 'http://localhost:3000/api';
+    private apiBaseUrl = `${window.location.origin}/api`;
 
     public getDevices = () => this.get('device') as Promise<Device[]>;
 
@@ -36,17 +36,14 @@ export class Api {
             this.post(`topic/device/${device.name}/change`, { state: state });
 
     public connectSocket(callback: SocketListener) {
-        const socket = io(this.apiBaseUrl);
+        const socket = io.connect(this.apiBaseUrl, {
+            path: '/api/socket.io'
+        });
         socket.on('message', callback.onMessage);
     }
 
     private async get(path: string): Promise<any> {
-        let config = {
-            headers: {
-                'X-User': 'tom'
-            }
-        };
-        let result = await axios.get(`${this.apiBaseUrl}/${path}`, config);
+        let result = await axios.get(`${this.apiBaseUrl}/${path}`);
         this.checkForError(result);
         return result.data;
     }
@@ -54,8 +51,7 @@ export class Api {
     private async post(path: string, message: any): Promise<any> {
         let config = {
             headers: {
-                'Content-Type': 'application/json',
-                'X-User': 'tom'
+                'Content-Type': 'application/json'
             }
         };
         let result = await axios.post(

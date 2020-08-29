@@ -12,7 +12,10 @@ module.exports = {
         proxy: {
             '/api': {
                 changeOrigin: true,
-                target: 'http://localhost:3000'
+                target: 'http://localhost:3000',
+                headers: {
+                    'X-User': 'tom'
+                }
             }
         },
         historyApiFallback: true

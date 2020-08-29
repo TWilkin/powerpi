@@ -18,6 +18,9 @@ const rootDir = Path.resolve(__dirname);
     componentsScan: [
         `${rootDir}/services/*.ts`
     ],
+    socketIO: {
+        path: '/api/socket.io'
+    },
     acceptMimes: ['application/json']
 })
 export default class Server extends ServerLoader {
