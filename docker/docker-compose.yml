@@ -98,6 +98,8 @@ services:
     configs:
       - source: nginx_config
         target: /etc/nginx/conf.d/default.conf
+      - source: nginx_roles_config
+        target: /etc/nginx/roles.conf
   
   certbot:
     build: ../certbot
@@ -124,6 +126,8 @@ configs:
     file: ./config/mosquitto.conf
   nginx_config:
     file: ./config/nginx.conf
+  nginx_roles_config:
+    file: ./config/roles.conf
   devices_config:
     file: ./config/devices.json
   events_config:

@@ -4,11 +4,9 @@ import { EndpointInfo, IMiddleware, Middleware, Req, UseAuth } from '@tsed/commo
 import { useDecorators } from '@tsed/core';
 import { Forbidden, Unauthorized } from '@tsed/exceptions';
 
-import { getRoles, Role } from '../roles';
+import Role from '../roles';
 
-export * from '../roles';
-
-export function RequiresRole(roles: Role[]): Function {
+export default function RequiresRole(roles: Role[]): Function {
     return useDecorators(
         UseAuth(AuthMiddleware, roles)
     )
@@ -23,12 +21,13 @@ class AuthMiddleware implements IMiddleware {
         const roles: Role[] = endpoint.get(AuthMiddleware) || [];
 
         const user = request.get('X-User');
+        const userRoles: Role[] | undefined = request.get('X-Roles')?.split(' ')?.map(role => (<any>Role)[role]);
 
         if(!user || user === '') {
             throw new Unauthorized(HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED));
         }
 
-        if(getRoles(user).filter(role => roles.includes(role)).length == 0) {
+        if(userRoles?.filter(role => roles.includes(role)).length == 0) {
             throw new Forbidden(HttpStatus.getStatusText(HttpStatus.FORBIDDEN));
         }
     }

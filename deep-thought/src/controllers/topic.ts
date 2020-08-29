@@ -3,7 +3,8 @@ import HttpStatus from 'http-status-codes';
 import { BodyParams, Controller, PathParams, Post, Required, Res, $log } from '@tsed/common';
 
 import Config from '../services/config';
-import { RequiresRole, Role } from '../middleware/auth';
+import RequiresRole from '../middleware/auth';
+import Role from '../roles';
 import MqttService from '../services/mqtt';
 
 @Controller('/topic')

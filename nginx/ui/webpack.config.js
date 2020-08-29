@@ -14,7 +14,8 @@ module.exports = {
                 changeOrigin: true,
                 target: 'http://localhost:3000',
                 headers: {
-                    'X-User': 'tom'
+                    'X-User': 'tom',
+                    'X-Roles': 'user'
                 }
             }
         },
