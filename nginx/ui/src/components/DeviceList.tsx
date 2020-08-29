@@ -1,3 +1,5 @@
+import { faPowerOff } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 import React from 'react';
 import Moment from 'react-moment';
@@ -51,7 +53,8 @@ export default class DeviceList extends React.Component<DeviceListProps, DeviceL
         return (
             <div id='device-list'>
                 {this.state.devices.map(device => 
-                    <div key={device.name} className='device'>
+                    <div key={device.name} className='device' 
+                            title={`Device ${device.name} is currently ${device.state}.`}>
                         <div className='device-name'>{device.name}</div>
                         <div className='device-state'>
                             {this.renderButton(device, 'on')}
@@ -73,12 +76,14 @@ export default class DeviceList extends React.Component<DeviceListProps, DeviceL
     }
 
     renderButton(device: Device, buttonFor: DeviceState) {
-        const isActive = device.state === buttonFor;
-        const classes = `device-${buttonFor}-button ${isActive ? 'active' : ''}`;
+        let classes = buttonFor === 'on' ? 'power-on' : 'power-off';
+        if(device.state === buttonFor) {
+            classes += ' active'
+        }
 
         return (
             <button className={classes} onClick={() => this.props.api.postMessage(device, buttonFor)}>
-                {buttonFor}
+                <FontAwesomeIcon icon={faPowerOff} />
             </button>
         );
     }

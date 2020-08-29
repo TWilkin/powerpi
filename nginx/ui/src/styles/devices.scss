@@ -14,8 +14,34 @@
             flex: 1;
         }
 
-        button.active {
-            font-weight: bold;
+        button {
+            width: 3em;
+            height: 3em;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            opacity: 0.3;
+
+            svg {
+                width: 100%;
+                height: auto;
+            }
+            
+            &:hover {
+                cursor: pointer;
+            }
+
+            &.power-on {
+                color: green;
+            }
+
+            &.power-off {
+                color: black;
+            }
+
+            &.active {
+                opacity: 1;
+            }
         }
     }
 }
