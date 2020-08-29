@@ -1,4 +1,4 @@
-import { faPowerOff } from '@fortawesome/free-solid-svg-icons';
+import { faHourglassHalf, faLayerGroup, faLightbulb, faLock, faPlug, faPowerOff, faQuestion, faTv } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 import React from 'react';
@@ -55,6 +55,9 @@ export default class DeviceList extends React.Component<DeviceListProps, DeviceL
                 {this.state.devices.map(device => 
                     <div key={device.name} className='device' 
                             title={`Device ${device.name} is currently ${device.state}.`}>
+                        <div className='device-icon'>
+                            <FontAwesomeIcon icon={this.deviceIcon(device)} />
+                        </div>
                         <div className='device-name'>{device.name}</div>
                         <div className='device-state'>
                             {this.renderButton(device, 'on')}
@@ -86,6 +89,33 @@ export default class DeviceList extends React.Component<DeviceListProps, DeviceL
                 <FontAwesomeIcon icon={faPowerOff} />
             </button>
         );
+    }
+
+    deviceIcon(device: Device) {
+        switch(device.type) {
+            case 'composite':
+                return faLayerGroup;
+
+            case 'delay':
+                return faHourglassHalf;
+            
+            case 'harmony_activity':
+            case 'harmony_hub':
+                return faTv;
+
+            case 'light':
+                return faLightbulb;
+            
+            case 'mutex':
+                return faLock;
+            
+            case 'socket':
+            case 'socket_group':
+                return faPlug;
+            
+            default:
+                return faQuestion;
+        }
     }
 
 };
