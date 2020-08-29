@@ -16,6 +16,7 @@ export default class Site extends React.Component {
                         {this.renderMenuLink('/devices', 'Devices')}
                     </nav>
                 </div>
+                <br />
 
                 <div id='content'>
                     <Switch>

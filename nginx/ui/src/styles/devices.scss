@@ -1,8 +1,17 @@
-#device-list {
+#device-filters, #device-list {
     width: 80%;
     margin-left: 10%;
     margin-right: 10%;
     display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+    label {
+        display: flex;
+    }
+}
+
+#device-list {
     flex-direction: column;
     justify-content: center;
 
@@ -43,10 +52,11 @@
                 opacity: 1;
             }
         }
-
-        .device-icon {
-            max-width: 25px;
-            text-align: center;
-        }
     }
+}
+
+.device-icon {
+    min-width: 25px;
+    max-width: 25px;
+    text-align: center;
 }
