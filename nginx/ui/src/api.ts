@@ -32,8 +32,8 @@ export class Api {
 
     public getDevices = () => this.get('device') as Promise<Device[]>;
 
-    public postMessage = (device: Device, state: DeviceState) => 
-            this.post(`topic/device/${device.name}/change`, { state: state });
+    public postMessage = (device: string, state: DeviceState) => 
+            this.post(`topic/device/${device}/change`, { state: state });
 
     public connectSocket(callback: SocketListener) {
         const socket = io.connect(this.apiBaseUrl, {

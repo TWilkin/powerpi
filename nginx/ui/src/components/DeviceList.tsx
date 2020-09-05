@@ -1,7 +1,7 @@
 import { faFilter, faHourglassHalf, faLayerGroup, faLightbulb, faLock, faPlug, faPowerOff, faQuestion, faTv } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, MouseEvent } from 'react';
 import Moment from 'react-moment';
 
 import { Api, Device, DeviceState, SocketListener } from '../api';
@@ -34,6 +34,7 @@ export default class DeviceList
         };
 
         this.handleFilterChange = this.handleFilterChange.bind(this);
+        this.handlePowerButton = this.handlePowerButton.bind(this);
         this.onMessage = this.onMessage.bind(this);
     }
 
@@ -93,8 +94,7 @@ export default class DeviceList
                             {this.renderDeviceTypeIcon(device.type)}
                             <div className='device-name'>{device.name}</div>
                             <div className='device-state'>
-                                {this.renderButton(device, 'on')}
-                                {this.renderButton(device, 'off')}
+                                {this.renderPowerButtons(device)}
                             </div>
                             <div className='device-since'>
                                 {device.since && device.since > -1 ? (
@@ -111,16 +111,31 @@ export default class DeviceList
         );
     }
 
-    renderButton(device: Device, buttonFor: DeviceState) {
-        let classes = buttonFor === 'on' ? 'power-on' : 'power-off';
-        if(device.state === buttonFor) {
-            classes += ' active'
-        }
-
+    renderPowerButtons(device: Device) {
         return (
-            <button className={classes} onClick={() => this.props.api.postMessage(device, buttonFor)}>
-                <FontAwesomeIcon icon={faPowerOff} />
-            </button>
+            <div className='switch-toggle'>
+                {['on', 'unknown', 'off'].map(state => (
+                    <input key={state}
+                        type='radio'
+                        id={`${device.name}-${state}`} 
+                        name={`${device.name}-state`} 
+                        className={`switch-${state}`}
+                        checked={device.state === state} 
+                        onChange={this.handlePowerButton} />
+                ))}
+
+                <label htmlFor={`${device.name}-on`} className='switch-on'>
+                    <FontAwesomeIcon icon={faPowerOff} />
+                </label>
+                <label htmlFor={`${device.name}-unknown`} className='switch-unknown'>&nbsp;</label>
+                <label htmlFor={`${device.name}-off`} className='switch-off'>
+                    <FontAwesomeIcon icon={faPowerOff} />
+                </label>
+
+                <div id={`${device.name}-slider`} 
+                    className='switch-toggle-slider'
+                    onClick={(event) => this.handleSliderClick(event, device)} />
+            </div>
         );
     }
 
@@ -187,6 +202,24 @@ export default class DeviceList
         this.setState({
             filters: filters
         });
+    }
+
+    private handlePowerButton(event: ChangeEvent<HTMLInputElement>) {
+        let index = event.target.id.lastIndexOf('-');
+        let device = event.target.id.slice(0, index);
+        let state = event.target.id.slice(index + 1) as DeviceState;
+        
+        if(state === 'on' || state === 'off') {
+            this.props.api.postMessage(device, state);
+        }
+    }
+
+    private handleSliderClick(event: MouseEvent<HTMLDivElement>, device: Device) {
+        event.preventDefault();
+
+        if(device.state !== 'unknown') {
+            this.props.api.postMessage(device.name, device.state);
+        }
     }
 
 };
