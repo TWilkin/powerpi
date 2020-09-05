@@ -21,7 +21,10 @@ class AuthMiddleware implements IMiddleware {
         const roles: Role[] = endpoint.get(AuthMiddleware) || [];
 
         const user = request.get('X-User');
-        const userRoles: Role[] | undefined = request.get('X-Roles')?.split(' ')?.map(role => (<any>Role)[role]);
+        const userRoles: Role[] | undefined = request
+            .get('X-Roles')
+            ?.split(' ')
+            ?.map(role => (<any>Role)[role.toUpperCase()]);
 
         if(!user || user === '') {
             throw new Unauthorized(HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED));
