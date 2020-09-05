@@ -22,6 +22,7 @@ export interface Schedule {
     saturation?: number[];
     brightness?: number[];
     kelvin?: number[];
+    power: boolean;
 }
 
 export class ScheduleExecutor {
@@ -102,7 +103,7 @@ export class ScheduleExecutor {
         this.run();
     }
 
-    private execute(): void {
+    private async execute(): Promise<void> {
         // default colour values
         let color = {
             hue: 0,
@@ -121,9 +122,14 @@ export class ScheduleExecutor {
         }, color);
 
         // update the device
-        this.light.lightSetColor({
+        await this.light.lightSetColor({
             color: color
         });
+
+        // if it's supposed to turn on
+        if(this.schedule.power) {
+            await this.light.turnOn();
+        }
     }
 
     private toDate(input: string, after: Date | null = new Date()): Date {
@@ -198,11 +204,17 @@ export class ScheduleExecutor {
         }
 
         str += ` adjust ${this.schedule.device}`;
+
         Object.keys(this.delta).forEach(key => {
             if(this.schedule[key]) {
                 str += ` ${key} between [${this.schedule[key]}]`;
             }
         });
+
+        if(this.schedule.power) {
+            str += ' and turn it on';
+        }
+
         return str;
     }
 
