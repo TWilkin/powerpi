@@ -15,7 +15,7 @@ services:
   
   deep-thought:
     build: ../deep-thought
-    image: ${REGISTRY}/powerpi/deep-thought:0.2.2
+    image: ${REGISTRY}/powerpi/deep-thought:0.3.0
     deploy:
       replicas: 1
     depends_on:
@@ -23,6 +23,10 @@ services:
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
+      - DEVICES_FILE=/devices.json
+    configs:
+      - source: devices_config
+        target: /devices.json
   
   power-starter:
     build: ../power-starter
