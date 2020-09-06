@@ -1,6 +1,6 @@
 import { Namespace } from 'socket.io';
 import { $log } from '@tsed/common';
-import { Nsp, SocketService} from '@tsed/socketio';
+import { Nsp, SocketService } from '@tsed/socketio';
 
 import Config from '../services/config';
 import { DeviceState } from '../models/device';

@@ -21,7 +21,7 @@ class AuthMiddleware implements IMiddleware {
         @Req() request: Request,
         @EndpointInfo() endpoint: EndpointInfo
     ) {
-        const roles: Role[] = endpoint.get(AuthMiddleware) || [];
+        const roles: Role[] = endpoint.get(AuthMiddleware) || [ Role.USER ];
 
         const user = request.get('X-User');
         const userRoles: Role[] | undefined = request
