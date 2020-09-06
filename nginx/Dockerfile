@@ -9,7 +9,6 @@ RUN npm install
 
 # transpile the application
 COPY ui/ ./
-RUN sed -i s/development/production/ ./webpack.config.js
 RUN npm run build
 
 FROM arm32v6/nginx:1.19-alpine AS run-image
