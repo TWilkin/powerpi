@@ -1,7 +1,6 @@
 const path = require('path');
 
 module.exports = {
-    devtool: 'source-map',
     entry: {
         app: path.join(__dirname, 'src', 'app.tsx')
     },
