@@ -3,12 +3,15 @@ import HttpStatus from 'http-status-codes';
 import { EndpointInfo, IMiddleware, Middleware, Req, UseAuth } from '@tsed/common';
 import { useDecorators } from '@tsed/core';
 import { Forbidden, Unauthorized } from '@tsed/exceptions';
+import { Returns } from '@tsed/schema';
 
 import Role from '../roles';
 
 export default function RequiresRole(roles: Role[]): Function {
     return useDecorators(
-        UseAuth(AuthMiddleware, roles)
+        UseAuth(AuthMiddleware, roles),
+        Returns(HttpStatus.UNAUTHORIZED, { description: HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED) }),
+        Returns(HttpStatus.FORBIDDEN, { description: HttpStatus.getStatusText(HttpStatus.FORBIDDEN) })
     )
 };
 
