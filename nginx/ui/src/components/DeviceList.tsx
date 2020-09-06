@@ -1,4 +1,4 @@
-import { faFilter, faHourglassHalf, faLayerGroup, faLightbulb, faLock, faPlug, faPowerOff, faQuestion, faTv } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faHourglassHalf, faLayerGroup, faLightbulb, faLock, faPlug, faPowerOff, faQuestion, faSpinner, faTv } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 import React, { ChangeEvent, MouseEvent } from 'react';
@@ -10,8 +10,12 @@ interface DeviceListProps {
     api: Api;
 }
 
+interface LoadableDevice extends Device {
+    loading: boolean;
+}
+
 interface DeviceListModel {
-    devices: Device[];
+    devices: LoadableDevice[];
     filters: string[];
 }
 
@@ -40,7 +44,7 @@ export default class DeviceList
 
     async componentDidMount() {
         this.setState({
-            devices: await this.props.api.getDevices()
+            devices: await this.props.api.getDevices() as LoadableDevice[]
         });
 
         this.props.api.connectSocket(this);
@@ -111,31 +115,39 @@ export default class DeviceList
         );
     }
 
-    renderPowerButtons(device: Device) {
+    renderPowerButtons(device: LoadableDevice) {
         return (
-            <div className='switch-toggle'>
-                {['on', 'unknown', 'off'].map(state => (
-                    <input key={state}
-                        type='radio'
-                        id={`${device.name}-${state}`} 
-                        name={`${device.name}-state`} 
-                        className={`switch-${state}`}
-                        checked={device.state === state} 
-                        onChange={this.handlePowerButton} />
-                ))}
+            <>
+                <div className='switch-toggle'>
+                    {['on', 'unknown', 'off'].map(state => (
+                        <input key={state}
+                            type='radio'
+                            id={`${device.name}-${state}`} 
+                            name={`${device.name}-state`} 
+                            className={`switch-${state}`}
+                            checked={device.state === state} 
+                            onChange={this.handlePowerButton} />
+                    ))}
 
-                <label htmlFor={`${device.name}-on`} className='switch-on'>
-                    <FontAwesomeIcon icon={faPowerOff} />
-                </label>
-                <label htmlFor={`${device.name}-unknown`} className='switch-unknown'>&nbsp;</label>
-                <label htmlFor={`${device.name}-off`} className='switch-off'>
-                    <FontAwesomeIcon icon={faPowerOff} />
-                </label>
+                    <label htmlFor={`${device.name}-on`} className='switch-on'>
+                        <FontAwesomeIcon icon={faPowerOff} />
+                    </label>
+                    <label htmlFor={`${device.name}-unknown`} className='switch-unknown'>&nbsp;</label>
+                    <label htmlFor={`${device.name}-off`} className='switch-off'>
+                        <FontAwesomeIcon icon={faPowerOff} />
+                    </label>
 
-                <div id={`${device.name}-slider`} 
-                    className='switch-toggle-slider'
-                    onClick={(event) => this.handleSliderClick(event, device)} />
-            </div>
+                    <div id={`${device.name}-slider`} 
+                        className='switch-toggle-slider'
+                        onClick={(event) => this.handleSliderClick(event, device)} />
+                </div>
+                
+                {device.loading ? (
+                    <div className='switch-toggle-spinner'>
+                        <FontAwesomeIcon icon={faSpinner} spin={true} />
+                    </div>
+                ) : null}
+            </>
         );
     }
 
@@ -148,19 +160,11 @@ export default class DeviceList
     }
 
     public onMessage(message: { device: string, state: DeviceState, timestamp: number }) {
-        let index = this.state.devices.findIndex(device => device.name === message.device);
-
-        if(index) {
-            let devices = [...this.state.devices];
-            let device = devices[index];
+        this.updateDeviceState(message.device, (device) => {
             device.state = message.state;
             device.since = message.timestamp;
-            devices[index] = device;
-
-            this.setState({
-                devices: devices
-            });
-        }
+            device.loading = false;
+        });
     }
 
     private getDeviceTypeIcon(type: string) {
@@ -210,6 +214,8 @@ export default class DeviceList
         let state = event.target.id.slice(index + 1) as DeviceState;
         
         if(state === 'on' || state === 'off') {
+            this.updateDeviceState(device, (device) => device.loading = true);
+
             this.props.api.postMessage(device, state);
         }
     }
@@ -218,8 +224,25 @@ export default class DeviceList
         event.preventDefault();
 
         if(device.state !== 'unknown') {
+            this.updateDeviceState(device.name, (device) => device.loading = true);
+
             this.props.api.postMessage(device.name, device.state);
         }
     }
 
+    private updateDeviceState(name: string, func: (device: LoadableDevice) => void) {
+        let index = this.state.devices.findIndex(device => device.name === name);
+
+        if(index) {
+            let devices = [...this.state.devices];
+            let device = devices[index];
+
+            func(device);
+            devices[index] = device;
+
+            this.setState({
+                devices: devices
+            });
+        }
+    }
 };

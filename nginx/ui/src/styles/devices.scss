@@ -27,8 +27,11 @@
             $slider-width: 35px;
             $slider-height: 25px;
 
+            display: flex;
+
             .switch-toggle {
                 width: calc(#{$slider-width} * 2.5);
+                max-width: calc(#{$slider-width} * 2.5);
                 height: $slider-height;
                 line-height: $slider-height;
                 margin-top: 1px;
@@ -98,6 +101,11 @@
                     border-radius: $slider-width;
                     transition: all .4s ease;
                 }
+            }
+
+            .switch-toggle-spinner {
+                margin-left: 5px;
+                line-height: $slider-height;
             }
         }
     }
