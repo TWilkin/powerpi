@@ -30,7 +30,7 @@ services:
   
   power-starter:
     build: ../power-starter
-    image: ${REGISTRY}/powerpi/power-starter:0.5.4
+    image: ${REGISTRY}/powerpi/power-starter:0.5.5
     deploy:
       replicas: 1
       placement:
