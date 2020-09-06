@@ -24,11 +24,11 @@
         }
 
         .device-state {
-            $slider-width: 50px;
+            $slider-width: 35px;
             $slider-height: 25px;
 
             .switch-toggle {
-                width: calc(#{$slider-width} * 3);
+                width: calc(#{$slider-width} * 2.5);
                 height: $slider-height;
                 line-height: $slider-height;
                 margin-top: 1px;
@@ -56,11 +56,11 @@
                         }
 
                         &.switch-unknown ~ .switch-toggle-slider {
-                            left: $slider-width;
+                            left: calc(#{$slider-width} - #{$slider-width} / 4);
                         }
 
                         &.switch-off ~ .switch-toggle-slider {
-                            left: calc(#{$slider-width} * 2);
+                            left: calc(#{$slider-width} * 1.5);
                             cursor: pointer;
                         }
                     }
@@ -79,6 +79,10 @@
 
                     &.switch-on {
                         color: green;
+                    }
+
+                    &.switch-unknown {
+                        width: calc(#{$slider-width / 2});
                     }
 
                     &.switch-off {
