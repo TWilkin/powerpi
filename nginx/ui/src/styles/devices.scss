@@ -30,8 +30,8 @@
             display: flex;
 
             .switch-toggle {
-                width: calc(#{$slider-width} * 2.5);
-                max-width: calc(#{$slider-width} * 2.5);
+                width: #{$slider-width * 2.5};
+                max-width: #{$slider-width * 2.5};
                 height: $slider-height;
                 line-height: $slider-height;
                 margin-top: 1px;
@@ -59,11 +59,11 @@
                         }
 
                         &.switch-unknown ~ .switch-toggle-slider {
-                            left: calc(#{$slider-width} - #{$slider-width} / 4);
+                            left: #{$slider-width - $slider-width / 4};
                         }
 
                         &.switch-off ~ .switch-toggle-slider {
-                            left: calc(#{$slider-width} * 1.5);
+                            left: #{$slider-width * 1.5};
                             cursor: pointer;
                         }
                     }
@@ -85,7 +85,7 @@
                     }
 
                     &.switch-unknown {
-                        width: calc(#{$slider-width / 2});
+                        width: #{$slider-width / 2};
                     }
 
                     &.switch-off {
