@@ -1,6 +1,9 @@
 import Lifx from 'node-lifx-lan';
 import Logger from 'loggy';
 import moment from 'moment-timezone';
+import { IClientPublishOptions, MqttClient } from 'mqtt';
+
+import Config from './config';
 
 export enum Weekday {
     Sunday,
@@ -27,12 +30,6 @@ export interface Schedule {
 
 export class ScheduleExecutor {
 
-    private schedule: Schedule;
-
-    private timezone: string;
-
-    private light: Lifx.LifxLanDevice;
-
     private interval?: NodeJS.Timeout;
 
     private delta = {
@@ -42,11 +39,13 @@ export class ScheduleExecutor {
         kelvin: 0
     };
 
-    constructor(schedule: Schedule, timezone: string, light: Lifx.LifxLanDevice) {
-        this.schedule = schedule;
-        this.timezone = timezone;
-        this.light = light;
-
+    constructor(
+            private config: Config,
+            private schedule: Schedule,
+            private mqttClient: MqttClient,
+            private timezone: string, 
+            private light: Lifx.LifxLanDevice
+    ) {
         // calculate the interval deltas for each adjustable property
         Object.keys(this.delta)
             .forEach(key => this.delta[key] = this.calculateIntervalDelta(schedule[key]));
@@ -126,9 +125,22 @@ export class ScheduleExecutor {
             color: color
         });
 
-        // if it's supposed to turn on
-        if(this.schedule.power) {
-            await this.light.turnOn();
+        // if it's supposed to turn on/off
+        if(this.schedule.power === true || this.schedule.power === false) {
+            const topicName = `${this.config.topicNameBase}/device/${this.schedule.device}/change`;
+
+            const message = {
+                state: this.schedule.power ? 'on' : 'off',
+                timestamp: new Date().getTime()
+            };
+
+            const options: IClientPublishOptions = {
+                qos: 2,
+                retain: true
+            };
+            this.mqttClient.publish(topicName, JSON.stringify(message), options);
+
+            Logger.info(`Setting power of ${this.schedule.device} to ${message.state}`);
         }
     }
 
