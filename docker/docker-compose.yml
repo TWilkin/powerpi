@@ -56,10 +56,12 @@ services:
   
   light-fantastic:
     build: ../light-fantastic
-    image: ${REGISTRY}/powerpi/light-fantastic:0.1.5
+    image: ${REGISTRY}/powerpi/light-fantastic:0.1.6
     deploy:
       replicas: 1
     environment:
+      - MQTT_ADDRESS=mqtt://mosquitto:1883
+      - TOPIC_BASE=powerpi
       - DEVICES_FILE=/devices.json
       - SCHEDULES_FILE=/schedules.json
     configs:

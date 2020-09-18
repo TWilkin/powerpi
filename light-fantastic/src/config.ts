@@ -11,6 +11,14 @@ export default class Config {
     get devices() { return this._devices; }
     get schedules() { return this._schedules; }
 
+    get mqttAddress() {
+        return process.env['MQTT_ADDRESS'];
+    }
+
+    get topicNameBase() {
+        return process.env['TOPIC_BASE'];
+    }
+
     public async load() {
         this._devices = (await Config.readFile(process.env['DEVICES_FILE'] as string)).devices;
         this._schedules = await Config.readFile(process.env['SCHEDULES_FILE'] as string);
