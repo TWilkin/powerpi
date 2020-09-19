@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   mosquitto:
-    image: arm32v6/eclipse-mosquitto:1.6.12
+    image: eclipse-mosquitto:1.6.12
     ports:
       - "1883:1883"
     deploy:
