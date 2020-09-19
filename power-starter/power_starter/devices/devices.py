@@ -202,6 +202,20 @@ class CompositeDevice(object):
         for device in devices:
             d = DeviceManager.get_device(device)
             self.__devices.append(d)
+    
+    def poll(self):
+        all_on = True
+        all_off = True
+
+        for device in self.__devices:
+            if device is not None:
+                all_on &= device.status == 'on'
+                all_off &= device.status == 'off'
+        
+        if all_on:
+            self.status = 'on'
+        elif all_off:
+            self.status = 'off'
 
     def turn_on(self):
         for device in self.__devices:
@@ -239,6 +253,25 @@ class MutexDevice(object):
         for device in off_devices:
             d = DeviceManager.get_device(device)
             self.__off_devices.append(d)
+    
+    def poll(self):
+        all_on = True
+        all_off = True
+        
+        for device in self.__on_devices:
+            if device is not None:
+                all_on &= device.status == 'on'
+                all_off &= device.status == 'off'
+        
+        for device in self.__off_devices:
+            if device is not None:
+                all_on &= device.status == 'off'
+                all_off &= device.status == 'off'
+        
+        if all_on:
+            self.status = 'on'
+        elif all_off:
+            self.status = 'off'
 
     def turn_on(self):
         for device in self.__off_devices:

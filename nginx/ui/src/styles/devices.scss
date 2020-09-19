@@ -1,0 +1,118 @@
+#device-filters, #device-list {
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+    label {
+        display: flex;
+    }
+}
+
+#device-list {
+    flex-direction: column;
+    justify-content: center;
+
+    .device {
+        max-width: 600px;
+        display: flex;
+
+        div {
+            flex: 1;
+        }
+
+        .device-state {
+            $slider-width: 35px;
+            $slider-height: 25px;
+
+            display: flex;
+
+            .switch-toggle {
+                width: #{$slider-width * 2.5};
+                max-width: #{$slider-width * 2.5};
+                height: $slider-height;
+                line-height: $slider-height;
+                margin-top: 1px;
+                position: relative;
+                background-color: lightgray;
+                border: 1px solid black;
+                border-radius: $slider-width;
+
+                > * {
+                    float: left;
+                }
+
+                input {
+                    display: none;
+
+                    &:checked {
+                        ~ .switch-toggle-slider {
+                            background: gray;
+                            opacity: 0.6;
+                        }
+
+                        &.switch-on ~ .switch-toggle-slider {
+                            left: 0px;
+                            cursor: pointer;
+                        }
+
+                        &.switch-unknown ~ .switch-toggle-slider {
+                            left: #{$slider-width - $slider-width / 4};
+                        }
+
+                        &.switch-off ~ .switch-toggle-slider {
+                            left: #{$slider-width * 1.5};
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                label {
+                    width: $slider-width;
+                    height: $slider-height;
+                    display: block;
+                    z-index: 1;
+                    text-align: center;
+
+                    &:not(.switch-unknown) {
+                        cursor: pointer;
+                    }
+
+                    &.switch-on {
+                        color: green;
+                    }
+
+                    &.switch-unknown {
+                        width: #{$slider-width / 2};
+                    }
+
+                    &.switch-off {
+                        color: red;
+                    }
+                }
+
+                .switch-toggle-slider {
+                    width: $slider-width;
+                    height: $slider-height;
+                    position: absolute;
+                    top: 0px;
+                    border-radius: $slider-width;
+                    transition: all .4s ease;
+                }
+            }
+
+            .switch-toggle-spinner {
+                margin-left: 5px;
+                line-height: $slider-height;
+            }
+        }
+    }
+}
+
+.device-icon {
+    min-width: 25px;
+    max-width: 25px;
+    text-align: center;
+}

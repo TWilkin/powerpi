@@ -1,9 +1,14 @@
 import fs from 'fs';
 import util from 'util';
+import { Injectable, ProviderType, ProviderScope } from '@tsed/common';
 
 // allow reading of files using await
 const readFile = util.promisify(fs.readFile);
 
+@Injectable({
+    type: ProviderType.VALUE,
+    scope: ProviderScope.SINGLETON
+})
 export default class Config {
 
     get mqttAddress() {

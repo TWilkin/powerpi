@@ -3,14 +3,15 @@ import HttpStatus from 'http-status-codes';
 import { EndpointInfo, IMiddleware, Middleware, Req, UseAuth } from '@tsed/common';
 import { useDecorators } from '@tsed/core';
 import { Forbidden, Unauthorized } from '@tsed/exceptions';
+import { Returns } from '@tsed/schema';
 
-import { getRoles, Role } from '../roles';
+import Role from '../roles';
 
-export * from '../roles';
-
-export function RequiresRole(roles: Role[]): Function {
+export default function RequiresRole(roles: Role[]): Function {
     return useDecorators(
-        UseAuth(AuthMiddleware, roles)
+        UseAuth(AuthMiddleware, roles),
+        Returns(HttpStatus.UNAUTHORIZED, { description: HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED) }),
+        Returns(HttpStatus.FORBIDDEN, { description: HttpStatus.getStatusText(HttpStatus.FORBIDDEN) })
     )
 };
 
@@ -20,15 +21,19 @@ class AuthMiddleware implements IMiddleware {
         @Req() request: Request,
         @EndpointInfo() endpoint: EndpointInfo
     ) {
-        const roles: Role[] = endpoint.get(AuthMiddleware) || [];
+        const roles: Role[] = endpoint.get(AuthMiddleware) || [ Role.USER ];
 
         const user = request.get('X-User');
+        const userRoles: Role[] | undefined = request
+            .get('X-Roles')
+            ?.split(' ')
+            ?.map(role => (<any>Role)[role.toUpperCase()]);
 
         if(!user || user === '') {
             throw new Unauthorized(HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED));
         }
 
-        if(getRoles(user).filter(role => roles.includes(role)).length == 0) {
+        if(userRoles?.filter(role => roles.includes(role)).length == 0) {
             throw new Forbidden(HttpStatus.getStatusText(HttpStatus.FORBIDDEN));
         }
     }
