@@ -39,6 +39,7 @@ services:
     depends_on:
       - mosquitto
     environment:
+      - DEVICE_FATAL=true
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
       - POLL_FREQUENCY=120
