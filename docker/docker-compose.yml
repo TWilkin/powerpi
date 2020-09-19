@@ -83,7 +83,7 @@ services:
     build: ../nginx
     image: ${REGISTRY}/powerpi/nginx:0.0.3
     ports:
-      - "80:80"
+      - "3001:80"
       - "3000:443"
     deploy:
       replicas: 1
