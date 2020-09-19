@@ -1,4 +1,3 @@
-FROM qemu AS qemu-image
 FROM node:14-alpine AS build-image
 LABEL description="Node.js to compile PowerPi UI"
 
@@ -11,10 +10,8 @@ RUN npm install
 COPY ui/ ./
 RUN npm run build
 
-FROM arm32v6/nginx:1.19-alpine AS run-image
-LABEL description="NGINX reverse proxy to protect web accessible endpoints with SSL"
-
-COPY --from=qemu-image qemu-arm-static /usr/bin/
+FROM nginx:1.19-alpine AS run-image
+LABEL description="NGINX reverse proxy to protect web accessible endpoints with SSL and host UI"
 
 # download letsencrypt configuration files
 WORKDIR /etc/nginx/
