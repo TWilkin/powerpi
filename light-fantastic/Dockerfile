@@ -1,8 +1,5 @@
-FROM qemu AS qemu-image
-FROM arm32v6/node:14-alpine
+FROM node:14-alpine
 LABEL description="Node.js application to control LIFX light colour and brightness"
-
-COPY --from=qemu-image qemu-arm-static /usr/bin/
 
 # install the dependencies
 WORKDIR /usr/src/app
