@@ -35,7 +35,7 @@ def main():
         power_state_change_producer(topic, message)
 
     # initialise the DeviceManager and EventManager
-    DeviceManager.load(config.devices['devices'], on_power_state_change)
+    DeviceManager.load(config, config.devices['devices'], on_power_state_change)
     EventManager.load(config.events['events'], client, config)
     
     # start the StatusChecker

@@ -1,4 +1,5 @@
 import copy
+import sys
 import time
 
 from wrapt import synchronized
@@ -163,7 +164,7 @@ class DeviceManager(object):
         return None
 
     @classmethod
-    def load(cls, devices, state_change_callback=None):
+    def load(cls, config, devices, state_change_callback=None):
         # iterate over the devices and create them
         for device in devices:
             device_type = device['type']
@@ -175,6 +176,8 @@ class DeviceManager(object):
                 cls.__instantiate(device_type, **args)
             except DeviceNotFoundException as e:
                 Logger.exception(e)
+                if config.device_fatal:
+                    sys.exit(-1)
 
     @classmethod
     def __instantiate(cls, device_type, **kws):

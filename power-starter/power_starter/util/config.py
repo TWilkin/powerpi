@@ -8,6 +8,11 @@ class Config(object):
         self.__events = Config.__load(os.getenv('EVENTS_FILE'))
 
     @property
+    def device_fatal(self):
+        value = os.getenv('DEVICE_FATAL')
+        return value.lower() == 'true' if value is not None else False
+
+    @property
     def mqtt_address(self):
         return os.getenv('MQTT_ADDRESS')
     
