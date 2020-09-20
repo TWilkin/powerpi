@@ -1,4 +1,4 @@
-FROM certbot/certbot:v1.6.0
+FROM certbot/certbot:arm32v6-v1.6.0
 LABEL description="Certbot automatic SSL certificate renewal"
 
 # setup crontab to renew
