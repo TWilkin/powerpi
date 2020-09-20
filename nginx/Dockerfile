@@ -13,6 +13,9 @@ RUN npm run build
 FROM nginx:1.19-alpine AS run-image
 LABEL description="NGINX reverse proxy to protect web accessible endpoints with SSL and host UI"
 
+EXPOSE 80
+EXPOSE 443
+
 # download letsencrypt configuration files
 WORKDIR /etc/nginx/
 RUN curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > options-ssl-nginx.conf
