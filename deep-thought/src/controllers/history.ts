@@ -21,9 +21,15 @@ export default class HistoryController {
         @QueryParams('entity') entity?: string,
         @QueryParams('action') action?: string
     ) {
-        return this.query(
+        return await this.query(
             response, 
-            async () => this.databaseService.getHistory(type, entity, action)
+            async () => {
+                const result = await this.databaseService.getHistory(type, entity, action);
+
+                result?.rows.forEach(row => row.message = JSON.parse(row.message));              
+
+                return result
+            }
         );
     }
 
