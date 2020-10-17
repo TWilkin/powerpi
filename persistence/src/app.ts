@@ -27,7 +27,7 @@ sequelize.sync().then(() => {
             entity,
             action,
             timestamp: json.timestamp,
-            message
+            message: message.toString()
         });
     
         record.save();
