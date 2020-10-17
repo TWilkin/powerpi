@@ -68,7 +68,7 @@ export default class DeviceList
             .sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
 
         return (
-            <div id='device-filters'>
+            <div id='device-filters' className='filters'>
                 <label>
                     <FontAwesomeIcon icon={faFilter} 
                         onClick={() => this.setState({ filters: this.state.filters.length === 0 ? types : [] })} />
@@ -89,7 +89,7 @@ export default class DeviceList
 
     renderDeviceList() {
         return (
-            <div id='device-list'>
+            <div id='device-list' className='list'>
                 {this.state.devices
                     .filter(device => this.state.filters.includes(device.type))
                     .map(device => 

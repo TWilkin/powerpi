@@ -40,12 +40,15 @@ export default class HistoryList
     }
 
     renderFilters() {
-        return (<></>);
+        return (
+            <div id="history-filters" className="filters">
+            </div>
+        );
     }
 
     renderHistory() {
         return (
-            <div id='history-list'>
+            <div id="history-list" className="list">
                 <table>
                     <thead>
                         <th>Type</th>
