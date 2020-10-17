@@ -1,9 +1,12 @@
 import HttpStatus from "http-status-codes";
-import { $log, Controller, Get, Res, Response } from "@tsed/common";
+import { QueryResult } from "pg";
+import { $log, Controller, Get, QueryParams, Res, Response } from "@tsed/common";
 
 import DatabaseService from "../services/db";
 import RequiresRole from "../middleware/auth";
 import Role from "../roles";
+
+type QueryFunction = () => Promise<QueryResult<any> | undefined>;
 
 @Controller("/history")
 export default class HistoryController {
@@ -12,19 +15,21 @@ export default class HistoryController {
 
     @Get("/")
     @RequiresRole([Role.USER])
-    async getAllHistory(
-        @Res() response: Response
+    async getHistory(
+        @Res() response: Response,
+        @QueryParams('type') type?: string,
+        @QueryParams('entity') entity?: string,
+        @QueryParams('action') action?: string
     ) {
-        await this.query(
-            response,
-            `SELECT * FROM mqtt
-            ORDER BY timestamp DESC;`
+        return this.query(
+            response, 
+            async () => this.databaseService.getHistory(type, entity, action)
         );
     }
 
-    private async query(response: Response, sql: string, values?: Array<any>) {
+    private async query(response: Response, func: QueryFunction) {
         try {
-            const result = await this.databaseService.query(sql, values);
+            const result = await func();
 
             response.send(result?.rows);
         } catch(error) {

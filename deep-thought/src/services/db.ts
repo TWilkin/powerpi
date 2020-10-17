@@ -3,6 +3,11 @@ import { $log, OnServerReady, Service } from "@tsed/common";
 
 import Config from "./config";
 
+interface DatabaseQueryParam {
+    name: string;
+    value?: string;
+}
+
 @Service()
 export default class DatabaseService implements OnServerReady {
 
@@ -16,8 +21,43 @@ export default class DatabaseService implements OnServerReady {
         this.connect();
     }
 
-    public query(sql: string, values?: Array<any>) {
-        return this.client?.query(sql, values);
+    public getHistory(type?: string, entity?: string, action?: string) {
+        let params = [];
+        if(type) { params.push(type); }
+        if(entity) { params.push(entity); }
+        if(action) { params.push(action); }
+
+        return this.client?.query(
+            this.generateQuery(
+                "SELECT * FROM mqtt",
+                "ORDER BY timestamp DESC",
+                { name: "type", value: type },
+                { name: "entity", value: entity },
+                { name: "action", value: action }
+            ),
+            params
+        );
+    }
+
+    private generateQuery(start: string, end: string, ...params: DatabaseQueryParam[]) {
+        const generator = optionalArgumentGenerator(params);
+
+        let sql = "";
+        while(true) {
+            const result = generator.next();
+
+            if(result.done) {
+                break;
+            }
+
+            sql += result.value;
+        }
+
+        if(sql.length > 0) {
+            return `${start} WHERE ${sql} ${end}`
+        }
+        
+        return `${start} ${end}`;
     }
 
     private async connect() {
@@ -28,6 +68,18 @@ export default class DatabaseService implements OnServerReady {
 
             await this.client.connect();
             $log.info("Database connected.");
+        }
+    }
+}
+
+function* optionalArgumentGenerator(params: DatabaseQueryParam[]) {
+    let index = 1;
+    for(let i = 0; i < params.length; i++) {
+        const current = params[i];
+
+        if(current.value) {
+            yield `${index > 1 ? " AND " : ""}${current.name} = $${index}::text`;
+            index++;
         }
     }
 }
