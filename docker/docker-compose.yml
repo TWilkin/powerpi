@@ -21,6 +21,8 @@ services:
     depends_on:
       - db
       - mosquitto
+    secrets:
+      - powerpi_db
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
