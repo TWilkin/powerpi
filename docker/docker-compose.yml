@@ -119,11 +119,27 @@ services:
     volumes:
       - /var/lib/docker-volumes/certbot/conf:/etc/letsencrypt
       - /var/lib/docker-volumes/certbot/www:/var/www/html
+  
+  db:
+    image: postgres:13.0-alpine
+    deploy:
+      replicas: 1
+    secrets:
+      - powerpi_db
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_DB=powerpi
+      - POSTGRES_USER=powerpi
+      - POSTGRES_PASSWORD_FILE=/var/run/secrets/powerpi_db
+    volumes:
+      - /var/lib/docker-volumes/postgres/data:/var/lib/postgresql/data/pgdata
 
 secrets:
   freedns:
     external: true
   powerpi_users:
+    external: true
+  powerpi_db:
     external: true
 
 configs:
