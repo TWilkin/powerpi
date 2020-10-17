@@ -7,7 +7,7 @@ import { AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from "seque
 export default class MqttModel extends Model<MqttModel> {
     @PrimaryKey
     @AutoIncrement
-    @Column(DataType.NUMBER)
+    @Column(DataType.INTEGER)
     id!: number;
 
     @Column(DataType.STRING)
