@@ -97,7 +97,7 @@ export default class HistoryList
         let filter = this.state.filter;
 
         const [filterName, ] = event.target.name.split("-", 2);
-        const value = event.target.value;
+        const value: string | undefined = isNullOrEmpty(event.target.value) ? undefined : event.target.value;
 
         switch(filterName) {
             case "type":
@@ -109,24 +109,28 @@ export default class HistoryList
                 break;
 
             case "action":
-                filter.entity = value;
+                filter.action = value;
                 break;
         }
 
-        if(filter.type || filter.entity || filter.action) {
+        if(!isNullOrEmpty(filter.type) || !isNullOrEmpty(filter.entity) || !isNullOrEmpty(filter.action)) {
             this.setState({
                 history: await this.props.api.getHistory(
-                    this.state.filter.type,
-                    this.state.filter.entity,
-                    this.state.filter.action
+                    filter.type,
+                    filter.entity,
+                    filter.action
                 ),
                 filter
             });
         } else {
             this.setState({
                 history: [],
-                filter
+                filter: {}
             });
         }
     }
+}
+
+function isNullOrEmpty(value: string | null | undefined) {
+    return value === null || value === undefined || value?.trim() === "";
 }

@@ -40,8 +40,8 @@ export class Api {
 
     public getDevices = () => this.get('device') as Promise<Device[]>;
 
-    public getHistory = (type?: string, entity?: string, action?: string) => 
-            this.get('history', type, entity, action) as Promise<History[]>;
+    public getHistory = (type?: string, entity?: string , action?: string) => 
+            this.get('history', { type, entity, action }) as Promise<History[]>;
 
     public postMessage = (device: string, state: DeviceState) => 
             this.post(`topic/device/${device}/change`, { state: state });
@@ -53,7 +53,7 @@ export class Api {
         socket.on('message', callback.onMessage);
     }
 
-    private async get(path: string, ...params: (string | undefined)[]): Promise<any> {
+    private async get(path: string, params?: object): Promise<any> {
         let result = await axios.get(`${this.apiBaseUrl}/${path}`, { params });
         this.checkForError(result);
         return result.data;
