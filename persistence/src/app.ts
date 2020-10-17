@@ -21,13 +21,17 @@ sequelize.sync().then(() => {
     
         const [ , type, entity, action] = topic.split("/", 4);
         const json = JSON.parse(message.toString());
-    
+
+        // we don't want to repeat the timestamp
+        const timestamp = json.timestamp;
+        delete json.timestamp;
+
         const record = new MqttModel({
             type,
             entity,
             action,
-            timestamp: json.timestamp,
-            message: message.toString()
+            timestamp,
+            message: JSON.stringify(json)
         });
     
         record.save();
