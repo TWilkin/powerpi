@@ -19,7 +19,9 @@ export default class Config {
     }
 
     async getDevices() { 
-        return (await Config.readFile(process.env['DEVICES_FILE'] as string)).devices
+        const file = await Config.readFile(process.env['DEVICES_FILE'] as string);
+        const json = JSON.parse(file);
+        return json.devices;
     }
 
     async getDatabaseURI() {
@@ -33,6 +35,7 @@ export default class Config {
     }
 
     private static async readFile(filePath: string): Promise<any> {
-        return JSON.parse((await readFile(filePath)).toString());
+        return (await readFile(filePath)).toString().trim();
     }
+    
 };
