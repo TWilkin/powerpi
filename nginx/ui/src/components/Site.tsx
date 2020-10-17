@@ -3,7 +3,7 @@ import { BrowserRouter, NavLink, Route, Switch } from 'react-router-dom';
 
 import { Api } from '../api';
 import DeviceList from './DeviceList';
-import History from './History';
+import HistoryList from './HistoryList';
 
 const api = new Api();
 
@@ -27,7 +27,7 @@ export default class Site extends React.Component {
                         </Route>
 
                         <Route path='/history'>
-                            <History api={api} />
+                            <HistoryList api={api} />
                         </Route>
 
                         <Route path='/'>
