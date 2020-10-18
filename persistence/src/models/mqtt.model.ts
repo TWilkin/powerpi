@@ -1,4 +1,4 @@
-import { AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { Column, DataType, Model, PrimaryKey, Table } from "sequelize-typescript";
 
 @Table({
     tableName: "mqtt",
@@ -6,19 +6,18 @@ import { AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from "seque
 })
 export default class MqttModel extends Model<MqttModel> {
     @PrimaryKey
-    @AutoIncrement
-    @Column(DataType.INTEGER)
-    id!: number;
-
     @Column(DataType.STRING)
     type!: string;
 
+    @PrimaryKey
     @Column(DataType.STRING)
     entity!: string;
 
+    @PrimaryKey
     @Column(DataType.STRING)
     action!: string;
 
+    @PrimaryKey
     @Column(DataType.DATE)
     timestamp!: Date;
 

@@ -143,7 +143,7 @@ services:
   
   persistence:
     build: ../persistence
-    image: ${REGISTRY}/powerpi/persistence:0.0.1
+    image: ${REGISTRY}/powerpi/persistence:0.0.2
     deploy:
       replicas: 1
     depends_on:
