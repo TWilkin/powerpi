@@ -80,10 +80,10 @@ export default class HistoryList
                     {name}:
                 </label>
                 
-                <select name={`${lowerName}-filter`} onChange={this.handleFilterChange}>
+                <select name={`${lowerName}-filter`} onChange={this.handleFilterChange} defaultValue={selected}>
                     <option value="">-</option>
                     {options.map(option => 
-                        <option key={option} value={option} selected={option === selected}>{option}</option>
+                        <option key={option} value={option}>{option}</option>
                     )}
                 </select>
             </>
@@ -95,23 +95,27 @@ export default class HistoryList
             <div id="history-list" className="list">
                 <table>
                     <thead>
-                        <th>Type</th>
-                        <th>Entity</th>
-                        <th>Action</th>
-                        <th>Timestamp</th>
-                        <th>Message</th>
+                        <tr>
+                            <th>Type</th>
+                            <th>Entity</th>
+                            <th>Action</th>
+                            <th>Timestamp</th>
+                            <th>Message</th>
+                        </tr>
                     </thead>
 
-                    {this.state.history
-                    .map((history, i) => 
-                        <tr key={i}>
-                            <td>{history.type}</td>
-                            <td>{history.entity}</td>
-                            <td>{history.action}</td>
-                            <td><Moment date={history.timestamp} format="L LT" /></td>
-                            <td>{JSON.stringify(history.message)}</td>
-                        </tr>
-                    )}
+                    <tbody>
+                        {this.state.history
+                        .map((history, i) => 
+                            <tr key={i}>
+                                <td>{history.type}</td>
+                                <td>{history.entity}</td>
+                                <td>{history.action}</td>
+                                <td><Moment date={history.timestamp} format="L LT" /></td>
+                                <td>{JSON.stringify(history.message)}</td>
+                            </tr>
+                        )}
+                    </tbody>
                 </table>
             </div>
         );

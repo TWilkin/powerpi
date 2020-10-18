@@ -2,13 +2,15 @@
     table {
         min-width: 80%;
 
-        tr {
-            &:nth-child(even) {
-                background-color: lightgray;
-            }
+        tbody {
+            tr {
+                &:nth-child(even) {
+                    background-color: lightgray;
+                }
 
-            &:hover {
-                background-color: $hover-colour;
+                &:hover {
+                    background-color: $hover-colour;
+                }
             }
         }
     }
