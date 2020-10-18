@@ -42,6 +42,10 @@ export class Api {
 
     public getHistory = (type?: string, entity?: string , action?: string) => 
             this.get('history', { type, entity, action }) as Promise<History[]>;
+    
+    public getHistoryTypes = () => this.get('history/types') as Promise<{ type: string }[]>;
+    public getHistoryEntities = () => this.get('history/entities') as Promise<{ entity: string }[]>;
+    public getHistoryActions = () => this.get('history/actions') as Promise<{ action: string }[]>;
 
     public postMessage = (device: string, state: DeviceState) => 
             this.post(`topic/device/${device}/change`, { state: state });

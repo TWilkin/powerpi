@@ -1,12 +1,12 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, FormEvent } from "react";
 import Moment from "react-moment";
 
 import { Api, History } from "../api";
 
 interface Filter {
-    type?: string;
-    entity?: string;
-    action?: string;
+    type: string;
+    entity: string;
+    action: string;
 }
 
 interface HistoryListProps {
@@ -15,6 +15,9 @@ interface HistoryListProps {
 
 interface HistoryListModel {
     history: History[];
+    types: string[];
+    entities: string[];
+    actions: string[];
     filter: Filter;
 }
 
@@ -27,10 +30,25 @@ export default class HistoryList
 
         this.state = {
             history: [],
-            filter: {}
+            types: [],
+            entities: [],
+            actions: [],
+            filter: {
+                type: "",
+                entity: "",
+                action: ""
+            }
         };
 
         this.handleFilterChange = this.handleFilterChange.bind(this);
+    }
+
+    async componentDidMount() {
+        this.setState({
+            types: (await this.props.api.getHistoryTypes()).map(row => row.type),
+            entities: (await this.props.api.getHistoryTypes()).map(row => row.type),
+            actions: (await this.props.api.getHistoryTypes()).map(row => row.type)
+        });
     }
 
     render() {
@@ -46,14 +64,14 @@ export default class HistoryList
     renderFilters() {
         return (
             <div id="history-filters" className="filters">
-                {this.renderFilter("Type")}
-                {this.renderFilter("Entity")}
-                {this.renderFilter("Action")}
+                {this.renderFilter("Type", this.state.types, this.state.filter.type)}
+                {this.renderFilter("Entity", this.state.entities, this.state.filter.entity)}
+                {this.renderFilter("Action", this.state.actions, this.state.filter.action)}
             </div>
         );
     }
 
-    renderFilter(name: string) {
+    renderFilter(name: string, options: string[], selected: string) {
         const lowerName = name.toLowerCase();
 
         return (
@@ -61,7 +79,13 @@ export default class HistoryList
                 <label htmlFor={`${lowerName}-filter`}>
                     {name}:
                 </label>
-                <input type="text" name={`${lowerName}-filter`} onChange={this.handleFilterChange} />
+                
+                <select name={`${lowerName}-filter`} onChange={this.handleFilterChange}>
+                    <option value="">-</option>
+                    {options.map(option => 
+                        <option key={option} value={option} selected={option === selected}>{option}</option>
+                    )}
+                </select>
             </>
         )
     }
@@ -93,11 +117,11 @@ export default class HistoryList
         );
     }
 
-    private async handleFilterChange(event: ChangeEvent<HTMLInputElement>) {
+    private async handleFilterChange(event: FormEvent<HTMLSelectElement>) {
         let filter = this.state.filter;
 
-        const [filterName, ] = event.target.name.split("-", 2);
-        const value: string | undefined = isNullOrEmpty(event.target.value) ? undefined : event.target.value;
+        const [filterName, ] = event.currentTarget.name.split("-", 2);
+        const value = event.currentTarget.value ?? "";
 
         switch(filterName) {
             case "type":
@@ -113,24 +137,20 @@ export default class HistoryList
                 break;
         }
 
-        if(!isNullOrEmpty(filter.type) || !isNullOrEmpty(filter.entity) || !isNullOrEmpty(filter.action)) {
+        if(filter.type || filter.entity || filter.action) {
             this.setState({
                 history: await this.props.api.getHistory(
-                    filter.type,
-                    filter.entity,
-                    filter.action
+                    filter.type === "" ? undefined : filter.type,
+                    filter.entity === "" ? undefined : filter.entity,
+                    filter.action === "" ? undefined : filter.action
                 ),
                 filter
             });
         } else {
             this.setState({
                 history: [],
-                filter: {}
+                filter
             });
         }
     }
-}
-
-function isNullOrEmpty(value: string | null | undefined) {
-    return value === null || value === undefined || value?.trim() === "";
 }
