@@ -46,8 +46,8 @@ export default class HistoryList
     async componentDidMount() {
         this.setState({
             types: (await this.props.api.getHistoryTypes()).map(row => row.type),
-            entities: (await this.props.api.getHistoryTypes()).map(row => row.type),
-            actions: (await this.props.api.getHistoryTypes()).map(row => row.type)
+            entities: (await this.props.api.getHistoryEntities()).map(row => row.entity),
+            actions: (await this.props.api.getHistoryActions()).map(row => row.action)
         });
     }
 
