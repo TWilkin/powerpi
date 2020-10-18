@@ -39,6 +39,10 @@ export default class DatabaseService implements OnServerReady {
         );
     }
 
+    public getHistoryTypes = () => this.client?.query("SELECT DISTINCT type FROM mqtt ORDER BY type ASC;");
+    public getHistoryEntities = () => this.client?.query("SELECT DISTINCT entity FROM mqtt ORDER BY entity ASC;");
+    public getHistoryActions = () => this.client?.query("SELECT DISTINCT action FROM mqtt ORDER BY action ASC;");
+
     private generateQuery(start: string, end: string, ...params: DatabaseQueryParam[]) {
         const generator = optionalArgumentGenerator(params);
 

@@ -13,6 +13,33 @@ export default class HistoryController {
 
     constructor(private readonly databaseService: DatabaseService) { }
 
+    @Get("/types")
+    @RequiresRole([Role.USER])
+    getTypes(@Res() response: Response) {
+        return this.query(
+            response,
+            async () => await this.databaseService.getHistoryTypes()
+        );
+    }
+
+    @Get("/entities")
+    @RequiresRole([Role.USER])
+    getEntities(@Res() response: Response) {
+        return this.query(
+            response,
+            async () => await this.databaseService.getHistoryEntities()
+        );
+    }
+
+    @Get("/actions")
+    @RequiresRole([Role.USER])
+    getActions(@Res() response: Response) {
+        return this.query(
+            response,
+            async () => await this.databaseService.getHistoryActions()
+        );
+    }
+
     @Get("/")
     @RequiresRole([Role.USER])
     async getHistory(
