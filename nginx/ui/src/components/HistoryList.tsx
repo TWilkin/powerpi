@@ -1,3 +1,5 @@
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ChangeEvent, FormEvent } from "react";
 import Moment from "react-moment";
 
@@ -64,6 +66,7 @@ export default class HistoryList
     renderFilters() {
         return (
             <div id="history-filters" className="filters">
+                <FontAwesomeIcon icon={faFilter} />
                 {this.renderFilter("Type", this.state.types, this.state.filter.type)}
                 {this.renderFilter("Entity", this.state.entities, this.state.filter.entity)}
                 {this.renderFilter("Action", this.state.actions, this.state.filter.action)}
