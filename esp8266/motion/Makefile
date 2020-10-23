@@ -1,23 +1,33 @@
 ARDUINO_PATH=/opt/arduino/arduino-1.8.12
 SKETCH=motion.ino
 TARGET_DIR=$(CURDIR)/bin
+LIB_DIR=$(CURDIR)/lib
 PORT?=/dev/ttyUSB0
+NTPCLIENT_VERSION=3.2.0
 PUBSUBCLIENT_VERSION=2.7
 
 LOCATION?=hallway
 
 all: clean compile flash monitor
 
+# Download NTPClient library
+$(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION):
+	mkdir -p $(LIB_DIR)
+	wget https://github.com/arduino-libraries/NTPClient/archive/$(NTPCLIENT_VERSION).tar.gz
+	tar xCfz $(LIB_DIR)/ $(NTPCLIENT_VERSION).tar.gz
+	rm $(NTPCLIENT_VERSION).tar.gz
+
 # Download pubsubclient library
-pubsubclient-$(PUBSUBCLIENT_VERSION):
+$(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION):
+	mkdir -p $(LIB_DIR)
 	wget https://github.com/knolleary/pubsubclient/archive/v$(PUBSUBCLIENT_VERSION).tar.gz
-	tar xfz v$(PUBSUBCLIENT_VERSION).tar.gz
+	tar xCfz $(LIB_DIR)/ v$(PUBSUBCLIENT_VERSION).tar.gz
 	rm v$(PUBSUBCLIENT_VERSION).tar.gz
 
 location.h:
 	echo "#define LOCATION \"$(LOCATION)\"" > location.h
 
-$(TARGET_DIR)/$(SKETCH).bin: $(SKETCH) location.h pubsubclient-$(PUBSUBCLIENT_VERSION)
+$(TARGET_DIR)/$(SKETCH).bin: $(SKETCH) location.h $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION) $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION)
 	mkdir -p $(TARGET_DIR)
 	$(ARDUINO_PATH)/arduino-builder \
 		-compile \
@@ -26,8 +36,8 @@ $(TARGET_DIR)/$(SKETCH).bin: $(SKETCH) location.h pubsubclient-$(PUBSUBCLIENT_VE
     	-tools "$(ARDUINO_PATH)/hardware/tools/avr" \
 		-built-in-libraries "$(ARDUINO_PATH)/libraries" \
 		-fqbn=esp8266com:esp8266:generic \
-		-libraries "$(CURDIR)/pubsubclient-$(PUBSUBCLIENT_VERSION)" \
-		-build-path "${TARGET_DIR}" \
+		-libraries "$(LIB_DIR)" \
+		-build-path "$(TARGET_DIR)" \
 		$<
 
 compile: $(TARGET_DIR)/$(SKETCH).bin
