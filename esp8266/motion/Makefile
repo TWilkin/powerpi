@@ -10,6 +10,8 @@ LOCATION?=hallway
 
 all: clean compile flash monitor
 
+libraries: $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION) $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION)
+
 # Download NTPClient library
 $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION):
 	mkdir -p $(LIB_DIR)
@@ -27,7 +29,7 @@ $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION):
 location.h:
 	echo "#define LOCATION \"$(LOCATION)\"" > location.h
 
-$(TARGET_DIR)/$(SKETCH).bin: $(SKETCH) location.h $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION) $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION)
+$(TARGET_DIR)/$(SKETCH).bin: $(SKETCH) location.h libraries
 	mkdir -p $(TARGET_DIR)
 	$(ARDUINO_PATH)/arduino-builder \
 		-compile \
