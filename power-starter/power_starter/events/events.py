@@ -35,6 +35,13 @@ class ConfigEventConsumer(MQTTConsumer):
     def on_message(self, client, user_data, message, entity, action):
         # execute the action if the condition is met
         if entity == self.__entity:
+            # remove the timestamp before comparison
+            try:
+                del message['timestamp']
+            except:
+                # if there is no timestamp that's not an error
+                pass
+
             if message == self.__condition:
                 Logger.info('Condition match for {:s}'.format(str(self)))
                 self.__power()
