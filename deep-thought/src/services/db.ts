@@ -1,4 +1,4 @@
-import { Client } from "pg";
+import { Pool, PoolClient } from "pg";
 import { $log, OnServerReady, Service } from "@tsed/common";
 
 import Config from "./config";
@@ -11,10 +11,10 @@ interface DatabaseQueryParam {
 @Service()
 export default class DatabaseService implements OnServerReady {
 
-    private client: Client | undefined;
+    private pool: Pool | undefined;
     
     constructor(private readonly config: Config) {
-        this.client = undefined;
+        this.pool = undefined;
     }
 
     $onServerReady() {
@@ -27,7 +27,7 @@ export default class DatabaseService implements OnServerReady {
         if(entity) { params.push(entity); }
         if(action) { params.push(action); }
 
-        return this.client?.query(
+        return this.query(
             this.generateQuery(
                 "SELECT * FROM mqtt",
                 "ORDER BY timestamp DESC",
@@ -39,9 +39,23 @@ export default class DatabaseService implements OnServerReady {
         );
     }
 
-    public getHistoryTypes = () => this.client?.query("SELECT DISTINCT type FROM mqtt ORDER BY type ASC;");
-    public getHistoryEntities = () => this.client?.query("SELECT DISTINCT entity FROM mqtt ORDER BY entity ASC;");
-    public getHistoryActions = () => this.client?.query("SELECT DISTINCT action FROM mqtt ORDER BY action ASC;");
+    public getHistoryTypes = () => this.query("SELECT DISTINCT type FROM mqtt ORDER BY type ASC;");
+    public getHistoryEntities = () => this.query("SELECT DISTINCT entity FROM mqtt ORDER BY entity ASC;");
+    public getHistoryActions = () => this.query("SELECT DISTINCT action FROM mqtt ORDER BY action ASC;");
+
+    private async query(sql: string, params?: any[]) {
+        let client: PoolClient | undefined = undefined;
+
+        try {
+            client = await this.pool?.connect();
+
+            return await client?.query(sql, params);
+        } catch(error) {
+            $log.error("Error accessing database.", error);
+        } finally {
+            client?.release();
+        }
+    }
 
     private generateQuery(start: string, end: string, ...params: DatabaseQueryParam[]) {
         const generator = optionalArgumentGenerator(params);
@@ -65,13 +79,13 @@ export default class DatabaseService implements OnServerReady {
     }
 
     private async connect() {
-        if(!this.client) {
-            this.client = new Client({
-                connectionString: await this.config.getDatabaseURI()
+        if(!this.pool) {
+            this.pool = new Pool({
+                connectionString: await this.config.getDatabaseURI(),
+                max: 2,
+                idleTimeoutMillis: 30 * 1000,
+                connectionTimeoutMillis: 10 * 1000
             });
-
-            await this.client.connect();
-            $log.info("Database connected.");
         }
     }
 }

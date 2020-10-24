@@ -15,7 +15,7 @@ services:
   
   deep-thought:
     build: ../deep-thought
-    image: ${REGISTRY}/powerpi/deep-thought:0.4.1
+    image: ${REGISTRY}/powerpi/deep-thought:0.4.2
     deploy:
       replicas: 1
     depends_on:
