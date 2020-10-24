@@ -1,6 +1,6 @@
 {
   "name": "powerpi-ui",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "PowerPi UI",
   "main": "src/app.tsx",
   "scripts": {
@@ -16,6 +16,7 @@
     "axios": "^0.20.0",
     "http-status-codes": "^1.4.0",
     "moment": "^2.27.0",
+    "query-string": "^6.13.6",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-moment": "^0.9.7",

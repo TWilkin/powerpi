@@ -1,6 +1,7 @@
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { ChangeEvent, FormEvent } from "react";
+import queryString from "query-string";
+import React, { FormEvent } from "react";
 import Moment from "react-moment";
 
 import { Api, History } from "../api";
@@ -30,16 +31,20 @@ export default class HistoryList
     constructor(props: HistoryListProps) {
         super(props);
 
+        // retrieve any query string
+        const query = queryString.parse(window.location.search);
+        const filter = {
+            type: query["type"] as string ?? "",
+            entity: query["entity"] as string ?? "",
+            action: query["action"] as string ?? ""
+        };
+
         this.state = {
             history: [],
             types: [],
             entities: [],
             actions: [],
-            filter: {
-                type: "",
-                entity: "",
-                action: ""
-            }
+            filter
         };
 
         this.handleFilterChange = this.handleFilterChange.bind(this);
@@ -47,6 +52,7 @@ export default class HistoryList
 
     async componentDidMount() {
         this.setState({
+            history: await this.query(this.state.filter),
             types: (await this.props.api.getHistoryTypes()).map(row => row.type),
             entities: (await this.props.api.getHistoryEntities()).map(row => row.entity),
             actions: (await this.props.api.getHistoryActions()).map(row => row.action)
@@ -143,21 +149,22 @@ export default class HistoryList
                 filter.action = value;
                 break;
         }
+        
+        this.setState({
+            history: await this.query(filter),
+            filter
+        });
+    }
 
+    private async query(filter: Filter) {
         if(filter.type || filter.entity || filter.action) {
-            this.setState({
-                history: await this.props.api.getHistory(
-                    filter.type === "" ? undefined : filter.type,
-                    filter.entity === "" ? undefined : filter.entity,
-                    filter.action === "" ? undefined : filter.action
-                ),
-                filter
-            });
-        } else {
-            this.setState({
-                history: [],
-                filter
-            });
+            return await this.props.api.getHistory(
+                filter.type === "" ? undefined : filter.type,
+                filter.entity === "" ? undefined : filter.entity,
+                filter.action === "" ? undefined : filter.action
+            );
         }
+
+        return [];
     }
 }
