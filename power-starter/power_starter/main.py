@@ -20,8 +20,8 @@ def main():
 
     # initialise and connect to MQTT
     client = MQTTClient()
-    client.add_consumer('device/change', PowerEventConsumer(config, power_change_topic))
-    client.add_consumer('device/status', StatusEventConsumer(power_status_topic.format(deviceName = '+')))
+    client.add_consumer('device/change', PowerEventConsumer(power_change_topic, config.message_age_cutoff))
+    client.add_consumer('device/status', StatusEventConsumer(power_status_topic.format(deviceName = '+'), config.message_age_cutoff))
     power_state_change_producer = client.add_producer()
     client.connect(config.mqtt_address)
 

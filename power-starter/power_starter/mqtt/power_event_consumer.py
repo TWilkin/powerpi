@@ -4,11 +4,11 @@ from power_starter.devices import DeviceManager
 from power_starter.mqtt import MQTTConsumer
 from power_starter.util.logger import Logger
 
+
 class PowerEventConsumer(MQTTConsumer):
 
-    def __init__(self, config, topic):
-        MQTTConsumer.__init__(self, topic)
-        self.__config = config
+    def __init__(self, topic, message_age_cutoff):
+        MQTTConsumer.__init__(self, topic, message_age_cutoff)
 
     # MQTT message callback
     def on_message(self, client, user_data, message, entity, action):      
@@ -37,13 +37,7 @@ class PowerEventConsumer(MQTTConsumer):
             return
     
     def __is_message_valid(self, device, state, timestamp):
-        # check age of message is within cutoff
-        now = int(datetime.utcnow().timestamp() * 1000)
-        if timestamp < now - (self.__config.message_age_cutoff * 1000):
-            Logger.info('Ignoring old message')
-            return False
-        
-        return is_message_valid(device, state)
+        return super().is_timestamp_valid(timestamp) and is_message_valid(device, state)
 
 
 def is_message_valid(device, state):
