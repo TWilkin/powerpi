@@ -15,15 +15,22 @@ services:
   
   deep-thought:
     build: ../deep-thought
-    image: ${REGISTRY}/powerpi/deep-thought:0.3.0
+    image: ${REGISTRY}/powerpi/deep-thought:0.4.2
     deploy:
       replicas: 1
     depends_on:
+      - db
       - mosquitto
+    secrets:
+      - powerpi_db
     environment:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
       - DEVICES_FILE=/devices.json
+      - DB_HOST=db
+      - DB_SCHEMA=powerpi
+      - DB_USER=powerpi
+      - DB_PASSWORD_FILE=/var/run/secrets/powerpi_db
     configs:
       - source: devices_config
         target: /devices.json
@@ -86,7 +93,7 @@ services:
   
   nginx:
     build: ../nginx
-    image: ${REGISTRY}/powerpi/nginx:0.1.0
+    image: ${REGISTRY}/powerpi/nginx:0.2.2
     ports:
       - "3001:80"
       - "3000:443"
@@ -119,11 +126,45 @@ services:
     volumes:
       - /var/lib/docker-volumes/certbot/conf:/etc/letsencrypt
       - /var/lib/docker-volumes/certbot/www:/var/www/html
+  
+  db:
+    image: postgres:13.0-alpine
+    deploy:
+      replicas: 1
+    secrets:
+      - powerpi_db
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_DB=powerpi
+      - POSTGRES_USER=powerpi
+      - POSTGRES_PASSWORD_FILE=/var/run/secrets/powerpi_db
+    volumes:
+      - /var/lib/docker-volumes/postgres/data:/var/lib/postgresql/data/pgdata
+  
+  persistence:
+    build: ../persistence
+    image: ${REGISTRY}/powerpi/persistence:0.0.2
+    deploy:
+      replicas: 1
+    depends_on:
+      - mosquitto
+      - db
+    secrets:
+      - powerpi_db
+    environment:
+      - MQTT_ADDRESS=mqtt://mosquitto:1883
+      - TOPIC_BASE=powerpi
+      - DB_HOST=db
+      - DB_SCHEMA=powerpi
+      - DB_USER=powerpi
+      - DB_PASSWORD_FILE=/var/run/secrets/powerpi_db
 
 secrets:
   freedns:
     external: true
   powerpi_users:
+    external: true
+  powerpi_db:
     external: true
 
 configs:

@@ -11,6 +11,14 @@ export interface Device {
     since: number;
 };
 
+export interface History {
+    type: string;
+    entity: string;
+    action: string;
+    timestamp?: Date;
+    message?: object;
+}
+
 export interface SocketListener {
     onMessage(message: any): void;
 };
@@ -32,6 +40,13 @@ export class Api {
 
     public getDevices = () => this.get('device') as Promise<Device[]>;
 
+    public getHistory = (type?: string, entity?: string , action?: string) => 
+            this.get('history', { type, entity, action }) as Promise<History[]>;
+    
+    public getHistoryTypes = () => this.get('history/types') as Promise<{ type: string }[]>;
+    public getHistoryEntities = () => this.get('history/entities') as Promise<{ entity: string }[]>;
+    public getHistoryActions = () => this.get('history/actions') as Promise<{ action: string }[]>;
+
     public postMessage = (device: string, state: DeviceState) => 
             this.post(`topic/device/${device}/change`, { state: state });
 
@@ -42,8 +57,8 @@ export class Api {
         socket.on('message', callback.onMessage);
     }
 
-    private async get(path: string): Promise<any> {
-        let result = await axios.get(`${this.apiBaseUrl}/${path}`);
+    private async get(path: string, params?: object): Promise<any> {
+        let result = await axios.get(`${this.apiBaseUrl}/${path}`, { params });
         this.checkForError(result);
         return result.data;
     }

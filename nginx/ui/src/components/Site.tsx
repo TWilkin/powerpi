@@ -3,6 +3,7 @@ import { BrowserRouter, NavLink, Route, Switch } from 'react-router-dom';
 
 import { Api } from '../api';
 import DeviceList from './DeviceList';
+import HistoryList from './HistoryList';
 
 const api = new Api();
 
@@ -14,6 +15,7 @@ export default class Site extends React.Component {
                     <nav>
                         {this.renderMenuLink('/', 'Home')}
                         {this.renderMenuLink('/devices', 'Devices')}
+                        {this.renderMenuLink('/history', 'History')}
                     </nav>
                 </div>
                 <br />
@@ -22,6 +24,10 @@ export default class Site extends React.Component {
                     <Switch>
                         <Route path='/devices'>
                             <DeviceList api={api} />
+                        </Route>
+
+                        <Route path='/history'>
+                            <HistoryList api={api} />
                         </Route>
 
                         <Route path='/'>

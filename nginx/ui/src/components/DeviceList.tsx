@@ -1,8 +1,9 @@
-import { faFilter, faHourglassHalf, faLayerGroup, faLightbulb, faLock, faPlug, faPowerOff, faQuestion, faSpinner, faTv } from '@fortawesome/free-solid-svg-icons';
+import { faFilter, faHistory, faHourglassHalf, faLayerGroup, faLightbulb, faLock, faPlug, faPowerOff, faQuestion, faSpinner, faTv } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import moment from 'moment';
 import React, { ChangeEvent, MouseEvent } from 'react';
 import Moment from 'react-moment';
+import { Link } from 'react-router-dom';
 
 import { Api, Device, DeviceState, SocketListener } from '../api';
 
@@ -68,7 +69,7 @@ export default class DeviceList
             .sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
 
         return (
-            <div id='device-filters'>
+            <div id='device-filters' className='filters'>
                 <label>
                     <FontAwesomeIcon icon={faFilter} 
                         onClick={() => this.setState({ filters: this.state.filters.length === 0 ? types : [] })} />
@@ -89,7 +90,7 @@ export default class DeviceList
 
     renderDeviceList() {
         return (
-            <div id='device-list'>
+            <div id='device-list' className='list'>
                 {this.state.devices
                     .filter(device => this.state.filters.includes(device.type))
                     .map(device => 
@@ -108,6 +109,11 @@ export default class DeviceList
                                 ) : (
                                     <></>
                                 )}
+                            </div>
+                            <div className='device-history'>
+                                <Link to={`/history?type=device&entity=${device.name}`}>
+                                    <FontAwesomeIcon icon={faHistory} />
+                                </Link>
                             </div>
                         </div>
                     )}

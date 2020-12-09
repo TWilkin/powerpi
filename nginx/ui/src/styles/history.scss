@@ -1,0 +1,17 @@
+#history-list {
+    table {
+        min-width: 80%;
+
+        tbody {
+            tr {
+                &:nth-child(even) {
+                    background-color: lightgray;
+                }
+
+                &:hover {
+                    background-color: $hover-colour;
+                }
+            }
+        }
+    }
+}
