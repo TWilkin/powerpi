@@ -67,8 +67,18 @@ class MQTTClient:
 
 class MQTTConsumer:
 
-    def __init__(self, topic):
+    def __init__(self, topic, message_age_cutoff):
         self.topic = topic
+        self.message_age_cutoff = message_age_cutoff
 
     def on_message(self, client, user_data, message, entity, action):
         raise NotImplementedError
+    
+    def is_timestamp_valid(self, timestamp):
+        # check age of message is within cutoff
+        now = int(datetime.utcnow().timestamp() * 1000)
+        if timestamp < now - (self.message_age_cutoff * 1000):
+            Logger.info('Ignoring old message')
+            return False
+        
+        return True

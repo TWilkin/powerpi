@@ -1,6 +1,3 @@
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
-
 #include "motion.h"
 
 void connectWiFi() {
@@ -36,12 +33,15 @@ void eventHandler(State state) {
   // use the LED to indicate the current state (active LOW)
   digitalWrite(BUILTIN_LED, state == ON ? LOW : HIGH);
 
+  // retrieve the timestamp
+  unsigned long timestamp = timeClient.getEpochTime();
+
   // act for detected and undetected
   if(state == ON) {
-    snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, DETECTED);
+    snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, DETECTED, timestamp);
     Serial.print("d");
   } else {
-    snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, UNDETECTED);
+    snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, UNDETECTED, timestamp);
     Serial.print("u");
   }
 
@@ -65,6 +65,10 @@ void setup() {
   snprintf(hostname, HOSTNAME_LEN, "%sMotionSensor", LOCATION);
   connectWiFi();
 
+  // initialise NTP
+  timeClient.begin();
+  timeClient.update();
+
   // initialise the MQTT connection
   client.setServer(MQTT_SERVER, MQTT_PORT);
   Serial.print("Using MQTT: ");
@@ -84,6 +88,9 @@ void setup() {
 
 void loop() {
   Serial.print(".");
+
+  // allow NTP to update
+  timeClient.update();
 
   // check if the pin has changed from last time
   int state = digitalRead(PIR_PIN);

@@ -3,10 +3,11 @@ from power_starter.mqtt import MQTTConsumer
 from power_starter.mqtt.power_event_consumer import is_message_valid
 from power_starter.util.logger import Logger
 
+
 class StatusEventConsumer(MQTTConsumer):
 
-    def __init__(self, topic):
-        MQTTConsumer.__init__(self, topic)
+    def __init__(self, topic, message_age_cutoff):
+        MQTTConsumer.__init__(self, topic, message_age_cutoff)
     
     def on_message(self, client, user_data, message, entity, action):
         # check if we should respond to this message

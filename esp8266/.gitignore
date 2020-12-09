@@ -2,4 +2,4 @@
 **/location.h
 **/mqtt.h
 **/wifi.h
-**/pubsubclient-*
+**/lib

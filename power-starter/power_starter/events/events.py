@@ -17,15 +17,15 @@ class EventManager(object):
             (_, message_type, entity, action) = topic.split('/', 3)
             key = '{}/{}'.format(message_type, action)
 
-            consumer = ConfigEventConsumer(topic, entity, event['action'], event['condition'])
+            consumer = ConfigEventConsumer(topic, config.message_age_cutoff, entity, event['action'], event['condition'])
             client.add_consumer(key, consumer)
             cls.__consumers.append(consumer)
 
 
 class ConfigEventConsumer(MQTTConsumer):
 
-    def __init__(self, topic, entity, action, condition):
-        MQTTConsumer.__init__(self, topic)
+    def __init__(self, topic, message_age_cutoff, entity, action, condition):
+        MQTTConsumer.__init__(self, topic, message_age_cutoff)
         self.__entity = entity
         self.__device = action['device']
         self.__state = action['state']
@@ -33,9 +33,21 @@ class ConfigEventConsumer(MQTTConsumer):
 
     # MQTT message callback
     def on_message(self, client, user_data, message, entity, action):
+        compare = message.copy()
+        
+        try:
+            if not super().is_timestamp_valid(message['timestamp']):
+                return
+            
+            # remove the timestamp before comparison
+            del compare['timestamp']
+        except:
+            # if there is no timestamp that's not an error
+            pass
+        
         # execute the action if the condition is met
         if entity == self.__entity:
-            if message == self.__condition:
+            if compare == self.__condition:
                 Logger.info('Condition match for {:s}'.format(str(self)))
                 self.__power()
     
