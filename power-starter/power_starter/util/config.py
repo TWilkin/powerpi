@@ -13,7 +13,7 @@ class Config(object):
         return value.lower() == 'true' if value is not None else False
     
     @property
-    def energenie_type(self)
+    def energenie_type(self):
         value = os.getenv('ENERGENIE_TYPE')
 
         if value is not None:

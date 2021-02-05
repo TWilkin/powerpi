@@ -1,4 +1,4 @@
-FROM python:3.8.6-alpine3 AS compile-image
+FROM python:3.8.6-alpine AS compile-image
 LABEL description="Python application to listen to the queue and start/stop devices as requested"
 
 # ensure we have the dependencies to run pip
