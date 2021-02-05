@@ -3,6 +3,8 @@ import os
 
 
 class Config(object):
+    __instance = None
+
     def __init__(self):
         self.__devices = Config.__load(os.getenv('DEVICES_FILE'))
         self.__events = Config.__load(os.getenv('EVENTS_FILE'))
@@ -46,6 +48,13 @@ class Config(object):
     @property
     def events(self):
         return self.__events
+    
+    @classmethod
+    def instance(cls):
+        if cls.__instance is None:
+            cls.__instance = Config()
+        
+        return cls.__instance
 
     @classmethod
     def __load(cls, file):
