@@ -22,7 +22,7 @@ with open(here('requirements.txt'), 'r') as requirements_file:
 
 setup(
     name='power_starter',
-    version='0.5.6',
+    version='0.6.0',
     description='PowerPi Power Starter Home Automation service',
     author='Tom Wilkin',
     classifiers=[

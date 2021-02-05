@@ -11,6 +11,15 @@ class Config(object):
     def device_fatal(self):
         value = os.getenv('DEVICE_FATAL')
         return value.lower() == 'true' if value is not None else False
+    
+    @property
+    def energenie_type(self)
+        value = os.getenv('ENERGENIE_TYPE')
+
+        if value is not None:
+            value = value.upper()
+        
+        return value if value is not None and value == 'ENER314' else 'ENER314-RT'
 
     @property
     def mqtt_address(self):
