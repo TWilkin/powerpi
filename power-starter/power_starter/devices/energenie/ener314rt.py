@@ -1,10 +1,9 @@
 import time
 
-from energenie import switch_on, switch_off
 from pyenergenie import energenie
 
-from . devices import Device, DeviceManager
-from .. util.config import Config
+from .. devices import Device, DeviceManager
+
 
 @Device(device_type='socket')
 class SocketDevice(energenie.Devices.ENER002):
@@ -16,20 +15,13 @@ class SocketDevice(energenie.Devices.ENER002):
 
     @classmethod
     def initialise(cls):
-        if use_pyenergenie():
-            energenie.init()
+        energenie.init()
 
     def turn_on(self):
-        if use_pyenergenie():
-            self.__run(energenie.Devices.ENER002.turn_on, self)
-        else:
-            self.__run(switch_on, self.device_id)
+        self.__run(energenie.Devices.ENER002.turn_on, self)
 
     def turn_off(self):
-        if use_pyenergenie():
-            self.__run(energenie.Devices.ENER002.turn_off, self)
-        else:
-            self.__run(switch_off, self.device_id)
+        self.__run(energenie.Devices.ENER002.turn_off, self)
 
     def __run(self, func, *params):
         for i in range(0, self.__retries):
@@ -52,20 +44,13 @@ class SocketGroupDevice(energenie.Devices.ENER002):
 
     @classmethod
     def initialise(cls):
-        if use_pyenergenie()
-            energenie.init()
+        energenie.init()
 
     def turn_on(self):
-        if use_pyenergenie():
-            self.__run(energenie.Devices.ENER002.turn_on, 'on', self)
-        else:
-            self.__run(switch_on, self.device_id)
+        self.__run(energenie.Devices.ENER002.turn_on, 'on', self)
 
     def turn_off(self):
-        if use_pyenergenie():
-            self.__run(energenie.Devices.ENER002.turn_off, 'off', self)
-        else:
-            self.__run(switch_off, self.device_id)
+        self.__run(energenie.Devices.ENER002.turn_off, 'off', self)
 
     def __run(self, func, status, *params):
         for i in range(0, self.__retries):
@@ -74,7 +59,3 @@ class SocketGroupDevice(energenie.Devices.ENER002):
 
         for device in self.__devices:
             device.status = status
-
-
-def use_pyenergenie():
-    return Config.instance().energenie_type == 'ENER314-RT'
