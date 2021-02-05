@@ -171,6 +171,7 @@ class DeviceManager(object):
             args = copy.deepcopy(device)
             args.pop('type')
             args['state_change_callback'] = state_change_callback
+            args['config'] = config
 
             try:
                 cls.__instantiate(device_type, **args)
