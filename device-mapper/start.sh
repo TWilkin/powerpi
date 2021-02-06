@@ -7,14 +7,27 @@ EVENTS=`tr "\n" " " < $EVENTS_FILE | sed s/\"/\\\\\"/g`
 # generate a name for the container
 NAME=powerpi_power-starter.1.`hostname`
 
+# function to ensure the spawned container is stopped
+function stop() {
+    echo "Stopping container $NAME"
+    docker stop $NAME
+    exit
+}
+
 # ensure we have the latest version of the image
 echo "Updating power-starter image"
 docker pull $POWER_STARTER_IMAGE
+
+# trap so if this container is stopped, it will stop the spawned container
+echo "Setting exit trap condition"
+trap 'kill ${!}; stop' SIGINT
+trap 'kill ${!}; stop' SIGTERM
 
 # start the container running on the node hosting this
 echo "Starting power-starter"
 docker run \
     --privileged \
+    --name $NAME \
     --device $GPIOMEM \
     --network powerpi \
     --env "DEVICE_FATAL=$DEVICE_FATAL" \
@@ -24,5 +37,5 @@ docker run \
     --env "POLL_FREQUENCY=$POLL_FREQUENCY" \
     --env "DEVICES=$DEVICES" \
     --env "EVENTS=$EVENTS" \
-    --name $NAME \
-    $POWER_STARTER_IMAGE
+    $POWER_STARTER_IMAGE \
+    & wait ${!}
