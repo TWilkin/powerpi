@@ -7,6 +7,11 @@ EVENTS=`tr "\n" " " < $EVENTS_FILE | sed s/\"/\\\\\"/g`
 # generate a name for the container
 NAME=powerpi_power-starter.1.`hostname`
 
+# ensure we have the latest version of the image
+echo "Updating power-starter image"
+docker pull $POWER_STARTER_IMAGE
+
+# start the container running on the node hosting this
 echo "Starting power-starter"
 docker run \
     --privileged \
