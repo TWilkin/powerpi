@@ -1,3 +1,4 @@
+from io import StringIO
 import json
 import os
 
@@ -6,8 +7,8 @@ class Config(object):
     __instance = None
 
     def __init__(self):
-        self.__devices = Config.__load(os.getenv('DEVICES_FILE'))
-        self.__events = Config.__load(os.getenv('EVENTS_FILE'))
+        self.__devices = Config.__load(os.getenv('DEVICES_FILE'), os.getenv('DEVICES'))
+        self.__events = Config.__load(os.getenv('EVENTS_FILE'), os.getenv('EVENTS'))
 
     @property
     def device_fatal(self):
@@ -61,9 +62,12 @@ class Config(object):
         return cls.__instance
 
     @classmethod
-    def __load(cls, file):
-        with open(file, 'r') as json_file:
-            return json.load(json_file)
+    def __load(cls, file, content):
+        try:
+            with open(file, 'r') as json_file:
+                return json.load(json_file)
+        except:
+            return json.load(StringIO(content))
 
 
 def as_int(value):
