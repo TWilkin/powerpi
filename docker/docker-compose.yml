@@ -35,28 +35,26 @@ services:
       - source: devices_config
         target: /devices.json
 
-  power-starter:
-    build: ../power-starter
-    image: ${REGISTRY}/powerpi/power-starter:0.6.0
+  device-mapper:
+    build: ../device-mapper
+    image: ${REGISTRY}/powerpi/device-mapper:0.0.1
     deploy:
       replicas: 1
       placement:
         constraints:
           - node.labels.energenie == true
-    depends_on:
-      - mosquitto
     environment:
       - DEVICE_FATAL=true
       - ENERGENIE_DEVICE=ENER314-RT
-      - MQTT_ADDRESS=mqtt://mosquitto:1883
+      - MQTT_ADDRESS=mqtt://INSERT_IP_HERE:1883
       - TOPIC_BASE=powerpi
       - POLL_FREQUENCY=120
       - DEVICES_FILE=/devices.json
       - EVENTS_FILE=/events.json
+      - POWER_STARTER_IMAGE=${REGISTRY}/powerpi/power-starter:0.6.0
+      - GPIOMEM=/dev/gpiomem
     volumes:
-      - type: bind
-        source: /dev/gpiomem
-        target: /dev/gpiomem
+      - /var/run/docker.sock:/var/run/docker.sock
     configs:
       - source: devices_config
         target: /devices.json
