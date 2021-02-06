@@ -15,10 +15,10 @@ class SocketDevice(object):
         self.__delay = delay
 
     def turn_on(self):
-        self.__run(switch_on, self.__device_id)
+        self.__run(switch_on, self.__home_id)
 
     def turn_off(self):
-        self.__run(switch_off, self.__device_id)
+        self.__run(switch_off, self.__home_id)
 
     def __run(self, func, *params):
         for i in range(0, self.__retries):
@@ -40,10 +40,10 @@ class SocketGroupDevice(object):
             self.__devices.append(d)
 
     def turn_on(self):
-        self.__run(switch_on)
+        self.__run(switch_on, self.__home_id)
 
     def turn_off(self):
-        self.__run(switch_off)
+        self.__run(switch_off, self.__home_id)
 
     def __run(self, func, status, *params):
         for i in range(0, self.__retries):
