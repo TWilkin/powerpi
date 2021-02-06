@@ -3,6 +3,8 @@ version: "3.3"
 services:
   mosquitto:
     image: eclipse-mosquitto:1.6.12
+    networks:
+      - powerpi
     ports:
       - "1883:1883"
     deploy:
@@ -16,6 +18,8 @@ services:
   deep-thought:
     build: ../deep-thought
     image: ${REGISTRY}/powerpi/deep-thought:0.4.2
+    networks:
+      - powerpi
     deploy:
       replicas: 1
     depends_on:
@@ -38,15 +42,19 @@ services:
   device-mapper:
     build: ../device-mapper
     image: ${REGISTRY}/powerpi/device-mapper:0.0.1
+    networks:
+      - powerpi
     deploy:
       replicas: 1
       placement:
         constraints:
           - node.labels.energenie == true
+    depends_on:
+      - mosquitto
     environment:
       - DEVICE_FATAL=true
       - ENERGENIE_DEVICE=ENER314-RT
-      - MQTT_ADDRESS=mqtt://INSERT_IP_HERE:1883
+      - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
       - POLL_FREQUENCY=120
       - DEVICES_FILE=/devices.json
@@ -64,6 +72,8 @@ services:
   light-fantastic:
     build: ../light-fantastic
     image: ${REGISTRY}/powerpi/light-fantastic:0.1.6
+    networks:
+      - powerpi
     deploy:
       replicas: 1
     depends_on:
@@ -82,6 +92,8 @@ services:
   freedns:
     build: ../freedns
     image: ${REGISTRY}/powerpi/freedns:0.0.5
+    networks:
+      - powerpi
     deploy:
       replicas: 1
     secrets:
@@ -93,6 +105,8 @@ services:
   nginx:
     build: ../nginx
     image: ${REGISTRY}/powerpi/nginx:0.2.2
+    networks:
+      - powerpi
     ports:
       - "3001:80"
       - "3000:443"
@@ -115,6 +129,8 @@ services:
   certbot:
     build: ../certbot
     image: ${REGISTRY}/powerpi/certbot:0.0.2
+    networks:
+      - powerpi
     deploy:
       replicas: 1
     depends_on:
@@ -128,6 +144,8 @@ services:
 
   db:
     image: postgres:13.0-alpine
+    networks:
+      - powerpi
     deploy:
       replicas: 1
     secrets:
@@ -143,6 +161,8 @@ services:
   persistence:
     build: ../persistence
     image: ${REGISTRY}/powerpi/persistence:0.0.2
+    networks:
+      - powerpi
     deploy:
       replicas: 1
     depends_on:
@@ -179,3 +199,8 @@ configs:
     file: ./config/events.json
   schedules_config:
     file: ./config/schedules.json
+
+# docker network create --driver=overlay --attachable powerpi
+networks:
+  powerpi:
+    external: true
