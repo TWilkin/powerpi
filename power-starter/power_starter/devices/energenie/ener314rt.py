@@ -2,7 +2,7 @@ import time
 
 from pyenergenie import energenie
 
-from . devices import Device, DeviceManager
+from .. devices import Device, DeviceManager
 
 
 @Device(device_type='socket')

@@ -12,7 +12,7 @@ def main():
     Logger.initialise()
 
     # initialise the config
-    config = Config()
+    config = Config.instance()
 
     # the MQTT topics we're reading/writing to
     power_change_topic = '{}/device/+/change'.format(config.topic_base)
