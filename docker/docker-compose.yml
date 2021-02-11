@@ -3,6 +3,8 @@ version: "3.3"
 services:
   mosquitto:
     image: eclipse-mosquitto:1.6.12
+    networks:
+      - powerpi
     ports:
       - "1883:1883"
     deploy:
@@ -16,6 +18,8 @@ services:
   deep-thought:
     build: ../deep-thought
     image: ${REGISTRY}/powerpi/deep-thought:0.4.2
+    networks:
+      - powerpi
     deploy:
       replicas: 1
     depends_on:
@@ -35,9 +39,11 @@ services:
       - source: devices_config
         target: /devices.json
 
-  power-starter:
-    build: ../power-starter
-    image: ${REGISTRY}/powerpi/power-starter:0.6.0
+  device-mapper:
+    build: ../device-mapper
+    image: ${REGISTRY}/powerpi/device-mapper:0.0.1
+    networks:
+      - powerpi
     deploy:
       replicas: 1
       placement:
@@ -53,10 +59,10 @@ services:
       - POLL_FREQUENCY=120
       - DEVICES_FILE=/devices.json
       - EVENTS_FILE=/events.json
+      - POWER_STARTER_IMAGE=${REGISTRY}/powerpi/power-starter:0.6.0
+      - GPIOMEM=/dev/gpiomem
     volumes:
-      - type: bind
-        source: /dev/gpiomem
-        target: /dev/gpiomem
+      - /var/run/docker.sock:/var/run/docker.sock
     configs:
       - source: devices_config
         target: /devices.json
@@ -66,6 +72,8 @@ services:
   light-fantastic:
     build: ../light-fantastic
     image: ${REGISTRY}/powerpi/light-fantastic:0.1.6
+    networks:
+      - powerpi
     deploy:
       replicas: 1
     depends_on:
@@ -84,6 +92,8 @@ services:
   freedns:
     build: ../freedns
     image: ${REGISTRY}/powerpi/freedns:0.0.5
+    networks:
+      - powerpi
     deploy:
       replicas: 1
     secrets:
@@ -95,6 +105,8 @@ services:
   nginx:
     build: ../nginx
     image: ${REGISTRY}/powerpi/nginx:0.2.2
+    networks:
+      - powerpi
     ports:
       - "3001:80"
       - "3000:443"
@@ -117,6 +129,8 @@ services:
   certbot:
     build: ../certbot
     image: ${REGISTRY}/powerpi/certbot:0.0.2
+    networks:
+      - powerpi
     deploy:
       replicas: 1
     depends_on:
@@ -130,6 +144,8 @@ services:
 
   db:
     image: postgres:13.0-alpine
+    networks:
+      - powerpi
     deploy:
       replicas: 1
     secrets:
@@ -145,6 +161,8 @@ services:
   persistence:
     build: ../persistence
     image: ${REGISTRY}/powerpi/persistence:0.0.2
+    networks:
+      - powerpi
     deploy:
       replicas: 1
     depends_on:
@@ -181,3 +199,8 @@ configs:
     file: ./config/events.json
   schedules_config:
     file: ./config/schedules.json
+
+# docker network create --driver=overlay --attachable powerpi
+networks:
+  powerpi:
+    external: true
