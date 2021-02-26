@@ -1,28 +1,21 @@
-import logging
-
 from common.config import Config
 from device import SocketDevice, SocketGroupDevice
 
+config = Config.instance()
+logger = config.logger()
+
+
 def main():
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
-    handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-d %H:%M:%S'))
-
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
-    logger.addHandler(handler)
-
     logger.info('PowerPi Energenie Controller')
     
-    config = Config.instance()
     logger.info('Using Energenie module {module}'.format(module=config.energenie_device))
-    devices = load_devices(config, logger)
+    devices = load_devices()
 
     for key in devices:
         devices[key].turn_on()
 
 
-def load_devices(config, logger):
+def load_devices():
     devices = list(filter(lambda device : 'socket' in device['type'], config.devices['devices']))
     logger.info('Found {matches} matching devices'.format(matches=len(devices)))
 
@@ -34,9 +27,9 @@ def load_devices(config, logger):
         del device['type']
 
         if device_type == 'socket':
-            instance = SocketDevice(logger=logger, **device)
+            instance = SocketDevice(**device)
         elif device_type == 'socket_group':
-            instance = SocketGroupDevice(logger=logger, **device)
+            instance = SocketGroupDevice(**device)
         else:
             continue
         
