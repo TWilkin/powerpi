@@ -18,6 +18,9 @@ def main():
     logger.info('Using Energenie module {module}'.format(module=config.energenie_device))
     devices = load_devices(config, logger)
 
+    for key in devices:
+        devices[key].turn_on()
+
 
 def load_devices(config, logger):
     devices = list(filter(lambda device : 'socket' in device['type'], config.devices['devices']))
@@ -31,9 +34,9 @@ def load_devices(config, logger):
         del device['type']
 
         if device_type == 'socket':
-            instance = SocketDevice(**device)
+            instance = SocketDevice(logger=logger, **device)
         elif device_type == 'socket_group':
-            instance = SocketGroupDevice(**device)
+            instance = SocketGroupDevice(logger=logger, **device)
         else:
             continue
         

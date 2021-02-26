@@ -11,4 +11,4 @@ except:
         raise
     
     # for testing off a Pi
-    from . dummy import SocketDevice, SocketGroupDevice
+    from . device import SocketDevice, SocketGroupDevice
