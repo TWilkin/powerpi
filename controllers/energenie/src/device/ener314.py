@@ -1,5 +1,3 @@
-import time
-
 from energenie import switch_on, switch_off
 
 from . socket import SocketDevice, SocketGroupDevice
@@ -13,11 +11,11 @@ class SocketDeviceImpl(SocketDevice):
 
     def turn_on(self):
         SocketDevice.turn_on(self)
-        self._run(switch_on, self.__device_id)
+        self._run(switch_on, 'on', self.__device_id)
 
     def turn_off(self):
         SocketDevice.turn_off(self)
-        self._run(switch_off, self.__device_id)
+        self._run(switch_off, 'off', self.__device_id)
 
 
 class SocketGroupDeviceImpl(SocketGroupDevice):
