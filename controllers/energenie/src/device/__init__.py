@@ -6,7 +6,7 @@ logger = config.logger()
 # import the appropriate implementation of SocketDevice
 try:
     if config.is_ener314_rt:
-        from . ener314rt import SocketDevice, SocketGroupDevice
+        from . ener314rt import SocketDeviceImpl as SocketDevice, SocketGroupDeviceImpl as SocketGroupDevice
     else:
         from . ener314 import SocketDeviceImpl as SocketDevice, SocketGroupDeviceImpl as SocketGroupDevice
 except:
