@@ -5,7 +5,8 @@ from energenie import switch_on, switch_off
 
 class SocketDevice(object):
 
-    def __init__(self, home_id=0, device_id=0, retries=4, delay=0.5):
+    def __init__(self, name, home_id=0, device_id=0, retries=4, delay=0.5):
+        self.__name = name
         self.__device_id = int(device_id)
         self.__retries = retries
         self.__delay = delay
@@ -24,7 +25,8 @@ class SocketDevice(object):
 
 class SocketGroupDevice(object):
 
-    def __init__(self, devices, home_id=None, retries=4, delay=0.5):
+    def __init__(self, name, devices, home_id=None, retries=4, delay=0.5):
+        self.__name = name
         self.__retries = retries
         self.__delay = delay
 

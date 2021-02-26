@@ -8,8 +8,9 @@ energenie.init()
 
 class SocketDevice(energenie.Devices.ENER002):
 
-    def __init__(self, home_id, device_id=0, retries=4, delay=0.5):
+    def __init__(self, name, home_id, device_id=0, retries=4, delay=0.5):
         energenie.Devices.ENER002.__init__(self, (int(home_id), int(device_id)))
+        self.__name = name
         self.__retries = retries
         self.__delay = delay
 
@@ -27,8 +28,9 @@ class SocketDevice(energenie.Devices.ENER002):
 
 class SocketGroupDevice(energenie.Devices.ENER002):
 
-    def __init__(self, home_id, devices, retries=4, delay=0.5):
+    def __init__(self, name, home_id, devices, retries=4, delay=0.5):
         energenie.Devices.ENER002.__init__(self, (int(home_id), 0))
+        self.__name = name
         self.__retries = retries
         self.__delay = delay
 
