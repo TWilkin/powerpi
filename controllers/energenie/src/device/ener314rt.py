@@ -1,23 +1,23 @@
 import time
 
-from energenie import switch_on, switch_off
-
-from .. devices import Device, DeviceManager
+from pyenergenie import energenie
 
 
-@Device(device_type='socket')
-class SocketDevice(object):
+energenie.init()
 
-    def __init__(self, home_id=0, device_id=0, retries=4, delay=0.5):
-        self.__device_id = int(device_id)
+
+class SocketDevice(energenie.Devices.ENER002):
+
+    def __init__(self, home_id, device_id=0, retries=4, delay=0.5):
+        energenie.Devices.ENER002.__init__(self, (int(home_id), int(device_id)))
         self.__retries = retries
         self.__delay = delay
 
     def turn_on(self):
-        self.__run(switch_on, self.__device_id)
+        self.__run(energenie.Devices.ENER002.turn_on, self)
 
     def turn_off(self):
-        self.__run(switch_off, self.__device_id)
+        self.__run(energenie.Devices.ENER002.turn_off, self)
 
     def __run(self, func, *params):
         for i in range(0, self.__retries):
@@ -25,10 +25,10 @@ class SocketDevice(object):
             time.sleep(self.__delay)
 
 
-@Device(device_type='socket_group')
-class SocketGroupDevice(object):
+class SocketGroupDevice(energenie.Devices.ENER002):
 
-    def __init__(self, devices, home_id=None, retries=4, delay=0.5):
+    def __init__(self, home_id, devices, retries=4, delay=0.5):
+        energenie.Devices.ENER002.__init__(self, (int(home_id), 0))
         self.__retries = retries
         self.__delay = delay
 
@@ -38,10 +38,10 @@ class SocketGroupDevice(object):
             self.__devices.append(d)
 
     def turn_on(self):
-        self.__run(switch_on, 'on')
+        self.__run(energenie.Devices.ENER002.turn_on, 'on', self)
 
     def turn_off(self):
-        self.__run(switch_off, 'off')
+        self.__run(energenie.Devices.ENER002.turn_off, 'off', self)
 
     def __run(self, func, status, *params):
         for i in range(0, self.__retries):

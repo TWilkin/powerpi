@@ -1,6 +1,7 @@
 import logging
 
 from common.config import Config
+from device import SocketDevice, SocketGroupDevice
 
 def main():
     handler = logging.StreamHandler()
