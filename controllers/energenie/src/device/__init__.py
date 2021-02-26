@@ -8,7 +8,7 @@ try:
     if config.is_ener314_rt:
         from . ener314rt import SocketDevice, SocketGroupDevice
     else:
-        from . ener314 import SocketDevice, SocketGroupDevice
+        from . ener314 import SocketDeviceImpl as SocketDevice, SocketGroupDeviceImpl as SocketGroupDevice
 except:
     if config.device_fatal:
         logger.error('DEVICE_FATAL=true, must be run on Raspberry Pi')

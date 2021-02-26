@@ -15,6 +15,11 @@ class SocketDevice(Device):
 
     def turn_off(self):
         logger.info('Turning off socket "{name}"'.format(name=self._name))
+    
+    def _run(self, func, *params):
+        for i in range(0, self.__retries):
+            func(*params)
+            time.sleep(self.__delay)
 
 
 class SocketGroupDevice(Device):
@@ -27,3 +32,11 @@ class SocketGroupDevice(Device):
 
     def turn_off(self):
         logger.info('Turning off socket group "{name}"'.format(name=self._name))
+    
+    def __run(self, func, status, *params):
+        for i in range(0, self.__retries):
+            func(*params)
+            time.sleep(self.__delay)
+
+        for device in self.__devices:
+            device.status = status
