@@ -16,5 +16,8 @@ def main():
     config = Config.instance()
     logger.info('Using Energenie module {module}'.format(module = config.energenie_device))
 
+    devices = list(filter(lambda device : 'socket' in device['type'], config.devices['devices']))
+    logger.info('Found {matches} matching devices'.format(matches = len(devices)))
+
 if __name__ == '__main__':
     main()
