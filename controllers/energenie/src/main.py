@@ -1,5 +1,7 @@
 from common.config import Config
 from device import SocketDevice, SocketGroupDevice
+from device.manager import DeviceManager
+
 
 config = Config.instance()
 logger = config.logger()
@@ -9,10 +11,10 @@ def main():
     logger.info('PowerPi Energenie Controller')
     
     logger.info('Using Energenie module {module}'.format(module=config.energenie_device))
-    devices = load_devices()
 
-    for key in devices:
-        devices[key].turn_on()
+    DeviceManager.instance().devices = load_devices()
+    for key in DeviceManager.instance().devices:
+        DeviceManager.instance().devices[key].turn_on()
 
 
 def load_devices():

@@ -2,6 +2,7 @@ import time
 
 from common.config import Config
 from common.device import Device
+from .manager import DeviceManager
 
 
 logger = Config.instance().logger()
@@ -57,7 +58,7 @@ class SocketGroupDevice(Device):
             func(*params)
             time.sleep(self.__delay)
 
-        #for device in self.__devices:
-        #    device.status = new_status
+        for device in self.__devices:
+            DeviceManager.instance().get_device(device).status = new_status
         
         self.status = new_status
