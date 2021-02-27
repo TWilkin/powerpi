@@ -21,7 +21,9 @@ class SocketDeviceImpl(SocketDevice):
 class SocketGroupDeviceImpl(SocketGroupDevice):
 
     def __init__(self, name, devices, home_id=None, retries=4, delay=0.5):
-        SocketGroupDevice.__init__(self, name, devices, home_id, retries, delay)
+        SocketGroupDevice.__init__(
+            self, name, devices, home_id, retries, delay
+        )
 
     def turn_on(self):
         SocketGroupDevice.turn_on(self)

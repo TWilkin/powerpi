@@ -9,8 +9,9 @@ logger = config.logger()
 
 def main():
     logger.info('PowerPi Energenie Controller')
-    
-    logger.info('Using Energenie module {module}'.format(module=config.energenie_device))
+
+    logger.info('Using Energenie module {module}'.format(
+        module=config.energenie_device))
 
     DeviceManager.instance().devices = load_devices()
     for key in DeviceManager.instance().devices:
@@ -18,12 +19,15 @@ def main():
 
 
 def load_devices():
-    devices = list(filter(lambda device : 'socket' in device['type'], config.devices['devices']))
-    logger.info('Found {matches} matching devices'.format(matches=len(devices)))
+    devices = list(
+        filter(lambda device: 'socket' in device['type'], config.devices['devices']))
+    logger.info('Found {matches} matching devices'.format(
+        matches=len(devices)))
 
     devices_impl = {}
     for device in devices:
-        logger.info('Found {type} "{name}"'.format(name=device['name'], type=device['type']))
+        logger.info('Found {type} "{name}"'.format(
+            name=device['name'], type=device['type']))
 
         device_type = device['type']
         del device['type']
@@ -34,9 +38,9 @@ def load_devices():
             instance = SocketGroupDevice(**device)
         else:
             continue
-        
+
         devices_impl[device['name']] = instance
-    
+
     return devices_impl
 
 

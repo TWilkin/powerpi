@@ -10,7 +10,9 @@ class SocketDeviceImpl(SocketDevice, energenie.Devices.ENER002):
 
     def __init__(self, name, home_id, device_id=0, retries=4, delay=0.5):
         SocketDevice.__init__(self, name, home_id, device_id, retries, delay)
-        energenie.Devices.ENER002.__init__(self, (int(home_id), int(device_id)))
+        energenie.Devices.ENER002.__init__(
+            self, (int(home_id), int(device_id))
+        )
 
     def turn_on(self):
         SocketDevice.turn_on(self)
@@ -24,7 +26,9 @@ class SocketDeviceImpl(SocketDevice, energenie.Devices.ENER002):
 class SocketGroupDeviceImpl(SocketGroupDevice, energenie.Devices.ENER002):
 
     def __init__(self, name, home_id, devices, retries=4, delay=0.5):
-        SocketGroupDevice.__init__(self, name, devices, home_id, retries, delay)
+        SocketGroupDevice.__init__(
+            self, name, devices, home_id, retries, delay
+        )
         energenie.Devices.ENER002.__init__(self, (int(home_id), 0))
 
     def turn_on(self):
