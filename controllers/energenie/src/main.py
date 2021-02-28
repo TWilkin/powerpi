@@ -4,35 +4,34 @@ from dependency_injector.wiring import inject, Provide
 
 from common.config import Config
 from common.logger import Logger
-from device import import_energenie
-from device.container import Container
+from device.container import Container, add_sockets
 from device.manager import DeviceManager
 
 
 @inject
 def main(
+    services: Container,
     config: Config = Provide[Container.config],
     logger: Logger = Provide[Container.logger],
-    deviceManager: DeviceManager = Provide[Container.devices]
+    deviceManager: DeviceManager = Provide[Container.deviceManager]
 ):
     logger.info('PowerPi Energenie Controller')
 
     logger.info('Using Energenie module {module}'
                 .format(module=config.energenie_device))
 
-    deviceManager.devices = load_devices()
+    deviceManager.devices = load_devices(services)
     for key in deviceManager.devices:
         deviceManager.devices[key].turn_on()
 
 
 @inject
 def load_devices(
+    services: Container,
     config: Config = Provide[Container.config],
     logger: Logger = Provide[Container.logger],
-    deviceManager: DeviceManager = Provide[Container.devices]
+    deviceManager: DeviceManager = Provide[Container.deviceManager]
 ):
-    SocketDevice, SocketGroupDevice = import_energenie()
-
     devices = list(
         filter(lambda device: 'socket' in device['type'], config.devices['devices']))
     logger.info('Found {matches} matching devices'.format(
@@ -46,14 +45,11 @@ def load_devices(
         device_type = device['type']
         del device['type']
 
-        # should happen with DI but it's not working
-        device['logger'] = logger
-
         if device_type == 'socket':
-            instance = SocketDevice(**device)
+            instance = services.socket_factory(**device)
         elif device_type == 'socket_group':
             device['deviceManager'] = deviceManager
-            instance = SocketGroupDevice(**device)
+            instance = services.socket_group_factory(**device)
         else:
             continue
 
@@ -63,6 +59,11 @@ def load_devices(
 
 
 if __name__ == '__main__':
+    # initialise DI
     container = Container()
     container.wire(modules=[sys.modules[__name__]])
-    main()
+
+    # dynamically add the socket based on the config
+    add_sockets(container)
+
+    main(container)
