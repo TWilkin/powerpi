@@ -2,14 +2,14 @@ from dependency_injector.wiring import inject, Provide
 
 from common.config import Config
 from common.container import Container
+from common.logger import Logger
 
 
 @inject
 def import_energenie(
-    config: Config = Provide[Container.config]
+    config: Config = Provide[Container.config],
+    logger: Logger = Provide[Container.logger]
 ):
-    logger = config.logger()
-
     # import the appropriate implementation of SocketDevice
     try:
         if config.is_ener314_rt:

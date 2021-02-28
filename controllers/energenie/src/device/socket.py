@@ -1,8 +1,8 @@
 import time
 from dependency_injector.wiring import inject, Provide
 
-from common.config import Config
 from common.container import Container
+from common.logger import Logger
 from common.device import Device
 from .manager import DeviceManager
 
@@ -12,10 +12,10 @@ class SocketDevice(Device):
 
     def __init__(
         self, name, home_id=0, device_id=0, retries=4, delay=0.5,
-        config: Config = Provide[Container.config]
+        logger: Logger = Provide[Container.logger]
     ):
         Device.__init__(self, name)
-        self.__logger = config.logger()
+        self.__logger = logger
         self.__retries = retries
         self.__delay = delay
 
@@ -45,10 +45,10 @@ class SocketGroupDevice(Device):
 
     def __init__(
         self, name, devices, home_id=None, retries=4, delay=0.5,
-        config: Config = Provide[Container.config]
+        logger: Logger = Provide[Container.logger]
     ):
         Device.__init__(self, name)
-        self.__logger = config.logger()
+        self.__logger = logger
         self.__devices = devices
         self.__retries = retries
         self.__delay = delay

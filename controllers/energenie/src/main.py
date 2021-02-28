@@ -4,16 +4,16 @@ from dependency_injector.wiring import inject, Provide
 
 from common.config import Config
 from common.container import Container
+from common.logger import Logger
 from device import import_energenie
 from device.manager import DeviceManager
 
 
 @inject
 def main(
-    config: Config = Provide[Container.config]
+    config: Config = Provide[Container.config],
+    logger: Logger = Provide[Container.logger]
 ):
-    logger = config.logger()
-
     logger.info('PowerPi Energenie Controller')
 
     logger.info('Using Energenie module {module}'
@@ -26,10 +26,10 @@ def main(
 
 @inject
 def load_devices(
-    config: Config = Provide[Container.config]
+    config: Config = Provide[Container.config],
+    logger: Logger = Provide[Container.logger]
 ):
     import_energenie()
-    logger = config.logger()
 
     devices = list(
         filter(lambda device: 'socket' in device['type'], config.devices['devices']))

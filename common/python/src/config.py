@@ -1,12 +1,9 @@
 from io import StringIO
 import json
-import logging
 import os
 
 
 class Config(object):
-    __logger = None
-
     def __init__(self):
         self.__devices = Config.__load(
             os.getenv('DEVICES_FILE'), os.getenv('DEVICES')
@@ -58,21 +55,6 @@ class Config(object):
     @property
     def events(self):
         return self.__events
-
-    @classmethod
-    def logger(cls):
-        if cls.__logger is None:
-            handler = logging.StreamHandler()
-            handler.setLevel(logging.INFO)
-            handler.setFormatter(logging.Formatter(
-                '%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
-            )
-
-            cls.__logger = logging.getLogger()
-            cls.__logger.setLevel(logging.INFO)
-            cls.__logger.addHandler(handler)
-
-        return cls.__logger
 
     @classmethod
     def __load(cls, file, content):
