@@ -1,10 +1,3 @@
-from common.config import Config
-
-
-config = Config.instance()
-logger = config.logger()
-
-
 class DeviceManager(object):
     __instance = None
 

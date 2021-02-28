@@ -5,7 +5,6 @@ import os
 
 
 class Config(object):
-    __instance = None
     __logger = None
 
     def __init__(self):
@@ -74,13 +73,6 @@ class Config(object):
             cls.__logger.addHandler(handler)
 
         return cls.__logger
-
-    @classmethod
-    def instance(cls):
-        if cls.__instance is None:
-            cls.__instance = Config()
-
-        return cls.__instance
 
     @classmethod
     def __load(cls, file, content):

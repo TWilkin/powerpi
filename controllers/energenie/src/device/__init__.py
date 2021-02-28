@@ -1,19 +1,26 @@
+from dependency_injector.wiring import inject, Provide
+
 from common.config import Config
+from common.container import Container
 
-config = Config.instance()
-logger = config.logger()
 
-# import the appropriate implementation of SocketDevice
-try:
-    if config.is_ener314_rt:
-        from . ener314rt import SocketDeviceImpl as SocketDevice, SocketGroupDeviceImpl as SocketGroupDevice
-    else:
-        from . ener314 import SocketDeviceImpl as SocketDevice, SocketGroupDeviceImpl as SocketGroupDevice
-except:
-    if config.device_fatal:
-        logger.error('DEVICE_FATAL=true, must be run on Raspberry Pi')
-        raise
+@inject
+def import_energenie(
+    config: Config = Provide[Container.config]
+):
+    logger = config.logger()
 
-    # for testing off a Pi
-    logger.warn('DEVICE_FATAL=false, no sockets will turn on/off')
-    from . socket import SocketDevice, SocketGroupDevice
+    # import the appropriate implementation of SocketDevice
+    try:
+        if config.is_ener314_rt:
+            from . ener314rt import SocketDeviceImpl as SocketDevice, SocketGroupDeviceImpl as SocketGroupDevice
+        else:
+            from . ener314 import SocketDeviceImpl as SocketDevice, SocketGroupDeviceImpl as SocketGroupDevice
+    except:
+        if config.device_fatal:
+            logger.error('DEVICE_FATAL=true, must be run on Raspberry Pi')
+            raise
+
+        # for testing off a Pi
+        logger.warn('DEVICE_FATAL=false, no sockets will turn on/off')
+        from . socket import SocketDevice, SocketGroupDevice

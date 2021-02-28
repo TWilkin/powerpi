@@ -13,6 +13,8 @@ RUN $VENV/bin/pip install wheel
 
 # install the dependencies
 ENV CFLAGS=-fcommon
+COPY common/python/requirements.txt ./common-requirements.txt
+RUN $VENV/bin/pip install -r common-requirements.txt
 COPY controllers/energenie/requirements.txt ./
 RUN $VENV/bin/pip install -r requirements.txt
 
@@ -29,7 +31,7 @@ COPY --from=compile-image /opt/venv ./venv
 # add the application
 COPY controllers/energenie/src/ ./
 RUN rm common && mkdir ./common
-COPY common/python/* ./common/
+COPY common/python/src/* ./common/
 
 # start the application once the container is ready
 CMD venv/bin/python main.py
