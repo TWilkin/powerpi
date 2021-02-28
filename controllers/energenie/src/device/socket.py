@@ -1,18 +1,16 @@
 import time
-from dependency_injector.wiring import inject, Provide
 
-from common.container import Container
 from common.logger import Logger
 from common.device import Device
-from .manager import DeviceManager
+from . manager import DeviceManager
 
 
-@inject
 class SocketDevice(Device):
 
     def __init__(
-        self, name, home_id=0, device_id=0, retries=4, delay=0.5,
-        logger: Logger = Provide[Container.logger]
+        self,
+        logger: Logger,
+        name, home_id=0, device_id=0, retries=4, delay=0.5,
     ):
         Device.__init__(self, name)
         self.__logger = logger
@@ -34,7 +32,7 @@ class SocketDevice(Device):
             'Turning off socket "{name}"'.format(name=self._name))
 
     def _run(self, func, new_status, *params):
-        for i in range(0, self.__retries):
+        for _ in range(0, self.__retries):
             func(*params)
             time.sleep(self.__delay)
 
@@ -44,8 +42,8 @@ class SocketDevice(Device):
 class SocketGroupDevice(Device):
 
     def __init__(
-        self, name, devices, home_id=None, retries=4, delay=0.5,
-        logger: Logger = Provide[Container.logger]
+        self, logger: Logger,
+        name, devices, home_id=None, retries=4, delay=0.5
     ):
         Device.__init__(self, name)
         self.__logger = logger
@@ -68,7 +66,7 @@ class SocketGroupDevice(Device):
             'Turning off socket group "{name}"'.format(name=self._name))
 
     def _run(self, func, new_status, *params):
-        for i in range(0, self.__retries):
+        for _ in range(0, self.__retries):
             func(*params)
             time.sleep(self.__delay)
 

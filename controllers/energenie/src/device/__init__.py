@@ -24,3 +24,5 @@ def import_energenie(
         # for testing off a Pi
         logger.warn('DEVICE_FATAL=false, no sockets will turn on/off')
         from . socket import SocketDevice, SocketGroupDevice
+
+    return SocketDevice, SocketGroupDevice

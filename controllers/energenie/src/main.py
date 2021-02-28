@@ -29,7 +29,7 @@ def load_devices(
     config: Config = Provide[Container.config],
     logger: Logger = Provide[Container.logger]
 ):
-    import_energenie()
+    SocketDevice, SocketGroupDevice = import_energenie()
 
     devices = list(
         filter(lambda device: 'socket' in device['type'], config.devices['devices']))
@@ -44,14 +44,17 @@ def load_devices(
         device_type = device['type']
         del device['type']
 
-        # if device_type == 'socket':
-        #     instance = SocketDevice(**device)
-        # elif device_type == 'socket_group':
-        #     instance = SocketGroupDevice(**device)
-        # else:
-        #     continue
+        # should happen with DI but it's not working
+        device['logger'] = logger
 
-        # devices_impl[device['name']] = instance
+        if device_type == 'socket':
+            instance = SocketDevice(**device)
+        elif device_type == 'socket_group':
+            instance = SocketGroupDevice(**device)
+        else:
+            continue
+
+        devices_impl[device['name']] = instance
 
     return devices_impl
 

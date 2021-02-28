@@ -5,8 +5,10 @@ from . socket import SocketDevice, SocketGroupDevice
 
 class SocketDeviceImpl(SocketDevice):
 
-    def __init__(self, name, home_id=0, device_id=0, retries=4, delay=0.5):
-        SocketDevice.__init__(self, name, home_id, device_id, retries, delay)
+    def __init__(self, logger, name, home_id=0, device_id=0, retries=4, delay=0.5):
+        SocketDevice.__init__(
+            self, logger, name, home_id, device_id, retries, delay
+        )
         self.__device_id = int(device_id)
 
     def turn_on(self):
@@ -20,9 +22,9 @@ class SocketDeviceImpl(SocketDevice):
 
 class SocketGroupDeviceImpl(SocketGroupDevice):
 
-    def __init__(self, name, devices, home_id=None, retries=4, delay=0.5):
+    def __init__(self, logger, name, devices, home_id=None, retries=4, delay=0.5):
         SocketGroupDevice.__init__(
-            self, name, devices, home_id, retries, delay
+            self, logger, name, devices, home_id, retries, delay
         )
 
     def turn_on(self):
