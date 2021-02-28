@@ -8,7 +8,7 @@ from . manager import DeviceManager
 
 class Container(CommonContainer):
 
-    deviceManager = providers.Singleton(
+    device_manager = providers.Singleton(
         DeviceManager
     )
 
@@ -26,5 +26,5 @@ def add_sockets(container):
     setattr(container, 'socket_group_factory', providers.Factory(
         SocketGroupDevice,
         logger=container.logger,
-        deviceManager=container.deviceManager
+        device_manager=container.device_manager
     ))

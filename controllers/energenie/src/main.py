@@ -13,24 +13,23 @@ def main(
     services: Container,
     config: Config = Provide[Container.config],
     logger: Logger = Provide[Container.logger],
-    deviceManager: DeviceManager = Provide[Container.deviceManager]
+    device_manager: DeviceManager = Provide[Container.device_manager]
 ):
     logger.info('PowerPi Energenie Controller')
 
     logger.info('Using Energenie module {module}'
                 .format(module=config.energenie_device))
 
-    deviceManager.devices = load_devices(services)
-    for key in deviceManager.devices:
-        deviceManager.devices[key].turn_on()
+    device_manager.devices = load_devices(services)
+    for key in device_manager.devices:
+        device_manager.devices[key].turn_on()
 
 
 @inject
 def load_devices(
     services: Container,
     config: Config = Provide[Container.config],
-    logger: Logger = Provide[Container.logger],
-    deviceManager: DeviceManager = Provide[Container.deviceManager]
+    logger: Logger = Provide[Container.logger]
 ):
     devices = list(
         filter(lambda device: 'socket' in device['type'], config.devices['devices']))
@@ -48,7 +47,6 @@ def load_devices(
         if device_type == 'socket':
             instance = services.socket_factory(**device)
         elif device_type == 'socket_group':
-            device['deviceManager'] = deviceManager
             instance = services.socket_group_factory(**device)
         else:
             continue
