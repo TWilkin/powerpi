@@ -1,6 +1,4 @@
 class DeviceManager(object):
-    __instance = None
-
     def __init__(self):
         self.__devices = {}
 
@@ -17,10 +15,3 @@ class DeviceManager(object):
             return self.__devices[name]
 
         raise Exception('Cannot find device "{name}"'.format(name=name))
-
-    @classmethod
-    def instance(cls):
-        if cls.__instance is None:
-            cls.__instance = DeviceManager()
-
-        return cls.__instance

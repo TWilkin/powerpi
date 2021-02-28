@@ -22,9 +22,9 @@ class SocketDeviceImpl(SocketDevice):
 
 class SocketGroupDeviceImpl(SocketGroupDevice):
 
-    def __init__(self, logger, name, devices, home_id=None, retries=4, delay=0.5):
+    def __init__(self, logger, deviceManager, name, devices, home_id=None, retries=4, delay=0.5):
         SocketGroupDevice.__init__(
-            self, logger, name, devices, home_id, retries, delay
+            self, logger, deviceManager, name, devices, home_id, retries, delay
         )
 
     def turn_on(self):

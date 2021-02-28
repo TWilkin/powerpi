@@ -3,31 +3,33 @@ import sys
 from dependency_injector.wiring import inject, Provide
 
 from common.config import Config
-from common.container import Container
 from common.logger import Logger
 from device import import_energenie
+from device.container import Container
 from device.manager import DeviceManager
 
 
 @inject
 def main(
     config: Config = Provide[Container.config],
-    logger: Logger = Provide[Container.logger]
+    logger: Logger = Provide[Container.logger],
+    deviceManager: DeviceManager = Provide[Container.devices]
 ):
     logger.info('PowerPi Energenie Controller')
 
     logger.info('Using Energenie module {module}'
                 .format(module=config.energenie_device))
 
-    DeviceManager.instance().devices = load_devices()
-    for key in DeviceManager.instance().devices:
-        DeviceManager.instance().devices[key].turn_on()
+    deviceManager.devices = load_devices()
+    for key in deviceManager.devices:
+        deviceManager.devices[key].turn_on()
 
 
 @inject
 def load_devices(
     config: Config = Provide[Container.config],
-    logger: Logger = Provide[Container.logger]
+    logger: Logger = Provide[Container.logger],
+    deviceManager: DeviceManager = Provide[Container.devices]
 ):
     SocketDevice, SocketGroupDevice = import_energenie()
 
@@ -50,6 +52,7 @@ def load_devices(
         if device_type == 'socket':
             instance = SocketDevice(**device)
         elif device_type == 'socket_group':
+            device['deviceManager'] = deviceManager
             instance = SocketGroupDevice(**device)
         else:
             continue

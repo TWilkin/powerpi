@@ -42,11 +42,12 @@ class SocketDevice(Device):
 class SocketGroupDevice(Device):
 
     def __init__(
-        self, logger: Logger,
+        self, logger: Logger, deviceManager: DeviceManager,
         name, devices, home_id=None, retries=4, delay=0.5
     ):
         Device.__init__(self, name)
         self.__logger = logger
+        self.__deviceManager = deviceManager
         self.__devices = devices
         self.__retries = retries
         self.__delay = delay
@@ -71,6 +72,6 @@ class SocketGroupDevice(Device):
             time.sleep(self.__delay)
 
         for device in self.__devices:
-            DeviceManager.instance().get_device(device).status = new_status
+            self.__deviceManager.get_device(device).status = new_status
 
         self.status = new_status
