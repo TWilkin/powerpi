@@ -31,7 +31,7 @@ COPY --from=compile-image /opt/venv ./venv
 # add the application
 COPY controllers/energenie/src/ ./
 RUN rm common && mkdir ./common
-COPY common/python/src/* ./common/
+COPY common/python/src/ ./common/
 
 # start the application once the container is ready
 CMD venv/bin/python main.py

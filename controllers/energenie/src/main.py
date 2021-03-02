@@ -4,6 +4,7 @@ from dependency_injector.wiring import inject, Provide
 
 from common.config import Config
 from common.logger import Logger
+from common.mqtt import MQTTClient
 from device.container import Container, add_sockets
 from device.manager import DeviceManager
 
@@ -12,7 +13,8 @@ from device.manager import DeviceManager
 def main(
     config: Config = Provide[Container.config],
     logger: Logger = Provide[Container.logger],
-    device_manager: DeviceManager = Provide[Container.device_manager]
+    device_manager: DeviceManager = Provide[Container.device_manager],
+    mqtt_client: MQTTClient = Provide[Container.mqtt_client]
 ):
     logger.info('PowerPi Energenie Controller')
 
@@ -20,8 +22,9 @@ def main(
                 .format(module=config.energenie_device))
 
     device_manager.devices = load_devices()
-    for key in device_manager.devices:
-        device_manager.devices[key].turn_on()
+
+    # use MQTT loop to handle messages
+    mqtt_client.loop()
 
 
 @inject
