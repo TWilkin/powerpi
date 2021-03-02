@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from datetime import datetime
 
 from common.config import Config
@@ -15,6 +16,7 @@ class MQTTConsumer:
     def topic(self):
         return self._topic
 
+    @abstractmethod
     def on_message(self, client, user_data, message, entity, action):
         raise NotImplementedError
 

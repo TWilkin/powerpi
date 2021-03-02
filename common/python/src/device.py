@@ -20,8 +20,8 @@ class Device(object):
 
     @abstractmethod
     def turn_on(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def turn_off(self):
-        pass
+        raise NotImplementedError
