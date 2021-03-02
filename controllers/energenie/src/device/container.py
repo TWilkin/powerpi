@@ -26,11 +26,15 @@ def add_sockets(container):
 
     setattr(container, 'socket_factory', providers.Factory(
         SocketDevice,
-        logger=container.logger
+        config=container.config,
+        logger=container.logger,
+        mqtt_client=container.mqtt_client
     ))
 
     setattr(container, 'socket_group_factory', providers.Factory(
         SocketGroupDevice,
+        config=container.config,
         logger=container.logger,
+        mqtt_client=container.mqtt_client,
         device_manager=container.device_manager
     ))

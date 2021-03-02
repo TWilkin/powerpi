@@ -7,6 +7,10 @@ class Device(object):
         self._status = 'unknown'
 
     @property
+    def name(self):
+        return self._name
+
+    @property
     def status(self):
         return self._status
 

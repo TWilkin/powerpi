@@ -21,3 +21,6 @@ class Logger(object):
 
     def error(self, *args):
         self.__logger.error(*args)
+
+    def exception(self, *args):
+        self.__logger.exception(*args)

@@ -1,12 +1,11 @@
 import json
 import paho.mqtt.client as mqtt
 
-from datetime import datetime
-from dependency_injector.wiring import Provide
 from urllib.parse import urlparse
 
 from common.config import Config
 from common.logger import Logger
+from . consumer import MQTTConsumer
 
 
 class MQTTClient(object):
@@ -18,8 +17,17 @@ class MQTTClient(object):
     ):
         self.__config = config
         self.__logger = logger
+        self.__consumers: dict(str, MQTTConsumer) = {}
 
         self.__connect()
+
+    def add_consumer(self, consumer: MQTTConsumer):
+        key = consumer.topic
+
+        if not key in self.__consumers:
+            self.__consumers[key] = []
+
+        self.__consumers[key].append(consumer)
 
     def loop(self):
         self.__client.loop_forever()
@@ -27,6 +35,11 @@ class MQTTClient(object):
     def __connect(self):
         if self.__config.mqtt_address is None:
             error = 'Cannot connect to MQTT, no address specified'
+            self.__logger.error(error)
+            raise EnvironmentError(error)
+
+        if self.__config.topic_base is None:
+            error = 'Cannot connect to MQTT, no topic base specified'
             self.__logger.error(error)
             raise EnvironmentError(error)
 
@@ -42,8 +55,28 @@ class MQTTClient(object):
     def __on_connect(self, _, __, ___, result_code):
         self.__logger.info('MQTT Connected {:d}'.format(result_code))
 
+        for _, consumers in self.__consumers.items():
+            for consumer in consumers:
+                topic = '{}/{}'.format(self.__config.topic_base,
+                                       consumer.topic)
+                self.__logger.info(
+                    'Subcribing to topic \'{:s}\''.format(topic)
+                )
+                self.__client.subscribe(topic)
+
     def __on_message(self, client, user_data, message):
         # read the JSON
         event = json.loads(message.payload)
         self.__logger.info('Received: {:s}:{:s}'
                            .format(message.topic, json.dumps(event)))
+
+        # split the topic
+        _, message_type, entity, action = message.topic.split('/', 3)
+
+        # define the listener this was registered for
+        listener_key = '{}/{}/{}'.format(message_type, entity, action)
+
+        # send the message to the correct consumers
+        if listener_key in self.__consumers:
+            for consumer in self.__consumers[listener_key]:
+                consumer.on_message(client, user_data, event, entity, action)
