@@ -16,7 +16,7 @@ class SocketDevice(Device, PowerEventConsumer):
         mqtt_client: MQTTClient,
         name, home_id=0, device_id=0, retries=4, delay=0.5,
     ):
-        Device.__init__(self, name)
+        Device.__init__(self, mqtt_client, name)
         PowerEventConsumer.__init__(self, self, config, logger)
 
         self.__logger = logger
@@ -25,11 +25,12 @@ class SocketDevice(Device, PowerEventConsumer):
 
         mqtt_client.add_consumer(self)
 
-    @Device.status.setter
-    def status(self, value):
-        Device.status = value
-        self.__logger.info('Socket "{name}" now has status {status}'
-                           .format(name=self._name, status=Device.status))
+    @Device.state.setter
+    def state(self, new_state):
+        Device.state.fset(self, new_state)
+        self.__logger.info(
+            'Socket "{}" now has state {}'.format(self._name, self.state)
+        )
 
     def turn_on(self):
         self.__logger.info(
@@ -39,12 +40,12 @@ class SocketDevice(Device, PowerEventConsumer):
         self.__logger.info(
             'Turning off socket "{name}"'.format(name=self._name))
 
-    def _run(self, func, new_status, *params):
+    def _run(self, func, new_state, *params):
         for _ in range(0, self.__retries):
             func(*params)
             time.sleep(self.__delay)
 
-        self.status = new_status
+        self.state = new_state
 
 
 class SocketGroupDevice(Device, PowerEventConsumer):
@@ -57,7 +58,7 @@ class SocketGroupDevice(Device, PowerEventConsumer):
         device_manager: DeviceManager,
         name, devices, home_id=None, retries=4, delay=0.5
     ):
-        Device.__init__(self, name)
+        Device.__init__(self, mqtt_client, name)
         PowerEventConsumer.__init__(self, self, config, logger)
 
         self.__logger = logger
@@ -68,11 +69,13 @@ class SocketGroupDevice(Device, PowerEventConsumer):
 
         mqtt_client.add_consumer(self)
 
-    @Device.status.setter
-    def status(self, value):
-        Device.status = value
-        self.__logger.info('Socket group "{name}" now has status {status}'.format(
-            name=self._name, status=Device.status))
+    @Device.state.setter
+    def state(self, new_state):
+        Device.state.fset(self, new_state)
+        self.__logger.info(
+            'Socket group "{}" now has state {}'.format(
+                self._name, self.state)
+        )
 
     def turn_on(self):
         self.__logger.info(
@@ -82,12 +85,12 @@ class SocketGroupDevice(Device, PowerEventConsumer):
         self.__logger.info(
             'Turning off socket group "{name}"'.format(name=self._name))
 
-    def _run(self, func, new_status, *params):
+    def _run(self, func, new_state, *params):
         for _ in range(0, self.__retries):
             func(*params)
             time.sleep(self.__delay)
 
         for device in self.__devices:
-            self.__device_manager.get_device(device).status = new_status
+            self.__device_manager.get_device(device).state = new_state
 
-        self.status = new_status
+        self.state = new_state

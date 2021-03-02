@@ -1,6 +1,7 @@
 import json
 import paho.mqtt.client as mqtt
 
+from datetime import datetime
 from urllib.parse import urlparse
 
 from common.config import Config
@@ -28,6 +29,16 @@ class MQTTClient(object):
             self.__consumers[key] = []
 
         self.__consumers[key].append(consumer)
+
+    def add_producer(self):
+        def publish(topic, message):
+            # add the timestamp to the message
+            message['timestamp'] = int(datetime.utcnow().timestamp() * 1000)
+
+            topic = '{}/{}'.format(self.__config.topic_base, topic)
+
+            return self.__publish(topic, message)
+        return publish
 
     def loop(self):
         self.__client.loop_forever()
@@ -80,3 +91,8 @@ class MQTTClient(object):
         if listener_key in self.__consumers:
             for consumer in self.__consumers[listener_key]:
                 consumer.on_message(client, user_data, event, entity, action)
+
+    def __publish(self, topic: str, message: dict):
+        message = json.dumps(message)
+        self.__logger.info('Publishing {:s}:{:s}'.format(topic, message))
+        self.__client.publish(topic, message, qos=2, retain=True)
