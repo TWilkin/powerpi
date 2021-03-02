@@ -8,6 +8,12 @@ from . manager import DeviceManager
 
 class Container(CommonContainer):
 
+    __self__ = providers.Self()
+
+    service_provider = providers.Singleton(
+        __self__
+    )
+
     device_manager = providers.Singleton(
         DeviceManager
     )

@@ -10,7 +10,6 @@ from device.manager import DeviceManager
 
 @inject
 def main(
-    services: Container,
     config: Config = Provide[Container.config],
     logger: Logger = Provide[Container.logger],
     device_manager: DeviceManager = Provide[Container.device_manager]
@@ -20,14 +19,14 @@ def main(
     logger.info('Using Energenie module {module}'
                 .format(module=config.energenie_device))
 
-    device_manager.devices = load_devices(services)
+    device_manager.devices = load_devices()
     for key in device_manager.devices:
         device_manager.devices[key].turn_on()
 
 
 @inject
 def load_devices(
-    services: Container,
+    service_provider: Container = Provide[Container.service_provider],
     config: Config = Provide[Container.config],
     logger: Logger = Provide[Container.logger]
 ):
@@ -45,9 +44,9 @@ def load_devices(
         del device['type']
 
         if device_type == 'socket':
-            instance = services.socket_factory(**device)
+            instance = service_provider.socket_factory(**device)
         elif device_type == 'socket_group':
-            instance = services.socket_group_factory(**device)
+            instance = service_provider.socket_group_factory(**device)
         else:
             continue
 
@@ -64,4 +63,4 @@ if __name__ == '__main__':
     # dynamically add the socket based on the config
     add_sockets(container)
 
-    main(container)
+    main()
