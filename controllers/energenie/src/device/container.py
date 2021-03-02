@@ -1,40 +1,41 @@
-from dependency_injector import providers
-
-from common.container import Container as CommonContainer
+from dependency_injector import containers, providers
 
 from . import_energenie import import_energenie
 from . manager import DeviceManager
 
 
-class Container(CommonContainer):
+class DeviceContainer(containers.DeclarativeContainer):
 
-    __self__ = providers.Self()
+    config = providers.Dependency()
 
-    service_provider = providers.Singleton(
-        __self__
-    )
+    logger = providers.Dependency()
+
+    service_provider = providers.Dependency()
 
     device_manager = providers.Singleton(
-        DeviceManager
+        DeviceManager,
+        config=config,
+        logger=logger,
+        service_provider=service_provider
     )
 
 
 def add_sockets(container):
     SocketDevice, SocketGroupDevice = import_energenie(
-        container.config(), container.logger()
+        container.common.config(), container.common.logger()
     )
 
     setattr(container, 'socket_factory', providers.Factory(
         SocketDevice,
-        config=container.config,
-        logger=container.logger,
-        mqtt_client=container.mqtt_client
+        config=container.common.config,
+        logger=container.common.logger,
+        mqtt_client=container.common.mqtt_client
     ))
 
     setattr(container, 'socket_group_factory', providers.Factory(
         SocketGroupDevice,
-        config=container.config,
-        logger=container.logger,
-        mqtt_client=container.mqtt_client,
-        device_manager=container.device_manager
+        config=container.common.config,
+        logger=container.common.logger,
+        mqtt_client=container.common.mqtt_client,
+        device_manager=container.device.device_manager
     ))
