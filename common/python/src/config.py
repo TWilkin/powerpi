@@ -4,14 +4,6 @@ import os
 
 
 class Config(object):
-    def __init__(self):
-        self.__devices = Config.__load(
-            os.getenv('DEVICES_FILE'), os.getenv('DEVICES')
-        )
-        self.__events = Config.__load(
-            os.getenv('EVENTS_FILE'), os.getenv('EVENTS')
-        )
-
     @property
     def device_fatal(self):
         value = os.getenv('DEVICE_FATAL')
@@ -50,11 +42,15 @@ class Config(object):
 
     @property
     def devices(self):
-        return self.__devices
+        return Config.__load(
+            os.getenv('DEVICES_FILE'), os.getenv('DEVICES')
+        )
 
     @property
     def events(self):
-        return self.__events
+        return Config.__load(
+            os.getenv('EVENTS_FILE'), os.getenv('EVENTS')
+        )
 
     @classmethod
     def __load(cls, file, content):
