@@ -1,5 +1,5 @@
-from common.config import Config
-from common.logger import Logger
+from powerpi_common.config import Config
+from powerpi_common.logger import Logger
 
 
 class DeviceManager(object):

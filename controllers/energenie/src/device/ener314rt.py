@@ -1,8 +1,8 @@
 from pyenergenie import energenie
 
-from common.config import Config
-from common.logger import Logger
-from common.mqtt import MQTTClient
+from powerpi_common.config import Config
+from powerpi_common.logger import Logger
+from powerpi_common.mqtt import MQTTClient
 from . socket import SocketDevice, SocketGroupDevice
 
 

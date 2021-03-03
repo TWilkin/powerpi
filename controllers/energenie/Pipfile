@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+energenie = "~=1.0.1"
+powerpi-common = {path = "./../../common/python"}
+pyenergenie = {git = "https://****@github.com/TWilkin/pyenergenie.git"}
+
+[dev-packages]
+pylint = "~=2.7.1"
+autopep8 = "~=1.5.5"
+
+[requires]
+python_version = "3"
+
+[scripts]
+start = "python src/main.py"

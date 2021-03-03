@@ -1,8 +1,8 @@
 from dependency_injector.wiring import inject, Provide
 
-from common.config import Config
-from common.container import Container
-from common.logger import Logger
+from powerpi_common.config import Config
+from powerpi_common.container import Container
+from powerpi_common.logger import Logger
 
 
 @inject

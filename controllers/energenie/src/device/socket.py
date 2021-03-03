@@ -1,9 +1,9 @@
 import time
 
-from common.config import Config
-from common.logger import Logger
-from common.device import Device
-from common.mqtt import MQTTClient, PowerEventConsumer
+from powerpi_common.config import Config
+from powerpi_common.logger import Logger
+from powerpi_common.device import Device
+from powerpi_common.mqtt import MQTTClient, PowerEventConsumer
 from . manager import DeviceManager
 
 

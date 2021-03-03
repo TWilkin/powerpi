@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from common.container import Container as CommonContainer
+from powerpi_common.container import Container as CommonContainer
 from device.container import DeviceContainer
 
 

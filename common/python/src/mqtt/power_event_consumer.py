@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from common.config import Config
-from common.device import Device
-from common.logger import Logger
+from ..config import Config
+from ..device import Device
+from ..logger import Logger
 from . consumer import MQTTConsumer
 
 

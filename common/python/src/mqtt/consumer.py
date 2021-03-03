@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from datetime import datetime
 
-from common.config import Config
-from common.logger import Logger
+from ..config import Config
+from ..logger import Logger
 
 
 class MQTTConsumer:

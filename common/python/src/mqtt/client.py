@@ -4,8 +4,8 @@ import paho.mqtt.client as mqtt
 from datetime import datetime
 from urllib.parse import urlparse
 
-from common.config import Config
-from common.logger import Logger
+from ..config import Config
+from ..logger import Logger
 from . consumer import MQTTConsumer
 
 

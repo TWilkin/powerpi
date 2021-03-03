@@ -2,9 +2,9 @@ import sys
 
 from dependency_injector.wiring import inject, Provide
 
-from common.config import Config
-from common.logger import Logger
-from common.mqtt import MQTTClient
+from powerpi_common.config import Config
+from powerpi_common.logger import Logger
+from powerpi_common.mqtt import MQTTClient
 from container import ApplicationContainer
 from device.container import add_sockets
 from device.manager import DeviceManager

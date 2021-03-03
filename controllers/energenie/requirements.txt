@@ -1,2 +1,0 @@
-energenie==1.0.1
-git+https://git@github.com/TWilkin/pyenergenie.git#egg=pyenergenie
