@@ -24,12 +24,10 @@ class SocketDeviceImpl(SocketDevice, energenie.Devices.ENER002):
             self, (int(home_id), int(device_id))
         )
 
-    def turn_on(self):
-        SocketDevice.turn_on(self)
+    def _turn_on(self):
         self._run(energenie.Devices.ENER002.turn_on, 'on', self)
 
-    def turn_off(self):
-        SocketDevice.turn_off(self)
+    def _turn_off(self):
         self._run(energenie.Devices.ENER002.turn_off, 'off', self)
 
 
@@ -47,10 +45,8 @@ class SocketGroupDeviceImpl(SocketGroupDevice, energenie.Devices.ENER002):
         )
         energenie.Devices.ENER002.__init__(self, (int(home_id), 0))
 
-    def turn_on(self):
-        SocketGroupDevice.turn_on(self)
+    def _turn_on(self):
         self.__run(energenie.Devices.ENER002.turn_on, 'on', self)
 
-    def turn_off(self):
-        SocketGroupDevice.turn_off(self)
+    def _turn_off(self):
         self.__run(energenie.Devices.ENER002.turn_off, 'off', self)

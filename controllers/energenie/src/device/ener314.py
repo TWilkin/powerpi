@@ -19,12 +19,10 @@ class SocketDeviceImpl(SocketDevice):
         )
         self.__device_id = int(device_id)
 
-    def turn_on(self):
-        SocketDevice.turn_on(self)
+    def _turn_on(self):
         self._run(switch_on, 'on', self.__device_id)
 
-    def turn_off(self):
-        SocketDevice.turn_off(self)
+    def _turn_off(self):
         self._run(switch_off, 'off', self.__device_id)
 
 
@@ -41,10 +39,8 @@ class SocketGroupDeviceImpl(SocketGroupDevice):
             self, config, logger, mqtt_client, device_manager, name, devices, home_id, retries, delay
         )
 
-    def turn_on(self):
-        SocketGroupDevice.turn_on(self)
+    def _turn_on(self):
         self._run(switch_on, 'on')
 
-    def turn_off(self):
-        SocketGroupDevice.turn_off(self)
+    def _turn_off(self):
         self._run(switch_off, 'off')
