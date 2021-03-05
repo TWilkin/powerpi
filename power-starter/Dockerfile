@@ -2,9 +2,7 @@ FROM python:3.8.6-alpine AS compile-image
 LABEL description="Python application to listen to the queue and start/stop devices as requested"
 
 # ensure we have the dependencies to run pip
-RUN apk update \
-    && apk upgrade \
-    && apk add --no-cache gcc git linux-headers musl-dev
+RUN apk add --no-cache gcc git linux-headers musl-dev
 
 # make a virtual env
 ENV VENV=/opt/venv
@@ -12,14 +10,8 @@ RUN python -m venv $VENV
 RUN $VENV/bin/pip install wheel
 
 # install the dependencies
-ENV CFLAGS=-fcommon
 COPY requirements.txt ./
 RUN $VENV/bin/pip install -r requirements.txt
-
-# recompile the binary
-WORKDIR $VENV/lib/python3.8/site-packages/pyenergenie/energenie/drv
-RUN rm radio_rpi.so \
-    && gcc -Wall -shared -o radio_rpi.so -fPIC radio.c hrfm69.c spis.c gpio_rpi.c delay_posix.c
 
 # build and install the wheel
 WORKDIR /usr/src/app

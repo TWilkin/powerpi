@@ -1,7 +1,5 @@
-energenie==1.0.1
 lifxlan==1.2.5
 paho-mqtt==1.5.0
-git+https://git@github.com/TWilkin/pyenergenie.git#egg=pyenergenie
 git+https://git@github.com/iandday/pyharmony.git@1.0.21#egg=pyharmony
 schedule==0.6.0
 wrapt==1.12.1
