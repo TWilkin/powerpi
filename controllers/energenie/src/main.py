@@ -36,6 +36,6 @@ if __name__ == '__main__':
     container.wire(modules=[sys.modules[__name__]])
 
     # dynamically add the socket based on the config
-    add_sockets(container)
+    add_sockets(container.device())
 
     main()

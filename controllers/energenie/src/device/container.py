@@ -6,11 +6,17 @@ from . manager import DeviceManager
 
 class DeviceContainer(containers.DeclarativeContainer):
 
+    __self__ = providers.Self()
+
+    service_provider = providers.Singleton(
+        __self__
+    )
+
     config = providers.Dependency()
 
     logger = providers.Dependency()
 
-    service_provider = providers.Dependency()
+    common = providers.Dependency()
 
     device_manager = providers.Singleton(
         DeviceManager,
@@ -22,20 +28,20 @@ class DeviceContainer(containers.DeclarativeContainer):
 
 def add_sockets(container):
     SocketDevice, SocketGroupDevice = import_energenie(
-        container.common.config(), container.common.logger()
+        container.config(), container.logger()
     )
 
     setattr(container, 'socket_factory', providers.Factory(
         SocketDevice,
-        config=container.common.config,
-        logger=container.common.logger,
+        config=container.config,
+        logger=container.logger,
         mqtt_client=container.common.mqtt_client
     ))
 
     setattr(container, 'socket_group_factory', providers.Factory(
         SocketGroupDevice,
-        config=container.common.config,
-        logger=container.common.logger,
+        config=container.config,
+        logger=container.logger,
         mqtt_client=container.common.mqtt_client,
-        device_manager=container.device.device_manager
+        device_manager=container.device_manager
     ))

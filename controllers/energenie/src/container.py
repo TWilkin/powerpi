@@ -9,18 +9,18 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     __self__ = providers.Self()
 
+    service_provider = providers.Singleton(
+        __self__
+    )
+
     common = providers.Container(
         CommonContainer,
         app_name=__app_name__
-    )
-
-    service_provider = providers.Singleton(
-        __self__
     )
 
     device = providers.Container(
         DeviceContainer,
         config=common.config,
         logger=common.logger,
-        service_provider=service_provider
+        common=common
     )
