@@ -5,6 +5,7 @@ import time
 from wrapt import synchronized
 
 from power_starter.util.logger import Logger
+from .remote_device import RemoteDevice
 
 
 class Device(object):
@@ -61,11 +62,11 @@ class Device(object):
                     return cls.loggers.fget(cls)
                 else:
                     return []
-            
+
             @property
             def pollable(self):
                 return getattr(cls, 'poll', None) is not None
-            
+
             def poll(self):
                 if self.pollable:
                     self.status = cls.poll(self)
@@ -79,7 +80,7 @@ class Device(object):
             def turn_off(self):
                 cls.turn_off(self)
                 self.status = 'off'
-            
+
             @synchronized
             def update_status(self, value, publish=True):
                 try:
@@ -91,7 +92,8 @@ class Device(object):
 
                     # call the callback if the status has changed
                     if publish and old_value != value and self.__state_change_callback is not None:
-                        self.__state_change_callback(self.__name, self.__status)
+                        self.__state_change_callback(
+                            self.__name, self.__status)
                 except Exception as e:
                     Logger.error(e)
 
@@ -104,7 +106,8 @@ class Device(object):
 class DeviceNotFoundException(Exception):
 
     def __init__(self, device_type, name):
-        Exception.__init__(self, 'Cannot find device "%s" of type "%s".' % (name, device_type))
+        Exception.__init__(
+            self, 'Cannot find device "%s" of type "%s".' % (name, device_type))
 
 
 class DeviceManager(object):
@@ -191,7 +194,13 @@ class DeviceManager(object):
                 Logger.add_logger(logger)
             return instance
         else:
-            raise DeviceNotFoundException(device_type, kws['name'])
+            instance = RemoteDevice(**kws)
+            Logger.info('Created %s' % instance)
+
+            # register the device instance
+            DeviceManager.register(device_type, instance)
+
+            return instance
 
 
 @Device(device_type='composite')
@@ -202,7 +211,7 @@ class CompositeDevice(object):
         for device in devices:
             d = DeviceManager.get_device(device)
             self.__devices.append(d)
-    
+
     def poll(self):
         all_on = True
         all_off = True
@@ -211,7 +220,7 @@ class CompositeDevice(object):
             if device is not None:
                 all_on &= device.status == 'on'
                 all_off &= device.status == 'off'
-        
+
         if all_on:
             self.status = 'on'
         elif all_off:
@@ -253,21 +262,21 @@ class MutexDevice(object):
         for device in off_devices:
             d = DeviceManager.get_device(device)
             self.__off_devices.append(d)
-    
+
     def poll(self):
         all_on = True
         all_off = True
-        
+
         for device in self.__on_devices:
             if device is not None:
                 all_on &= device.status == 'on'
                 all_off &= device.status == 'off'
-        
+
         for device in self.__off_devices:
             if device is not None:
                 all_on &= device.status == 'off'
                 all_off &= device.status == 'off'
-        
+
         if all_on:
             self.status = 'on'
         elif all_off:
