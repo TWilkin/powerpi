@@ -39,9 +39,29 @@ services:
       - source: devices_config
         target: /devices.json
 
+  power-starter:
+    build: ../power-starter
+    image: ${REGISTRY}/powerpi/power-starter:0.6.0
+    networks:
+      - powerpi
+    deploy:
+      replicas: 1
+    depends_on:
+      - mosquitto
+    environment:
+      - MQTT_ADDRESS=mqtt://mosquitto:1883
+      - TOPIC_BASE=powerpi
+      - DEVICES_FILE=/devices.json
+      - EVENTS_FILE=/events.json
+    configs:
+      - source: devices_config
+        target: /devices.json
+      - source: events_config
+        target: /events.json
+
   device-mapper:
     build: ../device-mapper
-    image: ${REGISTRY}/powerpi/device-mapper:0.0.1
+    image: ${REGISTRY}/powerpi/device-mapper:0.0.2
     networks:
       - powerpi
     deploy:
@@ -56,18 +76,15 @@ services:
       - ENERGENIE_DEVICE=ENER314-RT
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
-      - POLL_FREQUENCY=120
       - DEVICES_FILE=/devices.json
-      - EVENTS_FILE=/events.json
-      - POWER_STARTER_IMAGE=${REGISTRY}/powerpi/power-starter:0.6.0
+      - CONTROLLER_NAME=energenie_controller
+      - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.1
       - GPIOMEM=/dev/gpiomem
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     configs:
       - source: devices_config
         target: /devices.json
-      - source: events_config
-        target: /events.json
 
   light-fantastic:
     build: ../light-fantastic
