@@ -30,6 +30,18 @@ class MQTTClient(object):
 
         self.__consumers[key].append(consumer)
 
+    def remove_consumer(self, consumer: MQTTConsumer):
+        key = consumer.topic
+
+        if key in self.__consumers:
+            self.__consumers[key].remove(consumer)
+
+        topic = '{}/{}'.format(self.__config.topic_base, key)
+        self.__logger.info(
+            'Unsubcribing from topic \'{:s}\''.format(topic)
+        )
+        self.__client.unsubscribe(topic)
+
     def add_producer(self):
         def publish(topic, message):
             # add the timestamp to the message

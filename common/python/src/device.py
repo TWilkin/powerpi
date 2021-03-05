@@ -2,10 +2,26 @@ from abc import abstractmethod
 
 from .config import Config
 from .logger import Logger
-from .mqtt import MQTTClient, PowerEventConsumer
+from .mqtt import MQTTClient, StatusEventConsumer, PowerEventConsumer
 
 
 class Device(PowerEventConsumer):
+    class __StatusEventConsumer(StatusEventConsumer):
+        def __init__(self, device, mqtt_client: MQTTClient):
+            StatusEventConsumer.__init__(
+                self, device, device._config, device._logger
+            )
+            self.__mqtt_client = mqtt_client
+
+            mqtt_client.add_consumer(self)
+
+        def _update_device(self, new_state):
+            # override default behaviour to prevent events generated for state change
+            self._device.__state = new_state
+
+            # remove this consumer as it has completed its job
+            self.__mqtt_client.remove_consumer(self)
+
     def __init__(
         self,
         config: Config,
@@ -22,6 +38,8 @@ class Device(PowerEventConsumer):
         self._producer = mqtt_client.add_producer()
 
         mqtt_client.add_consumer(self)
+
+        self.__StatusEventConsumer(self, mqtt_client)
 
     @property
     def name(self):

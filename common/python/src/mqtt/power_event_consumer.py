@@ -1,23 +1,21 @@
-from datetime import datetime
-
 from ..config import Config
 from ..logger import Logger
-from . consumer import MQTTConsumer
+from . device_state_event_consumer import DeviceStateEventConsumer
 
 
-class PowerEventConsumer(MQTTConsumer):
+class PowerEventConsumer(DeviceStateEventConsumer):
 
     def __init__(self, device, config: Config, logger: Logger):
-        MQTTConsumer.__init__(
-            self, 'device/{}/change'.format(device.name), config, logger
+        topic = 'device/{}/change'.format(device.name)
+        DeviceStateEventConsumer.__init__(
+            self, topic, device, config, logger
         )
-        self.__device = device
 
     # MQTT message callback
     def on_message(self, client, user_data, message, entity, action):
         # check if we should respond to this message
         if action == 'change':
-            if self.__is_message_valid(entity, message['state'], message['timestamp']):
+            if self._is_message_valid(entity, message['state'], message['timestamp']):
                 # attempt to power the device on/off
                 self.__power(message['state'])
 
@@ -26,24 +24,9 @@ class PowerEventConsumer(MQTTConsumer):
         # turn the device on/off
         try:
             if state == 'on':
-                self.__device.turn_on()
+                self._device.turn_on()
             else:
-                self.__device.turn_off()
+                self._device.turn_off()
         except Exception as e:
             self._logger.exception(e)
             return
-
-    def __is_message_valid(self, device_name: str, state: str, timestamp: int):
-        valid = super().is_timestamp_valid(timestamp)
-
-        if state != 'on' and state != 'off':
-            self._logger.error('Unrecognisable state {:s}'.format(state))
-            valid = False
-
-        if device_name is None or device_name.strip() == '':
-            self._logger.error('Device is a required field')
-            valid = False
-        else:
-            valid &= device_name == self.__device.name
-
-        return valid

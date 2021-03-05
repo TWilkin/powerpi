@@ -1,0 +1,31 @@
+from datetime import datetime
+
+from ..config import Config
+from ..logger import Logger
+from . consumer import MQTTConsumer
+
+
+class DeviceStateEventConsumer(MQTTConsumer):
+    def __init__(self, topic: str, device, config: Config, logger: Logger):
+        MQTTConsumer.__init__(
+            self, topic, config, logger
+        )
+        self._device = device
+
+    def _is_message_valid(self, device_name: str, state: str, timestamp: int = None):
+        if timestamp is not None:
+            valid = super().is_timestamp_valid(timestamp)
+        else:
+            valid = True
+
+        if state != 'on' and state != 'off':
+            self._logger.error('Unrecognisable state {:s}'.format(state))
+            valid = False
+
+        if device_name is None or device_name.strip() == '':
+            self._logger.error('Device is a required field')
+            valid = False
+        else:
+            valid &= device_name == self._device.name
+
+        return valid
