@@ -47,7 +47,7 @@ class RemoteDevice(object):
         )
         self.__waiting.clear()
         while not self.__waiting.is_set():
-            self.__waiting.wait()
+            self.__waiting.wait(12.5)
 
         Logger.info(
             'Continuing after device {}'.format(self.__name)
