@@ -2,6 +2,7 @@ import sys
 
 from dependency_injector.wiring import inject, Provide
 
+from __version import __version__
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
@@ -17,7 +18,7 @@ def main(
     device_manager: DeviceManager = Provide[ApplicationContainer.device.device_manager],
     mqtt_client: MQTTClient = Provide[ApplicationContainer.common.mqtt_client]
 ):
-    logger.info('PowerPi Energenie Controller')
+    logger.info('PowerPi Energenie Controller v{}'.format(__version__))
 
     logger.info('Using Energenie module {module}'
                 .format(module=config.energenie_device))

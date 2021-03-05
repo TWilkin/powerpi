@@ -13,6 +13,8 @@ class Container(containers.DeclarativeContainer):
         __self__
     )
 
+    app_name = providers.Dependency()
+
     config = providers.Singleton(
         Config
     )
@@ -23,6 +25,7 @@ class Container(containers.DeclarativeContainer):
 
     mqtt_client = providers.Singleton(
         MQTTClient,
+        app_name=app_name,
         config=config,
         logger=logger
     )

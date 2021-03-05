@@ -13,11 +13,13 @@ class MQTTClient(object):
 
     def __init__(
         self,
+        app_name: str,
         config: Config,
         logger: Logger
     ):
         self.__config = config
         self.__logger = logger
+        self.__app_name = app_name
         self.__consumers: dict(str, MQTTConsumer) = {}
 
         self.__connect()
@@ -70,7 +72,7 @@ class MQTTClient(object):
                            .format(self.__config.mqtt_address))
 
         url = urlparse(self.__config.mqtt_address)
-        self.__client = mqtt.Client()
+        self.__client = mqtt.Client('powerpi_{}'.format(self.__app_name))
         self.__client.on_connect = self.__on_connect
         self.__client.on_message = self.__on_message
         self.__client.connect(url.hostname, url.port, 60)
