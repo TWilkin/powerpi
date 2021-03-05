@@ -2,7 +2,6 @@ import copy
 import sys
 import time
 
-from threading import Thread
 from wrapt import synchronized
 
 from power_starter.util.logger import Logger
@@ -228,18 +227,12 @@ class CompositeDevice(object):
             self.status = 'off'
 
     def turn_on(self):
-        def func():
-            for device in self.__devices:
-                device.turn_on()
-
-        Thread(target=func).start()
+        for device in self.__devices:
+            device.turn_on()
 
     def turn_off(self):
-        def func():
-            for device in reversed(self.__devices):
-                device.turn_off()
-
-        Thread(target=func).start()
+        for device in reversed(self.__devices):
+            device.turn_off()
 
 
 @Device(device_type='delay')

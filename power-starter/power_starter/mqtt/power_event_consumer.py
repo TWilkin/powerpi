@@ -1,4 +1,5 @@
 from datetime import datetime
+from threading import Thread
 
 from power_starter.devices import DeviceManager
 from power_starter.devices.remote_device import RemoteDevice
@@ -28,16 +29,19 @@ class PowerEventConsumer(MQTTConsumer):
         if type(device) is RemoteDevice:
             return
 
-        # turn the device on/off
-        try:
-            Logger.info('Turning device {:s} {:s}'.format(device_name, state))
-            if state == 'on':
-                device.turn_on()
-            else:
-                device.turn_off()
-        except e:
-            Logger.exception(e)
-            return
+        def func():
+            try:
+                Logger.info('Turning device {:s} {:s}'.format(
+                    device_name, state))
+                if state == 'on':
+                    device.turn_on()
+                else:
+                    device.turn_off()
+            except Exception as e:
+                Logger.exception(e)
+                return
+
+        Thread(target=func).start()
 
     def __is_message_valid(self, device, state, timestamp):
         return super().is_timestamp_valid(timestamp) and is_message_valid(device, state)
