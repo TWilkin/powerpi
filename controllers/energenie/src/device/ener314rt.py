@@ -46,7 +46,7 @@ class SocketGroupDeviceImpl(SocketGroupDevice, energenie.Devices.ENER002):
         energenie.Devices.ENER002.__init__(self, (int(home_id), 0))
 
     def _turn_on(self):
-        self.__run(energenie.Devices.ENER002.turn_on, 'on', self)
+        self._run(energenie.Devices.ENER002.turn_on, 'on', self)
 
     def _turn_off(self):
-        self.__run(energenie.Devices.ENER002.turn_off, 'off', self)
+        self._run(energenie.Devices.ENER002.turn_off, 'off', self)
