@@ -2,6 +2,7 @@ import copy
 import sys
 import time
 
+from threading import Thread
 from wrapt import synchronized
 
 from power_starter.util.logger import Logger
@@ -167,7 +168,7 @@ class DeviceManager(object):
         return None
 
     @classmethod
-    def load(cls, config, devices, state_change_callback=None):
+    def load(cls, config, devices, state_change_callback=None, client=None):
         # iterate over the devices and create them
         for device in devices:
             device_type = device['type']
@@ -176,14 +177,14 @@ class DeviceManager(object):
             args['state_change_callback'] = state_change_callback
 
             try:
-                cls.__instantiate(device_type, **args)
+                cls.__instantiate(device_type, client, **args)
             except DeviceNotFoundException as e:
                 Logger.exception(e)
                 if config.device_fatal:
                     sys.exit(-1)
 
     @classmethod
-    def __instantiate(cls, device_type, **kws):
+    def __instantiate(cls, device_type, client, **kws):
         if device_type in cls.__types:
             device_cls = cls.__types[device_type]
             instance = device_cls(**kws)
@@ -194,7 +195,7 @@ class DeviceManager(object):
                 Logger.add_logger(logger)
             return instance
         else:
-            instance = RemoteDevice(**kws)
+            instance = RemoteDevice(client, **kws)
             Logger.info('Created %s' % instance)
 
             # register the device instance
@@ -227,12 +228,18 @@ class CompositeDevice(object):
             self.status = 'off'
 
     def turn_on(self):
-        for device in self.__devices:
-            device.turn_on()
+        def func():
+            for device in self.__devices:
+                device.turn_on()
+
+        Thread(target=func).start()
 
     def turn_off(self):
-        for device in reversed(self.__devices):
-            device.turn_off()
+        def func():
+            for device in reversed(self.__devices):
+                device.turn_off()
+
+        Thread(target=func).start()
 
 
 @Device(device_type='delay')
@@ -292,3 +299,15 @@ class MutexDevice(object):
     def turn_off(self):
         for device in self.__on_devices + self.__off_devices:
             device.turn_off()
+
+
+@Device(device_type='test')
+class TestDevice(object):
+    def __init__(self, message):
+        self.__message = message
+
+    def turn_on(self):
+        Logger.info('{}: on: {}'.format(self, self.__message))
+
+    def turn_off(self):
+        Logger.info('{}: off: {}'.format(self, self.__message))
