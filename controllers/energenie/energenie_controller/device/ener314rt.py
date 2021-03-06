@@ -1,3 +1,5 @@
+import atexit
+
 from pyenergenie import energenie
 
 from powerpi_common.config import Config
@@ -7,6 +9,7 @@ from . socket import SocketDevice, SocketGroupDevice
 
 
 energenie.init()
+atexit.register(energenie.finished)
 
 
 class SocketDeviceImpl(SocketDevice, energenie.Devices.ENER002):
