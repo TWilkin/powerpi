@@ -1,15 +1,8 @@
-from dependency_injector.wiring import inject, Provide
-
-from powerpi_common.config import Config
-from powerpi_common.container import Container
 from powerpi_common.logger import Logger
+from energenie_controller.config import EnergenieConfig
 
 
-@inject
-def import_energenie(
-    config: Config = Provide[Container.config],
-    logger: Logger = Provide[Container.logger]
-):
+def import_energenie(config: EnergenieConfig, logger: Logger):
     # import the appropriate implementation of SocketDevice
     try:
         if config.is_ener314_rt:
