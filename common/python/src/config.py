@@ -26,7 +26,7 @@ class Config(object):
     @property
     def message_age_cutoff(self):
         cutoff = as_int(os.getenv('MESSAGE_AGE_CUTOFF'))
-        return cutoff if cutoff is not None else 120
+        return cutoff if cutoff is not None else 10
 
     @property
     def devices(self):
