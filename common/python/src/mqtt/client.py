@@ -62,8 +62,6 @@ class MQTTClient(object):
 
         self.__connect()
 
-        self.__wait_for_connection()
-
         self.__client.loop_forever()
 
     def __connect(self):
@@ -89,12 +87,11 @@ class MQTTClient(object):
         self.__client.on_connect = self.__on_connect
         self.__client.on_disconnect = self.__on_disconnect
         self.__client.on_message = self.__on_message
-        self.__client.loop_start()
+        self.__client.on_log = self.__on_log
         self.__client.connect(url.hostname, url.port, 60)
 
     def __disconnect(self):
         self.__logger.info('Disconnecting from MQTT')
-        self.__client.loop_stop()
         self.__client.disconnect()
 
     def __on_connect(self, client, user_data, flags, result_code):
@@ -142,6 +139,9 @@ class MQTTClient(object):
         if listener_key in self.__consumers:
             for consumer in self.__consumers[listener_key]:
                 consumer.on_message(client, user_data, event, entity, action)
+
+    def __on_log(self, client, user_data, level, message):
+        self.__logger.debug('MQTT({}): {}'.format(level, message))
 
     def __publish(self, topic: str, message: dict):
         self.__wait_for_connection()

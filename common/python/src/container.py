@@ -20,7 +20,8 @@ class Container(containers.DeclarativeContainer):
     )
 
     logger = providers.Singleton(
-        Logger
+        Logger,
+        config=config
     )
 
     mqtt_client = providers.Singleton(

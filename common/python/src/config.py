@@ -5,6 +5,11 @@ import os
 
 class Config(object):
     @property
+    def log_level(self):
+        level = os.getenv('LOG_LEVEL')
+        return level.upper() if level is not None else 'INFO'
+
+    @property
     def mqtt_address(self):
         return os.getenv('MQTT_ADDRESS')
 

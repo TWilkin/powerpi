@@ -1,17 +1,24 @@
 import logging
 
+from powerpi_common.config import Config
+
 
 class Logger(object):
-    def __init__(self):
+    def __init__(self, config: Config):
+        log_level = logging.getLevelName(config.log_level)
+
         handler = logging.StreamHandler()
-        handler.setLevel(logging.INFO)
+        handler.setLevel(log_level)
         handler.setFormatter(logging.Formatter(
             '%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S'
         ))
 
         self.__logger = logging.getLogger()
-        self.__logger.setLevel(logging.INFO)
+        self.__logger.setLevel(log_level)
         self.__logger.addHandler(handler)
+
+    def debug(self, *args):
+        self.__logger.debug(*args)
 
     def info(self, *args):
         self.__logger.info(*args)
