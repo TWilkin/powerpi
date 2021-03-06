@@ -2,13 +2,13 @@ import sys
 
 from dependency_injector.wiring import inject, Provide
 
-from __version import __version__
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
-from container import ApplicationContainer
-from device.container import add_sockets
-from device.manager import DeviceManager
+from energenie_controller.__version import __version__
+from energenie_controller.container import ApplicationContainer
+from energenie_controller.device.container import add_sockets
+from energenie_controller.device.manager import DeviceManager
 
 
 @inject

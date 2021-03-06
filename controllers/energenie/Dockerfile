@@ -31,7 +31,7 @@ COPY --from=compile-image /opt/venv ./venv
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 
 # add the application
-COPY controllers/energenie/src/ ./
+COPY controllers/energenie/energenie_controller ./energenie_controller/
 
 # start the application once the container is ready
-CMD python main.py
+CMD python -m energenie_controller

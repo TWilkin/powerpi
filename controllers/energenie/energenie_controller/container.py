@@ -1,8 +1,8 @@
 from dependency_injector import containers, providers
 
-from __version import __app_name__
 from powerpi_common.container import Container as CommonContainer
-from device.container import DeviceContainer
+from energenie_controller.__version import __app_name__
+from energenie_controller.device.container import DeviceContainer
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
