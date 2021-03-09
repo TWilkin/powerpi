@@ -11,8 +11,7 @@ from harmony_controller.container import ApplicationContainer
 @inject
 def main(
     logger: Logger = Provide[ApplicationContainer.common.logger],
-    mqtt_client: MQTTClient = Provide[ApplicationContainer.common.mqtt_client],
-    hub=Provide[ApplicationContainer.device.harmony_hub_device]
+    mqtt_client: MQTTClient = Provide[ApplicationContainer.common.mqtt_client]
 ):
     logger.info('PowerPi Harmony Controller v{}'.format(__version__))
 

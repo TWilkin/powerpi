@@ -27,6 +27,5 @@ class DeviceContainer(containers.DeclarativeContainer):
         config=config,
         logger=logger,
         mqtt_client=mqtt_client,
-        harmony_client=harmony_client,
-        name='test'
+        harmony_client=harmony_client
     )
