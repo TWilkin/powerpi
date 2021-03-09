@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+energenie = "~=1.0.1"
+powerpi-common = {path = "./../../common/python"}
+pyenergenie = {git = "https://****@github.com/TWilkin/pyenergenie.git"}
+
+[dev-packages]
+autopep8 = "~=1.5.5"
+pylint = "~=2.7.1"
+pytest = "~=6.2.2"
+pytest-mock = "~=3.5.1"
+
+[requires]
+python_version = "3"
+
+[scripts]
+start = "python -m energenie_controller"
+test = "python -m pytest -v"

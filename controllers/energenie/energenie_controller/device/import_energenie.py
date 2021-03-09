@@ -1,0 +1,21 @@
+from powerpi_common.logger import Logger
+from energenie_controller.config import EnergenieConfig
+
+
+def import_energenie(config: EnergenieConfig, logger: Logger):
+    # import the appropriate implementation of SocketDevice
+    try:
+        if config.is_ener314_rt:
+            from . ener314rt import SocketDeviceImpl as SocketDevice, SocketGroupDeviceImpl as SocketGroupDevice
+        else:
+            from . ener314 import SocketDeviceImpl as SocketDevice, SocketGroupDeviceImpl as SocketGroupDevice
+    except:
+        if config.device_fatal:
+            logger.error('DEVICE_FATAL=true, must be run on Raspberry Pi')
+            raise
+
+        # for testing off a Pi
+        logger.warn('DEVICE_FATAL=false, no sockets will turn on/off')
+        from . socket import SocketDevice, SocketGroupDevice
+
+    return SocketDevice, SocketGroupDevice

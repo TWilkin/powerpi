@@ -18,11 +18,12 @@ here = lambda *a: os.path.join(os.path.dirname(__file__), *a)
 
 # read the requirements.txt
 with open(here('requirements.txt'), 'r') as requirements_file:
-    requirements = [get_package_name(x.strip()) for x in requirements_file.readlines()]
+    requirements = [get_package_name(x.strip())
+                    for x in requirements_file.readlines()]
 
 setup(
     name='power_starter',
-    version='0.6.0',
+    version='0.7.0',
     description='PowerPi Power Starter Home Automation service',
     author='Tom Wilkin',
     classifiers=[
