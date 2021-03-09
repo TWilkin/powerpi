@@ -10,8 +10,8 @@ setup(
     ],
     packages=['powerpi_common', 'powerpi_common.mqtt'],
     package_dir={
-        'powerpi_common': 'src/', 
-        'powerpi_common.mqtt': 'src/mqtt/'
+        'powerpi_common': 'powerpi_common/',
+        'powerpi_common.mqtt': 'powerpi_common/mqtt/'
     },
     install_requires=[
         'dependency-injector~=4.27.0',

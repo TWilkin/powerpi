@@ -8,8 +8,12 @@ dependency-injector = "~=4.27.0"
 paho-mqtt = "~=1.5.1"
 
 [dev-packages]
-pylint = "~=2.7.1"
 autopep8 = "~=1.5.5"
+powerpi-common-test = {path = "./../pytest"}
+pylint = "~=2.7.1"
 
 [requires]
 python_version = "3"
+
+[scripts]
+test = "python -m pytest -v"
