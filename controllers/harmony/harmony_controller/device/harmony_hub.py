@@ -1,3 +1,6 @@
+from cachetools import cached, TTLCache
+from threading import Lock
+
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.device import Device
@@ -23,6 +26,8 @@ class HarmonyHubDevice(Device):
         self.__client.address = hostname if hostname is not None else ip
         self.__client.port = port
 
+        self.__cache_lock = Lock()
+
     def _turn_on(self):
         pass
 
@@ -30,3 +35,10 @@ class HarmonyHubDevice(Device):
         with self.__client as client:
             if client:
                 client.power_off()
+
+    @cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
+    def config(self):
+        with self.__client as client:
+            if client:
+                with self.__cache_lock:
+                    return client.get_config()
