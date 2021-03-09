@@ -11,9 +11,12 @@ from harmony_controller.container import ApplicationContainer
 @inject
 def main(
     logger: Logger = Provide[ApplicationContainer.common.logger],
-    mqtt_client: MQTTClient = Provide[ApplicationContainer.common.mqtt_client]
+    mqtt_client: MQTTClient = Provide[ApplicationContainer.common.mqtt_client],
+    hub=Provide[ApplicationContainer.device.harmony_hub_device]
 ):
     logger.info('PowerPi Harmony Controller v{}'.format(__version__))
+
+    print(hub)
 
     # use MQTT loop to handle messages
     mqtt_client.loop()
