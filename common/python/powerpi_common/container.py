@@ -1,12 +1,11 @@
 from dependency_injector import containers, providers
 
-from . config import Config
-from . logger import Logger
-from .mqtt.client import MQTTClient
+from powerpi_common.config import Config
+from powerpi_common.logger import Logger
+from powerpi_common.mqtt.client import MQTTClient
 
 
 class Container(containers.DeclarativeContainer):
-
     __self__ = providers.Self()
 
     service_provider = providers.Singleton(
