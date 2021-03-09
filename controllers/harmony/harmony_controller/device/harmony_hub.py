@@ -71,6 +71,3 @@ class HarmonyHubDevice(Device):
         )
 
         return activities
-
-    def __str__(self):
-        return 'HarmonyHubDevice({})'.format(self.name)

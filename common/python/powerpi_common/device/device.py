@@ -64,13 +64,13 @@ class Device(PowerEventConsumer):
 
     def turn_on(self):
         self._logger.info(
-            'Turning on socket "{name}"'.format(name=self._name))
+            'Turning on device {}'.format(self))
         self._turn_on()
         self.state = 'on'
 
     def turn_off(self):
         self._logger.info(
-            'Turning off socket "{name}"'.format(name=self._name))
+            'Turning off device {}'.format(self))
         self._turn_off()
         self.state = 'off'
 
@@ -81,3 +81,6 @@ class Device(PowerEventConsumer):
     @abstractmethod
     def _turn_off(self):
         raise NotImplementedError
+
+    def __str__(self):
+        return '{}({}, {})'.format(type(self).__name__, self._name, self.__state)
