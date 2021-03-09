@@ -8,11 +8,7 @@ setup(
     classifiers=[
         'Programming Language :: Python :: 3.6',
     ],
-    packages=['powerpi_common', 'powerpi_common.mqtt'],
-    package_dir={
-        'powerpi_common': 'powerpi_common/',
-        'powerpi_common.mqtt': 'powerpi_common/mqtt/'
-    },
+    packages=find_packages(),
     install_requires=[
         'dependency-injector~=4.27.0',
         'paho-mqtt~=1.5.1'
