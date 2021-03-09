@@ -1,0 +1,11 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pytest = "~=6.2.2"
+pytest-mock = "~=3.5.1"
+
+[requires]
+python_version = "3"

@@ -1,7 +1,7 @@
 from pytest_mock import MockerFixture
 
 from powerpi_common.device import Device
-from .device import DeviceTestBase
+from powerpi_common_test.device import DeviceTestBase
 
 
 class DeviceImpl(Device):

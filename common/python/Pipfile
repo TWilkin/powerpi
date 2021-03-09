@@ -9,9 +9,8 @@ paho-mqtt = "~=1.5.1"
 
 [dev-packages]
 autopep8 = "~=1.5.5"
+powerpi-common-test = {path = "./../pytest"}
 pylint = "~=2.7.1"
-pytest = "~=6.2.2"
-pytest-mock = "~=3.5.1"
 
 [requires]
 python_version = "3"
