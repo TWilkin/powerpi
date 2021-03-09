@@ -1,8 +1,8 @@
 from abc import abstractmethod
 
-from .config import Config
-from .logger import Logger
-from .mqtt import MQTTClient, StatusEventConsumer, PowerEventConsumer
+from powerpi_common.config import Config
+from powerpi_common.logger import Logger
+from powerpi_common.mqtt import MQTTClient, StatusEventConsumer, PowerEventConsumer
 
 
 class Device(PowerEventConsumer):
