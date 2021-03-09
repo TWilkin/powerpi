@@ -16,8 +16,6 @@ def main(
 ):
     logger.info('PowerPi Harmony Controller v{}'.format(__version__))
 
-    print(hub)
-
     # use MQTT loop to handle messages
     mqtt_client.loop()
 
