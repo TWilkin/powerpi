@@ -21,11 +21,13 @@ RUN pipenv install --three --deploy --ignore-pipfile
 # use multi-stage build to remove compile dependencies
 FROM python:3.9.2-alpine AS build-image
 WORKDIR /usr/src/app
-COPY --from=compile-image /opt/venv ./venv
+RUN adduser --disabled-password powerpi
+USER powerpi
+COPY --from=compile-image --chown=powerpi /opt/venv ./venv
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 
 # add the application
-COPY controllers/harmony/harmony_controller ./harmony_controller/
+COPY --chown=powerpi controllers/harmony/harmony_controller ./harmony_controller/
 
 # start the application once the container is ready
 CMD python -m harmony_controller
