@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5cd6ca4574d63b9173d87b76ff065576473d9ae53d10c45f51d88dd1c944f234"
+            "sha256": "61102cbba159b33ffe317f5466822831700b7bf7523440b313e7e29bae08a1ef"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -281,8 +281,8 @@
             "version": "==0.13.1"
         },
         "powerpi-common-test": {
-            "path": "./../../common/pytest",
-            "version": "==0.0.1"
+            "editable": true,
+            "path": "./../../common/pytest"
         },
         "py": {
             "hashes": [
