@@ -41,7 +41,7 @@ services:
 
   power-starter:
     build: ../power-starter
-    image: ${REGISTRY}/powerpi/power-starter:0.7.0
+    image: ${REGISTRY}/powerpi/power-starter:0.7.1
     networks:
       - powerpi
     deploy:
