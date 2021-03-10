@@ -2,6 +2,7 @@ from dependency_injector import containers, providers
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
+from powerpi_common.device import DeviceContainer
 from powerpi_common.mqtt.client import MQTTClient
 
 
@@ -28,4 +29,11 @@ class Container(containers.DeclarativeContainer):
         app_name=app_name,
         config=config,
         logger=logger
+    )
+
+    device = providers.Container(
+        DeviceContainer,
+        config=config,
+        logger=logger,
+        mqtt_client=mqtt_client
     )

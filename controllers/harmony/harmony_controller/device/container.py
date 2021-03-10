@@ -11,21 +11,25 @@ class DeviceContainer(containers.DeclarativeContainer):
         __self__
     )
 
-    config = providers.Dependency()
-
     logger = providers.Dependency()
-
-    mqtt_client = providers.Dependency()
 
     harmony_client = providers.Factory(
         HarmonyClient,
         logger=logger
     )
 
-    harmony_hub_device = providers.Factory(
-        HarmonyHubDevice,
-        config=config,
-        logger=logger,
-        mqtt_client=mqtt_client,
-        harmony_client=harmony_client
+
+def add_devices(container):
+    device_container = container.common().device()
+
+    setattr(
+        device_container,
+        'harmony_hub_device',
+        providers.Factory(
+            HarmonyHubDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client,
+            harmony_client=container.device.harmony_client
+        )
     )

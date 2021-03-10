@@ -8,18 +8,22 @@ from .manager import DeviceManager
 
 
 class DeviceContainer(containers.DeclarativeContainer):
+    __self__ = providers.Self()
+
+    service_provider = providers.Singleton(
+        __self__
+    )
+
     config = providers.Dependency()
 
     logger = providers.Dependency()
 
     mqtt_client = providers.Dependency()
 
-    device_service_provider = providers.Dependency()
-
     device_factory = providers.Factory(
         DeviceFactory,
         logger=logger,
-        service_provider=device_service_provider
+        service_provider=service_provider
     )
 
     device_manager = providers.Singleton(
