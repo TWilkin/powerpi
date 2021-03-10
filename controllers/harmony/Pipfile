@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 cachetools = "~=4.2.1"
+lazy = "~=1.4"
 powerpi-common = {path = "./../../common/python"}
 pyharmony = "~=1.0.21"
 

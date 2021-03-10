@@ -1,5 +1,6 @@
 from dependency_injector import containers, providers
 
+from .harmony_activity import HarmonyActivityDevice
 from .harmony_client import HarmonyClient
 from .harmony_hub import HarmonyHubDevice
 
@@ -31,5 +32,17 @@ def add_devices(container):
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
             harmony_client=container.device.harmony_client
+        )
+    )
+
+    setattr(
+        device_container,
+        'harmony_activity_device',
+        providers.Factory(
+            HarmonyActivityDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client,
+            device_manager=container.common.device.device_manager
         )
     )
