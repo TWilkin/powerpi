@@ -1,4 +1,4 @@
-FROM python:3.9.2-alpine AS compile-image
+FROM python:3.9.2-alpine3.12 AS compile-image
 LABEL description="Python application to listen to the queue and start/stop Logitech Harmony activities as requested"
 
 # ensure we have the dependencies to run pip
@@ -19,7 +19,7 @@ COPY controllers/harmony/Pipfile* ./
 RUN pipenv install --three --deploy --ignore-pipfile
 
 # use multi-stage build to remove compile dependencies
-FROM python:3.9.2-alpine AS build-image
+FROM python:3.9.2-alpine3.12 AS build-image
 WORKDIR /usr/src/app
 RUN adduser --disabled-password powerpi
 USER powerpi
