@@ -17,6 +17,15 @@ class Logger(object):
         self.__logger.setLevel(log_level)
         self.__logger.addHandler(self.__handler)
 
+        print("""
+__________                         __________.__ 
+\______   \______  _  __ __________\______   \__|
+ |     ___/  _ \ \/ \/ // __ \_  __ \     ___/  |
+ |    |  (  <_> )     /\  ___/|  | \/    |   |  |
+ |____|   \____/ \/\_/  \___  >__|  |____|   |__|
+                            \/                   
+        """)
+
     def add_logger(self, name):
         logger = logging.getLogger(name)
         logger.addHandler(self.__handler)
