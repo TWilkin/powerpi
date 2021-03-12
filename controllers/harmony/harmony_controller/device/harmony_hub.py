@@ -3,7 +3,7 @@ from threading import Lock
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.device import Device
+from powerpi_common.device import Device, DeviceManager
 from powerpi_common.mqtt import MQTTClient
 from harmony_controller.device.harmony_client import HarmonyClient
 
@@ -14,6 +14,7 @@ class HarmonyHubDevice(Device):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
+        device_manager: DeviceManager,
         harmony_client: HarmonyClient,
         name: str,
         ip: str = None,
@@ -21,6 +22,8 @@ class HarmonyHubDevice(Device):
         port: int = 5222
     ):
         Device.__init__(self, config, logger, mqtt_client, name)
+
+        self.__device_manager = device_manager
 
         self.__client = harmony_client
         self.__client.address = hostname if hostname is not None else ip
@@ -35,6 +38,15 @@ class HarmonyHubDevice(Device):
         with self.__client as client:
             if client:
                 client.power_off()
+
+        # update the state to off for all activities
+        for activity in self.__activities():
+            try:
+                device = self.__device_manager.get_device(activity)
+                device.state = 'off'
+            except:
+                # probably an unregistered activity or PowerOff
+                pass
 
     def start_activity(self, name: str):
         activities = self.__activities()

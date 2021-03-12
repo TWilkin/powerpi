@@ -31,6 +31,7 @@ def add_devices(container):
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
+            device_manager=container.common.device.device_manager,
             harmony_client=container.device.harmony_client
         )
     )
