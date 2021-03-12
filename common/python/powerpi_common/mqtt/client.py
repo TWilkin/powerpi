@@ -73,8 +73,6 @@ class MQTTClient(object):
         client_id = '{}-{}'.format(
             self.__app_name, socket.gethostname()
         ).lower()
-        if len(client_id) > 23:
-            client_id = client_id[:23]
 
         self.__logger.info(
             'Connecting to MQTT at "{}" as "{}"'.format(
