@@ -75,6 +75,11 @@ class TestHarmonyHubDevice(DeviceTestBase):
             self.config_data['activity'][1]['id']
         )
 
+        # update state of other activities
+        self.device_manager.get_device.assert_has_calls(
+            [mocker.call('Test Activity 1')]
+        )
+
     def test_config_and_activities_cache(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 

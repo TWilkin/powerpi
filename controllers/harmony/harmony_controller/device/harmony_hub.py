@@ -76,6 +76,21 @@ class HarmonyHubDevice(ThreadedDevice):
             self._logger.error(
                 'Activity "{}" for {} not found'.format(name, self)
             )
+            return
+
+        # only one activity can be started, so update the state
+        for activity in self.__activities():
+            if name == activity:
+                continue
+
+            try:
+                device = self.__device_manager.get_device(activity)
+
+                if device.state == 'on':
+                    device.state = 'off'
+            except:
+                # probably an unregistered activity or PowerOff
+                pass
 
     @cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
     def __config(self):
