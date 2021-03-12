@@ -31,6 +31,23 @@ class HarmonyHubDevice(Device):
 
         self.__cache_lock = Lock()
 
+    def poll(self):
+        with self.__client as client:
+            if client:
+                current_activity_id = client.get_current_activity()
+
+                for activity, activity_id in self.__activities().items():
+                    try:
+                        device = self.__device_manager.get_device(activity)
+                        current_state = device.state
+                        new_state = 'on' if activity_id == current_activity_id else 'off'
+
+                        if current_state != new_state:
+                            device.state = new_state
+                    except:
+                        # probably an unregistered activity or PowerOff
+                        pass
+
     def _turn_on(self):
         pass
 

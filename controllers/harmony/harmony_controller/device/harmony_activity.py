@@ -22,6 +22,9 @@ class HarmonyActivityDevice(Device):
         self.__device_manager = device_manager
         self.__hub_name = hub
 
+    def poll(self):
+        pass
+
     @lazy
     def __hub(self) -> HarmonyHubDevice:
         return self.__device_manager.get_device(self.__hub_name)
