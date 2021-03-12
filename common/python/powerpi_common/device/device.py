@@ -75,6 +75,10 @@ class Device(PowerEventConsumer):
         self.state = 'off'
 
     @abstractmethod
+    def poll(self):
+        raise NotImplementedError
+
+    @abstractmethod
     def _turn_on(self):
         raise NotImplementedError
 

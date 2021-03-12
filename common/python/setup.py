@@ -11,7 +11,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'dependency-injector~=4.27.0',
-        'paho-mqtt~=1.5.1'
+        'paho-mqtt~=1.5.1',
+        'schedule~=1.0.0'
     ],
     python_requires='>=3.6'
 )

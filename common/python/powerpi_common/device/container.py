@@ -5,6 +5,7 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt.client import MQTTClient
 from .factory import DeviceFactory
 from .manager import DeviceManager
+from .status import DeviceStatusChecker
 
 
 class DeviceContainer(containers.DeclarativeContainer):
@@ -31,4 +32,11 @@ class DeviceContainer(containers.DeclarativeContainer):
         config=config,
         logger=logger,
         factory=device_factory
+    )
+
+    device_status_checker = providers.Singleton(
+        DeviceStatusChecker,
+        config=config,
+        logger=logger,
+        device_manager=device_manager
     )
