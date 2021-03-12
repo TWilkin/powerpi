@@ -87,6 +87,12 @@ class TestHarmonyHubDevice(DeviceTestBase):
     def test_poll(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
+        mocker.patch.object(
+            self.harmony_client.client,
+            'get_current_activity',
+            return_value=-1
+        )
+
         subject.poll()
 
         self.device_manager.get_device.assert_has_calls(

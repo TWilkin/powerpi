@@ -3,12 +3,12 @@ from threading import Lock
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.device import Device, DeviceManager
+from powerpi_common.device import DeviceManager, ThreadedDevice
 from powerpi_common.mqtt import MQTTClient
 from harmony_controller.device.harmony_client import HarmonyClient
 
 
-class HarmonyHubDevice(Device):
+class HarmonyHubDevice(ThreadedDevice):
     def __init__(
         self,
         config: Config,
@@ -21,7 +21,7 @@ class HarmonyHubDevice(Device):
         hostname: str = None,
         port: int = 5222
     ):
-        Device.__init__(self, config, logger, mqtt_client, name)
+        ThreadedDevice.__init__(self, config, logger, mqtt_client, name)
 
         self.__device_manager = device_manager
 
@@ -52,7 +52,7 @@ class HarmonyHubDevice(Device):
         pass
 
     def _turn_off(self):
-        with self.__client as client:
+        with self._lock, self.__client as client:
             if client:
                 client.power_off()
 
@@ -69,7 +69,7 @@ class HarmonyHubDevice(Device):
         activities = self.__activities()
 
         if name in activities:
-            with self.__client as client:
+            with self._lock, self.__client as client:
                 if client:
                     client.start_activity(activities[name])
         else:
@@ -83,7 +83,7 @@ class HarmonyHubDevice(Device):
             'Loading config for {}'.format(self)
         )
 
-        with self.__client as client:
+        with self._lock, self.__client as client:
             if client:
                 with self.__cache_lock:
                     return client.get_config()
