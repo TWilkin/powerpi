@@ -83,3 +83,12 @@ class TestHarmonyHubDevice(DeviceTestBase):
         subject.start_activity('')
 
         self.harmony_client.client.get_config.assert_called_once()
+
+    def test_poll(self, mocker: MockerFixture):
+        subject = self.get_subject(mocker)
+
+        subject.poll()
+
+        self.device_manager.get_device.assert_has_calls(
+            [mocker.call('Test Activity 1'), mocker.call('Test Activity 2')]
+        )
