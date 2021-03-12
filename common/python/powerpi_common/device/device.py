@@ -17,7 +17,7 @@ class Device(PowerEventConsumer):
 
         def _update_device(self, new_state):
             # override default behaviour to prevent events generated for state change
-            self._device.__state = new_state
+            self._device._update_state_no_broadcast(new_state)
 
             # remove this consumer as it has completed its job
             self.__mqtt_client.remove_consumer(self)
@@ -85,6 +85,9 @@ class Device(PowerEventConsumer):
     @abstractmethod
     def _turn_off(self):
         raise NotImplementedError
+
+    def _update_state_no_broadcast(self, new_state):
+        self.__state = new_state
 
     def __str__(self):
         return '{}({}, {})'.format(type(self).__name__, self._name, self.__state)
