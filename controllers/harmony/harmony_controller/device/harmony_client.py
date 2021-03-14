@@ -2,8 +2,6 @@ import atexit
 import pyharmony
 import time
 
-from pyharmony.client import create_and_connect_client
-
 from powerpi_common.logger import Logger
 
 
@@ -58,13 +56,13 @@ class HarmonyClient(object):
     def connect(self, reconnect=False):
         if reconnect or not self.is_connected:
             self.__logger.info('Connecting to hub at "{}"'.format(self))
-            self.__client = create_and_connect_client(
+            self.__client = pyharmony.client.create_and_connect_client(
                 self.__address, self.__port
             )
 
             if self.__client == False:
                 self.__client = None
-                raise Exception(
+                raise ConnectionError(
                     'Failed to connect to hub at "{}"'.format(self)
                 )
 
@@ -85,7 +83,7 @@ class HarmonyClient(object):
             except Exception as e:
                 first = False
 
-                if retry == retries:
+                if retry == retries - 1:
                     self.__logger.error(
                         'Failed to connect after retry {}, giving up.'.format(
                             retries
