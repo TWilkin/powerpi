@@ -35,19 +35,16 @@ class HarmonyHubDevice(ThreadedDevice):
         self.__activity_lock = Lock()
 
     def poll(self):
-        with self.__client as client:
-            if client:
-                current_activity_id = client.get_current_activity()
+        current_activity_id = self.__client.get_current_activity()
 
-                self.__update_activity_state(current_activity_id)
+        self.__update_activity_state(current_activity_id)
 
     def _turn_on(self):
         pass
 
     def _turn_off(self):
-        with self.__activity_lock, self.__client as client:
-            if client:
-                client.power_off()
+        with self.__activity_lock:
+            self.__client.power_off()
 
         # update the state to off for all activities
         self.__update_activity_state(self.__POWER_OFF_ID)
@@ -56,9 +53,8 @@ class HarmonyHubDevice(ThreadedDevice):
         activities = self.__activities()
 
         if name in activities:
-            with self.__activity_lock, self.__client as client:
-                if client:
-                    client.start_activity(activities[name])
+            with self.__activity_lock:
+                self.__client.start_activity(activities[name])
 
                 # only one activity can be started, so update the state
                 self.__update_activity_state(activities[name], False)
@@ -73,10 +69,8 @@ class HarmonyHubDevice(ThreadedDevice):
             'Loading config for {}'.format(self)
         )
 
-        with self.__client as client:
-            if client:
-                with self.__cache_lock:
-                    return client.get_config()
+        with self.__cache_lock:
+            return self.__client.get_config()
 
     @cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
     def __activities(self):

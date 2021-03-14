@@ -1,4 +1,6 @@
+import atexit
 import pyharmony
+import time
 
 from pyharmony.client import create_and_connect_client
 
@@ -11,36 +13,89 @@ class HarmonyClient(object):
         self.__logger = logger
         self.__logger.add_logger(pyharmony.client.__name__)
 
+        self.__client = None
+
+        atexit.register(self.disconnect)
+
     @property
+    def is_connected(self):
+        return self.__client != None
+
+    @ property
     def address(self):
         return self.__address
 
-    @address.setter
+    @ address.setter
     def address(self, new_address: setattr):
         self.__address = new_address
 
-    @property
+    @ property
     def port(self):
         return self.__port
 
-    @port.setter
+    @ port.setter
     def port(self, new_port: int):
         self.__port = new_port
 
-    def __str__(self):
-        return 'harmony://{}:{}'.format(self.__address, self.__port)
+    def get_config(self):
+        def func():
+            return self.__client.get_config()
 
-    def __enter__(self):
-        self.__logger.info('Connecting to hub at "{}"'.format(self))
-        self.__client = create_and_connect_client(self.__address, self.__port)
+        return self.__reconnect_and_run(func)
 
-        if not self.__client:
-            raise Exception(
-                'Harmony hub at "{}" not found'.format(self)
+    def start_activity(self, activity_name: str):
+        def func():
+            self.__client.start_activity(activity_name)
+
+        self.__reconnect_and_run(func)
+
+    def power_off(self):
+        def func():
+            self.__client.power_off()
+
+        self.__reconnect_and_run(func)
+
+    def connect(self, reconnect=False):
+        if reconnect or not self.is_connected:
+            self.__logger.info('Connecting to hub at "{}"'.format(self))
+            self.__client = create_and_connect_client(
+                self.__address, self.__port
             )
 
-        return self.__client
+            if self.__client == False:
+                self.__client = None
+                raise Exception(
+                    'Failed to connect to hub at "{}"'.format(self)
+                )
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if self.__client:
+    def disconnect(self):
+        if self.is_connected:
+            self.__logger.info('Disconnecting from hub at "{}"'.format(self))
             self.__client.disconnect()
+            self.__client = None
+
+    def __reconnect_and_run(self, func, retries=2):
+        first = True
+
+        for retry in range(0, retries):
+            try:
+                self.connect(not first)
+
+                return func()
+            except Exception as e:
+                first = False
+
+                if retry == retries:
+                    self.__logger.error(
+                        'Failed to connect after retry {}, giving up.'.format(
+                            retries
+                        )
+                    )
+                    self.__logger.exception(e)
+                    raise e
+
+                # wait a little bit before retrying
+                time.sleep(2)
+
+    def __str__(self):
+        return 'harmony://{}:{}'.format(self.__address, self.__port)

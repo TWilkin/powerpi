@@ -5,28 +5,13 @@ from powerpi_common_test.device import DeviceTestBase
 from harmony_controller.device.harmony_hub import HarmonyHubDevice
 
 
-class MockClient(object):
-    def __init__(self, mocker: MockerFixture):
-        self.__client = mocker.Mock()
-
-    @property
-    def client(self):
-        return self.__client
-
-    def __enter__(self):
-        return self.__client
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
-
-
 class TestHarmonyHubDevice(DeviceTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.config = mocker.Mock()
         self.logger = mocker.Mock()
         self.mqtt_client = mocker.Mock()
         self.device_manager = mocker.Mock()
-        self.harmony_client = MockClient(mocker)
+        self.harmony_client = mocker.Mock()
 
         self.activity = Device(
             self.config, self.logger, self.mqtt_client, 'activity'
@@ -43,7 +28,7 @@ class TestHarmonyHubDevice(DeviceTestBase):
             ]
         }
         mocker.patch.object(
-            self.harmony_client.client,
+            self.harmony_client,
             'get_config',
             return_value=self.config_data
         )
@@ -61,7 +46,7 @@ class TestHarmonyHubDevice(DeviceTestBase):
             [mocker.call('Test Activity 1'), mocker.call('Test Activity 2')]
         )
 
-        self.harmony_client.client.power_off.assert_called_once()
+        self.harmony_client.power_off.assert_called_once()
 
     def test_start_activity(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
@@ -72,7 +57,7 @@ class TestHarmonyHubDevice(DeviceTestBase):
         # will not be called
         subject.start_activity('Not An Activity')
 
-        self.harmony_client.client.start_activity.assert_called_once_with(
+        self.harmony_client.start_activity.assert_called_once_with(
             self.config_data['activity'][1]['id']
         )
 
@@ -88,7 +73,7 @@ class TestHarmonyHubDevice(DeviceTestBase):
         subject.start_activity('')
         subject.start_activity('')
 
-        self.harmony_client.client.get_config.assert_called_once()
+        self.harmony_client.get_config.assert_called_once()
 
     def test_poll(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
