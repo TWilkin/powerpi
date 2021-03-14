@@ -37,6 +37,7 @@ class TestHarmonyHubDevice(DeviceTestBase):
 
         self.config_data = {
             'activity': [
+                {'label': 'PowerOff', 'id': -1},
                 {'label': 'Test Activity 1', 'id': 1000},
                 {'label': 'Test Activity 2', 'id': 13}
             ]

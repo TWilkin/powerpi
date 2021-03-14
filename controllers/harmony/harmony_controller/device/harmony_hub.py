@@ -9,6 +9,8 @@ from harmony_controller.device.harmony_client import HarmonyClient
 
 
 class HarmonyHubDevice(ThreadedDevice):
+    __POWER_OFF_ID = -1
+
     def __init__(
         self,
         config: Config,
@@ -37,17 +39,7 @@ class HarmonyHubDevice(ThreadedDevice):
             if client:
                 current_activity_id = client.get_current_activity()
 
-                for activity, activity_id in self.__activities().items():
-                    try:
-                        device = self.__device_manager.get_device(activity)
-                        current_state = device.state
-                        new_state = 'on' if activity_id == current_activity_id else 'off'
-
-                        if current_state != new_state:
-                            device.state = new_state
-                    except:
-                        # probably an unregistered activity or PowerOff
-                        pass
+                self.__update_activity_state(current_activity_id)
 
     def _turn_on(self):
         pass
@@ -58,13 +50,7 @@ class HarmonyHubDevice(ThreadedDevice):
                 client.power_off()
 
         # update the state to off for all activities
-        for activity in self.__activities():
-            try:
-                device = self.__device_manager.get_device(activity)
-                device.state = 'off'
-            except:
-                # probably an unregistered activity or PowerOff
-                pass
+        self.__update_activity_state(self.__POWER_OFF_ID)
 
     def start_activity(self, name: str):
         activities = self.__activities()
@@ -73,25 +59,13 @@ class HarmonyHubDevice(ThreadedDevice):
             with self.__activity_lock, self.__client as client:
                 if client:
                     client.start_activity(activities[name])
+
+                # only one activity can be started, so update the state
+                self.__update_activity_state(activities[name], False)
         else:
             self._logger.error(
                 'Activity "{}" for {} not found'.format(name, self)
             )
-            return
-
-        # only one activity can be started, so update the state
-        for activity in self.__activities():
-            if name == activity:
-                continue
-
-            try:
-                device = self.__device_manager.get_device(activity)
-
-                if device.state == 'on':
-                    device.state = 'off'
-            except:
-                # probably an unregistered activity or PowerOff
-                pass
 
     @cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
     def __config(self):
@@ -116,3 +90,21 @@ class HarmonyHubDevice(ThreadedDevice):
         )
 
         return activities
+
+    def __update_activity_state(self, current_activity_id: int, update_current=True):
+        for activity, activity_id in self.__activities().items():
+            try:
+                device = self.__device_manager.get_device(activity)
+                current_state = device.state
+                new_state = 'on' if activity_id == current_activity_id else 'off'
+
+                # when we're running start_activity we don't want to update the current
+                # as it will update itself when we return from that call
+                if activity_id == current_activity_id and not update_current:
+                    continue
+
+                if current_state != new_state:
+                    device.state = new_state
+            except:
+                # probably an unregistered activity or PowerOff
+                pass
