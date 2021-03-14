@@ -30,6 +30,7 @@ class HarmonyHubDevice(ThreadedDevice):
         self.__client.port = port
 
         self.__cache_lock = Lock()
+        self.__activity_lock = Lock()
 
     def poll(self):
         with self.__client as client:
@@ -52,7 +53,7 @@ class HarmonyHubDevice(ThreadedDevice):
         pass
 
     def _turn_off(self):
-        with self._lock, self.__client as client:
+        with self.__activity_lock, self.__client as client:
             if client:
                 client.power_off()
 
@@ -69,7 +70,7 @@ class HarmonyHubDevice(ThreadedDevice):
         activities = self.__activities()
 
         if name in activities:
-            with self._lock, self.__client as client:
+            with self.__activity_lock, self.__client as client:
                 if client:
                     client.start_activity(activities[name])
         else:
@@ -98,7 +99,7 @@ class HarmonyHubDevice(ThreadedDevice):
             'Loading config for {}'.format(self)
         )
 
-        with self._lock, self.__client as client:
+        with self.__client as client:
             if client:
                 with self.__cache_lock:
                     return client.get_config()

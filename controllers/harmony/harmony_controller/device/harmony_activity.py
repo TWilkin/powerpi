@@ -2,12 +2,12 @@ from lazy import lazy
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.device import Device, DeviceManager
+from powerpi_common.device import DeviceManager, ThreadedDevice
 from powerpi_common.mqtt import MQTTClient
 from .harmony_hub import HarmonyHubDevice
 
 
-class HarmonyActivityDevice(Device):
+class HarmonyActivityDevice(ThreadedDevice):
     def __init__(
         self,
         config: Config,
@@ -17,7 +17,7 @@ class HarmonyActivityDevice(Device):
         name: str,
         hub: str
     ):
-        Device.__init__(self, config, logger, mqtt_client, name)
+        ThreadedDevice.__init__(self, config, logger, mqtt_client, name)
 
         self.__device_manager = device_manager
         self.__hub_name = hub

@@ -1,4 +1,4 @@
-from threading import Lock, Thread
+from threading import Thread
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
@@ -15,8 +15,6 @@ class ThreadedDevice(Device):
         name: str
     ):
         Device.__init__(self, config, logger, mqtt_client, name)
-
-        self._lock = Lock()
 
     def on_message(self, client, user_data, message, entity, action):
         def handler():
