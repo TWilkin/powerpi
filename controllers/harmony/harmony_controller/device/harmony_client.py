@@ -41,6 +41,12 @@ class HarmonyClient(object):
 
         return self.__reconnect_and_run(func)
 
+    def get_current_activity(self):
+        def func():
+            return self.__client.get_current_activity()
+
+        return self.__reconnect_and_run(func)
+
     def start_activity(self, activity_name: str):
         def func():
             self.__client.start_activity(activity_name)

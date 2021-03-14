@@ -23,6 +23,15 @@ class TestHarmonyClient(object):
             harmony.assert_called_once_with(subject.address, subject.port)
             harmony().get_config.assert_called_once()
 
+    def test_get_current_activity(self, mocker: MockerFixture):
+        subject = self.get_subject(mocker)
+
+        with patch('pyharmony.client.create_and_connect_client') as harmony:
+            subject.get_current_activity()
+
+            harmony.assert_called_once_with(subject.address, subject.port)
+            harmony().get_current_activity.assert_called_once()
+
     def test_start_activity(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
