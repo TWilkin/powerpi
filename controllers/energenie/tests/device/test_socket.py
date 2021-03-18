@@ -15,7 +15,7 @@ class TestSocketDevice(DeviceTestBase):
 
         return SocketDevice(
             self.config, self.logger, self.mqtt_client,
-            self.energenie, 'test', 0, retries=2, delay=0
+            self.energenie, 'test', retries=2, delay=0
         )
 
     def test_run(self, mocker: MockerFixture):

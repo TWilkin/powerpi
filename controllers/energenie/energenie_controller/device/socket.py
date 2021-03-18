@@ -18,7 +18,7 @@ class SocketDevice(Device):
         mqtt_client: MQTTClient,
         energenie: EnergenieInterface,
         name: str,
-        device_id: int,
+        device_id=0,  # for individual socket in group,
         home_id=0,  # for ENER314
         retries=2,
         delay=0.2,
