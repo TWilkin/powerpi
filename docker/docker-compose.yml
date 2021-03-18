@@ -78,7 +78,7 @@ services:
       - TOPIC_BASE=powerpi
       - DEVICES_FILE=/devices.json
       - CONTROLLER_NAME=energenie_controller
-      - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.1
+      - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.2
       - GPIOMEM=/dev/gpiomem
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
