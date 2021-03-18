@@ -2,54 +2,22 @@ import atexit
 
 from pyenergenie import energenie
 
-from powerpi_common.config import Config
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
-from . socket import SocketDevice, SocketGroupDevice
+from .energenie import EnergenieInterface
 
 
 energenie.init()
 atexit.register(energenie.finished)
 
 
-class SocketDeviceImpl(SocketDevice, energenie.Devices.ENER002):
+class EnergenieInterfaceImpl(EnergenieInterface, energenie.Devices.ENER002):
 
-    def __init__(
-        self, config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
-        name, home_id, device_id=0, retries=4, delay=0.5
-    ):
-        SocketDevice.__init__(
-            self, config, logger, mqtt_client, name, home_id, device_id, retries, delay
-        )
-        energenie.Devices.ENER002.__init__(
-            self, (int(home_id), int(device_id))
-        )
+    def __init__(self):
+        energenie.Devices.ENER002.__init__(self, (0, 0))
 
-    def _turn_on(self):
-        self._run(energenie.Devices.ENER002.turn_on, 'on', self)
+    @EnergenieInterface.home_id.setter
+    def home_id(self, new_home_id):
+        self.device_id[0] = new_home_id
 
-    def _turn_off(self):
-        self._run(energenie.Devices.ENER002.turn_off, 'off', self)
-
-
-class SocketGroupDeviceImpl(SocketGroupDevice, energenie.Devices.ENER002):
-
-    def __init__(
-        self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
-        device_manager, name, home_id, devices, retries=4, delay=0.5
-    ):
-        SocketGroupDevice.__init__(
-            self, config, logger, mqtt_client, device_manager, name, devices, home_id, retries, delay
-        )
-        energenie.Devices.ENER002.__init__(self, (int(home_id), 0))
-
-    def _turn_on(self):
-        self._run(energenie.Devices.ENER002.turn_on, 'on', self)
-
-    def _turn_off(self):
-        self._run(energenie.Devices.ENER002.turn_off, 'off', self)
+    @EnergenieInterface.device_id.setter
+    def device_id(self, new_device_id):
+        self.device_id[1] = new_device_id

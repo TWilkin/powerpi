@@ -1,13 +1,23 @@
 from dependency_injector import containers, providers
 
 from .import_energenie import import_energenie
+from .socket import SocketDevice
+from .socket_group import SocketGroupDevice
 
 
 def add_devices(container):
     device_container = container.common().device()
 
-    SocketDevice, SocketGroupDevice = import_energenie(
+    EnergenieInterface = import_energenie(
         container.config(), container.common().logger()
+    )
+
+    setattr(
+        device_container,
+        'energenie',
+        providers.Factory(
+            EnergenieInterface
+        )
     )
 
     setattr(
@@ -17,7 +27,8 @@ def add_devices(container):
             SocketDevice,
             config=container.common.config,
             logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client
+            mqtt_client=container.common.mqtt_client,
+            energenie=container.common.device.energenie
         )
     )
 
@@ -29,6 +40,7 @@ def add_devices(container):
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
-            device_manager=container.common.device.device_manager
+            device_manager=container.common.device.device_manager,
+            energenie=container.common.device.energenie
         )
     )
