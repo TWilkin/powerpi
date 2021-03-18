@@ -18,8 +18,8 @@ class SocketDevice(Device):
         name: str,
         home_id=0,
         device_id=0,
-        retries=4,
-        delay=0.5,
+        retries=2,
+        delay=0.2,
     ):
         Device.__init__(self, config, logger, mqtt_client, name)
 

@@ -21,8 +21,8 @@ class SocketGroupDevice(Device):
         name: str,
         devices: List[str],
         home_id: int = None,
-        retries=4,
-        delay=0.5
+        retries=2,
+        delay=0.2
     ):
         Device.__init__(self, config, logger, mqtt_client, name)
 
