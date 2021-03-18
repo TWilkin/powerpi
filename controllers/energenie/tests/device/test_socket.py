@@ -13,7 +13,10 @@ class TestSocketDevice(DeviceTestBase):
         self.mqtt_client = mocker.Mock()
         self.energenie = mocker.Mock()
 
-        return SocketDevice(self.config, self.logger, self.mqtt_client, self.energenie, 'test', retries=2, delay=0)
+        return SocketDevice(
+            self.config, self.logger, self.mqtt_client,
+            self.energenie, 'test', 0, retries=2, delay=0
+        )
 
     def test_run(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)

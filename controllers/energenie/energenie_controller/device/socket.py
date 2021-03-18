@@ -18,8 +18,8 @@ class SocketDevice(Device):
         mqtt_client: MQTTClient,
         energenie: EnergenieInterface,
         name: str,
-        home_id=0,
-        device_id=0,
+        device_id: int,
+        home_id=0,  # for ENER314
         retries=2,
         delay=0.2,
     ):
@@ -29,8 +29,7 @@ class SocketDevice(Device):
         self.__retries = retries
         self.__delay = delay
 
-        self.__energenie.home_id = home_id
-        self.__energenie.device_id = device_id
+        self.__energenie.set_ids(home_id, device_id)
 
     def _turn_on(self):
         self._run(self.__energenie.turn_on)

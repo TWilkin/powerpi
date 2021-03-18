@@ -21,7 +21,7 @@ class SocketGroupDevice(Device):
         energenie: EnergenieInterface,
         name: str,
         devices: List[str],
-        home_id: int = None,
+        home_id=0,  # for ENER314
         retries=2,
         delay=0.2
     ):
@@ -33,8 +33,7 @@ class SocketGroupDevice(Device):
         self.__retries = retries
         self.__delay = delay
 
-        self.__energenie.home_id = home_id
-        self.__energenie.device_id = 0
+        self.__energenie.set_ids(home_id, 0)
 
     def _turn_on(self):
         self._run(self.__energenie.turn_on, 'on')
