@@ -2,9 +2,8 @@ import time
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.device import Device
+from powerpi_common.device import Device, DeviceManager
 from powerpi_common.mqtt import MQTTClient
-from . manager import DeviceManager
 
 
 class SocketDevice(Device):
