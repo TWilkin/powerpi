@@ -2,7 +2,7 @@ FROM python:3.9.2-alpine AS compile-image
 LABEL description="Python application to listen to the queue and start/stop Energenie devices as requested"
 
 # ensure we have the dependencies to run pip
-RUN apk add --no-cache gcc git linux-headers musl-dev \
+RUN apk add --no-cache gcc git musl-dev \
     && pip3 install pipenv
 
 # create the virtualenv
