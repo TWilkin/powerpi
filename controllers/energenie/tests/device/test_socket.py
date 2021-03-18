@@ -23,6 +23,6 @@ class TestSocketDevice(DeviceTestBase):
         def func():
             self.counter += 1
 
-        subject._run(func, 'blah')
+        subject._run(func)
 
         assert self.counter == 2

@@ -1,5 +1,6 @@
 import time
 
+from collections.abc import Callable
 from typing import List
 
 from powerpi_common.config import Config
@@ -41,7 +42,7 @@ class SocketGroupDevice(Device):
     def _turn_off(self):
         self._run(self.__energenie.turn_off, 'off')
 
-    def _run(self, func, new_state: str):
+    def _run(self, func: Callable, new_state: str):
         for _ in range(0, self.__retries):
             func()
             time.sleep(self.__delay)

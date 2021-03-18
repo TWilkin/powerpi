@@ -1,5 +1,7 @@
 import time
 
+from collections.abc import Callable
+
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.device import Device
@@ -31,12 +33,12 @@ class SocketDevice(Device):
         self.__energenie.device_id = device_id
 
     def _turn_on(self):
-        self._run(self.__energenie.turn_on, 'on')
+        self._run(self.__energenie.turn_on)
 
     def _turn_off(self):
-        self._run(self.__energenie.turn_off, 'off')
+        self._run(self.__energenie.turn_off)
 
-    def _run(self, func, new_state: str):
+    def _run(self, func: Callable):
         for _ in range(0, self.__retries):
             func()
             time.sleep(self.__delay)
