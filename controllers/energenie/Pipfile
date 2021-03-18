@@ -10,7 +10,7 @@ pyenergenie = {git = "https://****@github.com/TWilkin/pyenergenie.git"}
 
 [dev-packages]
 autopep8 = "~=1.5.5"
-powerpi-common-test = {path = "./../../common/pytest"}
+powerpi-common-test = {editable = true, path = "./../../common/pytest"}
 pylint = "~=2.7.1"
 
 [requires]
