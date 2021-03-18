@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "02967de4d8bd31eb69293714da78054e04b1f8df4acedf0d4ccbbe4ead21e509"
+            "sha256": "61102cbba159b33ffe317f5466822831700b7bf7523440b313e7e29bae08a1ef"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,36 @@
         ]
     },
     "default": {
+        "argparse": {
+            "hashes": [
+                "sha256:62b089a55be1d8949cd2bc7e0df0bddb9e028faefc8c32038cc84862aefdd6e4",
+                "sha256:c31647edb69fd3d465a847ea3157d37bed1f95f19760b11a47aa91c04b666314"
+            ],
+            "version": "==1.4.0"
+        },
+        "cachetools": {
+            "hashes": [
+                "sha256:1d9d5f567be80f7c07d765e21b814326d78c61eb0c3a637dffc0e5d1796cb2e2",
+                "sha256:f469e29e7aa4cff64d8de4aad95ce76de8ea1125a16c68e0d93f65c3c3dc92e9"
+            ],
+            "index": "pypi",
+            "version": "==4.2.1"
+        },
+        "certifi": {
+            "hashes": [
+                "sha256:1a4995114262bffbc2413b159f2a1a480c969de6e6eb13ee966d470af86af59c",
+                "sha256:719a74fb9e33b9bd44cc7f3a8d94bc35e4049deebe19ba7d8e108280cfd59830"
+            ],
+            "version": "==2020.12.5"
+        },
+        "chardet": {
+            "hashes": [
+                "sha256:0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa",
+                "sha256:f864054d66fd9118f2e67044ac8981a54775ec5b67aed0441892edb553d21da5"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
+            "version": "==4.0.0"
+        },
         "dependency-injector": {
             "hashes": [
                 "sha256:02d94ee634fc081807cf355468205d72ae0ab8d784adf64e442ad20cb82217f1",
@@ -83,22 +113,55 @@
                 "sha256:f9c6561da93beb0ad97fe63d375ed074c074dabb4d321d30f49d3cb908b0e193",
                 "sha256:fcfa8648c04e2e89d9cbd931345e59ecb134a76ef80a38879bf2b6cfa9d4f982"
             ],
-            "index": "pypi",
             "version": "==4.27.0"
+        },
+        "idna": {
+            "hashes": [
+                "sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6",
+                "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "version": "==2.10"
+        },
+        "lazy": {
+            "hashes": [
+                "sha256:2c6d27a5ab130fb85435320651a47403adcb37ecbcc501b0c6606391f65f5b43",
+                "sha256:9f293fd531546f3eda039da8f919b513b94f219e562764e3ceefc26fa503bf03"
+            ],
+            "index": "pypi",
+            "version": "==1.4"
         },
         "paho-mqtt": {
             "hashes": [
                 "sha256:9feb068e822be7b3a116324e01fb6028eb1d66412bf98595ae72698965cb1cae"
             ],
-            "index": "pypi",
             "version": "==1.5.1"
+        },
+        "powerpi-common": {
+            "path": "./../../common/python",
+            "version": "==0.0.1"
+        },
+        "pyharmony": {
+            "hashes": [
+                "sha256:715fb9d379eb06324cf7614c7e7d873b27e9e5eef48bf340d8360fec5dfb26a3"
+            ],
+            "index": "pypi",
+            "version": "==1.0.21"
+        },
+        "requests": {
+            "hashes": [
+                "sha256:27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804",
+                "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'",
+            "version": "==2.25.1"
         },
         "schedule": {
             "hashes": [
                 "sha256:1654cf70860a6d4d58236c98b0f1bb71521cc2a4bbf031b6cc39c96e77d59a91",
                 "sha256:82369250700af61af40bbf38efc8698560aaba8fa3e58eec7209c20aa05b9d02"
             ],
-            "index": "pypi",
+            "markers": "python_version >= '3.6'",
             "version": "==1.0.0"
         },
         "six": {
@@ -108,6 +171,20 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.15.0"
+        },
+        "sleekxmpp": {
+            "hashes": [
+                "sha256:d213c1de71d92505f95ced0460ee0f84fdc4ddcacb7d7dd343739ed4028e5569"
+            ],
+            "version": "==1.3.3"
+        },
+        "urllib3": {
+            "hashes": [
+                "sha256:1b465e494e3e0d8939b50680403e3aedaa2bc434b7d5af64dfd3c958d7f5ae80",
+                "sha256:de3eedaad74a2683334e282005cd8d7f22f4d55fa690a2a1020a416cb0a47e73"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
+            "version": "==1.26.3"
         }
     },
     "develop": {
@@ -212,8 +289,8 @@
             "version": "==0.13.1"
         },
         "powerpi-common-test": {
-            "path": "./../pytest",
-            "version": "==0.0.1"
+            "editable": true,
+            "path": "./../../common/pytest"
         },
         "py": {
             "hashes": [

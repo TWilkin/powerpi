@@ -7,5 +7,3 @@
 **/venv/
 **/*.pyc
 **/*.log
-**/.gitignore
-**/Dockerfile

@@ -26,7 +26,7 @@ class DeviceTestBase(object):
     def test_change_message(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
-        mocker.patch.object(subject.config, 'message_age_cutoff', 120)
+        mocker.patch.object(self.config, 'message_age_cutoff', 120)
 
         message = {
             'state': 'on',
@@ -40,7 +40,7 @@ class DeviceTestBase(object):
     def test_old_change_message(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
-        mocker.patch.object(subject.config, 'message_age_cutoff', 120)
+        mocker.patch.object(self.config, 'message_age_cutoff', 120)
 
         message = {
             'state': 'on',
@@ -54,7 +54,7 @@ class DeviceTestBase(object):
     def test_wrong_change_message(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
-        mocker.patch.object(subject.config, 'message_age_cutoff', 120)
+        mocker.patch.object(self.config, 'message_age_cutoff', 120)
 
         message = {
             'state': 'on',
@@ -68,7 +68,7 @@ class DeviceTestBase(object):
     def test_bad_state_change_message(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
-        mocker.patch.object(subject.config, 'message_age_cutoff', 120)
+        mocker.patch.object(self.config, 'message_age_cutoff', 120)
 
         message = {
             'state': 'notastate',

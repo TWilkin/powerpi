@@ -1,8 +1,8 @@
 from abc import abstractmethod
 
-from .config import Config
-from .logger import Logger
-from .mqtt import MQTTClient, StatusEventConsumer, PowerEventConsumer
+from powerpi_common.config import Config
+from powerpi_common.logger import Logger
+from powerpi_common.mqtt import MQTTClient, StatusEventConsumer, PowerEventConsumer
 
 
 class Device(PowerEventConsumer):
@@ -17,7 +17,7 @@ class Device(PowerEventConsumer):
 
         def _update_device(self, new_state):
             # override default behaviour to prevent events generated for state change
-            self._device.__state = new_state
+            self._device._update_state_no_broadcast(new_state)
 
             # remove this consumer as it has completed its job
             self.__mqtt_client.remove_consumer(self)
@@ -64,15 +64,19 @@ class Device(PowerEventConsumer):
 
     def turn_on(self):
         self._logger.info(
-            'Turning on socket "{name}"'.format(name=self._name))
+            'Turning on device {}'.format(self))
         self._turn_on()
         self.state = 'on'
 
     def turn_off(self):
         self._logger.info(
-            'Turning off socket "{name}"'.format(name=self._name))
+            'Turning off device {}'.format(self))
         self._turn_off()
         self.state = 'off'
+
+    @abstractmethod
+    def poll(self):
+        raise NotImplementedError
 
     @abstractmethod
     def _turn_on(self):
@@ -81,3 +85,9 @@ class Device(PowerEventConsumer):
     @abstractmethod
     def _turn_off(self):
         raise NotImplementedError
+
+    def _update_state_no_broadcast(self, new_state):
+        self.__state = new_state
+
+    def __str__(self):
+        return '{}({}, {})'.format(type(self).__name__, self._name, self.__state)
