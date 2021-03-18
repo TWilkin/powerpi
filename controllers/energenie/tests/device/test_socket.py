@@ -7,19 +7,19 @@ from energenie_controller.device.socket import SocketDevice
 
 
 class SocketDeviceImpl(SocketDevice):
-    def __init__(self, fixture):
-        self.config = fixture.Mock()
-        self.logger = fixture.Mock()
-        self.mqtt_client = fixture.Mock()
-
+    def __init__(self, config, logger, mqtt_client):
         SocketDevice.__init__(
-            self, self.config, self.logger, self.mqtt_client, 'test'
+            self, config, logger, mqtt_client, 'test'
         )
 
 
 class TestSocketDevice(DeviceTestBase):
     def get_subject(self, mocker: MockerFixture):
-        return SocketDeviceImpl(mocker)
+        self.config = mocker.Mock()
+        self.logger = mocker.Mock()
+        self.mqtt_client = mocker.Mock()
+
+        return SocketDeviceImpl(self.config, self.logger, self.mqtt_client)
 
     def test_run(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
