@@ -6,31 +6,26 @@ from powerpi_common_test.device import DeviceTestBase
 from energenie_controller.device.socket import SocketDevice
 
 
-class SocketDeviceImpl(SocketDevice):
-    def __init__(self, fixture):
-        self.config = fixture.Mock()
-        self.logger = fixture.Mock()
-        self.mqtt_client = fixture.Mock()
-
-        SocketDevice.__init__(
-            self, self.config, self.logger, self.mqtt_client, 'test'
-        )
-
-
 class TestSocketDevice(DeviceTestBase):
     def get_subject(self, mocker: MockerFixture):
-        return SocketDeviceImpl(mocker)
+        self.config = mocker.Mock()
+        self.logger = mocker.Mock()
+        self.mqtt_client = mocker.Mock()
+        self.energenie = mocker.Mock()
+
+        return SocketDevice(
+            self.config, self.logger, self.mqtt_client,
+            self.energenie, 'test', retries=2, delay=0
+        )
 
     def test_run(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         self.counter = 0
 
-        def func(a, b):
+        def func():
             self.counter += 1
-            assert a == 1
-            assert b == 2
 
-        subject._run(func, 'blah', 1, 2)
+        subject._run(func)
 
-        assert self.counter == 4
+        assert self.counter == 2

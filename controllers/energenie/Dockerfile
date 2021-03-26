@@ -2,7 +2,7 @@ FROM python:3.9.2-alpine AS compile-image
 LABEL description="Python application to listen to the queue and start/stop Energenie devices as requested"
 
 # ensure we have the dependencies to run pip
-RUN apk add --no-cache gcc git linux-headers musl-dev \
+RUN apk add --no-cache gcc git musl-dev \
     && pip3 install pipenv
 
 # create the virtualenv
@@ -27,11 +27,15 @@ RUN rm radio_rpi.so \
 # use multi-stage build to remove compile dependencies
 FROM python:3.9.2-alpine AS build-image
 WORKDIR /usr/src/app
-COPY --from=compile-image /opt/venv ./venv
+RUN addgroup -g 997 -S gpio \
+    && adduser --disabled-password powerpi \
+    && addgroup powerpi gpio
+USER powerpi
+COPY --from=compile-image --chown=powerpi /opt/venv ./venv
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 
 # add the application
-COPY controllers/energenie/energenie_controller ./energenie_controller/
+COPY --chown=powerpi controllers/energenie/energenie_controller ./energenie_controller/
 
 # start the application once the container is ready
 CMD python -m energenie_controller
