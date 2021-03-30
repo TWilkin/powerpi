@@ -41,14 +41,14 @@ export default class DeviceList
         this.handleFilterChange = this.handleFilterChange.bind(this);
         this.handlePowerButton = this.handlePowerButton.bind(this);
         this.onMessage = this.onMessage.bind(this);
+
+        this.props.api.addListener(this);
     }
 
     async componentDidMount() {
         this.setState({
             devices: await this.props.api.getDevices() as LoadableDevice[]
         });
-
-        this.props.api.connectSocket(this);
     }
 
     render() {
