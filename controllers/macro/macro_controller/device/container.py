@@ -1,5 +1,6 @@
 from dependency_injector import containers, providers
 
+from .delay import DelayDevice
 from .test import TestDevice
 
 
@@ -15,6 +16,17 @@ class DeviceContainer(containers.DeclarativeContainer):
 
 def add_devices(container):
     device_container = container.common().device()
+
+    setattr(
+        device_container,
+        'delay_device',
+        providers.Factory(
+            DelayDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client
+        )
+    )
 
     setattr(
         device_container,
