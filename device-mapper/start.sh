@@ -2,6 +2,7 @@
 
 # export the config to variables
 DEVICES=`tr "\n" " " < $DEVICES_FILE | sed s/\"/\\\\\"/g`
+EVENTS=`tr "\n" " " < $EVENTS_FILE | sed s/\"/\\\\\"/g`
 
 # generate a name for the container
 NAME=powerpi_$CONTROLLER_NAME.1.`hostname`
@@ -14,7 +15,7 @@ function stop() {
 }
 
 # ensure we have the latest version of the image
-echo "Updating image"
+echo "Updating image $IMAGE"
 docker pull $IMAGE
 
 # trap so if this container is stopped, it will stop the spawned container
@@ -34,5 +35,6 @@ docker run \
     --env "MQTT_ADDRESS=$MQTT_ADDRESS" \
     --env "TOPIC_BASE=$TOPIC_BASE" \
     --env "DEVICES=$DEVICES" \
+    --env "EVENTS=$EVENTS" \
     $IMAGE \
     & wait ${!}
