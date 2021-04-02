@@ -52,12 +52,9 @@ services:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
       - DEVICES_FILE=/devices.json
-      - EVENTS_FILE=/events.json
     configs:
       - source: devices_config
         target: /devices.json
-      - source: events_config
-        target: /events.json
 
   device-mapper:
     build: ../device-mapper
@@ -114,9 +111,12 @@ services:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
       - DEVICES_FILE=/devices.json
+      - EVENTS_FILE=/events.json
     configs:
       - source: devices_config
         target: /devices.json
+      - source: events_config
+        target: /events.json
 
   light-fantastic:
     build: ../light-fantastic
