@@ -31,6 +31,6 @@ class DelayDevice(ThreadedDevice):
         self.__delay(self.__end)
 
     def __delay(self, delay: int):
-        self._logger.debug(f'Delay of {delay}s starting')
+        self._logger.debug(f'{self.name}: Delay of {delay}s starting')
         time.sleep(delay)
-        self._logger.debug(f'Delay of {delay}s complete')
+        self._logger.debug(f'{self.name}: Delay of {delay}s complete')
