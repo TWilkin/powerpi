@@ -2,7 +2,9 @@ from dependency_injector import containers, providers
 
 from .composite import CompositeDevice
 from .delay import DelayDevice
+from .factory import RemoteDeviceFactory
 from .mutex import MutexDevice
+from .remote import RemoteDevice
 from .test import TestDevice
 
 
@@ -18,6 +20,13 @@ class DeviceContainer(containers.DeclarativeContainer):
 
 def add_devices(container):
     device_container = container.common().device()
+
+    # override the factory
+    device_container.device_factory.override(providers.Factory(
+        RemoteDeviceFactory,
+        logger=container.common.logger,
+        service_provider=container.common.device.service_provider
+    ))
 
     setattr(
         device_container,
@@ -51,6 +60,17 @@ def add_devices(container):
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
             device_manager=container.common.device.device_manager
+        )
+    )
+
+    setattr(
+        device_container,
+        'remote_device',
+        providers.Factory(
+            RemoteDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client
         )
     )
 
