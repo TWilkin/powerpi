@@ -40,7 +40,7 @@ services:
         target: /devices.json
 
   macro-controller:
-    image: ${REGISTRY}/powerpi/controllers/macro-controller:1.9.0
+    image: ${REGISTRY}/powerpi/controllers/macro:1.0.0
     networks:
       - powerpi
     deploy:
