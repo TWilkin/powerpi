@@ -34,7 +34,7 @@ class RemoteDevice(StatusEventConsumer):
         return self.__state
 
     @state.setter
-    def state(self, new_state):
+    def state(self, new_state: str):
         self.__state = new_state
         self.__waiting.set()
 
