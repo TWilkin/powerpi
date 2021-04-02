@@ -19,7 +19,7 @@ def main(
         ApplicationContainer.common.device.device_status_checker
     ]
 ):
-    logger.info('PowerPi Macro Controller v{}'.format(__version__))
+    logger.info(f'PowerPi Macro Controller v{__version__}')
 
     # load the devices from the config
     device_manager.load()
