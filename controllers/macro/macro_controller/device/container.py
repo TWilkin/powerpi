@@ -2,6 +2,7 @@ from dependency_injector import containers, providers
 
 from .composite import CompositeDevice
 from .delay import DelayDevice
+from .mutex import MutexDevice
 from .test import TestDevice
 
 
@@ -38,6 +39,18 @@ def add_devices(container):
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client
+        )
+    )
+
+    setattr(
+        device_container,
+        'mutex_device',
+        providers.Factory(
+            MutexDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client,
+            device_manager=container.common.device.device_manager
         )
     )
 
