@@ -1,6 +1,7 @@
-from io import StringIO
 import json
 import os
+
+from io import StringIO
 
 
 class Config(object):
