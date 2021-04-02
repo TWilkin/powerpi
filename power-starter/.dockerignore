@@ -1,8 +1,0 @@
-build/
-dist/
-*.egg-info/
-venv/
-*.pyc
-*.log
-.gitignore
-Dockerfile
