@@ -37,6 +37,13 @@ export class ApiException extends Error {
 export class Api {
 
     private apiBaseUrl = `${window.location.origin}/api`;
+    private socket: SocketIOClient.Socket;
+
+    constructor() {
+        this.socket = io.connect(this.apiBaseUrl, {
+            path: '/api/socket.io'
+        });
+    }
 
     public getDevices = () => this.get('device') as Promise<Device[]>;
 
@@ -50,11 +57,8 @@ export class Api {
     public postMessage = (device: string, state: DeviceState) => 
             this.post(`topic/device/${device}/change`, { state: state });
 
-    public connectSocket(callback: SocketListener) {
-        const socket = io.connect(this.apiBaseUrl, {
-            path: '/api/socket.io'
-        });
-        socket.on('message', callback.onMessage);
+    public addListener(callback: SocketListener) {
+        this.socket.on('message', callback.onMessage);
     }
 
     private async get(path: string, params?: object): Promise<any> {
