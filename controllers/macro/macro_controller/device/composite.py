@@ -41,7 +41,7 @@ class CompositeDevice(ThreadedDevice):
 
     def _turn_off(self):
         for device in reversed(self.__devices):
-            device.turn_on()
+            device.turn_off()
 
     @lazy
     def __devices(self) -> List[Device]:
