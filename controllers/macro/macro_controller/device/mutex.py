@@ -37,9 +37,9 @@ class MutexDevice(ThreadedDevice):
             all_off &= device.state == 'off'
 
         if all_on and self.state != 'on':
-            self.status = 'on'
+            self.state = 'on'
         elif all_off and self.state != 'off':
-            self.status = 'off'
+            self.state = 'off'
 
     def _turn_on(self):
         for device in self.__off_devices:
