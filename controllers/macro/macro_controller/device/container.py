@@ -1,5 +1,6 @@
 from dependency_injector import containers, providers
 
+from .composite import CompositeDevice
 from .delay import DelayDevice
 from .test import TestDevice
 
@@ -16,6 +17,18 @@ class DeviceContainer(containers.DeclarativeContainer):
 
 def add_devices(container):
     device_container = container.common().device()
+
+    setattr(
+        device_container,
+        'composite_device',
+        providers.Factory(
+            CompositeDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client,
+            device_manager=container.common.device.device_manager
+        )
+    )
 
     setattr(
         device_container,
