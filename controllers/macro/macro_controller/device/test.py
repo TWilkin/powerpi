@@ -23,5 +23,5 @@ class TestDevice(Device):
     def _turn_on(self):
         self._logger.info(f'{self}: on: {self.__message}')
 
-    def turn_off(self):
+    def _turn_off(self):
         self._logger.info(f'{self}: off: {self.__message}')
