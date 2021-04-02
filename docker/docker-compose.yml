@@ -39,9 +39,8 @@ services:
       - source: devices_config
         target: /devices.json
 
-  power-starter:
-    build: ../power-starter
-    image: ${REGISTRY}/powerpi/power-starter:0.7.1
+  macro-controller:
+    image: ${REGISTRY}/powerpi/controllers/macro-controller:1.9.0
     networks:
       - powerpi
     deploy:
@@ -52,12 +51,9 @@ services:
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
       - DEVICES_FILE=/devices.json
-      - EVENTS_FILE=/events.json
     configs:
       - source: devices_config
         target: /devices.json
-      - source: events_config
-        target: /events.json
 
   device-mapper:
     build: ../device-mapper
