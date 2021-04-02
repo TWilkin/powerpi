@@ -36,8 +36,8 @@ class LIFXLightDevice(ThreadedDevice):
             if new_state != self.state:
                 self.state = new_state
 
-    def turn_on(self):
+    def _turn_on(self):
         self.__light.set_power(True, self.__duration)
 
-    def turn_off(self):
+    def _turn_off(self):
         self.__light.set_power(False, self.__duration)
