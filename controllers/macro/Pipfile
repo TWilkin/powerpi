@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+lazy = "~=1.4"
+powerpi-common = {path = "./../../common/python"}
+
+[dev-packages]
+autopep8 = "~=1.5.5"
+powerpi-common-test = {editable = true, path = "./../../common/pytest"}
+pylint = "~=2.7.1"
+
+[requires]
+python_version = "3"
+
+[scripts]
+start = "python -m macro_controller"
+test = "python -m pytest -v"

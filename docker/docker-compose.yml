@@ -39,9 +39,8 @@ services:
       - source: devices_config
         target: /devices.json
 
-  power-starter:
-    build: ../power-starter
-    image: ${REGISTRY}/powerpi/power-starter:0.7.2
+  macro-controller:
+    image: ${REGISTRY}/powerpi/controllers/macro:1.0.0
     networks:
       - powerpi
     deploy:
