@@ -92,7 +92,7 @@ export default class DeviceList
         return (
             <div id='device-list' className='list'>
                 {this.state.devices
-                    .filter(device => !device.visible)
+                    .filter(device => device.visible)
                     .filter(device => this.state.filters.includes(device.type))
                     .map(device => 
                         <div key={device.name} className='device' 
