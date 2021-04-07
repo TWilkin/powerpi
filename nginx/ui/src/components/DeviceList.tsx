@@ -92,12 +92,13 @@ export default class DeviceList
         return (
             <div id='device-list' className='list'>
                 {this.state.devices
+                    .filter(device => !device.visible)
                     .filter(device => this.state.filters.includes(device.type))
                     .map(device => 
                         <div key={device.name} className='device' 
                                 title={`Device ${device.name} is currently ${device.state}.`}>
                             {this.renderDeviceTypeIcon(device.type)}
-                            <div className='device-name'>{device.name}</div>
+                            <div className='device-name'>{device.display_name ?? device.name}</div>
                             <div className='device-state'>
                                 {this.renderPowerButtons(device)}
                             </div>

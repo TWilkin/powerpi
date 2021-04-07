@@ -6,6 +6,8 @@ export type DeviceState = 'on' | 'off' | 'unknown';
 
 export interface Device {
     name: string;
+    display_name: string;
+    visible: boolean;
     type: string;
     state: DeviceState;
     since: number;
