@@ -23,9 +23,10 @@ class SocketGroupDevice(Device):
         devices: List[str],
         home_id=0,  # for ENER314
         retries=2,
-        delay=0.2
+        delay=0.2,
+        **kwargs
     ):
-        Device.__init__(self, config, logger, mqtt_client, name)
+        Device.__init__(self, config, logger, mqtt_client, name, **kwargs)
 
         self.__device_manager = device_manager
         self.__energenie = energenie

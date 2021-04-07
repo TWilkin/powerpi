@@ -57,7 +57,7 @@ services:
 
   device-mapper:
     build: ../device-mapper
-    image: ${REGISTRY}/powerpi/device-mapper:0.0.3
+    image: ${REGISTRY}/powerpi/device-mapper:0.0.4
     networks:
       - powerpi
     deploy:
