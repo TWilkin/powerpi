@@ -1,5 +1,6 @@
 export interface DeviceConfig {
     name: string;
+    display_name: string;
     type: string;
 };
 

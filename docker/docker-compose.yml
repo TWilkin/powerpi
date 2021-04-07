@@ -17,7 +17,7 @@ services:
 
   deep-thought:
     build: ../deep-thought
-    image: ${REGISTRY}/powerpi/deep-thought:0.4.3
+    image: ${REGISTRY}/powerpi/deep-thought:0.4.4
     networks:
       - powerpi
     deploy:

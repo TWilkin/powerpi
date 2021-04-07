@@ -14,8 +14,8 @@ export default class DeviceController {
     getAllDevices() {
         return this.deviceService.devices
             .sort((a, b) => {
-                let str1 = a.name.toUpperCase();
-                let str2 = b.name.toUpperCase();
+                let str1 = a.display_name.toUpperCase();
+                let str2 = b.display_name.toUpperCase();
 
                 return str1 < str2 ? -1 : str1 > str2 ? 1 : 0;
             });
