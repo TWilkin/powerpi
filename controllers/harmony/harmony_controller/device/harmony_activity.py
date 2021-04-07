@@ -26,6 +26,10 @@ class HarmonyActivityDevice(ThreadedDevice):
         self.__hub_name = hub
         self.__activity_name = activity_name if activity_name is not None else name
 
+    @property
+    def activity_name(self):
+        return self.__activity_name
+
     def poll(self):
         pass
 

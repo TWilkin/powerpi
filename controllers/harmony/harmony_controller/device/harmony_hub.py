@@ -3,9 +3,25 @@ from threading import Lock
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.device import DeviceManager, ThreadedDevice
+from powerpi_common.device import Device, DeviceManager, ThreadedDevice
 from powerpi_common.mqtt import MQTTClient
 from harmony_controller.device.harmony_client import HarmonyClient
+
+
+class Activity(object):
+    def __init__(
+        self, id: int, device: Device
+    ):
+        self.__id = id
+        self.__device = device
+
+    @property
+    def id(self):
+        return self.__id
+
+    @property
+    def device(self):
+        return self.__device
 
 
 class HarmonyHubDevice(ThreadedDevice):
@@ -56,19 +72,19 @@ class HarmonyHubDevice(ThreadedDevice):
 
         if name in activities:
             with self.__activity_lock:
-                self.__client.start_activity(activities[name])
+                self.__client.start_activity(activities[name].id)
 
                 # only one activity can be started, so update the state
-                self.__update_activity_state(activities[name], False)
+                self.__update_activity_state(activities[name].id, False)
         else:
             self._logger.error(
-                'Activity "{}" for {} not found'.format(name, self)
+                f'Activity "{name}" for {self} not found'
             )
 
     @cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
     def __config(self):
         self._logger.info(
-            'Loading config for {}'.format(self)
+            f'Loading config for {self}'
         )
 
         with self.__cache_lock:
@@ -76,31 +92,38 @@ class HarmonyHubDevice(ThreadedDevice):
 
     @cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
     def __activities(self):
+        devices = self.__device_manager.devices.values()
         activities = {}
 
         for activity in self.__config()['activity']:
-            activities[activity['label']] = int(activity['id'])
+            device = next(
+                (device for device in devices if
+                    hasattr(device, 'activity_name')
+                    and device.activity_name == activity['label']
+                 ),
+                None
+            )
+
+            if device is not None:
+                activities[activity['label']] = Activity(
+                    int(activity['id']),
+                    device
+                )
 
         self._logger.info(
-            'Found {} activities for {}'.format(len(activities), self)
+            f'Found {len(activities)} activities for {self}'
         )
 
         return activities
 
     def __update_activity_state(self, current_activity_id: int, update_current=True):
-        for activity, activity_id in self.__activities().items():
-            try:
-                device = self.__device_manager.get_device(activity)
-                current_state = device.state
-                new_state = 'on' if activity_id == current_activity_id else 'off'
+        for activity in self.__activities().values():
+            # when we're running start_activity we don't want to update the current
+            # as it will update itself when we return from that call
+            if activity.id == current_activity_id and not update_current:
+                continue
 
-                # when we're running start_activity we don't want to update the current
-                # as it will update itself when we return from that call
-                if activity_id == current_activity_id and not update_current:
-                    continue
+            new_state = 'on' if activity.id == current_activity_id else 'off'
 
-                if current_state != new_state:
-                    device.state = new_state
-            except:
-                # probably an unregistered activity or PowerOff
-                pass
+            if activity.device.state != new_state:
+                activity.device.state = new_state
