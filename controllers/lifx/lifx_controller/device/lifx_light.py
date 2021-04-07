@@ -18,9 +18,11 @@ class LIFXLightDevice(ThreadedDevice):
         mac: str,
         ip: str = None,
         hostname: str = None,
-        duration: int = 500
+        duration: int = 500,
+        **kwargs
     ):
-        ThreadedDevice.__init__(self, config, logger, mqtt_client, name)
+        ThreadedDevice.__init__(self, config, logger,
+                                mqtt_client, name, **kwargs)
 
         self.__duration = duration
 
