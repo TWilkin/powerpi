@@ -15,9 +15,11 @@ class HarmonyActivityDevice(ThreadedDevice):
         mqtt_client: MQTTClient,
         device_manager: DeviceManager,
         name: str,
-        hub: str
+        hub: str,
+        **kwargs
     ):
-        ThreadedDevice.__init__(self, config, logger, mqtt_client, name)
+        ThreadedDevice.__init__(self, config, logger,
+                                mqtt_client, name, **kwargs)
 
         self.__device_manager = device_manager
         self.__hub_name = hub

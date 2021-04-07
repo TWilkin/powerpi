@@ -86,7 +86,7 @@ services:
         target: /events.json
 
   harmony-controller:
-    image: ${REGISTRY}/powerpi/controllers/harmony:0.0.2
+    image: ${REGISTRY}/powerpi/controllers/harmony:0.0.3
     networks:
       - powerpi
     deploy:

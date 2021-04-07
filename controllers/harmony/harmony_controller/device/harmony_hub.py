@@ -21,9 +21,11 @@ class HarmonyHubDevice(ThreadedDevice):
         name: str,
         ip: str = None,
         hostname: str = None,
-        port: int = 5222
+        port: int = 5222,
+        **kwargs
     ):
-        ThreadedDevice.__init__(self, config, logger, mqtt_client, name)
+        ThreadedDevice.__init__(self, config, logger,
+                                mqtt_client, name, **kwargs)
 
         self.__device_manager = device_manager
 
