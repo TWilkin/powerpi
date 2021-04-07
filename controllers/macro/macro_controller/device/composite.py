@@ -15,9 +15,11 @@ class CompositeDevice(ThreadedDevice):
         mqtt_client: MQTTClient,
         device_manager: DeviceManager,
         name: str,
-        devices: List[str]
+        devices: List[str],
+        **kwargs
     ):
-        ThreadedDevice.__init__(self, config, logger, mqtt_client, name)
+        ThreadedDevice.__init__(self, config, logger,
+                                mqtt_client, name, **kwargs)
 
         self.__device_manager = device_manager
         self.__device_names = devices
