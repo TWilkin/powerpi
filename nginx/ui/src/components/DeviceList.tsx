@@ -33,8 +33,8 @@ export default class DeviceList
             filters: [
                 'composite',
                 'harmony_activity',
-                'light',
-                'socket'
+                'lifx_light',
+                'energenie_socket'
             ]
         };
 
@@ -186,14 +186,14 @@ export default class DeviceList
             case 'harmony_hub':
                 return faTv;
 
-            case 'light':
+            case 'lifx_light':
                 return faLightbulb;
             
             case 'mutex':
                 return faLock;
             
-            case 'socket':
-            case 'socket_group':
+            case 'energenie_socket':
+            case 'energenie_socket_group':
                 return faPlug;
             
             default:
