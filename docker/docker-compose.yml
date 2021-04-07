@@ -57,7 +57,7 @@ services:
 
   device-mapper:
     build: ../device-mapper
-    image: ${REGISTRY}/powerpi/device-mapper:0.0.4
+    image: ${REGISTRY}/powerpi/device-mapper:0.0.3
     networks:
       - powerpi
     deploy:
@@ -75,7 +75,7 @@ services:
       - DEVICES_FILE=/devices.json
       - EVENTS_FILE=/events.json
       - CONTROLLER_NAME=energenie_controller
-      - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.3
+      - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.4
       - GPIOMEM=/dev/gpiomem
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
