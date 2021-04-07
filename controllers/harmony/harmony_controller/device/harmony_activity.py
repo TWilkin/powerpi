@@ -16,6 +16,7 @@ class HarmonyActivityDevice(ThreadedDevice):
         device_manager: DeviceManager,
         name: str,
         hub: str,
+        activity_name: str = None,
         **kwargs
     ):
         ThreadedDevice.__init__(self, config, logger,
@@ -23,6 +24,7 @@ class HarmonyActivityDevice(ThreadedDevice):
 
         self.__device_manager = device_manager
         self.__hub_name = hub
+        self.__activity_name = activity_name if activity_name is not None else name
 
     def poll(self):
         pass
@@ -32,7 +34,7 @@ class HarmonyActivityDevice(ThreadedDevice):
         return self.__device_manager.get_device(self.__hub_name)
 
     def _turn_on(self):
-        self.__hub.start_activity(self._name)
+        self.__hub.start_activity(self.__activity_name)
 
     def _turn_off(self):
         self.__hub.turn_off()
