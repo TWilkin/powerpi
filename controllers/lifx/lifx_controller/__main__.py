@@ -2,34 +2,35 @@ import sys
 
 from dependency_injector.wiring import inject, Provide
 
-from powerpi_common.device import DeviceManager
-from powerpi_common.event import EventManager
 from powerpi_common.logger import Logger
+from powerpi_common.device import DeviceManager, DeviceStatusChecker
+from powerpi_common.event import EventManager
 from powerpi_common.mqtt import MQTTClient
-from energenie_controller.__version import __version__
-from energenie_controller.config import EnergenieConfig
-from energenie_controller.container import ApplicationContainer
-from energenie_controller.device.container import add_devices
+from lifx_controller.__version import __version__
+from lifx_controller.container import ApplicationContainer
+from lifx_controller.device.container import add_devices
 
 
 @inject
 def main(
-    config: EnergenieConfig = Provide[ApplicationContainer.config],
     logger: Logger = Provide[ApplicationContainer.common.logger],
     device_manager: DeviceManager = Provide[ApplicationContainer.common.device.device_manager],
     event_manager: EventManager = Provide[ApplicationContainer.common.event_manager],
-    mqtt_client: MQTTClient = Provide[ApplicationContainer.common.mqtt_client]
+    mqtt_client: MQTTClient = Provide[ApplicationContainer.common.mqtt_client],
+    device_status_checker: DeviceStatusChecker = Provide[
+        ApplicationContainer.common.device.device_status_checker
+    ]
 ):
-    logger.info('PowerPi Energenie Controller v{}'.format(__version__))
-
-    logger.info('Using Energenie module {module}'
-                .format(module=config.energenie_device))
+    logger.info('PowerPi LIFX Controller v{}'.format(__version__))
 
     # load the devices from the config
     device_manager.load()
 
     # load the events from the config
     event_manager.load()
+
+    # start the thread to periodically check device status
+    device_status_checker.start()
 
     # use MQTT loop to handle messages
     mqtt_client.loop()

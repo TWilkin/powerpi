@@ -1,5 +1,4 @@
 from power_starter.devices import DeviceManager
-from power_starter.events import EventManager
 from power_starter.mqtt import MQTTClient, PowerEventConsumer, StatusEventConsumer
 from power_starter.status import StatusChecker
 from power_starter.util.config import Config
@@ -37,10 +36,9 @@ def main():
         }
         power_state_change_producer(topic, message)
 
-    # initialise the DeviceManager and EventManager
+    # initialise the DeviceManager
     DeviceManager.load(
         config, config.devices['devices'], on_power_state_change, client)
-    EventManager.load(config.events['events'], client, config)
 
     # start the StatusChecker
     status_checker = StatusChecker(config)
