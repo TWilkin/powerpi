@@ -19,7 +19,7 @@ class TestHarmonyActivityDevice(DeviceTestBase):
         )
 
         return HarmonyActivityDevice(
-            self.config, self.logger, self.mqtt_client, self.device_manager, 'test', 'hub'
+            self.config, self.logger, self.mqtt_client, self.device_manager, 'test', 'hub', 'my activity'
         )
 
     def test_turn_on_hub(self, mocker: MockerFixture):
@@ -27,7 +27,7 @@ class TestHarmonyActivityDevice(DeviceTestBase):
 
         subject.turn_on()
 
-        self.harmony_hub.start_activity.assert_called_once_with('test')
+        self.harmony_hub.start_activity.assert_called_once_with('my activity')
 
     def test_turn_off_hub(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)

@@ -22,7 +22,7 @@ def add_devices(container):
 
     setattr(
         device_container,
-        'socket_device',
+        'energenie_socket_device',
         providers.Factory(
             SocketDevice,
             config=container.common.config,
@@ -34,7 +34,7 @@ def add_devices(container):
 
     setattr(
         device_container,
-        'socket_group_device',
+        'energenie_socket_group_device',
         providers.Factory(
             SocketGroupDevice,
             config=container.common.config,

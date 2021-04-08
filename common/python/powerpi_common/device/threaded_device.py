@@ -12,9 +12,10 @@ class ThreadedDevice(Device):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        name: str
+        name: str,
+        **kwargs
     ):
-        Device.__init__(self, config, logger, mqtt_client, name)
+        Device.__init__(self, config, logger, mqtt_client, name, **kwargs)
 
     def on_message(self, client, user_data, message, entity, action):
         def handler():

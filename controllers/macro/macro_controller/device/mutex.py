@@ -16,9 +16,11 @@ class MutexDevice(ThreadedDevice):
         device_manager: DeviceManager,
         name: str,
         on_devices: List[str],
-        off_devices: List[str]
+        off_devices: List[str],
+        **kwargs
     ):
-        ThreadedDevice.__init__(self, config, logger, mqtt_client, name)
+        ThreadedDevice.__init__(self, config, logger,
+                                mqtt_client, name, **kwargs)
 
         self.__device_manager = device_manager
         self.__on_device_names = on_devices

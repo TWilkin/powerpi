@@ -17,7 +17,7 @@ services:
 
   deep-thought:
     build: ../deep-thought
-    image: ${REGISTRY}/powerpi/deep-thought:0.4.3
+    image: ${REGISTRY}/powerpi/deep-thought:0.4.4
     networks:
       - powerpi
     deploy:
@@ -40,7 +40,7 @@ services:
         target: /devices.json
 
   macro-controller:
-    image: ${REGISTRY}/powerpi/controllers/macro:1.0.0
+    image: ${REGISTRY}/powerpi/controllers/macro:1.0.1
     networks:
       - powerpi
     deploy:
@@ -75,7 +75,7 @@ services:
       - DEVICES_FILE=/devices.json
       - EVENTS_FILE=/events.json
       - CONTROLLER_NAME=energenie_controller
-      - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.3
+      - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.4
       - GPIOMEM=/dev/gpiomem
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -86,7 +86,7 @@ services:
         target: /events.json
 
   harmony-controller:
-    image: ${REGISTRY}/powerpi/controllers/harmony:0.0.2
+    image: ${REGISTRY}/powerpi/controllers/harmony:0.0.3
     networks:
       - powerpi
     deploy:
@@ -105,7 +105,7 @@ services:
         target: /events.json
 
   lifx-controller:
-    image: ${REGISTRY}/powerpi/controllers/lifx:0.0.1
+    image: ${REGISTRY}/powerpi/controllers/lifx:0.0.2
     networks:
       - powerpi
     deploy:
@@ -158,7 +158,7 @@ services:
 
   nginx:
     build: ../nginx
-    image: ${REGISTRY}/powerpi/nginx:0.2.3
+    image: ${REGISTRY}/powerpi/nginx:0.2.4
     networks:
       - powerpi
     ports:

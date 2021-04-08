@@ -27,9 +27,13 @@ class Device(PowerEventConsumer):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        name: str
+        name: str,
+        display_name: str = None,
+        visible: bool = False
     ):
         self._name = name
+        self._display_name = display_name if display_name is not None else name
+
         PowerEventConsumer.__init__(self, self, config, logger)
 
         self._logger = logger
@@ -90,4 +94,4 @@ class Device(PowerEventConsumer):
         self.__state = new_state
 
     def __str__(self):
-        return '{}({}, {})'.format(type(self).__name__, self._name, self.__state)
+        return '{}({}, {})'.format(type(self).__name__, self._display_name, self.__state)

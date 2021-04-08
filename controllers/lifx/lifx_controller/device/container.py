@@ -24,7 +24,7 @@ def add_devices(container):
 
     setattr(
         device_container,
-        'light_device',
+        'lifx_light_device',
         providers.Factory(
             LIFXLightDevice,
             config=container.common.config,

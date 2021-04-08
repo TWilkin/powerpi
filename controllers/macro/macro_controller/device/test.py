@@ -11,9 +11,10 @@ class TestDevice(Device):
         logger: Logger,
         mqtt_client: MQTTClient,
         name: str,
-        message: str
+        message: str,
+        **kwargs
     ):
-        Device.__init__(self, config, logger, mqtt_client, name)
+        Device.__init__(self, config, logger, mqtt_client, name, **kwargs)
 
         self.__message = message
 

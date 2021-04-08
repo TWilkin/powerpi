@@ -40,7 +40,9 @@ export default class DeviceStateService extends StateListener {
         this._devices = (await this.config.getDevices())
             .map((device: DeviceConfig) => ({
                 name: device.name,
+                display_name: device.display_name,
                 type: device.type,
+                visible: device.visible ?? true,
                 state: 'unknown',
                 since: -1
             }));

@@ -14,9 +14,11 @@ class DelayDevice(ThreadedDevice):
         mqtt_client: MQTTClient,
         name: str,
         start: int = 5,
-        end: int = 5
+        end: int = 5,
+        **kwargs
     ):
-        ThreadedDevice.__init__(self, config, logger, mqtt_client, name)
+        ThreadedDevice.__init__(self, config, logger,
+                                mqtt_client, name, **kwargs)
 
         self.__start = start
         self.__end = end
