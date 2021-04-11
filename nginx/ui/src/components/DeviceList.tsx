@@ -12,10 +12,9 @@ import {
   faTv
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import moment from "moment";
 import React, { ChangeEvent, MouseEvent } from "react";
-import Moment from "react-moment";
 import { Link } from "react-router-dom";
+import ReactTimeAgo from "react-time-ago";
 
 import { Api, Device, DeviceState, SocketListener } from "../api";
 
@@ -127,12 +126,8 @@ export default class DeviceList
                 {this.renderPowerButtons(device)}
               </div>
               <div className="device-since">
-                {device.since && device.since > -1 ? (
-                  <span title={moment(device.since).format("L LT")}>
-                    <Moment date={device.since} fromNow />
-                  </span>
-                ) : (
-                  <></>
+                {device.since && device.since > -1 && (
+                  <ReactTimeAgo date={device.since} locale="en-GB" />
                 )}
               </div>
               <div className="device-history">

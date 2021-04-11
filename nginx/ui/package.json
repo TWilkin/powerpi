@@ -15,16 +15,16 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "axios": "^0.21.1",
     "http-status-codes": "^1.4.0",
-    "moment": "^2.29.1",
     "query-string": "^6.14.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "react-moment": "^0.9.7",
     "react-router-dom": "^5.2.0",
+    "react-time-ago": "^6.2.2",
     "socket.io-client": "^4.0.0"
   },
   "devDependencies": {
     "@tsconfig/node12": "^1.0.7",
+    "@types/javascript-time-ago": "^2.0.2",
     "@types/react": "^16.14.5",
     "@types/react-dom": "^16.9.12",
     "@types/react-router-dom": "^5.1.7",

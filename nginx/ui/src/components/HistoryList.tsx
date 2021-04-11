@@ -2,7 +2,7 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import queryString from "query-string";
 import React, { FormEvent } from "react";
-import Moment from "react-moment";
+import ReactTimeAgo from "react-time-ago";
 
 import { Api, History } from "../api";
 
@@ -135,7 +135,7 @@ export default class HistoryList extends React.Component<
                 <td>{history.entity}</td>
                 <td>{history.action}</td>
                 <td>
-                  <Moment date={history.timestamp} format="L LT" />
+                  <ReactTimeAgo date={history.timestamp} locale="en-GB" />
                 </td>
                 <td>{JSON.stringify(history.message)}</td>
               </tr>
