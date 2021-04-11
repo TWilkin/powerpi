@@ -13,42 +13,47 @@ import HistoryList from "./HistoryList";
 
 const api = new Api();
 
-export default class Site extends React.Component {
-  render() {
-    return (
-      <BrowserRouter>
-        <div id="menu">
-          <nav>
-            {this.renderMenuLink("/devices", "Devices")}
-            {this.renderMenuLink("/history", "History")}
-          </nav>
-        </div>
-        <br />
-
-        <div id="content">
-          <Switch>
-            <Route path="/devices">
-              <DeviceList api={api} />
-            </Route>
-
-            <Route path="/history">
-              <HistoryList api={api} />
-            </Route>
-
-            <Route path="/">
-              <Redirect to={"/devices"} />
-            </Route>
-          </Switch>
-        </div>
-      </BrowserRouter>
-    );
-  }
-
-  renderMenuLink(path: string, name: string) {
-    return (
-      <NavLink activeClassName="active" exact to={path}>
-        <div className="menu-element">{name}</div>
-      </NavLink>
-    );
-  }
+interface MenuElementProps {
+  path: string;
+  name: string;
 }
+
+const MenuElement = ({ path, name }: MenuElementProps) => {
+  return (
+    <NavLink activeClassName="active" exact to={path}>
+      <div className="menu-element">{name}</div>
+    </NavLink>
+  );
+};
+
+const Site = () => {
+  return (
+    <BrowserRouter>
+      <div id="menu">
+        <nav>
+          <MenuElement path="/devices" name="Devices" />
+          <MenuElement path="/history" name="History" />
+        </nav>
+      </div>
+      <br />
+
+      <div id="content">
+        <Switch>
+          <Route path="/devices">
+            <DeviceList api={api} />
+          </Route>
+
+          <Route path="/history">
+            <HistoryList api={api} />
+          </Route>
+
+          <Route path="/">
+            <Redirect to={"/devices"} />
+          </Route>
+        </Switch>
+      </div>
+    </BrowserRouter>
+  );
+};
+
+export default Site;
