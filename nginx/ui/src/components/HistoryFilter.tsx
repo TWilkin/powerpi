@@ -4,6 +4,7 @@ import queryString from "query-string";
 import React, { FormEvent, useEffect, useState } from "react";
 
 import { Api } from "../api";
+import Loading from "./Loading";
 
 type FilterType = "type" | "entity" | "action";
 
@@ -105,22 +106,22 @@ const Filter = ({
 
   return (
     <>
-      <label htmlFor={`${type}-filter`}>
-        {name} {defaultSelected}:
-      </label>
+      <label htmlFor={`${type}-filter`}>{name}:</label>
 
-      <select
-        name={`${type}-filter`}
-        onChange={handleFilterChange}
-        defaultValue={defaultSelected}
-      >
-        <option value="">-</option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
+      <Loading loading={options.length === 0}>
+        <select
+          name={`${type}-filter`}
+          onChange={handleFilterChange}
+          defaultValue={defaultSelected}
+        >
+          <option value="">-</option>
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </Loading>
     </>
   );
 };
