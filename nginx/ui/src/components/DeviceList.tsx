@@ -63,39 +63,50 @@ const DeviceList = ({ api }: DeviceListProps) => {
       <br />
 
       <div id="device-list" className="list">
-        {devices
-          .filter(
-            (device) => device.visible && filters.types.includes(device.type)
-          )
-          .map((device) => (
-            <div
-              key={device.name}
-              className="device"
-              title={`Device ${device.name} is currently ${device.state}.`}
-            >
-              <DeviceIcon type={device.type} />
-              <div className="device-name">
-                {device.display_name ?? device.name}
-              </div>
-              <div className="device-state">
-                <DevicePowerButton
-                  api={api}
-                  device={device}
-                  setLoading={setLoading}
-                />
-              </div>
-              <div className="device-since">
-                {device.since && device.since > -1 && (
-                  <ReactTimeAgo date={device.since} locale="en-GB" />
-                )}
-              </div>
-              <div className="device-history">
-                <Link to={`/history?type=device&entity=${device.name}`}>
-                  <FontAwesomeIcon icon={faHistory} />
-                </Link>
-              </div>
-            </div>
-          ))}
+        <table>
+          <tbody>
+            {devices
+              .filter(
+                (device) =>
+                  device.visible && filters.types.includes(device.type)
+              )
+              .map((device) => (
+                <tr
+                  key={device.name}
+                  className="device"
+                  title={`Device ${device.name} is currently ${device.state}.`}
+                >
+                  <td>
+                    <DeviceIcon type={device.type} />
+                  </td>
+
+                  <td className="device-name">
+                    {device.display_name ?? device.name}
+                  </td>
+
+                  <td className="device-state">
+                    <DevicePowerButton
+                      api={api}
+                      device={device}
+                      setLoading={setLoading}
+                    />
+                  </td>
+
+                  <td className="device-since">
+                    {device.since && device.since > -1 && (
+                      <ReactTimeAgo date={device.since} locale="en-GB" />
+                    )}
+                  </td>
+
+                  <td className="device-history">
+                    <Link to={`/history?type=device&entity=${device.name}`}>
+                      <FontAwesomeIcon icon={faHistory} />
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
       </div>
     </>
   );

@@ -11,11 +11,6 @@
 
   .device {
     max-width: 600px;
-    display: flex;
-
-    div {
-      flex: 1;
-    }
 
     .device-state {
       $slider-width: 35px;
