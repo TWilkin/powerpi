@@ -1,5 +1,11 @@
 import React from "react";
-import { BrowserRouter, NavLink, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter,
+  NavLink,
+  Redirect,
+  Route,
+  Switch
+} from "react-router-dom";
 
 import { Api } from "../api";
 import DeviceList from "./DeviceList";
@@ -13,7 +19,6 @@ export default class Site extends React.Component {
       <BrowserRouter>
         <div id="menu">
           <nav>
-            {this.renderMenuLink("/", "Home")}
             {this.renderMenuLink("/devices", "Devices")}
             {this.renderMenuLink("/history", "History")}
           </nav>
@@ -31,7 +36,7 @@ export default class Site extends React.Component {
             </Route>
 
             <Route path="/">
-              <h1>PowerPi</h1>
+              <Redirect to={"/devices"} />
             </Route>
           </Switch>
         </div>
