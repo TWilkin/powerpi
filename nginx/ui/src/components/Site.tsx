@@ -43,9 +43,12 @@ const Site = () => {
             <DeviceList api={api} />
           </Route>
 
-          <Route path="/history">
-            <HistoryList api={api} />
-          </Route>
+          <Route
+            path="/history"
+            render={(props) => (
+              <HistoryList api={api} query={props.location.search} />
+            )}
+          />
 
           <Route path="/">
             <Redirect to={"/devices"} />

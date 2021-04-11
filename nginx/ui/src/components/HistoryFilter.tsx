@@ -1,5 +1,6 @@
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import queryString from "query-string";
 import React, { FormEvent, useEffect, useState } from "react";
 
 import { Api } from "../api";
@@ -14,10 +15,11 @@ export interface Filters {
 
 interface HistoryFilterProps {
   api: Api;
+  query?: string;
   updateFilter: (filters: Filters) => void;
 }
 
-const HistoryFilter = ({ api, updateFilter }: HistoryFilterProps) => {
+const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
   const [types, setTypes] = useState<string[]>([]);
   const [entities, setEntities] = useState<string[]>([]);
   const [actions, setActions] = useState<string[]>([]);
@@ -28,6 +30,8 @@ const HistoryFilter = ({ api, updateFilter }: HistoryFilterProps) => {
   });
 
   useEffect(() => {
+    setFilters(parseQuery(query));
+
     (async () => {
       const [typeList, entityList, actionList] = await Promise.all([
         api.getHistoryTypes(),
@@ -39,59 +43,76 @@ const HistoryFilter = ({ api, updateFilter }: HistoryFilterProps) => {
       setEntities(entityList.map((row) => row.entity));
       setActions(actionList.map((row) => row.action));
     })();
-  });
+  }, []);
+
+  useEffect(() => updateFilter(filters), [filters]);
 
   const selectFilter = (type: FilterType, value: string) => {
     const newFilter = { ...filters };
     newFilter[type] = value;
     setFilters(newFilter);
-    updateFilter(newFilter);
   };
 
   return (
     <div id="history-filters" className="filters">
       <FontAwesomeIcon icon={faFilter} />
-      <Filter name="Type" type="type" options={types} onSelect={selectFilter} />
+      <Filter
+        name="Type"
+        type="type"
+        options={types}
+        defaultSelected={filters.type}
+        onSelect={selectFilter}
+      />
       <Filter
         name="Entity"
         type="entity"
         options={entities}
+        defaultSelected={filters.entity}
         onSelect={selectFilter}
       />
       <Filter
         name="Action"
         type="action"
         options={actions}
+        defaultSelected={filters.action}
         onSelect={selectFilter}
       />
     </div>
   );
 };
 
+export default HistoryFilter;
+
 interface FilterProps {
   name: string;
   type: FilterType;
   options: string[];
+  defaultSelected?: string;
   onSelect: (type: FilterType, value: string) => void;
 }
 
-const Filter = ({ name, type, options, onSelect }: FilterProps) => {
-  const [selected, setSelected] = useState<string | undefined>(undefined);
-
+const Filter = ({
+  name,
+  type,
+  options,
+  defaultSelected,
+  onSelect
+}: FilterProps) => {
   const handleFilterChange = (event: FormEvent<HTMLSelectElement>) => {
     const value = event.currentTarget.value ?? "";
-    setSelected(value);
     onSelect(type, value);
   };
 
   return (
     <>
-      <label htmlFor={`${type}-filter`}>{name}:</label>
+      <label htmlFor={`${type}-filter`}>
+        {name} {defaultSelected}:
+      </label>
 
       <select
         name={`${type}-filter`}
         onChange={handleFilterChange}
-        defaultValue={selected}
+        defaultValue={defaultSelected}
       >
         <option value="">-</option>
         {options.map((option) => (
@@ -104,4 +125,12 @@ const Filter = ({ name, type, options, onSelect }: FilterProps) => {
   );
 };
 
-export default HistoryFilter;
+function parseQuery(query: string | undefined): Filters {
+  const parsed = query ? queryString.parse(query) : undefined;
+
+  return {
+    type: (parsed?.type ?? undefined) as string | undefined,
+    entity: (parsed?.entity ?? undefined) as string | undefined,
+    action: (parsed?.action ?? undefined) as string | undefined
+  };
+}

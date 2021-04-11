@@ -6,9 +6,10 @@ import HistoryFilter, { Filters } from "./HistoryFilter";
 
 interface HistoryListProps {
   api: Api;
+  query: string | undefined;
 }
 
-const HistoryList = ({ api }: HistoryListProps) => {
+const HistoryList = ({ api, query }: HistoryListProps) => {
   const [filters, setFilters] = useState<Filters>({
     type: undefined,
     entity: undefined,
@@ -25,7 +26,7 @@ const HistoryList = ({ api }: HistoryListProps) => {
 
   return (
     <>
-      <HistoryFilter api={api} updateFilter={setFilters} />
+      <HistoryFilter api={api} query={query} updateFilter={setFilters} />
       <br />
       <div id="history-list" className="list">
         <table>
@@ -62,12 +63,12 @@ export default HistoryList;
 
 async function getHistory(api: Api, filters: Filters): Promise<History[]> {
   const type = filters.type !== "" ? filters.type : undefined;
-  const entity = filters.type !== "" ? filters.entity : undefined;
-  const action = filters.type !== "" ? filters.action : undefined;
+  const entity = filters.entity !== "" ? filters.entity : undefined;
+  const action = filters.action !== "" ? filters.action : undefined;
 
   if (!type && !entity && !action) {
     return [];
   }
 
-  return await api.getHistory(type, action, entity);
+  return await api.getHistory(type, entity, action);
 }
