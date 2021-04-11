@@ -1,49 +1,49 @@
-import React from 'react';
-import { BrowserRouter, NavLink, Route, Switch } from 'react-router-dom';
+import React from "react";
+import { BrowserRouter, NavLink, Route, Switch } from "react-router-dom";
 
-import { Api } from '../api';
-import DeviceList from './DeviceList';
-import HistoryList from './HistoryList';
+import { Api } from "../api";
+import DeviceList from "./DeviceList";
+import HistoryList from "./HistoryList";
 
 const api = new Api();
 
 export default class Site extends React.Component {
-    render() {
-        return (
-            <BrowserRouter>
-                <div id='menu'>
-                    <nav>
-                        {this.renderMenuLink('/', 'Home')}
-                        {this.renderMenuLink('/devices', 'Devices')}
-                        {this.renderMenuLink('/history', 'History')}
-                    </nav>
-                </div>
-                <br />
+  render() {
+    return (
+      <BrowserRouter>
+        <div id="menu">
+          <nav>
+            {this.renderMenuLink("/", "Home")}
+            {this.renderMenuLink("/devices", "Devices")}
+            {this.renderMenuLink("/history", "History")}
+          </nav>
+        </div>
+        <br />
 
-                <div id='content'>
-                    <Switch>
-                        <Route path='/devices'>
-                            <DeviceList api={api} />
-                        </Route>
+        <div id="content">
+          <Switch>
+            <Route path="/devices">
+              <DeviceList api={api} />
+            </Route>
 
-                        <Route path='/history'>
-                            <HistoryList api={api} />
-                        </Route>
+            <Route path="/history">
+              <HistoryList api={api} />
+            </Route>
 
-                        <Route path='/'>
-                            <h1>PowerPi</h1>
-                        </Route>
-                    </Switch>
-                </div>
-            </BrowserRouter>
-        );
-    }
+            <Route path="/">
+              <h1>PowerPi</h1>
+            </Route>
+          </Switch>
+        </div>
+      </BrowserRouter>
+    );
+  }
 
-    renderMenuLink(path: string, name: string) {
-        return (
-            <NavLink activeClassName='active' exact to={path}>
-                <div className='menu-element'>{name}</div>
-            </NavLink>
-        )
-    }
-};
+  renderMenuLink(path: string, name: string) {
+    return (
+      <NavLink activeClassName="active" exact to={path}>
+        <div className="menu-element">{name}</div>
+      </NavLink>
+    );
+  }
+}
