@@ -21,9 +21,9 @@ interface HistoryFilterProps {
 }
 
 const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
-  const [types, setTypes] = useState<string[]>([]);
-  const [entities, setEntities] = useState<string[]>([]);
-  const [actions, setActions] = useState<string[]>([]);
+  const [types, setTypes] = useState<string[] | undefined>(undefined);
+  const [entities, setEntities] = useState<string[] | undefined>(undefined);
+  const [actions, setActions] = useState<string[] | undefined>(undefined);
   const [filters, setFilters] = useState<Filters>({
     type: undefined,
     entity: undefined,
@@ -40,9 +40,9 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
         api.getHistoryActions()
       ]);
 
-      setTypes(typeList.map((row) => row.type));
-      setEntities(entityList.map((row) => row.entity));
-      setActions(actionList.map((row) => row.action));
+      setTypes(typeList?.map((row) => row.type));
+      setEntities(entityList?.map((row) => row.entity));
+      setActions(actionList?.map((row) => row.action));
     })();
   }, []);
 
@@ -87,7 +87,7 @@ export default HistoryFilter;
 interface FilterProps {
   name: string;
   type: FilterType;
-  options: string[];
+  options?: string[];
   defaultSelected?: string;
   onSelect: (type: FilterType, value: string) => void;
 }
@@ -108,14 +108,14 @@ const Filter = ({
     <>
       <label htmlFor={`${type}-filter`}>{name}:</label>
 
-      <Loading loading={options.length === 0}>
+      <Loading loading={!options}>
         <select
           name={`${type}-filter`}
           onChange={handleFilterChange}
           defaultValue={defaultSelected}
         >
           <option value="">-</option>
-          {options.map((option) => (
+          {options?.map((option) => (
             <option key={option} value={option}>
               {option}
             </option>

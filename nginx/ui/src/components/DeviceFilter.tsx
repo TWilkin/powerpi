@@ -15,8 +15,8 @@ export interface Filters {
 }
 
 const DeviceFilter = ({ devices, updateFilters }: DeviceFilterProps) => {
-  const [types, setTypes] = useState([] as string[]);
-  const [filters, setFilters] = useState({ types: [] } as Filters);
+  const [types, setTypes] = useState<string[]>([]);
+  const [filters, setFilters] = useState<Filters>({ types: [] });
 
   useEffect(
     () =>

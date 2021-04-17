@@ -39,6 +39,8 @@ const Site = () => {
 
       <div id="content">
         <Switch>
+          <Redirect exact from="/" to={"/devices"} />
+
           <Route path="/devices">
             <DeviceList api={api} />
           </Route>
@@ -49,10 +51,6 @@ const Site = () => {
               <HistoryList api={api} query={props.location.search} />
             )}
           />
-
-          <Route path="/">
-            <Redirect to={"/devices"} />
-          </Route>
         </Switch>
       </div>
     </BrowserRouter>

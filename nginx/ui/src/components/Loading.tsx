@@ -4,7 +4,7 @@ import React from "react";
 
 interface LoadingProps {
   loading: boolean;
-  children: JSX.Element | JSX.Element[];
+  children: JSX.Element | JSX.Element[] | undefined;
 }
 
 const Loading = ({ loading, children }: LoadingProps) =>

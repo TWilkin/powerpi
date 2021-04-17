@@ -18,8 +18,8 @@ export interface LoadableDevice extends Device {
 }
 
 const DeviceList = ({ api }: DeviceListProps) => {
-  const [devices, setDevices] = useState([] as LoadableDevice[]);
-  const [filters, setFilters] = useState({} as Filters);
+  const [devices, setDevices] = useState<LoadableDevice[]>([]);
+  const [filters, setFilters] = useState<Filters>({ types: [] });
 
   useEffect(() => {
     (async () => {
