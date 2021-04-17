@@ -4,9 +4,10 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 
 import { Device } from "../api";
 import DeviceIcon from "./DeviceIcon";
+import Loading from "./Loading";
 
 interface DeviceFilterProps {
-  devices: Device[];
+  devices?: Device[];
   updateFilters: (filters: Filters) => void;
 }
 
@@ -15,7 +16,7 @@ export interface Filters {
 }
 
 const DeviceFilter = ({ devices, updateFilters }: DeviceFilterProps) => {
-  const [types, setTypes] = useState<string[]>([]);
+  const [types, setTypes] = useState<string[] | undefined>(undefined);
   const [filters, setFilters] = useState<Filters>({ types: [] });
 
   useEffect(
@@ -23,14 +24,14 @@ const DeviceFilter = ({ devices, updateFilters }: DeviceFilterProps) => {
       setTypes([
         ...new Set(
           devices
-            .map((device) => device.type)
+            ?.map((device) => device.type)
             .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
         )
       ]),
     [devices]
   );
 
-  useEffect(() => setFilters({ types }), [types]);
+  useEffect(() => setFilters({ types: types ?? [] }), [types]);
 
   useEffect(() => updateFilters(filters), [filters]);
 
@@ -52,19 +53,21 @@ const DeviceFilter = ({ devices, updateFilters }: DeviceFilterProps) => {
         <FontAwesomeIcon icon={faFilter} />
       </label>
 
-      {types.map((type) => (
-        <label key={type}>
-          <input
-            type="checkbox"
-            name="device-type"
-            value={type}
-            checked={filters.types.includes(type)}
-            onChange={handleTypeFilterChange}
-          />
-          <DeviceIcon type={type} />
-          <div className="device-type">{type}</div>
-        </label>
-      ))}
+      <Loading loading={!types}>
+        {types?.map((type) => (
+          <label key={type}>
+            <input
+              type="checkbox"
+              name="device-type"
+              value={type}
+              checked={filters.types.includes(type)}
+              onChange={handleTypeFilterChange}
+            />
+            <DeviceIcon type={type} />
+            <div className="device-type">{type}</div>
+          </label>
+        ))}
+      </Loading>
     </div>
   );
 };

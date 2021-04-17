@@ -8,6 +8,7 @@ import { Api, Device, DeviceState } from "../api";
 import DeviceFilter, { Filters } from "./DeviceFilter";
 import DeviceIcon from "./DeviceIcon";
 import DevicePowerButton from "./DevicePowerButton";
+import Loading from "./Loading";
 
 interface DeviceListProps {
   api: Api;
@@ -18,7 +19,9 @@ export interface LoadableDevice extends Device {
 }
 
 const DeviceList = ({ api }: DeviceListProps) => {
-  const [devices, setDevices] = useState<LoadableDevice[]>([]);
+  const [devices, setDevices] = useState<LoadableDevice[] | undefined>(
+    undefined
+  );
   const [filters, setFilters] = useState<Filters>({ types: [] });
 
   useEffect(() => {
@@ -32,6 +35,10 @@ const DeviceList = ({ api }: DeviceListProps) => {
     name: string,
     update: (device: LoadableDevice) => void
   ) => {
+    if (!devices) {
+      return;
+    }
+
     const newDevices = [...devices];
 
     const instance = newDevices.filter((d) => d.name === name)[0];
@@ -63,50 +70,52 @@ const DeviceList = ({ api }: DeviceListProps) => {
       <br />
 
       <div id="device-list" className="list">
-        <table>
-          <tbody>
-            {devices
-              .filter(
-                (device) =>
-                  device.visible && filters.types.includes(device.type)
-              )
-              .map((device) => (
-                <tr
-                  key={device.name}
-                  className="device"
-                  title={`Device ${device.name} is currently ${device.state}.`}
-                >
-                  <td>
-                    <DeviceIcon type={device.type} />
-                  </td>
+        <Loading loading={!devices}>
+          <table>
+            <tbody>
+              {devices
+                ?.filter(
+                  (device) =>
+                    device.visible && filters.types.includes(device.type)
+                )
+                .map((device) => (
+                  <tr
+                    key={device.name}
+                    className="device"
+                    title={`Device ${device.name} is currently ${device.state}.`}
+                  >
+                    <td>
+                      <DeviceIcon type={device.type} />
+                    </td>
 
-                  <td className="device-name">
-                    {device.display_name ?? device.name}
-                  </td>
+                    <td className="device-name">
+                      {device.display_name ?? device.name}
+                    </td>
 
-                  <td className="device-state">
-                    <DevicePowerButton
-                      api={api}
-                      device={device}
-                      setLoading={setLoading}
-                    />
-                  </td>
+                    <td className="device-state">
+                      <DevicePowerButton
+                        api={api}
+                        device={device}
+                        setLoading={setLoading}
+                      />
+                    </td>
 
-                  <td className="device-since">
-                    {device.since && device.since > -1 && (
-                      <ReactTimeAgo date={device.since} locale="en-GB" />
-                    )}
-                  </td>
+                    <td className="device-since">
+                      {device.since && device.since > -1 && (
+                        <ReactTimeAgo date={device.since} locale="en-GB" />
+                      )}
+                    </td>
 
-                  <td className="device-history">
-                    <Link to={`/history?type=device&entity=${device.name}`}>
-                      <FontAwesomeIcon icon={faHistory} />
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+                    <td className="device-history">
+                      <Link to={`/history?type=device&entity=${device.name}`}>
+                        <FontAwesomeIcon icon={faHistory} />
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </Loading>
       </div>
     </>
   );
