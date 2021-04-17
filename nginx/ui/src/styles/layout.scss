@@ -33,29 +33,48 @@ body {
   flex-flow: column nowrap;
   align-items: center;
 
-  .filter-button {
-    position: absolute;
-    top: $menu-height;
-    left: 0;
-    cursor: pointer;
-    background-color: black;
-    color: white;
-    border-radius: 0 0 5px 0;
-  }
-
   .filter {
     height: 100%;
-    padding: 2px;
-    position: fixed;
+    padding: 2px 30px 2px 2px;
+    position: absolute;
     top: $menu-height;
     left: 0;
     z-index: 1;
     background-color: black;
     color: white;
-    transition: 0.5s;
+    transform: translateX(calc(25px - 100%));
 
     .filter-button {
-      position: initial;
+      position: absolute;
+      right: 0;
+      cursor: pointer;
+      background-color: black;
+      color: white;
+      border: 0;
+      outline: none;
+    }
+
+    &.slide-in {
+      animation: filter-slide-in 0.8s forwards;
+    }
+
+    &.slide-out {
+      animation: filter-slide-out 0.8s forwards;
+    }
+
+    @keyframes filter-slide-in {
+      100% {
+        transform: translateX(0%);
+      }
+    }
+
+    @keyframes filter-slide-out {
+      0% {
+        transform: translateX(0%);
+      }
+      100% {
+        transform: translateX(calc(25px - 100%));
+      }
     }
   }
 }

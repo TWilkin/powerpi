@@ -1,5 +1,6 @@
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classnames from "classnames";
 import React, { useState } from "react";
 
 interface FilterProps {
@@ -7,32 +8,24 @@ interface FilterProps {
 }
 
 const Filter = ({ children }: FilterProps) => {
-  const [showFilter, setShowFilter] = useState(false);
+  const [showFilter, setShowFilter] = useState<boolean | undefined>(undefined);
 
   return (
-    <>
-      <FilterButton onClick={() => setShowFilter(true)} />
-
-      {showFilter && (
-        <div className="filter">
-          <FilterButton onClick={() => setShowFilter(false)} />
-          {children}
-        </div>
+    <div
+      className={classnames(
+        "filter",
+        { "slide-in": showFilter },
+        { "slide-out": showFilter === false }
       )}
-    </>
+    >
+      <button
+        className="filter-button"
+        onClick={() => setShowFilter(!showFilter)}
+      >
+        <FontAwesomeIcon icon={faFilter} />
+      </button>
+      {children}
+    </div>
   );
 };
-
-interface FilterButtonProps {
-  onClick: () => void;
-}
-
-const FilterButton = ({ onClick }: FilterButtonProps) => {
-  return (
-    <button className="filter-button" onClick={onClick}>
-      <FontAwesomeIcon icon={faFilter} />
-    </button>
-  );
-};
-
 export default Filter;
