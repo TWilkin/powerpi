@@ -4,31 +4,40 @@ body {
   margin: 0;
 }
 
-.menu {
+.header {
   width: 100%;
   margin-bottom: 20px;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
 
-  .menu-element {
-    height: $menu-height;
-    flex: 1;
-    font-size: 1.6rem;
-    line-height: $menu-height;
-    text-align: center;
-    text-decoration: none;
-    background-color: lightcyan;
-    color: black;
-    border: 1px solid black;
+  .menu {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
 
-    &.active {
-      background-color: lightskyblue;
+    .menu-element {
+      height: $menu-height;
+      flex: 1;
+      font-size: 1.6rem;
+      line-height: $menu-height;
+      text-align: center;
+      text-decoration: none;
+      background-color: lightcyan;
+      color: black;
+      border: 1px solid black;
+
+      &.active {
+        background-color: lightskyblue;
+      }
     }
   }
 }
 
 .content {
+  margin-top: calc(#{$menu-height} + 20px);
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -36,7 +45,7 @@ body {
   .filter {
     height: 100%;
     padding: 2px 30px 2px 2px;
-    position: absolute;
+    position: fixed;
     top: $menu-height;
     left: 0;
     z-index: 1;
@@ -45,7 +54,7 @@ body {
     transform: translateX(calc(25px - 100%));
 
     .filter-button {
-      position: absolute;
+      position: fixed;
       right: 0;
       cursor: pointer;
       background-color: black;

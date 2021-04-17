@@ -31,7 +31,7 @@ interface SiteProps {
 const Site = ({ api }: SiteProps) => {
   return (
     <BrowserRouter>
-      <header>
+      <header className="header">
         <nav className="menu">
           <MenuElement path="/devices" name="Devices" />
           <MenuElement path="/history" name="History" />

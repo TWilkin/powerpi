@@ -102,8 +102,8 @@ const Filter = ({
   };
 
   return (
-    <>
-      <label htmlFor={`${type}-filter`}>{name}:</label>
+    <div>
+      <label htmlFor={`${type}-filter`}>{name}: </label>
 
       <Loading loading={!options}>
         <select
@@ -119,7 +119,7 @@ const Filter = ({
           ))}
         </select>
       </Loading>
-    </>
+    </div>
   );
 };
 
