@@ -1,5 +1,3 @@
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import queryString from "query-string";
 import React, { FormEvent, useEffect, useState } from "react";
 import { PowerPiApi } from "powerpi-common-api";
@@ -55,8 +53,7 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
   };
 
   return (
-    <div id="history-filters" className="filters">
-      <FontAwesomeIcon icon={faFilter} />
+    <div id="history-filters">
       <Filter
         name="Type"
         type="type"

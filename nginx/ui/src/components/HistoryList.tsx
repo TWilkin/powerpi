@@ -3,6 +3,7 @@ import ReactTimeAgo from "react-time-ago";
 import { History, PowerPiApi } from "powerpi-common-api";
 
 import HistoryFilter, { Filters } from "./HistoryFilter";
+import Filter from "./Filter";
 
 interface HistoryListProps {
   api: PowerPiApi;
@@ -26,8 +27,10 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
 
   return (
     <>
-      <HistoryFilter api={api} query={query} updateFilter={setFilters} />
-      <br />
+      <Filter>
+        <HistoryFilter api={api} query={query} updateFilter={setFilters} />
+      </Filter>
+
       <div id="history-list" className="list">
         <table>
           <thead>

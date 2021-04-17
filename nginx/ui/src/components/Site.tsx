@@ -18,8 +18,8 @@ interface MenuElementProps {
 
 const MenuElement = ({ path, name }: MenuElementProps) => {
   return (
-    <NavLink activeClassName="active" exact to={path}>
-      <div className="menu-element">{name}</div>
+    <NavLink exact to={path} className="menu-element" activeClassName="active">
+      {name}
     </NavLink>
   );
 };
@@ -31,15 +31,14 @@ interface SiteProps {
 const Site = ({ api }: SiteProps) => {
   return (
     <BrowserRouter>
-      <div id="menu">
-        <nav>
+      <header>
+        <nav className="menu">
           <MenuElement path="/devices" name="Devices" />
           <MenuElement path="/history" name="History" />
         </nav>
-      </div>
-      <br />
+      </header>
 
-      <div id="content">
+      <div className="content">
         <Switch>
           <Redirect exact from="/" to={"/devices"} />
 

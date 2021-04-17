@@ -1,5 +1,3 @@
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Device } from "powerpi-common-api";
 
@@ -48,11 +46,7 @@ const DeviceFilter = ({ devices, updateFilters }: DeviceFilterProps) => {
   };
 
   return (
-    <div id="device-filters" className="filters">
-      <label>
-        <FontAwesomeIcon icon={faFilter} />
-      </label>
-
+    <div id="device-filters">
       <Loading loading={!types}>
         {types?.map((type) => (
           <label key={type}>

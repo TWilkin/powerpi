@@ -9,6 +9,7 @@ import DeviceFilter, { Filters } from "./DeviceFilter";
 import DeviceIcon from "./DeviceIcon";
 import DevicePowerButton from "./DevicePowerButton";
 import Loading from "./Loading";
+import Filter from "./Filter";
 
 interface DeviceListProps {
   api: PowerPiApi;
@@ -66,8 +67,9 @@ const DeviceList = ({ api }: DeviceListProps) => {
 
   return (
     <>
-      <DeviceFilter devices={devices} updateFilters={setFilters} />
-      <br />
+      <Filter>
+        <DeviceFilter devices={devices} updateFilters={setFilters} />
+      </Filter>
 
       <div id="device-list" className="list">
         <Loading loading={!devices}>
@@ -76,7 +78,9 @@ const DeviceList = ({ api }: DeviceListProps) => {
               {devices
                 ?.filter(
                   (device) =>
-                    device.visible && filters.types.includes(device.type)
+                    device.visible &&
+                    (filters.types.length === 0 ||
+                      filters.types.includes(device.type))
                 )
                 .map((device) => (
                   <tr
