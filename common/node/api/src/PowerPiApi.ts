@@ -1,32 +1,17 @@
 import axios, { AxiosResponse } from "axios";
 import HttpStatusCodes from "http-status-codes";
 import io from "socket.io-client";
-import { ApiException } from "./ApiException";
 
-export type DeviceState = "on" | "off" | "unknown";
-
-export interface Device {
-  name: string;
-  display_name: string;
-  visible: boolean;
-  type: string;
-  state: DeviceState;
-  since: number;
-}
-
-export interface History {
-  type: string;
-  entity: string;
-  action: string;
-  timestamp?: Date;
-  message?: object;
-}
+import ApiException from "./ApiException";
+import Device from "./Device";
+import DeviceState from "./DeviceState";
+import History from "./History";
 
 export interface SocketListener {
   onMessage(message: any): void;
 }
 
-export class Api {
+class PowerPiApi {
   private apiBaseUrl = `${window.location.origin}/api`;
   private socket: SocketIOClient.Socket;
 
@@ -107,3 +92,5 @@ export class Api {
     }
   }
 }
+
+export default PowerPiApi;

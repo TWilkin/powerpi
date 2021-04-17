@@ -1,4 +1,4 @@
-export class ApiException extends Error {
+class ApiException extends Error {
   constructor(private _statusCode: number, message: string) {
     super(message);
   }
@@ -7,3 +7,5 @@ export class ApiException extends Error {
     return this._statusCode;
   }
 }
+
+export default ApiException;
