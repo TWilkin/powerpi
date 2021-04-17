@@ -1,13 +1,19 @@
 FROM node:14-alpine AS build-image
 LABEL description="Node.js to compile PowerPi UI"
 
+# install the libraries
+WORKDIR /usr/src/app/common/node/api
+COPY common/node/api/ ./
+RUN npm install \
+    && npm run build
+
 # install the dependencies
-WORKDIR /usr/src/app
-COPY ui/package*.json ./
+WORKDIR /usr/src/app/nginx/ui
+COPY nginx/ui/package*.json ./
 RUN npm install
 
 # transpile the application
-COPY ui/ ./
+COPY nginx/ui/ ./
 RUN npm run build
 
 FROM nginx:1.19-alpine AS run-image
@@ -25,5 +31,5 @@ RUN curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/cer
 ENV UI_DIR=/var/www/powerpi
 RUN mkdir -p $UI_DIR
 WORKDIR $UI_DIR
-COPY --from=build-image /usr/src/app/public/ ./
-COPY --from=build-image /usr/src/app/dist/ ./
+COPY --from=build-image /usr/src/app/nginx/ui/public/ ./
+COPY --from=build-image /usr/src/app/nginx/ui/dist/ ./
