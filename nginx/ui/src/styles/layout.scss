@@ -6,7 +6,6 @@ body {
 
 .header {
   width: 100%;
-  margin-bottom: 20px;
   position: fixed;
   top: 0;
   left: 0;
@@ -37,7 +36,7 @@ body {
 }
 
 .content {
-  margin-top: calc(#{$menu-height} + 20px);
+  margin-top: $menu-height;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
