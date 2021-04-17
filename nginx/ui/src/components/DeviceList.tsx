@@ -1,9 +1,9 @@
 import { faHistory } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";
-import { Device, DeviceState, PowerPiApi } from "powerpi-common-api";
+import { Device, DeviceStatusMessage, PowerPiApi } from "powerpi-common-api";
 
 import DeviceFilter, { Filters } from "./DeviceFilter";
 import DeviceIcon from "./DeviceIcon";
@@ -24,45 +24,45 @@ const DeviceList = ({ api }: DeviceListProps) => {
   );
   const [filters, setFilters] = useState<Filters>({ types: [] });
 
+  const updateDevice = useCallback(
+    (name: string, update: (device: LoadableDevice) => void) => {
+      if (!devices) {
+        return;
+      }
+
+      const newDevices = [...devices];
+
+      const instance = newDevices.filter((d) => d.name === name)[0];
+      if (instance) {
+        update(instance);
+        setDevices(newDevices);
+      }
+    },
+    [devices]
+  );
+
+  const setLoading = useCallback(
+    (device: LoadableDevice) =>
+      updateDevice(device.name, (d) => (d.loading = true)),
+    [updateDevice]
+  );
+
   useEffect(() => {
+    const onStatusUpdate = (message: DeviceStatusMessage) =>
+      updateDevice(message.device, (d) => {
+        d.state = message.state;
+        d.since = message.timestamp;
+        d.loading = false;
+      });
+
     (async () => {
       const result = await api.getDevices();
       setDevices(result as LoadableDevice[]);
     })();
+
+    api.addListener(onStatusUpdate);
+    return () => api.removeListener(onStatusUpdate);
   }, []);
-
-  const updateDevice = (
-    name: string,
-    update: (device: LoadableDevice) => void
-  ) => {
-    if (!devices) {
-      return;
-    }
-
-    const newDevices = [...devices];
-
-    const instance = newDevices.filter((d) => d.name === name)[0];
-    if (instance) {
-      update(instance);
-      setDevices(newDevices);
-    }
-  };
-
-  const setLoading = (device: LoadableDevice) =>
-    updateDevice(device.name, (d) => (d.loading = true));
-
-  const onStatusUpdate = (message: {
-    device: string;
-    state: DeviceState;
-    timestamp: number;
-  }) =>
-    updateDevice(message.device, (d) => {
-      d.state = message.state;
-      d.since = message.timestamp;
-      d.loading = false;
-    });
-
-  api.addListener({ onMessage: onStatusUpdate });
 
   return (
     <>

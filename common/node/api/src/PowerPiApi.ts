@@ -5,20 +5,21 @@ import io from "socket.io-client";
 import ApiException from "./ApiException";
 import Device from "./Device";
 import DeviceState from "./DeviceState";
+import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import History from "./History";
-
-export interface SocketListener {
-  onMessage(message: any): void;
-}
 
 class PowerPiApi {
   private apiBaseUrl = `${window.location.origin}/api`;
   private socket: SocketIOClient.Socket;
+  private listeners: DeviceStatusCallback[];
 
   constructor() {
     this.socket = io.connect(this.apiBaseUrl, {
       path: "/api/socket.io"
     });
+    this.listeners = [];
+
+    this.socket.on("message", this.onMessage);
   }
 
   public getDevices = () => this.get("device") as Promise<Device[]>;
@@ -36,9 +37,16 @@ class PowerPiApi {
   public postMessage = (device: string, state: DeviceState) =>
     this.post(`topic/device/${device}/change`, { state });
 
-  public addListener(callback: SocketListener) {
-    this.socket.on("message", callback.onMessage);
+  public addListener(callback: DeviceStatusCallback) {
+    this.listeners.push(callback);
   }
+
+  public removeListener(callback: DeviceStatusCallback) {
+    this.listeners = this.listeners.filter((listener) => listener === callback);
+  }
+
+  private onMessage = (message: DeviceStatusMessage) =>
+    this.listeners.forEach((listener) => listener(message));
 
   private async get(path: string, params?: object): Promise<any> {
     const result = await axios.get(`${this.apiBaseUrl}/${path}`, { params });

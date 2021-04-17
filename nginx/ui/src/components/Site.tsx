@@ -11,8 +11,6 @@ import { PowerPiApi } from "powerpi-common-api";
 import DeviceList from "./DeviceList";
 import HistoryList from "./HistoryList";
 
-const api = new PowerPiApi();
-
 interface MenuElementProps {
   path: string;
   name: string;
@@ -26,7 +24,11 @@ const MenuElement = ({ path, name }: MenuElementProps) => {
   );
 };
 
-const Site = () => {
+interface SiteProps {
+  api: PowerPiApi;
+}
+
+const Site = ({ api }: SiteProps) => {
   return (
     <BrowserRouter>
       <div id="menu">
