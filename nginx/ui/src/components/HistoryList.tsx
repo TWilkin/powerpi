@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ReactTimeAgo from "react-time-ago";
+import { History, PowerPiApi } from "powerpi-common-api";
 
-import { Api, History } from "../api";
 import HistoryFilter, { Filters } from "./HistoryFilter";
 
 interface HistoryListProps {
-  api: Api;
+  api: PowerPiApi;
   query: string | undefined;
 }
 
@@ -61,7 +61,10 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
 
 export default HistoryList;
 
-async function getHistory(api: Api, filters: Filters): Promise<History[]> {
+async function getHistory(
+  api: PowerPiApi,
+  filters: Filters
+): Promise<History[]> {
   const type = filters.type !== "" ? filters.type : undefined;
   const entity = filters.entity !== "" ? filters.entity : undefined;
   const action = filters.action !== "" ? filters.action : undefined;

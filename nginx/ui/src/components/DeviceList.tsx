@@ -3,15 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";
+import { Device, DeviceState, PowerPiApi } from "powerpi-common-api";
 
-import { Api, Device, DeviceState } from "../api";
 import DeviceFilter, { Filters } from "./DeviceFilter";
 import DeviceIcon from "./DeviceIcon";
 import DevicePowerButton from "./DevicePowerButton";
 import Loading from "./Loading";
 
 interface DeviceListProps {
-  api: Api;
+  api: PowerPiApi;
 }
 
 export interface LoadableDevice extends Device {

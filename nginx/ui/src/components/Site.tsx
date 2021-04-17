@@ -6,12 +6,12 @@ import {
   Route,
   Switch
 } from "react-router-dom";
+import { PowerPiApi } from "powerpi-common-api";
 
-import { Api } from "../api";
 import DeviceList from "./DeviceList";
 import HistoryList from "./HistoryList";
 
-const api = new Api();
+const api = new PowerPiApi();
 
 interface MenuElementProps {
   path: string;

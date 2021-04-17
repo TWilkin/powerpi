@@ -1,12 +1,12 @@
 import { faPowerOff, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ChangeEvent, MouseEvent } from "react";
-import { Api, DeviceState } from "../api";
+import { DeviceState, PowerPiApi } from "powerpi-common-api";
 
 import { LoadableDevice } from "./DeviceList";
 
 interface DevicePowerButtonProps {
-  api: Api;
+  api: PowerPiApi;
   device: LoadableDevice;
   setLoading: (device: LoadableDevice) => void;
 }

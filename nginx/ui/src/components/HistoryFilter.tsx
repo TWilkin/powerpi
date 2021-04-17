@@ -2,8 +2,8 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import queryString from "query-string";
 import React, { FormEvent, useEffect, useState } from "react";
+import { PowerPiApi } from "powerpi-common-api";
 
-import { Api } from "../api";
 import Loading from "./Loading";
 
 type FilterType = "type" | "entity" | "action";
@@ -15,7 +15,7 @@ export interface Filters {
 }
 
 interface HistoryFilterProps {
-  api: Api;
+  api: PowerPiApi;
   query?: string;
   updateFilter: (filters: Filters) => void;
 }

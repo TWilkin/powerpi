@@ -1,8 +1,8 @@
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ChangeEvent, useEffect, useState } from "react";
+import { Device } from "powerpi-common-api";
 
-import { Device } from "../api";
 import DeviceIcon from "./DeviceIcon";
 import Loading from "./Loading";
 
