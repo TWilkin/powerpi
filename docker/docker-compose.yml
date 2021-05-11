@@ -125,7 +125,7 @@ services:
 
   light-fantastic:
     build: ../light-fantastic
-    image: ${REGISTRY}/powerpi/light-fantastic:0.1.6
+    image: ${REGISTRY}/powerpi/light-fantastic:0.1.7
     networks:
       - powerpi
     deploy:
@@ -214,7 +214,7 @@ services:
 
   persistence:
     build: ../persistence
-    image: ${REGISTRY}/powerpi/persistence:0.0.2
+    image: ${REGISTRY}/powerpi/persistence:0.0.3
     networks:
       - powerpi
     deploy:
