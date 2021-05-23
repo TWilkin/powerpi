@@ -30,6 +30,7 @@ const DevicePowerButton = ({ api, device, state }: DevicePowerButtonProps) => {
       }
     }
 
+    setLoading(true);
     setChangeState(newState);
     await api.postMessage(device, newState);
   };
@@ -41,11 +42,11 @@ const DevicePowerButton = ({ api, device, state }: DevicePowerButtonProps) => {
           "slider-bar",
           { on: state === DeviceState.On },
           { off: state === DeviceState.Off },
-          { unknown: state === DeviceState.Unknown }
+          { unknown: state === DeviceState.Unknown },
+          { loading }
         )}
       />
     </div>
   );
 };
-
 export default DevicePowerButton;

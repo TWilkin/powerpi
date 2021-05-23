@@ -10,6 +10,7 @@
   },
   "author": "TWilkin",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.3",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
@@ -30,6 +31,7 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/webpack": "^5.28.0",
     "css-loader": "^5.2.5",
+    "file-loader": "^6.2.0",
     "prettier": "^2.2.1",
     "sass": "^1.32.8",
     "sass-loader": "^9.0.3",

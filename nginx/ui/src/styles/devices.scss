@@ -59,6 +59,7 @@
             background-color: gray;
 
             &::before {
+              color: gray;
               transform: translateX(14px);
               transition: 0.25s;
             }
@@ -68,20 +69,40 @@
             background-color: green;
 
             &::before {
+              color: green;
               transform: translateX(28px);
             }
           }
 
           &::before {
-            content: "";
             width: 22px;
             height: 22px;
             position: absolute;
             top: 2px;
             left: 2px;
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            color: red;
+            content: "\f011"; // power icon
+            line-height: 22px;
+            text-align: center;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
             background-color: white;
             border-radius: 50%;
             transition: 0.5s;
+          }
+
+          &.loading {
+            background-color: gray;
+
+            &::before {
+              color: gray;
+              content: "\f110"; // spinner
+              transform: translateX(14px);
+              transition: 0.25s;
+            }
           }
         }
       }
