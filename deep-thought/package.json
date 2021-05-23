@@ -11,7 +11,7 @@
   "dependencies": {
     "@tsconfig/node12": "^1.0.7",
     "@tsed/common": "^5.62.5",
-    "@tsed/core": "^5.62.5",
+    "@tsed/core": "^5.65.7",
     "@tsed/schema": "^5.65.1",
     "@tsed/socketio": "^5.62.5",
     "@types/cors": "^2.8.7",
