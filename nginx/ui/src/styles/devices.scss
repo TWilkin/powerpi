@@ -91,7 +91,7 @@
             text-rendering: auto;
             background-color: white;
             border-radius: 50%;
-            transition: 0.5s;
+            transition: 0.25s;
           }
 
           &.loading {
@@ -100,8 +100,26 @@
             &::before {
               color: gray;
               content: "\f110"; // spinner
-              transform: translateX(14px);
-              transition: 0.25s;
+              animation-name: slide, spin;
+              animation-duration: 0.25s, 2s;
+              animation-delay: 0s, 0.25s;
+              animation-iteration-count: 1, infinite;
+              animation-fill-mode: both, none;
+
+              @keyframes slide {
+                to {
+                  transform: translateX(14px);
+                }
+              }
+
+              @keyframes spin {
+                0% {
+                  transform: translateX(14px) rotate(0deg);
+                }
+                100% {
+                  transform: translateX(14px) rotate(360deg);
+                }
+              }
             }
           }
         }
