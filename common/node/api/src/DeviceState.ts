@@ -3,5 +3,4 @@ enum DeviceState {
   Off = "off",
   Unknown = "unknown"
 }
-
 export default DeviceState;

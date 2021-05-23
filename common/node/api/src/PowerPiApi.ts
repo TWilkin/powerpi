@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import HttpStatusCodes from "http-status-codes";
 import io from "socket.io-client";
-
 import ApiException from "./ApiException";
 import Device from "./Device";
 import DeviceState from "./DeviceState";
@@ -29,8 +28,10 @@ class PowerPiApi {
 
   public getHistoryTypes = () =>
     this.get("history/types") as Promise<{ type: string }[]>;
+
   public getHistoryEntities = () =>
     this.get("history/entities") as Promise<{ entity: string }[]>;
+
   public getHistoryActions = () =>
     this.get("history/actions") as Promise<{ action: string }[]>;
 
@@ -100,5 +101,4 @@ class PowerPiApi {
     }
   }
 }
-
 export default PowerPiApi;

@@ -7,5 +7,4 @@ class ApiException extends Error {
     return this._statusCode;
   }
 }
-
 export default ApiException;

@@ -1,9 +1,8 @@
+import { History, PowerPiApi } from "powerpi-common-api";
 import React, { useEffect, useState } from "react";
 import ReactTimeAgo from "react-time-ago";
-import { History, PowerPiApi } from "powerpi-common-api";
-
-import HistoryFilter, { Filters } from "./HistoryFilter";
 import Filter from "./Filter";
+import HistoryFilter, { Filters } from "./HistoryFilter";
 
 interface HistoryListProps {
   api: PowerPiApi;
@@ -61,7 +60,6 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
     </>
   );
 };
-
 export default HistoryList;
 
 async function getHistory(

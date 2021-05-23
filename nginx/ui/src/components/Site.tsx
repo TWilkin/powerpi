@@ -1,3 +1,4 @@
+import { PowerPiApi } from "powerpi-common-api";
 import React from "react";
 import {
   BrowserRouter,
@@ -6,8 +7,6 @@ import {
   Route,
   Switch
 } from "react-router-dom";
-import { PowerPiApi } from "powerpi-common-api";
-
 import DeviceList from "./DeviceList";
 import HistoryList from "./HistoryList";
 
@@ -57,5 +56,4 @@ const Site = ({ api }: SiteProps) => {
     </BrowserRouter>
   );
 };
-
 export default Site;

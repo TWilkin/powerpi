@@ -1,7 +1,6 @@
+import { PowerPiApi } from "powerpi-common-api";
 import queryString from "query-string";
 import React, { FormEvent, useEffect, useState } from "react";
-import { PowerPiApi } from "powerpi-common-api";
-
 import Loading from "./Loading";
 
 type FilterType = "type" | "entity" | "action";
@@ -78,7 +77,6 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
     </div>
   );
 };
-
 export default HistoryFilter;
 
 interface FilterProps {

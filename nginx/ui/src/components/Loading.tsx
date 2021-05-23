@@ -15,5 +15,4 @@ const Loading = ({ loading, children }: LoadingProps) =>
   ) : (
     <>{children}</>
   );
-
 export default Loading;

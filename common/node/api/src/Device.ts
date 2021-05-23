@@ -8,5 +8,4 @@ interface Device {
   state: DeviceState;
   since: number;
 }
-
 export default Device;

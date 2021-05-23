@@ -5,5 +5,4 @@ interface History {
   timestamp?: Date;
   message?: object;
 }
-
 export default History;

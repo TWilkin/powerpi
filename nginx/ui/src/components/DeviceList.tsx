@@ -110,5 +110,4 @@ const DeviceList = ({ api }: DeviceListProps) => {
     </>
   );
 };
-
 export default DeviceList;

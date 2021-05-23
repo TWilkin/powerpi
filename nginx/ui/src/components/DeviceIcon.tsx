@@ -48,5 +48,4 @@ function getDeviceTypeIcon(type: string) {
       return faQuestion;
   }
 }
-
 export default DeviceIcon;

@@ -1,6 +1,5 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
 import { Device } from "powerpi-common-api";
-
+import React, { ChangeEvent, useEffect, useState } from "react";
 import DeviceIcon from "./DeviceIcon";
 import Loading from "./Loading";
 
@@ -65,5 +64,4 @@ const DeviceFilter = ({ devices, updateFilters }: DeviceFilterProps) => {
     </div>
   );
 };
-
 export default DeviceFilter;
