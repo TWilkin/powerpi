@@ -1,69 +1,55 @@
 import { faHistory } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useCallback, useEffect, useState } from "react";
+import { Device, DeviceStatusMessage, PowerPiApi } from "powerpi-common-api";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";
-import { Device, DeviceStatusMessage, PowerPiApi } from "powerpi-common-api";
-
 import DeviceFilter, { Filters } from "./DeviceFilter";
 import DeviceIcon from "./DeviceIcon";
 import DevicePowerButton from "./DevicePowerButton";
-import Loading from "./Loading";
 import Filter from "./Filter";
+import Loading from "./Loading";
 
 interface DeviceListProps {
   api: PowerPiApi;
 }
 
-export interface LoadableDevice extends Device {
-  loading: boolean;
-}
-
 const DeviceList = ({ api }: DeviceListProps) => {
-  const [devices, setDevices] = useState<LoadableDevice[] | undefined>(
-    undefined
-  );
+  const [devices, setDevices] = useState<Device[] | undefined>(undefined);
   const [filters, setFilters] = useState<Filters>({ types: [] });
 
-  const updateDevice = useCallback(
-    (name: string, update: (device: LoadableDevice) => void) => {
+  // load initial device list
+  useEffect(() => {
+    (async () => {
+      const result = await api.getDevices();
+      setDevices(result);
+    })();
+  }, []);
+
+  // handle socket.io updates
+  useEffect(() => {
+    const onStatusUpdate = (message: DeviceStatusMessage) => {
       if (!devices) {
         return;
       }
 
       const newDevices = [...devices];
 
-      const instance = newDevices.filter((d) => d.name === name)[0];
-      if (instance) {
-        update(instance);
+      const index = newDevices.findIndex(
+        (device) => device.name === message.device
+      );
+      if (index) {
+        newDevices[index] = { ...newDevices[index] };
+        newDevices[index].state = message.state;
+        newDevices[index].since = message.timestamp;
+
         setDevices(newDevices);
       }
-    },
-    [devices]
-  );
-
-  const setLoading = useCallback(
-    (device: LoadableDevice) =>
-      updateDevice(device.name, (d) => (d.loading = true)),
-    [updateDevice]
-  );
-
-  useEffect(() => {
-    const onStatusUpdate = (message: DeviceStatusMessage) =>
-      updateDevice(message.device, (d) => {
-        d.state = message.state;
-        d.since = message.timestamp;
-        d.loading = false;
-      });
-
-    (async () => {
-      const result = await api.getDevices();
-      setDevices(result as LoadableDevice[]);
-    })();
+    };
 
     api.addListener(onStatusUpdate);
     return () => api.removeListener(onStatusUpdate);
-  }, []);
+  }, [devices, setDevices]);
 
   return (
     <>
@@ -99,8 +85,8 @@ const DeviceList = ({ api }: DeviceListProps) => {
                     <td className="device-state">
                       <DevicePowerButton
                         api={api}
-                        device={device}
-                        setLoading={setLoading}
+                        device={device.name}
+                        state={device.state}
                       />
                     </td>
 

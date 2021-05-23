@@ -1,3 +1,7 @@
-type DeviceState = "on" | "off" | "unknown";
+enum DeviceState {
+  On = "on",
+  Off = "off",
+  Unknown = "unknown"
+}
 
 export default DeviceState;

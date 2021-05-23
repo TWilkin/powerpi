@@ -1,80 +1,50 @@
-import { faPowerOff, faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { ChangeEvent, MouseEvent } from "react";
+import classNames from "classnames";
 import { DeviceState, PowerPiApi } from "powerpi-common-api";
-
-import { LoadableDevice } from "./DeviceList";
+import React, { MouseEvent, useEffect, useState } from "react";
 
 interface DevicePowerButtonProps {
   api: PowerPiApi;
-  device: LoadableDevice;
-  setLoading: (device: LoadableDevice) => void;
+  device: string;
+  state: DeviceState;
 }
 
-const DevicePowerButton = ({
-  api,
-  device,
-  setLoading
-}: DevicePowerButtonProps) => {
-  const handlePowerButton = (event: ChangeEvent<HTMLInputElement>) => {
-    const index = event.target.id.lastIndexOf("-");
-    const state = event.target.id.slice(index + 1) as DeviceState;
+const DevicePowerButton = ({ api, device, state }: DevicePowerButtonProps) => {
+  const [changeState, setChangeState] = useState(DeviceState.Unknown);
+  const [loading, setLoading] = useState(false);
 
-    if (state === "on" || state === "off") {
-      setLoading(device);
+  useEffect(() => {
+    setLoading(false);
+  }, [state]);
 
-      api.postMessage(device.name, state);
-    }
-  };
-
-  const handleSliderClick = (event: MouseEvent<HTMLDivElement>) => {
+  const handleClick = async (event: MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
 
-    if (device.state !== "unknown") {
-      setLoading(device);
-
-      api.postMessage(device.name, device.state);
+    let newState = DeviceState.On;
+    if (loading && changeState !== DeviceState.Unknown) {
+      // if we're loading just repeat the current state
+      newState = changeState;
+    } else {
+      if (state === DeviceState.On) {
+        // the only state change that isn't to on is from on to off
+        newState = DeviceState.Off;
+      }
     }
+
+    setChangeState(newState);
+    await api.postMessage(device, newState);
   };
 
   return (
-    <>
-      <div className="switch-toggle">
-        {["on", "unknown", "off"].map((state) => (
-          <input
-            key={state}
-            type="radio"
-            id={`${device.name}-${state}`}
-            name={`${device.name}-state`}
-            className={`switch-${state}`}
-            checked={device.state === state}
-            onChange={handlePowerButton}
-          />
-        ))}
-
-        <label htmlFor={`${device.name}-on`} className="switch-on">
-          <FontAwesomeIcon icon={faPowerOff} />
-        </label>
-        <label htmlFor={`${device.name}-unknown`} className="switch-unknown">
-          &nbsp;
-        </label>
-        <label htmlFor={`${device.name}-off`} className="switch-off">
-          <FontAwesomeIcon icon={faPowerOff} />
-        </label>
-
-        <div
-          id={`${device.name}-slider`}
-          className="switch-toggle-slider"
-          onClick={handleSliderClick}
-        />
-      </div>
-
-      {device.loading ? (
-        <div className="switch-toggle-spinner">
-          <FontAwesomeIcon icon={faSpinner} spin={true} />
-        </div>
-      ) : null}
-    </>
+    <div className="slider" onClick={handleClick}>
+      <span
+        className={classNames(
+          "slider-bar",
+          { on: state === DeviceState.On },
+          { off: state === DeviceState.Off },
+          { unknown: state === DeviceState.Unknown }
+        )}
+      />
+    </div>
   );
 };
 

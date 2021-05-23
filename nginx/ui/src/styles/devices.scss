@@ -13,88 +13,77 @@
     max-width: 600px;
 
     .device-state {
-      $slider-width: 35px;
-      $slider-height: 25px;
-
       display: flex;
 
-      .switch-toggle {
-        width: #{$slider-width * 2.5};
-        max-width: #{$slider-width * 2.5};
-        height: $slider-height;
-        line-height: $slider-height;
-        margin-top: 1px;
-        position: relative;
-        background-color: lightgray;
-        border: 1px solid black;
-        border-radius: $slider-width;
+      .slider {
+        $slider-width: 54px;
+        $slider-height: 26px;
 
-        > * {
-          float: left;
-        }
+        width: $slider-width;
+        height: $slider-height;
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
 
         input {
           display: none;
 
-          &:checked {
-            ~ .switch-toggle-slider {
-              background: gray;
-              opacity: 0.6;
-            }
+          &:indeterminate + .slider-bar {
+            background-color: gray;
+          }
 
-            &.switch-on ~ .switch-toggle-slider {
-              left: 0px;
-              cursor: pointer;
-            }
+          &:indeterminate + .slider-bar::before {
+            transform: translateX(14px);
+            transition: 0.25s;
+          }
 
-            &.switch-unknown ~ .switch-toggle-slider {
-              left: #{$slider-width - $slider-width / 4};
-            }
+          &:checked + .slider-bar {
+            background-color: green;
+          }
 
-            &.switch-off ~ .switch-toggle-slider {
-              left: #{$slider-width * 1.5};
-              cursor: pointer;
-            }
+          &:checked + .slider-bar::before {
+            transform: translateX(28px);
           }
         }
 
-        label {
-          width: $slider-width;
-          height: $slider-height;
-          display: block;
-          z-index: 1;
-          text-align: center;
-
-          &:not(.switch-unknown) {
-            cursor: pointer;
-          }
-
-          &.switch-on {
-            color: green;
-          }
-
-          &.switch-unknown {
-            width: #{$slider-width / 2};
-          }
-
-          &.switch-off {
-            color: red;
-          }
-        }
-
-        .switch-toggle-slider {
+        .slider-bar {
           width: $slider-width;
           height: $slider-height;
           position: absolute;
-          top: 0px;
-          border-radius: $slider-width;
-          transition: all 0.4s ease;
-        }
-      }
+          top: 0;
+          left: 0;
+          background-color: red;
+          border-radius: 20px;
 
-      .switch-toggle-spinner {
-        margin-left: 5px;
-        line-height: $slider-height;
+          &.unknown {
+            background-color: gray;
+
+            &::before {
+              transform: translateX(14px);
+              transition: 0.25s;
+            }
+          }
+
+          &.on {
+            background-color: green;
+
+            &::before {
+              transform: translateX(28px);
+            }
+          }
+
+          &::before {
+            content: "";
+            width: 22px;
+            height: 22px;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.5s;
+          }
+        }
       }
     }
   }
