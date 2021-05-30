@@ -21,7 +21,8 @@
     "react-dom": "^16.14.0",
     "react-router-dom": "^5.2.0",
     "react-time-ago": "^6.2.2",
-    "socket.io-client": "^4.0.0"
+    "socket.io-client": "^4.0.0",
+    "use-long-press": "^1.0.5"
   },
   "devDependencies": {
     "@tsconfig/node12": "^1.0.7",

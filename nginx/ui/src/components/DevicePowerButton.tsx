@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { DeviceState, PowerPiApi } from "powerpi-common-api";
 import React, { MouseEvent, useEffect, useState } from "react";
-import useLongPress from "../hooks/useLongPress";
+import { useLongPress } from "use-long-press";
 
 interface DevicePowerButtonProps {
   api: PowerPiApi;
