@@ -9,6 +9,16 @@
   flex-direction: column;
   justify-content: center;
 
+  tbody {
+    tr {
+      &:nth-child(odd) {
+        td {
+          background-color: $highlight-colour;
+        }
+      }
+    }
+  }
+
   .device {
     max-width: 600px;
 
