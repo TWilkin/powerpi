@@ -1,5 +1,42 @@
 #history-list {
   table {
-    min-width: 80%;
+    width: 100%;
+
+    th,
+    td {
+      padding: 0 5px;
+    }
+
+    tbody {
+      tr {
+        &:nth-child(odd) {
+          td {
+            background-color: lightgrey;
+          }
+        }
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      tr {
+        display: block;
+        clear: both;
+      }
+
+      tbody {
+        tr {
+          &:nth-child(odd) {
+            background-color: inherit;
+          }
+        }
+      }
+
+      th:last-child,
+      td:last-child {
+        width: 100%;
+        float: left;
+        border-bottom: 1px solid black;
+      }
+    }
   }
 }
