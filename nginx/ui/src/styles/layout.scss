@@ -45,7 +45,7 @@ body {
     height: 100%;
     padding: 2px 30px 2px 2px;
     position: fixed;
-    top: $menu-height;
+    top: calc(#{$menu-height} + 1px);
     left: 0;
     z-index: 1;
     background-color: black;
