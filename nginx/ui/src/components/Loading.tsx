@@ -9,9 +9,9 @@ interface LoadingProps {
 
 const Loading = ({ loading, children }: LoadingProps) =>
   loading ? (
-    <span>
+    <div className="loading">
       <FontAwesomeIcon icon={faSpinner} spin={true} />
-    </span>
+    </div>
   ) : (
     <>{children}</>
   );

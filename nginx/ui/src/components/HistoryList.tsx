@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import ReactTimeAgo from "react-time-ago";
 import Filter from "./Filter";
 import HistoryFilter, { Filters } from "./HistoryFilter";
+import Loading from "./Loading";
 
 interface HistoryListProps {
   api: PowerPiApi;
@@ -16,11 +17,18 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
     action: undefined
   });
   const [history, setHistory] = useState<History[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
-      const result = await getHistory(api, filters);
-      setHistory(result);
+      try {
+        setLoading(true);
+
+        const result = await getHistory(api, filters);
+        setHistory(result);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, [filters]);
 
@@ -31,31 +39,39 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
       </Filter>
 
       <div id="history-list" className="list">
-        <table>
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Entity</th>
-              <th>Action</th>
-              <th>Timestamp</th>
-              <th>Message</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {history.map((row, i) => (
-              <tr key={i}>
-                <td>{row.type}</td>
-                <td>{row.entity}</td>
-                <td>{row.action}</td>
-                <td>
-                  <ReactTimeAgo date={row.timestamp} locale="en-GB" />
-                </td>
-                <td>{JSON.stringify(row.message)}</td>
+        <Loading loading={loading}>
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Entity</th>
+                <th>Action</th>
+                <th>Timestamp</th>
+                <th>Message</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {history.length > 0 ? (
+                history.map((row, i) => (
+                  <tr key={i}>
+                    <td>{row.type}</td>
+                    <td>{row.entity}</td>
+                    <td>{row.action}</td>
+                    <td>
+                      <ReactTimeAgo date={row.timestamp} locale="en-GB" />
+                    </td>
+                    <td>{JSON.stringify(row.message)}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5}>No data</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </Loading>
       </div>
     </>
   );

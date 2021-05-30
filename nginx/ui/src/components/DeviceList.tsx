@@ -17,12 +17,19 @@ interface DeviceListProps {
 const DeviceList = ({ api }: DeviceListProps) => {
   const [devices, setDevices] = useState<Device[] | undefined>(undefined);
   const [filters, setFilters] = useState<Filters>({ types: [] });
+  const [loading, setLoading] = useState(true);
 
   // load initial device list
   useEffect(() => {
     (async () => {
-      const result = await api.getDevices();
-      setDevices(result);
+      try {
+        setLoading(true);
+
+        const result = await api.getDevices();
+        setDevices(result);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 
@@ -58,7 +65,7 @@ const DeviceList = ({ api }: DeviceListProps) => {
       </Filter>
 
       <div id="device-list" className="list">
-        <Loading loading={!devices}>
+        <Loading loading={loading}>
           <table>
             <tbody>
               {devices
