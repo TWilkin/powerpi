@@ -124,6 +124,16 @@
           }
         }
       }
+
+      .buttons {
+        .on {
+          color: green;
+        }
+
+        .off {
+          color: red;
+        }
+      }
     }
   }
 }
