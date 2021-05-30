@@ -105,6 +105,7 @@
           }
 
           &.loading {
+            margin: 0;
             background-color: gray;
 
             &::before {
