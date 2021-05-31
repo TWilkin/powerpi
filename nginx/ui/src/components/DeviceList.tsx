@@ -68,53 +68,55 @@ const DeviceList = ({ api }: DeviceListProps) => {
         <DeviceFilter devices={devices} updateFilters={setFilters} />
       </Filter>
 
-      <div id="device-list" className="list">
+      <div id="device-list">
         <Loading loading={loading}>
-          <table>
-            <tbody>
-              {filtered && filtered.length > 0 ? (
-                filtered.map((device) => (
-                  <tr
-                    key={device.name}
-                    className="device"
-                    title={`Device ${device.name} is currently ${device.state}.`}
-                  >
-                    <td>
-                      <DeviceIcon type={device.type} />
-                    </td>
+          <div className="list">
+            <table>
+              <tbody>
+                {filtered && filtered.length > 0 ? (
+                  filtered.map((device) => (
+                    <tr
+                      key={device.name}
+                      className="device"
+                      title={`Device ${device.name} is currently ${device.state}.`}
+                    >
+                      <td>
+                        <DeviceIcon type={device.type} />
+                      </td>
 
-                    <td className="device-name">
-                      {device.display_name ?? device.name}
-                    </td>
+                      <td className="device-name">
+                        {device.display_name ?? device.name}
+                      </td>
 
-                    <td className="device-state">
-                      <DevicePowerButton
-                        api={api}
-                        device={device.name}
-                        state={device.state}
-                      />
-                    </td>
+                      <td className="device-state">
+                        <DevicePowerButton
+                          api={api}
+                          device={device.name}
+                          state={device.state}
+                        />
+                      </td>
 
-                    <td className="device-since">
-                      {device.since && device.since > -1 && (
-                        <ReactTimeAgo date={device.since} locale="en-GB" />
-                      )}
-                    </td>
+                      <td className="device-since">
+                        {device.since && device.since > -1 && (
+                          <ReactTimeAgo date={device.since} locale="en-GB" />
+                        )}
+                      </td>
 
-                    <td className="device-history">
-                      <Link to={`/history?type=device&entity=${device.name}`}>
-                        <FontAwesomeIcon icon={faHistory} />
-                      </Link>
-                    </td>
+                      <td className="device-history">
+                        <Link to={`/history?type=device&entity=${device.name}`}>
+                          <FontAwesomeIcon icon={faHistory} />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5}>No devices</td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5}>No devices</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </Loading>
       </div>
     </>

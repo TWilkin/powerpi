@@ -11,11 +11,10 @@
 
 #history-list {
   table {
-    width: 100%;
-
     th,
     td {
       padding: 0 5px;
+      white-space: nowrap;
     }
 
     tbody {
@@ -25,27 +24,6 @@
             background-color: $highlight-colour;
           }
         }
-      }
-    }
-
-    @media screen and (max-width: 600px) {
-      tr {
-        display: block;
-        clear: both;
-      }
-
-      tbody {
-        tr {
-          &:nth-child(odd) {
-            background-color: inherit;
-          }
-        }
-      }
-
-      th:last-child,
-      td:last-child {
-        width: 100%;
-        float: left;
       }
     }
   }

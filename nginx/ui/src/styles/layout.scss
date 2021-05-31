@@ -12,7 +12,7 @@ body {
   z-index: 1;
 
   .menu {
-    width: 100%;
+    width: 100vw;
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
@@ -36,10 +36,11 @@ body {
 }
 
 .content {
-  margin: $menu-height calc(1rem + 8px) 0 calc(1rem + 8px);
+  margin: $menu-height 0 0 calc(1rem + 8px);
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
+  overflow: hidden;
 
   .filter {
     height: 100%;
@@ -87,6 +88,11 @@ body {
         transform: translateX(calc(25px - 100%));
       }
     }
+  }
+
+  .list {
+    max-width: calc(100vw - 1rem - 8px);
+    overflow: auto;
   }
 
   .loading {

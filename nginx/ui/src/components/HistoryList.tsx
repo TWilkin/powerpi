@@ -40,39 +40,41 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
         <HistoryFilter api={api} query={query} updateFilter={setFilters} />
       </Filter>
 
-      <div id="history-list" className="list">
+      <div id="history-list">
         <Loading loading={loading}>
-          <table>
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Entity</th>
-                <th>Action</th>
-                <th>Timestamp</th>
-                <th>Message</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {history.length > 0 ? (
-                history.map((row, i) => (
-                  <tr key={i}>
-                    <td>{row.type}</td>
-                    <td>{row.entity}</td>
-                    <td>{row.action}</td>
-                    <td>
-                      <ReactTimeAgo date={row.timestamp} locale="en-GB" />
-                    </td>
-                    <td>{JSON.stringify(row.message)}</td>
-                  </tr>
-                ))
-              ) : (
+          <div className="list">
+            <table>
+              <thead>
                 <tr>
-                  <td colSpan={5}>No data</td>
+                  <th>Type</th>
+                  <th>Entity</th>
+                  <th>Action</th>
+                  <th>Timestamp</th>
+                  <th>Message</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {history.length > 0 ? (
+                  history.map((row, i) => (
+                    <tr key={i}>
+                      <td>{row.type}</td>
+                      <td>{row.entity}</td>
+                      <td>{row.action}</td>
+                      <td>
+                        <ReactTimeAgo date={row.timestamp} locale="en-GB" />
+                      </td>
+                      <td>{JSON.stringify(row.message)}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5}>No data</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </Loading>
       </div>
     </>
