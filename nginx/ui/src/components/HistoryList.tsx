@@ -17,17 +17,19 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
     action: undefined
   });
   const [history, setHistory] = useState<History[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
-      try {
-        setLoading(true);
+      if (filters.action || filters.entity || filters.type) {
+        try {
+          setLoading(true);
 
-        const result = await getHistory(api, filters);
-        setHistory(result);
-      } finally {
-        setLoading(false);
+          const result = await getHistory(api, filters);
+          setHistory(result);
+        } finally {
+          setLoading(false);
+        }
       }
     })();
   }, [filters]);

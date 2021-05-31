@@ -58,6 +58,10 @@ const DeviceList = ({ api }: DeviceListProps) => {
     return () => api.removeListener(onStatusUpdate);
   }, [devices, setDevices]);
 
+  const filtered = devices?.filter(
+    (device) => device.visible && filters.types.includes(device.type)
+  );
+
   return (
     <>
       <Filter>
@@ -68,14 +72,8 @@ const DeviceList = ({ api }: DeviceListProps) => {
         <Loading loading={loading}>
           <table>
             <tbody>
-              {devices
-                ?.filter(
-                  (device) =>
-                    device.visible &&
-                    (filters.types.length === 0 ||
-                      filters.types.includes(device.type))
-                )
-                .map((device) => (
+              {filtered && filtered.length > 0 ? (
+                filtered.map((device) => (
                   <tr
                     key={device.name}
                     className="device"
@@ -109,7 +107,12 @@ const DeviceList = ({ api }: DeviceListProps) => {
                       </Link>
                     </td>
                   </tr>
-                ))}
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5}>No devices</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </Loading>
