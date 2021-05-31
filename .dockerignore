@@ -5,6 +5,7 @@
 **/dist/
 **/node_modules/
 **/venv/
+**/*.dev.js
 **/*.pyc
 **/*.log
 **/.gitignore
