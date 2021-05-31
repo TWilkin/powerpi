@@ -36,7 +36,7 @@ body {
 }
 
 .content {
-  margin-top: $menu-height;
+  margin: $menu-height calc(1rem + 8px) 0 calc(1rem + 8px);
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -53,8 +53,11 @@ body {
     transform: translateX(calc(25px - 100%));
 
     .filter-button {
+      height: 100%;
+      display: inline-flex;
       position: fixed;
       right: 0;
+      align-items: flex-start;
       cursor: pointer;
       background-color: black;
       color: white;
