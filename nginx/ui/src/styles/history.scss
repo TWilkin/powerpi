@@ -7,6 +7,10 @@
   select {
     width: calc(100% - 4rem);
   }
+
+  .loading {
+    display: inline;
+  }
 }
 
 #history-list {
