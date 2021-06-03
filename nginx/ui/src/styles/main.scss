@@ -1,5 +1,9 @@
-@import './vars.scss';
+$fa-font-path: "../../node_modules/@fortawesome/fontawesome-free/webfonts" !default;
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+@import "~@fortawesome/fontawesome-free/scss/solid";
 
-@import './layout.scss';
-@import './devices.scss';
-@import './history.scss';
+@import "./vars.scss";
+
+@import "./layout.scss";
+@import "./devices.scss";
+@import "./history.scss";

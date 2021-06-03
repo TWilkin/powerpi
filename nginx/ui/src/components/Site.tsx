@@ -1,49 +1,59 @@
-import React from 'react';
-import { BrowserRouter, NavLink, Route, Switch } from 'react-router-dom';
+import { PowerPiApi } from "powerpi-common-api";
+import React from "react";
+import {
+  BrowserRouter,
+  NavLink,
+  Redirect,
+  Route,
+  Switch
+} from "react-router-dom";
+import DeviceList from "./DeviceList";
+import HistoryList from "./HistoryList";
 
-import { Api } from '../api';
-import DeviceList from './DeviceList';
-import HistoryList from './HistoryList';
+interface MenuElementProps {
+  path: string;
+  name: string;
+}
 
-const api = new Api();
-
-export default class Site extends React.Component {
-    render() {
-        return (
-            <BrowserRouter>
-                <div id='menu'>
-                    <nav>
-                        {this.renderMenuLink('/', 'Home')}
-                        {this.renderMenuLink('/devices', 'Devices')}
-                        {this.renderMenuLink('/history', 'History')}
-                    </nav>
-                </div>
-                <br />
-
-                <div id='content'>
-                    <Switch>
-                        <Route path='/devices'>
-                            <DeviceList api={api} />
-                        </Route>
-
-                        <Route path='/history'>
-                            <HistoryList api={api} />
-                        </Route>
-
-                        <Route path='/'>
-                            <h1>PowerPi</h1>
-                        </Route>
-                    </Switch>
-                </div>
-            </BrowserRouter>
-        );
-    }
-
-    renderMenuLink(path: string, name: string) {
-        return (
-            <NavLink activeClassName='active' exact to={path}>
-                <div className='menu-element'>{name}</div>
-            </NavLink>
-        )
-    }
+const MenuElement = ({ path, name }: MenuElementProps) => {
+  return (
+    <NavLink exact to={path} className="menu-element" activeClassName="active">
+      {name}
+    </NavLink>
+  );
 };
+
+interface SiteProps {
+  api: PowerPiApi;
+}
+
+const Site = ({ api }: SiteProps) => {
+  return (
+    <BrowserRouter>
+      <header className="header">
+        <nav className="menu">
+          <MenuElement path="/devices" name="Devices" />
+          <MenuElement path="/history" name="History" />
+        </nav>
+      </header>
+
+      <div className="content">
+        <Switch>
+          <Redirect exact from="/" to={"/devices"} />
+
+          <Route path="/devices">
+            <DeviceList api={api} />
+          </Route>
+
+          <Route
+            path="/history"
+            render={(props) => (
+              <HistoryList api={api} query={props.location.search} />
+            )}
+          />
+        </Switch>
+      </div>
+    </BrowserRouter>
+  );
+};
+export default Site;

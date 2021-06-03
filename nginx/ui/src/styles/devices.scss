@@ -1,111 +1,156 @@
-#device-filters, #device-list {
-    label {
-        display: flex;
-    }
+#device-filters,
+#device-list {
+  label {
+    display: flex;
+  }
 }
 
 #device-list {
-    flex-direction: column;
-    justify-content: center;
+  flex-direction: column;
+  justify-content: center;
 
-    .device {
-        max-width: 600px;
-        display: flex;
-
-        div {
-            flex: 1;
+  tbody {
+    tr {
+      &:nth-child(even) {
+        td {
+          background-color: $highlight-colour;
         }
-
-        .device-state {
-            $slider-width: 35px;
-            $slider-height: 25px;
-
-            display: flex;
-
-            .switch-toggle {
-                width: #{$slider-width * 2.5};
-                max-width: #{$slider-width * 2.5};
-                height: $slider-height;
-                line-height: $slider-height;
-                margin-top: 1px;
-                position: relative;
-                background-color: lightgray;
-                border: 1px solid black;
-                border-radius: $slider-width;
-
-                > * {
-                    float: left;
-                }
-
-                input {
-                    display: none;
-
-                    &:checked {
-                        ~ .switch-toggle-slider {
-                            background: gray;
-                            opacity: 0.6;
-                        }
-
-                        &.switch-on ~ .switch-toggle-slider {
-                            left: 0px;
-                            cursor: pointer;
-                        }
-
-                        &.switch-unknown ~ .switch-toggle-slider {
-                            left: #{$slider-width - $slider-width / 4};
-                        }
-
-                        &.switch-off ~ .switch-toggle-slider {
-                            left: #{$slider-width * 1.5};
-                            cursor: pointer;
-                        }
-                    }
-                }
-
-                label {
-                    width: $slider-width;
-                    height: $slider-height;
-                    display: block;
-                    z-index: 1;
-                    text-align: center;
-
-                    &:not(.switch-unknown) {
-                        cursor: pointer;
-                    }
-
-                    &.switch-on {
-                        color: green;
-                    }
-
-                    &.switch-unknown {
-                        width: #{$slider-width / 2};
-                    }
-
-                    &.switch-off {
-                        color: red;
-                    }
-                }
-
-                .switch-toggle-slider {
-                    width: $slider-width;
-                    height: $slider-height;
-                    position: absolute;
-                    top: 0px;
-                    border-radius: $slider-width;
-                    transition: all .4s ease;
-                }
-            }
-
-            .switch-toggle-spinner {
-                margin-left: 5px;
-                line-height: $slider-height;
-            }
-        }
+      }
     }
+  }
+
+  .device {
+    max-width: 600px;
+
+    .device-state {
+      display: flex;
+
+      .slider {
+        $slider-width: 54px;
+        $slider-height: 26px;
+
+        width: $slider-width;
+        height: $slider-height;
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+
+        input {
+          display: none;
+
+          &:indeterminate + .slider-bar {
+            background-color: gray;
+          }
+
+          &:indeterminate + .slider-bar::before {
+            transform: translateX(14px);
+            transition: 0.25s;
+          }
+
+          &:checked + .slider-bar {
+            background-color: green;
+          }
+
+          &:checked + .slider-bar::before {
+            transform: translateX(28px);
+          }
+        }
+
+        .slider-bar {
+          width: $slider-width;
+          height: $slider-height;
+          position: absolute;
+          top: 0;
+          left: 0;
+          background-color: red;
+          border-radius: 20px;
+
+          &.unknown {
+            background-color: gray;
+
+            &::before {
+              color: gray;
+              transform: translateX(14px);
+              transition: 0.25s;
+            }
+          }
+
+          &.on {
+            background-color: green;
+
+            &::before {
+              color: green;
+              transform: translateX(28px);
+            }
+          }
+
+          &::before {
+            width: 22px;
+            height: 22px;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            color: red;
+            content: "\f011"; // power icon
+            line-height: 22px;
+            text-align: center;
+            font-style: normal;
+            font-variant: normal;
+            text-rendering: auto;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.25s;
+          }
+
+          &.loading {
+            margin: 0;
+            background-color: gray;
+
+            &::before {
+              color: gray;
+              content: "\f110"; // spinner
+              animation-name: slide, spin;
+              animation-duration: 0.25s, 2s;
+              animation-delay: 0s, 0.25s;
+              animation-iteration-count: 1, infinite;
+              animation-fill-mode: both, none;
+
+              @keyframes slide {
+                to {
+                  transform: translateX(14px);
+                }
+              }
+
+              @keyframes spin {
+                0% {
+                  transform: translateX(14px) rotate(0deg);
+                }
+                100% {
+                  transform: translateX(14px) rotate(360deg);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .buttons {
+        .on {
+          color: green;
+        }
+
+        .off {
+          color: red;
+        }
+      }
+    }
+  }
 }
 
 .device-icon {
-    min-width: 25px;
-    max-width: 25px;
-    text-align: center;
+  min-width: 25px;
+  max-width: 25px;
+  text-align: center;
 }

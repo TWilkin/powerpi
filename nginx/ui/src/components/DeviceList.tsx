@@ -1,255 +1,125 @@
-import { faFilter, faHistory, faHourglassHalf, faLayerGroup, faLightbulb, faLock, faPlug, faPowerOff, faQuestion, faSpinner, faTv } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import moment from 'moment';
-import React, { ChangeEvent, MouseEvent } from 'react';
-import Moment from 'react-moment';
-import { Link } from 'react-router-dom';
-
-import { Api, Device, DeviceState, SocketListener } from '../api';
+import { faHistory } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Device, DeviceStatusMessage, PowerPiApi } from "powerpi-common-api";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import ReactTimeAgo from "react-time-ago";
+import DeviceFilter, { Filters } from "./DeviceFilter";
+import DeviceIcon from "./DeviceIcon";
+import DevicePowerButton from "./DevicePowerButton";
+import Filter from "./Filter";
+import Loading from "./Loading";
 
 interface DeviceListProps {
-    api: Api;
+  api: PowerPiApi;
 }
 
-interface LoadableDevice extends Device {
-    loading: boolean;
-}
+const DeviceList = ({ api }: DeviceListProps) => {
+  const [devices, setDevices] = useState<Device[] | undefined>(undefined);
+  const [filters, setFilters] = useState<Filters>({ types: [] });
+  const [loading, setLoading] = useState(true);
 
-interface DeviceListModel {
-    devices: LoadableDevice[];
-    filters: string[];
-}
+  // load initial device list
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
 
-export default class DeviceList 
-        extends React.Component<DeviceListProps, DeviceListModel>
-        implements SocketListener
-{
+        const result = await api.getDevices();
+        setDevices(result);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
-    constructor(props: DeviceListProps) {
-        super(props);
+  // handle socket.io updates
+  useEffect(() => {
+    const onStatusUpdate = (message: DeviceStatusMessage) => {
+      if (!devices) {
+        return;
+      }
 
-        this.state = {
-            devices: [],
-            filters: [
-                'composite',
-                'harmony_activity',
-                'lifx_light',
-                'energenie_socket'
-            ]
-        };
+      const newDevices = [...devices];
 
-        this.handleFilterChange = this.handleFilterChange.bind(this);
-        this.handlePowerButton = this.handlePowerButton.bind(this);
-        this.onMessage = this.onMessage.bind(this);
+      const index = newDevices.findIndex(
+        (device) => device.name === message.device
+      );
+      if (index) {
+        newDevices[index] = { ...newDevices[index] };
+        newDevices[index].state = message.state;
+        newDevices[index].since = message.timestamp;
 
-        this.props.api.addListener(this);
-    }
+        setDevices(newDevices);
+      }
+    };
 
-    async componentDidMount() {
-        this.setState({
-            devices: await this.props.api.getDevices() as LoadableDevice[]
-        });
-    }
+    api.addListener(onStatusUpdate);
+    return () => api.removeListener(onStatusUpdate);
+  }, [devices, setDevices]);
 
-    render() {
-        return (
-            <>
-                {this.renderFilters()}
-                <br />
-                {this.renderDeviceList()}
-            </>
-        );
-    }
+  const filtered = devices?.filter(
+    (device) => device.visible && filters.types.includes(device.type)
+  );
 
-    renderFilters() {
-        let types = this.state.devices
-            .map(device => device.type);
-        types = types
-            .filter((value, index) => types.indexOf(value) === index)
-            .sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
+  return (
+    <>
+      <Filter>
+        <DeviceFilter devices={devices} updateFilters={setFilters} />
+      </Filter>
 
-        return (
-            <div id='device-filters' className='filters'>
-                <label>
-                    <FontAwesomeIcon icon={faFilter} 
-                        onClick={() => this.setState({ filters: this.state.filters.length === 0 ? types : [] })} />
-                </label>
+      <div id="device-list">
+        <Loading loading={loading}>
+          <div className="list">
+            <table>
+              <tbody>
+                {filtered && filtered.length > 0 ? (
+                  filtered.map((device) => (
+                    <tr
+                      key={device.name}
+                      className="device"
+                      title={`Device ${device.name} is currently ${device.state}.`}
+                    >
+                      <td>
+                        <DeviceIcon type={device.type} />
+                      </td>
 
-                {types.map(type => 
-                    <label key={type}>
-                        <input type='checkbox' name='device-type' value={type} 
-                            checked={this.state.filters.includes(type)}
-                            onChange={this.handleFilterChange} />
-                        {this.renderDeviceTypeIcon(type)}
-                        <div className='device-type'>{type}</div>
-                    </label>
+                      <td className="device-name">
+                        {device.display_name ?? device.name}
+                      </td>
+
+                      <td className="device-state">
+                        <DevicePowerButton
+                          api={api}
+                          device={device.name}
+                          state={device.state}
+                        />
+                      </td>
+
+                      <td className="device-since">
+                        {device.since && device.since > -1 && (
+                          <ReactTimeAgo date={device.since} locale="en-GB" />
+                        )}
+                      </td>
+
+                      <td className="device-history">
+                        <Link to={`/history?type=device&entity=${device.name}`}>
+                          <FontAwesomeIcon icon={faHistory} />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5}>No devices</td>
+                  </tr>
                 )}
-            </div>
-        );
-    }
-
-    renderDeviceList() {
-        return (
-            <div id='device-list' className='list'>
-                {this.state.devices
-                    .filter(device => device.visible)
-                    .filter(device => this.state.filters.includes(device.type))
-                    .map(device => 
-                        <div key={device.name} className='device' 
-                                title={`Device ${device.name} is currently ${device.state}.`}>
-                            {this.renderDeviceTypeIcon(device.type)}
-                            <div className='device-name'>{device.display_name ?? device.name}</div>
-                            <div className='device-state'>
-                                {this.renderPowerButtons(device)}
-                            </div>
-                            <div className='device-since'>
-                                {device.since && device.since > -1 ? (
-                                    <span title={moment(device.since).format('L LT')}>
-                                        <Moment date={device.since} fromNow />
-                                    </span>
-                                ) : (
-                                    <></>
-                                )}
-                            </div>
-                            <div className='device-history'>
-                                <Link to={`/history?type=device&entity=${device.name}`}>
-                                    <FontAwesomeIcon icon={faHistory} />
-                                </Link>
-                            </div>
-                        </div>
-                    )}
-            </div>
-        );
-    }
-
-    renderPowerButtons(device: LoadableDevice) {
-        return (
-            <>
-                <div className='switch-toggle'>
-                    {['on', 'unknown', 'off'].map(state => (
-                        <input key={state}
-                            type='radio'
-                            id={`${device.name}-${state}`} 
-                            name={`${device.name}-state`} 
-                            className={`switch-${state}`}
-                            checked={device.state === state} 
-                            onChange={this.handlePowerButton} />
-                    ))}
-
-                    <label htmlFor={`${device.name}-on`} className='switch-on'>
-                        <FontAwesomeIcon icon={faPowerOff} />
-                    </label>
-                    <label htmlFor={`${device.name}-unknown`} className='switch-unknown'>&nbsp;</label>
-                    <label htmlFor={`${device.name}-off`} className='switch-off'>
-                        <FontAwesomeIcon icon={faPowerOff} />
-                    </label>
-
-                    <div id={`${device.name}-slider`} 
-                        className='switch-toggle-slider'
-                        onClick={(event) => this.handleSliderClick(event, device)} />
-                </div>
-                
-                {device.loading ? (
-                    <div className='switch-toggle-spinner'>
-                        <FontAwesomeIcon icon={faSpinner} spin={true} />
-                    </div>
-                ) : null}
-            </>
-        );
-    }
-
-    renderDeviceTypeIcon(type: string) {
-        return (
-            <div className='device-icon'>
-                <FontAwesomeIcon icon={this.getDeviceTypeIcon(type)} />
-            </div>
-        );
-    }
-
-    public onMessage(message: { device: string, state: DeviceState, timestamp: number }) {
-        this.updateDeviceState(message.device, (device) => {
-            device.state = message.state;
-            device.since = message.timestamp;
-            device.loading = false;
-        });
-    }
-
-    private getDeviceTypeIcon(type: string) {
-        switch(type) {
-            case 'composite':
-                return faLayerGroup;
-
-            case 'delay':
-                return faHourglassHalf;
-            
-            case 'harmony_activity':
-            case 'harmony_hub':
-                return faTv;
-
-            case 'lifx_light':
-                return faLightbulb;
-            
-            case 'mutex':
-                return faLock;
-            
-            case 'energenie_socket':
-            case 'energenie_socket_group':
-                return faPlug;
-            
-            default:
-                return faQuestion;
-        }
-    }
-
-    private handleFilterChange(event: ChangeEvent<HTMLInputElement>) {
-        let filters = [...this.state.filters];
-
-        if(event.target.checked) {
-            filters.push(event.target.value);
-        } else {
-            filters = filters.filter(type => type !== event.target.value);
-        }
-
-        this.setState({
-            filters: filters
-        });
-    }
-
-    private handlePowerButton(event: ChangeEvent<HTMLInputElement>) {
-        let index = event.target.id.lastIndexOf('-');
-        let device = event.target.id.slice(0, index);
-        let state = event.target.id.slice(index + 1) as DeviceState;
-        
-        if(state === 'on' || state === 'off') {
-            this.updateDeviceState(device, (device) => device.loading = true);
-
-            this.props.api.postMessage(device, state);
-        }
-    }
-
-    private handleSliderClick(event: MouseEvent<HTMLDivElement>, device: Device) {
-        event.preventDefault();
-
-        if(device.state !== 'unknown') {
-            this.updateDeviceState(device.name, (device) => device.loading = true);
-
-            this.props.api.postMessage(device.name, device.state);
-        }
-    }
-
-    private updateDeviceState(name: string, func: (device: LoadableDevice) => void) {
-        let index = this.state.devices.findIndex(device => device.name === name);
-
-        if(index) {
-            let devices = [...this.state.devices];
-            let device = devices[index];
-
-            func(device);
-            devices[index] = device;
-
-            this.setState({
-                devices: devices
-            });
-        }
-    }
+              </tbody>
+            </table>
+          </div>
+        </Loading>
+      </div>
+    </>
+  );
 };
+export default DeviceList;

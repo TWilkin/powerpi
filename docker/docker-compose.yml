@@ -158,7 +158,7 @@ services:
 
   nginx:
     build: ../nginx
-    image: ${REGISTRY}/powerpi/nginx:0.2.4
+    image: ${REGISTRY}/powerpi/nginx:1.0.0
     networks:
       - powerpi
     ports:
