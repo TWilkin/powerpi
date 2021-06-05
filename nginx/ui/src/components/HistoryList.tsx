@@ -1,5 +1,6 @@
 import { History, PowerPiApi } from "powerpi-common-api";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";
 import Filter from "./Filter";
 import HistoryFilter, { Filters } from "./HistoryFilter";
@@ -18,6 +19,7 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
   });
   const [history, setHistory] = useState<History[]>([]);
   const [loading, setLoading] = useState(false);
+  const reactHistory = useHistory();
 
   useEffect(() => {
     (async () => {
@@ -27,6 +29,8 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
 
           const result = await getHistory(api, filters);
           setHistory(result);
+        } catch (e) {
+          reactHistory.push("/login");
         } finally {
           setLoading(false);
         }
