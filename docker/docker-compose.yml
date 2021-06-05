@@ -28,16 +28,22 @@ services:
     secrets:
       - powerpi_db
     environment:
+      - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
       - DEVICES_FILE=/devices.json
+      - USERS_FILE=/users.json
       - DB_HOST=db
       - DB_SCHEMA=powerpi
       - DB_USER=powerpi
       - DB_PASSWORD_FILE=/var/run/secrets/powerpi_db
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_SECRET_FILE=/var/run/secrets/powerpi_google_auth
     configs:
       - source: devices_config
         target: /devices.json
+      - source: users_config
+        target: /users.json
 
   macro-controller:
     image: ${REGISTRY}/powerpi/controllers/macro:1.0.1
@@ -239,6 +245,8 @@ secrets:
     external: true
   powerpi_db:
     external: true
+  powerpi_google_auth:
+    external: true
 
 configs:
   mosquitto_config:
@@ -253,6 +261,8 @@ configs:
     file: ./config/events.json
   schedules_config:
     file: ./config/schedules.json
+  users_config:
+    file: ./config/users.json
 
 # docker network create --driver=overlay --attachable powerpi
 networks:
