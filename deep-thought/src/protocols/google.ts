@@ -1,4 +1,5 @@
-import { OnInstall, OnVerify, Protocol } from "@tsed/passport";
+import { $log } from "@tsed/logger";
+import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { Strategy, StrategyOptions } from "passport-google-oauth20";
 import Config from "../services/config";
 import UserService from "../services/user";
@@ -9,6 +10,10 @@ interface GoogleStrategy {
     _clientSecret: string;
   };
   _callbackURL: string;
+}
+
+interface Profile {
+  emails: { value: string; verified: boolean }[];
 }
 
 @Protocol<StrategyOptions>({
@@ -23,9 +28,13 @@ interface GoogleStrategy {
 class GoogleProtocol implements OnVerify, OnInstall {
   constructor(private config: Config, private userService: UserService) {}
 
-  async $onVerify() {
-    const user = this.userService.users.find(
-      (registeredUser) => registeredUser.name === "admin"
+  async $onVerify(@Arg(2) profile: Profile) {
+    const userEmails = profile.emails
+      .filter((entry) => entry.verified)
+      .map((entry) => entry.value);
+
+    const user = this.userService.users.find((registeredUser) =>
+      userEmails.find((email) => email === registeredUser.email)
     );
 
     if (!user) {
@@ -44,7 +53,7 @@ class GoogleProtocol implements OnVerify, OnInstall {
 
     googleStrategy._oauth2._clientId = config!.clientId;
     googleStrategy._oauth2._clientSecret = config!.clientSecret;
-    googleStrategy._callbackURL = `https://${this.config.externalHostName}:${this.config.externalPort}/api/google/callback`;
+    googleStrategy._callbackURL = `http://${this.config.externalHostName}:${this.config.externalPort}/api/auth/google/callback`;
   }
 }
 export default GoogleProtocol;

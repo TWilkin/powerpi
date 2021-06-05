@@ -1,7 +1,7 @@
-import Role from "../roles";
+import Role from "./roles";
 
 interface User {
-  name: string;
-  role: Role | undefined;
+  email: string;
+  role?: Role;
 }
 export default User;

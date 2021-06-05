@@ -3,6 +3,12 @@ import { Authenticate } from "@tsed/passport";
 
 @Controller("/auth")
 export default class AuthController {
+  @Get("/google")
+  @Authenticate("google", { scope: ["profile", "email"] })
+  google() {
+    // doesn't need to do anything
+  }
+
   @Get("/google/callback")
   @Authenticate("google")
   googleCallback(@Req("user") user: Req) {

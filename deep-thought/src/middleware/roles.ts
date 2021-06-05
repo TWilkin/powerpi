@@ -36,17 +36,17 @@ class RoleMiddleware implements IMiddleware {
   ) {
     if (request.user && request.user.role && request.isAuthenticated()) {
       $log.info(
-        `Found user ${request.user.name} with role ${request.user.role}.`
+        `Found user ${request.user.email} with role ${request.user.role}.`
       );
       const roles = endpoint.get(RoleMiddleware);
 
       if (request.user.role in roles) {
-        $log.info(`User ${request.user.name} is authorised.`);
+        $log.info(`User ${request.user.email} is authorised.`);
         return;
       }
     }
 
-    $log.info(`User not authorised.`);
+    $log.info("User not authorised.");
     throw new Unauthorized(HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED));
   }
 }
