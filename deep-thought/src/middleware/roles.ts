@@ -4,14 +4,12 @@ import {
   IMiddleware,
   Middleware,
   Req,
-  Request,
   UseBefore
 } from "@tsed/common";
 import { StoreSet, useDecorators } from "@tsed/core";
 import { Unauthorized } from "@tsed/exceptions";
 import Role from "../models/roles";
 import User from "../models/user";
-import UserService from "../services/user";
 import HttpStatus = require("http-status-codes");
 
 export default function RequiresRole(...roles: Role[]) {
@@ -21,28 +19,17 @@ export default function RequiresRole(...roles: Role[]) {
   );
 }
 
-interface RequestWithUser extends Request {
-  user: User | undefined;
-  isAuthenticated: () => boolean;
-}
-
 @Middleware()
 class RoleMiddleware implements IMiddleware {
-  constructor(private readonly userService: UserService) {}
+  public use(@Req() request: Req, @EndpointInfo() endpoint: EndpointInfo) {
+    $log.info(JSON.stringify(request.user));
+    if (request.user && request.isAuthenticated()) {
+      const user = request.user as User;
 
-  public use(
-    @Req() request: RequestWithUser,
-    @EndpointInfo() endpoint: EndpointInfo
-  ) {
-    if (request.user && request.user.role && request.isAuthenticated()) {
-      $log.info(
-        `Found user ${request.user.email} with role ${request.user.role}.`
-      );
       const roles = endpoint.get(RoleMiddleware);
-
-      if (request.user.role in roles) {
-        $log.info(`User ${request.user.email} is authorised.`);
-        return;
+      if (user.role && user.role in roles) {
+        $log.info(`User ${user.email} is authorised.`);
+        return true;
       }
     }
 

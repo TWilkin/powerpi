@@ -8,8 +8,6 @@ import {
 } from "@tsed/common";
 import { QueryResult } from "pg";
 import Authorize from "../middleware/auth";
-import RequiresRole from "../middleware/roles";
-import Role from "../models/roles";
 import DatabaseService from "../services/db";
 import HttpStatus = require("http-status-codes");
 
@@ -21,7 +19,6 @@ export default class HistoryController {
 
   @Get("/types")
   @Authorize()
-  @RequiresRole(Role.USER)
   getTypes(@Res() response: Response) {
     return this.query(
       response,
@@ -31,7 +28,6 @@ export default class HistoryController {
 
   @Get("/entities")
   @Authorize()
-  @RequiresRole(Role.USER)
   getEntities(@Res() response: Response) {
     return this.query(
       response,
@@ -41,7 +37,6 @@ export default class HistoryController {
 
   @Get("/actions")
   @Authorize()
-  @RequiresRole(Role.USER)
   getActions(@Res() response: Response) {
     return this.query(
       response,
@@ -51,7 +46,6 @@ export default class HistoryController {
 
   @Get("/")
   @Authorize()
-  @RequiresRole(Role.USER)
   async getHistory(
     @Res() response: Response,
     @QueryParams("type") type?: string,

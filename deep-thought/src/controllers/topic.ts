@@ -9,8 +9,6 @@ import {
 } from "@tsed/common";
 import { Response } from "express";
 import Authorize from "../middleware/auth";
-import RequiresRole from "../middleware/roles";
-import Role from "../models/roles";
 import Config from "../services/config";
 import MqttService from "../services/mqtt";
 import HttpStatus = require("http-status-codes");
@@ -24,7 +22,6 @@ export default class TopicController {
 
   @Post("/:type/:entity/:action")
   @Authorize()
-  @RequiresRole(Role.WEB, Role.USER)
   writeMessage(
     @PathParams("type") type: string,
     @PathParams("entity") entity: string,

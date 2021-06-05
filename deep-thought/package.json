@@ -21,6 +21,7 @@
     "@types/jsonwebtoken": "^8.5.1",
     "@types/node": "^13.13.52",
     "@types/passport-google-oauth20": "^2.0.8",
+    "@types/passport-jwt": "^3.0.5",
     "@types/pg": "^7.14.11",
     "@types/socket.io": "^2.1.13",
     "body-parser": "^1.19.0",

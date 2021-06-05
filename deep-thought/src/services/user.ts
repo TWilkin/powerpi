@@ -20,7 +20,7 @@ export default class UserService {
       provider
     };
 
-    const token = jwt.sign({ user: body }, "SECRET");
+    const token = jwt.sign(body, "SECRET");
 
     return token;
   }
