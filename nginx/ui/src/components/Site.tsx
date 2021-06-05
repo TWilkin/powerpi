@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import DeviceList from "./DeviceList";
 import HistoryList from "./HistoryList";
+import Login from "./Login";
 
 interface MenuElementProps {
   path: string;
@@ -39,7 +40,11 @@ const Site = ({ api }: SiteProps) => {
 
       <div className="content">
         <Switch>
-          <Redirect exact from="/" to={"/devices"} />
+          <Redirect exact from="/" to="/devices" />
+
+          <Route path="/login">
+            <Login />
+          </Route>
 
           <Route path="/devices">
             <DeviceList api={api} />
