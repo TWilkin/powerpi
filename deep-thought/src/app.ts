@@ -1,34 +1,14 @@
-import { Configuration, ServerLoader } from "@tsed/common";
-import bodyParser from "body-parser";
-import cors from "cors";
-import Path from "path";
-import "reflect-metadata";
+import { $log } from "@tsed/common";
+import { PlatformExpress } from "@tsed/platform-express";
+import Server from "./Server";
 
-const rootDir = Path.resolve(__dirname);
-
-@Configuration({
-  rootDir,
-  httpPort: 3000,
-  httpsPort: false,
-  mount: {
-    "/api": [`${rootDir}/controllers/*.ts`]
-  },
-  componentsScan: [`${rootDir}/services/*.ts`],
-  socketIO: {
-    path: "/api/socket.io"
-  },
-  acceptMimes: ["application/json"]
-})
-export default class Server extends ServerLoader {
-  public $beforeRoutesInit() {
-    this.use(
-      cors({
-        origin: true,
-        methods: ["GET", "POST"],
-        allowedHeaders: ["Content-Type", "X-User"]
-      })
-    ).use(bodyParser.json());
+async function bootstrap() {
+  try {
+    const platform = await PlatformExpress.bootstrap(Server);
+    await platform.listen();
+  } catch (er) {
+    $log.error(er);
   }
 }
 
-new Server().start();
+bootstrap();
