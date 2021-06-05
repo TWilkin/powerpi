@@ -3,6 +3,7 @@ import "reflect-metadata";
 import bodyParser = require("body-parser");
 import cors = require("cors");
 import cookieParser = require("cookie-parser");
+import session = require("express-session");
 
 const rootDir = __dirname;
 
@@ -32,6 +33,11 @@ export default class Server {
           allowedHeaders: ["Content-Type", "X-User"]
         })
       )
-      .use(bodyParser.json());
+      .use(bodyParser.json())
+      .use(
+        session({
+          secret: "test"
+        })
+      );
   }
 }
