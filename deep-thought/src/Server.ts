@@ -1,5 +1,6 @@
 import { Configuration, PlatformApplication } from "@tsed/common";
 import "reflect-metadata";
+import Config from "./services/config";
 import bodyParser = require("body-parser");
 import cors = require("cors");
 import cookieParser = require("cookie-parser");
@@ -21,7 +22,7 @@ const rootDir = __dirname;
   acceptMimes: ["application/json"]
 })
 export default class Server {
-  constructor(private app: PlatformApplication) {}
+  constructor(private config: Config, private app: PlatformApplication) {}
 
   public $beforeRoutesInit() {
     this.app
@@ -36,7 +37,10 @@ export default class Server {
       .use(bodyParser.json())
       .use(
         session({
-          secret: "test"
+          secret: "test",
+          cookie: {
+            secure: this.config.usesHttps
+          }
         })
       );
   }

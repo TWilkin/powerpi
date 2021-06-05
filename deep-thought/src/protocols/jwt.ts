@@ -33,13 +33,12 @@ export default class JwtProtocol implements OnVerify, OnInstall {
     private readonly userService: UserService
   ) {}
 
-  async $onVerify(@Req() request: Req, @Arg(0) jwt: JWT) {
+  async $onVerify(@Arg(0) jwt: JWT) {
     const user = this.userService.users.find(
       (registeredUser) => registeredUser.email === jwt.email
     );
 
     if (user) {
-      request.user = user;
       return user;
     }
 

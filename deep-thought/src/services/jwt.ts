@@ -8,7 +8,7 @@ export default class JwtService {
   constructor(private readonly config: Config) {}
 
   public static get cookieKey() {
-    return "USER";
+    return "jwt";
   }
 
   public get audience() {
