@@ -9,6 +9,7 @@ import {
 } from "@tsed/common";
 import { Response } from "express";
 import HttpStatus from "http-status-codes";
+import Authorize from "../middleware/auth";
 import RequiresRole from "../middleware/roles";
 import Role from "../roles";
 import Config from "../services/config";
@@ -22,6 +23,7 @@ export default class TopicController {
   ) {}
 
   @Post("/:type/:entity/:action")
+  @Authorize()
   @RequiresRole(Role.WEB, Role.USER)
   writeMessage(
     @PathParams("type") type: string,

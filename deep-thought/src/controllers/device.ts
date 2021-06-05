@@ -1,4 +1,5 @@
 import { Controller, Get } from "@tsed/common";
+import Authorize from "../middleware/auth";
 import RequiresRole from "../middleware/roles";
 import Role from "../roles";
 import DeviceStateService from "../services/deviceState";
@@ -8,6 +9,7 @@ export default class DeviceController {
   constructor(private readonly deviceService: DeviceStateService) {}
 
   @Get("/")
+  @Authorize()
   @RequiresRole(Role.USER)
   getAllDevices() {
     return this.deviceService.devices.sort((a, b) => {
