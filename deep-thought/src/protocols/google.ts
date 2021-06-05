@@ -13,6 +13,7 @@ interface GoogleStrategy {
 }
 
 interface Profile {
+  id: string;
   emails: { value: string; verified: boolean }[];
 }
 
@@ -40,6 +41,8 @@ class GoogleProtocol implements OnVerify, OnInstall {
     if (!user) {
       return false;
     }
+
+    user.subject = profile.id;
 
     return user;
   }
