@@ -1,0 +1,3 @@
+{
+  "users": [{ "name": "admin", "roles": ["USER", "WEB"] }]
+}

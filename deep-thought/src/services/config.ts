@@ -36,6 +36,12 @@ export default class Config {
     return `postgres://${user}:${password}@${host}:${port}/${schema}`;
   }
 
+  async getUsers() {
+    const file = await Config.readFile(process.env.USERS_FILE as string);
+    const json = JSON.parse(file);
+    return json.users;
+  }
+
   private static async readFile(filePath: string): Promise<any> {
     return (await readFile(filePath)).toString().trim();
   }
