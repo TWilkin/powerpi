@@ -8,11 +8,11 @@ export default class JwtService {
   constructor(private readonly config: Config) {}
 
   public get audience() {
-    return `http://${this.config.externalHostName}:${this.config.externalPort}`;
+    return this.config.externalUrlBase;
   }
 
   public get issuer() {
-    return this.audience;
+    return this.config.externalUrlBase;
   }
 
   public async createJWT(user: User, provider: string) {

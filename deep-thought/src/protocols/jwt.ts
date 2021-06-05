@@ -28,7 +28,6 @@ interface JwtStrategy {
 })
 export default class JwtProtocol implements OnVerify, OnInstall {
   constructor(
-    private readonly config: Config,
     private readonly jwtService: JwtService,
     private readonly userService: UserService
   ) {}

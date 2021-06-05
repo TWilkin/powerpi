@@ -27,6 +27,15 @@ export default class Config {
     return process.env.EXTERNAL_PORT;
   }
 
+  get usesHttps() {
+    return process.env.USE_HTTP !== "true";
+  }
+
+  get externalUrlBase() {
+    const https = this.usesHttps ? "s" : "";
+    return `http${https}://${this.externalHostName}:${this.externalPort}`;
+  }
+
   async getDevices() {
     const file = await Config.readFile(process.env.DEVICES_FILE as string);
     const json = JSON.parse(file);

@@ -1,4 +1,3 @@
-import { $log } from "@tsed/logger";
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { Strategy, StrategyOptions } from "passport-google-oauth20";
 import Config from "../services/config";
@@ -59,6 +58,6 @@ export default class GoogleProtocol implements OnVerify, OnInstall {
 
     googleStrategy._oauth2._clientId = config!.clientId;
     googleStrategy._oauth2._clientSecret = config!.clientSecret;
-    googleStrategy._callbackURL = `http://${this.config.externalHostName}:${this.config.externalPort}/api/auth/google/callback`;
+    googleStrategy._callbackURL = `${this.config.externalUrlBase}/api/auth/google/callback`;
   }
 }
