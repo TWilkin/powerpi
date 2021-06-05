@@ -1,6 +1,7 @@
 import { Req } from "@tsed/common";
 import { Arg, OnVerify, Protocol } from "@tsed/passport";
 import { ExtractJwt, Strategy, StrategyOptions } from "passport-jwt";
+import Config from "../services/config";
 import UserService from "../services/user";
 
 interface JWT {
@@ -14,7 +15,7 @@ interface JWT {
   useStrategy: Strategy,
   settings: {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: "SECRET"
+    secretOrKeyProvider: getSecret
   }
 })
 export default class JwtProtocol implements OnVerify {
@@ -32,4 +33,8 @@ export default class JwtProtocol implements OnVerify {
 
     return false;
   }
+}
+
+function getSecret(_: any, __: any, done: (err: any, secret: string) => void) {
+  new Config().getJWTSecret().then((key) => done(null, key));
 }

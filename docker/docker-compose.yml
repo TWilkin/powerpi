@@ -27,6 +27,7 @@ services:
       - mosquitto
     secrets:
       - powerpi_db
+      - powerpi_jwt_auth
     environment:
       - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
       - EXTERNAL_PORT=${EXTERNAL_PORT}
@@ -40,6 +41,7 @@ services:
       - DB_PASSWORD_FILE=/var/run/secrets/powerpi_db
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_SECRET_FILE=/var/run/secrets/powerpi_google_auth
+      - JWT_SECRET_FILE=/var/run/secrets/powerpi_jwt_auth
     configs:
       - source: devices_config
         target: /devices.json
@@ -241,6 +243,8 @@ secrets:
   powerpi_db:
     external: true
   powerpi_google_auth:
+    external: true
+  powerpi_jwt_auth:
     external: true
 
 configs:

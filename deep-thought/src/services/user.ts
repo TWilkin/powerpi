@@ -13,14 +13,14 @@ export default class UserService {
     return this._users ?? [];
   }
 
-  public createJWT(user: User, provider: string) {
+  public async createJWT(user: User, provider: string) {
     const body = {
       sub: user.subject,
       email: user.email,
       provider
     };
 
-    const token = jwt.sign(body, "SECRET");
+    const token = jwt.sign(body, await this.config.getJWTSecret());
 
     return token;
   }

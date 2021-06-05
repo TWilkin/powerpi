@@ -71,6 +71,11 @@ export default class Config {
     );
   }
 
+  async getJWTSecret(): Promise<string> {
+    const file = await readFile(process.env.JWT_SECRET_FILE as string);
+    return file.toString();
+  }
+
   private static async readFile(filePath: string): Promise<any> {
     return (await readFile(filePath)).toString().trim();
   }

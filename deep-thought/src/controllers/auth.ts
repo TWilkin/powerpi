@@ -15,7 +15,7 @@ export default class AuthController {
 
   @Get("/google/callback")
   @Authenticate("google")
-  googleCallback(@Req("user") user: User) {
-    return this.userService.createJWT(user, "google");
+  async googleCallback(@Req("user") user: User) {
+    return await this.userService.createJWT(user, "google");
   }
 }
