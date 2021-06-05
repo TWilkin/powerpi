@@ -1,6 +1,6 @@
 enum Role {
-    WEB,
-    USER
-};
+  WEB,
+  USER
+}
 
 export default Role;
