@@ -12,7 +12,7 @@ const rootDir = __dirname;
   mount: {
     "/api": [`${rootDir}/controllers/*.ts`]
   },
-  componentsScan: [`${rootDir}/services/*.ts`],
+  componentsScan: [`${rootDir}/services/*.ts`, `${rootDir}/protocols/*.ts`],
   socketIO: {
     path: "/api/socket.io"
   },
