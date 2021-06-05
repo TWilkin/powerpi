@@ -1,6 +1,7 @@
 import { Injectable, ProviderScope, ProviderType } from "@tsed/common";
 import fs from "fs";
 import util from "util";
+import AuthConfig from "../models/auth";
 
 // allow reading of files using await
 const readFile = util.promisify(fs.readFile);
@@ -16,6 +17,10 @@ export default class Config {
 
   get topicNameBase() {
     return process.env.TOPIC_BASE;
+  }
+
+  get externalHostName() {
+    return process.env.EXTERNAL_HOST_NAME;
   }
 
   async getDevices() {
@@ -40,6 +45,26 @@ export default class Config {
     const file = await Config.readFile(process.env.USERS_FILE as string);
     const json = JSON.parse(file);
     return json.users;
+  }
+
+  async getAuthConfig(): Promise<AuthConfig[]> {
+    const protocols = ["google"];
+
+    return await Promise.all(
+      protocols.map(async (name) => {
+        const envPrefix = name.toUpperCase();
+
+        const secret = await Config.readFile(
+          process.env[`${envPrefix}_SECRET_FILE`] as string
+        );
+
+        return {
+          name,
+          clientId: process.env[`${envPrefix}_CLIENT_ID`],
+          clientSecret: secret
+        } as AuthConfig;
+      })
+    );
   }
 
   private static async readFile(filePath: string): Promise<any> {
