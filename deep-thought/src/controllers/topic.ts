@@ -8,12 +8,12 @@ import {
   Res
 } from "@tsed/common";
 import { Response } from "express";
-import HttpStatus from "http-status-codes";
 import Authorize from "../middleware/auth";
 import RequiresRole from "../middleware/roles";
-import Role from "../roles";
+import Role from "../models/roles";
 import Config from "../services/config";
 import MqttService from "../services/mqtt";
+import HttpStatus = require("http-status-codes");
 
 @Controller("/topic")
 export default class TopicController {

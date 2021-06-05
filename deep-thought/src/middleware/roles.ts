@@ -9,10 +9,10 @@ import {
 } from "@tsed/common";
 import { StoreSet, useDecorators } from "@tsed/core";
 import { Unauthorized } from "@tsed/exceptions";
-import HttpStatus from "http-status-codes";
+import Role from "../models/roles";
 import User from "../models/user";
-import Role from "../roles";
 import UserService from "../services/user";
+import HttpStatus = require("http-status-codes");
 
 export default function RequiresRole(...roles: Role[]) {
   return useDecorators(

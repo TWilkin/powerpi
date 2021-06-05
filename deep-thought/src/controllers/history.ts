@@ -6,12 +6,12 @@ import {
   Res,
   Response
 } from "@tsed/common";
-import HttpStatus from "http-status-codes";
 import { QueryResult } from "pg";
 import Authorize from "../middleware/auth";
 import RequiresRole from "../middleware/roles";
-import Role from "../roles";
+import Role from "../models/roles";
 import DatabaseService from "../services/db";
+import HttpStatus = require("http-status-codes");
 
 type QueryFunction = () => Promise<QueryResult<any> | undefined>;
 

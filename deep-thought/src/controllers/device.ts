@@ -1,7 +1,7 @@
 import { Controller, Get } from "@tsed/common";
 import Authorize from "../middleware/auth";
 import RequiresRole from "../middleware/roles";
-import Role from "../roles";
+import Role from "../models/roles";
 import DeviceStateService from "../services/deviceState";
 
 @Controller("/device")
