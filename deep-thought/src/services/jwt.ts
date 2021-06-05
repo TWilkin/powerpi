@@ -7,6 +7,10 @@ import Config from "./config";
 export default class JwtService {
   constructor(private readonly config: Config) {}
 
+  public static get cookieKey() {
+    return "USER";
+  }
+
   public get audience() {
     return this.config.externalUrlBase;
   }

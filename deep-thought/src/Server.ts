@@ -2,6 +2,7 @@ import { Configuration, PlatformApplication } from "@tsed/common";
 import "reflect-metadata";
 import bodyParser = require("body-parser");
 import cors = require("cors");
+import cookieParser = require("cookie-parser");
 
 const rootDir = __dirname;
 
@@ -23,6 +24,7 @@ export default class Server {
 
   public $beforeRoutesInit() {
     this.app
+      .use(cookieParser())
       .use(
         cors({
           origin: true,
