@@ -23,6 +23,10 @@ export default class Config {
     return process.env.EXTERNAL_HOST_NAME;
   }
 
+  get externalPort() {
+    return process.env.EXTERNAL_PORT;
+  }
+
   async getDevices() {
     const file = await Config.readFile(process.env.DEVICES_FILE as string);
     const json = JSON.parse(file);

@@ -12,11 +12,7 @@ module.exports = merge(common, {
     proxy: {
       "/api": {
         changeOrigin: true,
-        target: "http://localhost:3000",
-        headers: {
-          "X-User": "tom",
-          "X-Roles": "user"
-        }
+        target: "http://localhost:3000"
       }
     },
     historyApiFallback: true

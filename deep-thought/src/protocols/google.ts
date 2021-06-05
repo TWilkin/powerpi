@@ -44,7 +44,7 @@ class GoogleProtocol implements OnVerify, OnInstall {
 
     googleStrategy._oauth2._clientId = config!.clientId;
     googleStrategy._oauth2._clientSecret = config!.clientSecret;
-    googleStrategy._callbackURL = `https://${this.config.externalHostName}/api/google/callback`;
+    googleStrategy._callbackURL = `https://${this.config.externalHostName}:${this.config.externalPort}/api/google/callback`;
   }
 }
 export default GoogleProtocol;

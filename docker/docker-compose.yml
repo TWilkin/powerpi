@@ -29,6 +29,7 @@ services:
       - powerpi_db
     environment:
       - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
+      - EXTERNAL_PORT=${EXTERNAL_PORT}
       - MQTT_ADDRESS=mqtt://mosquitto:1883
       - TOPIC_BASE=powerpi
       - DEVICES_FILE=/devices.json
