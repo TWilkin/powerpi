@@ -1,5 +1,4 @@
 import { Controller, Get } from "@tsed/common";
-import RequiresRole from "../middleware/auth";
 import Role from "../roles";
 import DeviceStateService from "../services/deviceState";
 
@@ -8,7 +7,7 @@ export default class DeviceController {
   constructor(private readonly deviceService: DeviceStateService) {}
 
   @Get("/")
-  @RequiresRole([Role.USER])
+  //@RequiresRole([Role.USER])
   getAllDevices() {
     return this.deviceService.devices.sort((a, b) => {
       const str1 = (a.display_name ?? a.name).toUpperCase();

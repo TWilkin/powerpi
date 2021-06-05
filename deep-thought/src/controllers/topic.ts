@@ -9,7 +9,6 @@ import {
 } from "@tsed/common";
 import { Response } from "express";
 import HttpStatus from "http-status-codes";
-import RequiresRole from "../middleware/auth";
 import Role from "../roles";
 import Config from "../services/config";
 import MqttService from "../services/mqtt";
@@ -22,7 +21,7 @@ export default class TopicController {
   ) {}
 
   @Post("/:type/:entity/:action")
-  @RequiresRole([Role.WEB, Role.USER])
+  //@RequiresRole([Role.WEB, Role.USER])
   writeMessage(
     @PathParams("type") type: string,
     @PathParams("entity") entity: string,
