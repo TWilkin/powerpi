@@ -26,8 +26,11 @@ interface Profile {
     callbackURL: "default"
   }
 })
-class GoogleProtocol implements OnVerify, OnInstall {
-  constructor(private config: Config, private userService: UserService) {}
+export default class GoogleProtocol implements OnVerify, OnInstall {
+  constructor(
+    private readonly config: Config,
+    private readonly userService: UserService
+  ) {}
 
   async $onVerify(@Arg(2) profile: Profile) {
     const userEmails = profile.emails
@@ -59,4 +62,3 @@ class GoogleProtocol implements OnVerify, OnInstall {
     googleStrategy._callbackURL = `http://${this.config.externalHostName}:${this.config.externalPort}/api/auth/google/callback`;
   }
 }
-export default GoogleProtocol;

@@ -1,5 +1,4 @@
 import { Service } from "@tsed/common";
-import jwt from "jsonwebtoken";
 import User from "../models/user";
 import Config from "./config";
 
@@ -11,18 +10,6 @@ export default class UserService {
 
   public get users() {
     return this._users ?? [];
-  }
-
-  public async createJWT(user: User, provider: string) {
-    const body = {
-      sub: user.subject,
-      email: user.email,
-      provider
-    };
-
-    const token = jwt.sign(body, await this.config.getJWTSecret());
-
-    return token;
   }
 
   public async $onInit() {

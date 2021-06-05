@@ -1,11 +1,11 @@
 import { Controller, Get, Req } from "@tsed/common";
 import { Authenticate } from "@tsed/passport";
 import User from "../models/user";
-import UserService from "../services/user";
+import JwtService from "../services/jwt";
 
 @Controller("/auth")
 export default class AuthController {
-  constructor(private userService: UserService) {}
+  constructor(private readonly jwtService: JwtService) {}
 
   @Get("/google")
   @Authenticate("google", { scope: ["profile", "email"] })
@@ -16,6 +16,6 @@ export default class AuthController {
   @Get("/google/callback")
   @Authenticate("google")
   async googleCallback(@Req("user") user: User) {
-    return await this.userService.createJWT(user, "google");
+    return await this.jwtService.createJWT(user, "google");
   }
 }
