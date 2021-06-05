@@ -1,6 +1,6 @@
 {
   "name": "powerpi-ui",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "PowerPi UI",
   "main": "src/app.tsx",
   "scripts": {
