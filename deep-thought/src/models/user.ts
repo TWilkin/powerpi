@@ -2,6 +2,6 @@ import Role from "../roles";
 
 interface User {
   name: string;
-  roles: Role[];
+  role: Role | undefined;
 }
 export default User;
