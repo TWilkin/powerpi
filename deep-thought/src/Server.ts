@@ -31,7 +31,7 @@ export default class Server {
         cors({
           origin: true,
           methods: ["GET", "POST"],
-          allowedHeaders: ["Content-Type", "X-User"]
+          allowedHeaders: ["Content-Type"]
         })
       )
       .use(bodyParser.json())
