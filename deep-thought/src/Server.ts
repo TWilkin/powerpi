@@ -38,6 +38,8 @@ export default class Server {
       .use(
         session({
           secret: "test",
+          resave: false,
+          saveUninitialized: true,
           cookie: {
             secure: this.config.usesHttps
           }

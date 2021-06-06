@@ -7,6 +7,7 @@ import {
   Route,
   Switch
 } from "react-router-dom";
+import { LastLocationProvider } from "react-router-last-location";
 import DeviceList from "./DeviceList";
 import HistoryList from "./HistoryList";
 import Login from "./Login";
@@ -31,33 +32,35 @@ interface SiteProps {
 const Site = ({ api }: SiteProps) => {
   return (
     <BrowserRouter>
-      <header className="header">
-        <nav className="menu">
-          <MenuElement path="/devices" name="Devices" />
-          <MenuElement path="/history" name="History" />
-        </nav>
-      </header>
+      <LastLocationProvider>
+        <header className="header">
+          <nav className="menu">
+            <MenuElement path="/devices" name="Devices" />
+            <MenuElement path="/history" name="History" />
+          </nav>
+        </header>
 
-      <div className="content">
-        <Switch>
-          <Redirect exact from="/" to="/devices" />
+        <div className="content">
+          <Switch>
+            <Redirect exact from="/" to="/devices" />
 
-          <Route path="/login">
-            <Login />
-          </Route>
+            <Route path="/login">
+              <Login />
+            </Route>
 
-          <Route path="/devices">
-            <DeviceList api={api} />
-          </Route>
+            <Route path="/devices">
+              <DeviceList api={api} />
+            </Route>
 
-          <Route
-            path="/history"
-            render={(props) => (
-              <HistoryList api={api} query={props.location.search} />
-            )}
-          />
-        </Switch>
-      </div>
+            <Route
+              path="/history"
+              render={(props) => (
+                <HistoryList api={api} query={props.location.search} />
+              )}
+            />
+          </Switch>
+        </div>
+      </LastLocationProvider>
     </BrowserRouter>
   );
 };

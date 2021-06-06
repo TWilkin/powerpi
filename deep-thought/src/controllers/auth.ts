@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, Session } from "@tsed/common";
+import { Controller, Get, QueryParams, Req, Res, Session } from "@tsed/common";
 import { Authenticate } from "@tsed/passport";
 import passport from "passport";
 import User from "../models/user";
@@ -13,10 +13,12 @@ export default class AuthController {
   ) {}
 
   @Get("/google")
-  google(@Req() request: Req, @Session() session: any) {
-    const referrer = request.get("Referrer");
-    if (referrer) {
-      session.redirectUri = referrer;
+  google(
+    @Session() session: any,
+    @QueryParams("redirectUri") redirectUri: string
+  ) {
+    if (redirectUri) {
+      session.redirectUri = redirectUri;
     }
 
     return passport.authenticate("google", { scope: ["profile", "email"] });

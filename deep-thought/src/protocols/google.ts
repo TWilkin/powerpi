@@ -1,3 +1,4 @@
+import { $log } from "@tsed/logger";
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { Strategy, StrategyOptions } from "passport-google-oauth20";
 import Config from "../services/config";
@@ -41,6 +42,7 @@ export default class GoogleProtocol implements OnVerify, OnInstall {
     );
 
     if (!user) {
+      $log.info(`User '${profile.emails[0]}' not found`);
       return false;
     }
 
