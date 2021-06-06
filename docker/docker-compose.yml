@@ -27,6 +27,7 @@ services:
       - mosquitto
     secrets:
       - powerpi_db
+      - powerpi_google_auth
       - powerpi_jwt_auth
       - powerpi_session
     environment:
@@ -239,6 +240,7 @@ services:
       - DB_USER=powerpi
       - DB_PASSWORD_FILE=/var/run/secrets/powerpi_db
 
+# docker secret create powerpi_secret /path/to/secret/file
 secrets:
   freedns:
     external: true
