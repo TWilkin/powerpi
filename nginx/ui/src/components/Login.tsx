@@ -24,8 +24,10 @@ function useLogin(protocol: string) {
   const lastLocation = useLastLocation();
 
   return useCallback(() => {
-    const redirectUri = lastLocation ? lastLocation.pathname : "/";
-    const path = `/api/auth/${protocol.toLowerCase()}?redirectUri=${redirectUri}`;
+    const redirectUri = lastLocation ? lastLocation.pathname : "";
+    const path = `/api/auth/${protocol.toLowerCase()}?redirectUri=${
+      window.location.origin
+    }/${redirectUri}`;
 
     window.location.href = path;
   }, [history]);

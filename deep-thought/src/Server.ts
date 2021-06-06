@@ -25,6 +25,10 @@ export default class Server {
   constructor(private config: Config, private app: PlatformApplication) {}
 
   public async $beforeRoutesInit() {
+    if (this.config.usesHttps) {
+      this.app.raw.set("trust proxy", 1);
+    }
+
     this.app
       .use(cookieParser())
       .use(

@@ -1,4 +1,12 @@
-import { Controller, Get, QueryParams, Req, Res, Session } from "@tsed/common";
+import {
+  $log,
+  Controller,
+  Get,
+  QueryParams,
+  Req,
+  Res,
+  Session
+} from "@tsed/common";
 import { Authenticate } from "@tsed/passport";
 import passport from "passport";
 import User from "../models/user";
@@ -43,6 +51,7 @@ export default class AuthController {
     });
 
     if (redirectUri) {
+      $log.info(`Redirecting user to ${redirectUri}`);
       response.redirect(redirectUri);
     }
 
