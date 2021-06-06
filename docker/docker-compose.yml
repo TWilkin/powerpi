@@ -28,6 +28,7 @@ services:
     secrets:
       - powerpi_db
       - powerpi_jwt_auth
+      - powerpi_session
     environment:
       - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
       - EXTERNAL_PORT=${EXTERNAL_PORT}
@@ -42,6 +43,7 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_SECRET_FILE=/var/run/secrets/powerpi_google_auth
       - JWT_SECRET_FILE=/var/run/secrets/powerpi_jwt_auth
+      - JWT_SECRET_FILE=/var/run/secrets/powerpi_session
     configs:
       - source: devices_config
         target: /devices.json
@@ -245,6 +247,8 @@ secrets:
   powerpi_google_auth:
     external: true
   powerpi_jwt_auth:
+    external: true
+  powerpi_session:
     external: true
 
 configs:

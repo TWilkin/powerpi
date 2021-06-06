@@ -24,7 +24,7 @@ const rootDir = __dirname;
 export default class Server {
   constructor(private config: Config, private app: PlatformApplication) {}
 
-  public $beforeRoutesInit() {
+  public async $beforeRoutesInit() {
     this.app
       .use(cookieParser())
       .use(
@@ -37,7 +37,7 @@ export default class Server {
       .use(bodyParser.json())
       .use(
         session({
-          secret: "test",
+          secret: await this.config.getSessionSecret(),
           resave: false,
           saveUninitialized: true,
           cookie: {

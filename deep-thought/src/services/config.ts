@@ -85,6 +85,11 @@ export default class Config {
     return file.toString();
   }
 
+  async getSessionSecret(): Promise<string> {
+    const file = await readFile(process.env.SESSION_SECRET_FILE as string);
+    return file.toString();
+  }
+
   private static async readFile(filePath: string): Promise<any> {
     return (await readFile(filePath)).toString().trim();
   }
