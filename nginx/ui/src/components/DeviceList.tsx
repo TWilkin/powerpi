@@ -2,7 +2,7 @@ import { faHistory } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Device, DeviceStatusMessage, PowerPiApi } from "powerpi-common-api";
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";
 import DeviceFilter, { Filters } from "./DeviceFilter";
 import DeviceIcon from "./DeviceIcon";
@@ -18,7 +18,6 @@ const DeviceList = ({ api }: DeviceListProps) => {
   const [devices, setDevices] = useState<Device[] | undefined>(undefined);
   const [filters, setFilters] = useState<Filters>({ types: [] });
   const [loading, setLoading] = useState(true);
-  const history = useHistory();
 
   // load initial device list
   useEffect(() => {
@@ -28,8 +27,6 @@ const DeviceList = ({ api }: DeviceListProps) => {
 
         const result = await api.getDevices();
         setDevices(result);
-      } catch (e) {
-        history.push("/login");
       } finally {
         setLoading(false);
       }

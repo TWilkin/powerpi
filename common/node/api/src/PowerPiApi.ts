@@ -1,18 +1,21 @@
-import axios, { AxiosResponse } from "axios";
-import HttpStatusCodes from "http-status-codes";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import io from "socket.io-client";
-import ApiException from "./ApiException";
 import Device from "./Device";
 import DeviceState from "./DeviceState";
 import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import History from "./History";
 
 class PowerPiApi {
-  private apiBaseUrl = `${window.location.origin}/api`;
-  private socket: SocketIOClient.Socket;
+  private readonly apiBaseUrl = `${window.location.origin}/api`;
+  private readonly instance: AxiosInstance;
+  private readonly socket: SocketIOClient.Socket;
   private listeners: DeviceStatusCallback[];
 
   constructor() {
+    this.instance = axios.create({
+      baseURL: this.apiBaseUrl
+    });
+
     this.socket = io.connect(this.apiBaseUrl, {
       path: "/api/socket.io"
     });
@@ -46,12 +49,15 @@ class PowerPiApi {
     this.listeners = this.listeners.filter((listener) => listener === callback);
   }
 
+  public setErrorHandler(handler: (error: any) => void) {
+    this.instance.interceptors.response.use((response) => response, handler);
+  }
+
   private onMessage = (message: DeviceStatusMessage) =>
     this.listeners.forEach((listener) => listener(message));
 
   private async get(path: string, params?: object): Promise<any> {
-    const result = await axios.get(`${this.apiBaseUrl}/${path}`, { params });
-    this.checkForError(result);
+    const result = await this.instance.get(path, { params });
     return result.data;
   }
 
@@ -61,44 +67,12 @@ class PowerPiApi {
         "Content-Type": "application/json"
       }
     };
-    const result = await axios.post(
-      `${this.apiBaseUrl}/${path}`,
+    const result = await this.instance.post(
+      path,
       JSON.stringify(message),
       config
     );
-    this.checkForError(result);
     return result.data;
-  }
-
-  private checkForError(result: AxiosResponse<any>) {
-    switch (result.status) {
-      case HttpStatusCodes.OK:
-      case HttpStatusCodes.CREATED:
-        return;
-
-      case HttpStatusCodes.UNAUTHORIZED:
-      case HttpStatusCodes.FORBIDDEN:
-        throw new ApiException(
-          result.status,
-          "User is not authroised to access this endpoint."
-        );
-
-      case HttpStatusCodes.NOT_FOUND:
-        throw new ApiException(
-          result.status,
-          "The API endpoint could not be found."
-        );
-
-      case HttpStatusCodes.BAD_REQUEST:
-        throw new ApiException(result.status, "The API request was malformed.");
-
-      case HttpStatusCodes.INTERNAL_SERVER_ERROR:
-      default:
-        throw new ApiException(
-          result.status,
-          "The API endpoint did not respond as expected."
-        );
-    }
   }
 }
 export default PowerPiApi;

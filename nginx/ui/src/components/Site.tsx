@@ -1,3 +1,4 @@
+import HttpStatusCodes from "http-status-codes";
 import { PowerPiApi } from "powerpi-common-api";
 import React from "react";
 import {
@@ -30,6 +31,13 @@ interface SiteProps {
 }
 
 const Site = ({ api }: SiteProps) => {
+  // redirect to login on 401
+  api.setErrorHandler((error: any) => {
+    if (error.response.status === HttpStatusCodes.UNAUTHORIZED) {
+      window.location.pathname = "/login";
+    }
+  });
+
   return (
     <BrowserRouter>
       <LastLocationProvider>
