@@ -44,7 +44,7 @@ services:
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_SECRET_FILE=/var/run/secrets/powerpi_google_auth
       - JWT_SECRET_FILE=/var/run/secrets/powerpi_jwt_auth
-      - JWT_SECRET_FILE=/var/run/secrets/powerpi_session
+      - SESSION_SECRET_FILE=/var/run/secrets/powerpi_session
     configs:
       - source: devices_config
         target: /devices.json
