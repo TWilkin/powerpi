@@ -21,11 +21,14 @@ export default class AuthController {
       session.redirectUri = redirectUri;
     }
 
-    return passport.authenticate("google", { scope: ["profile", "email"] });
+    return passport.authenticate("google", {
+      scope: ["profile", "email"],
+      session: false
+    });
   }
 
   @Get("/google/callback")
-  @Authenticate("google")
+  @Authenticate("google", { session: false })
   async googleCallback(
     @Req("user") user: User,
     @Session("redirectUri") redirectUri: string,
