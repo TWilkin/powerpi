@@ -6,7 +6,8 @@
       "phrases": [
         "turn {device} {status}",
         "set {device} to {status}",
-        "trigger {device} {status}"
+        "trigger {device} {status}",
+        "{status} {device}"
       ],
       "inputs": [
         {
@@ -26,7 +27,18 @@
   "inputTypes": [
     {
       "name": "DeviceStatusInputType",
-      "values": [{ "value": "on" }, { "value": "off" }]
+      "values": [
+        {
+          "id": "on",
+          "value": "on",
+          "synonyms": ["activate", "enable"]
+        },
+        {
+          "id": "off",
+          "value": "off",
+          "synonyms": ["deactivate", "terminate", "disable"]
+        }
+      ]
     }
   ],
   "alexa": {

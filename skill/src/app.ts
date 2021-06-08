@@ -14,10 +14,29 @@ app.setHandler({
   },
 
   DevicePowerIntent() {
-    this.tell(
-      `Turning ${this.$inputs.device.value} ${this.$inputs.status.value}`
-    );
+    const status = interpretStatus(this.$inputs.status.value);
+    this.tell(`Turning ${this.$inputs.device.value} ${status}`);
   }
 });
 
 export default app;
+
+// this shouldn't be necessary but it's not working from the model
+function interpretStatus(status: string) {
+  status = status.toLowerCase();
+
+  switch (status) {
+    case "on":
+    case "activate":
+    case "enable":
+      return "on";
+
+    case "off":
+    case "deactivate":
+    case "terminate":
+    case "disable":
+      return "off";
+  }
+
+  return null;
+}
