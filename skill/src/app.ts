@@ -1,8 +1,8 @@
+import { FileDb } from "jovo-db-filedb";
 import { App } from "jovo-framework";
 import { Alexa } from "jovo-platform-alexa";
-import { JovoDebugger } from "jovo-plugin-debugger";
-import { FileDb } from "jovo-db-filedb";
 import { GoogleAssistant } from "jovo-platform-googleassistant";
+import { JovoDebugger } from "jovo-plugin-debugger";
 
 const app = new App();
 

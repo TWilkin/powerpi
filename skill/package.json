@@ -6,10 +6,11 @@
   "types": "./dist/src/index.d.ts",
   "scripts": {
     "tsc": "tsc",
-    "bundle": "gulp --gulpfile node_modules/jovo-framework/gulpfile.js build-ts --cwd ./",
+    "build": "gulp --gulpfile node_modules/jovo-framework/gulpfile.js build-ts --cwd ./",
     "start": "cd ./dist && node index.js --webhook",
     "launch": "npm start -- --launch",
-    "jovo": "./node_modules/jovo-cli/bin/run run -w",
+    "debug": "./node_modules/jovo-cli/bin/run run -w",
+    "build-platform": "./node_modules/jovo-cli/bin/run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "TWilkin",
