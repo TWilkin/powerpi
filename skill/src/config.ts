@@ -1,7 +1,3 @@
-// ------------------------------------------------------------------
-// APP CONFIGURATION
-// ------------------------------------------------------------------
-
 const config = {
   logging: true,
 
@@ -15,5 +11,4 @@ const config = {
     }
   }
 };
-
-export = config;
+export default config;

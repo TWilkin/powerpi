@@ -1,9 +1,6 @@
+import { Request, Response } from "express";
 import { ExpressJS, Lambda, Webhook } from "jovo-framework";
-import { app } from "./app";
-
-// ------------------------------------------------------------------
-// HOST CONFIGURATION
-// ------------------------------------------------------------------
+import app from "./app";
 
 // ExpressJS (Jovo Webhook)
 if (process.argv.indexOf("--webhook") > -1) {
@@ -14,12 +11,9 @@ if (process.argv.indexOf("--webhook") > -1) {
     console.info(`Local server listening on port ${port}.`);
   });
 
-  Webhook.post(
-    "/webhook",
-    async (req: Express.Request, res: Express.Response) => {
-      await app.handle(new ExpressJS(req, res));
-    }
-  );
+  Webhook.post("/webhook", async (request: Request, response: Response) => {
+    await app.handle(new ExpressJS(request, response));
+  });
 }
 
 // AWS Lambda
