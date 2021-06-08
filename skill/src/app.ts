@@ -18,7 +18,9 @@ app.setHandler({
   },
 
   MyNameIsIntent() {
-    this.tell("Hey " + this.$inputs.name.value + ", nice to meet you!");
+    this.tell(
+      `Turning ${this.$inputs.device.value} ${this.$inputs.status.value}`
+    );
   }
 });
 

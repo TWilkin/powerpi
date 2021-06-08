@@ -1,27 +1,32 @@
 {
-  "invocation": "my test app",
+  "invocation": "power pi",
   "intents": [
     {
       "name": "HelloWorldIntent",
-      "phrases": ["hello", "say hello", "say hello world"]
+      "phrases": ["start", "turn", "trigger"]
     },
     {
       "name": "MyNameIsIntent",
-      "phrases": [
-        "{name}",
-        "my name is {name}",
-        "i am {name}",
-        "you can call me {name}"
-      ],
+      "phrases": ["{device} {status}"],
       "inputs": [
         {
-          "name": "name",
+          "name": "device",
           "type": {
-            "alexa": "AMAZON.US_FIRST_NAME",
-            "dialogflow": "@sys.given-name"
+            "alexa": "AMAZON.LITERAL",
+            "dialogflow": "@sys.any"
           }
+        },
+        {
+          "name": "status",
+          "type": "DeviceStatusInputType"
         }
       ]
+    }
+  ],
+  "inputTypes": [
+    {
+      "name": "DeviceStatusInputType",
+      "values": [{ "value": "on" }, { "value": "off" }]
     }
   ],
   "alexa": {
