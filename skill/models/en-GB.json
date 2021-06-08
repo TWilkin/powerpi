@@ -2,12 +2,12 @@
   "invocation": "power pi",
   "intents": [
     {
-      "name": "HelloWorldIntent",
-      "phrases": ["start", "turn", "trigger"]
-    },
-    {
-      "name": "MyNameIsIntent",
-      "phrases": ["{device} {status}"],
+      "name": "DevicePowerIntent",
+      "phrases": [
+        "turn {device} {status}",
+        "set {device} to {status}",
+        "trigger {device} {status}"
+      ],
       "inputs": [
         {
           "name": "device",

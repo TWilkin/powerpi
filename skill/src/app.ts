@@ -10,14 +10,10 @@ app.use(new Alexa(), new GoogleAssistant(), new JovoDebugger(), new FileDb());
 
 app.setHandler({
   LAUNCH() {
-    return this.toIntent("HelloWorldIntent");
+    return this.toIntent("DevicePowerIntent");
   },
 
-  HelloWorldIntent() {
-    this.ask("Hello World! What's your name?", "Please tell me your name.");
-  },
-
-  MyNameIsIntent() {
+  DevicePowerIntent() {
     this.tell(
       `Turning ${this.$inputs.device.value} ${this.$inputs.status.value}`
     );
