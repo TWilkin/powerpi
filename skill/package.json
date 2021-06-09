@@ -15,6 +15,7 @@
   },
   "author": "TWilkin",
   "dependencies": {
+    "alexa-verifier-middleware": "^1.0.3",
     "jovo-db-filedb": "^3.5.1",
     "jovo-framework": "^3.5.2",
     "jovo-platform-alexa": "^3.5.4",
