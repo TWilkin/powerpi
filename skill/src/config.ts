@@ -1,5 +1,8 @@
 const config = {
-  logging: true,
+  logging: {
+    request: true,
+    requestObjects: ["request", "context.System.user"]
+  },
 
   intentMap: {
     "AMAZON.StopIntent": "END"
@@ -11,4 +14,4 @@ const config = {
     }
   }
 };
-export default config;
+export = config;
