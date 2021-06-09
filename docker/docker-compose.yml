@@ -39,6 +39,16 @@ services:
       - source: devices_config
         target: /devices.json
 
+  skill:
+    build: ../skill
+    image: ${REGISTRY}/powerpi/skill:0.0.1
+    networks:
+      - powerpi
+    deploy:
+      replicas: 1
+    depends_on:
+      - deep-thought
+
   macro-controller:
     image: ${REGISTRY}/powerpi/controllers/macro:1.0.1
     networks:
