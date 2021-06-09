@@ -48,6 +48,11 @@ services:
       replicas: 1
     depends_on:
       - deep-thought
+    environment:
+      - DEVICES_FILE=/devices.json
+    configs:
+      - source: devices_config
+        target: /devices.json
 
   macro-controller:
     image: ${REGISTRY}/powerpi/controllers/macro:1.0.1

@@ -13,7 +13,7 @@
         {
           "name": "device",
           "type": {
-            "alexa": "AMAZON.LITERAL",
+            "alexa": "DeviceInputType",
             "dialogflow": "@sys.any"
           }
         },
@@ -25,6 +25,11 @@
     }
   ],
   "inputTypes": [
+    {
+      "name": "DeviceInputType",
+      "type": "AMAZON.SearchQuery",
+      "values": [{ "value": "light" }]
+    },
     {
       "name": "DeviceStatusInputType",
       "values": [
