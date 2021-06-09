@@ -178,6 +178,7 @@ services:
       replicas: 1
     depends_on:
       - deep-thought
+      - skill
     secrets:
       - powerpi_users
     volumes:
