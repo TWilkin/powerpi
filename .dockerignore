@@ -2,8 +2,10 @@
 **/.pytest_cache/
 **/__pycache__/
 **/build/
+**/db/
 **/dist/
 **/node_modules/
+**/platforms/
 **/venv/
 **/*.dev.js
 **/*.pyc
