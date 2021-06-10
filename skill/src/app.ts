@@ -1,5 +1,5 @@
 import { FileDb } from "jovo-db-filedb";
-import { App, Input, Log } from "jovo-framework";
+import { App } from "jovo-framework";
 import { Alexa } from "jovo-platform-alexa";
 import { GoogleAssistant } from "jovo-platform-googleassistant";
 import { JovoDebugger } from "jovo-plugin-debugger";
