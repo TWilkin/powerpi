@@ -13,14 +13,14 @@ export async function addDeviceTypes(skill?: AlexaSkill) {
     name: "DeviceInputType",
     values: devices.map((device) => ({
       name: {
-        id: device.name,
-        value: device.display_name ?? device.name
+        id: device.name.toLowerCase(),
+        value: device.display_name?.toLowerCase() ?? device.name.toLowerCase()
       }
     }))
   };
 
   Log.info(
-    `Replace ${definition.name} with ${definition.values.length} values.`
+    `Replacing input ${definition.name} with ${definition.values.length} value(s).`
   );
 
   skill.replaceDynamicEntities([definition]);

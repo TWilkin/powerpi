@@ -5,6 +5,7 @@ const config = {
   },
 
   intentMap: {
+    "AMAZON.CancelIntent": "CancelIntent",
     "AMAZON.StopIntent": "END"
   }
 };
