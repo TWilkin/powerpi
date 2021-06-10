@@ -1,24 +1,19 @@
-import { Controller, Get } from '@tsed/common';
+import { Controller, Get } from "@tsed/common";
+import Authorize from "../middleware/auth";
+import DeviceStateService from "../services/deviceState";
 
-import DeviceStateService from '../services/deviceState';
-import RequiresRole from '../middleware/auth';
-import Role from '../roles';
-
-@Controller('/device')
+@Controller("/device")
 export default class DeviceController {
+  constructor(private readonly deviceService: DeviceStateService) {}
 
-    constructor(private readonly deviceService: DeviceStateService) { }
+  @Get("/")
+  @Authorize()
+  getAllDevices() {
+    return this.deviceService.devices.sort((a, b) => {
+      const str1 = (a.display_name ?? a.name).toUpperCase();
+      const str2 = (b.display_name ?? b.name).toUpperCase();
 
-    @Get('/')
-    @RequiresRole([Role.USER])
-    getAllDevices() {
-        return this.deviceService.devices
-            .sort((a, b) => {
-                let str1 = (a.display_name ?? a.name).toUpperCase();
-                let str2 = (b.display_name ?? b.name).toUpperCase();
-
-                return str1 < str2 ? -1 : str1 > str2 ? 1 : 0;
-            });
-    }
-
-};
+      return str1 < str2 ? -1 : str1 > str2 ? 1 : 0;
+    });
+  }
+}

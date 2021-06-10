@@ -1,3 +1,4 @@
+import HttpStatusCodes from "http-status-codes";
 import { PowerPiApi } from "powerpi-common-api";
 import React from "react";
 import {
@@ -7,8 +8,10 @@ import {
   Route,
   Switch
 } from "react-router-dom";
+import { LastLocationProvider } from "react-router-last-location";
 import DeviceList from "./DeviceList";
 import HistoryList from "./HistoryList";
+import Login from "./Login";
 
 interface MenuElementProps {
   path: string;
@@ -28,31 +31,44 @@ interface SiteProps {
 }
 
 const Site = ({ api }: SiteProps) => {
+  // redirect to login on 401
+  api.setErrorHandler((error: any) => {
+    if (error.response.status === HttpStatusCodes.UNAUTHORIZED) {
+      window.location.pathname = "/login";
+    }
+  });
+
   return (
     <BrowserRouter>
-      <header className="header">
-        <nav className="menu">
-          <MenuElement path="/devices" name="Devices" />
-          <MenuElement path="/history" name="History" />
-        </nav>
-      </header>
+      <LastLocationProvider>
+        <header className="header">
+          <nav className="menu">
+            <MenuElement path="/devices" name="Devices" />
+            <MenuElement path="/history" name="History" />
+          </nav>
+        </header>
 
-      <div className="content">
-        <Switch>
-          <Redirect exact from="/" to={"/devices"} />
+        <div className="content">
+          <Switch>
+            <Redirect exact from="/" to="/devices" />
 
-          <Route path="/devices">
-            <DeviceList api={api} />
-          </Route>
+            <Route path="/login">
+              <Login />
+            </Route>
 
-          <Route
-            path="/history"
-            render={(props) => (
-              <HistoryList api={api} query={props.location.search} />
-            )}
-          />
-        </Switch>
-      </div>
+            <Route path="/devices">
+              <DeviceList api={api} />
+            </Route>
+
+            <Route
+              path="/history"
+              render={(props) => (
+                <HistoryList api={api} query={props.location.search} />
+              )}
+            />
+          </Switch>
+        </div>
+      </LastLocationProvider>
     </BrowserRouter>
   );
 };
