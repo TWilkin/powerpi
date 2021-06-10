@@ -1,13 +1,11 @@
-import { FileDb } from "jovo-db-filedb";
 import { App } from "jovo-framework";
 import { Alexa } from "jovo-platform-alexa";
 import { GoogleAssistant } from "jovo-platform-googleassistant";
-import { JovoDebugger } from "jovo-plugin-debugger";
 import { addDeviceTypes } from "./alexa";
 
 const app = new App();
 
-app.use(new Alexa(), new GoogleAssistant(), new JovoDebugger(), new FileDb());
+app.use(new Alexa(), new GoogleAssistant());
 
 app.setHandler({
   LAUNCH() {

@@ -6,12 +6,6 @@ const config = {
 
   intentMap: {
     "AMAZON.StopIntent": "END"
-  },
-
-  db: {
-    FileDb: {
-      pathToFile: "../db/db.json"
-    }
   }
 };
 module.exports = config;
