@@ -1,10 +1,12 @@
-import { App } from "jovo-framework";
+import { App, Jovo } from "jovo-framework";
 import { Alexa } from "jovo-platform-alexa";
 import { GoogleAssistant } from "jovo-platform-googleassistant";
+import { PowerPiApi } from "powerpi-common-api";
 import { addDeviceTypes } from "./alexa";
-import { getDevices } from "./powerPiConfig";
+import PowerPiConfig from "./powerPiConfig";
 
 const app = new App();
+const config = new PowerPiConfig();
 
 app.use(new Alexa(), new GoogleAssistant());
 
@@ -17,7 +19,7 @@ app.setHandler({
     );
     const status = this.$inputs.status?.id ?? this.$inputs.status?.value;
 
-    const devices = await getDevices();
+    const devices = await config.getDevices();
     const device = deviceName
       ? devices.find(
           (device) =>
@@ -29,12 +31,17 @@ app.setHandler({
     // the device was found
     if (device && status) {
       this.tell(`Turning ${device.display_name ?? device.name} ${status}`);
+
+      makeRequest(this, (api: PowerPiApi) =>
+        api.postMessage(device.name, status)
+      );
+
       return;
     }
 
     // the device was set but not found
     if (!device && deviceName) {
-      await addDeviceTypes(this.$alexaSkill);
+      await addDeviceTypes(config, this.$alexaSkill);
 
       this.ask(`I couldn't find device ${deviceName}, try again.`);
       return;
@@ -44,11 +51,15 @@ app.setHandler({
   },
 
   CancelIntent() {
-    this.tell("Aborting");
+    this.tell("Aborting.");
   },
 
   ErrorIntent() {
     this.tell("I'm sorry, I didn't understand that.");
+  },
+
+  ApiErrorIntent() {
+    this.tell("I'm sorry, I was unable to make the request to Power Pi.");
   }
 });
 
@@ -60,4 +71,14 @@ function cleanString(value?: string) {
   }
 
   return value.trim().toLowerCase().replace(".", "").replace("-", "");
+}
+
+function makeRequest(jovo: Jovo, func: (api: PowerPiApi) => void) {
+  const api = new PowerPiApi("http://deep-thought:3000/api");
+
+  api.setErrorHandler(() => {
+    jovo.toIntent("ApiErrorIntent");
+  });
+
+  func(api);
 }

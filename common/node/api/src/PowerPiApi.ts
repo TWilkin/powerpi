@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance } from "axios";
 import io from "socket.io-client";
 import Device from "./Device";
 import DeviceState from "./DeviceState";
@@ -6,12 +6,11 @@ import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import History from "./History";
 
 class PowerPiApi {
-  private readonly apiBaseUrl = `${window.location.origin}/api`;
   private readonly instance: AxiosInstance;
   private readonly socket: SocketIOClient.Socket;
   private listeners: DeviceStatusCallback[];
 
-  constructor() {
+  constructor(private readonly apiBaseUrl = `${window.location.origin}/api`) {
     this.instance = axios.create({
       baseURL: this.apiBaseUrl
     });
@@ -58,7 +57,7 @@ class PowerPiApi {
 
   private async get(path: string, params?: object): Promise<any> {
     const result = await this.instance.get(path, { params });
-    return result.data;
+    return result?.data;
   }
 
   private async post(path: string, message: any): Promise<any> {
@@ -72,7 +71,7 @@ class PowerPiApi {
       JSON.stringify(message),
       config
     );
-    return result.data;
+    return result?.data;
   }
 }
 export default PowerPiApi;
