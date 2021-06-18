@@ -2,8 +2,8 @@ import { App, Jovo } from "jovo-framework";
 import { Alexa } from "jovo-platform-alexa";
 import { GoogleAssistant } from "jovo-platform-googleassistant";
 import { PowerPiApi } from "powerpi-common-api";
-import { addDeviceTypes } from "./alexa";
 import PowerPiConfig from "./powerPiConfig";
+import { addDeviceTypes } from "./providers";
 
 const app = new App();
 const config = new PowerPiConfig();
@@ -45,7 +45,7 @@ app.setHandler({
 
     // the device was set but not found
     if (!device && deviceName) {
-      await addDeviceTypes(config, this.$alexaSkill);
+      addDeviceTypes(this, devices);
 
       this.ask(`I couldn't find device ${deviceName}, try again.`);
       return;
