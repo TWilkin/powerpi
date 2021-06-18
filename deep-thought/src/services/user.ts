@@ -1,4 +1,4 @@
-import { $log, Service } from "@tsed/common";
+import { Service } from "@tsed/common";
 import User from "../models/user";
 import Config from "./config";
 
@@ -16,13 +16,11 @@ export default class UserService {
   }
 
   public pushUser(code: string, user: User) {
-    $log.info(`push ${code}: ${JSON.stringify(user)}`);
     this._codes[code] = user;
   }
 
   public popUser(code: string) {
     const user = this._codes[code];
-    $log.info(`pop ${code}: ${JSON.stringify(user)}`);
 
     if (user) {
       delete this._codes[code];

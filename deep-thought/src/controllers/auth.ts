@@ -1,5 +1,6 @@
 import {
   $log,
+  BodyParams,
   Controller,
   Get,
   Post,
@@ -94,12 +95,12 @@ export default class AuthController {
 
   @Post("/google/token")
   @Authorize("client_credentials")
-  async googleToken(@QueryParams("code") code: string, @Res() response: Res) {
-    /*const user = this.userService.popUser(code);
+  async googleToken(@BodyParams("code") code: string, @Res() response: Res) {
+    const user = this.userService.popUser(code);
     if (!user) {
-      response.status(HttpStatus.FORBIDDEN);
-    }*/
-    const user = this.userService.users[0];
+      response.status(HttpStatus.FORBIDDEN).send();
+      return;
+    }
 
     const jwt = await this.jwtService.createJWT(user, "google");
     const decoded = await this.jwtService.parse(jwt);
