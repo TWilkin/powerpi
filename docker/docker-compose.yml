@@ -30,6 +30,7 @@ services:
       - powerpi_google_auth
       - powerpi_jwt_auth
       - powerpi_session
+      - powerpi_oauth
     environment:
       - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
       - EXTERNAL_PORT=${EXTERNAL_PORT}
@@ -45,6 +46,8 @@ services:
       - GOOGLE_SECRET_FILE=/var/run/secrets/powerpi_google_auth
       - JWT_SECRET_FILE=/var/run/secrets/powerpi_jwt_auth
       - SESSION_SECRET_FILE=/var/run/secrets/powerpi_session
+      - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID}
+      - OAUTH_SECRET_FILE=/var/run/secrets/powerpi_oauth
     configs:
       - source: devices_config
         target: /devices.json
@@ -267,6 +270,8 @@ secrets:
   powerpi_jwt_auth:
     external: true
   powerpi_session:
+    external: true
+  powerpi_oauth:
     external: true
 
 configs:

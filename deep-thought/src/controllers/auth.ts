@@ -26,11 +26,13 @@ export default class AuthController {
   ) {}
 
   @Get("/google")
-  google(
+  async google(
     @Session() session: any,
     @QueryParams("redirect_uri") redirectUri: string,
     @QueryParams("response_type") responseType: string,
-    @QueryParams("state") state: string
+    @QueryParams("state") state: string,
+    @QueryParams("client_id") clientId: string,
+    @Res() response: Res
   ) {
     if (redirectUri) {
       session.redirectUri = state
@@ -40,6 +42,17 @@ export default class AuthController {
 
     if (responseType === "code") {
       session.useCode = true;
+    }
+
+    if (clientId) {
+      const credentials = (await this.config.getAuthConfig()).find(
+        (authConfig) => authConfig.name === "oauth"
+      );
+
+      if (credentials?.clientId !== clientId) {
+        response.status(HttpStatus.FORBIDDEN).send();
+        return;
+      }
     }
 
     return passport.authenticate("google", {
@@ -80,7 +93,7 @@ export default class AuthController {
   }
 
   @Post("/google/token")
-  //@Authorize("basic")
+  @Authorize("client_credentials")
   async googleToken(@QueryParams("code") code: string, @Res() response: Res) {
     /*const user = this.userService.popUser(code);
     if (!user) {
