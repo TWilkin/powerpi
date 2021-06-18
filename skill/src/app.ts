@@ -30,11 +30,15 @@ app.setHandler({
 
     // the device was found
     if (device && status) {
-      this.tell(`Turning ${device.display_name ?? device.name} ${status}`);
+      if (
+        !(await makeRequest((api: PowerPiApi) =>
+          api.postMessage(device.name, status)
+        ))
+      ) {
+        return this.toIntent("ApiErrorIntent");
+      }
 
-      makeRequest(this, (api: PowerPiApi) =>
-        api.postMessage(device.name, status)
-      );
+      this.tell(`Turning ${device.display_name ?? device.name} ${status}`);
 
       return;
     }
@@ -73,12 +77,13 @@ function cleanString(value?: string) {
   return value.trim().toLowerCase().replace(".", "").replace("-", "");
 }
 
-function makeRequest(jovo: Jovo, func: (api: PowerPiApi) => void) {
+async function makeRequest(func: (api: PowerPiApi) => Promise<void>) {
   const api = new PowerPiApi("http://deep-thought:3000/api");
 
-  api.setErrorHandler(() => {
-    jovo.toIntent("ApiErrorIntent");
-  });
+  let success = true;
+  api.setErrorHandler(() => (success = false));
 
-  func(api);
+  await func(api);
+
+  return success;
 }
