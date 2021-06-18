@@ -1,9 +1,9 @@
-import { App, Jovo } from "jovo-framework";
+import { App } from "jovo-framework";
 import { Alexa } from "jovo-platform-alexa";
 import { GoogleAssistant } from "jovo-platform-googleassistant";
 import { PowerPiApi } from "powerpi-common-api";
 import PowerPiConfig from "./powerPiConfig";
-import { addDeviceTypes } from "./providers";
+import { addDeviceTypes, getProviderName } from "./providers";
 
 const app = new App();
 const config = new PowerPiConfig();
@@ -14,6 +14,11 @@ app.setHandler({
   LAUNCH() {},
 
   async DevicePowerIntent() {
+    // check for login
+    if (!this.$request?.getAccessToken()) {
+      return this.toIntent("LoginIntent");
+    }
+
     const deviceName: string | undefined = cleanString(
       this.$inputs.device?.value
     );
@@ -56,6 +61,11 @@ app.setHandler({
 
   CancelIntent() {
     this.tell("Aborting.");
+  },
+
+  LoginIntent() {
+    const name = getProviderName(this);
+    this.tell(`Please login to your Power Pi account through the ${name} app.`);
   },
 
   ErrorIntent() {
