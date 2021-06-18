@@ -9,6 +9,7 @@ class PowerPiApi {
   private readonly instance: AxiosInstance;
   private readonly socket: SocketIOClient.Socket;
   private listeners: DeviceStatusCallback[];
+  private headers: { [key: string]: string };
 
   constructor(private readonly apiBaseUrl = `${window.location.origin}/api`) {
     this.instance = axios.create({
@@ -19,6 +20,8 @@ class PowerPiApi {
       path: "/api/socket.io"
     });
     this.listeners = [];
+
+    this.headers = {};
 
     this.socket.on("message", this.onMessage);
   }
@@ -52,17 +55,25 @@ class PowerPiApi {
     this.instance.interceptors.response.use((response) => response, handler);
   }
 
+  public setCredentials(token: string) {
+    this.headers.Authorization = `Bearer ${token}`;
+  }
+
   private onMessage = (message: DeviceStatusMessage) =>
     this.listeners.forEach((listener) => listener(message));
 
   private async get(path: string, params?: object): Promise<any> {
-    const result = await this.instance.get(path, { params });
+    const result = await this.instance.get(path, {
+      params,
+      headers: this.headers
+    });
     return result?.data;
   }
 
   private async post(path: string, message: any): Promise<any> {
     const config = {
       headers: {
+        ...this.headers,
         "Content-Type": "application/json"
       }
     };

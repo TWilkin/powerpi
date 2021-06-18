@@ -36,8 +36,9 @@ app.setHandler({
     // the device was found
     if (device && status) {
       if (
-        !(await makeRequest((api: PowerPiApi) =>
-          api.postMessage(device.name, status)
+        !(await makeRequest(
+          this.$request?.getAccessToken(),
+          (api: PowerPiApi) => api.postMessage(device.name, status)
         ))
       ) {
         return this.toIntent("ApiErrorIntent");
@@ -87,8 +88,15 @@ function cleanString(value?: string) {
   return value.trim().toLowerCase().replace(".", "").replace("-", "");
 }
 
-async function makeRequest(func: (api: PowerPiApi) => Promise<void>) {
+async function makeRequest(
+  token: string | undefined,
+  func: (api: PowerPiApi) => Promise<void>
+) {
   const api = new PowerPiApi("http://deep-thought:3000/api");
+
+  if (token) {
+    api.setCredentials(token);
+  }
 
   let success = true;
   api.setErrorHandler(() => (success = false));
