@@ -9,6 +9,6 @@ import "./styles/main.scss";
 
 TimeAgo.addDefaultLocale(en);
 
-const api = new PowerPiApi();
+const api = new PowerPiApi(`${window.location.origin}/api`);
 
 ReactDOM.render(<Site api={api} />, document.getElementById("content"));

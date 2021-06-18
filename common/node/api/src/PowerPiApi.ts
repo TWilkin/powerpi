@@ -11,7 +11,7 @@ class PowerPiApi {
   private listeners: DeviceStatusCallback[];
   private headers: { [key: string]: string };
 
-  constructor(private readonly apiBaseUrl = `${window.location.origin}/api`) {
+  constructor(private readonly apiBaseUrl: string) {
     this.instance = axios.create({
       baseURL: this.apiBaseUrl
     });
