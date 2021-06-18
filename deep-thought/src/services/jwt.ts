@@ -3,6 +3,16 @@ import jwt from "jsonwebtoken";
 import User from "../models/user";
 import Config from "./config";
 
+interface Token {
+  email: string;
+  provider: string;
+  iat: number;
+  exp: number;
+  aud: string;
+  iss: string;
+  sub: string;
+}
+
 @Service()
 export default class JwtService {
   constructor(private readonly config: Config) {}
@@ -35,5 +45,9 @@ export default class JwtService {
     const token = jwt.sign(body, await this.config.getJWTSecret(), options);
 
     return token;
+  }
+
+  public async parse(token: string): Promise<Token> {
+    return jwt.verify(token, await this.config.getJWTSecret()) as Token;
   }
 }
