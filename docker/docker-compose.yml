@@ -54,9 +54,9 @@ services:
       - source: users_config
         target: /users.json
 
-  skill:
-    build: ../skill
-    image: ${REGISTRY}/powerpi/skill:0.0.1
+  babel-fish:
+    build: ../babel-fish
+    image: ${REGISTRY}/powerpi/babel-fish:0.0.1
     networks:
       - powerpi
     deploy:

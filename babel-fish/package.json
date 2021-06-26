@@ -1,7 +1,7 @@
 {
-  "name": "skill",
+  "name": "babel-fish",
   "version": "0.0.1",
-  "description": "PowerPi home automation voice skill",
+  "description": "PowerPi home automation voice service",
   "main": "./src/index.ts",
   "scripts": {
     "start": "ts-node src/index.ts",
