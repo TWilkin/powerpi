@@ -1,6 +1,5 @@
 import { App } from "jovo-framework";
 import { Alexa } from "jovo-platform-alexa";
-import { GoogleAssistant } from "jovo-platform-googleassistant";
 import { PowerPiApi } from "powerpi-common-api";
 import PowerPiConfig from "./powerPiConfig";
 import { addDeviceTypes, getProviderName } from "./providers";
@@ -8,7 +7,7 @@ import { addDeviceTypes, getProviderName } from "./providers";
 const app = new App();
 const config = new PowerPiConfig();
 
-app.use(new Alexa(), new GoogleAssistant());
+app.use(new Alexa());
 
 app.setHandler({
   LAUNCH() {},
