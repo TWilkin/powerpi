@@ -79,11 +79,13 @@ export default class AuthController {
       redirectUri = `${redirectUri}${splitter}code=${code}`;
     } else {
       const jwt = await this.jwtService.createJWT(user, "google");
+      const decoded = await this.jwtService.parse(jwt);
 
       response.cookie(JwtService.cookieKey, jwt, {
         secure: this.config.usesHttps,
         httpOnly: !this.config.usesHttps,
-        sameSite: true
+        sameSite: true,
+        expires: new Date(decoded.exp * 1000)
       });
     }
 
