@@ -25,8 +25,7 @@
         {
           "name": "device",
           "type": {
-            "alexa": "DeviceInputType",
-            "dialogflow": "@sys.any"
+            "alexa": "DeviceInputType"
           }
         },
         {
@@ -89,25 +88,5 @@
         ]
       }
     }
-  },
-  "dialogflow": {
-    "intents": [
-      {
-        "name": "Default Fallback Intent",
-        "auto": true,
-        "webhookUsed": true,
-        "fallbackIntent": true
-      },
-      {
-        "name": "Default Welcome Intent",
-        "auto": true,
-        "webhookUsed": true,
-        "events": [
-          {
-            "name": "WELCOME"
-          }
-        ]
-      }
-    ]
   }
 }
