@@ -7,7 +7,7 @@ import History from "./History";
 
 class PowerPiApi {
   private readonly instance: AxiosInstance;
-  private readonly socket: SocketIOClient.Socket;
+  private socket: SocketIOClient.Socket | undefined;
   private listeners: DeviceStatusCallback[];
   private headers: { [key: string]: string };
 
@@ -16,14 +16,9 @@ class PowerPiApi {
       baseURL: this.apiBaseUrl
     });
 
-    this.socket = io.connect(this.apiBaseUrl, {
-      path: "/api/socket.io"
-    });
     this.listeners = [];
 
     this.headers = {};
-
-    this.socket.on("message", this.onMessage);
   }
 
   public getDevices = () => this.get("device") as Promise<Device[]>;
@@ -44,6 +39,7 @@ class PowerPiApi {
     this.post(`topic/device/${device}/change`, { state });
 
   public addListener(callback: DeviceStatusCallback) {
+    this.connectSocketIO();
     this.listeners.push(callback);
   }
 
@@ -83,6 +79,16 @@ class PowerPiApi {
       config
     );
     return result?.data;
+  }
+
+  private connectSocketIO() {
+    if (!this.socket) {
+      this.socket = io.connect(this.apiBaseUrl, {
+        path: "/api/socket.io"
+      });
+
+      this.socket.on("message", this.onMessage);
+    }
   }
 }
 export default PowerPiApi;
