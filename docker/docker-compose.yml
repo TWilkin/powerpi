@@ -198,7 +198,7 @@ services:
       replicas: 1
     depends_on:
       - deep-thought
-      - skill
+      - babel-fish
     volumes:
       - /var/lib/docker-volumes/certbot/conf:/etc/letsencrypt
       - /var/lib/docker-volumes/certbot/www:/var/www/certbot
