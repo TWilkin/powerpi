@@ -10,7 +10,7 @@ Webhook.listen(port, () => {
 });
 
 Webhook.post(
-  ["/webhook", "/webhook_alexa"],
+  ["/webhook_alexa"],
   async (request: Request, response: Response) => {
     await app.handle(new ExpressJS(request, response));
   }
