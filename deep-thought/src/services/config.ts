@@ -61,7 +61,7 @@ export default class Config {
   }
 
   async getAuthConfig(): Promise<AuthConfig[]> {
-    const protocols = ["google"];
+    const protocols = ["google", "oauth"];
 
     return await Promise.all(
       protocols.map(async (name) => {

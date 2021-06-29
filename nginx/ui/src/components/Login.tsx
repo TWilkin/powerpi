@@ -25,7 +25,7 @@ function useLogin(protocol: string) {
 
   return useCallback(() => {
     const redirectUri = lastLocation ? lastLocation.pathname : "";
-    const path = `/api/auth/${protocol.toLowerCase()}?redirectUri=${
+    const path = `/api/auth/${protocol.toLowerCase()}?redirect_uri=${
       window.location.origin
     }/${redirectUri}`;
 

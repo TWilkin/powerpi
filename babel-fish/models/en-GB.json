@@ -1,0 +1,96 @@
+{
+  "invocation": "power pi",
+  "intents": [
+    {
+      "name": "DevicePowerIntent",
+      "phrases": [
+        "turn {device} {status}",
+        "turn {device} {device} {status}",
+        "turn {device} {device} {device} {status}",
+        "turn {device} {device} {device} {device} {status}",
+        "set {device} to {status}",
+        "set {device} {device} to {status}",
+        "set {device} {device} {device} to {status}",
+        "set {device} {device} {device} {device} to {status}",
+        "switch {device} {status}",
+        "switch {device} {device} {status}",
+        "switch {device} {device} {device} {status}",
+        "switch {device} {device} {device} {device} {status}",
+        "trigger {device} {status}",
+        "trigger {device} {device} {status}",
+        "trigger {device} {device} {device} {status}",
+        "trigger {device} {device} {device} {device} {status}",
+        "{status} {device}",
+        "{status} {device} {device} ",
+        "{status} {device} {device} {device}",
+        "{status} {device} {device} {device} {device}"
+      ],
+      "inputs": [
+        {
+          "name": "device",
+          "type": {
+            "alexa": "DeviceInputType"
+          }
+        },
+        {
+          "name": "status",
+          "type": "DeviceStatusInputType"
+        }
+      ]
+    }
+  ],
+  "inputTypes": [
+    {
+      "name": "DeviceInputType",
+      "values": [
+        {
+          "value": "light",
+          "synonyms": ["lights"]
+        },
+        {
+          "value": "socket",
+          "synonyms": ["sockets"]
+        },
+        {
+          "value": "activity",
+          "synonyms": ["activities"]
+        }
+      ]
+    },
+    {
+      "name": "DeviceStatusInputType",
+      "values": [
+        {
+          "id": "on",
+          "value": "on",
+          "synonyms": ["activate", "enable", "start"]
+        },
+        {
+          "id": "off",
+          "value": "off",
+          "synonyms": ["deactivate", "terminate", "disable", "stop"]
+        }
+      ]
+    }
+  ],
+  "alexa": {
+    "interactionModel": {
+      "languageModel": {
+        "intents": [
+          {
+            "name": "AMAZON.CancelIntent",
+            "samples": []
+          },
+          {
+            "name": "AMAZON.HelpIntent",
+            "samples": []
+          },
+          {
+            "name": "AMAZON.StopIntent",
+            "samples": []
+          }
+        ]
+      }
+    }
+  }
+}

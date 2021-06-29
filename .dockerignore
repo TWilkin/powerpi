@@ -4,6 +4,7 @@
 **/build/
 **/dist/
 **/node_modules/
+**/platforms/
 **/venv/
 **/*.dev.js
 **/*.pyc

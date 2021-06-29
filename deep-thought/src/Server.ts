@@ -39,6 +39,7 @@ export default class Server {
         })
       )
       .use(bodyParser.json())
+      .use(bodyParser.urlencoded({ extended: true }))
       .use(
         session({
           secret: await this.config.getSessionSecret(),

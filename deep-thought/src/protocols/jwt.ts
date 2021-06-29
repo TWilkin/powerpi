@@ -1,4 +1,3 @@
-import { Req } from "@tsed/common";
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { Request } from "express";
 import { ExtractJwt, Strategy, StrategyOptions } from "passport-jwt";

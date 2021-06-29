@@ -17,7 +17,7 @@ services:
 
   deep-thought:
     build: ../deep-thought
-    image: ${REGISTRY}/powerpi/deep-thought:0.5.0
+    image: ${REGISTRY}/powerpi/deep-thought:0.5.1
     networks:
       - powerpi
     deploy:
@@ -30,6 +30,7 @@ services:
       - powerpi_google_auth
       - powerpi_jwt_auth
       - powerpi_session
+      - powerpi_oauth
     environment:
       - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
       - EXTERNAL_PORT=${EXTERNAL_PORT}
@@ -45,11 +46,28 @@ services:
       - GOOGLE_SECRET_FILE=/var/run/secrets/powerpi_google_auth
       - JWT_SECRET_FILE=/var/run/secrets/powerpi_jwt_auth
       - SESSION_SECRET_FILE=/var/run/secrets/powerpi_session
+      - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID}
+      - OAUTH_SECRET_FILE=/var/run/secrets/powerpi_oauth
     configs:
       - source: devices_config
         target: /devices.json
       - source: users_config
         target: /users.json
+
+  babel-fish:
+    build: ../babel-fish
+    image: ${REGISTRY}/powerpi/babel-fish:0.0.1
+    networks:
+      - powerpi
+    deploy:
+      replicas: 1
+    depends_on:
+      - deep-thought
+    environment:
+      - DEVICES_FILE=/devices.json
+    configs:
+      - source: devices_config
+        target: /devices.json
 
   macro-controller:
     image: ${REGISTRY}/powerpi/controllers/macro:1.0.1
@@ -170,7 +188,7 @@ services:
 
   nginx:
     build: ../nginx
-    image: ${REGISTRY}/powerpi/nginx:1.1.0
+    image: ${REGISTRY}/powerpi/nginx:1.1.1
     networks:
       - powerpi
     ports:
@@ -180,6 +198,7 @@ services:
       replicas: 1
     depends_on:
       - deep-thought
+      - babel-fish
     volumes:
       - /var/lib/docker-volumes/certbot/conf:/etc/letsencrypt
       - /var/lib/docker-volumes/certbot/www:/var/www/certbot
@@ -251,6 +270,8 @@ secrets:
   powerpi_jwt_auth:
     external: true
   powerpi_session:
+    external: true
+  powerpi_oauth:
     external: true
 
 configs:

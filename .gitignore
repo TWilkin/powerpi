@@ -4,6 +4,8 @@
 **/build/
 **/dist/
 **/node_modules/
+**/platforms/
 **/venv/
+**/.tsconfig-build.json
 **/*.pyc
 **/*.log

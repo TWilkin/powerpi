@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance } from "axios";
 import io from "socket.io-client";
 import Device from "./Device";
 import DeviceState from "./DeviceState";
@@ -6,22 +6,19 @@ import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import History from "./History";
 
 class PowerPiApi {
-  private readonly apiBaseUrl = `${window.location.origin}/api`;
   private readonly instance: AxiosInstance;
-  private readonly socket: SocketIOClient.Socket;
+  private socket: SocketIOClient.Socket | undefined;
   private listeners: DeviceStatusCallback[];
+  private headers: { [key: string]: string };
 
-  constructor() {
+  constructor(private readonly apiBaseUrl: string) {
     this.instance = axios.create({
       baseURL: this.apiBaseUrl
     });
 
-    this.socket = io.connect(this.apiBaseUrl, {
-      path: "/api/socket.io"
-    });
     this.listeners = [];
 
-    this.socket.on("message", this.onMessage);
+    this.headers = {};
   }
 
   public getDevices = () => this.get("device") as Promise<Device[]>;
@@ -42,6 +39,7 @@ class PowerPiApi {
     this.post(`topic/device/${device}/change`, { state });
 
   public addListener(callback: DeviceStatusCallback) {
+    this.connectSocketIO();
     this.listeners.push(callback);
   }
 
@@ -53,17 +51,25 @@ class PowerPiApi {
     this.instance.interceptors.response.use((response) => response, handler);
   }
 
+  public setCredentials(token: string) {
+    this.headers.Authorization = `Bearer ${token}`;
+  }
+
   private onMessage = (message: DeviceStatusMessage) =>
     this.listeners.forEach((listener) => listener(message));
 
   private async get(path: string, params?: object): Promise<any> {
-    const result = await this.instance.get(path, { params });
-    return result.data;
+    const result = await this.instance.get(path, {
+      params,
+      headers: this.headers
+    });
+    return result?.data;
   }
 
   private async post(path: string, message: any): Promise<any> {
     const config = {
       headers: {
+        ...this.headers,
         "Content-Type": "application/json"
       }
     };
@@ -72,7 +78,17 @@ class PowerPiApi {
       JSON.stringify(message),
       config
     );
-    return result.data;
+    return result?.data;
+  }
+
+  private connectSocketIO() {
+    if (!this.socket) {
+      this.socket = io.connect(this.apiBaseUrl, {
+        path: "/api/socket.io"
+      });
+
+      this.socket.on("message", this.onMessage);
+    }
   }
 }
 export default PowerPiApi;

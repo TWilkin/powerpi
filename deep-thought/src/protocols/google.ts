@@ -32,7 +32,7 @@ export default class GoogleProtocol implements OnVerify, OnInstall {
     private readonly userService: UserService
   ) {}
 
-  async $onVerify(@Arg(2) profile: Profile) {
+  async $onVerify(@Arg(0) accessToken: string, @Arg(2) profile: Profile) {
     const userEmails = profile.emails
       .filter((entry) => entry.verified)
       .map((entry) => entry.value);

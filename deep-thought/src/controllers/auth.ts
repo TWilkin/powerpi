@@ -1,32 +1,59 @@
 import {
   $log,
+  BodyParams,
   Controller,
   Get,
+  Post,
   QueryParams,
   Req,
   Res,
   Session
 } from "@tsed/common";
-import { Authenticate } from "@tsed/passport";
+import { Authenticate, Authorize } from "@tsed/passport";
+import crypto from "crypto";
 import passport from "passport";
 import User from "../models/user";
 import Config from "../services/config";
 import JwtService from "../services/jwt";
+import UserService from "../services/user";
+import HttpStatus = require("http-status-codes");
 
 @Controller("/auth")
 export default class AuthController {
   constructor(
     private readonly config: Config,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly userService: UserService
   ) {}
 
   @Get("/google")
-  google(
+  async google(
     @Session() session: any,
-    @QueryParams("redirectUri") redirectUri: string
+    @QueryParams("redirect_uri") redirectUri: string,
+    @QueryParams("response_type") responseType: string,
+    @QueryParams("state") state: string,
+    @QueryParams("client_id") clientId: string,
+    @Res() response: Res
   ) {
     if (redirectUri) {
-      session.redirectUri = redirectUri;
+      session.redirectUri = state
+        ? `${redirectUri}?state=${state}`
+        : redirectUri;
+    }
+
+    if (responseType === "code") {
+      session.useCode = true;
+    }
+
+    if (clientId) {
+      const credentials = (await this.config.getAuthConfig()).find(
+        (authConfig) => authConfig.name === "oauth"
+      );
+
+      if (credentials?.clientId !== clientId) {
+        response.status(HttpStatus.FORBIDDEN).send();
+        return;
+      }
     }
 
     return passport.authenticate("google", {
@@ -40,21 +67,50 @@ export default class AuthController {
   async googleCallback(
     @Req("user") user: User,
     @Session("redirectUri") redirectUri: string,
+    @Session("useCode") useCode: boolean,
     @Res() response: Res
   ) {
-    const jwt = await this.jwtService.createJWT(user, "google");
+    if (useCode) {
+      const code = crypto.randomBytes(64).toString("hex");
 
-    response.cookie(JwtService.cookieKey, jwt, {
-      secure: this.config.usesHttps,
-      httpOnly: !this.config.usesHttps,
-      sameSite: true
-    });
+      this.userService.pushUser(code, user);
+
+      const splitter = redirectUri.indexOf("?") >= 0 ? "&" : "?";
+      redirectUri = `${redirectUri}${splitter}code=${code}`;
+    } else {
+      const jwt = await this.jwtService.createJWT(user, "google");
+      const decoded = await this.jwtService.parse(jwt);
+
+      response.cookie(JwtService.cookieKey, jwt, {
+        secure: this.config.usesHttps,
+        httpOnly: !this.config.usesHttps,
+        sameSite: true,
+        expires: new Date(decoded.exp * 1000)
+      });
+    }
 
     if (redirectUri) {
       $log.info(`Redirecting user to ${redirectUri}`);
       response.redirect(redirectUri);
     }
+  }
 
-    response.send();
+  @Post("/google/token")
+  @Authorize("client_credentials")
+  async googleToken(@BodyParams("code") code: string, @Res() response: Res) {
+    const user = this.userService.popUser(code);
+    if (!user) {
+      response.status(HttpStatus.FORBIDDEN).send();
+      return;
+    }
+
+    const jwt = await this.jwtService.createJWT(user, "google");
+    const decoded = await this.jwtService.parse(jwt);
+
+    return {
+      access_token: jwt,
+      token_type: "bearer",
+      expires_in: Math.round(decoded.exp - Date.now() / 1000)
+    };
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "deep-thought",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "PowerPi API",
   "main": "src/app.ts",
   "scripts": {
@@ -23,6 +23,7 @@
     "@types/jsonwebtoken": "^8.5.1",
     "@types/node": "^13.13.52",
     "@types/passport-google-oauth20": "^2.0.8",
+    "@types/passport-http": "^0.3.8",
     "@types/passport-jwt": "^3.0.5",
     "@types/pg": "^7.14.11",
     "@types/socket.io": "^2.1.13",
@@ -36,6 +37,7 @@
     "mqtt": "^3.0.0",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
+    "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.0",
     "pg": "^8.6.0",
     "socket.io": "^4.1.2",
