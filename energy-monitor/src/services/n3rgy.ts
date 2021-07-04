@@ -1,6 +1,7 @@
 import axios from "axios";
 import dateFormat from "dateformat";
 import { Service } from "typedi";
+import { N3rgyData } from "../models/n3rgy";
 import ConfigService from "./config";
 
 type EnergyType = "electricity" | "gas";
@@ -33,6 +34,6 @@ export default class N3rgyService {
       }
     });
 
-    console.log(JSON.stringify(result?.data));
+    return result?.data as N3rgyData;
   }
 }
