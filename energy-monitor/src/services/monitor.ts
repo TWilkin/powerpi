@@ -102,7 +102,7 @@ export default class EnergyMonitorService {
 
     let lastDate: number = 0;
     messages.forEach((message) => {
-      this.logger.info(JSON.stringify(message));
+      this.mqtt.publish("event", energyType, "usage", message);
 
       lastDate = message.timestamp;
     });

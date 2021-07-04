@@ -56,6 +56,6 @@ export default class MqttService {
   }
 
   private topicName(type: string, entity: string, action: string) {
-    return `${this.config.mqttAddress}/${type}/${entity}/${action}`;
+    return `${this.config.topicNameBase}/${type}/${entity}/${action}`;
   }
 }
