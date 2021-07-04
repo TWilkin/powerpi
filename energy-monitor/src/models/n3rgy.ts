@@ -7,6 +7,7 @@ export interface N3rgyData {
   values: N3rgyDataPoint[];
   availableCacheRange: N3rgyDataCacheRange;
   unit: string;
+  message?: string;
 }
 
 export interface N3rgyDataPoint {

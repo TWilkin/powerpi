@@ -4,7 +4,7 @@ import { Service } from "typedi";
 import { N3rgyData } from "../models/n3rgy";
 import ConfigService from "./config";
 
-type EnergyType = "electricity" | "gas";
+export type EnergyType = "electricity" | "gas";
 
 @Service()
 export default class N3rgyService {
@@ -12,12 +12,10 @@ export default class N3rgyService {
 
   constructor(private config: ConfigService) {}
 
-  public getElecticity = () =>
-    this.get(
-      "electricity",
-      new Date("2021-07-01T00:00:00"),
-      new Date("2021-07-01T23:59:00")
-    );
+  public getElecticity = (start: Date, end: Date) =>
+    this.get("electricity", start, end);
+
+  public getGas = (start: Date, end: Date) => this.get("gas", start, end);
 
   private async get(energyType: EnergyType, start: Date, end: Date) {
     const url = `${this.config.n3rgyApiBase}/${energyType}/consumption/1`;
@@ -34,6 +32,16 @@ export default class N3rgyService {
       }
     });
 
-    return result?.data as N3rgyData;
+    if (!(result?.status >= 200 && result?.status < 300)) {
+      throw `API call returned ${result.status}`;
+    }
+
+    const data = result?.data as N3rgyData;
+
+    if (data.message) {
+      throw data.message;
+    }
+
+    return data;
   }
 }

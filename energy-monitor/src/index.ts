@@ -1,13 +1,13 @@
 import { MqttService } from "powerpi-common";
 import Container from "./container";
-import N3rgyService from "./services/n3rgy";
+import EnergyMonitorService from "./services/monitor";
 
-async function start() {
-  const n3rgy = Container.get(N3rgyService);
-  //const data = await n3rgy.getElecticity();
-
+function start() {
   const mqtt = Container.get(MqttService);
   mqtt.connect();
+
+  const monitor = Container.get(EnergyMonitorService);
+  monitor.start();
 }
 
 start();
