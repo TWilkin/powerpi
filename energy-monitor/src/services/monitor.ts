@@ -62,11 +62,14 @@ export default class EnergyMonitorService {
       }
     }
 
-    // schedule the next run
+    // schedule the next run either at default timeout, or 12 hours, whichever is sooner
+    const timeout = Math.min(this.updateFrequency, this.defaultTimeout);
     this.logger.info(
-      `Retrieving ${energyType} usage again in ${this.updateFrequency}ms.`
+      `Retrieving ${energyType} usage again at ${new Date(
+        new Date().getTime() + timeout
+      )}.`
     );
-    setTimeout(() => this.update(energyType), 10 * 1000);
+    setTimeout(() => this.update(energyType), timeout);
   }
 
   private get defaultDate() {
@@ -76,6 +79,16 @@ export default class EnergyMonitorService {
     const timestamp = Date.UTC(date.getFullYear(), date.getMonth(), 1, 0, 0, 0);
 
     return new Date(timestamp);
+  }
+
+  private get defaultTimeout() {
+    const defaultTimeout = new Date();
+    defaultTimeout.setDate(defaultTimeout.getDate() + 1);
+    defaultTimeout.setHours(1);
+    defaultTimeout.setMinutes(0);
+    defaultTimeout.setSeconds(0);
+
+    return defaultTimeout.getTime() - new Date().getTime();
   }
 
   private publishMessage(energyType: EnergyType, data: N3rgyData) {
