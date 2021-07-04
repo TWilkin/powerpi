@@ -1,8 +1,9 @@
-import { ConfigService, Container } from "powerpi-common";
+import { Container } from "typedi";
+import ConfigService from "./services/config";
 
-function start() {
+async function start() {
   const config = Container.get(ConfigService);
-  console.log("Hello World");
+  console.log(await config.ihdId);
 }
 
 start();
