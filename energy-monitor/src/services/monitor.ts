@@ -11,31 +11,38 @@ export default class EnergyMonitorService {
   private mqtt: MqttService;
   private logger: LoggerService;
 
-  private lastElectricityUpdate: Date | undefined;
+  private lastUpdate: {
+    electricity?: Date;
+    gas?: Date;
+  };
 
   constructor(private n3rgy: N3rgyService) {
     this.mqtt = Container.get(MqttService);
     this.logger = Container.get(LoggerService);
+    this.lastUpdate = {};
   }
 
   public start() {
     this.logger.info("Starting Energy Monitor");
 
     // as it's only just started force an update now
-    this.updateElectricity();
+    this.update("electricity");
+    this.update("gas");
   }
 
-  private async updateElectricity() {
-    const start = this.lastElectricityUpdate ?? this.defaultDate;
+  private async update(energyType: EnergyType) {
+    const start = this.lastUpdate[energyType] ?? this.defaultDate;
     const end = new Date();
 
     this.logger.info(
-      `Retrieving electricity usage between ${start} and ${end}.`
+      `Retrieving ${energyType} usage between ${start} and ${end}.`
     );
 
     const generator = getData(
-      this.n3rgy.getElecticity,
-      "electricity",
+      energyType === "electricity"
+        ? this.n3rgy.getElecticity
+        : this.n3rgy.getGas,
+      energyType,
       start,
       end,
       this.logger
@@ -49,16 +56,17 @@ export default class EnergyMonitorService {
         break;
       }
 
-      this.lastElectricityUpdate =
-        this.publishMessage("electricity", result.value) ??
-        this.lastElectricityUpdate;
+      const lastDate = this.publishMessage(energyType, result.value);
+      if (lastDate) {
+        this.lastUpdate[energyType] = lastDate;
+      }
     }
 
     // schedule the next run
     this.logger.info(
-      `Retrieving electricity usage again in ${this.updateFrequency}ms.`
+      `Retrieving ${energyType} usage again in ${this.updateFrequency}ms.`
     );
-    setTimeout(() => this.updateElectricity(), 10 * 1000);
+    setTimeout(() => this.update(energyType), 10 * 1000);
   }
 
   private get defaultDate() {
