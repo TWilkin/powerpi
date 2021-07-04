@@ -12,7 +12,7 @@
     "module": "commonjs",
     "target": "es2019",
 
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
 
     "declaration": true,
@@ -21,7 +21,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*"]
+  "include": ["**/*"]
 }

@@ -27,7 +27,10 @@ export default class N3rgyService {
 
     const result = await axios.get(url, {
       params,
-      headers: { Authorization: await this.config.ihdId }
+      headers: {
+        Authorization: await this.config.ihdId,
+        "User-Agent": `powerpi-${this.config.name} ${this.config.version}`
+      }
     });
 
     console.log(JSON.stringify(result?.data));
