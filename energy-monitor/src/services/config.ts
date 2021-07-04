@@ -8,4 +8,8 @@ export default class ConfigService extends PowerPiConfigService {
       id.replace(/-|:/g, "").toUpperCase()
     );
   }
+
+  get n3rgyApiBase() {
+    return "https://consumer-api.data.n3rgy.com";
+  }
 }

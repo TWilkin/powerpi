@@ -1,9 +1,9 @@
 import { Container } from "typedi";
-import ConfigService from "./services/config";
+import N3rgyService from "./services/n3rgy";
 
 async function start() {
-  const config = Container.get(ConfigService);
-  console.log(await config.ihdId);
+  const n3rgy = Container.get(N3rgyService);
+  n3rgy.getElecticity();
 }
 
 start();
