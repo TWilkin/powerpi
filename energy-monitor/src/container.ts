@@ -9,4 +9,8 @@ export default class Container {
       return LocalContainer.get(identifier);
     }
   }
+
+  public static set<T>(identifier: Constructable<T>, service: any) {
+    CommonContainer.set(identifier, service);
+  }
 }

@@ -1,10 +1,11 @@
 import { ConfigService as PowerPiConfigService } from "powerpi-common";
 import { Service } from "typedi";
 import app = require("../../package.json");
+import Container from "../container";
 
 @Service()
 export default class ConfigService extends PowerPiConfigService {
-  get name() {
+  get service() {
     return app.name;
   }
 
@@ -22,3 +23,5 @@ export default class ConfigService extends PowerPiConfigService {
     return "https://consumer-api.data.n3rgy.com";
   }
 }
+
+Container.set(PowerPiConfigService, new ConfigService());

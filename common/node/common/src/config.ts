@@ -1,13 +1,27 @@
 import util = require("util");
 import fs = require("fs");
+import { Service } from "typedi";
 
 // allow reading of files using await
 const readAsync = util.promisify(fs.readFile);
 
-export default abstract class ConfigService {
-  abstract get name(): string;
+@Service()
+export default class ConfigService {
+  get service(): string {
+    return "undefined";
+  }
 
-  abstract get version(): string;
+  get version(): string {
+    return "undefined";
+  }
+
+  get mqttAddress() {
+    return process.env["MQTT_ADDRESS"];
+  }
+
+  get topicNameBase() {
+    return process.env["TOPIC_BASE"] ?? "powerpi";
+  }
 
   protected async getSecret(key: string): Promise<string> {
     const file = await this.readFile(process.env[key] as string);

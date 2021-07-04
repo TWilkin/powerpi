@@ -4,7 +4,7 @@ import ConfigService from "./config";
 
 @Service()
 export default class LoggerService {
-  public init(config: ConfigService) {
+  public constructor(private config: ConfigService) {
     this.info(`
 __________                         __________.__ 
 \\______   \\______  _  __ __________\\______   \\__|
@@ -13,7 +13,7 @@ __________                         __________.__
 |____|   \\____/ \\/\\_/  \\___  >__|  |____|   |__|
                             \\/             
       `);
-    this.info(`${config.name} v${config.version}`);
+    this.info(`${this.config.service} v${this.config.version}`);
   }
 
   public info(...args: any[]) {

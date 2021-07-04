@@ -30,7 +30,7 @@ export default class N3rgyService {
       params,
       headers: {
         Authorization: await this.config.ihdId,
-        "User-Agent": `powerpi-${this.config.name} ${this.config.version}`
+        "User-Agent": `powerpi-${this.config.service} ${this.config.version}`
       }
     });
 
