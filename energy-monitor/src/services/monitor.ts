@@ -2,12 +2,11 @@ import { LoggerService, MqttService } from "powerpi-common";
 import { Service } from "typedi";
 import Container from "../container";
 import { N3rgyData } from "../models/n3rgy";
+import ConfigService from "./config";
 import N3rgyService, { EnergyType } from "./n3rgy";
 
 @Service()
 export default class EnergyMonitorService {
-  private updateFrequency = 12 * 60 * 60 * 1000;
-
   private mqtt: MqttService;
   private logger: LoggerService;
 
@@ -16,7 +15,7 @@ export default class EnergyMonitorService {
     gas?: Date;
   };
 
-  constructor(private n3rgy: N3rgyService) {
+  constructor(private n3rgy: N3rgyService, private config: ConfigService) {
     this.mqtt = Container.get(MqttService);
     this.logger = Container.get(LoggerService);
     this.lastUpdate = {};
@@ -48,6 +47,7 @@ export default class EnergyMonitorService {
       this.logger
     );
 
+    let rows = 0;
     let result: IteratorResult<N3rgyData, void>;
     while (true) {
       result = await generator.next();
@@ -56,20 +56,21 @@ export default class EnergyMonitorService {
         break;
       }
 
+      rows += result.value.values.length;
+
       const lastDate = this.publishMessage(energyType, result.value);
       if (lastDate) {
         this.lastUpdate[energyType] = lastDate;
       }
     }
 
-    // schedule the next run either at default timeout, or 12 hours, whichever is sooner
-    const timeout = Math.min(this.updateFrequency, this.defaultTimeout);
-    this.logger.info(
-      `Retrieving ${energyType} usage again at ${new Date(
-        new Date().getTime() + timeout
-      )}.`
+    // schedule the next run either at the repeat interval or after the time the results usually arrive
+    const nextRun = this.calculateNextRun(rows, this.lastUpdate[energyType]);
+    this.logger.info(`Retrieving ${energyType} usage again at ${nextRun}.`);
+    setTimeout(
+      () => this.update(energyType),
+      nextRun.getTime() - new Date().getTime()
     );
-    setTimeout(() => this.update(energyType), timeout);
   }
 
   private get defaultDate() {
@@ -81,14 +82,26 @@ export default class EnergyMonitorService {
     return new Date(timestamp);
   }
 
-  private get defaultTimeout() {
-    const defaultTimeout = new Date();
-    defaultTimeout.setDate(defaultTimeout.getDate() + 1);
-    defaultTimeout.setHours(1);
-    defaultTimeout.setMinutes(0);
-    defaultTimeout.setSeconds(0);
+  private calculateNextRun(rows: number, lastDate: Date | undefined) {
+    const now = new Date();
 
-    return defaultTimeout.getTime() - new Date().getTime();
+    if (rows > 1 && lastDate) {
+      // there was data, so use the time of the last record that was returned
+      let timeout = new Date(now);
+      timeout.setUTCHours(lastDate.getUTCHours());
+      timeout.setUTCMinutes(lastDate.getMinutes());
+      timeout = this.config.timeoutOffset.add(timeout);
+
+      while (timeout <= this.config.retryInterval.next()) {
+        // can't be in the past, or within interval so add a day
+        timeout.setUTCDate(timeout.getUTCDate() + 1);
+      }
+
+      return timeout;
+    }
+
+    // no data so use the retry interval
+    return this.config.retryInterval.next();
   }
 
   private publishMessage(energyType: EnergyType, data: N3rgyData) {
@@ -125,7 +138,7 @@ async function* getData(
     for (let i = 1; i < chunks.length; i++) {
       const result = await func(chunks[i - 1], chunks[i]);
 
-      logger.info(`Received ${result.values.length} ${energyType} readings.`);
+      logger.info(`Received ${result.values.length} ${energyType} reading(s).`);
 
       yield result;
     }

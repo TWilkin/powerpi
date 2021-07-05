@@ -1,10 +1,21 @@
-import { ConfigService as PowerPiConfigService } from "powerpi-common";
+import {
+  ConfigService as PowerPiConfigService,
+  IntervalParserService
+} from "powerpi-common";
 import { Service } from "typedi";
 import app = require("../../package.json");
 import Container from "../container";
 
 @Service()
 export default class ConfigService extends PowerPiConfigService {
+  private interval: IntervalParserService;
+
+  constructor() {
+    super();
+
+    this.interval = Container.get(IntervalParserService);
+  }
+
   get service() {
     return app.name;
   }
@@ -21,6 +32,16 @@ export default class ConfigService extends PowerPiConfigService {
 
   get n3rgyApiBase() {
     return "https://consumer-api.data.n3rgy.com";
+  }
+
+  get retryInterval() {
+    const str = process.env["RETRY_INTERVAL"] ?? "2 hours";
+    return this.interval.parse(str);
+  }
+
+  get timeoutOffset() {
+    const str = process.env["TIMEOUT_OFFSET"] ?? "30 minutes";
+    return this.interval.parse(str);
   }
 }
 
