@@ -9,12 +9,12 @@
   },
   "author": "TWilkin",
   "devDependencies": {
-    "@types/node": "^16.0.0",
     "prettier": "^2.3.2",
     "tslint": "^6.1.3"
   },
   "dependencies": {
     "@types/dateformat": "^3.0.1",
+    "@types/node": "^16.0.0",
     "axios": "^0.21.1",
     "dateformat": "^4.5.1",
     "powerpi-common": "file:../common/node/common",
