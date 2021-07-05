@@ -31,7 +31,9 @@ export default class ConfigService extends PowerPiConfigService {
   }
 
   get n3rgyApiBase() {
-    return "https://consumer-api.data.n3rgy.com";
+    return (
+      process.env["N3RGY_API_BASE"] ?? "https://consumer-api.data.n3rgy.com"
+    );
   }
 
   get retryInterval() {
