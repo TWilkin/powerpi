@@ -61,6 +61,7 @@ export default class EnergyMonitorService {
       const lastDate = this.publishMessage(energyType, result.value);
       if (lastDate) {
         this.lastUpdate[energyType] = lastDate;
+        this.logger.info(`Received ${energyType} readings up to ${lastDate}.`);
       }
     }
 
@@ -84,9 +85,12 @@ export default class EnergyMonitorService {
 
   private calculateNextRun(rows: number, lastDate: Date | undefined) {
     const now = new Date();
+    const oneDayAgo = new Date();
+    oneDayAgo.setUTCDate(oneDayAgo.getUTCDate() - 1);
 
-    if (rows > 1 && lastDate) {
-      // there was data, so use the time of the last record that was returned
+    if (rows > 1 && lastDate && lastDate >= oneDayAgo) {
+      // there was data within the last day,
+      // so use the time of the last record that was returned
       let timeout = new Date(now);
       timeout.setUTCHours(lastDate.getUTCHours());
       timeout.setUTCMinutes(lastDate.getMinutes());
@@ -132,7 +136,9 @@ async function* getData(
   logger: LoggerService
 ) {
   const chunks = chunkDates(start, end);
-  logger.info(`Split interval into ${chunks.length - 1} 90 day chunk(s).`);
+  logger.info(
+    `Split ${energyType} interval into ${chunks.length - 1} 90 day chunk(s).`
+  );
 
   try {
     for (let i = 1; i < chunks.length; i++) {
