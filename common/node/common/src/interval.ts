@@ -33,62 +33,66 @@ export class IntervalParserService {
   public parse(str: string) {
     const interval = new Interval();
 
+    str = str.replace(/,/g, "").toLowerCase();
     const split = str.split(" ");
 
-    let n: number | undefined = undefined;
+    let value: number | undefined = undefined;
     for (let i = 0; i < split.length; i++) {
-      if (isNumber(split[i])) {
-        n = parseFloat(split[i]);
+      const asFloat = parseFloat(split[i]);
+      if (!isNaN(asFloat)) {
+        value = asFloat;
       } else {
-        if (!n) {
-          n = 1;
-        }
-
+        const currentValue = value ?? 1;
         switch (split[i]) {
           case "year":
           case "years":
-            interval.years = n;
+            interval.years = currentValue;
             break;
 
           case "month":
           case "months":
-            interval.months = n;
+            interval.months = currentValue;
             break;
 
           case "day":
           case "days":
-            interval.days = n;
+            interval.days = currentValue;
             break;
 
           case "hour":
           case "hours":
-            interval.hours = n;
+          case "h":
+            interval.hours = currentValue;
             break;
 
           case "minute":
           case "minutes":
-            interval.minutes = n;
+          case "m":
+            interval.minutes = currentValue;
             break;
 
           case "second":
           case "seconds":
-            interval.seconds = n;
+          case "s":
+            interval.seconds = currentValue;
             break;
 
           case "milli":
           case "millis":
-            interval.millis = n;
+          case "ms":
+            interval.millis = currentValue;
+            break;
+
+          case "a":
+          case "an":
+            value = 1;
             break;
         }
 
-        n = undefined;
+        value = undefined;
       }
     }
 
     return interval;
   }
-}
-
-function isNumber(n: string) {
-  return !isNaN(parseFloat(n));
 }
