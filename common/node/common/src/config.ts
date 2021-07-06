@@ -1,7 +1,6 @@
 import util = require("util");
 import fs = require("fs");
 import { Service } from "typedi";
-import { LogLevel } from "loglevel";
 
 // allow reading of files using await
 const readAsync = util.promisify(fs.readFile);
@@ -41,7 +40,9 @@ export default class ConfigService {
   }
 
   protected async getSecret(key: string): Promise<string> {
-    const file = await this.readFile(process.env[key] as string);
+    const file = await this.readFile(
+      process.env[`${key}_SECRET_FILE`] as string
+    );
     return file;
   }
 

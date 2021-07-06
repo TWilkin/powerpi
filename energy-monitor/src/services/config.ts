@@ -25,7 +25,7 @@ export default class ConfigService extends PowerPiConfigService {
   }
 
   get ihdId() {
-    return this.getSecret("IHD_SECRET_FILE").then((id) =>
+    return this.getSecret("IHD").then((id) =>
       id.replace(/-|:/g, "").toUpperCase()
     );
   }
