@@ -22,9 +22,6 @@ export default class EnergyMonitorService {
   }
 
   public start() {
-    this.logger.info("Starting Energy Monitor");
-
-    // as it's only just started force an update now
     this.update("electricity");
     this.update("gas");
   }
@@ -34,7 +31,12 @@ export default class EnergyMonitorService {
     const end = new Date();
 
     this.logger.info(
-      `Retrieving ${energyType} usage between ${start} and ${end}.`
+      "Retrieving",
+      energyType,
+      "usage between",
+      start,
+      "and",
+      end
     );
 
     const generator = getData(
@@ -61,13 +63,13 @@ export default class EnergyMonitorService {
       const lastDate = this.publishMessage(energyType, result.value);
       if (lastDate) {
         this.lastUpdate[energyType] = lastDate;
-        this.logger.info(`Received ${energyType} readings up to ${lastDate}.`);
+        this.logger.info("Received", energyType, "usage up to", lastDate);
       }
     }
 
     // schedule the next run either at the repeat interval or after the time the results usually arrive
     const nextRun = this.calculateNextRun(rows, this.lastUpdate[energyType]);
-    this.logger.info(`Retrieving ${energyType} usage again at ${nextRun}.`);
+    this.logger.info("Retrieving", energyType, "usage again at", nextRun);
     setTimeout(
       () => this.update(energyType),
       nextRun.getTime() - new Date().getTime()
@@ -137,14 +139,18 @@ async function* getData(
 ) {
   const chunks = chunkDates(start, end);
   logger.info(
-    `Split ${energyType} interval into ${chunks.length - 1} 90 day chunk(s).`
+    "Split",
+    energyType,
+    "interval into",
+    chunks.length - 1,
+    "chunk(s)"
   );
 
   try {
     for (let i = 1; i < chunks.length; i++) {
       const result = await func(chunks[i - 1], chunks[i]);
 
-      logger.info(`Received ${result.values.length} ${energyType} reading(s).`);
+      logger.info("Received", result.values.length, energyType, "reading(s)");
 
       yield result;
     }
