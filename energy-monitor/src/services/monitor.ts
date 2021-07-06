@@ -1,7 +1,7 @@
 import { LoggerService, MqttService } from "powerpi-common";
 import { Service } from "typedi";
 import Container from "../container";
-import { N3rgyData } from "../models/n3rgy";
+import N3rgyData from "../models/n3rgy";
 import ConfigService from "./config";
 import N3rgyService, { EnergyType } from "./n3rgy";
 
@@ -50,9 +50,8 @@ export default class EnergyMonitorService {
     );
 
     let rows = 0;
-    let result: IteratorResult<N3rgyData, void>;
     while (true) {
-      result = await generator.next();
+      const result = await generator.next();
 
       if (result.done) {
         break;
@@ -78,9 +77,16 @@ export default class EnergyMonitorService {
 
   private get defaultDate() {
     const date = new Date();
-    date.setMonth(date.getMonth() - 13);
+    date.setUTCMonth(date.getUTCMonth() - 13);
 
-    const timestamp = Date.UTC(date.getFullYear(), date.getMonth(), 1, 0, 0, 0);
+    const timestamp = Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      1,
+      0,
+      0,
+      0
+    );
 
     return new Date(timestamp);
   }
@@ -125,6 +131,8 @@ export default class EnergyMonitorService {
 
       lastDate = message.timestamp;
     });
+
+    this.logger.info("Published", messages.length, "message(s) to queue");
 
     return lastDate > 0 ? new Date(lastDate) : undefined;
   }

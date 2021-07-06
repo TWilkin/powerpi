@@ -1,10 +1,10 @@
-import { ConfigService as PowerPiConfigService } from "powerpi-common";
+import { ConfigService as CommonConfigService } from "powerpi-common";
 import { Service } from "typedi";
 import Container from "../container";
 import app = require("../../package.json");
 
 @Service()
-export default class ConfigService extends PowerPiConfigService {
+export default class ConfigService extends CommonConfigService {
   get service() {
     return app.name;
   }
@@ -36,4 +36,4 @@ export default class ConfigService extends PowerPiConfigService {
   }
 }
 
-Container.set(PowerPiConfigService, new ConfigService());
+Container.set(CommonConfigService, new ConfigService());

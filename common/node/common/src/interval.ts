@@ -9,9 +9,7 @@ export class Interval {
   seconds = 0;
   millis = 0;
 
-  next() {
-    return this.add(new Date());
-  }
+  next = () => this.add(new Date());
 
   add(date: Date) {
     const timeout = new Date(date);

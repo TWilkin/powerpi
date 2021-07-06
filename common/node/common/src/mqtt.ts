@@ -55,7 +55,6 @@ export default class MqttService {
     this.client?.publish(topicName, JSON.stringify(message), options);
   }
 
-  private topicName(type: string, entity: string, action: string) {
-    return `${this.config.topicNameBase}/${type}/${entity}/${action}`;
-  }
+  private topicName = (type: string, entity: string, action: string) =>
+    `${this.config.topicNameBase}/${type}/${entity}/${action}`;
 }

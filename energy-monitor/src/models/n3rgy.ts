@@ -1,4 +1,4 @@
-export interface N3rgyData {
+export default interface N3rgyData {
   resource: string;
   responseTimestamp: string;
   start: string;
