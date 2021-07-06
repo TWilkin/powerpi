@@ -1,6 +1,7 @@
 import util = require("util");
 import fs = require("fs");
 import { Service } from "typedi";
+import { LogLevel } from "loglevel";
 
 // allow reading of files using await
 const readAsync = util.promisify(fs.readFile);
@@ -13,6 +14,22 @@ export default class ConfigService {
 
   get version(): string {
     return "undefined";
+  }
+
+  get logLevel() {
+    const level = process.env["LOG_LEVEL"]?.trim().toLowerCase();
+
+    switch (level) {
+      case "trace":
+      case "debug":
+      case "info":
+      case "warn":
+      case "error":
+        return level;
+
+      default:
+        return "info";
+    }
   }
 
   get mqttAddress() {
