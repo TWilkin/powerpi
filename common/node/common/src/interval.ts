@@ -77,6 +77,8 @@ export class IntervalParserService {
             interval.seconds = currentValue;
             break;
 
+          case "millisecond":
+          case "milliseconds":
           case "milli":
           case "millis":
           case "ms":
