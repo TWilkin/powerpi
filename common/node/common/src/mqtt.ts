@@ -20,15 +20,15 @@ export default class MqttService {
       clientId: `${this.config.service}-${os.hostname}`
     };
 
-    this.logger.info(`MQTT connecting to ${this.config.mqttAddress}`);
+    this.logger.info("MQTT connecting to", this.config.mqttAddress);
     this.client = connect(this.config.mqttAddress, options);
 
     this.client.on("connect", () => {
-      this.logger.info(`MQTT client ${options.clientId} connected.`);
+      this.logger.info("MQTT client", options.clientId, "connected.");
     });
 
     this.client.on("error", (error) => {
-      this.logger.error(`MQTT client error: ${error}`);
+      this.logger.error("MQTT client error:", error);
       process.exit(1);
     });
   }
@@ -50,7 +50,7 @@ export default class MqttService {
 
     const topicName = this.topicName(type, entity, action);
 
-    this.logger.info(`Publishing to ${topicName}.`);
+    this.logger.debug("Publishing to", topicName);
 
     this.client?.publish(topicName, JSON.stringify(message), options);
   }

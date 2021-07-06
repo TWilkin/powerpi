@@ -33,7 +33,7 @@ export default class ConfigService {
   }
 
   get mqttAddress() {
-    return process.env["MQTT_ADDRESS"];
+    return process.env["MQTT_ADDRESS"] ?? "mqtt://mosquitto:1883";
   }
 
   get topicNameBase() {
