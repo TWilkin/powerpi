@@ -37,13 +37,14 @@ function extractResult<TRecord>(
 export function useGetHistory(
   api: PowerPiApi,
   page: number,
+  records: number,
   type?: string,
   entity?: string,
   action?: string
 ) {
   const { isLoading, isError, data } = useQuery(
-    ["history", type, entity, action, page],
-    () => api.getHistory(type, entity, action, page),
+    ["history", type, entity, action, page, records],
+    () => api.getHistory(type, entity, action, page, records),
     {
       keepPreviousData: true
     }

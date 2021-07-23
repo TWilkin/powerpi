@@ -4,6 +4,7 @@ import Device from "./Device";
 import DeviceState from "./DeviceState";
 import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import History from "./History";
+import PaginationResponse from "./Pagination";
 
 class PowerPiApi {
   private readonly instance: AxiosInstance;
@@ -27,9 +28,12 @@ class PowerPiApi {
     type?: string,
     entity?: string,
     action?: string,
-    page: number = 0
+    page?: number,
+    records?: number
   ) =>
-    this.get("history", { type, entity, action, page }) as Promise<History[]>;
+    this.get("history", { type, entity, action, page, records }) as Promise<
+      PaginationResponse<History>
+    >;
 
   public getHistoryTypes = () =>
     this.get("history/types") as Promise<{ type: string }[]>;

@@ -20,13 +20,18 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
     action: undefined
   });
 
+  const records = 30;
+
   const { isHistoryLoading, isHistoryError, history } = useGetHistory(
     api,
     page,
+    records,
     filters.type !== "" ? filters.type : undefined,
     filters.entity !== "" ? filters.entity : undefined,
     filters.action !== "" ? filters.action : undefined
   );
+
+  const lastPage = history?.records ? Math.ceil(history.records / records) : 1;
 
   return (
     <>
@@ -37,7 +42,11 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
       <div id="history-list">
         <Loading loading={isHistoryLoading}>
           <div className="list">
-            <PaginationControls page={page} setPage={setPage} />
+            <PaginationControls
+              page={page}
+              lastPage={lastPage}
+              setPage={setPage}
+            />
             <table>
               <thead>
                 <tr>
@@ -50,8 +59,8 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
               </thead>
 
               <tbody>
-                {history && history.length > 0 ? (
-                  history.map((row, i) => (
+                {history?.data && history.data.length > 0 ? (
+                  history?.data.map((row, i) => (
                     <tr key={i}>
                       <td>{row.type}</td>
                       <td>{row.entity}</td>
@@ -73,7 +82,11 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
                 )}
               </tbody>
             </table>
-            <PaginationControls page={page} setPage={setPage} />
+            <PaginationControls
+              page={page}
+              lastPage={lastPage}
+              setPage={setPage}
+            />
           </div>
         </Loading>
       </div>

@@ -12,19 +12,17 @@ interface PaginationControlsProps {
   page: number;
   setPage: (page: number) => void;
   lastPage?: number;
-  hasNext?: boolean;
 }
 
 const PaginationControls = ({
   page,
   setPage,
-  lastPage = page,
-  hasNext = true
+  lastPage = page
 }: PaginationControlsProps) => {
   const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value);
 
-    if (!isNaN(value)) {
+    if (!isNaN(value) && value <= lastPage + 1) {
       setPage(value - 1);
     }
   };
@@ -50,7 +48,7 @@ const PaginationControls = ({
         page={page + 1}
         icon={faAngleRight}
         setPage={setPage}
-        disabled={!hasNext}
+        disabled={page > lastPage - 1}
       />
       <PaginationButton
         page={lastPage}
