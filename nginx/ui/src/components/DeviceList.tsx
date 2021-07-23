@@ -1,9 +1,10 @@
 import { faHistory } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Device, DeviceStatusMessage, PowerPiApi } from "powerpi-common-api";
-import React, { useEffect, useState } from "react";
+import { PowerPiApi } from "powerpi-common-api";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";
+import useGetDevices from "../hooks/devices";
 import DeviceFilter, { Filters } from "./DeviceFilter";
 import DeviceIcon from "./DeviceIcon";
 import DevicePowerButton from "./DevicePowerButton";
@@ -15,48 +16,9 @@ interface DeviceListProps {
 }
 
 const DeviceList = ({ api }: DeviceListProps) => {
-  const [devices, setDevices] = useState<Device[] | undefined>(undefined);
   const [filters, setFilters] = useState<Filters>({ types: [] });
-  const [loading, setLoading] = useState(true);
 
-  // load initial device list
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-
-        const result = await api.getDevices();
-        setDevices(result);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  // handle socket.io updates
-  useEffect(() => {
-    const onStatusUpdate = (message: DeviceStatusMessage) => {
-      if (!devices) {
-        return;
-      }
-
-      const newDevices = [...devices];
-
-      const index = newDevices.findIndex(
-        (device) => device.name === message.device
-      );
-      if (index) {
-        newDevices[index] = { ...newDevices[index] };
-        newDevices[index].state = message.state;
-        newDevices[index].since = message.timestamp;
-
-        setDevices(newDevices);
-      }
-    };
-
-    api.addListener(onStatusUpdate);
-    return () => api.removeListener(onStatusUpdate);
-  }, [devices, setDevices]);
+  const { isDevicesLoading, devices } = useGetDevices(api);
 
   const filtered = devices?.filter(
     (device) => device.visible && filters.types.includes(device.type)
@@ -69,7 +31,7 @@ const DeviceList = ({ api }: DeviceListProps) => {
       </Filter>
 
       <div id="device-list">
-        <Loading loading={loading}>
+        <Loading loading={isDevicesLoading}>
           <div className="list">
             <table>
               <tbody>
