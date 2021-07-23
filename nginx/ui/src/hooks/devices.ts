@@ -9,7 +9,9 @@ import { useMutation, useQuery } from "react-query";
 
 export function useGetDevices(api: PowerPiApi) {
   const [devices, setDevices] = useState<Device[] | undefined>();
-  const { isLoading, data } = useQuery("devices", () => api.getDevices());
+  const { isLoading, isError, data } = useQuery("devices", () =>
+    api.getDevices()
+  );
 
   // handle react-query updates
   useEffect(() => {
@@ -43,6 +45,7 @@ export function useGetDevices(api: PowerPiApi) {
 
   return {
     isDevicesLoading: isLoading,
+    isDevicesError: isError,
     devices
   };
 }

@@ -18,7 +18,7 @@ interface DeviceListProps {
 const DeviceList = ({ api }: DeviceListProps) => {
   const [filters, setFilters] = useState<Filters>({ types: [] });
 
-  const { isDevicesLoading, devices } = useGetDevices(api);
+  const { isDevicesLoading, isDevicesError, devices } = useGetDevices(api);
 
   const filtered = devices?.filter(
     (device) => device.visible && filters.types.includes(device.type)
@@ -69,7 +69,11 @@ const DeviceList = ({ api }: DeviceListProps) => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5}>No devices</td>
+                    <td colSpan={5}>
+                      {isDevicesError
+                        ? `An error occured when loading the device list`
+                        : `No devices`}
+                    </td>
                   </tr>
                 )}
               </tbody>
