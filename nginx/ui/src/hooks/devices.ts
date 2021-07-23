@@ -1,8 +1,13 @@
-import { Device, DeviceStatusMessage, PowerPiApi } from "powerpi-common-api";
+import {
+  Device,
+  DeviceState,
+  DeviceStatusMessage,
+  PowerPiApi
+} from "powerpi-common-api";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
-export default function useGetDevices(api: PowerPiApi) {
+export function useGetDevices(api: PowerPiApi) {
   const [devices, setDevices] = useState<Device[] | undefined>();
   const { isLoading, data } = useQuery("devices", () => api.getDevices());
 
@@ -39,5 +44,30 @@ export default function useGetDevices(api: PowerPiApi) {
   return {
     isDevicesLoading: isLoading,
     devices
+  };
+}
+
+export function useSetDeviceState(api: PowerPiApi, device: Device) {
+  const [changeState, setChangeState] = useState(DeviceState.Unknown);
+  const [loading, setLoading] = useState(false);
+
+  // manually handling loading as we want to change it when socket.io
+  // updates the state
+  useEffect(() => setLoading(false), [device.state]);
+
+  const mutation = useMutation(
+    async (newState: DeviceState) => {
+      setLoading(true);
+      api.postMessage(device.name, newState);
+    },
+    {
+      onError: () => setChangeState(DeviceState.Unknown)
+    }
+  );
+
+  return {
+    updateDeviceState: mutation.mutateAsync,
+    isDeviceStateLoading: loading || mutation.isLoading,
+    changeState
   };
 }

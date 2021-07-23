@@ -4,7 +4,7 @@ import { PowerPiApi } from "powerpi-common-api";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";
-import useGetDevices from "../hooks/devices";
+import { useGetDevices } from "../hooks/devices";
 import DeviceFilter, { Filters } from "./DeviceFilter";
 import DeviceIcon from "./DeviceIcon";
 import DevicePowerButton from "./DevicePowerButton";
@@ -51,11 +51,7 @@ const DeviceList = ({ api }: DeviceListProps) => {
                       </td>
 
                       <td className="device-state">
-                        <DevicePowerButton
-                          api={api}
-                          device={device.name}
-                          state={device.state}
-                        />
+                        <DevicePowerButton api={api} device={device} />
                       </td>
 
                       <td className="device-since">
