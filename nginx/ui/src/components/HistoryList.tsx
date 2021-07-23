@@ -1,6 +1,7 @@
-import { History, PowerPiApi } from "powerpi-common-api";
-import React, { useEffect, useState } from "react";
+import { PowerPiApi } from "powerpi-common-api";
+import React, { useState } from "react";
 import ReactTimeAgo from "react-time-ago";
+import { useGetHistory } from "../hooks/history";
 import Filter from "./Filter";
 import HistoryFilter, { Filters } from "./HistoryFilter";
 import Loading from "./Loading";
@@ -16,23 +17,13 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
     entity: undefined,
     action: undefined
   });
-  const [history, setHistory] = useState<History[]>([]);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      if (filters.action || filters.entity || filters.type) {
-        try {
-          setLoading(true);
-
-          const result = await getHistory(api, filters);
-          setHistory(result);
-        } finally {
-          setLoading(false);
-        }
-      }
-    })();
-  }, [filters]);
+  const { isHistoryLoading, isHistoryError, history } = useGetHistory(
+    api,
+    filters.type !== "" ? filters.type : undefined,
+    filters.entity !== "" ? filters.entity : undefined,
+    filters.action !== "" ? filters.action : undefined
+  );
 
   return (
     <>
@@ -41,7 +32,7 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
       </Filter>
 
       <div id="history-list">
-        <Loading loading={loading}>
+        <Loading loading={isHistoryLoading}>
           <div className="list">
             <table>
               <thead>
@@ -55,7 +46,7 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
               </thead>
 
               <tbody>
-                {history.length > 0 ? (
+                {history && history.length > 0 ? (
                   history.map((row, i) => (
                     <tr key={i}>
                       <td>{row.type}</td>
@@ -69,7 +60,11 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5}>No data</td>
+                    <td colSpan={5}>
+                      {isHistoryError
+                        ? `An error occured when loading the history list`
+                        : `No data`}
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -81,18 +76,3 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
   );
 };
 export default HistoryList;
-
-async function getHistory(
-  api: PowerPiApi,
-  filters: Filters
-): Promise<History[]> {
-  const type = filters.type !== "" ? filters.type : undefined;
-  const entity = filters.entity !== "" ? filters.entity : undefined;
-  const action = filters.action !== "" ? filters.action : undefined;
-
-  if (!type && !entity && !action) {
-    return [];
-  }
-
-  return await api.getHistory(type, entity, action);
-}

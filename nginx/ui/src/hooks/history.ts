@@ -33,3 +33,28 @@ function extractResult<TRecord>(
         : []
   };
 }
+
+export function useGetHistory(
+  api: PowerPiApi,
+  type?: string,
+  entity?: string,
+  action?: string
+) {
+  const { isLoading, isError, data } = useQuery(
+    ["history", type, entity, action],
+    async () => {
+      // only query if a filter is set (before pagination)
+      if (type || entity || action) {
+        return await api.getHistory(type, entity, action);
+      }
+
+      return [];
+    }
+  );
+
+  return {
+    isHistoryLoading: isLoading,
+    isHistoryError: isError,
+    history: data
+  };
+}
