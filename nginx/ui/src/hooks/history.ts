@@ -36,19 +36,16 @@ function extractResult<TRecord>(
 
 export function useGetHistory(
   api: PowerPiApi,
+  page: number,
   type?: string,
   entity?: string,
   action?: string
 ) {
   const { isLoading, isError, data } = useQuery(
-    ["history", type, entity, action],
-    async () => {
-      // only query if a filter is set (before pagination)
-      if (type || entity || action) {
-        return await api.getHistory(type, entity, action);
-      }
-
-      return [];
+    ["history", type, entity, action, page],
+    () => api.getHistory(type, entity, action, page),
+    {
+      keepPreviousData: true
     }
   );
 
