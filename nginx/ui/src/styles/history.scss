@@ -14,6 +14,20 @@
 }
 
 #history-list {
+  .pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+    button {
+      width: 40px;
+    }
+
+    input {
+      width: 100%;
+    }
+  }
+
   table {
     th,
     td {

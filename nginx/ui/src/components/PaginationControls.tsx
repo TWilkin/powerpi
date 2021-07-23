@@ -28,30 +28,40 @@ const PaginationControls = ({
   };
 
   return (
-    <div>
+    <div className="pagination-controls">
       <PaginationButton
         page={0}
+        title="First Page"
         icon={faAngleDoubleLeft}
         setPage={setPage}
         disabled={page === 0}
       />
       <PaginationButton
         page={page - 1}
+        title="Previous Page"
         icon={faAngleLeft}
         setPage={setPage}
         disabled={page === 0}
       />
 
-      <input type="number" value={page + 1} onChange={onInputChange} />
+      <input
+        type="number"
+        value={page + 1}
+        onChange={onInputChange}
+        min={1}
+        max={lastPage + 1}
+      />
 
       <PaginationButton
         page={page + 1}
+        title="Next Page"
         icon={faAngleRight}
         setPage={setPage}
         disabled={page > lastPage - 1}
       />
       <PaginationButton
         page={lastPage}
+        title="Last Page"
         icon={faAngleDoubleRight}
         setPage={setPage}
         disabled={lastPage === page}
@@ -64,6 +74,7 @@ export default PaginationControls;
 interface PaginationButtonProps {
   page: number;
   icon: IconProp;
+  title: string;
   setPage: (page: number) => void;
   disabled?: boolean;
 }
@@ -71,11 +82,12 @@ interface PaginationButtonProps {
 const PaginationButton = ({
   page,
   icon,
+  title,
   setPage,
   disabled = false
 }: PaginationButtonProps) => {
   return (
-    <button disabled={disabled} onClick={() => setPage(page)}>
+    <button title={title} disabled={disabled} onClick={() => setPage(page)}>
       <FontAwesomeIcon icon={icon} />
     </button>
   );
