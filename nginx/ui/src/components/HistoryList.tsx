@@ -1,9 +1,11 @@
-import { History, PowerPiApi } from "powerpi-common-api";
-import React, { useEffect, useState } from "react";
+import { PowerPiApi } from "powerpi-common-api";
+import React, { useState } from "react";
 import ReactTimeAgo from "react-time-ago";
+import { useGetHistory } from "../hooks/history";
 import Filter from "./Filter";
 import HistoryFilter, { Filters } from "./HistoryFilter";
 import Loading from "./Loading";
+import PaginationControls from "./PaginationControls";
 
 interface HistoryListProps {
   api: PowerPiApi;
@@ -11,28 +13,27 @@ interface HistoryListProps {
 }
 
 const HistoryList = ({ api, query }: HistoryListProps) => {
+  const [page, setPage] = useState(0);
   const [filters, setFilters] = useState<Filters>({
     type: undefined,
     entity: undefined,
     action: undefined
   });
-  const [history, setHistory] = useState<History[]>([]);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      if (filters.action || filters.entity || filters.type) {
-        try {
-          setLoading(true);
+  const records = 30;
 
-          const result = await getHistory(api, filters);
-          setHistory(result);
-        } finally {
-          setLoading(false);
-        }
-      }
-    })();
-  }, [filters]);
+  const { isHistoryLoading, isHistoryError, history } = useGetHistory(
+    api,
+    page,
+    records,
+    filters.type !== "" ? filters.type : undefined,
+    filters.entity !== "" ? filters.entity : undefined,
+    filters.action !== "" ? filters.action : undefined
+  );
+
+  const lastPage = history?.records
+    ? Math.ceil(history.records / records) - 1
+    : 1;
 
   return (
     <>
@@ -41,8 +42,13 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
       </Filter>
 
       <div id="history-list">
-        <Loading loading={loading}>
+        <Loading loading={isHistoryLoading}>
           <div className="list">
+            <PaginationControls
+              page={page}
+              lastPage={lastPage}
+              setPage={setPage}
+            />
             <table>
               <thead>
                 <tr>
@@ -55,8 +61,8 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
               </thead>
 
               <tbody>
-                {history.length > 0 ? (
-                  history.map((row, i) => (
+                {history?.data && history.data.length > 0 ? (
+                  history?.data.map((row, i) => (
                     <tr key={i}>
                       <td>{row.type}</td>
                       <td>{row.entity}</td>
@@ -69,11 +75,20 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5}>No data</td>
+                    <td colSpan={5}>
+                      {isHistoryError
+                        ? `An error occured when loading the history list`
+                        : `No data`}
+                    </td>
                   </tr>
                 )}
               </tbody>
             </table>
+            <PaginationControls
+              page={page}
+              lastPage={lastPage}
+              setPage={setPage}
+            />
           </div>
         </Loading>
       </div>
@@ -81,18 +96,3 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
   );
 };
 export default HistoryList;
-
-async function getHistory(
-  api: PowerPiApi,
-  filters: Filters
-): Promise<History[]> {
-  const type = filters.type !== "" ? filters.type : undefined;
-  const entity = filters.entity !== "" ? filters.entity : undefined;
-  const action = filters.action !== "" ? filters.action : undefined;
-
-  if (!type && !entity && !action) {
-    return [];
-  }
-
-  return await api.getHistory(type, entity, action);
-}

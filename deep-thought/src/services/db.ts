@@ -19,36 +19,58 @@ export default class DatabaseService implements OnServerReady {
     this.connect();
   }
 
-  public getHistory(type?: string, entity?: string, action?: string) {
-    const params = [];
-    if (type) {
-      params.push(type);
-    }
-    if (entity) {
-      params.push(entity);
-    }
-    if (action) {
-      params.push(action);
-    }
+  public getHistory(
+    page: number,
+    limit: number,
+    type?: string,
+    entity?: string,
+    action?: string
+  ) {
+    const params = optionalParameterList(type, entity, action);
+
+    const dbQueryParams = [
+      { name: "type", value: type },
+      { name: "entity", value: entity },
+      { name: "action", value: action }
+    ];
+
+    const skip = limit * page;
 
     return this.query(
       this.generateQuery(
         "SELECT * FROM mqtt",
         "ORDER BY timestamp DESC",
-        { name: "type", value: type },
-        { name: "entity", value: entity },
-        { name: "action", value: action }
+        dbQueryParams,
+        limit,
+        skip
       ),
       params
     );
   }
 
+  public getHistoryCount(type?: string, entity?: string, action?: string) {
+    const params = optionalParameterList(type, entity, action);
+
+    const dbQueryParams = [
+      { name: "type", value: type },
+      { name: "entity", value: entity },
+      { name: "action", value: action }
+    ];
+
+    return this.query(
+      this.generateQuery("SELECT COUNT(*) FROM mqtt", "", dbQueryParams),
+      params
+    );
+  }
+
   public getHistoryTypes = () =>
-    this.query("SELECT DISTINCT type FROM mqtt ORDER BY type ASC;");
+    this.query("SELECT DISTINCT type FROM mqtt ORDER BY type ASC");
+
   public getHistoryEntities = () =>
-    this.query("SELECT DISTINCT entity FROM mqtt ORDER BY entity ASC;");
+    this.query("SELECT DISTINCT entity FROM mqtt ORDER BY entity ASC");
+
   public getHistoryActions = () =>
-    this.query("SELECT DISTINCT action FROM mqtt ORDER BY action ASC;");
+    this.query("SELECT DISTINCT action FROM mqtt ORDER BY action ASC");
 
   private async query(sql: string, params?: any[]) {
     let client: PoolClient | undefined;
@@ -66,8 +88,10 @@ export default class DatabaseService implements OnServerReady {
 
   private generateQuery(
     start: string,
-    end: string,
-    ...params: DatabaseQueryParam[]
+    end: string = "",
+    params: DatabaseQueryParam[],
+    limit?: number,
+    skip?: number
   ) {
     const generator = optionalArgumentGenerator(params);
 
@@ -82,11 +106,14 @@ export default class DatabaseService implements OnServerReady {
       sql += result.value;
     }
 
-    if (sql.length > 0) {
-      return `${start} WHERE ${sql} ${end}`;
+    const middle = sql.length > 0 ? `WHERE ${sql}` : "";
+    sql = `${start} ${middle} ${end}`;
+
+    if (limit !== undefined && skip !== undefined) {
+      sql = `${sql} LIMIT ${limit} OFFSET ${skip}`;
     }
 
-    return `${start} ${end}`;
+    return sql;
   }
 
   private async connect() {
@@ -109,4 +136,16 @@ function* optionalArgumentGenerator(params: DatabaseQueryParam[]) {
       index++;
     }
   }
+}
+
+function optionalParameterList(...params: any[]) {
+  const list: any[] = [];
+
+  params.forEach((param) => {
+    if (param) {
+      list.push(param);
+    }
+  });
+
+  return list;
 }

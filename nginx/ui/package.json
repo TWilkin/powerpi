@@ -1,6 +1,6 @@
 {
   "name": "powerpi-ui",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "PowerPi UI",
   "main": "src/app.tsx",
   "scripts": {
@@ -20,6 +20,7 @@
     "query-string": "^6.14.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-query": "^3.19.0",
     "react-router-dom": "^5.2.0",
     "react-router-last-location": "^2.0.1",
     "react-time-ago": "^6.2.2",

@@ -10,14 +10,14 @@ services:
     deploy:
       replicas: 1
     volumes:
-      - /var/lib/docker-volumes/mosquitto/data:/mosquitto/data
+      - /srv/docker-volumes/powerpi/mosquitto/data:/mosquitto/data
     configs:
       - source: mosquitto_config
         target: /mosquitto/config/mosquitto.conf
 
   deep-thought:
     build: ../deep-thought
-    image: ${REGISTRY}/powerpi/deep-thought:0.5.1
+    image: ${REGISTRY}/powerpi/deep-thought:0.5.2
     networks:
       - powerpi
     deploy:
@@ -188,7 +188,7 @@ services:
 
   nginx:
     build: ../nginx
-    image: ${REGISTRY}/powerpi/nginx:1.1.1
+    image: ${REGISTRY}/powerpi/nginx:1.2.0
     networks:
       - powerpi
     ports:
@@ -200,8 +200,8 @@ services:
       - deep-thought
       - babel-fish
     volumes:
-      - /var/lib/docker-volumes/certbot/conf:/etc/letsencrypt
-      - /var/lib/docker-volumes/certbot/www:/var/www/certbot
+      - /srv/docker-volumes/powerpi/certbot/conf:/etc/letsencrypt
+      - /srv/docker-volumes/powerpi/certbot/www:/var/www/certbot
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     configs:
       - source: nginx_config
@@ -220,8 +220,8 @@ services:
       - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
       - EMAIL=${EMAIL}
     volumes:
-      - /var/lib/docker-volumes/certbot/conf:/etc/letsencrypt
-      - /var/lib/docker-volumes/certbot/www:/var/www/html
+      - /srv/docker-volumes/powerpi/certbot/conf:/etc/letsencrypt
+      - /srv/docker-volumes/powerpi/certbot/www:/var/www/html
 
   db:
     image: postgres:13.0-alpine
@@ -237,7 +237,7 @@ services:
       - POSTGRES_USER=powerpi
       - POSTGRES_PASSWORD_FILE=/var/run/secrets/powerpi_db
     volumes:
-      - /var/lib/docker-volumes/postgres/data:/var/lib/postgresql/data/pgdata
+      - /srv/docker-volumes/powerpi/postgres/data:/var/lib/postgresql/data/pgdata
 
   persistence:
     build: ../persistence

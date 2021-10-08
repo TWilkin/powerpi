@@ -1,6 +1,9 @@
+import { faExclamation } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PowerPiApi } from "powerpi-common-api";
 import queryString from "query-string";
 import React, { FormEvent, useEffect, useState } from "react";
+import { useGetHistoryFilters } from "../hooks/history";
 import Loading from "./Loading";
 
 type FilterType = "type" | "entity" | "action";
@@ -18,9 +21,8 @@ interface HistoryFilterProps {
 }
 
 const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
-  const [types, setTypes] = useState<string[] | undefined>(undefined);
-  const [entities, setEntities] = useState<string[] | undefined>(undefined);
-  const [actions, setActions] = useState<string[] | undefined>(undefined);
+  const { actions, entities, types } = useGetHistoryFilters(api);
+
   const [filters, setFilters] = useState<Filters>({
     type: undefined,
     entity: undefined,
@@ -29,18 +31,6 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
 
   useEffect(() => {
     setFilters(parseQuery(query));
-
-    (async () => {
-      const [typeList, entityList, actionList] = await Promise.all([
-        api.getHistoryTypes(),
-        api.getHistoryEntities(),
-        api.getHistoryActions()
-      ]);
-
-      setTypes(typeList?.map((row) => row.type));
-      setEntities(entityList?.map((row) => row.entity));
-      setActions(actionList?.map((row) => row.action));
-    })();
   }, []);
 
   useEffect(() => updateFilter(filters), [filters]);
@@ -56,23 +46,29 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
       <Filter
         name="Type"
         type="type"
-        options={types}
+        options={types.data}
         defaultSelected={filters.type}
         onSelect={selectFilter}
+        loading={types.isLoading}
+        error={types.isError}
       />
       <Filter
         name="Entity"
         type="entity"
-        options={entities}
+        options={entities.data}
         defaultSelected={filters.entity}
         onSelect={selectFilter}
+        loading={entities.isLoading}
+        error={entities.isError}
       />
       <Filter
         name="Action"
         type="action"
-        options={actions}
+        options={actions.data}
         defaultSelected={filters.action}
         onSelect={selectFilter}
+        loading={actions.isLoading}
+        error={actions.isError}
       />
     </div>
   );
@@ -85,6 +81,8 @@ interface FilterProps {
   options?: string[];
   defaultSelected?: string;
   onSelect: (type: FilterType, value: string) => void;
+  loading: boolean;
+  error: boolean;
 }
 
 const Filter = ({
@@ -92,7 +90,9 @@ const Filter = ({
   type,
   options,
   defaultSelected,
-  onSelect
+  onSelect,
+  loading,
+  error
 }: FilterProps) => {
   const handleFilterChange = (event: FormEvent<HTMLSelectElement>) => {
     const value = event.currentTarget.value ?? "";
@@ -103,19 +103,23 @@ const Filter = ({
     <div>
       <label htmlFor={`${type}-filter`}>{name}: </label>
 
-      <Loading loading={!options}>
-        <select
-          name={`${type}-filter`}
-          onChange={handleFilterChange}
-          defaultValue={defaultSelected}
-        >
-          <option value="">-</option>
-          {options?.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+      <Loading loading={loading}>
+        {error ? (
+          <FontAwesomeIcon icon={faExclamation} />
+        ) : (
+          <select
+            name={`${type}-filter`}
+            onChange={handleFilterChange}
+            defaultValue={defaultSelected}
+          >
+            <option value="">-</option>
+            {options?.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        )}
       </Loading>
     </div>
   );
