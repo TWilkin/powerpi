@@ -1,5 +1,3 @@
-import socket
-
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.device import ThreadedDevice
@@ -26,6 +24,8 @@ class LIFXLightDevice(ThreadedDevice):
 
         self.__duration = duration
 
+        self.__colour = []
+
         self.__light = lifx_client
         lifx_client.mac_address = mac
         lifx_client.address = hostname if hostname is not None else ip
@@ -37,9 +37,15 @@ class LIFXLightDevice(ThreadedDevice):
             new_state = 'off' if is_powered == 0 else 'on'
             if new_state != self.state:
                 self.state = new_state
+        
+        self.__colour = self.__light.get_colour()
+        self._logger.info(self)
 
     def _turn_on(self):
         self.__light.set_power(True, self.__duration)
 
     def _turn_off(self):
         self.__light.set_power(False, self.__duration)
+    
+    def __str__(self):
+        return '{} {}'.format(ThreadedDevice.__str__(self), self.__colour)

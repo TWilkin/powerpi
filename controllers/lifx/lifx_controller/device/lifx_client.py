@@ -1,8 +1,10 @@
 import socket
 
 from lifxlan import Light, WorkflowException
+from typing import List
 
 from powerpi_common.logger import Logger
+from lifx_controller.device.lifx_colour import LIFXColour
 
 
 class LIFXClient(object):
@@ -45,6 +47,18 @@ class LIFXClient(object):
             self.__light.set_power(on, duration)
 
         self.__error_handling(func, on, duration)
+    
+    def get_colour(self):
+        def func():
+            return LIFXColour(self.__light.get_color())
+        
+        return self.__error_handling(func)
+    
+    def set_colour(self, colour: LIFXColour, duration: int):
+        def func(colour: LIFXColour):
+            self.__light.set_color(colour.list, duration)
+        
+        self.__error_handling(func, colour, duration)
 
     def __error_handling(self, func, *args):
         if self.__light is None:
