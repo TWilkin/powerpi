@@ -56,7 +56,7 @@ services:
 
   babel-fish:
     build: ../babel-fish
-    image: ${REGISTRY}/powerpi/babel-fish:0.0.1
+    image: ${REGISTRY}/powerpi/babel-fish:0.0.2
     networks:
       - powerpi
     deploy:
