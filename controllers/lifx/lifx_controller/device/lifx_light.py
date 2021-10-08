@@ -24,28 +24,39 @@ class LIFXLightDevice(ThreadedDevice):
 
         self.__duration = duration
 
-        self.__colour = []
-
         self.__light = lifx_client
         lifx_client.mac_address = mac
         lifx_client.address = hostname if hostname is not None else ip
+    
+    @property
+    def colour(self):
+        return self.additional_state.get('colour')
 
     def poll(self):
         is_powered = self.__light.get_power()
+        colour = self.__light.get_colour()
+
+        changed = False
+        new_state = self.state
+        new_additional_state = self.additional_state
 
         if is_powered is not None:
             new_state = 'off' if is_powered == 0 else 'on'
-            if new_state != self.state:
-                self.state = new_state
+            changed = new_state != self.state
         
-        self.__colour = self.__light.get_colour()
-        self._logger.info(self)
+        if colour is not None:
+            current_colour = self.colour
+            if colour != current_colour:
+                changed = True
+                new_additional_state['colour'] = colour
+        
+        if changed:
+            self.set_state_and_additional(new_state, new_additional_state)
+        
 
     def _turn_on(self):
         self.__light.set_power(True, self.__duration)
 
     def _turn_off(self):
         self.__light.set_power(False, self.__duration)
-    
-    def __str__(self):
-        return '{} {}'.format(ThreadedDevice.__str__(self), self.__colour)
+

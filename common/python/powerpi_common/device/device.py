@@ -38,6 +38,7 @@ class Device(PowerEventConsumer):
 
         self._logger = logger
         self.__state = 'unknown'
+        self.__additional_state = None
 
         self._producer = mqtt_client.add_producer()
 
@@ -57,14 +58,26 @@ class Device(PowerEventConsumer):
     def state(self, new_state):
         self.__state = new_state
 
-        self._logger.info(
-            'Device "{}" now has state {}'.format(self._name, self.__state)
-        )
+        self._broadcast_state_change()
+    
+    @property
+    def additional_state(self):
+        if self.__additional_state:
+            return self.__additional_state
+        
+        return {}
+    
+    @additional_state.setter
+    def additional_state(self, new_state):
+        self.__additional_state = new_state
 
-        # broadcast the state change
-        topic = '{}/{}/{}'.format('device', self._name, 'status')
-        message = {'state': self.__state}
-        self._producer(topic, message)
+        self._broadcast_state_change()
+    
+    def set_state_and_additional(self, state: str, additional_state: dict):
+        self.__state = state
+        self.__additional_state = additional_state
+
+        self._broadcast_state_change()
 
     def turn_on(self):
         self._logger.info(
@@ -92,6 +105,32 @@ class Device(PowerEventConsumer):
 
     def _update_state_no_broadcast(self, new_state):
         self.__state = new_state
+    
+    def _broadcast_state_change(self):
+        message = self._format_state()
+
+        self._logger.info(
+            'Device "{}" now has state {}'.format(self._name, message)
+        )
+
+        topic = '{}/{}/{}'.format('device', self._name, 'status')
+        self._producer(topic, message)
+
+    def _format_state(self):
+        result = {'state': self.state}
+
+        if self.__additional_state:
+            result['additional_state'] = {}
+
+            for key in self.__additional_state:
+                to_json = getattr(self.__additional_state[key], "to_json", None)
+
+                if callable(to_json):
+                    result['additional_state'][key] = to_json()
+                else:
+                    result['additional_state'][key] = self.__additional_state[key]
+        
+        return result
 
     def __str__(self):
-        return '{}({}, {})'.format(type(self).__name__, self._display_name, self.__state)
+        return '{}({}, {})'.format(type(self).__name__, self._display_name, self._format_state())
