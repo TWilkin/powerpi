@@ -7,7 +7,7 @@ module.exports = merge(common, {
   mode: "development",
   devtool: "source-map",
   devServer: {
-    contentBase: [path.join(__dirname, "dist"), path.join(__dirname, "public")],
+    static: [path.join(__dirname, "dist"), path.join(__dirname, "public")],
     port: 8080,
     proxy: {
       "/api": {

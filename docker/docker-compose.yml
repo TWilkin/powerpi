@@ -17,7 +17,7 @@ services:
 
   deep-thought:
     build: ../deep-thought
-    image: ${REGISTRY}/powerpi/deep-thought:0.5.2
+    image: ${REGISTRY}/powerpi/deep-thought:0.5.3
     networks:
       - powerpi
     deploy:
@@ -56,7 +56,7 @@ services:
 
   babel-fish:
     build: ../babel-fish
-    image: ${REGISTRY}/powerpi/babel-fish:0.0.1
+    image: ${REGISTRY}/powerpi/babel-fish:0.0.2
     networks:
       - powerpi
     deploy:
@@ -175,7 +175,7 @@ services:
 
   freedns:
     build: ../freedns
-    image: ${REGISTRY}/powerpi/freedns:0.0.5
+    image: ${REGISTRY}/powerpi/freedns:0.0.6
     networks:
       - powerpi
     deploy:
@@ -188,7 +188,7 @@ services:
 
   nginx:
     build: ../nginx
-    image: ${REGISTRY}/powerpi/nginx:1.2.0
+    image: ${REGISTRY}/powerpi/nginx:1.2.1
     networks:
       - powerpi
     ports:
@@ -241,7 +241,7 @@ services:
 
   persistence:
     build: ../persistence
-    image: ${REGISTRY}/powerpi/persistence:0.0.3
+    image: ${REGISTRY}/powerpi/persistence:0.0.4
     networks:
       - powerpi
     deploy:
