@@ -31,7 +31,9 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
     filters.action !== "" ? filters.action : undefined
   );
 
-  const lastPage = history?.records ? Math.ceil(history.records / records) : 1;
+  const lastPage = history?.records
+    ? Math.ceil(history.records / records) - 1
+    : 1;
 
   return (
     <>
