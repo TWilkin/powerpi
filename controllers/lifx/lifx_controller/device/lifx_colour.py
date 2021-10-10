@@ -1,8 +1,11 @@
-from typing import List
+from typing import Tuple
 
 class LIFXColour(object):
-    def __init__(self, colour: List[int]):
-        self.__colour = colour
+    def __init__(self, colour: Tuple[int] or dict):
+        if isinstance(colour, dict):
+            self.__colour = (colour.get('hue', 0), colour.get('saturation', 0), colour.get('brightness', 0), colour.get('temperature', 0))
+        else:
+            self.__colour = colour
     
     @property
     def hue(self):
@@ -33,7 +36,7 @@ class LIFXColour(object):
         }
     
     def __str__(self):
-        return 'HSBK({}, {}, {}, {})'.format(self.hue, self.saturation, self.brightness, self.temperature)
+        return f'HSBK({self.hue}, {self.saturation}, {self.brightness}, {self.temperature})'
     
     def __eq__(self, other):
         if isinstance(other, LIFXColour):

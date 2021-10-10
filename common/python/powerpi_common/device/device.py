@@ -100,7 +100,7 @@ class Device(PowerEventConsumer):
             
             if len(new_additional_state) > 0:
                 # there is other work to do
-                self._change_additional_state(new_additional_state)
+                new_additional_state = self._change_additional_state(new_additional_state)
             
             self.set_state_and_additional(new_power_state, new_additional_state)
         except Exception as e:
@@ -120,7 +120,7 @@ class Device(PowerEventConsumer):
         raise NotImplementedError
     
     def _change_additional_state(self, new_additional_state: dict):
-        pass
+        return new_additional_state
 
     def _update_state_no_broadcast(self, new_power_state: str, new_additional_state: dict):
         self.__state = new_power_state
