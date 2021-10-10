@@ -120,15 +120,13 @@ class Device(PowerEventConsumer):
         result = {'state': self.state}
 
         if self.__additional_state:
-            result['additional_state'] = {}
-
             for key in self.__additional_state:
                 to_json = getattr(self.__additional_state[key], "to_json", None)
 
                 if callable(to_json):
-                    result['additional_state'][key] = to_json()
+                    result[key] = to_json()
                 else:
-                    result['additional_state'][key] = self.__additional_state[key]
+                    result[key] = self.__additional_state[key]
         
         return result
 
