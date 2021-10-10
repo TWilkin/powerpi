@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-lifxlan = "~=1.2.6"
+lifxlan = "~=1.2.7"
 powerpi-common = {path = "./../../common/python"}
 
 [dev-packages]
