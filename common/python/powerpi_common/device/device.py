@@ -90,6 +90,25 @@ class Device(PowerEventConsumer):
             'Turning off device {}'.format(self))
         self._turn_off()
         self.state = 'off'
+    
+    def change_power_and_additional_state(self, new_power_state: str, new_additional_state: dict):
+        try:
+            self._logger.info(
+                'Turning {} device {}'.format(new_power_state, self))
+
+            if new_power_state == 'on':
+                self._turn_on()
+            else:
+                self._turn_off()
+            
+            if len(new_additional_state) > 0:
+                # there is other work to do
+                self._change_additional_state(new_additional_state)
+            
+            self.set_state_and_additional(new_power_state, new_additional_state)
+        except Exception as e:
+            self._logger.exception(e)
+            return
 
     @abstractmethod
     def poll(self):
@@ -102,6 +121,9 @@ class Device(PowerEventConsumer):
     @abstractmethod
     def _turn_off(self):
         raise NotImplementedError
+    
+    def _change_additional_state(self, new_additional_state: dict):
+        pass
 
     def _update_state_no_broadcast(self, new_power_state: str, new_additional_state: dict):
         self.__state = new_power_state

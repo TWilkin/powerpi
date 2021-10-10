@@ -16,17 +16,7 @@ class PowerEventConsumer(DeviceStateEventConsumer):
         # check if we should respond to this message
         if action == 'change':
             if self._is_message_valid(entity, message.get('state'), message.get('timestamp')):
-                # attempt to power the device on/off
-                self.__power(message['state'])
+                new_state = message.get('state', 'unknown')
+                new_additional_state = self._get_additional_state(message)
 
-    # change the power state of a device
-    def __power(self, state: str):
-        # turn the device on/off
-        try:
-            if state == 'on':
-                self._device.turn_on()
-            else:
-                self._device.turn_off()
-        except Exception as e:
-            self._logger.exception(e)
-            return
+                self._device.change_power_and_additional_state(new_state, new_additional_state)

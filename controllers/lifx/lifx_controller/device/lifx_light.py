@@ -52,6 +52,12 @@ class LIFXLightDevice(ThreadedDevice):
         
         if changed:
             self.set_state_and_additional(new_state, new_additional_state)
+    
+    def _change_additional_state(self, additional_state: dict):
+        colour = additional_state.get('colour', None)
+
+        if colour is not None:
+            self.__light.set_colour(colour, self.__duration)
         
 
     def _turn_on(self):

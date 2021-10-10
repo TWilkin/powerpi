@@ -29,3 +29,9 @@ class DeviceStateEventConsumer(MQTTConsumer):
             valid &= device_name == self._device.name
 
         return valid
+    
+    def _get_additional_state(self, message: dict):
+        result = message.copy()
+        result.pop('state', None)
+        result.pop('timestamp', None)
+        return result
