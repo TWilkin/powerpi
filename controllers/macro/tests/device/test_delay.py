@@ -10,4 +10,4 @@ class TestDelayDevice(DeviceTestBase):
         self.logger = mocker.Mock()
         self.mqtt_client = mocker.Mock()
 
-        return DelayDevice(self.config, self.logger, self.mqtt_client, 'delay', 1, 1)
+        return DelayDevice(self.config, self.logger, self.mqtt_client, 'delay', 0.1, 0.1)

@@ -13,8 +13,8 @@ class DelayDevice(ThreadedDevice):
         logger: Logger,
         mqtt_client: MQTTClient,
         name: str,
-        start: int = 5,
-        end: int = 5,
+        start: float = 5,
+        end: float = 5,
         **kwargs
     ):
         ThreadedDevice.__init__(self, config, logger,

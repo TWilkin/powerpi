@@ -34,8 +34,10 @@ class DeviceTestBase(object):
         }
 
         assert subject.state == 'unknown'
+        assert subject.additional_state == {}
         subject.on_message(None, None, message, subject.name, 'change')
         assert subject.state == 'on'
+        assert subject.additional_state == {}
     
     def test_change_message_with_additional_state(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
@@ -52,7 +54,6 @@ class DeviceTestBase(object):
         assert subject.additional_state.get('something', None) is None
         subject.on_message(None, None, message, subject.name, 'change')
         assert subject.state == 'off'
-        print(subject.additional_state)
         assert subject.additional_state.get('something', None) == 'else'
 
     def test_old_change_message(self, mocker: MockerFixture):
