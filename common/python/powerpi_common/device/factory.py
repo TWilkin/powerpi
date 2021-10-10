@@ -7,15 +7,13 @@ class DeviceFactory(object):
         self.__service_provider = service_provider
 
     def build(self, device_type, **kwargs):
-        device_attribute = '{}_device'.format(device_type)
+        device_attribute = f'{device_type}_device'
 
         try:
             factory = getattr(self.__service_provider, device_attribute)
 
             return factory(**kwargs)
         except AttributeError:
-            self.__logger.debug(
-                'Could not find device type "{}"'.format(device_type)
-            )
+            self.__logger.debug(f'Could not find device type "{device_type}"')
 
         return None

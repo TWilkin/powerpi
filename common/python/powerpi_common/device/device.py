@@ -80,21 +80,18 @@ class Device(PowerEventConsumer):
         self._broadcast_state_change()
 
     def turn_on(self):
-        self._logger.info(
-            'Turning on device {}'.format(self))
+        self._logger.info(f'Turning on device {self}')
         self._turn_on()
         self.state = 'on'
 
     def turn_off(self):
-        self._logger.info(
-            'Turning off device {}'.format(self))
+        self._logger.info(f'Turning off device {self}')
         self._turn_off()
         self.state = 'off'
     
     def change_power_and_additional_state(self, new_power_state: str, new_additional_state: dict):
         try:
-            self._logger.info(
-                'Turning {} device {}'.format(new_power_state, self))
+            self._logger.info(f'Turning {new_power_state} device {self}')
 
             if new_power_state == 'on':
                 self._turn_on()
@@ -132,11 +129,9 @@ class Device(PowerEventConsumer):
     def _broadcast_state_change(self):
         message = self._format_state()
 
-        self._logger.info(
-            'Device "{}" now has state {}'.format(self._name, message)
-        )
+        self._logger.info(f'Device "{self._name}" now has state {message}')
 
-        topic = '{}/{}/{}'.format('device', self._name, 'status')
+        topic = f'device/{self._name}/status'
         self._producer(topic, message)
 
     def _format_state(self):
@@ -154,4 +149,4 @@ class Device(PowerEventConsumer):
         return result
 
     def __str__(self):
-        return '{}({}, {})'.format(type(self).__name__, self._display_name, self._format_state())
+        return f'{type(self).__name__}({self._display_name}, {self._format_state()})'

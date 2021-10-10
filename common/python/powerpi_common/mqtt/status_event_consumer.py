@@ -6,7 +6,7 @@ from . device_state_event_consumer import DeviceStateEventConsumer
 class StatusEventConsumer(DeviceStateEventConsumer):
 
     def __init__(self, device, config: Config, logger: Logger):
-        topic = 'device/{}/status'.format(device.name)
+        topic = f'device/{device.name}/status'
         DeviceStateEventConsumer.__init__(
             self, topic, device, config, logger
         )

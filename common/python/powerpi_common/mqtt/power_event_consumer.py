@@ -6,7 +6,7 @@ from . device_state_event_consumer import DeviceStateEventConsumer
 class PowerEventConsumer(DeviceStateEventConsumer):
 
     def __init__(self, device, config: Config, logger: Logger):
-        topic = 'device/{}/change'.format(device.name)
+        topic = f'device/{device.name}/change'
         DeviceStateEventConsumer.__init__(
             self, topic, device, config, logger
         )
