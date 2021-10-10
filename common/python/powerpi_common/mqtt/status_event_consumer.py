@@ -11,10 +11,10 @@ class StatusEventConsumer(DeviceStateEventConsumer):
             self, topic, device, config, logger
         )
 
-    def on_message(self, client, user_data, message, entity, action):
+    def on_message(self, _, __, message, entity, action):
         # check if we should respond to this message
         if action == 'status':
-            if self._is_message_valid(entity, message['state']):
+            if self._is_message_valid(entity, message.get('state')):
                 self._update_device(message['state'])
 
     def _update_device(self, new_state):

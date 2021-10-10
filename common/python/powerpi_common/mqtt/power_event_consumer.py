@@ -12,10 +12,10 @@ class PowerEventConsumer(DeviceStateEventConsumer):
         )
 
     # MQTT message callback
-    def on_message(self, client, user_data, message, entity, action):
+    def on_message(self, _, __, message, entity, action):
         # check if we should respond to this message
         if action == 'change':
-            if self._is_message_valid(entity, message['state'], message['timestamp']):
+            if self._is_message_valid(entity, message.get('state'), message.get('timestamp')):
                 # attempt to power the device on/off
                 self.__power(message['state'])
 
