@@ -25,7 +25,7 @@ class LIFXColour(object):
 
     @property
     def list(self):
-        return self.__colour if self.__colour is not None else [0, 0, 0, 0]
+        return self.__colour if self.__colour is not None else (0, 0, 0, 0)
     
     def to_json(self):
         return {

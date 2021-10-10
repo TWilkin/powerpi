@@ -65,6 +65,7 @@ class LIFXLightDevice(ThreadedDevice):
     
     def _update_state_no_broadcast(self, new_power_state: str, new_additional_state: dict):
         colour = new_additional_state.get('colour', None)
+
         if colour is not None:
             new_additional_state['colour'] = LIFXColour(colour)
         
@@ -76,4 +77,3 @@ class LIFXLightDevice(ThreadedDevice):
 
     def _turn_off(self):
         self.__light.set_power(False, self.__duration)
-
