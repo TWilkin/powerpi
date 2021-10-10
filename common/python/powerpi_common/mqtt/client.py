@@ -92,7 +92,7 @@ class MQTTClient(object):
         self.__logger.info('Disconnecting from MQTT')
         self.__client.disconnect()
 
-    def __on_connect(self, client, user_data, flags, result_code):
+    def __on_connect(self, _, __, ___, result_code):
         if result_code == 0:
             self.__connected = True
             self.__logger.info('MQTT connected')
@@ -111,7 +111,7 @@ class MQTTClient(object):
                 )
                 self.__client.subscribe(topic)
 
-    def __on_disconnect(self, client, user_data, result_code):
+    def __on_disconnect(self, _, __, result_code):
         self.__connected = False
 
         if result_code == 0:
@@ -138,7 +138,7 @@ class MQTTClient(object):
             for consumer in self.__consumers[listener_key]:
                 consumer.on_message(client, user_data, event, entity, action)
 
-    def __on_log(self, client, user_data, level, message):
+    def __on_log(self, _, __, level, message):
         self.__logger.debug('MQTT({}): {}'.format(level, message))
 
     def __publish(self, topic: str, message: dict):

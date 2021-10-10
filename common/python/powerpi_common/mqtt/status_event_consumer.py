@@ -15,7 +15,11 @@ class StatusEventConsumer(DeviceStateEventConsumer):
         # check if we should respond to this message
         if action == 'status':
             if self._is_message_valid(entity, message.get('state')):
-                self._update_device(message['state'])
+                new_additional_state = message
+                new_additional_state.pop('timestamp', None)
+                new_power_state = message.pop('state', 'unknown')
 
-    def _update_device(self, new_state):
-        self._device.state = new_state
+                self._update_device(new_power_state, new_additional_state)
+
+    def _update_device(self, new_power_state: str, new_additional_state: dict):
+        self._device.set_state_and_additional(new_power_state, new_additional_state)
