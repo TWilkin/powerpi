@@ -7,7 +7,7 @@ import { IntervalParserService } from "./interval";
 const readAsync = util.promisify(fs.readFile);
 
 @Service()
-export default class ConfigService {
+export class ConfigService {
   protected interval: IntervalParserService;
 
   constructor() {

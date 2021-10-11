@@ -1,10 +1,10 @@
 import dateFormat from "dateformat";
 import logger from "loglevel";
 import { Service } from "typedi";
-import ConfigService from "./config";
+import { ConfigService } from "./config";
 
 @Service()
-export default class LoggerService {
+export class LoggerService {
   private static timestampFormat = "yyyy-mm-dd HH:MM:ss";
 
   public constructor(private config: ConfigService) {
