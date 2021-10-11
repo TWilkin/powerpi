@@ -3,11 +3,11 @@ LABEL description="Node.js application to control LIFX light colour and brightne
 
 # install the dependencies
 WORKDIR /usr/src/app
-COPY package*.json ./
+COPY light-fantastic/package*.json ./
 RUN npm install
 
 # copy across the application code
-COPY . .
+COPY light-fantastic/. .
 
 # start the application once the container is ready
 CMD npm start
