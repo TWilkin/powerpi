@@ -1,8 +1,8 @@
 import { connect, IClientPublishOptions, MqttClient } from "mqtt";
 import os from "os";
 import { Service } from "typedi";
-import ConfigService from "./config";
-import LoggerService from "./logger";
+import { ConfigService } from "./config";
+import { LoggerService } from "./logger";
 
 export interface Message {
   [key: string]: any;
@@ -10,7 +10,7 @@ export interface Message {
 }
 
 @Service()
-export default class MqttService {
+export class MqttService {
   private client: MqttClient | undefined;
 
   constructor(private config: ConfigService, private logger: LoggerService) {}

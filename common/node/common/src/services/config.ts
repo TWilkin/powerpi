@@ -2,13 +2,13 @@ import util = require("util");
 import fs = require("fs");
 import Container, { Service } from "typedi";
 import { IntervalParserService } from "./interval";
-import Device from "./models/device";
+import { Device } from "../models/device";
 
 // allow reading of files using await
 const readAsync = util.promisify(fs.readFile);
 
 @Service()
-export default class ConfigService {
+export class ConfigService {
   protected interval: IntervalParserService;
 
   constructor() {
