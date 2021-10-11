@@ -2,6 +2,7 @@ import util = require("util");
 import fs = require("fs");
 import Container, { Service } from "typedi";
 import { IntervalParserService } from "./interval";
+import Device from "./models/device";
 
 // allow reading of files using await
 const readAsync = util.promisify(fs.readFile);
@@ -44,6 +45,12 @@ export default class ConfigService {
 
   get topicNameBase() {
     return process.env["TOPIC_BASE"] ?? "powerpi";
+  }
+
+  async devices(): Promise<Device[]> {
+    return JSON.parse(
+      await this.readFile(process.env["DEVICES_FILE"] as string)
+    )?.devices;
   }
 
   protected async getSecret(key: string) {
