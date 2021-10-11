@@ -17,10 +17,14 @@
     "loggy": "^1.0.8",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.28",
-    "mqtt": "^4.2.1",
+    "mqtt": "^4.2.8",
     "node-lifx-lan": "^0.4.1",
     "ping": "^0.2.3",
     "ts-node": "^8.9.1",
     "typescript": "^3.8.3"
+  },
+  "devDependencies": {
+    "prettier": "^2.4.1",
+    "tslint": "^6.1.3"
   }
 }
