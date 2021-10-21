@@ -127,7 +127,28 @@ export default class DeviceSchedule {
     }
 
     private execute() {
-        this.logger.info("Execute!");
+        const colour: Partial<Delta> = Object.keys(this.delta).reduce((acc, k) => {
+            const key = k as keyof Delta;
+
+            if (this.schedule[key]) {
+                const newValue = this.calculateNewValue(this.delta[key], this.schedule[key]!);
+
+                acc[key] = newValue;
+
+                this.logger.info(
+                    `Setting ${key} of ${
+                        this.device.display_name ?? this.device.name
+                    } to ${newValue}`
+                );
+            }
+
+            return acc;
+        }, {} as Partial<Delta>);
+
+        const message = { state: "on", colour };
+        this.logger.info(JSON.stringify(message));
+
+        this.mqtt.publish("device", this.device.name, "change", message);
     }
 
     private toDate(input: string, after?: DateTime) {
@@ -168,5 +189,24 @@ export default class DeviceSchedule {
 
         // calculate the new value
         return (range[1] - range[0]) / interval;
+    }
+
+    private calculateNewValue(delta: number, range: number[]) {
+        // calculate the number of times this has run thus far
+        const startTime = this.toDate(this.schedule.between[0]);
+        const diff = (DateTime.utc().toMillis() - startTime.toMillis()) / 1000;
+        const counter = diff / this.schedule.interval;
+
+        // calculate the new value with the delta
+        let value = range[0] + delta * counter;
+
+        // ensure it's constrained by the end range
+        if (delta > 0) {
+            value = Math.min(value, range[1]);
+        } else {
+            value = Math.max(value, range[1]);
+        }
+
+        return value;
     }
 }
