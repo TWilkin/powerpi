@@ -5,13 +5,13 @@ import app = require("../../package.json");
 
 @Service()
 export default class ConfigService extends CommonConfigService {
-  get service() {
-    return app.name;
-  }
+    get service() {
+        return app.name;
+    }
 
-  get version() {
-    return app.version;
-  }
+    get version() {
+        return app.version;
+    }
 }
 
 Container.set(CommonConfigService, new ConfigService());

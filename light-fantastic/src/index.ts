@@ -3,11 +3,11 @@ import Container from "./container";
 import ScheduleExecutorService from "./services/executor";
 
 function start() {
-  const mqtt = Container.get(MqttService);
-  mqtt.connect();
+    const mqtt = Container.get(MqttService);
+    mqtt.connect();
 
-  const executor = Container.get(ScheduleExecutorService);
-  executor.start();
+    const executor = Container.get(ScheduleExecutorService);
+    executor.start();
 }
 
 start();
