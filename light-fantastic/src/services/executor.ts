@@ -1,15 +1,14 @@
-import { LoggerService, MqttService } from "powerpi-common";
-import { Service } from "typedi";
+import { LoggerService } from "powerpi-common";
+import { Container as RootContainer, Service } from "typedi";
 import ConfigService from "./config";
 import Container from "../container";
+import DeviceSchedule, { DeviceScheduleToken } from "./deviceschedule";
 
 @Service()
 export default class ScheduleExecutorService {
-    private mqtt: MqttService;
     private logger: LoggerService;
 
     constructor(private config: ConfigService) {
-        this.mqtt = Container.get(MqttService);
         this.logger = Container.get(LoggerService);
     }
 
@@ -23,5 +22,20 @@ export default class ScheduleExecutorService {
         lights.forEach((light) =>
             this.logger.info(`Found LIFX light "${light.display_name ?? light.name}"`)
         );
+
+        // load the schedule
+        const schedules = await this.config.schedule();
+        const deviceSchedules = schedules.schedules.map((schedule, i) => {
+            const request = RootContainer.of(`DeviceSchedule${i}`);
+            request.set(DeviceScheduleToken, {
+                device: lights.find((light) => light.name === schedule.device),
+                schedule,
+                timezone: schedules.timezone,
+            });
+
+            return request.get(DeviceSchedule);
+        });
+
+        await Promise.all(deviceSchedules.map((scheduler) => scheduler.start()));
     }
 }
