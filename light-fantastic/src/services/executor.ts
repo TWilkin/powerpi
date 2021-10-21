@@ -1,4 +1,5 @@
 import { LoggerService } from "powerpi-common";
+import { Settings } from "luxon";
 import { Container as RootContainer, Service } from "typedi";
 import ConfigService from "./config";
 import Container from "../container";
@@ -25,6 +26,11 @@ export default class ScheduleExecutorService {
 
         // load the schedule
         const schedules = await this.config.schedule();
+
+        // set the timezone
+        Settings.defaultZone = schedules.timezone;
+
+        // configure the devices
         const deviceSchedules = schedules.schedules.map((schedule, i) => {
             const request = RootContainer.of(`DeviceSchedule${i}`);
             request.set(DeviceScheduleToken, {
