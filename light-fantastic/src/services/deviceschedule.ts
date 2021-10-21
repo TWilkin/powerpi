@@ -11,6 +11,13 @@ interface DeviceScheduleConfig {
 
 export const DeviceScheduleToken = new Token<DeviceScheduleConfig>("DEVICE_SCHEDULE_TOKEN");
 
+interface Delta {
+    hue: number;
+    saturation: number;
+    brightness: number;
+    kelvin: number;
+}
+
 @Service({ transient: true })
 export default class DeviceSchedule {
     private mqtt: MqttService;
@@ -19,22 +26,55 @@ export default class DeviceSchedule {
     private device: Device;
     private schedule: Schedule;
 
+    private delta: Delta = {
+        hue: 0,
+        saturation: 0,
+        brightness: 0,
+        kelvin: 0,
+    };
+
     constructor(@Inject(DeviceScheduleToken) config: DeviceScheduleConfig) {
         this.mqtt = Container.get(MqttService);
         this.logger = Container.get(LoggerService);
 
         this.device = config.device;
         this.schedule = config.schedule;
+
+        Object.keys(this.delta).forEach((k: string) => {
+            const key = k as keyof Delta;
+            this.delta[key] = this.calculateIntervalDelta(this.schedule[key]);
+        });
     }
 
     public async start() {
-        this.logger.info(`Scheduling ${this.device.display_name ?? this.device.name}`);
+        this.logger.info(this.toString());
+        this.logger.info(this.delta);
+    }
 
-        const startTime = this.toDate(this.schedule.between[0]);
-        const endTime = this.toDate(this.schedule.between[1], startTime);
+    public toString(): string {
+        let str = `Every ${this.schedule.interval}s between [${this.schedule.between}]`;
 
-        this.logger.info(`${this.schedule.between[0]} => ${startTime}`);
-        this.logger.info(`${this.schedule.between[1]} => ${endTime}`);
+        // add the days
+        if (this.schedule.days) {
+            str += " on " + this.schedule.days.join(", ");
+        } else {
+            str += " every day";
+        }
+
+        str += ` adjust ${this.device.display_name ?? this.device.name}`;
+
+        Object.keys(this.delta).forEach((k: string) => {
+            const key = k as keyof Delta;
+            if (this.schedule[key]) {
+                str += ` ${key} between [${[this.schedule[key]]}]`;
+            }
+        });
+
+        if (this.schedule.power) {
+            str += " and turn it on";
+        }
+
+        return str;
     }
 
     private toDate(input: string, after: DateTime = DateTime.local()) {
@@ -58,5 +98,22 @@ export default class DeviceSchedule {
         }
 
         return date;
+    }
+
+    private calculateIntervalDelta(range?: number[]): number {
+        if (!range) {
+            return 0;
+        }
+
+        // work out how many ms the between time covers
+        const startTime = this.toDate(this.schedule.between[0]);
+        const endTime = this.toDate(this.schedule.between[1], startTime);
+        const ms = endTime.toMillis() - startTime.toMillis();
+
+        // calculate how many intervals we have
+        const interval = ms / (this.schedule.interval * 1000);
+
+        // calculate the new value
+        return (range[1] - range[0]) / interval;
     }
 }
