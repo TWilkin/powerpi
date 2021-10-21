@@ -1,4 +1,4 @@
-import { DateTime } from "luxon";
+import { DateTime, Interval } from "luxon";
 import { Device, LoggerService, MqttService } from "powerpi-common";
 import { Inject, Service, Token } from "typedi";
 import Container from "../container";
@@ -73,6 +73,13 @@ export default class DeviceSchedule {
             this.start();
         };
 
+        const printSchedule = (type: string, time: DateTime) =>
+            this.logger.info(
+                `Scheduling to ${type} at ${time} (in ${Interval.fromDateTimes(DateTime.utc(), time)
+                    .toDuration(["hours", "minutes", "seconds"])
+                    .toFormat("hh:mm:ss")})`
+            );
+
         // check if we're already within the time window
         let startTime = this.toDate(this.schedule.between[0]);
         let stopTime = this.toDate(this.schedule.between[1], startTime);
@@ -84,13 +91,13 @@ export default class DeviceSchedule {
             // set a timeout until the start time
             startTime = this.toDate(this.schedule.between[0], DateTime.utc());
             setTimeout(start, startTime.toMillis() - DateTime.utc().toMillis());
-            this.logger.info(`Scheduling to start at ${startTime}`);
+            printSchedule("start", startTime);
         }
 
         // set a timeout until the stop time
         stopTime = this.toDate(this.schedule.between[1], startTime);
         setTimeout(stop, stopTime.toMillis() - DateTime.utc().toMillis());
-        this.logger.info(`Scheduling to stop at ${stopTime}`);
+        printSchedule("stop", stopTime);
     }
 
     public toString(): string {

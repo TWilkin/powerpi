@@ -31,16 +31,18 @@ export default class ScheduleExecutorService {
         Settings.defaultZone = schedules.timezone;
 
         // configure the devices
-        const deviceSchedules = schedules.schedules.map((schedule, i) => {
+        schedules.schedules.map((schedule, i) => {
             const request = RootContainer.of(`DeviceSchedule${i}`);
             request.set(DeviceScheduleToken, {
                 device: lights.find((light) => light.name === schedule.device),
                 schedule,
             });
 
-            return request.get(DeviceSchedule);
-        });
+            const deviceSchedule = request.get(DeviceSchedule);
 
-        await Promise.all(deviceSchedules.map((scheduler) => scheduler.start()));
+            deviceSchedule.start();
+
+            return deviceSchedule;
+        });
     }
 }
