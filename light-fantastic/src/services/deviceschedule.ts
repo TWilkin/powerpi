@@ -46,9 +46,51 @@ export default class DeviceSchedule {
         });
     }
 
-    public async start() {
+    public start() {
         this.logger.info(this.toString());
-        this.logger.info(this.delta);
+
+        let interval: NodeJS.Timeout | null;
+
+        const start = () => {
+            // first execute the schedule
+            this.execute();
+
+            // then execute it for the next interval
+            interval = setInterval(() => this.execute(), this.schedule.interval * 1000);
+        };
+
+        const stop = () => {
+            // clear the current interval
+            if (interval) {
+                clearTimeout(interval);
+                interval = null;
+            }
+
+            // ensure we run one last time to force it to the end of the range
+            this.execute();
+
+            // now schedule to run it again
+            this.start();
+        };
+
+        // check if we're already within the time window
+        let startTime = this.toDate(this.schedule.between[0]);
+        let stopTime = this.toDate(this.schedule.between[1], startTime);
+        const now = DateTime.utc();
+        if (now >= startTime && now < stopTime) {
+            // start the schedule running now
+            start();
+        } else {
+            // set a timeout until the start time
+            startTime = this.toDate(this.schedule.between[0], DateTime.utc());
+            setTimeout(start, startTime.toMillis() - DateTime.utc().toMillis());
+            this.logger.info(`Scheduling to start at ${startTime}`);
+        }
+
+        // set a timeout until the stop time
+        stopTime = this.toDate(this.schedule.between[1], startTime);
+        setTimeout(stop, stopTime.toMillis() - DateTime.utc().toMillis());
+        this.logger.info(`Scheduling to stop at ${stopTime}`);
     }
 
     public toString(): string {
@@ -77,14 +119,18 @@ export default class DeviceSchedule {
         return str;
     }
 
-    private toDate(input: string, after: DateTime = DateTime.local()) {
+    private execute() {
+        this.logger.info("Execute!");
+    }
+
+    private toDate(input: string, after?: DateTime) {
         // get the date in the local timezone
         const split = input.split(":").map((s) => Number.parseInt(s));
         const now = DateTime.local();
         let date = DateTime.local(now.year, now.month, now.day, split[0], split[1], split[2]);
 
         // check this date is after the specified date
-        if (after >= date) {
+        if (after && after >= date.toUTC()) {
             date = date.plus({ days: 1 });
         }
 
@@ -97,7 +143,7 @@ export default class DeviceSchedule {
             }
         }
 
-        return date;
+        return date.toUTC();
     }
 
     private calculateIntervalDelta(range?: number[]): number {

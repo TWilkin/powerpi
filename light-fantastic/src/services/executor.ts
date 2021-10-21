@@ -36,7 +36,6 @@ export default class ScheduleExecutorService {
             request.set(DeviceScheduleToken, {
                 device: lights.find((light) => light.name === schedule.device),
                 schedule,
-                timezone: schedules.timezone,
             });
 
             return request.get(DeviceSchedule);
