@@ -127,6 +127,7 @@ export default class DeviceSchedule {
     }
 
     private execute() {
+        // what colour configuration should be set?
         const colour: Partial<Delta> = Object.keys(this.delta).reduce((acc, k) => {
             const key = k as keyof Delta;
 
@@ -145,9 +146,16 @@ export default class DeviceSchedule {
             return acc;
         }, {} as Partial<Delta>);
 
-        const message = { state: "on", colour };
-        this.logger.info(JSON.stringify(message));
+        // do we want to turn it on/off?
+        const state =
+            this.schedule.power === true ? "on" : this.schedule.power === false ? "off" : undefined;
+        if (state) {
+            this.logger.info(
+                `Setting power of ${this.device.display_name ?? this.device.name} to ${state}`
+            );
+        }
 
+        const message = { state, colour };
         this.mqtt.publish("device", this.device.name, "change", message);
     }
 
