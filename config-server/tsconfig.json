@@ -1,28 +1,22 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Node 12",
-  "compilerOptions": {
-    "lib": [
-      "es2019",
-      "es2020.promise",
-      "es2020.bigint",
-      "es2020.string",
-      "dom"
-    ],
-    "module": "commonjs",
-    "target": "es2019",
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Node 12",
+    "compilerOptions": {
+        "lib": ["es2019", "es2020.promise", "es2020.bigint", "es2020.string", "dom"],
+        "module": "commonjs",
+        "target": "es2019",
 
-    "rootDir": ".",
-    "outDir": "dist",
+        "rootDir": ".",
+        "outDir": "dist",
 
-    "declaration": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "resolveJsonModule": true
-  },
-  "include": ["src"]
+        "declaration": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "resolveJsonModule": true
+    },
+    "include": ["src"]
 }
