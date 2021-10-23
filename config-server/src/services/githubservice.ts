@@ -1,7 +1,7 @@
-import GitHub, { GitHubOptions } from "github-api";
+import { Octokit } from "@octokit/rest";
+import path from "path";
 import { LoggerService, MqttService } from "powerpi-common";
 import { Service } from "typedi";
-import { sys } from "typescript";
 import Container from "../container";
 import ConfigService from "./config";
 
@@ -16,26 +16,46 @@ export default class GitHubConfigService {
   }
 
   public async start() {
-    await this.login();
+    await this.checkForChanges();
+  }
+
+  private async checkForChanges() {
+    const octokit = await this.login();
+
+    const getFile = async (file: string) => {
+      const filePath = path.join(this.config.path, file);
+
+      this.logger.info(
+        `Attempting to retrieve ${path.basename(
+          file,
+          ".json"
+        )} file from github://${this.config.gitHubUser}/${
+          this.config.repo
+        }/${filePath}@${this.config.branch}`
+      );
+
+      const { data } = await octokit.rest.repos.getContent({
+        owner: this.config.gitHubUser!,
+        repo: this.config.repo,
+        ref: this.config.branch,
+        path: filePath
+      });
+
+      const { content } = data as { content: string };
+      const buffer = Buffer.from(content, "base64");
+
+      return JSON.parse(buffer.toString());
+    };
+
+    const devices = await getFile("devices.json");
+    this.logger.info(JSON.stringify(devices));
   }
 
   private async login() {
-    const options: GitHubOptions = {};
+    const token = await this.config.gitHubToken;
 
-    try {
-      if (this.config.gitHubUser) {
-        this.logger.info(`Logging into GitHub as ${this.config.gitHubUser}`);
-        options.username = this.config.gitHubUser;
-        options.password = await this.config.gitHubPassword;
-      } else {
-        this.logger.info(`Logging into GitHub with token`);
-        options.token = await this.config.gitHubToken;
-      }
-    } catch {
-      // if we can't login to GitHub this service won't work
-      sys.exit(1);
-    }
-
-    const github = new GitHub(options);
+    return new Octokit({
+      auth: token
+    });
   }
 }

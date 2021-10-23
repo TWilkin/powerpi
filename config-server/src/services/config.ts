@@ -17,12 +17,20 @@ export default class ConfigService extends CommonConfigService {
     return process.env["GITHUB_USER"];
   }
 
-  get gitHubPassword(): Promise<string> {
+  get gitHubToken(): Promise<string> {
     return this.getSecret("GITHUB");
   }
 
-  get gitHubToken(): Promise<string> {
-    return this.getSecret("GITHUB_TOKEN");
+  get repo(): string {
+    return process.env["REPO"] ?? "powerpi-config";
+  }
+
+  get branch(): string {
+    return process.env["BRANCH"] ?? "master";
+  }
+
+  get path(): string {
+    return process.env["FILE_PATH"] ?? "";
   }
 }
 

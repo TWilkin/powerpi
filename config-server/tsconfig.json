@@ -14,7 +14,6 @@
 
     "rootDir": ".",
     "outDir": "dist",
-    "typeRoots": ["node_modules/@types", "src/modules"],
 
     "declaration": true,
     "strict": true,
