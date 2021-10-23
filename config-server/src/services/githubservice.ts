@@ -12,9 +12,13 @@ export default class GitHubConfigService {
   private mqtt: MqttService;
   private logger: LoggerService;
 
+  private checksums: { [key: string]: string | undefined };
+
   constructor(private config: ConfigService) {
     this.mqtt = Container.get(MqttService);
     this.logger = Container.get(LoggerService);
+
+    this.checksums = {};
   }
 
   public async start() {
@@ -37,7 +41,15 @@ export default class GitHubConfigService {
       const file = await this.getFile(octokit, type);
 
       if (file) {
-        this.publishConfigChange(type, file);
+        // check if this file has changed
+        if (this.checksums[type] === file.checksum) {
+          this.logger.info("File", type, "is unchanged");
+          continue;
+        }
+
+        this.checksums[type] = file.checksum;
+
+        this.publishConfigChange(type, file.content);
       }
     }
   }
@@ -53,7 +65,7 @@ export default class GitHubConfigService {
   private async getFile(
     octokit: Octokit,
     fileType: string
-  ): Promise<object | undefined> {
+  ): Promise<{ content: object; checksum: string } | undefined> {
     const filePath = path.join(this.config.path, `${fileType}.json`);
 
     this.logger.info(
@@ -71,10 +83,13 @@ export default class GitHubConfigService {
         path: filePath
       });
 
-      const { content } = data as { content: string };
+      const { content, sha } = data as { content: string; sha: string };
       const buffer = Buffer.from(content, "base64");
 
-      return JSON.parse(buffer.toString());
+      return {
+        content: JSON.parse(buffer.toString()),
+        checksum: sha
+      };
     } catch {
       this.logger.error("Could not retrieve", fileType, "file from GitHub");
     }
