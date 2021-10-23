@@ -28,7 +28,7 @@ export default class GitHubConfigService {
       const file = await this.getFile(octokit, type);
 
       if (file) {
-        this.logger.info(JSON.stringify(file));
+        this.publishConfigChange(type, file);
       }
     }
   }
@@ -41,11 +41,14 @@ export default class GitHubConfigService {
     });
   }
 
-  private async getFile(octokit: Octokit, fileType: string) {
+  private async getFile(
+    octokit: Octokit,
+    fileType: string
+  ): Promise<object | undefined> {
     const filePath = path.join(this.config.path, `${fileType}.json`);
 
     this.logger.info(
-      `Attempting to retrieve ${fileType} file from github://${this.config.gitHubUser}/${this.config.repo}/${filePath}@${this.config.branch}`
+      `Attempting to retrieve ${fileType} file from github://${this.config.gitHubUser}/${this.config.repo}/${this.config.branch}/${filePath}`
     );
 
     try {
@@ -65,5 +68,15 @@ export default class GitHubConfigService {
     }
 
     return undefined;
+  }
+
+  private publishConfigChange(fileType: string, file: object) {
+    const message = {
+      payload: file
+    };
+
+    this.mqtt.publish("config", fileType, "change", message);
+
+    this.logger.info("Published updated", fileType, "config");
   }
 }
