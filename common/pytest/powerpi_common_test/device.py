@@ -97,3 +97,16 @@ class DeviceTestBase(object):
         assert subject.state == 'unknown'
         subject.on_message(None, None, message, subject.name, 'change')
         assert subject.state == 'unknown'
+    
+    def test_missing_state_change_message(self, mocker: MockerFixture):
+        subject = self.get_subject(mocker)
+
+        mocker.patch.object(self.config, 'message_age_cutoff', 120)
+
+        message = {
+            'timestamp': int(datetime.utcnow().timestamp() * 1000)
+        }
+
+        assert subject.state == 'unknown'
+        subject.on_message(None, None, message, subject.name, 'change')
+        assert subject.state == 'unknown'

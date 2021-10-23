@@ -74,8 +74,11 @@ class Device(PowerEventConsumer):
         self._broadcast_state_change()
     
     def set_state_and_additional(self, state: str, additional_state: dict):
-        self.__state = state
-        self.__additional_state = additional_state
+        if state is not None:
+            self.__state = state
+        
+        if len(additional_state) > 0:
+            self.__additional_state = additional_state
 
         self._broadcast_state_change()
 
@@ -91,12 +94,13 @@ class Device(PowerEventConsumer):
     
     def change_power_and_additional_state(self, new_power_state: str, new_additional_state: dict):
         try:
-            self._logger.info(f'Turning {new_power_state} device {self}')
+            if new_power_state is not None:
+                self._logger.info(f'Turning {new_power_state} device {self}')
 
-            if new_power_state == 'on':
-                self._turn_on()
-            else:
-                self._turn_off()
+                if new_power_state == 'on':
+                    self._turn_on()
+                else:
+                    self._turn_off()
             
             if len(new_additional_state) > 0:
                 # there is other work to do
