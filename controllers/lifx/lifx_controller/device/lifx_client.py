@@ -55,7 +55,7 @@ class LIFXClient(object):
         return self.__error_handling(func)
     
     def set_colour(self, colour: LIFXColour, duration: int):
-        def func(colour: LIFXColour):
+        def func(colour: LIFXColour, duration: int):
             self.__light.set_color(colour.list, duration)
         
         self.__error_handling(func, colour, duration)
