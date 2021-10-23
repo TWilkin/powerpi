@@ -9,8 +9,10 @@
   },
   "author": "TWilkin",
   "dependencies": {
-    "prettier": "^2.4.1",
+    "@types/node": "^16.11.4",
+    "github-api": "^3.4.0",
     "powerpi-common": "file:../common/node/common",
+    "prettier": "^2.4.1",
     "ts-node": "^10.4.0",
     "tslint": "^6.1.3",
     "typedi": "^0.10.0",
