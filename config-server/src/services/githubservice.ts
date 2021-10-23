@@ -48,7 +48,10 @@ export default class GitHubConfigService {
     const filePath = path.join(this.config.path, `${fileType}.json`);
 
     this.logger.info(
-      `Attempting to retrieve ${fileType} file from github://${this.config.gitHubUser}/${this.config.repo}/${this.config.branch}/${filePath}`
+      "Attempting to retrieve",
+      fileType,
+      "file from",
+      `github://${this.config.gitHubUser}/${this.config.repo}/${this.config.branch}/${filePath}`
     );
 
     try {
@@ -64,7 +67,7 @@ export default class GitHubConfigService {
 
       return JSON.parse(buffer.toString());
     } catch {
-      this.logger.error(`Could not retrieve ${fileType} file from GitHub`);
+      this.logger.error("Could not retrieve", fileType, "file from GitHub");
     }
 
     return undefined;
