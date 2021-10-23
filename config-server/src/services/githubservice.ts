@@ -18,7 +18,16 @@ export default class GitHubConfigService {
   }
 
   public async start() {
+    // always check immediately the service starts
     await this.checkForChanges();
+
+    // now schedule again at the interval
+    this.logger.info(
+      "Scheduling to run every",
+      this.config.pollFrequency,
+      "seconds"
+    );
+    setInterval(() => this.checkForChanges(), this.config.pollFrequency * 1000);
   }
 
   private async checkForChanges() {

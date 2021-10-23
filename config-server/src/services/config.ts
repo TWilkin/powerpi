@@ -32,6 +32,15 @@ export default class ConfigService extends CommonConfigService {
   get path(): string {
     return process.env["FILE_PATH"] ?? "";
   }
+
+  get pollFrequency(): number {
+    const frequency = process.env["POLL_FREQUENCY"];
+    if (frequency) {
+      return parseInt(frequency);
+    }
+
+    return 5 * 60;
+  }
 }
 
 Container.set(CommonConfigService, new ConfigService());
