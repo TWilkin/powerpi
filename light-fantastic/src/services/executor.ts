@@ -20,9 +20,7 @@ export default class ScheduleExecutorService {
         );
         this.logger.info(`Found ${lights.length} LIFX lights`);
 
-        lights.forEach((light) =>
-            this.logger.info(`Found LIFX light "${light.display_name ?? light.name}"`)
-        );
+        lights.forEach((light) => this.logger.info(`Found LIFX light "${light.displayName}"`));
 
         // load the schedule
         const schedules = await this.config.schedule();

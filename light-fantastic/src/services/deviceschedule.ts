@@ -110,7 +110,7 @@ export default class DeviceSchedule {
             str += " every day";
         }
 
-        str += ` adjust ${this.device.display_name ?? this.device.name}`;
+        str += ` adjust ${this.device.displayName}`;
 
         Object.keys(this.delta).forEach((k: string) => {
             const key = k as keyof Delta;
@@ -136,11 +136,7 @@ export default class DeviceSchedule {
 
                 acc[key] = newValue;
 
-                this.logger.info(
-                    `Setting ${key} of ${
-                        this.device.display_name ?? this.device.name
-                    } to ${newValue}`
-                );
+                this.logger.info(`Setting ${key} of ${this.device.displayName} to ${newValue}`);
             }
 
             return acc;
@@ -150,9 +146,7 @@ export default class DeviceSchedule {
         const state =
             this.schedule.power === true ? "on" : this.schedule.power === false ? "off" : undefined;
         if (state) {
-            this.logger.info(
-                `Setting power of ${this.device.display_name ?? this.device.name} to ${state}`
-            );
+            this.logger.info(`Setting power of ${this.device.displayName} to ${state}`);
         }
 
         const message = { state, colour };
