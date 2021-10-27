@@ -1,59 +1,86 @@
-import util = require("util");
-import fs = require("fs");
+import fs from "fs";
 import Container, { Service } from "typedi";
+import util from "util";
+import { Device } from "../models/device";
 import { IntervalParserService } from "./interval";
+
+export enum ConfigFileType {
+    Devices = "devices",
+    Events = "events",
+    Schedules = "schedules",
+}
 
 // allow reading of files using await
 const readAsync = util.promisify(fs.readFile);
 
 @Service()
 export class ConfigService {
-  protected interval: IntervalParserService;
+    protected interval: IntervalParserService;
 
-  constructor() {
-    this.interval = Container.get(IntervalParserService);
-  }
+    private configs: { [key in ConfigFileType]?: object };
 
-  get service() {
-    return "undefined";
-  }
+    constructor() {
+        this.interval = Container.get(IntervalParserService);
 
-  get version() {
-    return "undefined";
-  }
-
-  get logLevel() {
-    const level = process.env["LOG_LEVEL"]?.trim().toLowerCase();
-
-    switch (level) {
-      case "trace":
-      case "debug":
-      case "info":
-      case "warn":
-      case "error":
-        return level;
-
-      default:
-        return "info";
+        this.configs = {};
     }
-  }
 
-  get mqttAddress() {
-    return process.env["MQTT_ADDRESS"] ?? "mqtt://mosquitto:1883";
-  }
+    get service() {
+        return "undefined";
+    }
 
-  get topicNameBase() {
-    return process.env["TOPIC_BASE"] ?? "powerpi";
-  }
+    get version() {
+        return "undefined";
+    }
 
-  protected async getSecret(key: string) {
-    const file = await this.readFile(
-      process.env[`${key}_SECRET_FILE`] as string
-    );
-    return file;
-  }
+    get logLevel() {
+        const level = process.env["LOG_LEVEL"]?.trim().toLowerCase();
 
-  protected async readFile(filePath: string) {
-    return (await readAsync(filePath)).toString().trim();
-  }
+        switch (level) {
+            case "trace":
+            case "debug":
+            case "info":
+            case "warn":
+            case "error":
+                return level;
+
+            default:
+                return "info";
+        }
+    }
+
+    get mqttAddress() {
+        return process.env["MQTT_ADDRESS"] ?? "mqtt://mosquitto:1883";
+    }
+
+    get topicNameBase() {
+        return process.env["TOPIC_BASE"] ?? "powerpi";
+    }
+
+    get devices() {
+        return (this.configs[ConfigFileType.Devices] as { devices: Device[] })?.devices;
+    }
+
+    public get configFileTypes() {
+        return Object.values(ConfigFileType);
+    }
+
+    public get isPopulated() {
+        return this.configFileTypes.every((key) =>
+            Object.keys(this.configs).includes(key.toString())
+        );
+    }
+
+    public setConfig(type: ConfigFileType, data: object) {
+        this.configs[type] = data;
+    }
+
+    protected async getSecret(key: string) {
+        const file = await this.readFile(process.env[`${key}_SECRET_FILE`] as string);
+        return file;
+    }
+
+    protected async readFile(filePath: string) {
+        return (await readAsync(filePath)).toString().trim();
+    }
 }

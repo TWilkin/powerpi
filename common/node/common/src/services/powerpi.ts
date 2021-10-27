@@ -9,7 +9,7 @@ type AppStart = () => void | Promise<void>;
 export class PowerPiService {
     constructor(
         private mqtt: MqttService,
-        private config: ConfigRetrieverService,
+        private configRetriever: ConfigRetrieverService,
         private logger: LoggerService
     ) {}
 
@@ -20,7 +20,7 @@ export class PowerPiService {
 
             // retrieve the config from the queue
             this.logger.info("Starting PowerPi Service");
-            await this.config.start();
+            await this.configRetriever.start();
 
             // now the app is ready to start
             this.logger.info("Starting app");
