@@ -1,7 +1,7 @@
 import { ConfigService as CommonConfigService } from "powerpi-common";
 import { Service } from "typedi";
-import Container from "../container";
 import app from "../../package.json";
+import Container from "../container";
 
 @Service()
 export default class ConfigService extends CommonConfigService {
@@ -11,6 +11,14 @@ export default class ConfigService extends CommonConfigService {
 
     get version() {
         return app.version;
+    }
+
+    getUsedConfig() {
+        return [];
+    }
+
+    get configIsNeeded() {
+        return false;
     }
 
     get gitHubUser(): string | undefined {
@@ -43,4 +51,6 @@ export default class ConfigService extends CommonConfigService {
     }
 }
 
-Container.set(CommonConfigService, new ConfigService());
+const instance = new ConfigService();
+Container.set(CommonConfigService, instance);
+Container.set(ConfigService, instance);

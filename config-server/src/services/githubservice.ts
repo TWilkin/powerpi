@@ -1,24 +1,21 @@
 import { Octokit } from "@octokit/rest";
 import path from "path";
-import { LoggerService, MqttService } from "powerpi-common";
+import { ConfigFileType, LoggerService, MqttService } from "powerpi-common";
 import { Service } from "typedi";
 import Container from "../container";
 import ConfigService from "./config";
-
-const fileTypes = ["devices", "events", "schedules"];
 
 @Service()
 export default class GitHubConfigService {
     private mqtt: MqttService;
     private logger: LoggerService;
 
-    private checksums: { [key: string]: string | undefined };
+    private static readonly topicType = "config";
+    private static readonly topicAction = "change";
 
     constructor(private config: ConfigService) {
         this.mqtt = Container.get(MqttService);
         this.logger = Container.get(LoggerService);
-
-        this.checksums = {};
     }
 
     public async start() {
@@ -33,19 +30,19 @@ export default class GitHubConfigService {
     private async checkForChanges() {
         const octokit = await this.login();
 
-        for (const type of fileTypes) {
+        for (const type of this.config.configFileTypes) {
+            const typeConfig = this.config.getConfig(type);
+
             const file = await this.getFile(octokit, type);
 
             if (file) {
                 // check if this file has changed
-                if (this.checksums[type] === file.checksum) {
+                if (typeConfig?.checksum === file.checksum) {
                     this.logger.info("File", type, "is unchanged");
                     continue;
                 }
 
-                this.checksums[type] = file.checksum;
-
-                this.publishConfigChange(type, file.content);
+                this.publishConfigChange(type, file.content, file.checksum);
             }
         }
     }
@@ -60,7 +57,7 @@ export default class GitHubConfigService {
 
     private async getFile(
         octokit: Octokit,
-        fileType: string
+        fileType: ConfigFileType
     ): Promise<{ content: object; checksum: string } | undefined> {
         const filePath = path.join(this.config.path, `${fileType}.json`);
 
@@ -93,12 +90,18 @@ export default class GitHubConfigService {
         return undefined;
     }
 
-    private publishConfigChange(fileType: string, file: object) {
+    private publishConfigChange(fileType: ConfigFileType, file: object, checksum: string) {
         const message = {
             payload: file,
+            checksum,
         };
 
-        this.mqtt.publish("config", fileType, "change", message);
+        this.mqtt.publish(
+            GitHubConfigService.topicType,
+            fileType,
+            GitHubConfigService.topicAction,
+            message
+        );
 
         this.logger.info("Published updated", fileType, "config");
     }

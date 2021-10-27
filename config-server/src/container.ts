@@ -10,7 +10,7 @@ export default class Container {
         }
     }
 
-    public static set<T>(identifier: Constructable<T>, service: any) {
+    public static set<T>(identifier: Constructable<T>, service: T) {
         CommonContainer.set(identifier, service);
     }
 }
