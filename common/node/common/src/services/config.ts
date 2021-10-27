@@ -71,8 +71,16 @@ export class ConfigService {
         );
     }
 
+    public getConfig(type: ConfigFileType) {
+        return this.configs[type];
+    }
+
     public setConfig(type: ConfigFileType, data: object) {
         this.configs[type] = data;
+    }
+
+    public getUsedConfig(): ConfigFileType[] {
+        throw new Error("Method not implemented.");
     }
 
     protected async getSecret(key: string) {

@@ -19,7 +19,7 @@ export class ConfigRetrieverService implements MqttConsumer {
     ) {}
 
     public async start() {
-        // subscribe to change for each device type
+        // subscribe to change topic for each device type
         await Promise.all(
             this.config.configFileTypes.map((type) =>
                 this.mqtt.subscribe(
@@ -51,7 +51,17 @@ export class ConfigRetrieverService implements MqttConsumer {
         if (type) {
             this.logger.info("Received config for", type);
 
-            this.config.setConfig(type, payload);
+            if (
+                this.config.getUsedConfig().find((config) => config === type) &&
+                this.config.getConfig(type)
+            ) {
+                // this is a changed config and used, so we should restart the service
+                this.logger.info("Restarting service due to changed", type, "config");
+                process.exit(0);
+            } else {
+                // this is a new config, so just set it
+                this.config.setConfig(type, payload);
+            }
         }
     }
 }

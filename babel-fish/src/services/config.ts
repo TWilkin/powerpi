@@ -1,9 +1,9 @@
-import { ConfigService as CommonConfigService } from "powerpi-common";
+import { ConfigFileType, ConfigService as CommonConfigService } from "powerpi-common";
 import { Service } from "typedi";
 import Container from "../container";
 import app = require("../../package.json");
 
-@Service({ transient: false })
+@Service()
 export default class ConfigService extends CommonConfigService {
     get service() {
         return app.name;
@@ -11,6 +11,10 @@ export default class ConfigService extends CommonConfigService {
 
     get version() {
         return app.version;
+    }
+
+    getUsedConfig(): ConfigFileType[] {
+        return [ConfigFileType.Devices];
     }
 
     get port() {
