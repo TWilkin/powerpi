@@ -1,0 +1,28 @@
+import { ConfigService as CommonConfigService } from "powerpi-common";
+import { Service } from "typedi";
+import Container from "../container";
+import app = require("../../package.json");
+
+@Service({ transient: false })
+export default class ConfigService extends CommonConfigService {
+    get service() {
+        return app.name;
+    }
+
+    get version() {
+        return app.version;
+    }
+
+    get port() {
+        const str = process.env["JOVO_PORT"];
+        if (str) {
+            return parseInt(str);
+        }
+
+        return 3000;
+    }
+}
+
+const instance = new ConfigService();
+Container.set(CommonConfigService, instance);
+Container.set(ConfigService, instance);
