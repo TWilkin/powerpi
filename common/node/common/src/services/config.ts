@@ -17,7 +17,7 @@ const readAsync = util.promisify(fs.readFile);
 export class ConfigService {
     protected interval: IntervalParserService;
 
-    private configs: { [key in ConfigFileType]?: object };
+    private configs: { [key in ConfigFileType]?: { data: object; checksum: string } };
 
     constructor() {
         this.interval = Container.get(IntervalParserService);
@@ -57,8 +57,21 @@ export class ConfigService {
         return process.env["TOPIC_BASE"] ?? "powerpi";
     }
 
+    get configWaitTime() {
+        const str = process.env["CONFIG_WAIT_TIME"];
+        if (str) {
+            return parseInt(str);
+        }
+
+        return 2 * 60;
+    }
+
+    get configIsNeeded() {
+        return true;
+    }
+
     get devices() {
-        return (this.configs[ConfigFileType.Devices] as { devices: Device[] })?.devices;
+        return (this.configs[ConfigFileType.Devices]?.data as { devices: Device[] })?.devices;
     }
 
     public get configFileTypes() {
@@ -75,8 +88,8 @@ export class ConfigService {
         return this.configs[type];
     }
 
-    public setConfig(type: ConfigFileType, data: object) {
-        this.configs[type] = data;
+    public setConfig(type: ConfigFileType, data: object, checksum: string) {
+        this.configs[type] = { data, checksum };
     }
 
     public getUsedConfig(): ConfigFileType[] {
