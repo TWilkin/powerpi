@@ -114,7 +114,7 @@ services:
             - TOPIC_BASE=powerpi
             - DEVICES_FILE=/devices.json
             - EVENTS_FILE=/events.json
-            - CONTROLLER_NAME=energenie_controller
+            - CONTROLLER_NAME=energenie-controller
             - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.5
             - GPIOMEM=/dev/gpiomem
         volumes:
