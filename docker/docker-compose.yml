@@ -191,10 +191,10 @@ services:
         deploy:
             replicas: 1
         secrets:
-            - freedns
+            - powerpi_freedns
         environment:
             - FREEDNS_USER=${FREEDNS_USER}
-            - FREEDNS_PASSWORD=/var/run/secrets/freedns
+            - FREEDNS_PASSWORD=/var/run/secrets/powerpi_freedns
 
     nginx:
         build: ../nginx
@@ -287,7 +287,7 @@ services:
 
 # docker secret create powerpi_secret /path/to/secret/file
 secrets:
-    freedns:
+    powerpi_freedns:
         external: true
     powerpi_db:
         external: true
