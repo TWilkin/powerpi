@@ -28,6 +28,7 @@ services:
             - powerpi_github
         environment:
             - GITHUB_USER=${GITHUB_USER}
+            - GITHUB_SECRET_FILE=/var/run/secrets/powerpi_github
             - FILE_PATH=docker/config
 
     deep-thought:
