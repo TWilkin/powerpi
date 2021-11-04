@@ -8,6 +8,7 @@ export enum ConfigFileType {
     Devices = "devices",
     Events = "events",
     Schedules = "schedules",
+    Users = "users",
 }
 
 // allow reading of files using await
