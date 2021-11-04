@@ -26,7 +26,7 @@ EXPOSE 3000
 
 # use non-root account
 USER node
-RUN mkdir -p /home/node/app/common/node/api /home/node/app/babel-fish
+RUN mkdir -p /home/node/app/common/node/api /home/node/app/common/node/common /home/node/app/babel-fish
 
 # copy the built common libraries
 WORKDIR /home/node/app/common/node/api

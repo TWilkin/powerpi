@@ -27,6 +27,4 @@ export default class ConfigService extends CommonConfigService {
     }
 }
 
-const instance = new ConfigService();
-Container.set(CommonConfigService, instance);
-Container.set(ConfigService, instance);
+Container.override(CommonConfigService, ConfigService);
