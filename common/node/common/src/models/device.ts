@@ -2,6 +2,8 @@ export interface IDevice {
     name: string;
     type: string;
     display_name?: string;
+
+    displayName: string;
 }
 
 export class Device implements IDevice {

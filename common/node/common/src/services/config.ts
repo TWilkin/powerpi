@@ -2,7 +2,7 @@ import fs from "fs";
 import Container, { Service } from "typedi";
 import util from "util";
 import { Device, IDevice } from "../models/device";
-import { Schedule } from "../models/schedule";
+import { ISchedule } from "../models/schedule";
 import { IntervalParserService } from "./interval";
 
 export enum ConfigFileType {
@@ -72,7 +72,7 @@ export class ConfigService {
         return true;
     }
 
-    get devices() {
+    get devices(): IDevice[] {
         const file = this.configs[ConfigFileType.Devices]?.data as { devices: IDevice[] };
 
         return file?.devices.map((device) => Object.assign(new Device(), device));
@@ -81,7 +81,7 @@ export class ConfigService {
     get schedules() {
         return this.configs[ConfigFileType.Schedules]?.data as {
             timezone: string;
-            schedules: Schedule[];
+            schedules: ISchedule[];
         };
     }
 

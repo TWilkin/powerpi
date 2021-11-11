@@ -1,11 +1,11 @@
 import { DateTime, Interval } from "luxon";
-import { Device, LoggerService, MqttService, Schedule, Weekday } from "powerpi-common";
+import { IDevice, ISchedule, LoggerService, MqttService, Weekday } from "powerpi-common";
 import { Inject, Service, Token } from "typedi";
 import Container from "../container";
 
 interface DeviceScheduleConfig {
-    device: Device;
-    schedule: Schedule;
+    device: IDevice;
+    schedule: ISchedule;
 }
 
 export const DeviceScheduleToken = new Token<DeviceScheduleConfig>("DEVICE_SCHEDULE_TOKEN");
@@ -22,8 +22,8 @@ export default class DeviceSchedule {
     private mqtt: MqttService;
     private logger: LoggerService;
 
-    private device: Device;
-    private schedule: Schedule;
+    private device: IDevice;
+    private schedule: ISchedule;
 
     private delta: Delta = {
         hue: 0,
