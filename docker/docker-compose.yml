@@ -72,7 +72,7 @@ services:
 
     babel-fish:
         build: ../babel-fish
-        image: ${REGISTRY}/powerpi/babel-fish:0.0.2
+        image: ${REGISTRY}/powerpi/babel-fish:0.0.3
         networks:
             - powerpi
         deploy:
@@ -120,7 +120,7 @@ services:
             - TOPIC_BASE=powerpi
             - DEVICES_FILE=/devices.json
             - EVENTS_FILE=/events.json
-            - CONTROLLER_NAME=energenie_controller
+            - CONTROLLER_NAME=energenie-controller
             - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.7
             - GPIOMEM=/dev/gpiomem
         volumes:
@@ -197,10 +197,10 @@ services:
         deploy:
             replicas: 1
         secrets:
-            - freedns
+            - powerpi_freedns
         environment:
             - FREEDNS_USER=${FREEDNS_USER}
-            - FREEDNS_PASSWORD=/var/run/secrets/freedns
+            - FREEDNS_PASSWORD=/var/run/secrets/powerpi_freedns
 
     nginx:
         build: ../nginx
