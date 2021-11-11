@@ -1,0 +1,23 @@
+{
+    "name": "clacks-config",
+    "version": "0.0.1",
+    "description": "PowerPi config retrieval from GitHub pushing to message queue",
+    "main": "./src/index.ts",
+    "scripts": {
+        "start": "ts-node src/index.ts",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "TWilkin",
+    "devDependencies": {
+        "prettier": "^2.4.1",
+        "tslint": "^6.1.3"
+    },
+    "dependencies": {
+        "@octokit/rest": "^18.12.0",
+        "@types/node": "^16.11.4",
+        "powerpi-common": "file:../common/node/common",
+        "ts-node": "^10.4.0",
+        "typedi": "^0.10.0",
+        "typescript": "^4.4.4"
+    }
+}

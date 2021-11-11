@@ -1,17 +1,24 @@
 import { Request, Response } from "express";
 import { ExpressJS, WebhookVerified as Webhook } from "jovo-framework";
+import { LoggerService, PowerPiService } from "powerpi-common";
 import app from "./app";
+import Container from "./container";
+import ConfigService from "./services/config";
 
-const port = process.env.JOVO_PORT || 3000;
-Webhook.jovoApp = app;
+function start() {
+    const config = Container.get(ConfigService);
+    const logger = Container.get(LoggerService);
 
-Webhook.listen(port, () => {
-  console.info(`Local server listening on port ${port}.`);
-});
+    Webhook.jovoApp = app;
 
-Webhook.post(
-  ["/webhook_alexa"],
-  async (request: Request, response: Response) => {
-    await app.handle(new ExpressJS(request, response));
-  }
-);
+    Webhook.listen(config.port, () => {
+        logger.info("Local server listening on port", config.port);
+    });
+
+    Webhook.post(["/webhook_alexa"], async (request: Request, response: Response) => {
+        await app.handle(new ExpressJS(request, response));
+    });
+}
+
+const service = Container.get(PowerPiService);
+service.start(start);

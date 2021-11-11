@@ -15,6 +15,22 @@ services:
             - source: mosquitto_config
               target: /mosquitto/config/mosquitto.conf
 
+    clacks-config:
+        build: ../clacks-config
+        image: ${REGISTRY}/powerpi/clacks-config:0.0.1
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        depends_on:
+            - mosquitto
+        secrets:
+            - powerpi_github
+        environment:
+            - GITHUB_USER=${GITHUB_USER}
+            - GITHUB_SECRET_FILE=/var/run/secrets/powerpi_github
+            - FILE_PATH=docker/config
+
     deep-thought:
         build: ../deep-thought
         image: ${REGISTRY}/powerpi/deep-thought:0.5.3
@@ -277,7 +293,7 @@ services:
 
 # docker secret create powerpi_secret /path/to/secret/file
 secrets:
-    freedns:
+    powerpi_freedns:
         external: true
     powerpi_db:
         external: true
@@ -290,6 +306,8 @@ secrets:
     powerpi_oauth:
         external: true
     powerpi_ihd:
+        external: true
+    powerpi_github:
         external: true
 
 configs:
