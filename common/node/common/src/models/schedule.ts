@@ -16,6 +16,6 @@ export interface ISchedule {
     hue?: number[];
     saturation?: number[];
     brightness?: number[];
-    kelvin?: number[];
+    temperature?: number[];
     power?: boolean;
 }

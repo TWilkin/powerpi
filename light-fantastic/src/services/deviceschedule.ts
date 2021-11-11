@@ -14,7 +14,7 @@ interface Delta {
     hue: number;
     saturation: number;
     brightness: number;
-    kelvin: number;
+    temperature: number;
 }
 
 @Service({ transient: true })
@@ -29,7 +29,7 @@ export default class DeviceSchedule {
         hue: 0,
         saturation: 0,
         brightness: 0,
-        kelvin: 0,
+        temperature: 0,
     };
 
     constructor(@Inject(DeviceScheduleToken) config: DeviceScheduleConfig) {
