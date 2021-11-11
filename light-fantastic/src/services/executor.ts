@@ -13,17 +13,15 @@ export default class ScheduleExecutorService {
         this.logger = Container.get(LoggerService);
     }
 
-    public async start() {
+    public start() {
         // find the lights
-        const lights = (await this.config.devices()).filter(
-            (device) => device.type === "lifx_light"
-        );
+        const lights = this.config.devices.filter((device) => device.type === "lifx_light");
         this.logger.info(`Found ${lights.length} LIFX lights`);
 
         lights.forEach((light) => this.logger.info(`Found LIFX light "${light.displayName}"`));
 
         // load the schedule
-        const schedules = await this.config.schedule();
+        const schedules = this.config.schedules;
 
         // set the timezone
         Settings.defaultZone = schedules.timezone;

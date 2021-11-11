@@ -1,7 +1,8 @@
 import fs from "fs";
 import Container, { Service } from "typedi";
 import util from "util";
-import { Device } from "../models/device";
+import { Device, IDevice } from "../models/device";
+import { Schedule } from "../models/schedule";
 import { IntervalParserService } from "./interval";
 
 export enum ConfigFileType {
@@ -72,7 +73,16 @@ export class ConfigService {
     }
 
     get devices() {
-        return (this.configs[ConfigFileType.Devices]?.data as { devices: Device[] })?.devices;
+        const file = this.configs[ConfigFileType.Devices]?.data as { devices: IDevice[] };
+
+        return file?.devices.map((device) => Object.assign(new Device(), device));
+    }
+
+    get schedules() {
+        return this.configs[ConfigFileType.Schedules]?.data as {
+            timezone: string;
+            schedules: Schedule[];
+        };
     }
 
     public get configFileTypes() {

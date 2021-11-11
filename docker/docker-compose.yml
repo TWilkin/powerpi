@@ -79,11 +79,6 @@ services:
             replicas: 1
         depends_on:
             - deep-thought
-        environment:
-            - DEVICES_FILE=/devices.json
-        configs:
-            - source: devices_config
-              target: /devices.json
 
     macro-controller:
         image: ${REGISTRY}/powerpi/controllers/macro:1.0.3
@@ -181,13 +176,6 @@ services:
         environment:
             - MQTT_ADDRESS=mqtt://mosquitto:1883
             - TOPIC_BASE=powerpi
-            - DEVICES_FILE=/devices.json
-            - SCHEDULES_FILE=/schedules.json
-        configs:
-            - source: devices_config
-              target: /devices.json
-            - source: schedules_config
-              target: /schedules.json
 
     freedns:
         build: ../freedns

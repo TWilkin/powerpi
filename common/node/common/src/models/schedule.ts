@@ -8,7 +8,7 @@ export enum Weekday {
     Saturday,
 }
 
-export default interface Schedule {
+export interface Schedule {
     device: string;
     days?: Weekday[];
     between: string[];

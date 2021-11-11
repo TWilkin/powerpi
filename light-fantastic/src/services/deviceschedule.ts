@@ -1,8 +1,7 @@
 import { DateTime, Interval } from "luxon";
-import { Device, LoggerService, MqttService } from "powerpi-common";
+import { Device, LoggerService, MqttService, Schedule, Weekday } from "powerpi-common";
 import { Inject, Service, Token } from "typedi";
 import Container from "../container";
-import Schedule, { Weekday } from "../models/schedule";
 
 interface DeviceScheduleConfig {
     device: Device;
