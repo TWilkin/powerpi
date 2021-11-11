@@ -1,4 +1,4 @@
-FROM node:14-alpine as build-image
+FROM node:14.18.1-alpine3.11 as build-image
 LABEL description="Node.js builder for common library"
 
 # install the common library
@@ -8,7 +8,7 @@ RUN npm install
 COPY common/node/common ./
 RUN npm run build
 
-FROM node:14-alpine as run-image
+FROM node:14.18.1-alpine3.11 as run-image
 LABEL description="Node.js configuration service"
 
 # expose the port used by the application
