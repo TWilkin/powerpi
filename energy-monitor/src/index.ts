@@ -3,11 +3,11 @@ import Container from "./container";
 import EnergyMonitorService from "./services/monitor";
 
 function start() {
-  const mqtt = Container.get(MqttService);
-  mqtt.connect();
+    const mqtt = Container.get(MqttService);
+    mqtt.connect();
 
-  const monitor = Container.get(EnergyMonitorService);
-  monitor.start();
+    const monitor = Container.get(EnergyMonitorService);
+    monitor.start();
 }
 
 start();
