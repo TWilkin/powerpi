@@ -18,7 +18,7 @@ class DeviceStateEventConsumer(MQTTConsumer):
         else:
             valid = True
 
-        if state != 'on' and state != 'off':
+        if state is not None and state != 'on' and state != 'off':
             self._logger.error(f'Unrecognisable state {state}')
             valid = False
 
