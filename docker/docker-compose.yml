@@ -173,9 +173,6 @@ services:
             replicas: 1
         depends_on:
             - mosquitto
-        environment:
-            - MQTT_ADDRESS=mqtt://mosquitto:1883
-            - TOPIC_BASE=powerpi
 
     freedns:
         build: ../freedns
