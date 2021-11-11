@@ -1,312 +1,325 @@
 version: "3.3"
 
 services:
-  mosquitto:
-    image: eclipse-mosquitto:2.0.8
-    networks:
-      - powerpi
-    ports:
-      - "1883:1883"
-    deploy:
-      replicas: 1
-    volumes:
-      - /srv/docker-volumes/powerpi/mosquitto/data:/mosquitto/data
-    configs:
-      - source: mosquitto_config
-        target: /mosquitto/config/mosquitto.conf
+    mosquitto:
+        image: eclipse-mosquitto:2.0.8
+        networks:
+            - powerpi
+        ports:
+            - "1883:1883"
+        deploy:
+            replicas: 1
+        volumes:
+            - /srv/docker-volumes/powerpi/mosquitto/data:/mosquitto/data
+        configs:
+            - source: mosquitto_config
+              target: /mosquitto/config/mosquitto.conf
 
-  deep-thought:
-    build: ../deep-thought
-    image: ${REGISTRY}/powerpi/deep-thought:0.5.3
-    networks:
-      - powerpi
-    deploy:
-      replicas: 1
-    depends_on:
-      - db
-      - mosquitto
-    secrets:
-      - powerpi_db
-      - powerpi_google_auth
-      - powerpi_jwt_auth
-      - powerpi_session
-      - powerpi_oauth
-    environment:
-      - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
-      - EXTERNAL_PORT=${EXTERNAL_PORT}
-      - MQTT_ADDRESS=mqtt://mosquitto:1883
-      - TOPIC_BASE=powerpi
-      - DEVICES_FILE=/devices.json
-      - USERS_FILE=/users.json
-      - DB_HOST=db
-      - DB_SCHEMA=powerpi
-      - DB_USER=powerpi
-      - DB_PASSWORD_FILE=/var/run/secrets/powerpi_db
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - GOOGLE_SECRET_FILE=/var/run/secrets/powerpi_google_auth
-      - JWT_SECRET_FILE=/var/run/secrets/powerpi_jwt_auth
-      - SESSION_SECRET_FILE=/var/run/secrets/powerpi_session
-      - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID}
-      - OAUTH_SECRET_FILE=/var/run/secrets/powerpi_oauth
-    configs:
-      - source: devices_config
-        target: /devices.json
-      - source: users_config
-        target: /users.json
+    clacks-config:
+        build: ../clacks-config
+        image: ${REGISTRY}/powerpi/clacks-config:0.0.1
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        depends_on:
+            - mosquitto
+        secrets:
+            - powerpi_github
+        environment:
+            - GITHUB_USER=${GITHUB_USER}
+            - GITHUB_SECRET_FILE=/var/run/secrets/powerpi_github
+            - FILE_PATH=docker/config
 
-  babel-fish:
-    build: ../babel-fish
-    image: ${REGISTRY}/powerpi/babel-fish:0.0.2
-    networks:
-      - powerpi
-    deploy:
-      replicas: 1
-    depends_on:
-      - deep-thought
-    environment:
-      - DEVICES_FILE=/devices.json
-    configs:
-      - source: devices_config
-        target: /devices.json
+    deep-thought:
+        build: ../deep-thought
+        image: ${REGISTRY}/powerpi/deep-thought:0.5.3
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        depends_on:
+            - db
+            - mosquitto
+        secrets:
+            - powerpi_db
+            - powerpi_google_auth
+            - powerpi_jwt_auth
+            - powerpi_session
+            - powerpi_oauth
+        environment:
+            - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
+            - EXTERNAL_PORT=${EXTERNAL_PORT}
+            - MQTT_ADDRESS=mqtt://mosquitto:1883
+            - TOPIC_BASE=powerpi
+            - DEVICES_FILE=/devices.json
+            - USERS_FILE=/users.json
+            - DB_HOST=db
+            - DB_SCHEMA=powerpi
+            - DB_USER=powerpi
+            - DB_PASSWORD_FILE=/var/run/secrets/powerpi_db
+            - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+            - GOOGLE_SECRET_FILE=/var/run/secrets/powerpi_google_auth
+            - JWT_SECRET_FILE=/var/run/secrets/powerpi_jwt_auth
+            - SESSION_SECRET_FILE=/var/run/secrets/powerpi_session
+            - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID}
+            - OAUTH_SECRET_FILE=/var/run/secrets/powerpi_oauth
+        configs:
+            - source: devices_config
+              target: /devices.json
+            - source: users_config
+              target: /users.json
 
-  macro-controller:
-    image: ${REGISTRY}/powerpi/controllers/macro:1.0.1
-    networks:
-      - powerpi
-    deploy:
-      replicas: 1
-    depends_on:
-      - mosquitto
-    environment:
-      - MQTT_ADDRESS=mqtt://mosquitto:1883
-      - TOPIC_BASE=powerpi
-      - DEVICES_FILE=/devices.json
-    configs:
-      - source: devices_config
-        target: /devices.json
+    babel-fish:
+        build: ../babel-fish
+        image: ${REGISTRY}/powerpi/babel-fish:0.0.3
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        depends_on:
+            - deep-thought
 
-  device-mapper:
-    build: ../device-mapper
-    image: ${REGISTRY}/powerpi/device-mapper:0.0.3
-    networks:
-      - powerpi
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.labels.energenie == true
-    depends_on:
-      - mosquitto
-    environment:
-      - DEVICE_FATAL=true
-      - ENERGENIE_DEVICE=ENER314-RT
-      - MQTT_ADDRESS=mqtt://mosquitto:1883
-      - TOPIC_BASE=powerpi
-      - DEVICES_FILE=/devices.json
-      - EVENTS_FILE=/events.json
-      - CONTROLLER_NAME=energenie_controller
-      - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.5
-      - GPIOMEM=/dev/gpiomem
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    configs:
-      - source: devices_config
-        target: /devices.json
-      - source: events_config
-        target: /events.json
+    macro-controller:
+        image: ${REGISTRY}/powerpi/controllers/macro:1.0.1
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        depends_on:
+            - mosquitto
+        environment:
+            - MQTT_ADDRESS=mqtt://mosquitto:1883
+            - TOPIC_BASE=powerpi
+            - DEVICES_FILE=/devices.json
+        configs:
+            - source: devices_config
+              target: /devices.json
 
-  harmony-controller:
-    image: ${REGISTRY}/powerpi/controllers/harmony:0.0.3
-    networks:
-      - powerpi
-    deploy:
-      replicas: 1
-    depends_on:
-      - mosquitto
-    environment:
-      - MQTT_ADDRESS=mqtt://mosquitto:1883
-      - TOPIC_BASE=powerpi
-      - DEVICES_FILE=/devices.json
-      - EVENTS_FILE=/events.json
-    configs:
-      - source: devices_config
-        target: /devices.json
-      - source: events_config
-        target: /events.json
+    device-mapper:
+        build: ../device-mapper
+        image: ${REGISTRY}/powerpi/device-mapper:0.0.3
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.labels.energenie == true
+        depends_on:
+            - mosquitto
+        environment:
+            - DEVICE_FATAL=true
+            - ENERGENIE_DEVICE=ENER314-RT
+            - MQTT_ADDRESS=mqtt://mosquitto:1883
+            - TOPIC_BASE=powerpi
+            - DEVICES_FILE=/devices.json
+            - EVENTS_FILE=/events.json
+            - CONTROLLER_NAME=energenie-controller
+            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.5
+            - GPIOMEM=/dev/gpiomem
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        configs:
+            - source: devices_config
+              target: /devices.json
+            - source: events_config
+              target: /events.json
 
-  lifx-controller:
-    image: ${REGISTRY}/powerpi/controllers/lifx:0.0.2
-    networks:
-      - powerpi
-    deploy:
-      replicas: 1
-    depends_on:
-      - mosquitto
-    environment:
-      - MQTT_ADDRESS=mqtt://mosquitto:1883
-      - TOPIC_BASE=powerpi
-      - DEVICES_FILE=/devices.json
-      - EVENTS_FILE=/events.json
-    configs:
-      - source: devices_config
-        target: /devices.json
-      - source: events_config
-        target: /events.json
+    harmony-controller:
+        image: ${REGISTRY}/powerpi/controllers/harmony:0.0.3
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        depends_on:
+            - mosquitto
+        environment:
+            - MQTT_ADDRESS=mqtt://mosquitto:1883
+            - TOPIC_BASE=powerpi
+            - DEVICES_FILE=/devices.json
+            - EVENTS_FILE=/events.json
+        configs:
+            - source: devices_config
+              target: /devices.json
+            - source: events_config
+              target: /events.json
 
-  light-fantastic:
-    build: ../light-fantastic
-    image: ${REGISTRY}/powerpi/light-fantastic:0.1.7
-    networks:
-      - powerpi
-    deploy:
-      replicas: 1
-    depends_on:
-      - mosquitto
-    environment:
-      - MQTT_ADDRESS=mqtt://mosquitto:1883
-      - TOPIC_BASE=powerpi
-      - DEVICES_FILE=/devices.json
-      - SCHEDULES_FILE=/schedules.json
-    configs:
-      - source: devices_config
-        target: /devices.json
-      - source: schedules_config
-        target: /schedules.json
+    lifx-controller:
+        image: ${REGISTRY}/powerpi/controllers/lifx:0.0.2
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        depends_on:
+            - mosquitto
+        environment:
+            - MQTT_ADDRESS=mqtt://mosquitto:1883
+            - TOPIC_BASE=powerpi
+            - DEVICES_FILE=/devices.json
+            - EVENTS_FILE=/events.json
+        configs:
+            - source: devices_config
+              target: /devices.json
+            - source: events_config
+              target: /events.json
 
-  freedns:
-    build: ../freedns
-    image: ${REGISTRY}/powerpi/freedns:0.0.6
-    networks:
-      - powerpi
-    deploy:
-      replicas: 1
-    secrets:
-      - freedns
-    environment:
-      - FREEDNS_USER=${FREEDNS_USER}
-      - FREEDNS_PASSWORD=/var/run/secrets/freedns
+    light-fantastic:
+        build: ../light-fantastic
+        image: ${REGISTRY}/powerpi/light-fantastic:0.1.7
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        depends_on:
+            - mosquitto
+        environment:
+            - MQTT_ADDRESS=mqtt://mosquitto:1883
+            - TOPIC_BASE=powerpi
+            - DEVICES_FILE=/devices.json
+            - SCHEDULES_FILE=/schedules.json
+        configs:
+            - source: devices_config
+              target: /devices.json
+            - source: schedules_config
+              target: /schedules.json
 
-  nginx:
-    build: ../nginx
-    image: ${REGISTRY}/powerpi/nginx:1.2.1
-    networks:
-      - powerpi
-    ports:
-      - "3001:80"
-      - "3000:443"
-    deploy:
-      replicas: 1
-    depends_on:
-      - deep-thought
-      - babel-fish
-    volumes:
-      - /srv/docker-volumes/powerpi/certbot/conf:/etc/letsencrypt
-      - /srv/docker-volumes/powerpi/certbot/www:/var/www/certbot
-    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
-    configs:
-      - source: nginx_config
-        target: /etc/nginx/conf.d/default.conf
+    freedns:
+        build: ../freedns
+        image: ${REGISTRY}/powerpi/freedns:0.0.6
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        secrets:
+            - powerpi_freedns
+        environment:
+            - FREEDNS_USER=${FREEDNS_USER}
+            - FREEDNS_PASSWORD=/var/run/secrets/powerpi_freedns
 
-  certbot:
-    build: ../certbot
-    image: ${REGISTRY}/powerpi/certbot:0.0.2
-    networks:
-      - powerpi
-    deploy:
-      replicas: 1
-    depends_on:
-      - nginx
-    environment:
-      - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
-      - EMAIL=${EMAIL}
-    volumes:
-      - /srv/docker-volumes/powerpi/certbot/conf:/etc/letsencrypt
-      - /srv/docker-volumes/powerpi/certbot/www:/var/www/html
+    nginx:
+        build: ../nginx
+        image: ${REGISTRY}/powerpi/nginx:1.2.1
+        networks:
+            - powerpi
+        ports:
+            - "3001:80"
+            - "3000:443"
+        deploy:
+            replicas: 1
+        depends_on:
+            - deep-thought
+            - babel-fish
+        volumes:
+            - /srv/docker-volumes/powerpi/certbot/conf:/etc/letsencrypt
+            - /srv/docker-volumes/powerpi/certbot/www:/var/www/certbot
+        command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+        configs:
+            - source: nginx_config
+              target: /etc/nginx/conf.d/default.conf
 
-  db:
-    image: postgres:13.0-alpine
-    networks:
-      - powerpi
-    deploy:
-      replicas: 1
-    secrets:
-      - powerpi_db
-    environment:
-      - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_DB=powerpi
-      - POSTGRES_USER=powerpi
-      - POSTGRES_PASSWORD_FILE=/var/run/secrets/powerpi_db
-    volumes:
-      - /srv/docker-volumes/powerpi/postgres/data:/var/lib/postgresql/data/pgdata
+    certbot:
+        build: ../certbot
+        image: ${REGISTRY}/powerpi/certbot:0.0.2
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        depends_on:
+            - nginx
+        environment:
+            - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
+            - EMAIL=${EMAIL}
+        volumes:
+            - /srv/docker-volumes/powerpi/certbot/conf:/etc/letsencrypt
+            - /srv/docker-volumes/powerpi/certbot/www:/var/www/html
 
-  persistence:
-    build: ../persistence
-    image: ${REGISTRY}/powerpi/persistence:0.0.4
-    networks:
-      - powerpi
-    deploy:
-      replicas: 1
-    depends_on:
-      - mosquitto
-      - db
-    secrets:
-      - powerpi_db
-    environment:
-      - MQTT_ADDRESS=mqtt://mosquitto:1883
-      - TOPIC_BASE=powerpi
-      - DB_HOST=db
-      - DB_SCHEMA=powerpi
-      - DB_USER=powerpi
-      - DB_PASSWORD_FILE=/var/run/secrets/powerpi_db
+    db:
+        image: postgres:13.0-alpine
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        secrets:
+            - powerpi_db
+        environment:
+            - PGDATA=/var/lib/postgresql/data/pgdata
+            - POSTGRES_DB=powerpi
+            - POSTGRES_USER=powerpi
+            - POSTGRES_PASSWORD_FILE=/var/run/secrets/powerpi_db
+        volumes:
+            - /srv/docker-volumes/powerpi/postgres/data:/var/lib/postgresql/data/pgdata
 
-  energy-monitor:
-    build: ../energy-monitor
-    image: ${REGISTRY}/powerpi/energy-monitor:0.0.1
-    networks:
-      - powerpi
-    deploy:
-      replicas: 1
-    depends_on:
-      - mosquitto
-    secrets:
-      - powerpi_ihd
-    environment:
-      - MQTT_ADDRESS=mqtt://mosquitto:1883
-      - TOPIC_BASE=powerpi
-      - IHD_SECRET_FILE=/var/run/secrets/powerpi_ihd
+    persistence:
+        build: ../persistence
+        image: ${REGISTRY}/powerpi/persistence:0.0.4
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        depends_on:
+            - mosquitto
+            - db
+        secrets:
+            - powerpi_db
+        environment:
+            - MQTT_ADDRESS=mqtt://mosquitto:1883
+            - TOPIC_BASE=powerpi
+            - DB_HOST=db
+            - DB_SCHEMA=powerpi
+            - DB_USER=powerpi
+            - DB_PASSWORD_FILE=/var/run/secrets/powerpi_db
+
+    energy-monitor:
+        build: ../energy-monitor
+        image: ${REGISTRY}/powerpi/energy-monitor:0.0.1
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+        depends_on:
+            - mosquitto
+        secrets:
+            - powerpi_ihd
+        environment:
+            - MQTT_ADDRESS=mqtt://mosquitto:1883
+            - TOPIC_BASE=powerpi
+            - IHD_SECRET_FILE=/var/run/secrets/powerpi_ihd
 
 # docker secret create powerpi_secret /path/to/secret/file
 secrets:
-  freedns:
-    external: true
-  powerpi_db:
-    external: true
-  powerpi_google_auth:
-    external: true
-  powerpi_jwt_auth:
-    external: true
-  powerpi_session:
-    external: true
-  powerpi_oauth:
-    external: true
-  powerpi_ihd:
-    external: true
+    powerpi_freedns:
+        external: true
+    powerpi_db:
+        external: true
+    powerpi_google_auth:
+        external: true
+    powerpi_jwt_auth:
+        external: true
+    powerpi_session:
+        external: true
+    powerpi_oauth:
+        external: true
+    powerpi_ihd:
+        external: true
+    powerpi_github:
+        external: true
 
 configs:
-  mosquitto_config:
-    file: ./config/mosquitto.conf
-  nginx_config:
-    file: ./config/nginx.conf
-  devices_config:
-    file: ./config/devices.json
-  events_config:
-    file: ./config/events.json
-  schedules_config:
-    file: ./config/schedules.json
-  users_config:
-    file: ./config/users.json
+    mosquitto_config:
+        file: ./config/mosquitto.conf
+    nginx_config:
+        file: ./config/nginx.conf
+    devices_config:
+        file: ./config/devices.json
+    events_config:
+        file: ./config/events.json
+    schedules_config:
+        file: ./config/schedules.json
+    users_config:
+        file: ./config/users.json
 
 # docker network create --driver=overlay --attachable powerpi
 networks:
-  powerpi:
-    external: true
+    powerpi:
+        external: true
