@@ -202,6 +202,7 @@ export default class DeviceSchedule {
         let value = range[0] + delta * counter;
 
         // ensure it's constrained by the end range
+        value = Math.round(value);
         if (delta > 0) {
             value = Math.min(value, range[1]);
         } else {
