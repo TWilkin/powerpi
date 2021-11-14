@@ -24,5 +24,7 @@ export default class DbService {
             modelPaths: [path.join(__dirname, "models", "*.model.ts")],
             logging: (sql) => console.info(`SQL: ${sql}`),
         });
+
+        await this.sequelize.sync();
     }
 }
