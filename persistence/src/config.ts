@@ -1,7 +1,6 @@
 import fs from "fs";
 
 export default class Config {
-
     public static get databaseURI() {
         const user = process.env["DB_USER"];
         const password = Config.readFile(process.env["DB_PASSWORD_FILE"]);
@@ -21,11 +20,10 @@ export default class Config {
     }
 
     private static readFile(filePath?: string): string | undefined {
-        if(filePath) {
+        if (filePath) {
             return fs.readFileSync(filePath).toString().trim();
         }
 
         return undefined;
     }
-
 }

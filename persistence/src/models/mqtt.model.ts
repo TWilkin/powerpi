@@ -2,7 +2,7 @@ import { Column, DataType, Model, PrimaryKey, Table } from "sequelize-typescript
 
 @Table({
     tableName: "mqtt",
-    timestamps: false
+    timestamps: false,
 })
 export default class MqttModel extends Model<MqttModel> {
     @PrimaryKey

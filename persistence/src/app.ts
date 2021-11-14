@@ -7,19 +7,19 @@ import MqttModel from "./models/mqtt.model";
 
 sequelize.sync().then(() => {
     const mqttClient = connect(Config.mqttAddress, {
-        clientId: `persistence-${os.hostname}`
+        clientId: `persistence-${os.hostname}`,
     });
-    
+
     mqttClient.on("connect", () => console.info("MQTT client connected"));
     mqttClient.on("error", (error) => {
         console.info(`MQTT client error: ${error}`);
         process.exit(1);
     });
-    
+
     mqttClient.on("message", (topic, message) => {
         console.info(`MQTT received (${topic}):(${message.toString()}`);
-    
-        const [ , type, entity, action] = topic.split("/", 4);
+
+        const [, type, entity, action] = topic.split("/", 4);
         const json = JSON.parse(message.toString());
 
         // we don't want to repeat the timestamp
@@ -31,11 +31,11 @@ sequelize.sync().then(() => {
             entity,
             action,
             timestamp,
-            message: JSON.stringify(json)
+            message: JSON.stringify(json),
         });
-    
+
         record.save();
     });
-    
+
     mqttClient.subscribe(`${Config.topicNameBase}/#`);
 });
