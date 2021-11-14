@@ -252,7 +252,7 @@ services:
 
     persistence:
         build: ../persistence
-        image: ${REGISTRY}/powerpi/persistence:0.0.4
+        image: ${REGISTRY}/powerpi/persistence:0.0.5
         networks:
             - powerpi
         deploy:
