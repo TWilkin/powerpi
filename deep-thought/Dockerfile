@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:14.18.1-alpine3.11
 LABEL description="Node.js application API for PowerPi"
 
 # install the dependencies
