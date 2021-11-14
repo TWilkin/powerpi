@@ -17,16 +17,16 @@ export default class MessageWriterService implements MqttConsumer {
 
     public async message(type: string, entity: string, action: string, message: Message) {
         // we don't want to repeat the timestamp
-        const timestamp = message.timestamp;
+        const timestamp = new Date(message.timestamp!);
         delete message.timestamp;
 
-        const record = new MqttModel({
+        const record = MqttModel.build({
             type,
             entity,
             action,
             timestamp,
-            message: JSON.stringify(message),
-        });
+            message,
+        } as MqttModel);
 
         await record.save();
     }
