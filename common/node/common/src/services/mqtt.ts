@@ -46,7 +46,9 @@ export class MqttService {
 
             this.logger.debug("Received:", topic, ": ", str);
 
-            const consumers = (this.consumers["#"] ?? []).concat(this.consumers[topic] ?? []);
+            const consumers = (this.consumers[this.topicName()] ?? []).concat(
+                this.consumers[topic] ?? []
+            );
 
             if (consumers.length > 0) {
                 const [_, type, entity, action] = topic.split("/");
@@ -96,7 +98,7 @@ export class MqttService {
         d?: MqttConsumer
     ): Promise<void> {
         const consumer = d ?? (a as MqttConsumer);
-        const topic = b ? this.topicName(a as string, b, c!) : "#";
+        const topic = typeof a === "string" && b && c ? this.topicName(a, b, c) : this.topicName();
 
         this.logger.debug("Subscribing to topic", topic);
 
@@ -122,7 +124,7 @@ export class MqttService {
         d?: MqttConsumer
     ): Promise<void> {
         const consumer = d ?? (a as MqttConsumer);
-        const topic = b ? this.topicName(a as string, b, c!) : "#";
+        const topic = typeof a === "string" && b && c ? this.topicName(a, b, c) : this.topicName();
 
         this.logger.debug("Unsubscribing from topic", topic);
 
@@ -131,6 +133,13 @@ export class MqttService {
         await this.client?.unsubscribe(topic);
     }
 
-    private topicName = (type: string, entity: string, action: string) =>
-        `${this.config.topicNameBase}/${type}/${entity}/${action}`;
+    private topicName(type: string, entity: string, action: string): string;
+    private topicName(): string;
+    private topicName(type?: string, entity?: string, action?: string): string {
+        if (type && entity && action) {
+            return `${this.config.topicNameBase}/${type}/${entity}/${action}`;
+        }
+
+        return `${this.config.topicNameBase}/#`;
+    }
 }
