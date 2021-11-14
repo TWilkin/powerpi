@@ -46,14 +46,14 @@ export class MqttService {
 
             this.logger.debug("Received:", topic, ": ", str);
 
-            if (this.consumers[topic]) {
+            const consumers = (this.consumers["#"] ?? []).concat(this.consumers[topic] ?? []);
+
+            if (consumers.length > 0) {
                 const [_, type, entity, action] = topic.split("/");
 
                 const data = JSON.parse(str);
 
-                this.consumers[topic].forEach((consumer) =>
-                    consumer.message(type, entity, action, data)
-                );
+                consumers.forEach((consumer) => consumer.message(type, entity, action, data));
             }
         });
     }
@@ -87,6 +87,17 @@ export class MqttService {
 
         this.logger.debug("Subscribing to topic", topic);
 
+        if (!this.consumers[topic]) {
+            this.consumers[topic] = [];
+        }
+
+        this.consumers[topic].push(consumer);
+
+        await this.client?.subscribe(topic);
+    }
+
+    public async subscribeToAll(consumer: MqttConsumer) {
+        const topic = "#";
         if (!this.consumers[topic]) {
             this.consumers[topic] = [];
         }
