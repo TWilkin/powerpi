@@ -1,22 +1,13 @@
-import { connect } from "mqtt";
-import os from "os";
+import { MqttService } from "powerpi-common";
+import Container from "./container";
 
-import Config from "./config";
-import sequelize from "./db";
-import MqttModel from "./models/mqtt.model";
+async function start() {
+    const mqtt = Container.get(MqttService);
+    mqtt.connect();
 
-sequelize.sync().then(() => {
-    const mqttClient = connect(Config.mqttAddress, {
-        clientId: `persistence-${os.hostname}`,
-    });
+    //await sequelize.sync();
 
-    mqttClient.on("connect", () => console.info("MQTT client connected"));
-    mqttClient.on("error", (error) => {
-        console.info(`MQTT client error: ${error}`);
-        process.exit(1);
-    });
-
-    mqttClient.on("message", (topic, message) => {
+    /*mqttClient.on("message", (topic, message) => {
         console.info(`MQTT received (${topic}):(${message.toString()}`);
 
         const [, type, entity, action] = topic.split("/", 4);
@@ -37,5 +28,7 @@ sequelize.sync().then(() => {
         record.save();
     });
 
-    mqttClient.subscribe(`${Config.topicNameBase}/#`);
-});
+    mqttClient.subscribe(`${Config.topicNameBase}/#`);*/
+}
+
+start();

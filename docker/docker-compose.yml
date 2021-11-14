@@ -252,7 +252,7 @@ services:
 
     persistence:
         build: ../persistence
-        image: ${REGISTRY}/powerpi/persistence:0.0.5
+        image: ${REGISTRY}/powerpi/persistence:0.1.0
         networks:
             - powerpi
         deploy:
@@ -263,12 +263,7 @@ services:
         secrets:
             - powerpi_db
         environment:
-            - MQTT_ADDRESS=mqtt://mosquitto:1883
-            - TOPIC_BASE=powerpi
-            - DB_HOST=db
-            - DB_SCHEMA=powerpi
-            - DB_USER=powerpi
-            - DB_PASSWORD_FILE=/var/run/secrets/powerpi_db
+            - DB_SECRET_FILE=/var/run/secrets/powerpi_db
 
     energy-monitor:
         build: ../energy-monitor
