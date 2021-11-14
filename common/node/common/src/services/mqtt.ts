@@ -82,35 +82,49 @@ export class MqttService {
         await this.client?.publish(topicName, JSON.stringify(message), options);
     }
 
-    public async subscribe(type: string, entity: string, action: string, consumer: MqttConsumer) {
-        const topic = this.topicName(type, entity, action);
+    public async subscribe(
+        type: string,
+        entity: string,
+        action: string,
+        consumer: MqttConsumer
+    ): Promise<void>;
+    public async subscribe(consumer: MqttConsumer): Promise<void>;
+    public async subscribe(
+        a: string | MqttConsumer,
+        b?: string,
+        c?: string,
+        d?: MqttConsumer
+    ): Promise<void> {
+        const consumer = d ?? (a as MqttConsumer);
+        const topic = b ? this.topicName(a as string, b, c!) : "#";
 
         this.logger.debug("Subscribing to topic", topic);
 
         if (!this.consumers[topic]) {
             this.consumers[topic] = [];
         }
-
         this.consumers[topic].push(consumer);
 
         await this.client?.subscribe(topic);
     }
 
-    public async subscribeToAll(consumer: MqttConsumer) {
-        const topic = "#";
-        if (!this.consumers[topic]) {
-            this.consumers[topic] = [];
-        }
+    public async unsubscribe(
+        type: string,
+        entity: string,
+        action: string,
+        consumer: MqttConsumer
+    ): Promise<void>;
+    public async unsubscribe(consumer: MqttConsumer): Promise<void>;
+    public async unsubscribe(
+        a: string | MqttConsumer,
+        b?: string,
+        c?: string,
+        d?: MqttConsumer
+    ): Promise<void> {
+        const consumer = d ?? (a as MqttConsumer);
+        const topic = b ? this.topicName(a as string, b, c!) : "#";
 
-        this.consumers[topic].push(consumer);
-
-        await this.client?.subscribe(topic);
-    }
-
-    public async unsubscribe(type: string, entity: string, action: string, consumer: MqttConsumer) {
-        const topic = this.topicName(type, entity, action);
-
-        this.logger.debug("Unsubscribing to topic", topic);
+        this.logger.debug("Unsubscribing from topic", topic);
 
         this.consumers[topic] = this.consumers[topic]?.filter((c) => c !== consumer);
 

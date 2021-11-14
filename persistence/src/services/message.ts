@@ -12,7 +12,7 @@ export default class MessageWriterService implements MqttConsumer {
     }
 
     public async start() {
-        await this.mqtt.subscribeToAll(this);
+        await this.mqtt.subscribe(this);
     }
 
     public async message(type: string, entity: string, action: string, message: Message) {
