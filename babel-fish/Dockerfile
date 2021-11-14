@@ -1,4 +1,4 @@
-FROM node:14-alpine as build-api-image
+FROM node:14.18.1-alpine3.11 as build-api-image
 LABEL description="Node.js builder for API library"
 
 # install the API library
@@ -8,7 +8,7 @@ RUN npm install
 COPY common/node/api ./
 RUN npm run build
 
-FROM node:14-alpine as build-common-image
+FROM node:14.18.1-alpine3.11 as build-common-image
 LABEL description="Node.js builder for common library"
 
 # install the common library
@@ -18,7 +18,7 @@ RUN npm install
 COPY common/node/common ./
 RUN npm run build
 
-FROM node:14-alpine as run-image
+FROM node:14.18.1-alpine3.11 as run-image
 LABEL description="Node.js webhook service for Alexa skills"
 
 # expose the port used by the application
