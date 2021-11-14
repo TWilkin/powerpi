@@ -1,9 +1,13 @@
 import { MqttService } from "powerpi-common";
 import Container from "./container";
+import DbService from "./services/db";
 
 async function start() {
+    const db = Container.get(DbService);
+    await db.connect();
+
     const mqtt = Container.get(MqttService);
-    mqtt.connect();
+    await mqtt.connect();
 
     //await sequelize.sync();
 
