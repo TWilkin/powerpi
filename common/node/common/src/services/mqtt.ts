@@ -46,14 +46,16 @@ export class MqttService {
 
             this.logger.debug("Received:", topic, ": ", str);
 
-            if (this.consumers[topic]) {
+            const consumers = (this.consumers[this.topicName()] ?? []).concat(
+                this.consumers[topic] ?? []
+            );
+
+            if (consumers.length > 0) {
                 const [_, type, entity, action] = topic.split("/");
 
                 const data = JSON.parse(str);
 
-                this.consumers[topic].forEach((consumer) =>
-                    consumer.message(type, entity, action, data)
-                );
+                consumers.forEach((consumer) => consumer.message(type, entity, action, data));
             }
         });
     }
@@ -82,30 +84,62 @@ export class MqttService {
         await this.client?.publish(topicName, JSON.stringify(message), options);
     }
 
-    public async subscribe(type: string, entity: string, action: string, consumer: MqttConsumer) {
-        const topic = this.topicName(type, entity, action);
+    public async subscribe(
+        type: string,
+        entity: string,
+        action: string,
+        consumer: MqttConsumer
+    ): Promise<void>;
+    public async subscribe(consumer: MqttConsumer): Promise<void>;
+    public async subscribe(
+        a: string | MqttConsumer,
+        b?: string,
+        c?: string,
+        d?: MqttConsumer
+    ): Promise<void> {
+        const consumer = d ?? (a as MqttConsumer);
+        const topic = typeof a === "string" && b && c ? this.topicName(a, b, c) : this.topicName();
 
         this.logger.debug("Subscribing to topic", topic);
 
         if (!this.consumers[topic]) {
             this.consumers[topic] = [];
         }
-
         this.consumers[topic].push(consumer);
 
         await this.client?.subscribe(topic);
     }
 
-    public async unsubscribe(type: string, entity: string, action: string, consumer: MqttConsumer) {
-        const topic = this.topicName(type, entity, action);
+    public async unsubscribe(
+        type: string,
+        entity: string,
+        action: string,
+        consumer: MqttConsumer
+    ): Promise<void>;
+    public async unsubscribe(consumer: MqttConsumer): Promise<void>;
+    public async unsubscribe(
+        a: string | MqttConsumer,
+        b?: string,
+        c?: string,
+        d?: MqttConsumer
+    ): Promise<void> {
+        const consumer = d ?? (a as MqttConsumer);
+        const topic = typeof a === "string" && b && c ? this.topicName(a, b, c) : this.topicName();
 
-        this.logger.debug("Unsubscribing to topic", topic);
+        this.logger.debug("Unsubscribing from topic", topic);
 
         this.consumers[topic] = this.consumers[topic]?.filter((c) => c !== consumer);
 
         await this.client?.unsubscribe(topic);
     }
 
-    private topicName = (type: string, entity: string, action: string) =>
-        `${this.config.topicNameBase}/${type}/${entity}/${action}`;
+    private topicName(type: string, entity: string, action: string): string;
+    private topicName(): string;
+    private topicName(type?: string, entity?: string, action?: string): string {
+        if (type && entity && action) {
+            return `${this.config.topicNameBase}/${type}/${entity}/${action}`;
+        }
+
+        return `${this.config.topicNameBase}/#`;
+    }
 }
