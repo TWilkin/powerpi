@@ -24,7 +24,7 @@ class DeviceManager(object):
         if self.__devices[name]:
             return self.__devices[name]
 
-        raise Exception('Cannot find device "{name}"'.format(name=name))
+        raise Exception(f'Cannot find device "{name}"')
 
     def load(self):
         devices = self.__config.devices['devices']
@@ -36,10 +36,8 @@ class DeviceManager(object):
 
             instance = self.__factory.build(device_type, **device)
             if instance is not None:
-                self.__logger.info('Found {}'.format(instance))
+                self.__logger.info(f'Found {instance}')
 
                 self.__devices[device['name']] = instance
 
-        self.__logger.info(
-            'Found {} matching devices'.format(len(self.__devices))
-        )
+        self.__logger.info(f'Found {len(self.__devices)} matching devices')

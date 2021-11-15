@@ -1,7 +1,8 @@
 import fs from "fs";
 import Container, { Service } from "typedi";
 import util from "util";
-import { Device } from "../models/device";
+import { IDeviceConfigFile, IScheduleConfigFile } from "../models/config";
+import { Device, IDevice } from "../models/device";
 import { IntervalParserService } from "./interval";
 
 export enum ConfigFileType {
@@ -68,11 +69,21 @@ export class ConfigService {
     }
 
     get configIsNeeded() {
-        return true;
+        return !this.useConfigFile;
     }
 
-    get devices() {
-        return (this.configs[ConfigFileType.Devices]?.data as { devices: Device[] })?.devices;
+    get useConfigFile() {
+        return process.env["USE_CONFIG_FILE"]?.toLowerCase() === "true";
+    }
+
+    get devices(): IDevice[] {
+        const file = this.fileOrConfig<IDeviceConfigFile>("DEVICES_FILE", ConfigFileType.Devices);
+
+        return file.devices.map((device) => Object.assign(new Device(), device));
+    }
+
+    get schedules() {
+        return this.fileOrConfig<IScheduleConfigFile>("SCHEDULES_FILE", ConfigFileType.Schedules);
     }
 
     public get configFileTypes() {
@@ -104,5 +115,21 @@ export class ConfigService {
 
     protected async readFile(filePath: string) {
         return (await readAsync(filePath)).toString().trim();
+    }
+
+    private fileOrConfig<TConfigFile extends object>(
+        key: string,
+        type: ConfigFileType
+    ): TConfigFile {
+        if (this.useConfigFile) {
+            const filePath = process.env[key];
+
+            if (filePath) {
+                const file = fs.readFileSync(filePath).toString().trim();
+                return JSON.parse(file);
+            }
+        }
+
+        return this.getConfig(type)?.data as TConfigFile;
     }
 }

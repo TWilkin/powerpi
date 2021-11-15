@@ -1,2 +1,2 @@
 __app_name__ = 'harmony-controller'
-__version__ = '0.0.3'
+__version__ = '0.0.5'

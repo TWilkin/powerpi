@@ -81,7 +81,7 @@ services:
             - deep-thought
 
     macro-controller:
-        image: ${REGISTRY}/powerpi/controllers/macro:1.0.1
+        image: ${REGISTRY}/powerpi/controllers/macro:1.0.3
         networks:
             - powerpi
         deploy:
@@ -116,7 +116,7 @@ services:
             - DEVICES_FILE=/devices.json
             - EVENTS_FILE=/events.json
             - CONTROLLER_NAME=energenie-controller
-            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.5
+            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.7
             - GPIOMEM=/dev/gpiomem
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
@@ -127,7 +127,7 @@ services:
               target: /events.json
 
     harmony-controller:
-        image: ${REGISTRY}/powerpi/controllers/harmony:0.0.3
+        image: ${REGISTRY}/powerpi/controllers/harmony:0.0.5
         networks:
             - powerpi
         deploy:
@@ -146,7 +146,7 @@ services:
               target: /events.json
 
     lifx-controller:
-        image: ${REGISTRY}/powerpi/controllers/lifx:0.0.2
+        image: ${REGISTRY}/powerpi/controllers/lifx:0.0.3
         networks:
             - powerpi
         deploy:
@@ -166,23 +166,13 @@ services:
 
     light-fantastic:
         build: ../light-fantastic
-        image: ${REGISTRY}/powerpi/light-fantastic:0.1.7
+        image: ${REGISTRY}/powerpi/light-fantastic:0.2.0
         networks:
             - powerpi
         deploy:
             replicas: 1
         depends_on:
             - mosquitto
-        environment:
-            - MQTT_ADDRESS=mqtt://mosquitto:1883
-            - TOPIC_BASE=powerpi
-            - DEVICES_FILE=/devices.json
-            - SCHEDULES_FILE=/schedules.json
-        configs:
-            - source: devices_config
-              target: /devices.json
-            - source: schedules_config
-              target: /schedules.json
 
     freedns:
         build: ../freedns

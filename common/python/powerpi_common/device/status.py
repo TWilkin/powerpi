@@ -38,16 +38,12 @@ class DeviceStatusChecker(object):
         self.__running = False
 
     def __schedule(self):
-        self.__logger.info(
-            'Polling for device state changes every {:d} seconds'.format(
-                self.__poll_frequency
-            )
-        )
+        self.__logger.info(f'Polling for device state changes every {self.__poll_frequency} seconds')
 
         schedule.every(self.__poll_frequency).seconds.do(self.__run)
 
     def __run(self):
-        self.__logger.info('Checking device state')
+        self.__logger.info('Checking devices state')
         for _, device in self.__device_manager.devices.items():
             try:
                 device.poll()

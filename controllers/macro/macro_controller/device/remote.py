@@ -41,6 +41,9 @@ class RemoteDevice(StatusEventConsumer):
     def poll(self):
         pass
 
+    def set_state_and_additional(self, state: str, _: dict):
+        self.state = state
+
     def turn_on(self):
         self.__send_message('on')
 

@@ -42,9 +42,7 @@ class MQTTClient(object):
             self.__consumers[key].remove(consumer)
 
         topic = '{}/{}'.format(self.__config.topic_base, key)
-        self.__logger.info(
-            'Unsubcribing from topic \'{:s}\''.format(topic)
-        )
+        self.__logger.info(f'Unsubcribing from topic "{topic}"')
         self.__client.unsubscribe(topic)
 
     def add_producer(self):
@@ -52,7 +50,7 @@ class MQTTClient(object):
             # add the timestamp to the message
             message['timestamp'] = int(datetime.utcnow().timestamp() * 1000)
 
-            topic = '{}/{}'.format(self.__config.topic_base, topic)
+            topic = f'{self.__config.topic_base}/{topic}'
 
             return self.__publish(topic, message)
         return publish
@@ -70,14 +68,10 @@ class MQTTClient(object):
             self.__logger.error(error)
             raise EnvironmentError(error)
 
-        client_id = '{}-{}'.format(
-            self.__app_name, socket.gethostname()
-        ).lower()
+        client_id = f'{self.__app_name}-{socket.gethostname()}'.lower()
 
         self.__logger.info(
-            'Connecting to MQTT at "{}" as "{}"'.format(
-                self.__config.mqtt_address, client_id
-            )
+            f'Connecting to MQTT at "{self.__config.mqtt_address}" as "{client_id}"'
         )
 
         url = urlparse(self.__config.mqtt_address)
@@ -92,60 +86,53 @@ class MQTTClient(object):
         self.__logger.info('Disconnecting from MQTT')
         self.__client.disconnect()
 
-    def __on_connect(self, client, user_data, flags, result_code):
+    def __on_connect(self, _, __, ___, result_code):
         if result_code == 0:
             self.__connected = True
             self.__logger.info('MQTT connected')
         else:
-            self.__logger.error(
-                'MQTT connection failed with code {}'.format(result_code)
-            )
+            self.__logger.error(f'MQTT connection failed with code {result_code}')
             return
 
         for _, consumers in self.__consumers.items():
             for consumer in consumers:
                 topic = '{}/{}'.format(self.__config.topic_base,
                                        consumer.topic)
-                self.__logger.info(
-                    'Subcribing to topic \'{:s}\''.format(topic)
-                )
+                self.__logger.info(f'Subcribing to topic "{topic}"')
                 self.__client.subscribe(topic)
 
-    def __on_disconnect(self, client, user_data, result_code):
+    def __on_disconnect(self, _, __, result_code):
         self.__connected = False
 
         if result_code == 0:
             self.__logger.info('MQTT disconnected')
         else:
-            self.__logger.error(
-                'MQTT disconnected with code {}'.format(result_code)
-            )
+            self.__logger.error(f'MQTT disconnected with code {result_code}')
 
     def __on_message(self, client, user_data, message):
         # read the JSON
         event = json.loads(message.payload)
-        self.__logger.info('Received: {:s}:{:s}'
-                           .format(message.topic, json.dumps(event)))
+        self.__logger.info(f'Received: {message.topic}:{json.dumps(event)}')
 
         # split the topic
         _, message_type, entity, action = message.topic.split('/', 3)
 
         # define the listener this was registered for
-        listener_key = '{}/{}/{}'.format(message_type, entity, action)
+        listener_key = f'{message_type}/{entity}/{action}'
 
         # send the message to the correct consumers
         if listener_key in self.__consumers:
             for consumer in self.__consumers[listener_key]:
                 consumer.on_message(client, user_data, event, entity, action)
 
-    def __on_log(self, client, user_data, level, message):
-        self.__logger.debug('MQTT({}): {}'.format(level, message))
+    def __on_log(self, _, __, level, message):
+        self.__logger.debug(f'MQTT({level}): {message}')
 
     def __publish(self, topic: str, message: dict):
         self.__wait_for_connection()
 
         message = json.dumps(message)
-        self.__logger.info('Publishing {:s}:{:s}'.format(topic, message))
+        self.__logger.info(f'Publishing {topic}:{message}')
         self.__client.publish(topic, message, qos=2, retain=True)
 
     def __wait_for_connection(self):
