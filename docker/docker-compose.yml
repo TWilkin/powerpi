@@ -262,7 +262,7 @@ services:
 
     energy-monitor:
         build: ../energy-monitor
-        image: ${REGISTRY}/powerpi/energy-monitor:0.0.1
+        image: ${REGISTRY}/powerpi/energy-monitor:0.0.2
         networks:
             - powerpi
         deploy:
@@ -272,8 +272,6 @@ services:
         secrets:
             - powerpi_ihd
         environment:
-            - MQTT_ADDRESS=mqtt://mosquitto:1883
-            - TOPIC_BASE=powerpi
             - IHD_SECRET_FILE=/var/run/secrets/powerpi_ihd
 
 # docker secret create powerpi_secret /path/to/secret/file

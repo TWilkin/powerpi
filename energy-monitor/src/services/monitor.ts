@@ -7,174 +7,149 @@ import N3rgyService, { EnergyType } from "./n3rgy";
 
 @Service()
 export default class EnergyMonitorService {
-  private mqtt: MqttService;
-  private logger: LoggerService;
+    private mqtt: MqttService;
+    private logger: LoggerService;
 
-  private lastUpdate: {
-    electricity?: Date;
-    gas?: Date;
-  };
+    private lastUpdate: {
+        electricity?: Date;
+        gas?: Date;
+    };
 
-  constructor(private n3rgy: N3rgyService, private config: ConfigService) {
-    this.mqtt = Container.get(MqttService);
-    this.logger = Container.get(LoggerService);
-    this.lastUpdate = {};
-  }
-
-  public start() {
-    this.update("electricity");
-    this.update("gas");
-  }
-
-  private async update(energyType: EnergyType) {
-    const start = this.lastUpdate[energyType] ?? this.defaultDate;
-    const end = new Date();
-
-    this.logger.info(
-      "Retrieving",
-      energyType,
-      "usage between",
-      start,
-      "and",
-      end
-    );
-
-    const generator = getData(
-      energyType === "electricity"
-        ? this.n3rgy.getElecticity
-        : this.n3rgy.getGas,
-      energyType,
-      start,
-      end,
-      this.logger
-    );
-
-    let rows = 0;
-    while (true) {
-      const result = await generator.next();
-
-      if (result.done) {
-        break;
-      }
-
-      rows += result.value.values.length;
-
-      const lastDate = this.publishMessage(energyType, result.value);
-      if (lastDate) {
-        this.lastUpdate[energyType] = lastDate;
-        this.logger.info("Received", energyType, "usage up to", lastDate);
-      }
+    constructor(private n3rgy: N3rgyService, private config: ConfigService) {
+        this.mqtt = Container.get(MqttService);
+        this.logger = Container.get(LoggerService);
+        this.lastUpdate = {};
     }
 
-    // schedule the next run either at the repeat interval or after the time the results usually arrive
-    const nextRun = this.calculateNextRun(rows, this.lastUpdate[energyType]);
-    this.logger.info("Retrieving", energyType, "usage again at", nextRun);
-    setTimeout(
-      () => this.update(energyType),
-      nextRun.getTime() - new Date().getTime()
-    );
-  }
-
-  private get defaultDate() {
-    const date = new Date();
-    date.setUTCMonth(date.getUTCMonth() - 13);
-
-    const timestamp = Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth(),
-      1,
-      0,
-      0,
-      0
-    );
-
-    return new Date(timestamp);
-  }
-
-  private calculateNextRun(rows: number, lastDate: Date | undefined) {
-    const now = new Date();
-    const oneDayAgo = new Date();
-    oneDayAgo.setUTCDate(oneDayAgo.getUTCDate() - 1);
-
-    if (rows > 1 && lastDate && lastDate >= oneDayAgo) {
-      // there was data within the last day,
-      // so use the time of the last record that was returned
-      let timeout = new Date(now);
-      timeout.setUTCHours(lastDate.getUTCHours());
-      timeout.setUTCMinutes(lastDate.getMinutes());
-      timeout = this.config.timeoutOffset.add(timeout);
-
-      while (timeout <= this.config.retryInterval.next()) {
-        // can't be in the past, or within interval so add a day
-        timeout.setUTCDate(timeout.getUTCDate() + 1);
-      }
-
-      return timeout;
+    public start() {
+        this.update("electricity");
+        this.update("gas");
     }
 
-    // no data so use the retry interval
-    return this.config.retryInterval.next();
-  }
+    private async update(energyType: EnergyType) {
+        const start = this.lastUpdate[energyType] ?? this.defaultDate;
+        const end = new Date();
 
-  private publishMessage(energyType: EnergyType, data: N3rgyData) {
-    const messages = data.values
-      .map((value) => ({
-        value: value.value,
-        unit: data.unit,
-        timestamp: new Date(`${value.timestamp}Z`).getTime()
-      }))
-      .sort((a, b) => a.timestamp - b.timestamp);
+        this.logger.info("Retrieving", energyType, "usage between", start, "and", end);
 
-    let lastDate: number = 0;
-    messages.forEach((message) => {
-      this.mqtt.publish("event", energyType, "usage", message);
+        const generator = getData(
+            energyType === "electricity" ? this.n3rgy.getElecticity : this.n3rgy.getGas,
+            energyType,
+            start,
+            end,
+            this.logger
+        );
 
-      lastDate = message.timestamp;
-    });
+        let rows = 0;
+        while (true) {
+            const result = await generator.next();
 
-    this.logger.info("Published", messages.length, "message(s) to queue");
+            if (result.done) {
+                break;
+            }
 
-    return lastDate > 0 ? new Date(lastDate) : undefined;
-  }
+            rows += result.value.values.length;
+
+            const lastDate = this.publishMessage(energyType, result.value);
+            if (lastDate) {
+                this.lastUpdate[energyType] = lastDate;
+                this.logger.info("Received", energyType, "usage up to", lastDate);
+            }
+        }
+
+        // schedule the next run either at the repeat interval or after the time the results usually arrive
+        const nextRun = this.calculateNextRun(rows, this.lastUpdate[energyType]);
+        this.logger.info("Retrieving", energyType, "usage again at", nextRun);
+        setTimeout(() => this.update(energyType), nextRun.getTime() - new Date().getTime());
+    }
+
+    private get defaultDate() {
+        const date = new Date();
+        date.setUTCMonth(date.getUTCMonth() - 13);
+
+        const timestamp = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1, 0, 0, 0);
+
+        return new Date(timestamp);
+    }
+
+    private calculateNextRun(rows: number, lastDate: Date | undefined) {
+        const now = new Date();
+        const oneDayAgo = new Date();
+        oneDayAgo.setUTCDate(oneDayAgo.getUTCDate() - 1);
+
+        if (rows > 1 && lastDate && lastDate >= oneDayAgo) {
+            // there was data within the last day,
+            // so use the time of the last record that was returned
+            let timeout = new Date(now);
+            timeout.setUTCHours(lastDate.getUTCHours());
+            timeout.setUTCMinutes(lastDate.getMinutes());
+            timeout = this.config.timeoutOffset.add(timeout);
+
+            while (timeout <= this.config.retryInterval.next()) {
+                // can't be in the past, or within interval so add a day
+                timeout.setUTCDate(timeout.getUTCDate() + 1);
+            }
+
+            return timeout;
+        }
+
+        // no data so use the retry interval
+        return this.config.retryInterval.next();
+    }
+
+    private publishMessage(energyType: EnergyType, data: N3rgyData) {
+        const messages = data.values
+            .map((value) => ({
+                value: value.value,
+                unit: data.unit,
+                timestamp: new Date(`${value.timestamp}Z`).getTime(),
+            }))
+            .sort((a, b) => a.timestamp - b.timestamp);
+
+        let lastDate: number = 0;
+        messages.forEach((message) => {
+            this.mqtt.publish("event", energyType, "usage", message);
+
+            lastDate = message.timestamp;
+        });
+
+        this.logger.info("Published", messages.length, "message(s) to queue");
+
+        return lastDate > 0 ? new Date(lastDate) : undefined;
+    }
 }
 
 async function* getData(
-  func: (start: Date, end: Date) => Promise<N3rgyData>,
-  energyType: EnergyType,
-  start: Date,
-  end: Date,
-  logger: LoggerService
+    func: (start: Date, end: Date) => Promise<N3rgyData>,
+    energyType: EnergyType,
+    start: Date,
+    end: Date,
+    logger: LoggerService
 ) {
-  const chunks = chunkDates(start, end);
-  logger.info(
-    "Split",
-    energyType,
-    "interval into",
-    chunks.length - 1,
-    "chunk(s)"
-  );
+    const chunks = chunkDates(start, end);
+    logger.info("Split", energyType, "interval into", chunks.length - 1, "chunk(s)");
 
-  try {
-    for (let i = 1; i < chunks.length; i++) {
-      const result = await func(chunks[i - 1], chunks[i]);
+    try {
+        for (let i = 1; i < chunks.length; i++) {
+            const result = await func(chunks[i - 1], chunks[i]);
 
-      logger.info("Received", result.values.length, energyType, "reading(s)");
+            logger.info("Received", result.values.length, energyType, "reading(s)");
 
-      yield result;
+            yield result;
+        }
+    } catch (error) {
+        logger.error(error);
     }
-  } catch (error) {
-    logger.error(error);
-  }
 }
 
 function chunkDates(start: Date, end: Date) {
-  let dates = [start];
+    let dates = [start];
 
-  let current = new Date(start);
-  do {
-    current.setDate(current.getDate() + 90);
-    dates.push(new Date(current));
-  } while (current <= end);
+    let current = new Date(start);
+    do {
+        current.setDate(current.getDate() + 90);
+        dates.push(new Date(current));
+    } while (current <= end);
 
-  return dates;
+    return dates;
 }
