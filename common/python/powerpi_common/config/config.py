@@ -19,7 +19,8 @@ class Config(object):
 
     @property
     def mqtt_address(self):
-        return os.getenv('MQTT_ADDRESS')
+        address = os.getenv('MQTT_ADDRESS')
+        return address if address is not None else 'mqtt://mosquitto:1883'
 
     @property
     def mqtt_connect_timeout(self):
