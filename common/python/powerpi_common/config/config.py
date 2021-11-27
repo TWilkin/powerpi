@@ -10,7 +10,7 @@ class ConfigFileType(Enum):
 
 class Config(object):
     def __init__(self):
-        self.__configs: dict(ConfigFileType, dict('data' | 'checksum', object)) = {}
+        self.__configs: dict(ConfigFileType, dict) = {}
 
     @property
     def log_level(self):
@@ -64,14 +64,19 @@ class Config(object):
         return self.__file_or_config('EVENTS_FILE', ConfigFileType.Events)
     
     @property
+    def is_populated(self):
+        types = [fileType.value for fileType in ConfigFileType]
+        return all([self.__configs.get(fileType) is not None for fileType in types])
+    
+    @property
     def used_config(self):
-        raise NotImplementedError()
+        return [fileType.value for fileType in ConfigFileType]
 
     def get_config(self, type: ConfigFileType):
         return self.__configs.get(type)
     
-    def set_config(self, type: ConfigFileType, data: object, checksum: str):
-        self.__configs[type] = { data, checksum }
+    def set_config(self, type: ConfigFileType, data: dict):
+        self.__configs[type] = data
 
     @classmethod
     def __load(cls, file: str):
@@ -87,7 +92,7 @@ class Config(object):
         
         config = self.get_config(type)
         if config is not None:
-            return config.data
+            return config
         
         return None
 
