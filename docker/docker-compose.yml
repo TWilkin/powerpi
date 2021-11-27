@@ -116,7 +116,7 @@ services:
             - DEVICES_FILE=/devices.json
             - EVENTS_FILE=/events.json
             - CONTROLLER_NAME=energenie-controller
-            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.7
+            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.8
             - GPIOMEM=/dev/gpiomem
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
