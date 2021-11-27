@@ -23,7 +23,7 @@ async def main(
         ApplicationContainer.common.device.device_status_checker
     ]
 ):
-    logger.info('PowerPi LIFX Controller v{}'.format(__version__))
+    logger.info(f'PowerPi LIFX Controller v{__version__}')
 
     # intially connect to MQTT
     mqtt_client.connect()
