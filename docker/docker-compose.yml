@@ -146,7 +146,7 @@ services:
               target: /events.json
 
     lifx-controller:
-        image: ${REGISTRY}/powerpi/controllers/lifx:0.0.3
+        image: ${REGISTRY}/powerpi/controllers/lifx:0.0.4
         networks:
             - powerpi
         deploy:
