@@ -1,10 +1,17 @@
 import json
 import os
 
-from io import StringIO
+from enum import Enum
+
+class ConfigFileType(Enum):
+    Devices = 'devices'
+    Events = 'events'
 
 
 class Config(object):
+    def __init__(self):
+        self.__configs: dict(ConfigFileType, dict('data' | 'checksum', object)) = {}
+
     @property
     def log_level(self):
         level = os.getenv('LOG_LEVEL')
@@ -33,26 +40,56 @@ class Config(object):
     def message_age_cutoff(self):
         cutoff = as_int(os.getenv('MESSAGE_AGE_CUTOFF'))
         return cutoff if cutoff is not None else 10
+    
+    @property
+    def config_wait_time(self):
+        time = as_int(os.getenv('CONFIG_WAIT_TIME'))
+        return time if time is not None else 2 * 60
+    
+    @property
+    def config_is_needed(self):
+        return not self.use_config_file
+    
+    @property
+    def use_config_file(self):
+        use = os.getenv("USE_CONFIG_FILE")
+        return use.upper() == "TRUE" if use is not None else False
 
     @property
     def devices(self):
-        return Config.__load(
-            os.getenv('DEVICES_FILE'), os.getenv('DEVICES')
-        )
+        return self.__file_or_config('DEVICES_FILE', ConfigFileType.Devices)
 
     @property
     def events(self):
-        return Config.__load(
-            os.getenv('EVENTS_FILE'), os.getenv('EVENTS')
-        )
+        return self.__file_or_config('EVENTS_FILE', ConfigFileType.Events)
+    
+    @property
+    def used_config(self):
+        raise NotImplementedError()
+
+    def get_config(self, type: ConfigFileType):
+        return self.__configs.get(type)
+    
+    def set_config(self, type: ConfigFileType, data: object, checksum: str):
+        self.__configs[type] = { data, checksum }
 
     @classmethod
-    def __load(cls, file, content):
-        try:
-            with open(file, 'r') as json_file:
-                return json.load(json_file)
-        except:
-            return json.load(StringIO(content))
+    def __load(cls, file: str):
+        with open(file, 'r') as json_file:
+            return json.load(json_file)
+    
+    def __file_or_config(self, key: str, type: ConfigFileType):
+        if self.use_config_file:
+            path = os.getenv(key);
+
+            if path is not None:
+                return Config.__load(path)
+        
+        config = self.get_config(type)
+        if config is not None:
+            return config.data
+        
+        return None
 
 
 def as_int(value):
