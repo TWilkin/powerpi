@@ -85,12 +85,12 @@ class Config(object):
     
     def __file_or_config(self, key: str, type: ConfigFileType):
         if self.use_config_file:
-            path = os.getenv(key);
+            path = os.getenv(key)
 
             if path is not None:
                 return Config.__load(path)
         
-        config = self.get_config(type)
+        config = self.get_config(type.value)
         if config is not None:
             return config
         
