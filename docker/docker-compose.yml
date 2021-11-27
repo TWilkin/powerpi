@@ -81,7 +81,7 @@ services:
             - deep-thought
 
     macro-controller:
-        image: ${REGISTRY}/powerpi/controllers/macro:1.0.3
+        image: ${REGISTRY}/powerpi/controllers/macro:1.0.4
         networks:
             - powerpi
         deploy:
