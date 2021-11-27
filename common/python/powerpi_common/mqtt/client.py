@@ -6,6 +6,7 @@ import sys
 import time
 
 from datetime import datetime
+from threading import Thread
 from urllib.parse import urlparse
 
 from ..config import Config
@@ -14,7 +15,6 @@ from . consumer import MQTTConsumer
 
 
 class MQTTClient(object):
-
     def __init__(
         self,
         app_name: str,
@@ -64,7 +64,7 @@ class MQTTClient(object):
         return publish
 
     def loop(self):
-        self.__client.loop_forever()
+        self.__thread.join()
 
     def connect(self):
         if self.__config.mqtt_address is None:
@@ -87,11 +87,13 @@ class MQTTClient(object):
         self.__client.connect(url.hostname, url.port, 60)
 
         atexit.register(self.disconnect)
-        self.__client.loop_start()
+        self.__thread = Thread(target = self.__client.loop_forever)
+        self.__thread.start()
 
     def disconnect(self):
         self.__logger.info('Disconnecting from MQTT')
         self.__client.disconnect()
+        self.__client.loop_stop()
 
     def __on_connect(self, _, __, ___, result_code):
         if result_code == 0:
@@ -112,7 +114,7 @@ class MQTTClient(object):
     def __on_message(self, client, user_data, message):
         # read the JSON
         event = json.loads(message.payload)
-        self.__logger.info(f'Received: {message.topic}:{json.dumps(event)}')
+        self.__logger.debug(f'Received: {message.topic}:{json.dumps(event)}')
 
         # split the topic
         _, message_type, entity, action = message.topic.split('/', 3)
