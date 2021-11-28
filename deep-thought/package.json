@@ -33,7 +33,6 @@
         "express-session": "^1.17.2",
         "http-status-codes": "^1.4.0",
         "jsonwebtoken": "^8.5.1",
-        "mqtt": "^4.2.8",
         "passport": "^0.4.1",
         "passport-google-oauth20": "^2.0.0",
         "passport-http": "^0.3.0",

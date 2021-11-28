@@ -1,37 +1,21 @@
+import { Message, MqttConsumer } from "powerpi-common";
 import { DeviceState } from "../models/device";
-import ConfigService from "./config";
-import MqttService, { MqttListener } from "./mqtt";
+import MqttService from "./mqtt";
 
-export default abstract class StateListener implements MqttListener {
-    private topicMatcherRegex: RegExp;
-
-    constructor(
-        protected readonly config: ConfigService,
-        private readonly mqttService: MqttService
-    ) {
-        this.topicMatcherRegex = new RegExp(this.topicName(".*")).compile();
-    }
-
-    private topicName = (placeholder: string) =>
-        `${this.config.topicNameBase}/device/${placeholder}/status`;
-
-    public get topicMatcher() {
-        return this.topicMatcherRegex;
-    }
+export default abstract class StateListener implements MqttConsumer {
+    constructor(private readonly mqttService: MqttService) {}
 
     public async $onInit() {
-        this.mqttService.subscribe(this.topicName("+"), this);
+        await this.mqttService.subscribe("devices", "+", "status", this);
     }
 
-    public async onMessage(topic: string, message: any) {
-        const [, , deviceName] = topic.split("/", 4);
-
-        this.onStateMessage(deviceName, message.state, message.timestamp);
+    public message(type: string, entity: string, action: string, message: Message): void {
+        this.onStateMessage(entity, message.state, message.timestamp);
     }
 
     protected abstract onStateMessage(
         deviceName: string,
         state: DeviceState,
-        timestamp: number
+        timestamp?: number
     ): void;
 }

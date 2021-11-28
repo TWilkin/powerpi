@@ -2,7 +2,6 @@ import { $log } from "@tsed/common";
 import { Nsp, SocketService } from "@tsed/socketio";
 import { Namespace } from "socket.io";
 import { DeviceState } from "../models/device";
-import ConfigService from "./config";
 import MqttService from "./mqtt";
 import StateListener from "./stateListener";
 
@@ -11,11 +10,11 @@ export default class DeviceStateSocketService extends StateListener {
     @Nsp
     namespace!: Namespace;
 
-    constructor(config: ConfigService, mqttService: MqttService) {
-        super(config, mqttService);
+    constructor(mqttService: MqttService) {
+        super(mqttService);
     }
 
-    onStateMessage(deviceName: string, state: DeviceState, timestamp: number) {
+    onStateMessage(deviceName: string, state: DeviceState, timestamp?: number) {
         this.namespace.emit("message", {
             device: deviceName,
             state,
