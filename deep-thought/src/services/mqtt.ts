@@ -1,7 +1,7 @@
 import { $log, OnInit, Service } from "@tsed/common";
 import { connect, IClientPublishOptions, MqttClient } from "mqtt";
 import os from "os";
-import Config from "./config";
+import ConfigService from "./config";
 
 export interface MqttListener extends OnInit {
     topicMatcher: RegExp;
@@ -17,7 +17,7 @@ export default class MqttService {
 
     private topics: string[];
 
-    constructor(private readonly config: Config) {
+    constructor(private readonly config: ConfigService) {
         this.client = undefined;
         this.listeners = [];
         this.topics = [];

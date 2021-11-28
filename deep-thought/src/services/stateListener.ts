@@ -1,11 +1,14 @@
 import { DeviceState } from "../models/device";
-import Config from "./config";
+import ConfigService from "./config";
 import MqttService, { MqttListener } from "./mqtt";
 
 export default abstract class StateListener implements MqttListener {
     private topicMatcherRegex: RegExp;
 
-    constructor(protected readonly config: Config, private readonly mqttService: MqttService) {
+    constructor(
+        protected readonly config: ConfigService,
+        private readonly mqttService: MqttService
+    ) {
         this.topicMatcherRegex = new RegExp(this.topicName(".*")).compile();
     }
 

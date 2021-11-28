@@ -13,15 +13,15 @@ import { Authenticate, Authorize } from "@tsed/passport";
 import crypto from "crypto";
 import HttpStatus from "http-status-codes";
 import passport from "passport";
-import User from "../models/user";
-import Config from "../services/config";
+import { IUser } from "powerpi-common";
+import ConfigService from "../services/config";
 import JwtService from "../services/jwt";
 import UserService from "../services/user";
 
 @Controller("/auth")
 export default class AuthController {
     constructor(
-        private readonly config: Config,
+        private readonly config: ConfigService,
         private readonly jwtService: JwtService,
         private readonly userService: UserService
     ) {}
@@ -63,7 +63,7 @@ export default class AuthController {
     @Get("/google/callback")
     @Authenticate("google", { session: false })
     async googleCallback(
-        @Req("user") user: User,
+        @Req("user") user: IUser,
         @Session("redirectUri") redirectUri: string,
         @Session("useCode") useCode: boolean,
         @Res() response: Res

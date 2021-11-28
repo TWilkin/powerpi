@@ -2,16 +2,16 @@ import { $log } from "@tsed/common";
 import { Nsp, SocketService } from "@tsed/socketio";
 import { Namespace } from "socket.io";
 import { DeviceState } from "../models/device";
-import Config from "../services/config";
-import MqttService from "../services/mqtt";
-import StateListener from "../services/stateListener";
+import ConfigService from "./config";
+import MqttService from "./mqtt";
+import StateListener from "./stateListener";
 
 @SocketService("/api")
 export default class DeviceStateSocketService extends StateListener {
     @Nsp
     namespace!: Namespace;
 
-    constructor(config: Config, mqttService: MqttService) {
+    constructor(config: ConfigService, mqttService: MqttService) {
         super(config, mqttService);
     }
 

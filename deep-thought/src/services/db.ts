@@ -1,6 +1,6 @@
 import { $log, Service } from "@tsed/common";
 import { Pool, PoolClient } from "pg";
-import Config from "./config";
+import ConfigService from "./config";
 
 interface DatabaseQueryParam {
     name: string;
@@ -11,7 +11,7 @@ interface DatabaseQueryParam {
 export default class DatabaseService {
     private pool: Pool | undefined;
 
-    constructor(private readonly config: Config) {
+    constructor(private readonly config: ConfigService) {
         this.pool = undefined;
     }
 

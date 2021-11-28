@@ -3,12 +3,15 @@ import { Required } from "@tsed/schema";
 import { Response } from "express";
 import HttpStatus from "http-status-codes";
 import Authorize from "../middleware/auth";
-import Config from "../services/config";
+import ConfigService from "../services/config";
 import MqttService from "../services/mqtt";
 
 @Controller("/topic")
 export default class TopicController {
-    constructor(private readonly config: Config, private readonly mqttService: MqttService) {}
+    constructor(
+        private readonly config: ConfigService,
+        private readonly mqttService: MqttService
+    ) {}
 
     @Post("/:type/:entity/:action")
     @Authorize()

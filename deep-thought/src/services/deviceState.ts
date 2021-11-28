@@ -1,6 +1,6 @@
 import { Service } from "@tsed/common";
 import { Device, DeviceConfig, DeviceState } from "../models/device";
-import Config from "./config";
+import ConfigService from "./config";
 import MqttService from "./mqtt";
 import StateListener from "./stateListener";
 
@@ -8,7 +8,7 @@ import StateListener from "./stateListener";
 export default class DeviceStateService extends StateListener {
     private _devices: Device[] | undefined;
 
-    constructor(config: Config, mqttService: MqttService) {
+    constructor(config: ConfigService, mqttService: MqttService) {
         super(config, mqttService);
 
         this._devices = undefined;
@@ -34,9 +34,9 @@ export default class DeviceStateService extends StateListener {
     }
 
     private async initialise() {
-        this._devices = (await this.config.getDevices()).map((device: DeviceConfig) => ({
+        this._devices = this.config.devices.map((device) => ({
             name: device.name,
-            display_name: device.display_name,
+            display_name: device.displayName,
             type: device.type,
             visible: device.visible ?? true,
             state: "unknown",

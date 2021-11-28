@@ -1,7 +1,7 @@
 import { $log } from "@tsed/logger";
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { Strategy, StrategyOptions } from "passport-google-oauth20";
-import Config from "../services/config";
+import ConfigService from "../services/config";
 import UserService from "../services/user";
 
 interface GoogleStrategy {
@@ -27,7 +27,10 @@ interface Profile {
     },
 })
 export default class GoogleProtocol implements OnVerify, OnInstall {
-    constructor(private readonly config: Config, private readonly userService: UserService) {}
+    constructor(
+        private readonly config: ConfigService,
+        private readonly userService: UserService
+    ) {}
 
     async $onVerify(@Arg(0) accessToken: string, @Arg(2) profile: Profile) {
         const userEmails = profile.emails

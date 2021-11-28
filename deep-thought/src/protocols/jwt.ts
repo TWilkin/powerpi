@@ -1,7 +1,7 @@
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { Request } from "express";
 import { ExtractJwt, Strategy, StrategyOptions } from "passport-jwt";
-import Config from "../services/config";
+import ConfigService from "../services/config";
 import JwtService from "../services/jwt";
 import UserService from "../services/user";
 
@@ -53,7 +53,7 @@ export default class JwtProtocol implements OnVerify, OnInstall {
 }
 
 function getSecret(_: any, __: any, done: (err: any, secret: string) => void) {
-    new Config().getJWTSecret().then((key) => done(null, key));
+    new ConfigService().getJWTSecret().then((key) => done(null, key));
 }
 
 function getToken(request: Request): string | null {

@@ -1,7 +1,7 @@
 import { Service } from "@tsed/common";
 import jwt from "jsonwebtoken";
 import User from "../models/user";
-import Config from "./config";
+import ConfigService from "./config";
 
 interface Token {
     email: string;
@@ -15,7 +15,7 @@ interface Token {
 
 @Service()
 export default class JwtService {
-    constructor(private readonly config: Config) {}
+    constructor(private readonly config: ConfigService) {}
 
     public static get cookieKey() {
         return "jwt";

@@ -1,13 +1,13 @@
 import { Service } from "@tsed/common";
 import User from "../models/user";
-import Config from "./config";
+import ConfigService from "./config";
 
 @Service()
 export default class UserService {
     private _users: User[] | undefined;
     private _codes: { [code: string]: User };
 
-    constructor(private readonly config: Config) {
+    constructor(private readonly config: ConfigService) {
         this._codes = {};
     }
 
@@ -29,11 +29,11 @@ export default class UserService {
         return user;
     }
 
-    public async $onInit() {
-        await this.initialise();
+    public $onInit() {
+        this.initialise();
     }
 
-    private async initialise() {
-        this._users = await this.config.getUsers();
+    private initialise() {
+        this._users = this.config.users.users;
     }
 }
