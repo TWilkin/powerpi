@@ -7,90 +7,88 @@ import AuthConfig from "../models/auth";
 const readFile = util.promisify(fs.readFile);
 
 @Injectable({
-  type: ProviderType.VALUE,
-  scope: ProviderScope.SINGLETON
+    type: ProviderType.VALUE,
+    scope: ProviderScope.SINGLETON,
 })
 export default class Config {
-  get mqttAddress() {
-    return process.env.MQTT_ADDRESS;
-  }
+    get mqttAddress() {
+        return process.env.MQTT_ADDRESS;
+    }
 
-  get topicNameBase() {
-    return process.env.TOPIC_BASE;
-  }
+    get topicNameBase() {
+        return process.env.TOPIC_BASE;
+    }
 
-  get externalHostName() {
-    return process.env.EXTERNAL_HOST_NAME;
-  }
+    get externalHostName() {
+        return process.env.EXTERNAL_HOST_NAME;
+    }
 
-  get externalPort() {
-    return process.env.EXTERNAL_PORT;
-  }
+    get externalPort() {
+        return process.env.EXTERNAL_PORT;
+    }
 
-  get usesHttps() {
-    return process.env.USE_HTTP !== "true";
-  }
+    get usesHttps() {
+        return process.env.USE_HTTP !== "true";
+    }
 
-  get externalUrlBase() {
-    const https = this.usesHttps ? "s" : "";
-    return `http${https}://${this.externalHostName}:${this.externalPort}`;
-  }
+    get externalUrlBase() {
+        const https = this.usesHttps ? "s" : "";
+        return `http${https}://${this.externalHostName}:${this.externalPort}`;
+    }
 
-  async getDevices() {
-    const file = await Config.readFile(process.env.DEVICES_FILE as string);
-    const json = JSON.parse(file);
-    return json.devices;
-  }
+    async getDevices() {
+        const file = await Config.readFile(process.env.DEVICES_FILE as string);
+        const json = JSON.parse(file);
+        return json.devices;
+    }
 
-  async getDatabaseURI() {
-    const user = process.env.DB_USER;
-    const password = await Config.readFile(
-      process.env.DB_PASSWORD_FILE as string
-    );
-    const host = process.env.DB_HOST;
-    const port = process.env.DB_PORT ?? 5432;
-    const schema = process.env.DB_SCHEMA;
+    async getDatabaseURI() {
+        const user = process.env.DB_USER;
+        const password = await Config.readFile(process.env.DB_PASSWORD_FILE as string);
+        const host = process.env.DB_HOST;
+        const port = process.env.DB_PORT ?? 5432;
+        const schema = process.env.DB_SCHEMA;
 
-    return `postgres://${user}:${password}@${host}:${port}/${schema}`;
-  }
+        return `postgres://${user}:${password}@${host}:${port}/${schema}`;
+    }
 
-  async getUsers() {
-    const file = await Config.readFile(process.env.USERS_FILE as string);
-    const json = JSON.parse(file);
-    return json.users;
-  }
+    async getUsers() {
+        const file = await Config.readFile(process.env.USERS_FILE as string);
+        const json = JSON.parse(file);
+        return json.users;
+    }
 
-  async getAuthConfig(): Promise<AuthConfig[]> {
-    const protocols = ["google", "oauth"];
+    async getAuthConfig(): Promise<AuthConfig[]> {
+        const protocols = ["google", "oauth"];
 
-    return await Promise.all(
-      protocols.map(async (name) => {
-        const envPrefix = name.toUpperCase();
+        return await Promise.all(
+            protocols.map(async (name) => {
+                const envPrefix = name.toUpperCase();
 
-        const secret = await Config.readFile(
-          process.env[`${envPrefix}_SECRET_FILE`] as string
+                const secret = await Config.readFile(
+                    process.env[`${envPrefix}_SECRET_FILE`] as string
+                );
+
+                return {
+                    name,
+                    clientId: process.env[`${envPrefix}_CLIENT_ID`],
+                    clientSecret: secret,
+                } as AuthConfig;
+            })
         );
+    }
 
-        return {
-          name,
-          clientId: process.env[`${envPrefix}_CLIENT_ID`],
-          clientSecret: secret
-        } as AuthConfig;
-      })
-    );
-  }
+    async getJWTSecret(): Promise<string> {
+        const file = await readFile(process.env.JWT_SECRET_FILE as string);
+        return file.toString();
+    }
 
-  async getJWTSecret(): Promise<string> {
-    const file = await readFile(process.env.JWT_SECRET_FILE as string);
-    return file.toString();
-  }
+    async getSessionSecret(): Promise<string> {
+        const file = await readFile(process.env.SESSION_SECRET_FILE as string);
+        return file.toString();
+    }
 
-  async getSessionSecret(): Promise<string> {
-    const file = await readFile(process.env.SESSION_SECRET_FILE as string);
-    return file.toString();
-  }
-
-  private static async readFile(filePath: string): Promise<any> {
-    return (await readFile(filePath)).toString().trim();
-  }
+    private static async readFile(filePath: string): Promise<any> {
+        return (await readFile(filePath)).toString().trim();
+    }
 }

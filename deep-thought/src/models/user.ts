@@ -1,4 +1,4 @@
 export default interface User {
-  email: string;
-  subject?: string;
+    email: string;
+    subject?: string;
 }

@@ -3,12 +3,12 @@ import { PlatformExpress } from "@tsed/platform-express";
 import Server from "./Server";
 
 async function bootstrap() {
-  try {
-    const platform = await PlatformExpress.bootstrap(Server);
-    await platform.listen();
-  } catch (er) {
-    $log.error(er);
-  }
+    try {
+        const platform = await PlatformExpress.bootstrap(Server);
+        await platform.listen();
+    } catch (er) {
+        $log.error(er);
+    }
 }
 
 bootstrap();
