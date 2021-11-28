@@ -72,7 +72,7 @@ services:
 
     babel-fish:
         build: ../babel-fish
-        image: ${REGISTRY}/powerpi/babel-fish:0.0.3
+        image: ${REGISTRY}/powerpi/babel-fish:0.0.4
         networks:
             - powerpi
         deploy:
