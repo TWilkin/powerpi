@@ -9,8 +9,14 @@ import AuthConfig from "../models/auth";
 @Injectable({
     type: ProviderType.VALUE,
     scope: ProviderScope.SINGLETON,
+    useFactory: () => Container.get(ConfigService),
 })
 export default class ConfigService extends CommonConfigService {
+    constructor() {
+        super();
+        console.log("here");
+    }
+
     get service() {
         return app.name;
     }
