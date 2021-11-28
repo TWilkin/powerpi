@@ -1,4 +1,5 @@
-import { $log, BodyParams, Controller, PathParams, Post, Required, Res } from "@tsed/common";
+import { $log, BodyParams, Controller, PathParams, Post, Res } from "@tsed/common";
+import { Required } from "@tsed/schema";
 import { Response } from "express";
 import HttpStatus from "http-status-codes";
 import Authorize from "../middleware/auth";

@@ -1,4 +1,4 @@
-import { $log, OnInit, OnServerReady, Service } from "@tsed/common";
+import { $log, OnInit, Service } from "@tsed/common";
 import { connect, IClientPublishOptions, MqttClient } from "mqtt";
 import os from "os";
 import Config from "./config";
@@ -10,7 +10,7 @@ export interface MqttListener extends OnInit {
 }
 
 @Service()
-export default class MqttService implements OnServerReady {
+export default class MqttService {
     private client: MqttClient | undefined;
 
     private listeners: MqttListener[];
@@ -23,11 +23,9 @@ export default class MqttService implements OnServerReady {
         this.topics = [];
     }
 
-    $onServerReady() {
-        this.connect();
-    }
-
     public publish(topic: string, message: any) {
+        this.connect();
+
         const options: IClientPublishOptions = {
             qos: 2,
             retain: true,
@@ -39,6 +37,8 @@ export default class MqttService implements OnServerReady {
     }
 
     public subscribe(topic: string, listener: MqttListener) {
+        this.connect();
+
         this.topics.push(topic);
         this.listeners.push(listener);
     }

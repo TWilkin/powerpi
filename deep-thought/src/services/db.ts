@@ -1,4 +1,4 @@
-import { $log, OnServerReady, Service } from "@tsed/common";
+import { $log, Service } from "@tsed/common";
 import { Pool, PoolClient } from "pg";
 import Config from "./config";
 
@@ -8,15 +8,11 @@ interface DatabaseQueryParam {
 }
 
 @Service()
-export default class DatabaseService implements OnServerReady {
+export default class DatabaseService {
     private pool: Pool | undefined;
 
     constructor(private readonly config: Config) {
         this.pool = undefined;
-    }
-
-    $onServerReady() {
-        this.connect();
     }
 
     public getHistory(
@@ -75,6 +71,8 @@ export default class DatabaseService implements OnServerReady {
         let client: PoolClient | undefined;
 
         try {
+            await this.connect();
+
             client = await this.pool?.connect();
 
             return await client?.query(sql, params);
