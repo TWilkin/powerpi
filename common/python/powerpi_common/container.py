@@ -1,11 +1,10 @@
 from dependency_injector import containers, providers
 
-from powerpi_common.config import Config
+from powerpi_common.config import Config, ConfigRetriever
 from powerpi_common.logger import Logger
 from powerpi_common.device import DeviceContainer
 from powerpi_common.event import EventManager
 from powerpi_common.mqtt.client import MQTTClient
-
 
 class Container(containers.DeclarativeContainer):
     __self__ = providers.Self()
@@ -30,6 +29,13 @@ class Container(containers.DeclarativeContainer):
         app_name=app_name,
         config=config,
         logger=logger
+    )
+
+    config_retriever = providers.Singleton(
+        ConfigRetriever,
+        config=config,
+        logger=logger,
+        mqtt_client=mqtt_client
     )
 
     device = providers.Container(

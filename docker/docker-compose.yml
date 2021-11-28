@@ -81,24 +81,17 @@ services:
             - deep-thought
 
     macro-controller:
-        image: ${REGISTRY}/powerpi/controllers/macro:1.0.3
+        image: ${REGISTRY}/powerpi/controllers/macro:1.0.4
         networks:
             - powerpi
         deploy:
             replicas: 1
         depends_on:
             - mosquitto
-        environment:
-            - MQTT_ADDRESS=mqtt://mosquitto:1883
-            - TOPIC_BASE=powerpi
-            - DEVICES_FILE=/devices.json
-        configs:
-            - source: devices_config
-              target: /devices.json
 
     device-mapper:
         build: ../device-mapper
-        image: ${REGISTRY}/powerpi/device-mapper:0.0.3
+        image: ${REGISTRY}/powerpi/device-mapper:0.0.4
         networks:
             - powerpi
         deploy:
@@ -111,58 +104,29 @@ services:
         environment:
             - DEVICE_FATAL=true
             - ENERGENIE_DEVICE=ENER314-RT
-            - MQTT_ADDRESS=mqtt://mosquitto:1883
-            - TOPIC_BASE=powerpi
-            - DEVICES_FILE=/devices.json
-            - EVENTS_FILE=/events.json
             - CONTROLLER_NAME=energenie-controller
-            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.7
+            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.8
             - GPIOMEM=/dev/gpiomem
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-        configs:
-            - source: devices_config
-              target: /devices.json
-            - source: events_config
-              target: /events.json
 
     harmony-controller:
-        image: ${REGISTRY}/powerpi/controllers/harmony:0.0.5
+        image: ${REGISTRY}/powerpi/controllers/harmony:0.0.6
         networks:
             - powerpi
         deploy:
             replicas: 1
         depends_on:
             - mosquitto
-        environment:
-            - MQTT_ADDRESS=mqtt://mosquitto:1883
-            - TOPIC_BASE=powerpi
-            - DEVICES_FILE=/devices.json
-            - EVENTS_FILE=/events.json
-        configs:
-            - source: devices_config
-              target: /devices.json
-            - source: events_config
-              target: /events.json
 
     lifx-controller:
-        image: ${REGISTRY}/powerpi/controllers/lifx:0.0.3
+        image: ${REGISTRY}/powerpi/controllers/lifx:0.0.4
         networks:
             - powerpi
         deploy:
             replicas: 1
         depends_on:
             - mosquitto
-        environment:
-            - MQTT_ADDRESS=mqtt://mosquitto:1883
-            - TOPIC_BASE=powerpi
-            - DEVICES_FILE=/devices.json
-            - EVENTS_FILE=/events.json
-        configs:
-            - source: devices_config
-              target: /devices.json
-            - source: events_config
-              target: /events.json
 
     light-fantastic:
         build: ../light-fantastic

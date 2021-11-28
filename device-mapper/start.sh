@@ -1,9 +1,5 @@
 #!/bin/sh
 
-# export the config to variables
-DEVICES=`tr "\n" " " < $DEVICES_FILE | sed s/\"/\\\\\"/g`
-EVENTS=`tr "\n" " " < $EVENTS_FILE | sed s/\"/\\\\\"/g`
-
 # generate a name for the container
 NAME=powerpi_$CONTROLLER_NAME.1.`hostname`
 
@@ -32,9 +28,5 @@ docker run \
     --network powerpi \
     --env "DEVICE_FATAL=$DEVICE_FATAL" \
     --env "ENERGENIE_DEVICE=$ENERGENIE_DEVICE" \
-    --env "MQTT_ADDRESS=$MQTT_ADDRESS" \
-    --env "TOPIC_BASE=$TOPIC_BASE" \
-    --env "DEVICES=$DEVICES" \
-    --env "EVENTS=$EVENTS" \
     $IMAGE \
     & wait ${!}

@@ -6,6 +6,7 @@ import sys
 import time
 
 from datetime import datetime
+from threading import Thread
 from urllib.parse import urlparse
 
 from ..config import Config
@@ -14,7 +15,6 @@ from . consumer import MQTTConsumer
 
 
 class MQTTClient(object):
-
     def __init__(
         self,
         app_name: str,
@@ -30,10 +30,17 @@ class MQTTClient(object):
     def add_consumer(self, consumer: MQTTConsumer):
         key = consumer.topic
 
+        new_topic = False
         if not key in self.__consumers:
             self.__consumers[key] = []
+            new_topic = True
 
         self.__consumers[key].append(consumer)
+
+        if new_topic:
+            topic = '{}/{}'.format(self.__config.topic_base, key)
+            self.__logger.info(f'Subcribing to topic "{topic}"')
+            self.__client.subscribe(topic)
 
     def remove_consumer(self, consumer: MQTTConsumer):
         key = consumer.topic
@@ -41,9 +48,10 @@ class MQTTClient(object):
         if key in self.__consumers:
             self.__consumers[key].remove(consumer)
 
-        topic = '{}/{}'.format(self.__config.topic_base, key)
-        self.__logger.info(f'Unsubcribing from topic "{topic}"')
-        self.__client.unsubscribe(topic)
+        if len(self.__consumers.get(key, [])) == 0:
+            topic = '{}/{}'.format(self.__config.topic_base, key)
+            self.__logger.info(f'Unsubcribing from topic "{topic}"')
+            self.__client.unsubscribe(topic)
 
     def add_producer(self):
         def publish(topic, message):
@@ -56,13 +64,9 @@ class MQTTClient(object):
         return publish
 
     def loop(self):
-        atexit.register(self.__disconnect)
+        self.__thread.join()
 
-        self.__connect()
-
-        self.__client.loop_forever()
-
-    def __connect(self):
+    def connect(self):
         if self.__config.mqtt_address is None:
             error = 'Cannot connect to MQTT, no address specified'
             self.__logger.error(error)
@@ -82,9 +86,14 @@ class MQTTClient(object):
         self.__client.on_log = self.__on_log
         self.__client.connect(url.hostname, url.port, 60)
 
-    def __disconnect(self):
+        atexit.register(self.disconnect)
+        self.__thread = Thread(target = self.__client.loop_forever)
+        self.__thread.start()
+
+    def disconnect(self):
         self.__logger.info('Disconnecting from MQTT')
         self.__client.disconnect()
+        self.__client.loop_stop()
 
     def __on_connect(self, _, __, ___, result_code):
         if result_code == 0:
@@ -93,13 +102,6 @@ class MQTTClient(object):
         else:
             self.__logger.error(f'MQTT connection failed with code {result_code}')
             return
-
-        for _, consumers in self.__consumers.items():
-            for consumer in consumers:
-                topic = '{}/{}'.format(self.__config.topic_base,
-                                       consumer.topic)
-                self.__logger.info(f'Subcribing to topic "{topic}"')
-                self.__client.subscribe(topic)
 
     def __on_disconnect(self, _, __, result_code):
         self.__connected = False
@@ -112,7 +114,7 @@ class MQTTClient(object):
     def __on_message(self, client, user_data, message):
         # read the JSON
         event = json.loads(message.payload)
-        self.__logger.info(f'Received: {message.topic}:{json.dumps(event)}')
+        self.__logger.debug(f'Received: {message.topic}:{json.dumps(event)}')
 
         # split the topic
         _, message_type, entity, action = message.topic.split('/', 3)
