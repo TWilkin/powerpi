@@ -11,12 +11,12 @@ import {
 } from "@tsed/common";
 import { Authenticate, Authorize } from "@tsed/passport";
 import crypto from "crypto";
+import HttpStatus from "http-status-codes";
 import passport from "passport";
 import User from "../models/user";
 import Config from "../services/config";
 import JwtService from "../services/jwt";
 import UserService from "../services/user";
-import HttpStatus = require("http-status-codes");
 
 @Controller("/auth")
 export default class AuthController {

@@ -1,10 +1,10 @@
 import { Configuration, PlatformApplication } from "@tsed/common";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import session from "express-session";
 import "reflect-metadata";
 import Config from "./services/config";
-import bodyParser = require("body-parser");
-import cors = require("cors");
-import cookieParser = require("cookie-parser");
-import session = require("express-session");
 
 const rootDir = __dirname;
 

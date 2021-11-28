@@ -1,7 +1,7 @@
 import { $log, Controller, Get, QueryParams, Res, Response } from "@tsed/common";
+import HttpStatus from "http-status-codes";
 import Authorize from "../middleware/auth";
 import DatabaseService from "../services/db";
-import HttpStatus = require("http-status-codes");
 
 type QueryFunction = () => Promise<any | undefined>;
 

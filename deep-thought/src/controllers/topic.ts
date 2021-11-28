@@ -1,9 +1,9 @@
 import { $log, BodyParams, Controller, PathParams, Post, Required, Res } from "@tsed/common";
 import { Response } from "express";
+import HttpStatus from "http-status-codes";
 import Authorize from "../middleware/auth";
 import Config from "../services/config";
 import MqttService from "../services/mqtt";
-import HttpStatus = require("http-status-codes");
 
 @Controller("/topic")
 export default class TopicController {
