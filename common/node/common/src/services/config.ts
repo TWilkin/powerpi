@@ -1,7 +1,7 @@
 import fs from "fs";
 import Container, { Service } from "typedi";
 import util from "util";
-import { IDeviceConfigFile, IScheduleConfigFile } from "../models/config";
+import { IDeviceConfigFile, IScheduleConfigFile, IUserConfigFile } from "../models/config";
 import { Device, IDevice } from "../models/device";
 import { IntervalParserService } from "./interval";
 
@@ -84,6 +84,10 @@ export class ConfigService {
 
     get schedules() {
         return this.fileOrConfig<IScheduleConfigFile>("SCHEDULES_FILE", ConfigFileType.Schedules);
+    }
+
+    get users() {
+        return this.fileOrConfig<IUserConfigFile>("USERS_FILE", ConfigFileType.Users);
     }
 
     public get configFileTypes() {
