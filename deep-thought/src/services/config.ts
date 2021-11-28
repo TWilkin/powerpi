@@ -12,11 +12,6 @@ import AuthConfig from "../models/auth";
     useFactory: () => Container.get(ConfigService),
 })
 export default class ConfigService extends CommonConfigService {
-    constructor() {
-        super();
-        console.log("here");
-    }
-
     get service() {
         return app.name;
     }
