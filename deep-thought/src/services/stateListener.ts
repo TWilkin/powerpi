@@ -6,7 +6,7 @@ export default abstract class StateListener implements MqttConsumer {
     constructor(private readonly mqttService: MqttService) {}
 
     public async $onInit() {
-        await this.mqttService.subscribe("devices", "+", "status", this);
+        await this.mqttService.subscribe("device", "+", "status", this);
     }
 
     public message(type: string, entity: string, action: string, message: Message): void {

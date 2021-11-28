@@ -50,7 +50,7 @@ export class MqttService {
             const matches = Object.keys(this.consumers)
                 .map((key) => ({ key: key, regex: this.topicRegex(key) }))
                 .filter((obj) => obj.regex)
-                .filter((obj) => topic.match(obj.regex!) !== null)
+                .filter((obj) => obj.regex?.test(topic))
                 .map((obj) => obj.key);
 
             // append the base consumers, the specific topic consumers, and any regex match consumers
