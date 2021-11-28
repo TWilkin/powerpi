@@ -26,7 +26,7 @@ export default class Server {
 
     public async $beforeRoutesInit() {
         if (this.config.usesHttps) {
-            this.app.raw.set("trust proxy", 1);
+            this.app.getApp().set("trust proxy", 1);
         }
 
         this.app
