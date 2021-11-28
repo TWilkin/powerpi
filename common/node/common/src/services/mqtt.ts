@@ -46,9 +46,22 @@ export class MqttService {
 
             this.logger.debug("Received:", topic, ": ", str);
 
-            const consumers = (this.consumers[this.topicName()] ?? []).concat(
-                this.consumers[topic] ?? []
-            );
+            // find the keys that need RegExp
+            const matches = Object.keys(this.consumers)
+                .map((key) => ({ key: key, regex: this.topicRegex(key) }))
+                .filter((obj) => obj.regex)
+                .filter((obj) => topic.match(obj.regex!) !== null)
+                .map((obj) => obj.key);
+
+            // append the base consumers, the specific topic consumers, and any regex match consumers
+            const consumers = (this.consumers[this.topicName()] ?? [])
+                .concat(this.consumers[topic] ?? [])
+                .concat(
+                    matches.reduce(
+                        (acc, match) => acc.concat(this.consumers[match]),
+                        [] as MqttConsumer[]
+                    )
+                );
 
             if (consumers.length > 0) {
                 const [_, type, entity, action] = topic.split("/");
@@ -141,5 +154,16 @@ export class MqttService {
         }
 
         return `${this.config.topicNameBase}/#`;
+    }
+
+    private topicRegex(str: string) {
+        if (str.indexOf("+") >= 0) {
+            // this needs converting
+            str = str.replace("+", ".*");
+
+            return new RegExp(`^${str}$`);
+        }
+
+        return undefined;
     }
 }
