@@ -2,6 +2,7 @@ export interface IDevice {
     name: string;
     type: string;
     display_name?: string;
+    visible?: boolean;
 
     displayName: string;
 }

@@ -33,7 +33,7 @@ services:
 
     deep-thought:
         build: ../deep-thought
-        image: ${REGISTRY}/powerpi/deep-thought:0.5.4
+        image: ${REGISTRY}/powerpi/deep-thought:0.5.5
         networks:
             - powerpi
         deploy:
@@ -50,10 +50,6 @@ services:
         environment:
             - EXTERNAL_HOST_NAME=${EXTERNAL_HOST_NAME}
             - EXTERNAL_PORT=${EXTERNAL_PORT}
-            - MQTT_ADDRESS=mqtt://mosquitto:1883
-            - TOPIC_BASE=powerpi
-            - DEVICES_FILE=/devices.json
-            - USERS_FILE=/users.json
             - DB_HOST=db
             - DB_SCHEMA=powerpi
             - DB_USER=powerpi
@@ -64,11 +60,6 @@ services:
             - SESSION_SECRET_FILE=/var/run/secrets/powerpi_session
             - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID}
             - OAUTH_SECRET_FILE=/var/run/secrets/powerpi_oauth
-        configs:
-            - source: devices_config
-              target: /devices.json
-            - source: users_config
-              target: /users.json
 
     babel-fish:
         build: ../babel-fish
@@ -257,14 +248,6 @@ configs:
         file: ./config/mosquitto.conf
     nginx_config:
         file: ./config/nginx.conf
-    devices_config:
-        file: ./config/devices.json
-    events_config:
-        file: ./config/events.json
-    schedules_config:
-        file: ./config/schedules.json
-    users_config:
-        file: ./config/users.json
 
 # docker network create --driver=overlay --attachable powerpi
 networks:
