@@ -19,6 +19,6 @@
         "xml2js": "^0.4.22"
     },
     "devDependencies": {
-        "prettier": "^2.4.1"
+        "prettier": "^2.5.1"
     }
 }

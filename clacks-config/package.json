@@ -9,7 +9,7 @@
     },
     "author": "TWilkin",
     "devDependencies": {
-        "prettier": "^2.4.1"
+        "prettier": "^2.5.1"
     },
     "dependencies": {
         "@octokit/rest": "^18.12.0",
