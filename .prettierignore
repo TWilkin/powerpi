@@ -1,8 +1,10 @@
 **/*.egg-info/
 **/.pytest_cache/
 **/__pycache__/
+**/bin/
 **/build/
 **/dist/
+**/lib/
 **/node_modules/
 **/platforms/
 **/venv/
