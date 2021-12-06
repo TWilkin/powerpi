@@ -1,0 +1,16 @@
+**/*.egg-info/
+**/.pytest_cache/
+**/__pycache__/
+**/build/
+**/dist/
+**/node_modules/
+**/platforms/
+**/venv/
+**/*.py
+**/*.pyc
+**/*.log
+**/.eslintignore
+**/.eslintrc
+**/.gitignore
+**/Dockerfile
+**/Pipfile.lock

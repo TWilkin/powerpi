@@ -1,12 +1,10 @@
 {
     "extends": "@tsconfig/node12/tsconfig.json",
     "compilerOptions": {
-      "rootDir": "src",
-      "outDir": "dist",
-      "lib": ["dom"],
-      "jsx": "react"
+        "rootDir": "src",
+        "outDir": "dist",
+        "lib": ["dom"],
+        "jsx": "react"
     },
-    "include": [
-      "src/**/*"
-    ]
-} 
+    "include": ["src/**/*"]
+}

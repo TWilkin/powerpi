@@ -14,11 +14,11 @@ const api = new PowerPiApi(`${window.location.origin}/api`);
 const queryClient = new QueryClient();
 
 const App = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Site api={api} />
-    </QueryClientProvider>
-  );
+    return (
+        <QueryClientProvider client={queryClient}>
+            <Site api={api} />
+        </QueryClientProvider>
+    );
 };
 
 ReactDOM.render(<App />, document.getElementById("content"));
