@@ -28,7 +28,6 @@
         "use-long-press": "^1.0.5"
     },
     "devDependencies": {
-        "@tsconfig/node12": "^1.0.7",
         "@types/javascript-time-ago": "^2.0.2",
         "@types/react": "^16.14.5",
         "@types/react-dom": "^16.9.12",
