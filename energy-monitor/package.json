@@ -9,8 +9,7 @@
     },
     "author": "TWilkin",
     "devDependencies": {
-        "prettier": "^2.3.2",
-        "tslint": "^6.1.3"
+        "prettier": "^2.3.2"
     },
     "dependencies": {
         "@types/dateformat": "^3.0.1",
