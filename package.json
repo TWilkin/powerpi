@@ -1,0 +1,17 @@
+{
+    "private": true,
+    "name": "powerpi",
+    "workspaces": [
+        "common/node/api",
+        "common/node/common",
+        "babel-fish",
+        "clacks-config",
+        "deep-thought",
+        "energy-monitor",
+        "freedns",
+        "light-fantastic",
+        "nginx/ui",
+        "persistence"
+    ],
+    "scripts": {}
+}
