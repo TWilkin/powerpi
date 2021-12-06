@@ -12,6 +12,6 @@ export function getProviderName(jovo: Jovo) {
 
 export function addDeviceTypes(jovo: Jovo, devices?: Device[]) {
     if (jovo.$alexaSkill && devices) {
-        Alexa.addDeviceTypes(jovo.$alexaSkill!, devices);
+        Alexa.addDeviceTypes(jovo.$alexaSkill, devices);
     }
 }

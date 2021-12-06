@@ -11,6 +11,7 @@ const config = Container.get(ConfigService);
 app.use(new Alexa());
 
 app.setHandler({
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     LAUNCH() {},
 
     async DevicePowerIntent() {

@@ -106,7 +106,7 @@ export default class EnergyMonitorService {
             }))
             .sort((a, b) => a.timestamp - b.timestamp);
 
-        let lastDate: number = 0;
+        let lastDate = 0;
         messages.forEach((message) => {
             this.mqtt.publish("event", energyType, "usage", message);
 
@@ -143,9 +143,9 @@ async function* getData(
 }
 
 function chunkDates(start: Date, end: Date) {
-    let dates = [start];
+    const dates = [start];
 
-    let current = new Date(start);
+    const current = new Date(start);
     do {
         current.setDate(current.getDate() + 90);
         dates.push(new Date(current));
