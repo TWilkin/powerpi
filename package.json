@@ -13,5 +13,8 @@
         "nginx/ui",
         "persistence"
     ],
-    "scripts": {}
+    "scripts": {},
+    "devDependencies": {
+        "prettier": "^2.5.1"
+    }
 }

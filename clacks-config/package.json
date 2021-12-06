@@ -8,9 +8,6 @@
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "TWilkin",
-    "devDependencies": {
-        "prettier": "^2.5.1"
-    },
     "dependencies": {
         "@octokit/rest": "^18.12.0",
         "@types/node": "^16.11.4",

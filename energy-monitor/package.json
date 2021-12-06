@@ -8,9 +8,6 @@
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "TWilkin",
-    "devDependencies": {
-        "prettier": "^2.5.1"
-    },
     "dependencies": {
         "@types/dateformat": "^3.0.1",
         "@types/node": "^16.0.0",
