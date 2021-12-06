@@ -21,7 +21,7 @@ export default class ConfigService extends CommonConfigService {
     }
 
     getUsedConfig(): ConfigFileType[] {
-        return [ConfigFileType.Devices, ConfigFileType.Schedules];
+        return [ConfigFileType.Devices, ConfigFileType.Users];
     }
 
     get externalHostName() {
