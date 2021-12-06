@@ -8,14 +8,21 @@ import StateListener from "./stateListener";
 @SocketService("/api")
 export default class DeviceStateSocketService extends StateListener {
     @Nsp
-    namespace!: Namespace;
+    namespace?: Namespace;
 
     constructor(mqttService: MqttService) {
         super(mqttService);
+
+        this.namespace = undefined;
+    }
+
+    $onNamespaceInit(namespace: Namespace) {
+        $log.info("Socket namespace initialised.");
+        this.namespace = namespace;
     }
 
     onStateMessage(deviceName: string, state: DeviceState, timestamp?: number) {
-        this.namespace.emit("message", {
+        this.namespace?.emit("message", {
             device: deviceName,
             state,
             timestamp,
