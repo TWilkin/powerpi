@@ -6,13 +6,13 @@ import xml2js from "xml2js";
 
 // constants for the application
 const urlBase = "http://freedns.afraid.org/api/?action=getdyndns&v=2&style=xml";
-const username = process.env.FREEDNS_USER as string;
-const password = getPassword(process.env.FREEDNS_PASSWORD as string);
+const username = process.env.FREEDNS_USER;
+const password = getPassword(process.env.FREEDNS_PASSWORD);
 const interval = 5 * 60 * 1000;
 
 // check if the password is a file
-function getPassword(file: string): string {
-    if (fs.existsSync(file)) {
+function getPassword(file?: string) {
+    if (file && fs.existsSync(file)) {
         // read from the file
         return fs.readFileSync(file, "utf8").trim();
     }
@@ -23,6 +23,11 @@ function getPassword(file: string): string {
 
 // update the DNS records for the specified account
 async function updateDNS() {
+    // check the credentials
+    if (!username || !password) {
+        throw new Error("Username and password are required");
+    }
+
     // create the hashed credentials
     loggy.info(`Accessing account for ${username}.`);
     const hash = crypto.createHash("sha1");
@@ -44,14 +49,18 @@ async function updateDNS() {
         }
     } catch (error) {
         loggy.error(error);
+        throw error;
     }
 }
 
 // update the DNS record for the supplied record
 async function updateRecord(host: string, url: string): Promise<AxiosResponse> {
     loggy.info(`Attempting to update host ${host}.`);
+
     const response = await axios.get(url);
+
     loggy.info(`Updated host ${host}.`);
+
     return response;
 }
 
