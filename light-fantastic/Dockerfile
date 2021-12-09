@@ -1,4 +1,4 @@
-FROM node:14.18.1-alpine3.11 as build-image
+FROM node:16.13.1-alpine3.12 as build-image
 LABEL description="Node.js builder for common libraries"
 
 # install the libraries
@@ -10,7 +10,7 @@ RUN yarn workspace @powerpi/common install
 COPY common/node/common ./common/node/common/
 RUN yarn workspace @powerpi/common build
 
-FROM node:14.18.1-alpine3.11 as run-image
+FROM node:16.13.1-alpine3.12 as run-image
 LABEL description="Node.js application to control LIFX light colour and brightness"
 
 # use non-root account
