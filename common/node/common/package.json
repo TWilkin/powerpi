@@ -2,15 +2,15 @@
     "name": "@powerpi/common",
     "version": "0.0.5",
     "description": "PowerPi Common Typescript library",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "dist/src/index.js",
+    "types": "dist/src/index.d.ts",
     "scripts": {
         "build": "tsc",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "TWilkin",
     "files": [
-        "/dist"
+        "dist/src"
     ],
     "devDependencies": {
         "@types/dateformat": "^3.0.1",
