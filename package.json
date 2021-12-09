@@ -14,6 +14,8 @@
         "persistence"
     ],
     "scripts": {
+        "build:api": "yarn workspace @powerpi/api build",
+        "build:common": "yarn workspace @powerpi/common build",
         "lint": "eslint . --ext .ts --ext .tsx",
         "prettier": "prettier --write ."
     },
