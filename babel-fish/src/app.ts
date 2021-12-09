@@ -1,6 +1,6 @@
+import { PowerPiApi } from "@powerpi/api";
 import { App } from "jovo-framework";
 import { Alexa } from "jovo-platform-alexa";
-import { PowerPiApi } from "powerpi-common-api";
 import Container from "./container";
 import { addDeviceTypes, getProviderName } from "./providers";
 import ConfigService from "./services/config";

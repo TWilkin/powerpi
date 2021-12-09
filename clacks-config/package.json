@@ -10,8 +10,8 @@
     "author": "TWilkin",
     "dependencies": {
         "@octokit/rest": "^18.12.0",
+        "@powerpi/common": "file:../common/node/common",
         "@types/node": "^16.11.4",
-        "powerpi-common": "file:../common/node/common",
         "ts-node": "^10.4.0",
         "typedi": "^0.10.0",
         "typescript": "^4.4.4"

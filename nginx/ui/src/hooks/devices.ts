@@ -1,4 +1,4 @@
-import { Device, DeviceState, DeviceStatusMessage, PowerPiApi } from "powerpi-common-api";
+import { Device, DeviceState, DeviceStatusMessage, PowerPiApi } from "@powerpi/api";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 

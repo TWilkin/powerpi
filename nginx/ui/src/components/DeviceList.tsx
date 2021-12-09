@@ -1,6 +1,6 @@
 import { faHistory } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PowerPiApi } from "powerpi-common-api";
+import { PowerPiApi } from "@powerpi/api";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ReactTimeAgo from "react-time-ago";

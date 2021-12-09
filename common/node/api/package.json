@@ -1,5 +1,5 @@
 {
-    "name": "powerpi-common-api",
+    "name": "@powerpi/api",
     "version": "0.0.4",
     "description": "PowerPi API Common",
     "main": "dist/index.js",

@@ -1,4 +1,4 @@
-import { ConfigService as CommonConfigService } from "powerpi-common";
+import { ConfigService as CommonConfigService } from "@powerpi/common";
 import { Service } from "typedi";
 import Container from "../container";
 import app from "../../package.json";

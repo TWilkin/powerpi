@@ -1,6 +1,6 @@
 import { Octokit } from "@octokit/rest";
+import { ConfigFileType, LoggerService, MqttService } from "@powerpi/common";
 import path from "path";
-import { ConfigFileType, LoggerService, MqttService } from "powerpi-common";
 import { Service } from "typedi";
 import Container from "../container";
 import ConfigService from "./config";

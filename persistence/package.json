@@ -9,11 +9,11 @@
     },
     "author": "TWilkin",
     "dependencies": {
+        "@powerpi/common": "file:../common/node/common",
         "@types/bluebird": "^3.5.32",
         "@types/validator": "^13.1.0",
         "pg": "^8.7.1",
         "pg-hstore": "^2.3.4",
-        "powerpi-common": "file:../common/node/common",
         "reflect-metadata": "^0.1.13",
         "sequelize": "^6.9.0",
         "sequelize-typescript": "^2.1.1",

@@ -1,4 +1,4 @@
-import { LoggerService, MqttService } from "powerpi-common";
+import { LoggerService, MqttService } from "@powerpi/common";
 import { Service } from "typedi";
 import Container from "../container";
 import N3rgyData from "../models/n3rgy";

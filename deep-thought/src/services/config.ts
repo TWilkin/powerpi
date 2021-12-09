@@ -1,5 +1,5 @@
+import { ConfigFileType, ConfigService as CommonConfigService } from "@powerpi/common";
 import { Injectable, ProviderScope, ProviderType } from "@tsed/common";
-import { ConfigFileType, ConfigService as CommonConfigService } from "powerpi-common";
 import { Service } from "typedi";
 import app from "../../package.json";
 import Container from "../container";

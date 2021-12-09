@@ -1,7 +1,7 @@
 import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Device, DeviceState, PowerPiApi } from "@powerpi/api";
 import classNames from "classnames";
-import { Device, DeviceState, PowerPiApi } from "powerpi-common-api";
 import React, { MouseEvent, useState } from "react";
 import { useLongPress } from "use-long-press";
 import { useSetDeviceState } from "../hooks/devices";

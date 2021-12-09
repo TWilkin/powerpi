@@ -1,4 +1,4 @@
-import { Message, MqttConsumer, MqttService } from "powerpi-common";
+import { Message, MqttConsumer, MqttService } from "@powerpi/common";
 import { Service } from "typedi";
 import Container from "../container";
 import MqttModel from "../models/mqtt.model";

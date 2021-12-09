@@ -1,5 +1,5 @@
 {
-    "name": "powerpi-common",
+    "name": "@powerpi/common",
     "version": "0.0.4",
     "description": "PowerPi Common Typescript library",
     "main": "dist/index.js",

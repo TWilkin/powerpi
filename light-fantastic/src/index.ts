@@ -1,4 +1,4 @@
-import { PowerPiService } from "powerpi-common";
+import { PowerPiService } from "@powerpi/common";
 import Container from "./container";
 import ScheduleExecutorService from "./services/executor";
 

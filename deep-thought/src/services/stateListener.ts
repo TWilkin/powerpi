@@ -1,4 +1,4 @@
-import { Message, MqttConsumer } from "powerpi-common";
+import { Message, MqttConsumer } from "@powerpi/common";
 import { DeviceState } from "../models/device";
 import MqttService from "./mqtt";
 

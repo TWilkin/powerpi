@@ -1,5 +1,5 @@
+import { IDevice, ISchedule, LoggerService, MqttService, Weekday } from "@powerpi/common";
 import { DateTime, Interval } from "luxon";
-import { IDevice, ISchedule, LoggerService, MqttService, Weekday } from "powerpi-common";
 import { Inject, Service, Token } from "typedi";
 import Container from "../container";
 

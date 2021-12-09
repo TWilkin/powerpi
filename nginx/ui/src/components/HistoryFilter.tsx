@@ -1,6 +1,6 @@
 import { faExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PowerPiApi } from "powerpi-common-api";
+import { PowerPiApi } from "@powerpi/api";
 import queryString from "query-string";
 import React, { FormEvent, useEffect, useState } from "react";
 import { useGetHistoryFilters } from "../hooks/history";

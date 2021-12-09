@@ -1,6 +1,6 @@
+import { Device } from "@powerpi/common";
 import { Log } from "jovo-core";
 import { AlexaSkill } from "jovo-platform-alexa";
-import { Device } from "powerpi-common";
 
 export default class Alexa {
     static addDeviceTypes(skill: AlexaSkill | undefined, devices: Device[]) {

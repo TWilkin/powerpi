@@ -1,5 +1,5 @@
+import { PowerPiApi } from "@powerpi/api";
 import HttpStatusCodes from "http-status-codes";
-import { PowerPiApi } from "powerpi-common-api";
 import React from "react";
 import { BrowserRouter, NavLink, Redirect, Route, Switch } from "react-router-dom";
 import { LastLocationProvider } from "react-router-last-location";

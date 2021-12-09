@@ -1,5 +1,5 @@
+import { Device } from "@powerpi/common";
 import { Jovo } from "jovo-framework";
-import { Device } from "powerpi-common";
 import Alexa from "./alexa";
 
 export function getProviderName(jovo: Jovo) {

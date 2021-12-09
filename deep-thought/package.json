@@ -9,6 +9,7 @@
     },
     "author": "TWilkin",
     "dependencies": {
+        "@powerpi/common": "file:../common/node/common",
         "@tsed/common": "^6.90.0",
         "@tsed/core": "^6.90.0",
         "@tsed/passport": "^6.90.0",
@@ -38,7 +39,6 @@
         "passport-http": "^0.3.0",
         "passport-jwt": "^4.0.0",
         "pg": "^8.6.0",
-        "powerpi-common": "file:../common/node/common",
         "socket.io": "^4.1.2",
         "ts-node": "^8.10.1",
         "typedi": "^0.10.0",

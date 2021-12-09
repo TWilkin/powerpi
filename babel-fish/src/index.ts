@@ -1,6 +1,6 @@
+import { LoggerService, PowerPiService } from "@powerpi/common";
 import { Request, Response } from "express";
 import { ExpressJS, WebhookVerified as Webhook } from "jovo-framework";
-import { LoggerService, PowerPiService } from "powerpi-common";
 import app from "./app";
 import Container from "./container";
 import ConfigService from "./services/config";

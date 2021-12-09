@@ -1,6 +1,6 @@
+import { PowerPiApi } from "@powerpi/api";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
-import { PowerPiApi } from "powerpi-common-api";
 import React from "react";
 import ReactDOM from "react-dom";
 import { QueryClient, QueryClientProvider } from "react-query";

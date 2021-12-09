@@ -1,4 +1,4 @@
-import { Device } from "powerpi-common-api";
+import { Device } from "@powerpi/api";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import DeviceIcon from "./DeviceIcon";
 import Loading from "./Loading";

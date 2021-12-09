@@ -1,3 +1,4 @@
+import { IUser } from "@powerpi/common";
 import {
     $log,
     BodyParams,
@@ -13,7 +14,6 @@ import { Authenticate, Authorize } from "@tsed/passport";
 import crypto from "crypto";
 import HttpStatus from "http-status-codes";
 import passport from "passport";
-import { IUser } from "powerpi-common";
 import ConfigService from "../services/config";
 import JwtService from "../services/jwt";
 import UserService from "../services/user";

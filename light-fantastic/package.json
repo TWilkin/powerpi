@@ -9,10 +9,10 @@
     },
     "author": "TWilkin",
     "dependencies": {
+        "@powerpi/common": "file:../common/node/common",
         "@types/luxon": "^2.0.5",
         "@types/node": "^16.11.2",
         "luxon": "^2.0.2",
-        "powerpi-common": "file:../common/node/common",
         "ts-node": "^10.0.0",
         "typedi": "^0.10.0",
         "typescript": "^4.3.5"

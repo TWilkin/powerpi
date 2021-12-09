@@ -1,4 +1,4 @@
-import { PowerPiApi } from "powerpi-common-api";
+import { PowerPiApi } from "@powerpi/api";
 import React, { useState } from "react";
 import ReactTimeAgo from "react-time-ago";
 import { useGetHistory } from "../hooks/history";
