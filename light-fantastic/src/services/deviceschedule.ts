@@ -131,7 +131,7 @@ export default class DeviceSchedule {
             const key = k as keyof Delta;
 
             if (this.schedule[key]) {
-                const newValue = this.calculateNewValue(this.delta[key], this.schedule[key]!);
+                const newValue = this.calculateNewValue(this.delta[key], this.schedule[key]);
 
                 acc[key] = newValue;
 
@@ -192,7 +192,11 @@ export default class DeviceSchedule {
         return (range[1] - range[0]) / interval;
     }
 
-    private calculateNewValue(delta: number, range: number[]) {
+    private calculateNewValue(delta: number, range?: number[]) {
+        if (!range || range.length !== 2) {
+            throw new Error("Range must be set and have a length of 2");
+        }
+
         // calculate the number of times this has run thus far
         const startTime = this.toDate(this.schedule.between[0]);
         const diff = (DateTime.utc().toMillis() - startTime.toMillis()) / 1000;
