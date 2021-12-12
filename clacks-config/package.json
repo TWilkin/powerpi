@@ -4,8 +4,7 @@
     "description": "PowerPi config retrieval from GitHub pushing to message queue",
     "main": "./src/index.ts",
     "scripts": {
-        "start": "ts-node src/index.ts",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "ts-node src/index.ts"
     },
     "author": "TWilkin",
     "dependencies": {
