@@ -1,14 +1,16 @@
-FROM node:14.18.1-alpine3.11 as build-image
+FROM node:16.13.1-alpine3.12 as build-image
 LABEL description="Node.js builder for common library"
 
 # install the common library
-WORKDIR /home/node/app/common/node/common
-COPY common/node/common/package*.json ./
-RUN npm install
-COPY common/node/common ./
-RUN npm run build
+WORKDIR /home/node/app
+RUN mkdir -p /home/node/app/common/node/common
+COPY package.json yarn.lock tsconfig.json ./
+COPY common/node/common/package.json ./common/node/common/
+RUN yarn workspace @powerpi/common install
+COPY common/node/common ./common/node/common/
+RUN yarn workspace @powerpi/common build
 
-FROM node:14.18.1-alpine3.11 as run-image
+FROM node:16.13.1-alpine3.12 as run-image
 LABEL description="Node.js configuration service"
 
 # expose the port used by the application
@@ -16,20 +18,21 @@ EXPOSE 3000
 
 # use non-root account
 USER node
-RUN mkdir -p /home/node/app/common/node/common /home/node/app/clacks-config
+RUN mkdir -p /home/node/app/common/node/common/dist \
+     /home/node/app/clacks-config
 
-# copy the built common libraries
-WORKDIR /home/node/app/common/node/common
-COPY --from=build-image --chown=node:node /home/node/app/common/node/common/package* ./
-COPY --from=build-image --chown=node:node /home/node/app/common/node/common/dist/ ./
+# copy the built common library
+WORKDIR /home/node/app
+COPY --chown=node:node package.json yarn.lock tsconfig.json ./
+COPY --from=build-image --chown=node:node /home/node/app/common/node/common/package.json ./common/node/common/
+COPY --from=build-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 
 # install the dependencies
-WORKDIR /home/node/app/clacks-config
-COPY --chown=node:node clacks-config/package*.json ./
-RUN npm install --production
+COPY --chown=node:node clacks-config/package.json ./clacks-config
+RUN yarn workspace clacks-config install --production
 
 # copy the application
-COPY --chown=node:node clacks-config ./
+COPY --chown=node:node clacks-config ./clacks-config
 
 # start the application once the container is ready
-CMD npm start
+CMD yarn workspace clacks-config start
