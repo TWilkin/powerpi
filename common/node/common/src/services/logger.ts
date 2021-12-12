@@ -3,7 +3,7 @@ import logger from "loglevel";
 import { Service } from "typedi";
 import { ConfigService } from "./config";
 
-type LogParameter = string | number;
+type LogParameter = string | number | Date;
 type LogErrorParameter = LogParameter | Error | unknown;
 
 type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR";

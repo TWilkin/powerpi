@@ -212,7 +212,7 @@ services:
 
     energy-monitor:
         build: ../energy-monitor
-        image: ${REGISTRY}/powerpi/energy-monitor:0.0.2
+        image: ${REGISTRY}/powerpi/energy-monitor:0.0.3
         networks:
             - powerpi
         deploy:
