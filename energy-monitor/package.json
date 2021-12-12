@@ -9,7 +9,7 @@
     },
     "author": "TWilkin",
     "dependencies": {
-        "@powerpi/common": "file:../common/node/common",
+        "@powerpi/common": "^0.0.5",
         "@types/dateformat": "^3.0.1",
         "@types/node": "^16.0.0",
         "axios": "^0.21.4",
