@@ -1,5 +1,6 @@
 import { $log, Service } from "@tsed/common";
 import { Pool, PoolClient } from "pg";
+import Message from "../models/message";
 import ConfigService from "./config";
 
 interface DatabaseQueryParam {
@@ -32,7 +33,7 @@ export default class DatabaseService {
 
         const skip = limit * page;
 
-        return this.query(
+        return this.query<Message>(
             this.generateQuery(
                 "SELECT * FROM mqtt",
                 "ORDER BY timestamp DESC",
@@ -53,21 +54,22 @@ export default class DatabaseService {
             { name: "action", value: action },
         ];
 
-        return this.query(
+        return this.query<{ count: number }>(
             this.generateQuery("SELECT COUNT(*) FROM mqtt", "", dbQueryParams),
             params
         );
     }
 
-    public getHistoryTypes = () => this.query("SELECT DISTINCT type FROM mqtt ORDER BY type ASC");
+    public getHistoryTypes = () =>
+        this.query<string>("SELECT DISTINCT type FROM mqtt ORDER BY type ASC");
 
     public getHistoryEntities = () =>
-        this.query("SELECT DISTINCT entity FROM mqtt ORDER BY entity ASC");
+        this.query<string>("SELECT DISTINCT entity FROM mqtt ORDER BY entity ASC");
 
     public getHistoryActions = () =>
-        this.query("SELECT DISTINCT action FROM mqtt ORDER BY action ASC");
+        this.query<string>("SELECT DISTINCT action FROM mqtt ORDER BY action ASC");
 
-    private async query(sql: string, params?: any[]) {
+    private async query<TResult>(sql: string, params?: string[]) {
         let client: PoolClient | undefined;
 
         try {
@@ -75,7 +77,7 @@ export default class DatabaseService {
 
             client = await this.pool?.connect();
 
-            return await client?.query(sql, params);
+            return await client?.query<TResult>(sql, params);
         } catch (error) {
             $log.error("Error accessing database.", error);
         } finally {
@@ -85,7 +87,7 @@ export default class DatabaseService {
 
     private generateQuery(
         start: string,
-        end: string = "",
+        end = "",
         params: DatabaseQueryParam[],
         limit?: number,
         skip?: number
@@ -93,15 +95,12 @@ export default class DatabaseService {
         const generator = optionalArgumentGenerator(params);
 
         let sql = "";
-        while (true) {
-            const result = generator.next();
-
-            if (result.done) {
-                break;
-            }
+        let result: IteratorResult<string, void> | undefined;
+        do {
+            result = generator.next();
 
             sql += result.value;
-        }
+        } while (!result.done);
 
         const middle = sql.length > 0 ? `WHERE ${sql}` : "";
         sql = `${start} ${middle} ${end}`;
@@ -135,8 +134,8 @@ function* optionalArgumentGenerator(params: DatabaseQueryParam[]) {
     }
 }
 
-function optionalParameterList(...params: any[]) {
-    const list: any[] = [];
+function optionalParameterList(...params: (string | undefined)[]) {
+    const list: string[] = [];
 
     params.forEach((param) => {
         if (param) {
