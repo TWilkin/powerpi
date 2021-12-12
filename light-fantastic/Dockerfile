@@ -15,7 +15,8 @@ LABEL description="Node.js application to control LIFX light colour and brightne
 
 # use non-root account
 USER node
-RUN mkdir -p /home/node/app/common/node/common/dist /home/node/app/light-fantastic
+RUN mkdir -p /home/node/app/common/node/common/dist \
+    /home/node/app/light-fantastic
 
 # copy the built common library
 WORKDIR /home/node/app
@@ -24,7 +25,7 @@ COPY --from=build-image --chown=node:node /home/node/app/common/node/common/pack
 COPY --from=build-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 
 # install the dependencies
-COPY --chown=node:node light-fantastic/package*.json ./light-fantastic
+COPY --chown=node:node light-fantastic/package.json ./light-fantastic
 RUN yarn workspace light-fantastic install --production
 
 # copy across the application code
