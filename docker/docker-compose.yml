@@ -53,7 +53,7 @@ services:
             - DB_HOST=db
             - DB_SCHEMA=powerpi
             - DB_USER=powerpi
-            - DB_PASSWORD_FILE=/var/run/secrets/powerpi_db
+            - DB_SECRET_FILE=/var/run/secrets/powerpi_db
             - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
             - GOOGLE_SECRET_FILE=/var/run/secrets/powerpi_google_auth
             - JWT_SECRET_FILE=/var/run/secrets/powerpi_jwt_auth
