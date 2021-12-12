@@ -59,6 +59,16 @@ export class ConfigService {
         return process.env["TOPIC_BASE"] ?? "powerpi";
     }
 
+    public get databaseSchema() {
+        return process.env["DB_SCHEMA"] ?? "powerpi";
+    }
+
+    get databaseURI() {
+        return this.databasePassword.then((password) => {
+            return `postgres://${this.databaseUser}:${password}@${this.databaseHost}:${this.databasePort}/${this.databaseSchema}`;
+        });
+    }
+
     get configWaitTime() {
         const str = process.env["CONFIG_WAIT_TIME"];
         if (str) {
@@ -113,12 +123,39 @@ export class ConfigService {
     }
 
     protected async getSecret(key: string) {
-        const file = await this.readFile(process.env[`${key}_SECRET_FILE`] as string);
-        return file;
+        const fileName = process.env[`${key}_SECRET_FILE`];
+
+        if (fileName) {
+            const file = await this.readFile(fileName);
+            return file;
+        } else {
+            throw new Error(`Cannot find secret '${key}'`);
+        }
     }
 
     protected async readFile(filePath: string) {
         return (await readAsync(filePath)).toString().trim();
+    }
+
+    private get databaseHost() {
+        return process.env["DB_HOST"] ?? "db";
+    }
+
+    private get databasePort() {
+        const str = process.env["DB_PORT"];
+        if (str) {
+            return parseInt(str);
+        }
+
+        return 5432;
+    }
+
+    private get databaseUser() {
+        return process.env["DB_USER"] ?? "powerpi";
+    }
+
+    private get databasePassword() {
+        return this.getSecret("DB");
     }
 
     private fileOrConfig<TConfigFile extends object>(

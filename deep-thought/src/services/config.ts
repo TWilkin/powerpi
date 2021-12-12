@@ -41,16 +41,6 @@ export default class ConfigService extends CommonConfigService {
         return `http${https}://${this.externalHostName}:${this.externalPort}`;
     }
 
-    async getDatabaseURI() {
-        const user = process.env.DB_USER;
-        const password = await this.readFile(process.env.DB_PASSWORD_FILE as string);
-        const host = process.env.DB_HOST;
-        const port = process.env.DB_PORT ?? 5432;
-        const schema = process.env.DB_SCHEMA;
-
-        return `postgres://${user}:${password}@${host}:${port}/${schema}`;
-    }
-
     async getAuthConfig(): Promise<AuthConfig[]> {
         const protocols = ["google", "oauth"];
 
