@@ -3,6 +3,11 @@ import logger from "loglevel";
 import { Service } from "typedi";
 import { ConfigService } from "./config";
 
+type LogParameter = string | number;
+type LogErrorParameter = LogParameter | Error | unknown;
+
+type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR";
+
 @Service()
 export class LoggerService {
     private static timestampFormat = "yyyy-mm-dd HH:MM:ss";
@@ -21,23 +26,23 @@ __________                         __________.__
         this.info(`${this.config.service} v${this.config.version}`);
     }
 
-    public debug(...args: any[]) {
+    public debug(...args: LogParameter[]) {
         logger.debug(this.label("DEBUG"), ...args);
     }
 
-    public info(...args: any[]) {
+    public info(...args: LogParameter[]) {
         logger.info(this.label("INFO"), ...args);
     }
 
-    public warn(...args: any[]) {
+    public warn(...args: LogParameter[]) {
         logger.warn(this.label("WARN"), ...args);
     }
 
-    public error(...args: any[]) {
+    public error(...args: LogErrorParameter[]) {
         logger.error(this.label("ERROR"), ...args);
     }
 
-    private label(level: string) {
+    private label(level: LogLevel) {
         return `[${dateFormat(new Date(), LoggerService.timestampFormat)} ${level}]`;
     }
 }

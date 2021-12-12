@@ -6,7 +6,7 @@ import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import History from "./History";
 import PaginationResponse from "./Pagination";
 
-class PowerPiApi {
+export default class PowerPiApi {
     private readonly instance: AxiosInstance;
     private socket: SocketIOClient.Socket | undefined;
     private listeners: DeviceStatusCallback[];
@@ -22,7 +22,7 @@ class PowerPiApi {
         this.headers = {};
     }
 
-    public getDevices = () => this.get("device") as Promise<Device[]>;
+    public getDevices = () => this.get<Device[]>("device");
 
     public getHistory = (
         type?: string,
@@ -30,16 +30,13 @@ class PowerPiApi {
         action?: string,
         page?: number,
         records?: number
-    ) =>
-        this.get("history", { type, entity, action, page, records }) as Promise<
-            PaginationResponse<History>
-        >;
+    ) => this.get<PaginationResponse<History>>("history", { type, entity, action, page, records });
 
-    public getHistoryTypes = () => this.get("history/types") as Promise<{ type: string }[]>;
+    public getHistoryTypes = () => this.get<{ type: string }[]>("history/types");
 
-    public getHistoryEntities = () => this.get("history/entities") as Promise<{ entity: string }[]>;
+    public getHistoryEntities = () => this.get<{ entity: string }[]>("history/entities");
 
-    public getHistoryActions = () => this.get("history/actions") as Promise<{ action: string }[]>;
+    public getHistoryActions = () => this.get<{ action: string }[]>("history/actions");
 
     public postMessage = (device: string, state: DeviceState) =>
         this.post(`topic/device/${device}/change`, { state });
@@ -53,7 +50,7 @@ class PowerPiApi {
         this.listeners = this.listeners.filter((listener) => listener === callback);
     }
 
-    public setErrorHandler(handler: (error: any) => void) {
+    public setErrorHandler(handler: (error: string) => void) {
         this.instance.interceptors.response.use((response) => response, handler);
     }
 
@@ -64,22 +61,26 @@ class PowerPiApi {
     private onMessage = (message: DeviceStatusMessage) =>
         this.listeners.forEach((listener) => listener(message));
 
-    private async get(path: string, params?: object): Promise<any> {
-        const result = await this.instance.get(path, {
+    private async get<TResult>(path: string, params?: object) {
+        const result = await this.instance.get<TResult>(path, {
             params,
             headers: this.headers,
         });
         return result?.data;
     }
 
-    private async post(path: string, message: any): Promise<any> {
+    private async post<TResult, TMessage>(path: string, message: TMessage) {
         const config = {
             headers: {
                 ...this.headers,
                 "Content-Type": "application/json",
             },
         };
-        const result = await this.instance.post(path, JSON.stringify(message), config);
+        const result = await this.instance.post<string, { data: TResult }>(
+            path,
+            JSON.stringify(message),
+            config
+        );
         return result?.data;
     }
 
@@ -93,4 +94,3 @@ class PowerPiApi {
         }
     }
 }
-export default PowerPiApi;

@@ -5,7 +5,6 @@ import { ConfigService } from "./config";
 import { LoggerService } from "./logger";
 
 export interface Message {
-    [key: string]: any;
     timestamp?: number;
 }
 
