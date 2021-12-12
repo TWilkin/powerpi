@@ -16,6 +16,7 @@
     "scripts": {
         "build:api": "yarn workspace @powerpi/api build",
         "build:common": "yarn workspace @powerpi/common build",
+        "clean": "find . -name \"node_modules\" -type d -prune -exec rm -rf '{}' +",
         "lint": "eslint . --ext .ts --ext .tsx",
         "prettier": "prettier --write ."
     },
