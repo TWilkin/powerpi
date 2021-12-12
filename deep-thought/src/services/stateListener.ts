@@ -2,14 +2,18 @@ import { Message, MqttConsumer } from "@powerpi/common";
 import { DeviceState } from "../models/device";
 import MqttService from "./mqtt";
 
-export default abstract class StateListener implements MqttConsumer {
+interface StateMessage extends Message {
+    state: DeviceState;
+}
+
+export default abstract class StateListener implements MqttConsumer<StateMessage> {
     constructor(private readonly mqttService: MqttService) {}
 
     public async $onInit() {
         await this.mqttService.subscribe("device", "+", "status", this);
     }
 
-    public message(type: string, entity: string, action: string, message: Message): void {
+    public message(_: string, entity: string, __: string, message: StateMessage): void {
         this.onStateMessage(entity, message.state, message.timestamp);
     }
 
