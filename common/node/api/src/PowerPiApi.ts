@@ -6,6 +6,8 @@ import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import History from "./History";
 import PaginationResponse from "./Pagination";
 
+type ErrorHandler = (error: { response: { status: number } }) => void;
+
 export default class PowerPiApi {
     private readonly instance: AxiosInstance;
     private socket: SocketIOClient.Socket | undefined;
@@ -50,7 +52,7 @@ export default class PowerPiApi {
         this.listeners = this.listeners.filter((listener) => listener === callback);
     }
 
-    public setErrorHandler(handler: (error: string) => void) {
+    public setErrorHandler(handler: ErrorHandler) {
         this.instance.interceptors.response.use((response) => response, handler);
     }
 

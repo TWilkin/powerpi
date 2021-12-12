@@ -41,8 +41,9 @@ export default class EnergyMonitorService {
         );
 
         let rows = 0;
-        while (true) {
-            const result = await generator.next();
+        let result: IteratorResult<N3rgyData, void> | undefined;
+        do {
+            result = await generator.next();
 
             if (result.done) {
                 break;
@@ -55,7 +56,7 @@ export default class EnergyMonitorService {
                 this.lastUpdate[energyType] = lastDate;
                 this.logger.info("Received", energyType, "usage up to", lastDate);
             }
-        }
+        } while (!result.done);
 
         // schedule the next run either at the repeat interval or after the time the results usually arrive
         const nextRun = this.calculateNextRun(rows, this.lastUpdate[energyType]);

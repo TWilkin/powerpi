@@ -17,7 +17,7 @@ export default class MessageWriterService implements MqttConsumer {
 
     public async message(type: string, entity: string, action: string, message: Message) {
         // we don't want to repeat the timestamp
-        const timestamp = new Date(message.timestamp!);
+        const timestamp = message.timestamp ? new Date(message.timestamp) : undefined;
         delete message.timestamp;
 
         const record = MqttModel.build({

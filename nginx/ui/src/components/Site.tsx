@@ -26,7 +26,7 @@ interface SiteProps {
 
 const Site = ({ api }: SiteProps) => {
     // redirect to login on 401
-    api.setErrorHandler((error: any) => {
+    api.setErrorHandler((error) => {
         if (error.response.status === HttpStatusCodes.UNAUTHORIZED) {
             window.location.pathname = "/login";
         }
