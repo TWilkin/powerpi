@@ -109,6 +109,8 @@ export default class DatabaseService {
             sql = `${sql} LIMIT ${limit} OFFSET ${skip}`;
         }
 
+        $log.debug(sql);
+
         return sql;
     }
 
