@@ -1,6 +1,6 @@
 {
     "name": "persistence",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "PowerPi database persistence service",
     "main": "src/app.ts",
     "scripts": {
@@ -10,6 +10,7 @@
     "dependencies": {
         "@powerpi/common": "^0.0.5",
         "@types/bluebird": "^3.5.32",
+        "@types/node": "^16.11.12",
         "@types/validator": "^13.1.0",
         "pg": "^8.7.1",
         "pg-hstore": "^2.3.4",
