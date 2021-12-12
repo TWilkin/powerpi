@@ -94,20 +94,22 @@ export default class DatabaseService {
     ) {
         const generator = optionalArgumentGenerator(params);
 
-        let sql = "";
+        let whereClause = "";
         let result: IteratorResult<string, void> | undefined;
         do {
             result = generator.next();
 
-            sql += result.value;
+            if (result.value) {
+                whereClause += result.value;
+            }
         } while (!result.done);
 
-        const middle = sql.length > 0 ? `WHERE ${sql}` : "";
-        sql = `${start} ${middle} ${end}`;
+        whereClause = whereClause.length > 0 ? `WHERE ${whereClause}` : "";
 
-        if (limit !== undefined && skip !== undefined) {
-            sql = `${sql} LIMIT ${limit} OFFSET ${skip}`;
-        }
+        const limitClause =
+            limit !== undefined && skip !== undefined ? `LIMIT ${limit} OFFSET ${skip}` : "";
+
+        const sql = `${start} ${whereClause} ${end} ${limitClause}`.trim();
 
         $log.debug(sql);
 
