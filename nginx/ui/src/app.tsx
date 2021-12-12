@@ -1,5 +1,5 @@
 import { PowerPiApi } from "@powerpi/api";
-import TimeAgo from "javascript-time-ago";
+import TimeAgo, { LocaleData } from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import Site from "./components/Site";
 import "./styles/main.scss";
 
-TimeAgo.addDefaultLocale(en);
+TimeAgo.addDefaultLocale(en as LocaleData);
 
 const api = new PowerPiApi(`${window.location.origin}/api`);
 
