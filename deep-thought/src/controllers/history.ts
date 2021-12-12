@@ -48,18 +48,18 @@ export default class HistoryController {
     ) {
         return await this.query(response, async () => {
             const data = await this.databaseService.getHistory(page, records, type, entity, action);
-            data?.rows.forEach((row) => {
-                if (typeof row.message === "string") {
-                    row.message = JSON.parse(row.message);
-                }
-            });
 
             const count = await this.databaseService.getHistoryCount(type, entity, action);
 
             return {
                 page,
                 records: count?.rows[0]?.count,
-                data: data?.rows,
+                data: data?.rows.map((row) => {
+                    if (typeof row.message === "string") {
+                        row.message = JSON.parse(row.message);
+                    }
+                    return row;
+                }),
             };
         });
     }
