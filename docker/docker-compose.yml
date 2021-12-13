@@ -165,7 +165,7 @@ services:
 
     certbot:
         build: ../certbot
-        image: ${REGISTRY}/powerpi/certbot:0.0.2
+        image: ${REGISTRY}/powerpi/certbot:0.0.3
         networks:
             - powerpi
         deploy:
