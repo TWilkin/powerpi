@@ -83,8 +83,8 @@ export class MqttService {
 
     public async publish(type: string, entity: string, action: string, message: OutgoingMessage) {
         const json = JSON.stringify({
-            ...message,
             timestamp: new Date().getTime(),
+            ...message,
         });
 
         const options: IClientPublishOptions = {
