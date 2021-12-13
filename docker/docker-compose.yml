@@ -144,12 +144,12 @@ services:
 
     nginx:
         build: ../nginx
-        image: ${REGISTRY}/powerpi/nginx:1.2.1
+        image: ${REGISTRY}/powerpi/nginx:1.2.2
         networks:
             - powerpi
         ports:
-            - "3001:80"
-            - "3000:443"
+            - "3001:8080"
+            - "3000:8443"
         deploy:
             replicas: 1
         depends_on:
