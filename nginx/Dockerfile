@@ -20,11 +20,11 @@ RUN yarn workspace @powerpi/api build
 # install the dependencies
 COPY nginx/ui/package.json ./nginx/ui
 RUN yarn config set network-timeout 600000 -g
-RUN yarn workspace powerpi-ui install
+RUN yarn workspace @powerpi/ui install
 
 # transpile the application
 COPY nginx/ui ./nginx/ui
-RUN yarn workspace powerpi-ui build
+RUN yarn workspace @powerpi/ui build
 
 FROM nginx:1.20.2-alpine AS run-image
 LABEL description="NGINX reverse proxy to protect web accessible endpoints with SSL and host UI"

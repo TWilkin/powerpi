@@ -1,5 +1,5 @@
 {
-    "name": "powerpi-ui",
+    "name": "@powerpi/ui",
     "version": "1.2.2",
     "description": "PowerPi UI",
     "main": "src/app.tsx",
