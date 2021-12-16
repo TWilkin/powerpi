@@ -3,6 +3,7 @@
 
 #include <NTPClient.h>
 #include <PubSubClient.h>
+#include <WiFiUdp.h>
 
 #include "wifi.h"
 
