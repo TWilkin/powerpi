@@ -7,6 +7,8 @@
 // the maximum length of the hostname
 #define HOSTNAME_LEN 32
 
-void connectWiFi();
+char* generateHostname();
+
+void connectWiFi(char* hostname);
 
 #endif
