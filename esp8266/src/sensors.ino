@@ -1,15 +1,22 @@
 #include "sensors.h"
 
 void setupSensors() {
-    #if MOTION_SENSOR
+    #ifdef MOTION_SENSOR
         Serial.println("Motion Sensor");
     #endif
 
-    #if TEMPERATURE_SENSOR
+    #ifdef TEMPERATURE_SENSOR
         Serial.println("Temperature Sensor");
+        setupDHT22();
     #endif
 
-    #if HUMIDITY_SENSOR
+    #ifdef HUMIDITY_SENSOR
         Serial.println("Humidity Sensor");
+    #endif
+}
+
+void pollSensors() {
+    #ifdef TEMPERATURE_SENSOR
+        pollDHT22();
     #endif
 }

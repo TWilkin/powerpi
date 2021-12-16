@@ -10,7 +10,6 @@ void setup() {
     // connect to WiFi and MQTT
     char* hostname = generateHostname();
     connectWiFi(hostname);
-    connectMQTT(hostname);
 
     // initialise the sensors
     setupSensors();
@@ -21,6 +20,9 @@ void loop() {
     
     // allow NTP to update
     timeClient.update();
+
+    // poll the sensors
+    pollSensors();
 
     // delay before checking the state again
     delay(POLL_DELAY);
