@@ -16,4 +16,12 @@ void setup() {
     setupSensors();
 }
 
-void loop() { }
+void loop() {
+    Serial.print(".");
+    
+    // allow NTP to update
+    timeClient.update();
+
+    // delay before checking the state again
+    delay(POLL_DELAY);
+}
