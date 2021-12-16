@@ -2,14 +2,18 @@
 TARGET_DIR=$(CURDIR)/bin
 LIB_DIR=$(CURDIR)/lib
 
-# paths to tools
+# variables for tools
 ARDUINO_PATH=/opt/arduino/arduino-1.8.12
+SERIAL_PORT?=/dev/ttyUSB0
 
 # versions of libraries
 NTPCLIENT_VERSION=3.2.0
 PUBSUBCLIENT_VERSION=2.7
 
-all: compile
+# other variables
+SKETCH=@PACKAGE_NAME@.ino
+
+all: compile flash monitor
 
 common_libraries: $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION) $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION)
 
@@ -28,7 +32,7 @@ $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION):
 	rm v$(PUBSUBCLIENT_VERSION).tar.gz
 
 # compile the sketch
-$(TARGET_DIR)/powerpi.bin: src/powerpi.ino src/config.h common_libraries
+$(TARGET_DIR)/$(SKETCH).bin: src/$(SKETCH) src/config.h common_libraries
 	mkdir -p $(TARGET_DIR)
 	$(ARDUINO_PATH)/arduino-builder \
 		-compile \
@@ -41,7 +45,18 @@ $(TARGET_DIR)/powerpi.bin: src/powerpi.ino src/config.h common_libraries
 		-build-path "$(TARGET_DIR)" \
 		$<
 
-compile: $(TARGET_DIR)/powerpi.bin
+compile: $(TARGET_DIR)/$(SKETCH).bin
+
+# deploy the binary to the device
+flash: $(TARGET_DIR)/$(SKETCH).bin
+	$(ARDUINO_PATH)/hardware/esp8266com/esp8266/tools/upload.py \
+		--port $(SERIAL_PORT) \
+		write_flash \
+		0x00000 \
+		$<
+
+monitor:
+	screen $(SERIAL_PORT) 115200
 
 clean:
 	rm -r ${TARGET_DIR}
