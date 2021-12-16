@@ -3,3 +3,9 @@
 **/mqtt.h
 **/wifi.h
 **/lib
+autom4te.cache
+.config.log
+config.status
+configure
+config.h
+Makefile

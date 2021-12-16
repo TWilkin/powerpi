@@ -1,0 +1,15 @@
+#ifndef __INCLUDED_CONFIG_H
+#define __INCLUDED_CONFIG_H
+
+// the location of this sensor
+#define LOCATION "@location@"
+
+// the MQTT address
+#define MQTT_SERVER "@mqtt_server@"
+#define MQTT_PORT @mqtt_port@
+
+// the WiFI connection details
+#define WIFI_SSID "@wifi_ssid@"
+#define WIFI_PASSWORD "@wifi_password@"
+
+#endif
