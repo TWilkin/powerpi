@@ -7,6 +7,9 @@ void setup() {
     Serial.print("Location: ");
     Serial.println(LOCATION);
 
+    // initialise the sensors
+    setupSensors();
+
     connectWiFi();
 }
 

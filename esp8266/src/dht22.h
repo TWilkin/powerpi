@@ -1,0 +1,7 @@
+#ifndef __INCLUDED_DHT22_H
+#define __INCLUDED_DHT22_H
+
+#define TEMPERATURE_SENSOR 1
+#define HUMIDITY_SENSOR 1
+
+#endif

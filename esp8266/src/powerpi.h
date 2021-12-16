@@ -2,6 +2,7 @@
 #define __INCLUDED_POWERPI_H
 
 #include "wifi.h"
+#include "sensors.h"
 
 // use the config file generated during configure
 #include "config.h"

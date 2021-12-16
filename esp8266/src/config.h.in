@@ -12,4 +12,14 @@
 #define WIFI_SSID "@wifi_ssid@"
 #define WIFI_PASSWORD "@wifi_password@"
 
+// include the PIR functionality
+#if @include_pir@
+    #include "pir.h"
+#endif
+
+// include the DHT22 (temperature/humidity) functionality
+#if @include_dht22@
+    #include "dht22.h"
+#endif
+
 #endif

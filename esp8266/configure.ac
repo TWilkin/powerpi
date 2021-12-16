@@ -6,9 +6,13 @@ AC_ARG_VAR([mqtt_server], [The MQTT server address])
 AC_ARG_VAR([mqtt_port], [The MQTT server port])
 AC_ARG_VAR([wifi_ssid], [The SSID of the WiFi connection to use])
 AC_ARG_VAR([wifi_password], [The password of the WiFi connection to use])
+AC_ARG_VAR([include_dht22], [Whether to build including the DHT22 sensor code or not])
+AC_ARG_VAR([include_pir], [Whether to build including the PIR sensor code or not])
 
 dnl The default value for any of those arguments
 ${mqtt_port:=1883}
+${include_dht22:=0}
+${include_pir:=0}
 
 dnl Ensure the required arguments are set
 m4_foreach_w([var],[location mqtt_server wifi_ssid wifi_password],[
