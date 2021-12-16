@@ -18,6 +18,6 @@ m4_foreach_w([var],[location mqtt_server wifi_ssid wifi_password],[
 ])
 
 dnl Generate the Makefile and config.h
-AC_CONFIG_FILES([Makefile config.h])
+AC_CONFIG_FILES([Makefile src/config.h])
 
 AC_OUTPUT

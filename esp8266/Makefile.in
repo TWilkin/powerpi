@@ -1,4 +1,47 @@
-all: test
+# paths to build directories
+TARGET_DIR=$(CURDIR)/bin
+LIB_DIR=$(CURDIR)/lib
 
-test:
-    echo @location@
+# paths to tools
+ARDUINO_PATH=/opt/arduino/arduino-1.8.12
+
+# versions of libraries
+NTPCLIENT_VERSION=3.2.0
+PUBSUBCLIENT_VERSION=2.7
+
+all: compile
+
+common_libraries: $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION) $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION)
+
+# Download NTPClient library
+$(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION):
+	mkdir -p $(LIB_DIR)
+	wget https://github.com/arduino-libraries/NTPClient/archive/$(NTPCLIENT_VERSION).tar.gz
+	tar xCfz $(LIB_DIR)/ $(NTPCLIENT_VERSION).tar.gz
+	rm $(NTPCLIENT_VERSION).tar.gz
+
+# Download pubsubclient library
+$(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION):
+	mkdir -p $(LIB_DIR)
+	wget https://github.com/knolleary/pubsubclient/archive/v$(PUBSUBCLIENT_VERSION).tar.gz
+	tar xCfz $(LIB_DIR)/ v$(PUBSUBCLIENT_VERSION).tar.gz
+	rm v$(PUBSUBCLIENT_VERSION).tar.gz
+
+# compile the sketch
+$(TARGET_DIR)/powerpi.bin: src/powerpi.ino src/config.h common_libraries
+	mkdir -p $(TARGET_DIR)
+	$(ARDUINO_PATH)/arduino-builder \
+		-compile \
+		-hardware "$(ARDUINO_PATH)/hardware" \
+		-tools "$(ARDUINO_PATH)/tools-builder" \
+		-tools "$(ARDUINO_PATH)/hardware/tools/avr" \
+		-built-in-libraries "$(ARDUINO_PATH)/libraries" \
+		-fqbn=esp8266com:esp8266:generic \
+		-libraries "$(LIB_DIR)" \
+		-build-path "$(TARGET_DIR)" \
+		$<
+
+compile: $(TARGET_DIR)/powerpi.bin
+
+clean:
+	rm -r ${TARGET_DIR}
