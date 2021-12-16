@@ -12,6 +12,9 @@
 #define WIFI_SSID "@wifi_ssid@"
 #define WIFI_PASSWORD "@wifi_password@"
 
+// the hostname of this device
+#define HOSTNAME "@location@Sensor"
+
 // include the PIR functionality
 #if @include_pir@
     #include "pir.h"

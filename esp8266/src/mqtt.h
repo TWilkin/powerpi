@@ -6,6 +6,16 @@
 
 #include "wifi.h"
 
+// the maximum length of the topic
+#define TOPIC_LEN 40
+
+// the maximum length of the message
+#define MESSAGE_LEN 64
+
+// constants for the MQTT messages
+#define MQTT_TOPIC "powerpi/event/%s/%s"
+#define MQTT_MESSAGE "{\"timestamp\":%ld000,%s}"
+
 // the WiFi UDF for connecting to NTP
 WiFiUDP espUdp;
 
@@ -18,6 +28,8 @@ WiFiClient espClient;
 // the MQTT client
 PubSubClient mqttClient(espClient);
 
-void connectMQTT(char* hostname);
+void setupMQTT();
+void connectMQTT();
+void publish(char* action, char* props);
 
 #endif

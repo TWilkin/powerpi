@@ -7,7 +7,7 @@
 #include "wifi.h"
 
 // the delay between sensor polling
-#define POLL_DELAY 0.5 * 1000
+#define POLL_DELAY 5 * 60 * 1000
 
 void setup();
 void loop();

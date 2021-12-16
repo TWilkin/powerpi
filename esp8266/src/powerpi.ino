@@ -8,8 +8,8 @@ void setup() {
     Serial.println(LOCATION);
 
     // connect to WiFi and MQTT
-    char* hostname = generateHostname();
-    connectWiFi(hostname);
+    connectWiFi();
+    setupMQTT();
 
     // initialise the sensors
     setupSensors();

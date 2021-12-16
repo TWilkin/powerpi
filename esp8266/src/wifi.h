@@ -4,11 +4,6 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-// the maximum length of the hostname
-#define HOSTNAME_LEN 32
-
-char* generateHostname();
-
-void connectWiFi(char* hostname);
+void connectWiFi();
 
 #endif
