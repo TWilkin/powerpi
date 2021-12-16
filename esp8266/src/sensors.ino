@@ -3,6 +3,7 @@
 void setupSensors() {
     #ifdef MOTION_SENSOR
         Serial.println("Motion Sensor");
+        setupPIR();
     #endif
 
     #ifdef TEMPERATURE_SENSOR
@@ -16,6 +17,10 @@ void setupSensors() {
 }
 
 void pollSensors() {
+    #ifdef MOTION_SENSOR
+        pollPIR();
+    #endif
+    
     #ifdef TEMPERATURE_SENSOR
         pollDHT22();
     #endif

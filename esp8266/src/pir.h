@@ -3,4 +3,7 @@
 
 #define MOTION_SENSOR
 
+void setupPIR();
+void pollPIR();
+
 #endif
