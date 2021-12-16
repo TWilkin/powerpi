@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
     mosquitto:
-        image: eclipse-mosquitto:2.0.8
+        image: eclipse-mosquitto:2.0.14
         networks:
             - powerpi
         ports:
@@ -17,7 +17,7 @@ services:
 
     clacks-config:
         build: ../clacks-config
-        image: ${REGISTRY}/powerpi/clacks-config:0.0.1
+        image: ${REGISTRY}/powerpi/clacks-config:0.0.2
         networks:
             - powerpi
         deploy:
@@ -33,7 +33,7 @@ services:
 
     deep-thought:
         build: ../deep-thought
-        image: ${REGISTRY}/powerpi/deep-thought:0.5.6
+        image: ${REGISTRY}/powerpi/deep-thought:0.5.7
         networks:
             - powerpi
         deploy:
@@ -53,7 +53,7 @@ services:
             - DB_HOST=db
             - DB_SCHEMA=powerpi
             - DB_USER=powerpi
-            - DB_PASSWORD_FILE=/var/run/secrets/powerpi_db
+            - DB_SECRET_FILE=/var/run/secrets/powerpi_db
             - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
             - GOOGLE_SECRET_FILE=/var/run/secrets/powerpi_google_auth
             - JWT_SECRET_FILE=/var/run/secrets/powerpi_jwt_auth
@@ -63,7 +63,7 @@ services:
 
     babel-fish:
         build: ../babel-fish
-        image: ${REGISTRY}/powerpi/babel-fish:0.0.4
+        image: ${REGISTRY}/powerpi/babel-fish:0.0.5
         networks:
             - powerpi
         deploy:
@@ -121,7 +121,7 @@ services:
 
     light-fantastic:
         build: ../light-fantastic
-        image: ${REGISTRY}/powerpi/light-fantastic:0.2.0
+        image: ${REGISTRY}/powerpi/light-fantastic:0.2.1
         networks:
             - powerpi
         deploy:
@@ -131,7 +131,7 @@ services:
 
     freedns:
         build: ../freedns
-        image: ${REGISTRY}/powerpi/freedns:0.0.6
+        image: ${REGISTRY}/powerpi/freedns:0.0.7
         networks:
             - powerpi
         deploy:
@@ -144,12 +144,12 @@ services:
 
     nginx:
         build: ../nginx
-        image: ${REGISTRY}/powerpi/nginx:1.2.1
+        image: ${REGISTRY}/powerpi/nginx:1.2.2
         networks:
             - powerpi
         ports:
-            - "3001:80"
-            - "3000:443"
+            - "3001:8080"
+            - "3000:8443"
         deploy:
             replicas: 1
         depends_on:
@@ -165,7 +165,7 @@ services:
 
     certbot:
         build: ../certbot
-        image: ${REGISTRY}/powerpi/certbot:0.0.2
+        image: ${REGISTRY}/powerpi/certbot:0.0.3
         networks:
             - powerpi
         deploy:
@@ -197,7 +197,7 @@ services:
 
     persistence:
         build: ../persistence
-        image: ${REGISTRY}/powerpi/persistence:0.1.0
+        image: ${REGISTRY}/powerpi/persistence:0.1.1
         networks:
             - powerpi
         deploy:
@@ -212,7 +212,7 @@ services:
 
     energy-monitor:
         build: ../energy-monitor
-        image: ${REGISTRY}/powerpi/energy-monitor:0.0.2
+        image: ${REGISTRY}/powerpi/energy-monitor:0.0.3
         networks:
             - powerpi
         deploy:

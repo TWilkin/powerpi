@@ -1,4 +1,4 @@
-import { Configuration, PlatformApplication } from "@tsed/common";
+import { $log, Configuration, PlatformApplication } from "@tsed/common";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -25,6 +25,8 @@ export default class Server {
     constructor(private config: Config, private app: PlatformApplication) {}
 
     public async $beforeRoutesInit() {
+        $log.level = this.config.logLevel;
+
         if (this.config.usesHttps) {
             this.app.getApp().set("trust proxy", 1);
         }

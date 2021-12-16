@@ -58,8 +58,12 @@ export default class GoogleProtocol implements OnVerify, OnInstall {
             (authConfig) => authConfig.name === "google"
         );
 
-        googleStrategy._oauth2._clientId = config!.clientId;
-        googleStrategy._oauth2._clientSecret = config!.clientSecret;
-        googleStrategy._callbackURL = `${this.config.externalUrlBase}/api/auth/google/callback`;
+        if (config) {
+            googleStrategy._oauth2._clientId = config.clientId;
+            googleStrategy._oauth2._clientSecret = config.clientSecret;
+            googleStrategy._callbackURL = `${this.config.externalUrlBase}/api/auth/google/callback`;
+        } else {
+            throw new Error("Google client id and secret required to support authentication");
+        }
     }
 }

@@ -3,7 +3,7 @@ import HttpStatus from "http-status-codes";
 import Authorize from "../middleware/auth";
 import DatabaseService from "../services/db";
 
-type QueryFunction = () => Promise<any | undefined>;
+type QueryFunction<TResult> = () => Promise<TResult | undefined>;
 
 @Controller("/history")
 export default class HistoryController {
@@ -11,8 +11,8 @@ export default class HistoryController {
 
     @Get("/types")
     @Authorize()
-    getTypes(@Res() response: Response) {
-        return this.query(
+    async getTypes(@Res() response: Response) {
+        return await this.query(
             response,
             async () => (await this.databaseService.getHistoryTypes())?.rows
         );
@@ -20,8 +20,8 @@ export default class HistoryController {
 
     @Get("/entities")
     @Authorize()
-    getEntities(@Res() response: Response) {
-        return this.query(
+    async getEntities(@Res() response: Response) {
+        return await this.query(
             response,
             async () => (await this.databaseService.getHistoryEntities())?.rows
         );
@@ -29,8 +29,8 @@ export default class HistoryController {
 
     @Get("/actions")
     @Authorize()
-    getActions(@Res() response: Response) {
-        return this.query(
+    async getActions(@Res() response: Response) {
+        return await this.query(
             response,
             async () => (await this.databaseService.getHistoryActions())?.rows
         );
@@ -40,31 +40,31 @@ export default class HistoryController {
     @Authorize()
     async getHistory(
         @Res() response: Response,
-        @QueryParams("page") page: number = 0,
-        @QueryParams("records") records: number = 30,
+        @QueryParams("page") page = 0,
+        @QueryParams("records") records = 30,
         @QueryParams("type") type?: string,
         @QueryParams("entity") entity?: string,
         @QueryParams("action") action?: string
     ) {
-        return this.query(response, async () => {
+        return await this.query(response, async () => {
             const data = await this.databaseService.getHistory(page, records, type, entity, action);
-            data?.rows.forEach((row) => {
-                if (typeof row.message === "string") {
-                    row.message = JSON.parse(row.message);
-                }
-            });
 
             const count = await this.databaseService.getHistoryCount(type, entity, action);
 
             return {
                 page,
                 records: count?.rows[0]?.count,
-                data: data?.rows,
+                data: data?.rows.map((row) => {
+                    if (typeof row.message === "string") {
+                        row.message = JSON.parse(row.message);
+                    }
+                    return row;
+                }),
             };
         });
     }
 
-    private async query(response: Response, func: QueryFunction) {
+    private async query<TResult>(response: Response, func: QueryFunction<TResult>) {
         try {
             const result = await func();
 

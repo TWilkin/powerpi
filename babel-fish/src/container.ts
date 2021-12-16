@@ -1,4 +1,4 @@
-import { Container as CommonContainer } from "powerpi-common";
+import { Container as CommonContainer } from "@powerpi/common";
 import { Constructable, Container as LocalContainer } from "typedi";
 
 export default class Container {

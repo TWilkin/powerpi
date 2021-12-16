@@ -1,6 +1,6 @@
+import { PowerPiApi } from "@powerpi/api";
 import { App } from "jovo-framework";
 import { Alexa } from "jovo-platform-alexa";
-import { PowerPiApi } from "powerpi-common-api";
 import Container from "./container";
 import { addDeviceTypes, getProviderName } from "./providers";
 import ConfigService from "./services/config";
@@ -11,6 +11,7 @@ const config = Container.get(ConfigService);
 app.use(new Alexa());
 
 app.setHandler({
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     LAUNCH() {},
 
     async DevicePowerIntent() {
@@ -85,7 +86,7 @@ function cleanString(value?: string) {
     return value.trim().toLowerCase().replace(".", "").replace("-", "");
 }
 
-async function makeRequest(token: string | undefined, func: (api: PowerPiApi) => Promise<void>) {
+async function makeRequest(token: string | undefined, func: (api: PowerPiApi) => Promise<unknown>) {
     const api = new PowerPiApi("http://deep-thought:3000/api");
 
     if (token) {

@@ -1,6 +1,6 @@
 import { Octokit } from "@octokit/rest";
+import { ConfigFileType, LoggerService, MqttService } from "@powerpi/common";
 import path from "path";
-import { ConfigFileType, LoggerService, MqttService } from "powerpi-common";
 import { Service } from "typedi";
 import Container from "../container";
 import ConfigService from "./config";
@@ -69,8 +69,14 @@ export default class GitHubConfigService {
         );
 
         try {
+            const user = this.config.gitHubUser;
+            if (!user) {
+                this.logger.error("No GitHub user set.");
+                return undefined;
+            }
+
             const { data } = await octokit.rest.repos.getContent({
-                owner: this.config.gitHubUser!,
+                owner: user,
                 repo: this.config.repo,
                 ref: this.config.branch,
                 path: filePath,

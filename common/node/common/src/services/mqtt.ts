@@ -5,12 +5,13 @@ import { ConfigService } from "./config";
 import { LoggerService } from "./logger";
 
 export interface Message {
-    [key: string]: any;
     timestamp?: number;
 }
 
-export interface MqttConsumer {
-    message(type: string, entity: string, action: string, message: Message): void;
+export type OutgoingMessage = Omit<Message, "timestamp">;
+
+export interface MqttConsumer<TMessage extends Message = Message> {
+    message(type: string, entity: string, action: string, message: TMessage): void;
 }
 
 @Service()
@@ -80,10 +81,11 @@ export class MqttService {
         }
     }
 
-    public async publish(type: string, entity: string, action: string, message: Message) {
-        if (!message.timestamp) {
-            message.timestamp = new Date().getTime();
-        }
+    public async publish(type: string, entity: string, action: string, message: OutgoingMessage) {
+        const json = JSON.stringify({
+            timestamp: new Date().getTime(),
+            ...message,
+        });
 
         const options: IClientPublishOptions = {
             qos: 2,
@@ -94,7 +96,7 @@ export class MqttService {
 
         this.logger.debug("Publishing to", topicName);
 
-        await this.client?.publish(topicName, JSON.stringify(message), options);
+        await this.client?.publish(topicName, json, options);
     }
 
     public async subscribe(

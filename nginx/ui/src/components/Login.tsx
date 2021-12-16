@@ -2,33 +2,33 @@ import React, { useCallback } from "react";
 import { useLastLocation } from "react-router-last-location";
 
 interface LoginButtonProps {
-  protocol: string;
+    protocol: string;
 }
 
 const LoginButton = ({ protocol }: LoginButtonProps) => {
-  const onLoginClick = useLogin(protocol);
+    const onLoginClick = useLogin(protocol);
 
-  return <button onClick={onLoginClick}>{`Login with ${protocol}`}</button>;
+    return <button onClick={onLoginClick}>{`Login with ${protocol}`}</button>;
 };
 
 const Login = () => {
-  return (
-    <div id="login">
-      <LoginButton protocol="Google" />
-    </div>
-  );
+    return (
+        <div id="login">
+            <LoginButton protocol="Google" />
+        </div>
+    );
 };
 export default Login;
 
 function useLogin(protocol: string) {
-  const lastLocation = useLastLocation();
+    const lastLocation = useLastLocation();
 
-  return useCallback(() => {
-    const redirectUri = lastLocation ? lastLocation.pathname : "";
-    const path = `/api/auth/${protocol.toLowerCase()}?redirect_uri=${
-      window.location.origin
-    }/${redirectUri}`;
+    return useCallback(() => {
+        const redirectUri = lastLocation ? lastLocation.pathname : "";
+        const path = `/api/auth/${protocol.toLowerCase()}?redirect_uri=${
+            window.location.origin
+        }/${redirectUri}`;
 
-    window.location.href = path;
-  }, [history]);
+        window.location.href = path;
+    }, [history]);
 }

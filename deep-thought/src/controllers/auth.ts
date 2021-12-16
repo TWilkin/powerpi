@@ -1,3 +1,4 @@
+import { IUser } from "@powerpi/common";
 import {
     $log,
     BodyParams,
@@ -11,12 +12,17 @@ import {
 } from "@tsed/common";
 import { Authenticate, Authorize } from "@tsed/passport";
 import crypto from "crypto";
+import { Session as ExpressSession } from "express-session";
 import HttpStatus from "http-status-codes";
 import passport from "passport";
-import { IUser } from "powerpi-common";
 import ConfigService from "../services/config";
 import JwtService from "../services/jwt";
 import UserService from "../services/user";
+
+interface AuthSession extends ExpressSession {
+    redirectUri: string;
+    useCode: boolean;
+}
 
 @Controller("/auth")
 export default class AuthController {
@@ -28,7 +34,7 @@ export default class AuthController {
 
     @Get("/google")
     async google(
-        @Session() session: any,
+        @Session() session: AuthSession,
         @QueryParams("redirect_uri") redirectUri: string,
         @QueryParams("response_type") responseType: string,
         @QueryParams("state") state: string,

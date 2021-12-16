@@ -1,4 +1,4 @@
-import { MqttService } from "powerpi-common";
+import { MqttService } from "@powerpi/common";
 import Container from "./container";
 import EnergyMonitorService from "./services/monitor";
 

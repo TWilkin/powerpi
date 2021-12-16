@@ -1,3 +1,4 @@
+import { OutgoingMessage } from "@powerpi/common";
 import { BodyParams, Controller, PathParams, Post, Res } from "@tsed/common";
 import { Required } from "@tsed/schema";
 import { Response } from "express";
@@ -24,7 +25,7 @@ export default class TopicController {
         }
 
         // generate the message
-        const message = {
+        const message: OutgoingMessage = {
             state,
         };
 

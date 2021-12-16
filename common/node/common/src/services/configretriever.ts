@@ -9,7 +9,7 @@ interface ConfigMessage extends Message {
 }
 
 @Service()
-export class ConfigRetrieverService implements MqttConsumer {
+export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
     private static readonly topicType = "config";
     private static readonly topicAction = "change";
 

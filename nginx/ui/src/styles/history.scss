@@ -1,48 +1,48 @@
 #history-filters {
-  label {
-    display: inline-block;
-    width: 3.75rem;
-  }
+    label {
+        display: inline-block;
+        width: 3.75rem;
+    }
 
-  select {
-    width: calc(100% - 4rem);
-  }
+    select {
+        width: calc(100% - 4rem);
+    }
 
-  .loading {
-    display: inline;
-  }
+    .loading {
+        display: inline;
+    }
 }
 
 #history-list {
-  .pagination-controls {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+    .pagination-controls {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
 
-    button {
-      width: 40px;
-    }
-
-    input {
-      width: 100%;
-    }
-  }
-
-  table {
-    th,
-    td {
-      padding: 0 5px;
-      white-space: nowrap;
-    }
-
-    tbody {
-      tr {
-        &:nth-child(even) {
-          td {
-            background-color: $highlight-colour;
-          }
+        button {
+            width: 40px;
         }
-      }
+
+        input {
+            width: 100%;
+        }
     }
-  }
+
+    table {
+        th,
+        td {
+            padding: 0 5px;
+            white-space: nowrap;
+        }
+
+        tbody {
+            tr {
+                &:nth-child(even) {
+                    td {
+                        background-color: $highlight-colour;
+                    }
+                }
+            }
+        }
+    }
 }

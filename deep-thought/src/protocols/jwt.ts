@@ -52,8 +52,17 @@ export default class JwtProtocol implements OnVerify, OnInstall {
     }
 }
 
-function getSecret(_: any, __: any, done: (err: any, secret: string) => void) {
-    new ConfigService().getJWTSecret().then((key) => done(null, key));
+async function getSecret(
+    _: Request,
+    __: string,
+    done: (err: string | null | unknown, secret?: string) => void
+) {
+    try {
+        const secret = await new ConfigService().getJWTSecret();
+        done(null, secret);
+    } catch (error) {
+        done(error);
+    }
 }
 
 function getToken(request: Request): string | null {

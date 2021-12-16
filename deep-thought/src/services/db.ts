@@ -1,5 +1,6 @@
 import { $log, Service } from "@tsed/common";
 import { Pool, PoolClient } from "pg";
+import Message from "../models/message";
 import ConfigService from "./config";
 
 interface DatabaseQueryParam {
@@ -15,7 +16,7 @@ export default class DatabaseService {
         this.pool = undefined;
     }
 
-    public getHistory(
+    public async getHistory(
         page: number,
         limit: number,
         type?: string,
@@ -32,7 +33,7 @@ export default class DatabaseService {
 
         const skip = limit * page;
 
-        return this.query(
+        return await this.query<Message>(
             this.generateQuery(
                 "SELECT * FROM mqtt",
                 "ORDER BY timestamp DESC",
@@ -44,7 +45,7 @@ export default class DatabaseService {
         );
     }
 
-    public getHistoryCount(type?: string, entity?: string, action?: string) {
+    public async getHistoryCount(type?: string, entity?: string, action?: string) {
         const params = optionalParameterList(type, entity, action);
 
         const dbQueryParams = [
@@ -53,21 +54,22 @@ export default class DatabaseService {
             { name: "action", value: action },
         ];
 
-        return this.query(
+        return await this.query<{ count: number }>(
             this.generateQuery("SELECT COUNT(*) FROM mqtt", "", dbQueryParams),
             params
         );
     }
 
-    public getHistoryTypes = () => this.query("SELECT DISTINCT type FROM mqtt ORDER BY type ASC");
+    public getHistoryTypes = async () =>
+        await this.query<string>("SELECT DISTINCT type FROM mqtt ORDER BY type ASC");
 
-    public getHistoryEntities = () =>
-        this.query("SELECT DISTINCT entity FROM mqtt ORDER BY entity ASC");
+    public getHistoryEntities = async () =>
+        await this.query<string>("SELECT DISTINCT entity FROM mqtt ORDER BY entity ASC");
 
-    public getHistoryActions = () =>
-        this.query("SELECT DISTINCT action FROM mqtt ORDER BY action ASC");
+    public getHistoryActions = async () =>
+        await this.query<string>("SELECT DISTINCT action FROM mqtt ORDER BY action ASC");
 
-    private async query(sql: string, params?: any[]) {
+    private async query<TResult>(sql: string, params?: string[]) {
         let client: PoolClient | undefined;
 
         try {
@@ -75,7 +77,7 @@ export default class DatabaseService {
 
             client = await this.pool?.connect();
 
-            return await client?.query(sql, params);
+            return await client?.query<TResult>(sql, params);
         } catch (error) {
             $log.error("Error accessing database.", error);
         } finally {
@@ -85,42 +87,48 @@ export default class DatabaseService {
 
     private generateQuery(
         start: string,
-        end: string = "",
+        end = "",
         params: DatabaseQueryParam[],
         limit?: number,
         skip?: number
     ) {
         const generator = optionalArgumentGenerator(params);
 
-        let sql = "";
-        while (true) {
-            const result = generator.next();
+        let whereClause = "";
+        let result: IteratorResult<string, void> | undefined;
+        do {
+            result = generator.next();
 
-            if (result.done) {
-                break;
+            if (result.value) {
+                whereClause += result.value;
             }
+        } while (!result.done);
 
-            sql += result.value;
-        }
+        whereClause = whereClause.length > 0 ? `WHERE ${whereClause}` : "";
 
-        const middle = sql.length > 0 ? `WHERE ${sql}` : "";
-        sql = `${start} ${middle} ${end}`;
+        const limitClause =
+            limit !== undefined && skip !== undefined ? `LIMIT ${limit} OFFSET ${skip}` : "";
 
-        if (limit !== undefined && skip !== undefined) {
-            sql = `${sql} LIMIT ${limit} OFFSET ${skip}`;
-        }
+        const sql = `${start} ${whereClause} ${end} ${limitClause}`.trim();
+
+        $log.debug(sql);
 
         return sql;
     }
 
     private async connect() {
         if (!this.pool) {
-            this.pool = new Pool({
-                connectionString: await this.config.getDatabaseURI(),
-                max: 2,
-                idleTimeoutMillis: 30 * 1000,
-                connectionTimeoutMillis: 10 * 1000,
-            });
+            try {
+                this.pool = new Pool({
+                    connectionString: await this.config.databaseURI,
+                    max: 2,
+                    idleTimeoutMillis: 30 * 1000,
+                    connectionTimeoutMillis: 10 * 1000,
+                });
+            } catch (error) {
+                $log.error("Error connecting to database", error);
+                process.exit(-1);
+            }
         }
     }
 }
@@ -135,8 +143,8 @@ function* optionalArgumentGenerator(params: DatabaseQueryParam[]) {
     }
 }
 
-function optionalParameterList(...params: any[]) {
-    const list: any[] = [];
+function optionalParameterList(...params: (string | undefined)[]) {
+    const list: string[] = [];
 
     params.forEach((param) => {
         if (param) {

@@ -1,4 +1,4 @@
-import { LoggerService } from "powerpi-common";
+import { LoggerService } from "@powerpi/common";
 import { Sequelize } from "sequelize-typescript";
 import { Service } from "typedi";
 import Container from "../container";

@@ -1,4 +1,4 @@
-import { LoggerService } from "powerpi-common";
+import { LoggerService } from "@powerpi/common";
 import { Settings } from "luxon";
 import { Container as RootContainer, Service } from "typedi";
 import ConfigService from "./config";
