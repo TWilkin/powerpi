@@ -22,12 +22,12 @@
 #define HOSTNAME "@location@Sensor"
 
 // include the PIR functionality
-#if @include_pir@
+#if @enable_pir@
     #include "pir.h"
 #endif
 
 // include the DHT22 (temperature/humidity) functionality
-#if @include_dht22@
+#if @enable_dht22@
     #include "dht22.h"
 #endif
 
