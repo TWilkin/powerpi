@@ -19,6 +19,11 @@ void connectMQTT() {
             delay(500);
         }
     }
+
+    // check NTP update has run
+    while(timeClient.getEpochTime() < 24 * 60 * 60 * 1000) {
+        Serial.println("Waiting for NTP update");
+    }
 }
 
 void publish(char* action, char* props) {
