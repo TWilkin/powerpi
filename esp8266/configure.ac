@@ -1,4 +1,4 @@
-AC_INIT([powerpi], [0.0.1])
+AC_INIT([powerpi-sensor], [0.1.0])
 
 dnl The arguments the user can override
 AC_ARG_VAR([location], [The location of this sensor])
@@ -10,9 +10,9 @@ AC_ARG_VAR([include_dht22], [Whether to build including the DHT22 sensor code or
 AC_ARG_VAR([include_pir], [Whether to build including the PIR sensor code or not])
 
 dnl The default value for any of those arguments
-${mqtt_port:=1883}
-${include_dht22:=0}
-${include_pir:=0}
+test "$mqtt_port" = "" && mqtt_port=1883
+test "$include_dht22" = "" && include_dht22=0
+test "$include_pir" = "" && include_pir=0
 
 dnl Ensure the required arguments are set
 m4_foreach_w([var],[location mqtt_server wifi_ssid wifi_password],[

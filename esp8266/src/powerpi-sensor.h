@@ -1,5 +1,5 @@
-#ifndef __INCLUDED_POWERPI_H
-#define __INCLUDED_POWERPI_H
+#ifndef __INCLUDED_POWERPI_SENSOR_H
+#define __INCLUDED_POWERPI_SENSOR_H
 
 #include "config.h"
 #include "mqtt.h"

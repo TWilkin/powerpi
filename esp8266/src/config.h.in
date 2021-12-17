@@ -1,5 +1,11 @@
+// @configure_input@
+
 #ifndef __INCLUDED_CONFIG_H
 #define __INCLUDED_CONFIG_H
+
+// the package we're building
+#define PACKAGE "@PACKAGE_NAME@"
+#define VERSION "@PACKAGE_VERSION@"
 
 // the location of this sensor
 #define LOCATION "@location@"

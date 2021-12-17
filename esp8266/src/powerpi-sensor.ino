@@ -1,9 +1,12 @@
-#include "powerpi.h"
+#include "powerpi-sensor.h"
 
 void setup() {
     // intialise Serial for logging
     Serial.begin(115200);
-    Serial.println("PowerPi Sensor");
+    Serial.print(PACKAGE);
+    Serial.print(" v");
+    Serial.println(VERSION);
+    
     Serial.print("Location: ");
     Serial.println(LOCATION);
 

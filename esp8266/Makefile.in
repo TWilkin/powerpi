@@ -1,3 +1,5 @@
+# @configure_input@
+
 # paths to build directories
 TARGET_DIR=$(CURDIR)/bin
 LIB_DIR=$(CURDIR)/lib
