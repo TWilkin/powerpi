@@ -2,11 +2,11 @@
 
 void setup() {
     // intialise Serial for logging
-    Serial.begin(115200);
+    Serial.begin(SERIAL_BAUD);
     Serial.print(PACKAGE);
     Serial.print(" v");
     Serial.println(VERSION);
-    
+
     Serial.print("Location: ");
     Serial.println(LOCATION);
 

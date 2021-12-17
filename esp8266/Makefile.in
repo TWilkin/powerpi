@@ -76,7 +76,7 @@ flash: $(TARGET_DIR)/$(SKETCH).bin
 		$<
 
 monitor:
-	screen $(SERIAL_PORT) 115200
+	screen $(SERIAL_PORT) @serial_baud@
 
 clean:
 	rm -r ${TARGET_DIR}

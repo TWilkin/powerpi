@@ -6,9 +6,11 @@ AC_ARG_VAR([mqtt_server], [The MQTT server address])
 AC_ARG_VAR([mqtt_port], [The MQTT server port])
 AC_ARG_VAR([wifi_ssid], [The SSID of the WiFi connection to use])
 AC_ARG_VAR([wifi_password], [The password of the WiFi connection to use])
+AC_ARG_VAR([serial_baud], [The baud rate for the serial connection])
 
 dnl The default value for any of those arguments
 test "$mqtt_port" = "" && mqtt_port=1883
+test "$serial_baud" = "" && serial_baud=115200
 
 dnl Ensure the required arguments are set
 m4_foreach_w(

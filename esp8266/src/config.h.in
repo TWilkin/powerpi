@@ -21,6 +21,9 @@
 // the hostname of this device
 #define HOSTNAME "@location@Sensor"
 
+// the serial port configuration
+#define SERIAL_BAUD @serial_baud@
+
 // include the DHT22 (temperature/humidity) functionality
 #if @enable_dht22@
     #define TEMPERATURE_SENSOR
