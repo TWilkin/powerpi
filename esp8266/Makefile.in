@@ -5,7 +5,7 @@ TARGET_DIR=$(CURDIR)/bin
 LIB_DIR=$(CURDIR)/lib
 
 # variables for tools
-ARDUINO_PATH=/opt/arduino/arduino-1.8.12
+ARDUINO_PATH=@ARDUINO_PATH@
 SERIAL_PORT?=/dev/ttyUSB0
 
 # versions of libraries

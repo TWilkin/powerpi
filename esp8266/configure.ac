@@ -41,6 +41,25 @@ AC_ARG_ENABLE(
 )
 AC_SUBST([enable_pir])
 
+dnl Find the arduino IDE
+AC_CHECK_PROG([ARDUINO], [arduino], $(whereis arduino -b | cut -d':' -f 2), [no])
+if test "$ARDUINO" == "no"
+then
+    AC_MSG_ERROR([Required program "arduino" not found.])
+else
+    ARDUINO_PATH=$(dirname "${ARDUINO}")
+    AC_SUBST([ARDUINO_PATH])
+fi
+
+dnl Check for the arduino builder tool
+AC_CHECK_PROG([ARDUINO_BUILDER], [arduino-builder], [yes], [no])
+if test "$ARDUINO_BUILDER" == "no"
+then
+    AC_MSG_ERROR([Required program "arduino-builder" not found.])
+else
+    arduino-builder -version
+fi
+
 dnl Generate the Makefile and config.h
 AC_CONFIG_FILES([Makefile src/config.h])
 
