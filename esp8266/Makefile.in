@@ -12,10 +12,22 @@ SERIAL_PORT?=/dev/ttyUSB0
 ADAFRUIT_SENSOR_VERSION=1.1.4
 DHT_SENSOR_VERSION=1.4.3
 NTPCLIENT_VERSION=3.2.0
-PUBSUBCLIENT_VERSION=2.7
+PUBSUBCLIENT_VERSION=v2.7
 
 # other variables
 SKETCH=@PACKAGE_NAME@.ino
+
+define download_lib
+	# Download a libary from GitHub
+	# $(1) Package name
+	# $(2) Package version
+	# $(3) GitHub user
+
+	mkdir -p $(LIB_DIR)/$(1)-$(2)
+	wget https://github.com/$(3)/$(1)/archive/$(2).tar.gz
+	tar xCfz $(LIB_DIR)/$(1)-$(2) $(2).tar.gz --strip-components=1
+	rm $(2).tar.gz
+endef
 
 all: compile flash monitor
 
@@ -23,33 +35,21 @@ common_libraries: $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION) $(LIB_DIR)/pubsubcli
 
 # Download NTPClient library
 $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION):
-	mkdir -p $(LIB_DIR)
-	wget https://github.com/arduino-libraries/NTPClient/archive/$(NTPCLIENT_VERSION).tar.gz
-	tar xCfz $(LIB_DIR)/ $(NTPCLIENT_VERSION).tar.gz
-	rm $(NTPCLIENT_VERSION).tar.gz
+	$(call download_lib,NTPClient,$(NTPCLIENT_VERSION),arduino-libraries)
 
 # Download pubsubclient library
 $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION):
-	mkdir -p $(LIB_DIR)
-	wget https://github.com/knolleary/pubsubclient/archive/v$(PUBSUBCLIENT_VERSION).tar.gz
-	tar xCfz $(LIB_DIR)/ v$(PUBSUBCLIENT_VERSION).tar.gz
-	rm v$(PUBSUBCLIENT_VERSION).tar.gz
+	$(call download_lib,pubsubclient,$(PUBSUBCLIENT_VERSION),knolleary)
 
-dht22_libaries: $(LIB_DIR)/Adafruit-Sensor-$(ADAFRUIT_SENSOR_VERSION) $(LIB_DIR)/DHT-sensor-library-$(DHT_SENSOR_VERSION)
+dht22_libaries: $(LIB_DIR)/Adafruit_Sensor-$(ADAFRUIT_SENSOR_VERSION) $(LIB_DIR)/DHT-sensor-library-$(DHT_SENSOR_VERSION)
 
 # Download Adafruit Sensor library
-$(LIB_DIR)/Adafruit-Sensor-$(ADAFRUIT_SENSOR_VERSION):
-	mkdir -p $(LIB_DIR)
-	wget https://github.com/adafruit/Adafruit_Sensor/archive/$(ADAFRUIT_SENSOR_VERSION).tar.gz
-	tar xCfz $(LIB_DIR)/ $(ADAFRUIT_SENSOR_VERSION).tar.gz
-	rm $(ADAFRUIT_SENSOR_VERSION).tar.gz
+$(LIB_DIR)/Adafruit_Sensor-$(ADAFRUIT_SENSOR_VERSION):
+	$(call download_lib,Adafruit_Sensor,$(ADAFRUIT_SENSOR_VERSION),adafruit)
 
 # Download DHT Sensor library
 $(LIB_DIR)/DHT-sensor-library-$(DHT_SENSOR_VERSION):
-	mkdir -p $(LIB_DIR)
-	wget https://github.com/adafruit/DHT-sensor-library/archive/$(DHT_SENSOR_VERSION).tar.gz
-	tar xCfz $(LIB_DIR)/ $(DHT_SENSOR_VERSION).tar.gz
-	rm $(DHT_SENSOR_VERSION).tar.gz
+	$(call download_lib,DHT-sensor-library,$(DHT_SENSOR_VERSION),adafruit)
 
 # compile the sketch
 $(TARGET_DIR)/$(SKETCH).bin: src/$(SKETCH) src/config.h common_libraries dht22_libaries
@@ -80,3 +80,6 @@ monitor:
 
 clean:
 	rm -r ${TARGET_DIR}
+
+clean_lib:
+	rm -rf ${LIB_DIR}
