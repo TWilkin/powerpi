@@ -5,9 +5,6 @@
 
 #include "mqtt.h"
 
-#define TEMPERATURE_SENSOR
-#define HUMIDITY_SENSOR
-
 // the data pin for the DHT22 (GPIO5/D1)
 #define DHT22_PIN 5
 
