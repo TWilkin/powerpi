@@ -14,6 +14,8 @@ void setupSensors() {
     #ifdef HUMIDITY_SENSOR
         Serial.println("Humidity Sensor");
     #endif
+
+    Serial.println("Ready");
 }
 
 void pollSensors() {
