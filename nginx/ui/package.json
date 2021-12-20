@@ -8,6 +8,7 @@
         "start": "webpack serve --config webpack.dev.js"
     },
     "author": "TWilkin",
+    "license": "GPL-3.0-only",
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.3",
         "@fortawesome/fontawesome-svg-core": "^1.2.35",

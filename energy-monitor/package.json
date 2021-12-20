@@ -7,6 +7,7 @@
         "start": "ts-node src/index.ts"
     },
     "author": "TWilkin",
+    "license": "GPL-3.0-only",
     "dependencies": {
         "@powerpi/common": "^0.0.5",
         "@types/dateformat": "^3.0.1",
