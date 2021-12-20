@@ -13,4 +13,5 @@
 **/.eslintrc
 **/.gitignore
 **/Dockerfile
+**/*.md
 LICENSE
