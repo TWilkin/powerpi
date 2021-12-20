@@ -5,8 +5,8 @@
 
 #include "mqtt.h"
 
-// the data pin for the DHT22 (GPIO5/D1)
-#define DHT22_PIN 5
+// the data pin for the DHT22 (GPIO4/D2)
+#define DHT22_PIN 4
 
 // the number of loop intervals to skip (5 minutes)
 #define DHT22_SKIP 5 * 60 * 2
