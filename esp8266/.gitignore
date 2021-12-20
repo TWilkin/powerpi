@@ -1,6 +1,6 @@
-bin
-lib
-autom4te.cache
+bin/
+lib/
+autom4te.cache/
 .config.log
 args.sh
 config.status
