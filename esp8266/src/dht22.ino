@@ -6,7 +6,7 @@ void setupDHT22() {
 
 void pollDHT22() {
     // check if we've skipped enough counts
-    if(dhtCounter++ >= (DHT22_POLL_DELAY / POLL_DELAY)) {
+    if(dhtCounter++ >= DHT22_SKIP) {
         dhtCounter = 0;
 
         float humidity = dht.readHumidity();
@@ -14,6 +14,7 @@ void pollDHT22() {
 
         if(isnan(humidity) || isnan(temperature)) {
             Serial.println("DHT22 read error");
+            return;
         }
 
         char message[30];
@@ -25,5 +26,7 @@ void pollDHT22() {
         // generate and publish the humidity message
         snprintf(message, 30, DHT22_MESSAGE, humidity, "%");
         publish("humidity", message);
+
+        Serial.print("TH");
     }
 }
