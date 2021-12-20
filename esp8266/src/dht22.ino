@@ -5,20 +5,25 @@ void setupDHT22() {
 }
 
 void pollDHT22() {
-    float humidity = dht.readHumidity();
-    float temperature = dht.readTemperature();
+    // check if we've skipped enough counts
+    if(dhtCounter++ >= (DHT22_POLL_DELAY / POLL_DELAY)) {
+        dhtCounter = 0;
 
-    if(isnan(humidity) || isnan(temperature)) {
-        Serial.println("Failed to read from DHT22 sensor");
+        float humidity = dht.readHumidity();
+        float temperature = dht.readTemperature();
+
+        if(isnan(humidity) || isnan(temperature)) {
+            Serial.println("DHT22 read error");
+        }
+
+        char message[30];
+
+        // generate and publish the temperature message
+        snprintf(message, 30, DHT22_MESSAGE, temperature, "°C");
+        publish("temperature", message);
+
+        // generate and publish the humidity message
+        snprintf(message, 30, DHT22_MESSAGE, humidity, "%");
+        publish("humidity", message);
     }
-
-    char message[30];
-
-    // generate and publish the temperature message
-    snprintf(message, 30, DHT22_MESSAGE, temperature, "°C");
-    publish("temperature", message);
-
-    // generate and publish the humidity message
-    snprintf(message, 30, DHT22_MESSAGE, humidity, "%");
-    publish("humidity", message);
 }
