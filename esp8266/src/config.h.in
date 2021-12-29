@@ -1,0 +1,38 @@
+// @configure_input@
+
+#ifndef __INCLUDED_CONFIG_H
+#define __INCLUDED_CONFIG_H
+
+// the package we're building
+#define PACKAGE "@PACKAGE_NAME@"
+#define VERSION "@PACKAGE_VERSION@"
+
+// the location of this sensor
+#define LOCATION "@location@"
+
+// the MQTT address
+#define MQTT_SERVER "@mqtt_server@"
+#define MQTT_PORT @mqtt_port@
+
+// the WiFI connection details
+#define WIFI_SSID "@wifi_ssid@"
+#define WIFI_PASSWORD "@wifi_password@"
+
+// the hostname of this device
+#define HOSTNAME "@location@Sensor"
+
+// the serial port configuration
+#define SERIAL_BAUD @serial_baud@
+
+// include the DHT22 (temperature/humidity) functionality
+#if @enable_dht22@
+    #define TEMPERATURE_SENSOR
+    #define HUMIDITY_SENSOR
+#endif
+
+// include the PIR functionality
+#if @enable_pir@
+    #define MOTION_SENSOR
+#endif
+
+#endif

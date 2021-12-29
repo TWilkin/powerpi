@@ -1,0 +1,85 @@
+# @configure_input@
+
+# paths to build directories
+TARGET_DIR=$(CURDIR)/bin
+LIB_DIR=$(CURDIR)/lib
+
+# variables for tools
+ARDUINO_PATH=@ARDUINO_PATH@
+SERIAL_PORT?=/dev/ttyUSB0
+
+# versions of libraries
+ADAFRUIT_SENSOR_VERSION=1.1.4
+DHT_SENSOR_VERSION=1.4.3
+NTPCLIENT_VERSION=3.2.0
+PUBSUBCLIENT_VERSION=v2.8
+
+# other variables
+SKETCH=@PACKAGE_NAME@.ino
+
+define download_lib
+	# Download a libary from GitHub
+	# $(1) Package name
+	# $(2) Package version
+	# $(3) GitHub user
+
+	mkdir -p $(LIB_DIR)/$(1)-$(2)
+	wget https://github.com/$(3)/$(1)/archive/$(2).tar.gz
+	tar xCfz $(LIB_DIR)/$(1)-$(2) $(2).tar.gz --strip-components=1
+	rm $(2).tar.gz
+endef
+
+all: compile flash monitor
+
+common_libraries: $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION) $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION)
+
+# Download NTPClient library
+$(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION):
+	$(call download_lib,NTPClient,$(NTPCLIENT_VERSION),arduino-libraries)
+
+# Download pubsubclient library
+$(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION):
+	$(call download_lib,pubsubclient,$(PUBSUBCLIENT_VERSION),knolleary)
+
+dht22_libaries: $(LIB_DIR)/Adafruit_Sensor-$(ADAFRUIT_SENSOR_VERSION) $(LIB_DIR)/DHT-sensor-library-$(DHT_SENSOR_VERSION)
+
+# Download Adafruit Sensor library
+$(LIB_DIR)/Adafruit_Sensor-$(ADAFRUIT_SENSOR_VERSION):
+	$(call download_lib,Adafruit_Sensor,$(ADAFRUIT_SENSOR_VERSION),adafruit)
+
+# Download DHT Sensor library
+$(LIB_DIR)/DHT-sensor-library-$(DHT_SENSOR_VERSION):
+	$(call download_lib,DHT-sensor-library,$(DHT_SENSOR_VERSION),adafruit)
+
+# compile the sketch
+$(TARGET_DIR)/$(SKETCH).bin: src/$(SKETCH) common_libraries dht22_libaries
+	mkdir -p $(TARGET_DIR)
+	$(ARDUINO_PATH)/arduino-builder \
+		-compile \
+		-hardware "$(ARDUINO_PATH)/hardware" \
+		-tools "$(ARDUINO_PATH)/tools-builder" \
+		-tools "$(ARDUINO_PATH)/hardware/tools/avr" \
+		-built-in-libraries "$(ARDUINO_PATH)/libraries" \
+		-fqbn=esp8266com:esp8266:generic \
+		-libraries "$(LIB_DIR)" \
+		-build-path "$(TARGET_DIR)" \
+		$<
+
+compile: $(TARGET_DIR)/$(SKETCH).bin
+
+# deploy the binary to the device
+flash: $(TARGET_DIR)/$(SKETCH).bin
+	$(ARDUINO_PATH)/hardware/esp8266com/esp8266/tools/upload.py \
+		--port $(SERIAL_PORT) \
+		write_flash \
+		0x00000 \
+		$<
+
+monitor:
+	screen $(SERIAL_PORT) @serial_baud@
+
+clean:
+	rm -r ${TARGET_DIR}
+
+clean_lib:
+	rm -rf ${LIB_DIR}
