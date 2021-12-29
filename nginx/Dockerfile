@@ -26,7 +26,7 @@ RUN yarn workspace @powerpi/ui install
 COPY nginx/ui ./nginx/ui
 RUN yarn workspace @powerpi/ui build
 
-FROM nginx:1.20.2-alpine AS run-image
+FROM nginx:1.18.0-alpine AS run-image
 LABEL description="NGINX reverse proxy to protect web accessible endpoints with SSL and host UI"
 
 # use non-root user
