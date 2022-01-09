@@ -27,7 +27,6 @@ const Charts = ({ api }: ChartsProps) => {
                 {(filters.entity || filters.action) && (
                     <Chart
                         api={api}
-                        title="Example Chart"
                         start={filters.start}
                         end={filters.end}
                         entity={filters.entity}

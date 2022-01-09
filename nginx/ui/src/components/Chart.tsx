@@ -8,7 +8,6 @@ import {
     LineElement,
     PointElement,
     TimeSeriesScale,
-    Title,
     Tooltip,
 } from "chart.js";
 import "chartjs-adapter-luxon";
@@ -24,7 +23,6 @@ ChartJS.register(
     LineElement,
     PointElement,
     TimeSeriesScale,
-    Title,
     Tooltip
 );
 
@@ -44,14 +42,13 @@ interface Dataset {
 
 interface ChartProps {
     api: PowerPiApi;
-    title: string;
     start?: Date;
     end?: Date;
     entity?: string;
     action?: string;
 }
 
-const Chart = ({ api, title, start, end, entity, action }: ChartProps) => {
+const Chart = ({ api, start, end, entity, action }: ChartProps) => {
     const { isHistoryLoading, history } = useGetHistoryRange(
         api,
         start,
@@ -105,12 +102,6 @@ const Chart = ({ api, title, start, end, entity, action }: ChartProps) => {
     };
 
     const options: ChartOptions<"line"> = {
-        plugins: {
-            title: {
-                display: true,
-                text: title,
-            },
-        },
         scales: datasets?.reduce((scales, dataset, i) => {
             const key = `y-${dataset.action}-${dataset.unit}`;
 
