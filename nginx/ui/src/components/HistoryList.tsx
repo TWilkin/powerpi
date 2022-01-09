@@ -3,8 +3,9 @@ import React, { useState } from "react";
 import ReactTimeAgo from "react-time-ago";
 import { useGetHistory } from "../hooks/history";
 import Filter from "./Filter";
-import HistoryFilter, { Filters } from "./HistoryFilter";
+import HistoryFilter from "./HistoryFilter";
 import Loading from "./Loading";
+import { MessageTypeFilters } from "./MessageTypeFilter";
 import PaginationControls from "./PaginationControls";
 
 interface HistoryListProps {
@@ -14,7 +15,7 @@ interface HistoryListProps {
 
 const HistoryList = ({ api, query }: HistoryListProps) => {
     const [page, setPage] = useState(0);
-    const [filters, setFilters] = useState<Filters>({
+    const [filters, setFilters] = useState<MessageTypeFilters>({
         type: undefined,
         entity: undefined,
         action: undefined,
