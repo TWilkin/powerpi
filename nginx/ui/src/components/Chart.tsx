@@ -28,13 +28,14 @@ ChartJS.register(
 const colours = ["#003f5c", "#bc5090", "#ff6361", "#ffa600", "#58508d"];
 
 interface DataPoint {
-    unit: string;
+    unit: string | undefined;
     timestamp: number;
     value: number;
 }
 
 interface Dataset {
-    title: string;
+    entity: string;
+    action: string;
     data: DataPoint[];
 }
 
@@ -61,31 +62,38 @@ const Chart = ({ title, datasets }: ChartProps) => {
             },
         },
         scales: datasets.reduce((scales, dataset, i) => {
-            const title = dataset.data[0]
-                ? `${dataset.title} (${dataset.data[0]?.unit})`
-                : dataset.title;
+            const key = `y${dataset.action}`;
 
-            scales[`y${i}`] = {
-                title: {
-                    display: true,
-                    text: title,
-                },
-                type: "linear" as const,
-                position: i % 2 === 0 ? ("left" as const) : ("right" as const),
-                grid: {
-                    drawOnChartArea: i === 0,
-                },
-            };
+            if (!scales[key]) {
+                scales[key] = {
+                    title: {
+                        display: true,
+                        text: dataset.data[0]?.unit
+                            ? `${dataset.action} (${dataset.data[0].unit})`
+                            : dataset.action,
+                    },
+                    type: "linear" as const,
+                    position:
+                        Object.keys(scales).length % 2 === 1
+                            ? ("left" as const)
+                            : ("right" as const),
+                    grid: {
+                        drawOnChartArea: i === 0,
+                    },
+                };
+            }
 
             return scales;
         }, scales),
     };
 
+    console.log(options);
+
     const data = {
         datasets: datasets.map((dataset, i) => ({
-            label: dataset.title,
+            label: `${dataset.entity} ${dataset.action}`,
             data: dataset.data.map((data) => ({ x: data.timestamp, y: data.value })),
-            yAxisID: `y${i}`,
+            yAxisID: `y${dataset.action}`,
             backgroundColor: colours[i],
             borderColor: colours[i],
         })),
