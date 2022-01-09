@@ -36,6 +36,34 @@ export default class HistoryController {
         );
     }
 
+    @Get("/range")
+    @Authorize()
+    async getHistoryRange(
+        @Res() response: Response,
+        @QueryParams("start") start?: Date,
+        @QueryParams("end") end?: Date,
+        @QueryParams("type") type?: string,
+        @QueryParams("entity") entity?: string,
+        @QueryParams("action") action?: string
+    ) {
+        return await this.query(response, async () => {
+            const data = await this.databaseService.getHistoryRange(
+                start,
+                end,
+                type,
+                entity,
+                action
+            );
+
+            return data?.rows.map((row) => {
+                if (typeof row.message === "string") {
+                    row.message = JSON.parse(row.message);
+                }
+                return row;
+            });
+        });
+    }
+
     @Get("/")
     @Authorize()
     async getHistory(

@@ -3,10 +3,18 @@ import { Pool, PoolClient } from "pg";
 import Message from "../models/message";
 import ConfigService from "./config";
 
-interface DatabaseQueryParam {
+interface DatabaseQueryValueParam {
     name: string;
     value?: string;
 }
+
+interface DatabaseQueryBetweenParam {
+    name: string;
+    start?: Date;
+    end?: Date;
+}
+
+type DatabaseQueryParam = DatabaseQueryValueParam | DatabaseQueryBetweenParam;
 
 @Service()
 export default class DatabaseService {
@@ -41,6 +49,28 @@ export default class DatabaseService {
                 limit,
                 skip
             ),
+            params
+        );
+    }
+
+    public async getHistoryRange(
+        start?: Date,
+        end?: Date,
+        type?: string,
+        entity?: string,
+        action?: string
+    ) {
+        const params = optionalParameterList(start, end, type, entity, action);
+
+        const dbQueryParams = [
+            { name: "range", start, end },
+            { name: "type", value: type },
+            { name: "entity", value: entity },
+            { name: "action", value: action },
+        ];
+
+        return await this.query<Message>(
+            this.generateQuery("SELECT * FROM mqtt", "ORDER BY timestamp ASC", dbQueryParams),
             params
         );
     }
@@ -158,19 +188,35 @@ export default class DatabaseService {
 function* optionalArgumentGenerator(params: DatabaseQueryParam[]) {
     let index = 1;
     for (const current of params) {
-        if (current.value) {
-            yield `${index > 1 ? " AND " : ""}${current.name} = $${index}::text`;
-            index++;
+        const isFirst = index === 1;
+
+        let paramSql: string | undefined;
+
+        if ("value" in current) {
+            // DatabaseQueryValueParam
+            if (current.value) {
+                paramSql = `${current.name} = $${index}::text`;
+                index++;
+            }
+        } else if ("start" in current) {
+            // DatabaseQueryBetweenParam
+            if (current.start && current.end) {
+                paramSql = `${current.name} BETWEEN ${index++}::text AND ${index++}::text`;
+            }
+        }
+
+        if (paramSql) {
+            yield `${!isFirst ? " AND " : ""}${paramSql}`;
         }
     }
 }
 
-function optionalParameterList(...params: (string | undefined)[]) {
+function optionalParameterList(...params: (string | Date | undefined)[]) {
     const list: string[] = [];
 
     params.forEach((param) => {
         if (param) {
-            list.push(param);
+            list.push(param.toLocaleString());
         }
     });
 
