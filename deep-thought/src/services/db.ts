@@ -60,13 +60,13 @@ export default class DatabaseService {
         entity?: string,
         action?: string
     ) {
-        const params = optionalParameterList(start, end, type, entity, action);
+        const params = optionalParameterList(type, entity, action, start, end);
 
         const dbQueryParams = [
-            { name: "range", start, end },
             { name: "type", value: type },
             { name: "entity", value: entity },
             { name: "action", value: action },
+            { name: "timestamp", start, end },
         ];
 
         return await this.query<Message>(
@@ -114,20 +114,22 @@ export default class DatabaseService {
         return await this.query<string>(
             this.generateQuery(
                 "SELECT DISTINCT action FROM mqtt",
-                "ORDER BY entity ASC",
+                "ORDER BY action ASC",
                 dbQueryParams
             ),
             params
         );
     }
 
-    private async query<TResult>(sql: string, params?: string[]) {
+    private async query<TResult>(sql: string, params?: (string | Date)[]) {
         let client: PoolClient | undefined;
 
         try {
             await this.connect();
 
             client = await this.pool?.connect();
+
+            $log.debug("params: ", JSON.stringify(params));
 
             return await client?.query<TResult>(sql, params);
         } catch (error) {
@@ -201,7 +203,9 @@ function* optionalArgumentGenerator(params: DatabaseQueryParam[]) {
         } else if ("start" in current) {
             // DatabaseQueryBetweenParam
             if (current.start && current.end) {
-                paramSql = `${current.name} BETWEEN ${index++}::text AND ${index++}::text`;
+                paramSql = `${
+                    current.name
+                } BETWEEN $${index++}::timestamptz AND $${index++}::timestamptz`;
             }
         }
 
@@ -212,13 +216,5 @@ function* optionalArgumentGenerator(params: DatabaseQueryParam[]) {
 }
 
 function optionalParameterList(...params: (string | Date | undefined)[]) {
-    const list: string[] = [];
-
-    params.forEach((param) => {
-        if (param) {
-            list.push(param.toLocaleString());
-        }
-    });
-
-    return list;
+    return params.filter((param) => param) as (string | Date)[];
 }
