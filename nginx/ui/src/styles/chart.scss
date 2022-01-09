@@ -1,3 +1,5 @@
+@import "../../node_modules/react-datepicker/src/stylesheets/datepicker.scss";
+
 #charts {
     .chart {
         width: 600px;
@@ -9,5 +11,15 @@
             width: 400px;
             height: 200px;
         }
+    }
+}
+
+#chart-filters {
+    .react-datepicker-wrapper {
+        width: inherit;
+    }
+
+    .react-datepicker {
+        width: 327px;
     }
 }

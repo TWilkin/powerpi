@@ -1,6 +1,8 @@
 import { PowerPiApi } from "@powerpi/api";
 import React, { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { useGetHistoryFilters } from "../hooks/history";
+import DateFilter from "./DateFilter";
 import MessageTypeFilter, { MessageFilterType, MessageTypeFilters } from "./MessageTypeFilter";
 
 export interface ChartFilters extends MessageTypeFilters {
@@ -16,13 +18,13 @@ interface ChartFilterProps {
 const ChartFilter = ({ api, updateFilter }: ChartFilterProps) => {
     const { entities, actions } = useGetHistoryFilters(api, "event");
 
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
+    const now = new Date();
+    const lastHour = new Date();
+    lastHour.setHours(now.getHours() - 1);
 
     const [filters, setFilters] = useState<ChartFilters>({
-        start: yesterday,
-        end: today,
+        start: lastHour,
+        end: now,
         type: undefined,
         entity: undefined,
         action: undefined,
@@ -30,14 +32,36 @@ const ChartFilter = ({ api, updateFilter }: ChartFilterProps) => {
 
     useEffect(() => updateFilter(filters), [filters]);
 
-    const selectFilter = (type: MessageFilterType, value: string) => {
-        const newFilter = { ...filters };
-        newFilter[type] = value;
-        setFilters(newFilter);
-    };
+    const selectFilter = useCallback(
+        (type: MessageFilterType, value: string) => {
+            const newFilter = { ...filters };
+            newFilter[type] = value;
+            setFilters(newFilter);
+        },
+        [filters]
+    );
+
+    const selectDateFilter = useCallback(
+        (type: "start" | "end", value: Date | null | undefined) => {
+            const newFilter = { ...filters };
+            newFilter[type] = value ?? undefined;
+            setFilters(newFilter);
+        },
+        [filters]
+    );
 
     return (
         <div id="chart-filters">
+            <DateFilter
+                name="From"
+                selected={filters.start}
+                onChange={(date) => selectDateFilter("start", date)}
+            />
+            <DateFilter
+                name="To"
+                selected={filters.end}
+                onChange={(date) => selectDateFilter("end", date)}
+            />
             <MessageTypeFilter
                 name="Entity"
                 type="entity"
