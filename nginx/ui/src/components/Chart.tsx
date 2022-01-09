@@ -1,4 +1,4 @@
-import { History, PowerPiApi } from "@powerpi/api";
+import { PowerPiApi } from "@powerpi/api";
 import {
     CategoryScale,
     Chart as ChartJS,

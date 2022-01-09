@@ -1,10 +1,10 @@
 import { PowerPiApi } from "@powerpi/api";
 import { useQuery, UseQueryResult } from "react-query";
 
-export function useGetHistoryFilters(api: PowerPiApi) {
-    const actions = useGetHistoryFilter("actions", api.getHistoryActions);
-    const entities = useGetHistoryFilter("entities", api.getHistoryEntities);
-    const types = useGetHistoryFilter("types", api.getHistoryTypes);
+export function useGetHistoryFilters(api: PowerPiApi, type?: string) {
+    const actions = useGetHistoryFilter("actions", api.getHistoryActions, type);
+    const entities = useGetHistoryFilter("entities", api.getHistoryEntities, type);
+    const types = useGetHistoryFilter("types", (_) => api.getHistoryTypes());
 
     return {
         actions: extractResult(actions, "action"),
@@ -13,8 +13,17 @@ export function useGetHistoryFilters(api: PowerPiApi) {
     };
 }
 
-function useGetHistoryFilter<TFilter>(name: string, method: () => Promise<TFilter[]>) {
-    return useQuery(["history", name], method);
+function useGetHistoryFilter<TFilter>(
+    name: string,
+    method: (type?: string) => Promise<TFilter[]>,
+    type?: string
+) {
+    const key = ["history", name];
+    if (type) {
+        key.push(type);
+    }
+
+    return useQuery(key, () => method(type));
 }
 
 function extractResult<TRecord>(result: UseQueryResult<TRecord[], unknown>, prop: keyof TRecord) {

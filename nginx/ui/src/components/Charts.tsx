@@ -1,22 +1,41 @@
 import { PowerPiApi } from "@powerpi/api";
-import React from "react";
+import React, { useState } from "react";
 import Chart from "./Chart";
+import ChartFilter, { ChartFilters } from "./ChartFilter";
+import Filter from "./Filter";
 
 interface ChartsProps {
     api: PowerPiApi;
 }
 
 const Charts = ({ api }: ChartsProps) => {
+    const [filters, setFilters] = useState<ChartFilters>({
+        start: undefined,
+        end: undefined,
+        type: undefined,
+        entity: undefined,
+        action: undefined,
+    });
+
     return (
-        <div id="charts">
-            <Chart
-                api={api}
-                title="Example Chart"
-                entity="Office"
-                start={new Date("2021-12-31T23:00:00Z")}
-                end={new Date("2021-12-31T23:59:59Z")}
-            />
-        </div>
+        <>
+            <Filter>
+                <ChartFilter api={api} updateFilter={setFilters} />
+            </Filter>
+
+            <div id="charts">
+                {(filters.entity || filters.action) && (
+                    <Chart
+                        api={api}
+                        title="Example Chart"
+                        start={filters.start}
+                        end={filters.end}
+                        entity={filters.entity}
+                        action={filters.action}
+                    />
+                )}
+            </div>
+        </>
     );
 };
 export default Charts;
