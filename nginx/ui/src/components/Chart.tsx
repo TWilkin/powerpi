@@ -31,7 +31,6 @@ ChartJS.register(
 const colours = ["#003f5c", "#bc5090", "#ff6361", "#ffa600", "#58508d"];
 
 interface DataPoint {
-    unit: string | undefined;
     value: number;
     timestamp: Date;
 }
@@ -39,6 +38,7 @@ interface DataPoint {
 interface Dataset {
     entity: string;
     action: string;
+    unit: string | undefined;
     data: DataPoint[];
 }
 
@@ -62,9 +62,14 @@ const Chart = ({ api, title, start, end, entity, action }: ChartProps) => {
     );
 
     const datasets = history?.reduce<Dataset[]>((datasets, record) => {
+        const message = record.message as { unit: string; value: number };
+
         // find the dataset
         let dataset = datasets.find(
-            (dataset) => dataset.entity === record.entity && dataset.action === record.action
+            (dataset) =>
+                dataset.entity === record.entity &&
+                dataset.action === record.action &&
+                dataset.unit == message.unit
         );
 
         if (!dataset) {
@@ -72,6 +77,7 @@ const Chart = ({ api, title, start, end, entity, action }: ChartProps) => {
             dataset = {
                 entity: record.entity,
                 action: record.action,
+                unit: message.unit,
                 data: [],
             };
 
@@ -80,10 +86,7 @@ const Chart = ({ api, title, start, end, entity, action }: ChartProps) => {
 
         // add the record
         if (record.message && record.timestamp) {
-            const message = record.message as { unit: string; value: number };
-
             dataset.data.push({
-                unit: message.unit,
                 value: message.value,
                 timestamp: record.timestamp,
             });
@@ -109,15 +112,13 @@ const Chart = ({ api, title, start, end, entity, action }: ChartProps) => {
             },
         },
         scales: datasets?.reduce((scales, dataset, i) => {
-            const key = `y${dataset.action}`;
+            const key = `y-${dataset.action}-${dataset.unit}`;
 
             if (!scales[key]) {
                 scales[key] = {
                     title: {
                         display: true,
-                        text: dataset.data[0]?.unit
-                            ? `${dataset.action} (${dataset.data[0].unit})`
-                            : dataset.action,
+                        text: dataset.unit ? `${dataset.action} (${dataset.unit})` : dataset.action,
                     },
                     type: "linear" as const,
                     position:
@@ -139,7 +140,7 @@ const Chart = ({ api, title, start, end, entity, action }: ChartProps) => {
             datasets?.map((dataset, i) => ({
                 label: `${dataset.entity} ${dataset.action}`,
                 data: dataset.data.map((data) => ({ x: data.timestamp, y: data.value })),
-                yAxisID: `y${dataset.action}`,
+                yAxisID: `y-${dataset.action}-${dataset.unit}`,
                 backgroundColor: colours[i],
                 borderColor: colours[i],
             })) ?? [],
