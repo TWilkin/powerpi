@@ -8,6 +8,7 @@ import {
     PointElement,
     TimeSeriesScale,
     Title,
+    Tooltip,
 } from "chart.js";
 import "chartjs-adapter-luxon";
 import React from "react";
@@ -20,7 +21,8 @@ ChartJS.register(
     LineElement,
     PointElement,
     TimeSeriesScale,
-    Title
+    Title,
+    Tooltip
 );
 
 const colours = ["#003f5c", "#bc5090", "#ff6361", "#ffa600", "#58508d"];
