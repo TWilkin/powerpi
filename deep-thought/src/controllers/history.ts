@@ -20,19 +20,19 @@ export default class HistoryController {
 
     @Get("/entities")
     @Authorize()
-    async getEntities(@Res() response: Response) {
+    async getEntities(@Res() response: Response, @QueryParams("type") type?: string) {
         return await this.query(
             response,
-            async () => (await this.databaseService.getHistoryEntities())?.rows
+            async () => (await this.databaseService.getHistoryEntities(type))?.rows
         );
     }
 
     @Get("/actions")
     @Authorize()
-    async getActions(@Res() response: Response) {
+    async getActions(@Res() response: Response, @QueryParams("type") type?: string) {
         return await this.query(
             response,
-            async () => (await this.databaseService.getHistoryActions())?.rows
+            async () => (await this.databaseService.getHistoryActions(type))?.rows
         );
     }
 

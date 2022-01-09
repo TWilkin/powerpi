@@ -63,11 +63,33 @@ export default class DatabaseService {
     public getHistoryTypes = async () =>
         await this.query<string>("SELECT DISTINCT type FROM mqtt ORDER BY type ASC");
 
-    public getHistoryEntities = async () =>
-        await this.query<string>("SELECT DISTINCT entity FROM mqtt ORDER BY entity ASC");
+    public async getHistoryEntities(type: string | undefined) {
+        const params = optionalParameterList(type);
+        const dbQueryParams = [{ name: "type", value: type }];
 
-    public getHistoryActions = async () =>
-        await this.query<string>("SELECT DISTINCT action FROM mqtt ORDER BY action ASC");
+        return await this.query<string>(
+            this.generateQuery(
+                "SELECT DISTINCT entity FROM mqtt",
+                "ORDER BY entity ASC",
+                dbQueryParams
+            ),
+            params
+        );
+    }
+
+    public async getHistoryActions(type: string | undefined) {
+        const params = optionalParameterList(type);
+        const dbQueryParams = [{ name: "type", value: type }];
+
+        return await this.query<string>(
+            this.generateQuery(
+                "SELECT DISTINCT action FROM mqtt",
+                "ORDER BY entity ASC",
+                dbQueryParams
+            ),
+            params
+        );
+    }
 
     private async query<TResult>(sql: string, params?: string[]) {
         let client: PoolClient | undefined;
