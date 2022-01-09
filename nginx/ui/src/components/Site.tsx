@@ -64,7 +64,7 @@ const Site = ({ api }: SiteProps) => {
                         />
 
                         <Route path="/charts">
-                            <Charts />
+                            <Charts api={api} />
                         </Route>
                     </Switch>
                 </div>

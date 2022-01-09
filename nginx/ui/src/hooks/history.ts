@@ -48,3 +48,26 @@ export function useGetHistory(
         history: data,
     };
 }
+
+export function useGetHistoryRange(
+    api: PowerPiApi,
+    start?: Date,
+    end?: Date,
+    type?: string,
+    entity?: string,
+    action?: string
+) {
+    const { isLoading, isError, data } = useQuery(
+        ["history/range", start, end, type, entity, action],
+        () => api.getHistoryRange(start, end, type, entity, action),
+        {
+            keepPreviousData: true,
+        }
+    );
+
+    return {
+        isHistoryLoading: isLoading,
+        isHistoryError: isError,
+        history: data,
+    };
+}

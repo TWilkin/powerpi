@@ -40,7 +40,7 @@ export default class PowerPiApi {
         type?: string,
         entity?: string,
         action?: string
-    ) => this.get<History>("history/range", { start, end, type, entity, action });
+    ) => this.get<History[]>("history/range", { start, end, type, entity, action });
 
     public getHistoryTypes = () => this.get<{ type: string }[]>("history/types");
 
