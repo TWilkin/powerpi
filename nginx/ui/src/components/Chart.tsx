@@ -128,6 +128,7 @@ const Chart = ({ api, title, start, end, entity, action }: ChartProps) => {
                     grid: {
                         drawOnChartArea: i === 0,
                     },
+                    beginAtZero: true,
                 };
             }
 
