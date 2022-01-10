@@ -61,34 +61,37 @@ const Chart = ({ api, start, end, entity, action }: ChartProps) => {
     );
 
     const datasets = history?.reduce<Dataset[]>((datasets, record) => {
-        const message = record.message as { unit: string; value: number };
+        // check this data point actually has data that we're looking for
+        if (record.message && "value" in record.message && "unit" in record.message) {
+            const message = record.message as { unit: string; value: number };
 
-        // find the dataset
-        let dataset = datasets.find(
-            (dataset) =>
-                dataset.entity.toLowerCase() === record.entity.toLowerCase() &&
-                dataset.action.toLowerCase() === record.action.toLowerCase() &&
-                dataset.unit == message.unit
-        );
+            // find the dataset
+            let dataset = datasets.find(
+                (dataset) =>
+                    dataset.entity.toLowerCase() === record.entity.toLowerCase() &&
+                    dataset.action.toLowerCase() === record.action.toLowerCase() &&
+                    dataset.unit == message.unit
+            );
 
-        if (!dataset) {
-            // create the dataset
-            dataset = {
-                entity: record.entity,
-                action: record.action,
-                unit: message.unit,
-                data: [],
-            };
+            if (!dataset) {
+                // create the dataset
+                dataset = {
+                    entity: record.entity,
+                    action: record.action,
+                    unit: message.unit,
+                    data: [],
+                };
 
-            datasets.push(dataset);
-        }
+                datasets.push(dataset);
+            }
 
-        // add the record
-        if (record.message && record.timestamp) {
-            dataset.data.push({
-                value: message.value,
-                timestamp: record.timestamp,
-            });
+            // add the record
+            if (record.message && record.timestamp) {
+                dataset.data.push({
+                    value: message.value,
+                    timestamp: record.timestamp,
+                });
+            }
         }
 
         return datasets;
