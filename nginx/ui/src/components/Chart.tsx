@@ -13,6 +13,7 @@ import "chartjs-adapter-luxon";
 import React from "react";
 import { Line } from "react-chartjs-2";
 import { useGetHistoryRange } from "../hooks/history";
+import useOrientation from "../hooks/orientation";
 import Loading from "./Loading";
 
 ChartJS.register(
@@ -48,6 +49,8 @@ interface ChartProps {
 }
 
 const Chart = ({ api, start, end, entity, action }: ChartProps) => {
+    const { isLandscape } = useOrientation();
+
     const { isHistoryLoading, history } = useGetHistoryRange(
         api,
         start,
@@ -99,7 +102,7 @@ const Chart = ({ api, start, end, entity, action }: ChartProps) => {
         };
     } = {
         timeseries: {
-            axis: "x",
+            axis: isLandscape ? "x" : "y",
             type: "timeseries" as const,
             time: {
                 minUnit: "minute",
@@ -110,21 +113,23 @@ const Chart = ({ api, start, end, entity, action }: ChartProps) => {
     // generate the chart options
     const options = {
         responsive: true,
+        maintainAspectRatio: false,
         scales: datasets?.reduce((scales, dataset, i) => {
             const key = `${dataset.action}-${dataset.unit}`.toLowerCase();
 
             if (!scales[key]) {
                 scales[key] = {
-                    axis: "y",
+                    axis: isLandscape ? "y" : "x",
                     title: {
                         display: true,
                         text: dataset.unit ? `${dataset.action} (${dataset.unit})` : dataset.action,
                     },
                     type: "linear" as const,
-                    position:
-                        Object.keys(scales).length % 2 === 1
+                    position: isLandscape
+                        ? Object.keys(scales).length % 2 === 1
                             ? ("left" as const)
-                            : ("right" as const),
+                            : ("right" as const)
+                        : "bottom",
                     grid: {
                         drawOnChartArea: i === 0,
                     },
@@ -150,8 +155,16 @@ const Chart = ({ api, start, end, entity, action }: ChartProps) => {
         datasets:
             datasets?.map((dataset, i) => ({
                 label: `${dataset.entity} ${dataset.action}`,
-                data: dataset.data.map((data) => ({ x: data.timestamp, y: data.value })),
-                yAxisID: `${dataset.action}-${dataset.unit}`.toLowerCase(),
+                data: dataset.data.map((data) => ({
+                    x: isLandscape ? data.timestamp : data.value,
+                    y: isLandscape ? data.value : data.timestamp,
+                })),
+                xAxisID: isLandscape
+                    ? undefined
+                    : `${dataset.action}-${dataset.unit}`.toLowerCase(),
+                yAxisID: isLandscape
+                    ? `${dataset.action}-${dataset.unit}`.toLowerCase()
+                    : undefined,
                 backgroundColor: colours[i],
                 borderColor: colours[i],
                 borderWidth: 1,

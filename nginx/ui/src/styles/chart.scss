@@ -4,8 +4,14 @@
     .chart {
         $chart-size: 80vw;
         width: $chart-size;
-        height: calc(#{$chart-size} / 2);
+        height: min(#{$chart-size} / 2, 90vh);
         padding: 0 2px;
+
+        @media (orientation: portrait) {
+            $chart-size: 90vh;
+            width: min(#{$chart-size} / 2, 90vw);
+            height: $chart-size;
+        }
     }
 }
 
