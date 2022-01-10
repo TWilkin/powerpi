@@ -2,21 +2,29 @@
 
 #charts {
     .chart {
-        width: 600px;
-        height: 300px;
-    }
-
-    @media screen and (max-width: 600px) {
-        .chart {
-            width: 400px;
-            height: 200px;
-        }
+        $chart-size: 80vw;
+        width: $chart-size;
+        height: calc(#{$chart-size} / 2);
+        padding: 0 2px;
     }
 }
 
 #chart-filters {
+    label {
+        display: inline-block;
+        width: 3.75rem;
+    }
+
+    select {
+        width: calc(100% - 4rem);
+    }
+
+    .loading {
+        display: inline;
+    }
+
     .react-datepicker-wrapper {
-        width: inherit;
+        width: calc(100% - 4rem);
     }
 
     .react-datepicker {
