@@ -1,14 +1,16 @@
 @import "../../node_modules/react-datepicker/src/stylesheets/datepicker.scss";
+@import "./vars.scss";
 
 #charts {
     .chart {
         $chart-size: 80vw;
+
         width: $chart-size;
-        height: min(#{$chart-size} / 2, 90vh);
+        height: min(#{$chart-size} / 2, 90vh - #{$menu-height});
         padding: 0 2px;
 
         @media (orientation: portrait) {
-            $chart-size: 90vh;
+            $chart-size: calc(90vh - #{$menu-height});
             width: min(#{$chart-size} / 2, 90vw);
             height: $chart-size;
         }
