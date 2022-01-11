@@ -97,16 +97,16 @@ const Chart = ({ api, start, end, entity, action }: ChartProps) => {
         return datasets;
     }, []);
 
-    // add the timeseries axis by default
+    // add the time axis by default
     const scales: {
         [key: string]: {
             [key: string]: unknown;
             max?: number;
         };
     } = {
-        timeseries: {
+        time: {
             axis: isLandscape ? "x" : "y",
-            type: "timeseries" as const,
+            type: "time" as const,
             time: {
                 minUnit: "minute",
             },
@@ -137,6 +137,9 @@ const Chart = ({ api, start, end, entity, action }: ChartProps) => {
                         drawOnChartArea: i === 0,
                     },
                     beginAtZero: true,
+                    ticks: {
+                        includeBounds: false,
+                    },
                 };
             }
 
@@ -162,12 +165,8 @@ const Chart = ({ api, start, end, entity, action }: ChartProps) => {
                     x: isLandscape ? data.timestamp : data.value,
                     y: isLandscape ? data.value : data.timestamp,
                 })),
-                xAxisID: isLandscape
-                    ? undefined
-                    : `${dataset.action}-${dataset.unit}`.toLowerCase(),
-                yAxisID: isLandscape
-                    ? `${dataset.action}-${dataset.unit}`.toLowerCase()
-                    : undefined,
+                xAxisID: isLandscape ? "time" : `${dataset.action}-${dataset.unit}`.toLowerCase(),
+                yAxisID: isLandscape ? `${dataset.action}-${dataset.unit}`.toLowerCase() : "time",
                 backgroundColor: colours[i],
                 borderColor: colours[i],
                 borderWidth: 1,
