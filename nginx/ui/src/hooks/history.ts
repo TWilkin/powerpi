@@ -68,10 +68,7 @@ export function useGetHistoryRange(
 ) {
     const { isLoading, isError, data } = useQuery(
         ["history/range", start, end, type, entity, action],
-        () => api.getHistoryRange(start, end, type, entity, action),
-        {
-            keepPreviousData: true,
-        }
+        () => api.getHistoryRange(start, end, type, entity, action)
     );
 
     return {
