@@ -110,6 +110,7 @@ const Chart = ({ api, start, end, entity, action }: ChartProps) => {
             time: {
                 minUnit: "minute",
             },
+            reverse: !isLandscape,
         },
     };
 
