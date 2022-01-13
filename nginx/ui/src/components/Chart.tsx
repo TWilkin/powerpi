@@ -2,6 +2,7 @@ import { PowerPiApi } from "@powerpi/api";
 import {
     CategoryScale,
     Chart as ChartJS,
+    ChartOptions,
     Legend,
     LinearScale,
     LineElement,
@@ -115,9 +116,22 @@ const Chart = ({ api, start, end, entity, action }: ChartProps) => {
     };
 
     // generate the chart options
-    const options = {
+    const options: ChartOptions<"line"> = {
         responsive: true,
         maintainAspectRatio: false,
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    title: (context) =>
+                        context.map((item) => (isLandscape ? item.label : item.formattedValue)),
+                    label: (context) => {
+                        const value = isLandscape ? context.parsed.y : context.parsed.x;
+                        const unit = datasets && datasets[context.datasetIndex].unit;
+                        return `${value} ${unit}`;
+                    },
+                },
+            },
+        },
         scales: datasets?.reduce((scales, dataset, i) => {
             const key = `${dataset.action}-${dataset.unit}`.toLowerCase();
 
