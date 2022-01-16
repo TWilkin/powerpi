@@ -1,29 +1,19 @@
-import { faExclamation } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PowerPiApi } from "@powerpi/api";
 import queryString from "query-string";
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGetHistoryFilters } from "../hooks/history";
-import Loading from "./Loading";
-
-type FilterType = "type" | "entity" | "action";
-
-export interface Filters {
-    type: string | undefined;
-    entity: string | undefined;
-    action: string | undefined;
-}
+import MessageTypeFilter, { MessageFilterType, MessageTypeFilters } from "./MessageTypeFilter";
 
 interface HistoryFilterProps {
     api: PowerPiApi;
     query?: string;
-    updateFilter: (filters: Filters) => void;
+    updateFilter: (filters: MessageTypeFilters) => void;
 }
 
 const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
     const { actions, entities, types } = useGetHistoryFilters(api);
 
-    const [filters, setFilters] = useState<Filters>({
+    const [filters, setFilters] = useState<MessageTypeFilters>({
         type: undefined,
         entity: undefined,
         action: undefined,
@@ -35,7 +25,7 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
 
     useEffect(() => updateFilter(filters), [filters]);
 
-    const selectFilter = (type: FilterType, value: string) => {
+    const selectFilter = (type: MessageFilterType, value: string) => {
         const newFilter = { ...filters };
         newFilter[type] = value;
         setFilters(newFilter);
@@ -43,7 +33,7 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
 
     return (
         <div id="history-filters">
-            <Filter
+            <MessageTypeFilter
                 name="Type"
                 type="type"
                 options={types.data}
@@ -52,7 +42,7 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
                 loading={types.isLoading}
                 error={types.isError}
             />
-            <Filter
+            <MessageTypeFilter
                 name="Entity"
                 type="entity"
                 options={entities.data}
@@ -61,7 +51,7 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
                 loading={entities.isLoading}
                 error={entities.isError}
             />
-            <Filter
+            <MessageTypeFilter
                 name="Action"
                 type="action"
                 options={actions.data}
@@ -75,57 +65,7 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
 };
 export default HistoryFilter;
 
-interface FilterProps {
-    name: string;
-    type: FilterType;
-    options?: string[];
-    defaultSelected?: string;
-    onSelect: (type: FilterType, value: string) => void;
-    loading: boolean;
-    error: boolean;
-}
-
-const Filter = ({
-    name,
-    type,
-    options,
-    defaultSelected,
-    onSelect,
-    loading,
-    error,
-}: FilterProps) => {
-    const handleFilterChange = (event: FormEvent<HTMLSelectElement>) => {
-        const value = event.currentTarget.value ?? "";
-        onSelect(type, value);
-    };
-
-    return (
-        <div>
-            <label htmlFor={`${type}-filter`}>{name}: </label>
-
-            <Loading loading={loading}>
-                {error ? (
-                    <FontAwesomeIcon icon={faExclamation} />
-                ) : (
-                    <select
-                        name={`${type}-filter`}
-                        onChange={handleFilterChange}
-                        defaultValue={defaultSelected}
-                    >
-                        <option value="">-</option>
-                        {options?.map((option) => (
-                            <option key={option} value={option}>
-                                {option}
-                            </option>
-                        ))}
-                    </select>
-                )}
-            </Loading>
-        </div>
-    );
-};
-
-function parseQuery(query: string | undefined): Filters {
+function parseQuery(query: string | undefined): MessageTypeFilters {
     const parsed = query ? queryString.parse(query) : undefined;
 
     return {

@@ -3,10 +3,18 @@ import { Pool, PoolClient } from "pg";
 import Message from "../models/message";
 import ConfigService from "./config";
 
-interface DatabaseQueryParam {
+interface DatabaseQueryValueParam {
     name: string;
     value?: string;
 }
+
+interface DatabaseQueryBetweenParam {
+    name: string;
+    start?: Date;
+    end?: Date;
+}
+
+type DatabaseQueryParam = DatabaseQueryValueParam | DatabaseQueryBetweenParam;
 
 @Service()
 export default class DatabaseService {
@@ -45,6 +53,28 @@ export default class DatabaseService {
         );
     }
 
+    public async getHistoryRange(
+        start?: Date,
+        end?: Date,
+        type?: string,
+        entity?: string,
+        action?: string
+    ) {
+        const params = optionalParameterList(type, entity, action, start, end);
+
+        const dbQueryParams = [
+            { name: "type", value: type },
+            { name: "entity", value: entity },
+            { name: "action", value: action },
+            { name: "timestamp", start, end },
+        ];
+
+        return await this.query<Message>(
+            this.generateQuery("SELECT * FROM mqtt", "ORDER BY timestamp ASC", dbQueryParams),
+            params
+        );
+    }
+
     public async getHistoryCount(type?: string, entity?: string, action?: string) {
         const params = optionalParameterList(type, entity, action);
 
@@ -63,19 +93,43 @@ export default class DatabaseService {
     public getHistoryTypes = async () =>
         await this.query<string>("SELECT DISTINCT type FROM mqtt ORDER BY type ASC");
 
-    public getHistoryEntities = async () =>
-        await this.query<string>("SELECT DISTINCT entity FROM mqtt ORDER BY entity ASC");
+    public async getHistoryEntities(type: string | undefined) {
+        const params = optionalParameterList(type);
+        const dbQueryParams = [{ name: "type", value: type }];
 
-    public getHistoryActions = async () =>
-        await this.query<string>("SELECT DISTINCT action FROM mqtt ORDER BY action ASC");
+        return await this.query<string>(
+            this.generateQuery(
+                "SELECT DISTINCT entity FROM mqtt",
+                "ORDER BY entity ASC",
+                dbQueryParams
+            ),
+            params
+        );
+    }
 
-    private async query<TResult>(sql: string, params?: string[]) {
+    public async getHistoryActions(type: string | undefined) {
+        const params = optionalParameterList(type);
+        const dbQueryParams = [{ name: "type", value: type }];
+
+        return await this.query<string>(
+            this.generateQuery(
+                "SELECT DISTINCT action FROM mqtt",
+                "ORDER BY action ASC",
+                dbQueryParams
+            ),
+            params
+        );
+    }
+
+    private async query<TResult>(sql: string, params?: (string | Date)[]) {
         let client: PoolClient | undefined;
 
         try {
             await this.connect();
 
             client = await this.pool?.connect();
+
+            $log.debug("params: ", JSON.stringify(params));
 
             return await client?.query<TResult>(sql, params);
         } catch (error) {
@@ -136,21 +190,31 @@ export default class DatabaseService {
 function* optionalArgumentGenerator(params: DatabaseQueryParam[]) {
     let index = 1;
     for (const current of params) {
-        if (current.value) {
-            yield `${index > 1 ? " AND " : ""}${current.name} = $${index}::text`;
-            index++;
+        const isFirst = index === 1;
+
+        let paramSql: string | undefined;
+
+        if ("value" in current) {
+            // DatabaseQueryValueParam
+            if (current.value) {
+                paramSql = `${current.name} = $${index}::text`;
+                index++;
+            }
+        } else if ("start" in current) {
+            // DatabaseQueryBetweenParam
+            if (current.start && current.end) {
+                paramSql = `${
+                    current.name
+                } BETWEEN $${index++}::timestamptz AND $${index++}::timestamptz`;
+            }
+        }
+
+        if (paramSql) {
+            yield `${!isFirst ? " AND " : ""}${paramSql}`;
         }
     }
 }
 
-function optionalParameterList(...params: (string | undefined)[]) {
-    const list: string[] = [];
-
-    params.forEach((param) => {
-        if (param) {
-            list.push(param);
-        }
-    });
-
-    return list;
+function optionalParameterList(...params: (string | Date | undefined)[]) {
+    return params.filter((param) => param) as (string | Date)[];
 }

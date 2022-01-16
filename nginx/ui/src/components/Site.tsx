@@ -3,6 +3,7 @@ import HttpStatusCodes from "http-status-codes";
 import React from "react";
 import { BrowserRouter, NavLink, Redirect, Route, Switch } from "react-router-dom";
 import { LastLocationProvider } from "react-router-last-location";
+import Charts from "./Charts";
 import DeviceList from "./DeviceList";
 import HistoryList from "./HistoryList";
 import Login from "./Login";
@@ -39,6 +40,7 @@ const Site = ({ api }: SiteProps) => {
                     <nav className="menu">
                         <MenuElement path="/devices" name="Devices" />
                         <MenuElement path="/history" name="History" />
+                        <MenuElement path="/charts" name="Charts" />
                     </nav>
                 </header>
 
@@ -60,6 +62,10 @@ const Site = ({ api }: SiteProps) => {
                                 <HistoryList api={api} query={props.location.search} />
                             )}
                         />
+
+                        <Route path="/charts">
+                            <Charts api={api} />
+                        </Route>
                     </Switch>
                 </div>
             </LastLocationProvider>
