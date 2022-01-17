@@ -1,4 +1,4 @@
-# PowerPi \ NGINX (UI)
+# PowerPi - NGINX (UI)
 
 PowerPi service providing reverse proxy for [_deep-thought_ (API)](../deep-thought/README.md) and [_babel-fish_ (Alexa integration)](../babel-fish/README.md), edge SSL for HTTPS and hosting the React UI.
 
@@ -44,17 +44,16 @@ Additionally, the _ui/webpack.dev.js_ file can be modified as follows to utilise
 
 ```json
 {
-    devServer: {
-        ...,
-        proxy: {
+    "devServer": {
+        "proxy": {
             "/api": {
-                changeOrigin: true,
-                target: "https://POWERPI_URL:3000",
-                headers: {
-                    Authorization: "Bearer TOKEN",
-                },
-            },
-        },
+                "changeOrigin": true,
+                "target": "https://POWERPI_URL:3000",
+                "headers": {
+                    "Authorization": "Bearer TOKEN"
+                }
+            }
+        }
     }
 }
 ```

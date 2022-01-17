@@ -1,4 +1,4 @@
-# PowerPi \ Sensors
+# PowerPi - Sensors
 
 Home Automation IoT sensors.
 
