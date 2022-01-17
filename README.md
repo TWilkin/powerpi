@@ -19,31 +19,31 @@ Home automation microservice stack communicating via MQTT built with Node.js, Py
 
 The project is split into the following services, each of which have their own _README_ describing the configuration interface they support as well as how to modify and test them.
 
--   **babel-fish** - Integration with Amazon Alexa skill to receive voice commands.
--   **certbot** - Use Let's Encrypt to provide SSL certificates for NGINX.
--   **clacks-config** - Retrieve configuration files from GitHub.
+-   [**babel-fish**](babel-fish/README.md) - Integration with Amazon Alexa skill to receive voice commands.
+-   [**certbot**](certbot/README.md) - Use Let's Encrypt to provide SSL certificates for NGINX.
+-   [**clacks-config**](clacks-config/READEME.md) - Retrieve configuration files from GitHub.
 -   **controllers**:
-    -   **energenie** - Allows control of Energenie MiHome devices using the ENER314 or ENER314-RT Pi module.
-    -   **harmony** - Allows control of Logitech Harmony devices.
-    -   **lifx** - Allows control of LIFX devices.
-    -   **macro** - Allows control of other devices with macros, delays, mutexes etc.
--   **deep-thought** - API
--   **device-mapper** - Workaround for accessing Raspberry Pi _/dev/gpiomem_ in Docker Swarm mode using Docker-in-docker.
--   **energy-monitor** - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
--   **freedns** - Overcome changing public IP addresses of consumer ISPs by pointing a free hostname at the current public IP via [FreeDNS](https://freedns.afraid.org/)
--   **light-fantastic** - Schedule based control of light devices (LIFX), e.g. brightness, colour temperature etc.
+    -   [**energenie**](controllers/energenie/README.md) - Allows control of Energenie MiHome devices using the ENER314 or ENER314-RT Pi module.
+    -   [**harmony**](controllers/harmony/README.md) - Allows control of Logitech Harmony devices.
+    -   [**lifx**](controllers/lifx/README.md) - Allows control of LIFX devices.
+    -   [**macro**](controllers/macro/README.md) - Allows control of other devices with macros, delays, mutexes etc.
+-   [**deep-thought**](deep-thought/README.md) - API
+-   [**device-mapper**](device-mapper/README.md) - Workaround for accessing Raspberry Pi _/dev/gpiomem_ in Docker Swarm mode using Docker-in-docker.
+-   [**energy-monitor**](energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
+-   [**freedns**](freedns/README.md) - Overcome changing public IP addresses of consumer ISPs by pointing a free hostname at the current public IP via [FreeDNS](https://freedns.afraid.org/)
+-   [**light-fantastic**](light-fantastic/README.md) - Schedule based control of light devices (LIFX), e.g. brightness, colour temperature etc.
 -   [**nginx**](nginx/README.md) - NGINX acts as a proxy to _deep-thought_ and _babel-fish_ as well as hosting the UI.
--   **persistence** - Service for writing all the messages that appear in the MQTT message queue to a database.
+-   [**persistence**](pesistence/README.md) - Service for writing all the messages that appear in the MQTT message queue to a database.
 
-The project also includes sensor Arduino code in the _esp8266_ directory which can be used to generate events when motion is detected, or temperature/humidity data at an interval.
+The project also includes sensor Arduino code in the [_esp8266_](esp8266/README.md) directory which can be used to generate events when motion is detected, or temperature/humidity data at an interval.
 
 ## Building
 
 The images can be build with Docker's _buildx_ tool which supports cross-compilation of images, allowing us to build ARM images for deployment on a Raspberry Pi on an x86_64 architecture. Although, if you're not using Energenie, and therefore don't need the Pi module you can build and run the stack on other architectures supported by the base images.
 
 ```bash
-# Build an image with buildx, the image version tags can be found in docker/docker-compose.yml
 # From the root of your checkout of PowerPi
+# Build an image with buildx, the image version tags can be found in docker/docker-compose.yml
 docker buildx build --platform linux/arm/v7 --push -t MY_DOCKER_REGISTRY/powerpi/clacks-config:0.0.2 -f clacks-config/Dockerfile .
 ```
 
@@ -51,7 +51,7 @@ docker buildx build --platform linux/arm/v7 --push -t MY_DOCKER_REGISTRY/powerpi
 
 Deploying the services is simply a matter of building images with docker, and deploying the stack using docker-compose.
 
-The deployment expects the network to already be created and deployed, this is to allow the docker-in-docker container for _device-mapper_ to join any created pods to the network.
+The deployment expects the network to already be created and deployed, this is to allow the docker-in-docker container for [_device-mapper_](device-mapper/README.md) to join any created pods to the network.
 
 ```bash
 # Create powerpi docker network
@@ -77,6 +77,7 @@ docker secret create powerpi_SECRET_NAME /path/to/secret/file
 Finally once the network and secrets are created, the docker images built the stack can be deployed:
 
 ```bash
+# From the root of your checkout of PowerPi
 # Deploy stack
 docker stack deploy -c docker/docker-compose.yml powerpi
 ```
