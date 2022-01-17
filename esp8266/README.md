@@ -11,7 +11,8 @@ The following pins on the ESP8266 are used for each different type of sensor
 -   **motion** - _D1_ - _GPIO5_ for the data pin of the PIR.
 -   **temperature/humidity** - _D2_ - _GPIO4_ - for the data pin of the DHT22.
 
-![ESP8266 NodeMCU pinout](https://hackster.imgix.net/uploads/attachments/944050/node-mcu_nRId0HmElJ.jpg?auto=compress%2Cformat&w=1280&h=960&fit=max)
+As follows is the circuit diagram for a sensor including both a PIR (motion) and DHT22 (temperature/humidity). Either can be omitted, which can be configured when building the Arduino firmware. This circuit diagram was created using [Circuit Diagram](https://www.circuit-diagram.org/editor/).
+![PowerPi sensor circuit diagram](./circuit.svg)
 
 ## Building
 
