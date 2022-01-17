@@ -21,9 +21,11 @@
     "scripts": {
         "build:api": "yarn workspace @powerpi/api build",
         "build:common": "yarn workspace @powerpi/common build",
+        "build:ui": "yarn workspace @powerpi/ui build",
         "clean": "find . -name \"node_modules\" -type d -prune -exec rm -rf '{}' +",
         "lint": "eslint . --ext .ts --ext .tsx",
-        "prettier": "prettier --write ."
+        "prettier": "prettier --write .",
+        "start:ui": "yarn workspace @powerpi/ui start"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.5.0",

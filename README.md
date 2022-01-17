@@ -32,7 +32,7 @@ The project is split into the following services, each of which have their own _
 -   **energy-monitor** - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
 -   **freedns** - Overcome changing public IP addresses of consumer ISPs by pointing a free hostname at the current public IP via [FreeDNS](https://freedns.afraid.org/)
 -   **light-fantastic** - Schedule based control of light devices (LIFX), e.g. brightness, colour temperature etc.
--   **ngingx** - NGINX acts as a proxy to _deep-thought_ and _babel-fish_ as well as hosting the UI.
+-   [**nginx**](nginx/README.md) - NGINX acts as a proxy to _deep-thought_ and _babel-fish_ as well as hosting the UI.
 -   **persistence** - Service for writing all the messages that appear in the MQTT message queue to a database.
 
 The project also includes sensor Arduino code in the _esp8266_ directory which can be used to generate events when motion is detected, or temperature/humidity data at an interval.
