@@ -26,6 +26,7 @@
         "clean": "find . -name \"node_modules\" -type d -prune -exec rm -rf '{}' +",
         "lint": "eslint . --ext .ts --ext .tsx",
         "prettier": "prettier --write .",
+        "start:energy-monitor": "yarn workspace energy-monitor start",
         "start:ui": "yarn workspace @powerpi/ui start"
     },
     "devDependencies": {

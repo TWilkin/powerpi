@@ -2,7 +2,7 @@
 
 PowerPi service providing reverse proxy for [_deep-thought_ (API)](../deep-thought/README.md) and [_babel-fish_ (Alexa integration)](../babel-fish/README.md), edge SSL for HTTPS and hosting the React UI.
 
-The UI is built using React and typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/api_](../common/node/api/README.md) which needs to be compiled before use.
+The UI is built using React and typescript, with dependencies using yarn workspaces. It is also dependant on a local common API library [_@powerpi/api_](../common/node/api/README.md) which needs to be compiled before use.
 
 ## Building
 
@@ -13,7 +13,7 @@ The UI can be built locally with the following commands, which will generate the
 # Download the dependencies
 yarn
 
-# Build the common library
+# Build the common API library
 yarn build:api
 
 # Build the UI using webpack
@@ -26,14 +26,14 @@ The Docker container can be built utilising _buildx_ as described in the [projec
 
 There are currently no automated tests for this service.
 
-However, you can run the UI locally with the following command.
+However, you can run the UI locally with the following commands.
 
 ```bash
 # From the root of your PowerPi checkout
 # Download the dependencies
 yarn
 
-# Build the common library
+# Build the common API library
 yarn build:api
 
 # Run the UI locally
