@@ -26,7 +26,9 @@ The Docker container can be built utilising _buildx_ as described in the [projec
 
 There are currently no automated tests for this service.
 
-However, you can run the UI locally with the following commands.
+## Local
+
+The UI can be started locally with the following commands.
 
 ```bash
 # From the root of your PowerPi checkout

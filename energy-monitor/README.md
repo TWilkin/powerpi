@@ -19,7 +19,9 @@ This service expects the following environment variables to be set before it wil
 
 There are currently no automated tests for this service.
 
-However, you can run the service locally with the following commands.
+## Local
+
+The service can be started locally with the following commands.
 
 ```bash
 # From the root of your PowerPi checkout
@@ -29,7 +31,7 @@ yarn
 # Build the common library
 yarn build:common
 
-# Run the UI locally
+# Run the service locally
 yarn start:energy-monitor
 ```
 
