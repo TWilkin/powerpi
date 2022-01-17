@@ -1,6 +1,6 @@
 {
     "name": "freedns",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "FreeDNS automatic updater service",
     "main": "src/app.ts",
     "scripts": {

@@ -1,5 +1,9 @@
-**/bin
-**/location.h
-**/mqtt.h
-**/wifi.h
-**/lib
+bin/
+lib/
+autom4te.cache/
+.config.log
+args.sh
+config.status
+configure
+config.h
+Makefile

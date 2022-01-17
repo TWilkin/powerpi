@@ -11,7 +11,7 @@
     "author": "TWilkin",
     "license": "GPL-3.0-only",
     "dependencies": {
-        "@powerpi/api": "^0.0.5",
+        "@powerpi/api": "^0.0.6",
         "@powerpi/common": "^0.0.5",
         "@types/express": "^4.17.12",
         "@types/node": "^16.11.12",

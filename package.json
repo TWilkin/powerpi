@@ -15,7 +15,8 @@
             "persistence"
         ],
         "nohoist": [
-            "**/@fortawesome/fontawesome-free"
+            "**/@fortawesome/fontawesome-free",
+            "**/react-datepicker"
         ]
     },
     "scripts": {

@@ -34,11 +34,21 @@ export default class PowerPiApi {
         records?: number
     ) => this.get<PaginationResponse<History>>("history", { type, entity, action, page, records });
 
+    public getHistoryRange = (
+        start?: Date,
+        end?: Date,
+        type?: string,
+        entity?: string,
+        action?: string
+    ) => this.get<History[]>("history/range", { start, end, type, entity, action });
+
     public getHistoryTypes = () => this.get<{ type: string }[]>("history/types");
 
-    public getHistoryEntities = () => this.get<{ entity: string }[]>("history/entities");
+    public getHistoryEntities = (type?: string) =>
+        this.get<{ entity: string }[]>("history/entities", { type });
 
-    public getHistoryActions = () => this.get<{ action: string }[]>("history/actions");
+    public getHistoryActions = (type?: string) =>
+        this.get<{ action: string }[]>("history/actions", { type });
 
     public postMessage = (device: string, state: DeviceState) =>
         this.post(`topic/device/${device}/change`, { state });

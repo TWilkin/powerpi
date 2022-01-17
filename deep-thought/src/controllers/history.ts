@@ -20,20 +20,48 @@ export default class HistoryController {
 
     @Get("/entities")
     @Authorize()
-    async getEntities(@Res() response: Response) {
+    async getEntities(@Res() response: Response, @QueryParams("type") type?: string) {
         return await this.query(
             response,
-            async () => (await this.databaseService.getHistoryEntities())?.rows
+            async () => (await this.databaseService.getHistoryEntities(type))?.rows
         );
     }
 
     @Get("/actions")
     @Authorize()
-    async getActions(@Res() response: Response) {
+    async getActions(@Res() response: Response, @QueryParams("type") type?: string) {
         return await this.query(
             response,
-            async () => (await this.databaseService.getHistoryActions())?.rows
+            async () => (await this.databaseService.getHistoryActions(type))?.rows
         );
+    }
+
+    @Get("/range")
+    @Authorize()
+    async getHistoryRange(
+        @Res() response: Response,
+        @QueryParams("start") start?: Date,
+        @QueryParams("end") end?: Date,
+        @QueryParams("type") type?: string,
+        @QueryParams("entity") entity?: string,
+        @QueryParams("action") action?: string
+    ) {
+        return await this.query(response, async () => {
+            const data = await this.databaseService.getHistoryRange(
+                start,
+                end,
+                type,
+                entity,
+                action
+            );
+
+            return data?.rows.map((row) => {
+                if (typeof row.message === "string") {
+                    row.message = JSON.parse(row.message);
+                }
+                return row;
+            });
+        });
     }
 
     @Get("/")

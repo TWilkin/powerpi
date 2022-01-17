@@ -33,7 +33,7 @@ services:
 
     deep-thought:
         build: ../deep-thought
-        image: ${REGISTRY}/powerpi/deep-thought:0.5.7
+        image: ${REGISTRY}/powerpi/deep-thought:0.5.9
         networks:
             - powerpi
         deploy:
@@ -131,7 +131,7 @@ services:
 
     freedns:
         build: ../freedns
-        image: ${REGISTRY}/powerpi/freedns:0.0.7
+        image: ${REGISTRY}/powerpi/freedns:0.0.8
         networks:
             - powerpi
         deploy:
@@ -144,7 +144,7 @@ services:
 
     nginx:
         build: ../nginx
-        image: ${REGISTRY}/powerpi/nginx:1.2.2
+        image: ${REGISTRY}/powerpi/nginx:1.2.5
         networks:
             - powerpi
         ports:
