@@ -35,7 +35,7 @@ The project is split into the following services, each of which have their own _
 -   [**freedns**](freedns/README.md) - Overcome changing public IP addresses of consumer ISPs by pointing a free hostname at the current public IP via [FreeDNS](https://freedns.afraid.org/)
 -   [**light-fantastic**](light-fantastic/README.md) - Schedule based control of light devices (LIFX), e.g. brightness, colour temperature etc.
 -   [**nginx**](nginx/README.md) - NGINX acts as a proxy to _deep-thought_ and _babel-fish_ as well as hosting the UI.
--   [**persistence**](pesistence/README.md) - Service for writing all the messages that appear in the MQTT message queue to a database.
+-   [**persistence**](persistence/README.md) - Service for writing all the messages that appear in the MQTT message queue to a database.
 
 The project also includes sensor NodeMCU code in the [_esp8266_](esp8266/README.md) directory which can be used to generate events when motion is detected, or temperature/humidity readings at an interval.
 

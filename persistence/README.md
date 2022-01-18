@@ -10,6 +10,8 @@ The Docker container can be built utilising _buildx_ as described in the [projec
 
 ## Configuration
 
+### Environment
+
 This service expects the following environment variables to be set before it will start successfully. When using docker these are already configured in the _docker-compose_ file, however when running locally for testing we need to define these:
 
 -   **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_

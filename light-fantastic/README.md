@@ -1,12 +1,8 @@
-# PowerPi - Energy Monitor
+# PowerPi - Light Fantastic
 
-PowerPi service retrieving gas and electricity usage from UK smart meter data collection service [N3rgy](http://www.n3rgy.com/).
+PowerPi service which adjusts the temperature, colour, brightness and on/off status of [LIFX](https://www.lifx.com/) bulbs via a schedule.
 
 The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../common/node/common/README.md) which needs to be compiled before use.
-
-## Grant N3rgy access
-
-To use this service you must first grant [N3rgy](http://www.n3rgy.com/) access to your gas and electricity smart meter data. This is simply a case of going to their [consumer portal](https://data.n3rgy.com/consumer/home) and providing the id of your smart meter.
 
 ## Building
 
@@ -19,7 +15,16 @@ The Docker container can be built utilising _buildx_ as described in the [projec
 This service expects the following environment variables to be set before it will start successfully. When using docker these are already configured in the _docker-compose_ file, however when running locally for testing we need to define these:
 
 -   **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
--   **IHD_SECRET_FILE** - The path to a file which contains the IHD (In Home Device) MAC address, which is used to authenticate against N3rgy. In the form _00-00-00-00-00-00-00-00_.
+-   **USE_CONFIG_FILE** - Use local config files instead of the files downloaded from GitHub by [_clacks-config_](../clacks-config/README.md) (default _false_).
+-   **DEVICES_FILE** - When _USE_CONFIG_FILE_ is true, load the _devices.json_ from this path.
+-   **SCHEDULES_FILE** - When _USE_CONFIG_FILE_ is true, load the _schedules.json_ from this path.
+
+### Configuration Files
+
+This service requires two configuration files, both of which are described on the following [_clacks-config_](../clacks-config/README.md) pages.
+
+-   [devices.json](../clacks-config/README.md#devices.json)
+-   [schedules.json](../clacks-config/README.md#schedules.json)
 
 ## Testing
 
@@ -38,5 +43,5 @@ yarn
 yarn build:common
 
 # Run the service locally
-yarn start:energy-monitor
+yarn start:light-fantastic
 ```
