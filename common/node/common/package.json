@@ -2,13 +2,19 @@
     "name": "@powerpi/common",
     "version": "0.0.5",
     "description": "PowerPi Common Typescript library",
+    "private": true,
+    "license": "GPL-3.0-only",
+    "author": "TWilkin",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TWilkin/powerpi.git",
+        "directory": "common/node/common"
+    },
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
     "scripts": {
         "build": "tsc"
     },
-    "author": "TWilkin",
-    "license": "GPL-3.0-only",
     "files": [
         "dist/src"
     ],

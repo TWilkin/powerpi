@@ -2,12 +2,18 @@
     "name": "persistence",
     "version": "0.1.1",
     "description": "PowerPi database persistence service",
+    "private": true,
+    "license": "GPL-3.0-only",
+    "author": "TWilkin",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TWilkin/powerpi.git",
+        "directory": "persistence"
+    },
     "main": "src/app.ts",
     "scripts": {
         "start": "ts-node src/app.ts"
     },
-    "author": "TWilkin",
-    "license": "GPL-3.0-only",
     "dependencies": {
         "@powerpi/common": "^0.0.5",
         "@types/bluebird": "^3.5.32",

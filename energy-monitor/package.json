@@ -2,12 +2,18 @@
     "name": "energy-monitor",
     "version": "0.0.3",
     "description": "PowerPi n3rgy energy usage retrieval service",
+    "private": true,
+    "license": "GPL-3.0-only",
+    "author": "TWilkin",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TWilkin/powerpi.git",
+        "directory": "energy-monitor"
+    },
     "main": "./src/index.ts",
     "scripts": {
         "start": "ts-node src/index.ts"
     },
-    "author": "TWilkin",
-    "license": "GPL-3.0-only",
     "dependencies": {
         "@powerpi/common": "^0.0.5",
         "@types/dateformat": "^3.0.1",

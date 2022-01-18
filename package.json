@@ -1,6 +1,12 @@
 {
-    "private": true,
     "name": "powerpi",
+    "private": true,
+    "license": "GPL-3.0-only",
+    "author": "TWilkin",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TWilkin/powerpi.git"
+    },
     "workspaces": {
         "packages": [
             "common/node/api",

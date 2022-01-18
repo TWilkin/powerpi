@@ -2,13 +2,19 @@
     "name": "@powerpi/ui",
     "version": "1.2.5",
     "description": "PowerPi UI",
+    "private": true,
+    "license": "GPL-3.0-only",
+    "author": "TWilkin",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TWilkin/powerpi.git",
+        "directory": "nginx/ui"
+    },
     "main": "src/app.tsx",
     "scripts": {
         "build": "webpack --config webpack.prod.js",
         "start": "webpack serve --config webpack.dev.js"
     },
-    "author": "TWilkin",
-    "license": "GPL-3.0-only",
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.3",
         "@fortawesome/fontawesome-svg-core": "^1.2.35",

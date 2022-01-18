@@ -5,6 +5,8 @@ setup(
     version='0.0.3',
     description='PowerPi Common Python Library',
     author='TWilkin',
+    license='GPLv3',
+    url='https://github.com/TWilkin/powerpi/common/python',
     classifiers=[
         'Programming Language :: Python :: 3.6',
     ],

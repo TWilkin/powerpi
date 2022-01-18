@@ -5,6 +5,8 @@ setup(
     version='0.0.2',
     description='PowerPi Common Python Test Library',
     author='TWilkin',
+    license='GPLv3',
+    url='https://github.com/TWilkin/powerpi/common/pytest',
     classifiers=[
         'Programming Language :: Python :: 3.6',
     ],
