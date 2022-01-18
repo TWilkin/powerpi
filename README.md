@@ -1,14 +1,16 @@
 # PowerPi
 
-Home automation microservice stack communicating via MQTT built with Node.js, Python and Arduino C deployable with Docker Swarm on Raspberry Pi.
+Home automation microservice stack communicating via MQTT (using [mosquitto](https://mosquitto.org/)) built with Typescript, Python and [NodeMCU](https://en.wikipedia.org/wiki/NodeMCU) C deployable with [Docker Swarm](https://docs.docker.com/engine/swarm/) on a [Raspberry Pi](https://www.raspberrypi.com/) cluster.
+
+This project was devised to utilise open, reverse engineered or free home automation hardware and software together without the need for third-party hubs, cloud services or subscriptions.
 
 ### Supported IoT Hardware
 
 -   [Amazon Alexa](https://developer.amazon.com/en-GB/alexa/devices)
--   [Arduino](https://www.arduino.cc/)
 -   [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories)
 -   [LIFX](https://www.lifx.com/)
 -   [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html)
+-   [NodeMCU](https://en.wikipedia.org/wiki/NodeMCU)
 
 ### Supported Services
 
@@ -23,9 +25,9 @@ The project is split into the following services, each of which have their own _
 -   [**certbot**](certbot/README.md) - Use Let's Encrypt to provide SSL certificates for NGINX.
 -   [**clacks-config**](clacks-config/READEME.md) - Retrieve configuration files from GitHub.
 -   **controllers**:
-    -   [**energenie**](controllers/energenie/README.md) - Allows control of Energenie MiHome devices using the ENER314 or ENER314-RT Pi module.
-    -   [**harmony**](controllers/harmony/README.md) - Allows control of Logitech Harmony devices.
-    -   [**lifx**](controllers/lifx/README.md) - Allows control of LIFX devices.
+    -   [**energenie**](controllers/energenie/README.md) - Allows control of [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories) devices using the ENER314 or ENER314-RT Pi module.
+    -   [**harmony**](controllers/harmony/README.md) - Allows control of [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html) Smart Hub devices.
+    -   [**lifx**](controllers/lifx/README.md) - Allows control of [LIFX](https://www.lifx.com/) light devices.
     -   [**macro**](controllers/macro/README.md) - Allows control of other devices with macros, delays, mutexes etc.
 -   [**deep-thought**](deep-thought/README.md) - API
 -   [**device-mapper**](device-mapper/README.md) - Workaround for accessing Raspberry Pi _/dev/gpiomem_ in Docker Swarm mode using Docker-in-docker.
@@ -35,11 +37,11 @@ The project is split into the following services, each of which have their own _
 -   [**nginx**](nginx/README.md) - NGINX acts as a proxy to _deep-thought_ and _babel-fish_ as well as hosting the UI.
 -   [**persistence**](pesistence/README.md) - Service for writing all the messages that appear in the MQTT message queue to a database.
 
-The project also includes sensor Arduino code in the [_esp8266_](esp8266/README.md) directory which can be used to generate events when motion is detected, or temperature/humidity data at an interval.
+The project also includes sensor NodeMCU code in the [_esp8266_](esp8266/README.md) directory which can be used to generate events when motion is detected, or temperature/humidity readings at an interval.
 
 ## Building
 
-The images can be build with Docker's _buildx_ tool which supports cross-compilation of images, allowing us to build ARM images for deployment on a Raspberry Pi on an x86_64 architecture. Although, if you're not using Energenie, and therefore don't need the Pi module you can build and run the stack on other architectures supported by the base images.
+The images can be build with Docker's [_buildx_](https://docs.docker.com/buildx/working-with-buildx/) tool which supports cross-compilation of images, allowing us to build ARM images for deployment on a Raspberry Pi on an x86_64 architecture. Although, if you're not using Energenie, and therefore don't need the Pi module you can build and run the stack on other architectures supported by the base images.
 
 ```bash
 # From the root of your checkout of PowerPi

@@ -4,11 +4,15 @@ PowerPi service retrieving gas and electricity usage from UK smart meter data co
 
 The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../common/node/common/README.md) which needs to be compiled before use.
 
+## Grant N3rgy access
+
+To use this service you must first grant [N3rgy](http://www.n3rgy.com/) access to your gas and electricity smart meter data. This is simply a case of going to their [consumer portal](https://data.n3rgy.com/consumer/home) and providing the id of your smart meter.
+
 ## Building
 
 The Docker container can be built utilising _buildx_ as described in the [project documentation](../README.md#Building).
 
-## Environment
+## Configuration
 
 This service expects the following environment variables to be set before it will start successfully. When using docker these are already configured in the _docker-compose_ file, however when running locally for testing we need to define these:
 
@@ -19,7 +23,7 @@ This service expects the following environment variables to be set before it wil
 
 There are currently no automated tests for this service.
 
-## Local
+## Local Execution
 
 The service can be started locally with the following commands.
 
@@ -34,7 +38,3 @@ yarn build:common
 # Run the service locally
 yarn start:energy-monitor
 ```
-
-## Grant N3rgy access
-
-To use this service you must first grant [N3rgy](http://www.n3rgy.com/) access to your gas and electricity smart meter data. This is simply a case of going to their [consumer portal](https://data.n3rgy.com/consumer/home) and providing the id of your smart meter.
