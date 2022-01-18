@@ -15,7 +15,7 @@ export class Sensor implements ISensor {
     constructor(name?: string, type?: string, location?: string, displayName?: string) {
         this.name = name ?? "unknown";
         this.type = type ?? "unknown";
-        this.location = location ?? "unknonw";
+        this.location = location ?? "unknown";
         this.display_name = displayName;
     }
 
