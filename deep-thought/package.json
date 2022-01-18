@@ -8,7 +8,7 @@
     },
     "author": "TWilkin",
     "dependencies": {
-        "@powerpi/common": "^0.0.5",
+        "@powerpi/common": "^0.0.6",
         "@tsed/common": "^6.95.4",
         "@tsed/core": "^6.95.4",
         "@tsed/di": "^6.95.4",
