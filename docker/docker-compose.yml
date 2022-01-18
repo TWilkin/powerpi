@@ -16,7 +16,6 @@ services:
               target: /mosquitto/config/mosquitto.conf
 
     clacks-config:
-        build: ../clacks-config
         image: ${REGISTRY}/powerpi/clacks-config:0.0.2
         networks:
             - powerpi
@@ -32,7 +31,6 @@ services:
             - FILE_PATH=docker/config
 
     deep-thought:
-        build: ../deep-thought
         image: ${REGISTRY}/powerpi/deep-thought:0.5.9
         networks:
             - powerpi
@@ -62,7 +60,6 @@ services:
             - OAUTH_SECRET_FILE=/var/run/secrets/powerpi_oauth
 
     babel-fish:
-        build: ../babel-fish
         image: ${REGISTRY}/powerpi/babel-fish:0.0.5
         networks:
             - powerpi
@@ -81,7 +78,6 @@ services:
             - mosquitto
 
     device-mapper:
-        build: ../device-mapper
         image: ${REGISTRY}/powerpi/device-mapper:0.0.4
         networks:
             - powerpi
@@ -120,7 +116,6 @@ services:
             - mosquitto
 
     light-fantastic:
-        build: ../light-fantastic
         image: ${REGISTRY}/powerpi/light-fantastic:0.2.1
         networks:
             - powerpi
@@ -130,7 +125,6 @@ services:
             - mosquitto
 
     freedns:
-        build: ../freedns
         image: ${REGISTRY}/powerpi/freedns:0.0.8
         networks:
             - powerpi
@@ -143,7 +137,6 @@ services:
             - FREEDNS_PASSWORD=/var/run/secrets/powerpi_freedns
 
     nginx:
-        build: ../nginx
         image: ${REGISTRY}/powerpi/nginx:1.2.5
         networks:
             - powerpi
@@ -164,7 +157,6 @@ services:
               target: /etc/nginx/conf.d/default.conf
 
     certbot:
-        build: ../certbot
         image: ${REGISTRY}/powerpi/certbot:0.0.3
         networks:
             - powerpi
@@ -196,7 +188,6 @@ services:
             - /srv/docker-volumes/powerpi/postgres/data:/var/lib/postgresql/data/pgdata
 
     persistence:
-        build: ../persistence
         image: ${REGISTRY}/powerpi/persistence:0.1.1
         networks:
             - powerpi
@@ -211,7 +202,6 @@ services:
             - DB_SECRET_FILE=/var/run/secrets/powerpi_db
 
     energy-monitor:
-        build: ../energy-monitor
         image: ${REGISTRY}/powerpi/energy-monitor:0.0.3
         networks:
             - powerpi
