@@ -1,10 +1,12 @@
 import axios, { AxiosInstance } from "axios";
 import io from "socket.io-client";
+import Config from "./Config";
 import Device from "./Device";
 import DeviceState from "./DeviceState";
 import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import History from "./History";
 import PaginationResponse from "./Pagination";
+import Sensor from "./Sensor";
 
 type ErrorHandler = (error: { response: { status: number } }) => void;
 
@@ -24,7 +26,11 @@ export default class PowerPiApi {
         this.headers = {};
     }
 
+    public getConfig = () => this.get<Config>("config");
+
     public getDevices = () => this.get<Device[]>("device");
+
+    public getSensors = () => this.get<Sensor[]>("sensor");
 
     public getHistory = (
         type?: string,

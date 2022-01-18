@@ -1,6 +1,6 @@
 import DeviceState from "./DeviceState";
 
-interface Device {
+export default interface Device {
     name: string;
     display_name: string;
     visible: boolean;
@@ -8,4 +8,3 @@ interface Device {
     state: DeviceState;
     since: number;
 }
-export default Device;
