@@ -22,6 +22,7 @@ COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/lifx/.venv ./ve
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 
 # add the application
+COPY --chown=powerpi LICENSE ./
 COPY --chown=powerpi controllers/lifx/lifx_controller ./lifx_controller/
 
 # start the application once the container is ready

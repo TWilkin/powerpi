@@ -22,6 +22,7 @@ COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/harmony/.venv .
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 
 # add the application
+COPY --chown=powerpi LICENSE ./
 COPY --chown=powerpi controllers/harmony/harmony_controller ./harmony_controller/
 
 # start the application once the container is ready

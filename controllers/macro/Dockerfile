@@ -22,6 +22,7 @@ COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/macro/.venv ./v
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 
 # add the application
+COPY --chown=powerpi LICENSE ./
 COPY --chown=powerpi controllers/macro/macro_controller ./macro_controller/
 
 # start the application once the container is ready
