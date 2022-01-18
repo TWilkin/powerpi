@@ -3,6 +3,7 @@ import Container, { Service } from "typedi";
 import util from "util";
 import { IDeviceConfigFile, IScheduleConfigFile, IUserConfigFile } from "../models/config";
 import { Device, IDevice } from "../models/device";
+import { ISensor, Sensor } from "../models/sensor";
 import { IntervalParserService } from "./interval";
 
 export enum ConfigFileType {
@@ -89,7 +90,13 @@ export class ConfigService {
     get devices(): IDevice[] {
         const file = this.fileOrConfig<IDeviceConfigFile>("DEVICES_FILE", ConfigFileType.Devices);
 
-        return file.devices.map((device) => Object.assign(new Device(), device));
+        return file.devices?.map((device) => Object.assign(new Device(), device)) ?? [];
+    }
+
+    get sensors(): ISensor[] {
+        const file = this.fileOrConfig<IDeviceConfigFile>("DEVICES_FILE", ConfigFileType.Devices);
+
+        return file.sensors?.map((sensor) => Object.assign(new Sensor(), sensor)) ?? [];
     }
 
     get schedules() {
