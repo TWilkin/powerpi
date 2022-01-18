@@ -27,6 +27,7 @@
         "lint": "eslint . --ext .ts --ext .tsx",
         "prettier": "prettier --write .",
         "start:energy-monitor": "yarn workspace energy-monitor start",
+        "start:persistence": "yarn workspace persistence start",
         "start:ui": "yarn workspace @powerpi/ui start"
     },
     "devDependencies": {
