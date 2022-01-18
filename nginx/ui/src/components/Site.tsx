@@ -3,6 +3,7 @@ import HttpStatusCodes from "http-status-codes";
 import React from "react";
 import { BrowserRouter, NavLink, Redirect, Route, Switch } from "react-router-dom";
 import { LastLocationProvider } from "react-router-last-location";
+import { useGetConfig } from "../hooks/config";
 import Charts from "./Charts";
 import DeviceList from "./DeviceList";
 import HistoryList from "./HistoryList";
@@ -33,39 +34,57 @@ const Site = ({ api }: SiteProps) => {
         }
     });
 
+    const { config } = useGetConfig(api);
+
+    const defaultPage = config?.hasDevices
+        ? "devices"
+        : config?.hasPersistence
+        ? "history"
+        : "login";
+
     return (
         <BrowserRouter>
             <LastLocationProvider>
                 <header className="header">
                     <nav className="menu">
-                        <MenuElement path="/devices" name="Devices" />
-                        <MenuElement path="/history" name="History" />
-                        <MenuElement path="/charts" name="Charts" />
+                        {config?.hasDevices && <MenuElement path="/devices" name="Devices" />}
+                        {config?.hasPersistence && (
+                            <>
+                                <MenuElement path="/history" name="History" />
+                                <MenuElement path="/charts" name="Charts" />
+                            </>
+                        )}
                     </nav>
                 </header>
 
                 <div className="content">
                     <Switch>
-                        <Redirect exact from="/" to="/devices" />
+                        <Redirect exact from="/" to={`/${defaultPage}`} />
 
                         <Route path="/login">
                             <Login />
                         </Route>
 
-                        <Route path="/devices">
-                            <DeviceList api={api} />
-                        </Route>
+                        {config?.hasDevices && (
+                            <Route path="/devices">
+                                <DeviceList api={api} />
+                            </Route>
+                        )}
 
-                        <Route
-                            path="/history"
-                            render={(props) => (
-                                <HistoryList api={api} query={props.location.search} />
-                            )}
-                        />
+                        {config?.hasPersistence && (
+                            <>
+                                <Route
+                                    path="/history"
+                                    render={(props) => (
+                                        <HistoryList api={api} query={props.location.search} />
+                                    )}
+                                />
 
-                        <Route path="/charts">
-                            <Charts api={api} />
-                        </Route>
+                                <Route path="/charts">
+                                    <Charts api={api} />
+                                </Route>
+                            </>
+                        )}
                     </Switch>
                 </div>
             </LastLocationProvider>
