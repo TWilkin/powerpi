@@ -4,6 +4,8 @@ export default interface Sensor {
     visible: boolean;
     type: string;
     location: string;
+    entity?: string;
+    action?: string;
     state?: string;
     value?: number;
     unit?: string;

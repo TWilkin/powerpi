@@ -30,6 +30,8 @@ export default class SensorStateService {
                     display_name: sensor.display_name,
                     type: sensor.type,
                     location: sensor.location,
+                    entity: sensor.entity ?? sensor.location,
+                    action: sensor.action ?? sensor.type,
                     visible: sensor.visible ?? true,
                     state: undefined,
                     value: undefined,
@@ -54,7 +56,7 @@ class SensorConsumer implements MqttConsumer {
     }
 
     public async initialise() {
-        await this.mqttService.subscribe("event", this._sensor.location, this._sensor.type, this);
+        await this.mqttService.subscribe("event", this._sensor.entity, this._sensor.action, this);
     }
 
     public message(_: string, __: string, ___: string, message: EventMessage) {
