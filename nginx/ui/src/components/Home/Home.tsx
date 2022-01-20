@@ -26,20 +26,28 @@ const Home = ({ api }: HomeProps) => {
 
     return (
         <div id="home">
-            <svg viewBox="0 0 600 300" preserveAspectRatio="true">
-                <g>
-                    <title>Home</title>
-                    <rect id="LivingRoom" width="300" height="300" data-tip data-for="LivingRoom" />
-                    <rect
-                        id="Kitchen"
-                        x="300"
-                        width="300"
-                        height="300"
-                        data-tip
-                        data-for="Office"
-                    />
-                </g>
-            </svg>
+            <div id="layout">
+                <svg viewBox="0 0 600 300" preserveAspectRatio="true">
+                    <g>
+                        <title>Home</title>
+                        <rect
+                            id="LivingRoom"
+                            width="300"
+                            height="300"
+                            data-tip
+                            data-for="Hallway"
+                        />
+                        <rect
+                            id="Kitchen"
+                            x="300"
+                            width="300"
+                            height="300"
+                            data-tip
+                            data-for="Office"
+                        />
+                    </g>
+                </svg>
+            </div>
 
             {Object.keys(sensorsByLocation).map((location) => (
                 <Tooltip location={location} sensors={sensorsByLocation[location]} />

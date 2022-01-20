@@ -1,6 +1,7 @@
 import { Sensor } from "@powerpi/api";
 import React from "react";
 import ReactTooltip from "react-tooltip";
+import SensorIcon from "./SensorIcon";
 
 interface TooltipProps {
     location: string;
@@ -13,7 +14,7 @@ const Tooltip = ({ location, sensors }: TooltipProps) => (
 
         {sensors.map((sensor) => (
             <p key={sensor.name}>
-                {sensor.type}:{" "}
+                <SensorIcon type={sensor.type} /> <strong>{sensor.type}:</strong>{" "}
                 {sensor.value !== undefined && sensor.unit
                     ? `${sensor.value} ${sensor.unit}`
                     : sensor.state}

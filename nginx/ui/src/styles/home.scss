@@ -1,19 +1,22 @@
 @import "./vars.scss";
 
 #home {
-    svg {
-        width: auto;
-        max-width: 90vw;
-        height: calc(90vh - #{$menu-height});
+    #layout {
+        svg {
+            width: auto;
+            max-width: 90vw;
+            height: calc(90vh - #{$menu-height});
+            margin-top: $menu-height;
 
-        polygon,
-        rect {
-            pointer-events: all;
-            fill: none;
-            stroke: black;
+            polygon,
+            rect {
+                pointer-events: all;
+                fill: none;
+                stroke: black;
 
-            &:hover {
-                fill: lightgrey;
+                &:hover {
+                    fill: lightgrey;
+                }
             }
         }
     }
