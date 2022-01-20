@@ -1,3 +1,5 @@
+import { faPlug } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PowerPiApi } from "@powerpi/api";
 import HttpStatusCodes from "http-status-codes";
 import React from "react";
@@ -28,16 +30,21 @@ interface SiteProps {
 }
 
 const Site = ({ api }: SiteProps) => {
+    const { isConfigLoading, isConfigError, config } = useGetConfig(api);
+
     // redirect to login on 401
     api.setErrorHandler((error) => {
-        if (error.response.status === HttpStatusCodes.UNAUTHORIZED) {
+        if (
+            error.response.status === HttpStatusCodes.UNAUTHORIZED &&
+            !window.location.pathname.endsWith("/login")
+        ) {
             window.location.pathname = "/login";
         }
     });
 
-    const { config } = useGetConfig(api);
-
-    const defaultPage = config?.hasDevices
+    const defaultPage = config?.hasSensors
+        ? "home"
+        : config?.hasDevices
         ? "devices"
         : config?.hasPersistence
         ? "history"
@@ -47,16 +54,22 @@ const Site = ({ api }: SiteProps) => {
         <BrowserRouter>
             <LastLocationProvider>
                 <header className="header">
-                    <nav className="menu">
-                        <MenuElement path="/home" name="Home" />
-                        {config?.hasDevices && <MenuElement path="/devices" name="Devices" />}
-                        {config?.hasPersistence && (
-                            <>
-                                <MenuElement path="/history" name="History" />
-                                <MenuElement path="/charts" name="Charts" />
-                            </>
-                        )}
-                    </nav>
+                    <div className="logo">
+                        <FontAwesomeIcon icon={faPlug} /> PowerPi
+                    </div>
+
+                    {!isConfigLoading && !isConfigError && (
+                        <nav className="menu">
+                            {config?.hasSensors && <MenuElement path="/home" name="Home" />}
+                            {config?.hasDevices && <MenuElement path="/devices" name="Devices" />}
+                            {config?.hasPersistence && (
+                                <>
+                                    <MenuElement path="/history" name="History" />
+                                    <MenuElement path="/charts" name="Charts" />
+                                </>
+                            )}
+                        </nav>
+                    )}
                 </header>
 
                 <div className="content">
@@ -67,9 +80,11 @@ const Site = ({ api }: SiteProps) => {
                             <Login />
                         </Route>
 
-                        <Route path="/home">
-                            <Home api={api} />
-                        </Route>
+                        {config?.hasSensors && (
+                            <Route path="/home">
+                                <Home api={api} />
+                            </Route>
+                        )}
 
                         {config?.hasDevices && (
                             <Route path="/devices">

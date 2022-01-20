@@ -6,13 +6,30 @@ body {
 
 .header {
     width: 100%;
+    height: $menu-height;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 1;
+    display: flex;
+    background-color: black;
+
+    .logo {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        white-space: nowrap;
+        transform: rotate(-90deg) translateY(-#{$menu-height});
+        transform-origin: $menu-height 0;
+        background-color: black;
+        color: white;
+        font-size: 0.8rem;
+        border: 1px solid black;
+    }
 
     .menu {
-        width: 100vw;
+        width: 100%;
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
