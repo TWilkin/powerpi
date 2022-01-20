@@ -15,7 +15,7 @@ body {
     background-color: black;
 
     .logo {
-        width: 100%;
+        width: $menu-height;
         position: absolute;
         top: 0;
         left: 0;
@@ -25,6 +25,7 @@ body {
         background-color: black;
         color: white;
         font-size: 0.8rem;
+        text-align: center;
         border: 1px solid black;
     }
 
