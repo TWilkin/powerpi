@@ -68,7 +68,7 @@ const Site = ({ api }: SiteProps) => {
                         </Route>
 
                         <Route path="/home">
-                            <Home />
+                            <Home api={api} />
                         </Route>
 
                         {config?.hasDevices && (

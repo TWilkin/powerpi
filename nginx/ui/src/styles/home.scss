@@ -17,4 +17,11 @@
             }
         }
     }
+
+    div[data-id="tooltip"] {
+        h3,
+        p {
+            margin: 0;
+        }
+    }
 }
