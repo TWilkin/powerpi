@@ -1,7 +1,7 @@
 import { PowerPiApi, Sensor } from "@powerpi/api";
 import React, { useMemo } from "react";
-import ReactTooltip from "react-tooltip";
 import useGetSensors from "../../hooks/sensors";
+import Tooltip from "./Tooltip";
 
 interface HomeProps {
     api: PowerPiApi;
@@ -48,23 +48,3 @@ const Home = ({ api }: HomeProps) => {
     );
 };
 export default Home;
-
-interface TooltipProps {
-    location: string;
-    sensors: Sensor[];
-}
-
-const Tooltip = ({ location, sensors }: TooltipProps) => (
-    <ReactTooltip id={location} clickable={true}>
-        <h3>{location}</h3>
-
-        {sensors.map((sensor) => (
-            <p key={sensor.name}>
-                {sensor.type}:{" "}
-                {sensor.value !== undefined && sensor.unit
-                    ? `${sensor.value} ${sensor.unit}`
-                    : sensor.state}
-            </p>
-        ))}
-    </ReactTooltip>
-);
