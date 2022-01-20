@@ -1,10 +1,10 @@
 import { Controller, Get } from "@tsed/common";
 import Authorize from "../middleware/auth";
-import SensorService from "../services/sensor";
+import SensorStateService from "../services/sensorState";
 
 @Controller("/sensor")
 export default class SensorController {
-    constructor(private readonly sensorService: SensorService) {}
+    constructor(private readonly sensorService: SensorStateService) {}
 
     @Get("/")
     @Authorize()
