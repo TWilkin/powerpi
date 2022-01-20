@@ -2,7 +2,7 @@ import { Sensor } from "@powerpi/api";
 import React from "react";
 import ReactTooltip from "react-tooltip";
 import FormattedValue from "../Components/FormattedValue";
-import SensorIcon from "./SensorIcon";
+import SensorIcon from "../Components/SensorIcon";
 
 interface TooltipProps {
     location: string;

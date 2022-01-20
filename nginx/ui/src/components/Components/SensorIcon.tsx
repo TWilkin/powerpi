@@ -1,5 +1,6 @@
 import {
     faBolt,
+    faBurn,
     faInfo,
     faThermometerHalf,
     faTint,
@@ -21,7 +22,7 @@ function mapSensorIcon(type: string) {
             return faBolt;
 
         case "gas":
-            return "burn";
+            return faBurn;
 
         case "humidity":
             return faTint;
