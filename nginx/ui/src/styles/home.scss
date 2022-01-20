@@ -1,0 +1,20 @@
+@import "./vars.scss";
+
+#home {
+    svg {
+        width: auto;
+        max-width: 90vw;
+        height: calc(90vh - #{$menu-height});
+
+        polygon,
+        rect {
+            pointer-events: all;
+            fill: none;
+            stroke: black;
+
+            &:hover {
+                fill: lightgrey;
+            }
+        }
+    }
+}

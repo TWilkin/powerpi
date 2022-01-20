@@ -7,6 +7,7 @@ import { useGetConfig } from "../hooks/config";
 import Charts from "./Charts";
 import DeviceList from "./DeviceList";
 import HistoryList from "./HistoryList";
+import Home from "./Home/Home";
 import Login from "./Login";
 
 interface MenuElementProps {
@@ -47,6 +48,7 @@ const Site = ({ api }: SiteProps) => {
             <LastLocationProvider>
                 <header className="header">
                     <nav className="menu">
+                        <MenuElement path="/home" name="Home" />
                         {config?.hasDevices && <MenuElement path="/devices" name="Devices" />}
                         {config?.hasPersistence && (
                             <>
@@ -63,6 +65,10 @@ const Site = ({ api }: SiteProps) => {
 
                         <Route path="/login">
                             <Login />
+                        </Route>
+
+                        <Route path="/home">
+                            <Home />
                         </Route>
 
                         {config?.hasDevices && (
