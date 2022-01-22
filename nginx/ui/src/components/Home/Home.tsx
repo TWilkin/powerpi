@@ -1,6 +1,7 @@
 import { PowerPiApi, Sensor } from "@powerpi/api";
 import React, { useMemo } from "react";
 import useGetSensors from "../../hooks/sensors";
+import Floorplan from "./Floorplan";
 import Tooltip from "./Tooltip";
 
 interface HomeProps {
@@ -24,33 +25,24 @@ const Home = ({ api }: HomeProps) => {
         [sensors]
     );
 
+    const floorplan = {
+        floors: [
+            {
+                name: "Example",
+                rooms: [
+                    { name: "Office", width: 300, height: 300 },
+                    { name: "Hallway", x: 300, width: 300, height: 300 },
+                ],
+            },
+        ],
+    };
+
     return (
         <div id="home">
-            <div id="layout">
-                <svg viewBox="0 0 600 300" preserveAspectRatio="true">
-                    <g>
-                        <title>Home</title>
-                        <rect
-                            id="LivingRoom"
-                            width="300"
-                            height="300"
-                            data-tip
-                            data-for="Hallway"
-                        />
-                        <rect
-                            id="Kitchen"
-                            x="300"
-                            width="300"
-                            height="300"
-                            data-tip
-                            data-for="Office"
-                        />
-                    </g>
-                </svg>
-            </div>
+            <Floorplan floorplan={floorplan} />
 
             {Object.keys(sensorsByLocation).map((location) => (
-                <Tooltip location={location} sensors={sensorsByLocation[location]} />
+                <Tooltip key={location} location={location} sensors={sensorsByLocation[location]} />
             ))}
         </div>
     );
