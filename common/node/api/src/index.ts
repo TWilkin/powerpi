@@ -6,6 +6,7 @@ import { Floorplan, Floor, Room, Point } from "./Floorplan";
 import History from "./History";
 import PowerPiApi from "./PowerPiApi";
 import Sensor from "./Sensor";
+import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus";
 
 export {
     Config,
@@ -20,4 +21,6 @@ export {
     PowerPiApi,
     Room,
     Sensor,
+    SensorStatusCallback,
+    SensorStatusMessage,
 };

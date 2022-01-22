@@ -7,9 +7,7 @@ export function useGetDevices(api: PowerPiApi) {
     const { isLoading, isError, data } = useQuery("devices", () => api.getDevices());
 
     // handle react-query updates
-    useEffect(() => {
-        setDevices(data);
-    }, [data]);
+    useEffect(() => setDevices(data), [data]);
 
     // handle socket.io updates
     useEffect(() => {
@@ -18,10 +16,10 @@ export function useGetDevices(api: PowerPiApi) {
                 return;
             }
 
-            const newDevices = [...devices];
-
             const index = devices.findIndex((device) => device.name === message.device);
-            if (index) {
+            if (index !== -1) {
+                const newDevices = [...devices];
+
                 newDevices[index] = { ...newDevices[index] };
                 newDevices[index].state = message.state;
                 newDevices[index].since = message.timestamp;
