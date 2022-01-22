@@ -17,7 +17,7 @@ services:
 
     clacks-config:
         build: ../clacks-config
-        image: ${REGISTRY}/powerpi/clacks-config:0.0.2
+        image: ${REGISTRY}/powerpi/clacks-config:0.0.3
         networks:
             - powerpi
         deploy:

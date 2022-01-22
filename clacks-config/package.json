@@ -1,6 +1,6 @@
 {
     "name": "clacks-config",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "PowerPi config retrieval from GitHub pushing to message queue",
     "main": "./src/index.ts",
     "scripts": {
