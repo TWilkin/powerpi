@@ -27,9 +27,18 @@ body {
         transform-origin: $menu-height 0;
         background-color: black;
         color: white;
+        line-height: $logo-width;
         font-size: 0.8rem;
         text-align: center;
         border: 1px solid black;
+
+        a {
+            text-decoration: none;
+
+            &:visited {
+                color: white;
+            }
+        }
     }
 
     .menu {

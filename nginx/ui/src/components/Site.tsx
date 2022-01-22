@@ -55,7 +55,9 @@ const Site = ({ api }: SiteProps) => {
             <LastLocationProvider>
                 <header className="header">
                     <div className="logo">
-                        <FontAwesomeIcon icon={faPlug} /> PowerPi
+                        <NavLink exact to="/">
+                            <FontAwesomeIcon icon={faPlug} /> PowerPi
+                        </NavLink>
                     </div>
 
                     {!isConfigLoading && !isConfigError && (
