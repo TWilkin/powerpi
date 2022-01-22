@@ -30,7 +30,7 @@ interface FloorplanProps {
 }
 
 const Floorplan = ({ floorplan }: FloorplanProps) => {
-    const size = useMemo(() => viewBox(floorplan), [floorplan]);
+    const size = useMemo(() => viewBoxByFloorplan(floorplan), [floorplan]);
 
     return (
         <div id="layout">
@@ -38,6 +38,12 @@ const Floorplan = ({ floorplan }: FloorplanProps) => {
                 viewBox={`${size.minX} ${size.minY} ${size.maxX} ${size.maxY}`}
                 preserveAspectRatio="xMidYMid"
             >
+                <defs>
+                    {floorplan.floors.map((floor) => (
+                        <RoomOutline key={floor.name} floor={floor} />
+                    ))}
+                </defs>
+
                 {floorplan.floors.map((floor) => (
                     <Floor key={floor.name} floor={floor} />
                 ))}
@@ -47,9 +53,29 @@ const Floorplan = ({ floorplan }: FloorplanProps) => {
 };
 export default Floorplan;
 
+const RoomOutline = ({ floor }: { floor: IFloor }) => {
+    const size = useMemo(() => viewBoxByFloor(floor), [floor]);
+
+    return (
+        <filter
+            id={outlineId(floor)}
+            x={size.minX}
+            y={size.minY}
+            width={size.maxX}
+            height={size.maxY}
+            filterUnits="userSpaceOnUse"
+        >
+            <feMorphology operator="dilate" in="SourceAlpha" radius={2} result="morph1" />
+            <feMorphology operator="dilate" in="SourceAlpha" radius={3} result="morph2" />
+            <feComposite in="morph1" in2="morph2" operator="xor" result="outline" />
+            <feComposite in="outline" in2="SourceGraphic" operator="over" result="output" />
+        </filter>
+    );
+};
+
 const Floor = ({ floor }: { floor: IFloor }) => {
     return (
-        <g id={floor.name}>
+        <g id={floor.name} filter={`url(#${outlineId(floor)})`}>
             <title>{floor.display_name ?? floor.name}</title>
 
             {floor.rooms.map((room) => (
@@ -81,53 +107,79 @@ const Room = ({ room }: { room: IRoom }) => {
     return <></>;
 };
 
+const outlineId = (floor: IFloor) => `${floor.name}Outline`;
+
 const isRect = (room: IRoom) =>
     room.width && room.height && (!room.points || room.points.length === 0);
 
 const isPolygon = (room: IRoom) =>
     !room.width && !room.height && room.points && room.points.length !== 0;
 
-function viewBox(floorplan: IFloorplan) {
-    // convert all the rooms into a list of points
-    const points = floorplan.floors.reduce((points, floor) => {
-        points.push(
-            ...floor.rooms.reduce((points, room) => {
-                if (isRect(room)) {
-                    points.push(...pointsFromRect(room.x, room.y, room.width, room.height));
-                } else if (isPolygon(room)) {
-                    points.push(...(room.points ?? []));
-                }
+class ViewBox {
+    minX: number;
+    minY: number;
+    maxX: number;
+    maxY: number;
 
-                return points;
-            }, [] as IPoint[])
-        );
+    constructor() {
+        this.minX = Number.MAX_VALUE;
+        this.minY = Number.MAX_VALUE;
+        this.maxX = 0;
+        this.maxY = 0;
+    }
 
-        return points;
-    }, [] as IPoint[]);
+    pad(size = 5) {
+        this.minX -= size;
+        this.minY -= size;
+        this.maxX += size;
+        this.maxY += size;
+
+        return this;
+    }
+
+    join(viewBox: ViewBox) {
+        this.minX = Math.min(this.minX, viewBox.minX);
+        this.minY = Math.min(this.minY, viewBox.minY);
+        this.maxX = Math.max(this.maxX, viewBox.maxX);
+        this.maxY = Math.max(this.maxY, viewBox.maxY);
+
+        return this;
+    }
+
+    update(x: number, y: number) {
+        this.minX = Math.min(this.minX, x);
+        this.minY = Math.min(this.minY, y);
+        this.maxX = Math.max(this.maxX, x);
+        this.maxY = Math.max(this.maxY, y);
+
+        return this;
+    }
+}
+
+const viewBoxByFloorplan = (floorplan: IFloorplan) =>
+    floorplan.floors
+        .map((floor) => viewBoxByFloor(floor))
+        .reduce((viewBox, floor) => viewBox.join(floor), new ViewBox())
+        .pad();
+
+const viewBoxByFloor = (floor: IFloor) =>
+    floor.rooms
+        .map((room) => viewBoxByRoom(room))
+        .reduce((viewBox, room) => viewBox.join(room), new ViewBox());
+
+function viewBoxByRoom(room: IRoom) {
+    // convert the room into a list of points
+    const points: IPoint[] = [];
+    if (isRect(room)) {
+        points.push(...pointsFromRect(room.x, room.y, room.width, room.height));
+    } else if (isPolygon(room)) {
+        points.push(...(room.points ?? []));
+    }
 
     // now get the min/max values
     const viewBox = points.reduce(
-        (viewBox, point) => {
-            if (point.x < viewBox.minX) {
-                viewBox.minX = point.x;
-            } else if (point.x > viewBox.maxX) {
-                viewBox.maxX = point.x;
-            }
-
-            if (point.y < viewBox.minY) {
-                viewBox.minY = point.y;
-            } else if (point.y > viewBox.maxY) {
-                viewBox.maxY = point.y;
-            }
-
-            return viewBox;
-        },
-        {
-            minX: Number.MAX_VALUE,
-            minY: Number.MAX_VALUE,
-            maxX: 0,
-            maxY: 0,
-        }
+        (viewBox, point) => viewBox.update(point.x, point.y),
+        new ViewBox()
     );
 
     return viewBox;
