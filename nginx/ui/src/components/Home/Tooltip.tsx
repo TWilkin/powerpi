@@ -5,13 +5,14 @@ import FormattedValue from "../Components/FormattedValue";
 import SensorIcon from "../Components/SensorIcon";
 
 interface TooltipProps {
+    title: string;
     location: string;
     sensors: Sensor[];
 }
 
-const Tooltip = ({ location, sensors }: TooltipProps) => (
+const Tooltip = ({ title, location, sensors }: TooltipProps) => (
     <ReactTooltip id={location} clickable={true}>
-        <h3>{location}</h3>
+        <h3>{title}</h3>
 
         {sensors.map((sensor) => (
             <p key={sensor.name}>

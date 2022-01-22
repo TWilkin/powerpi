@@ -1,5 +1,6 @@
 import { PowerPiApi, Sensor } from "@powerpi/api";
 import React, { useMemo } from "react";
+import { useGetFloorplan } from "../../hooks/floorplan";
 import useGetSensors from "../../hooks/sensors";
 import Floorplan from "./Floorplan";
 import Tooltip from "./Tooltip";
@@ -9,42 +10,31 @@ interface HomeProps {
 }
 
 const Home = ({ api }: HomeProps) => {
+    const { floorplan } = useGetFloorplan(api);
     const { sensors } = useGetSensors(api);
-
-    const floorplan = {
-        floors: [
-            {
-                name: "Example",
-                rooms: [
-                    { name: "Office", width: 300, height: 300 },
-                    { name: "Hallway", x: 300, width: 300, height: 300 },
-                    { name: "Bedroom", x: 600, width: 300, height: 300 },
-                ],
-            },
-        ],
-    };
 
     const locations = useMemo(
         () =>
-            floorplan.floors.reduce((locations, floor) => {
+            floorplan?.floors.reduce((locations, floor) => {
                 locations.push(
                     ...floor.rooms.map((room) => ({
-                        name: room.name,
+                        title: room.display_name ?? room.name,
+                        location: room.name,
                         sensors: sensors?.filter((sensor) => sensor.location === room.name) ?? [],
                     }))
                 );
 
                 return locations;
-            }, [] as { name: string; sensors: Sensor[] }[]),
+            }, [] as { title: string; location: string; sensors: Sensor[] }[]),
         [floorplan, sensors]
     );
 
     return (
         <div id="home">
-            <Floorplan floorplan={floorplan} />
+            {floorplan && <Floorplan floorplan={floorplan} />}
 
-            {locations.map((location) => (
-                <Tooltip key={location.name} location={location.name} sensors={location.sensors} />
+            {locations?.map((location) => (
+                <Tooltip key={location.location} {...location} />
             ))}
         </div>
     );

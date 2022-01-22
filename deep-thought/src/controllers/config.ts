@@ -10,7 +10,7 @@ export default class DeviceController {
     @Authorize()
     async getConfig() {
         const hasDevices = this.configService.devices?.length > 0;
-        const hasFloorplan = this.configService.floorplan !== undefined;
+        const hasFloorplan = this.configService.floorplan?.floorplan !== undefined;
         const hasSensors = this.configService.sensors?.length > 0;
 
         let hasPersistence: boolean;

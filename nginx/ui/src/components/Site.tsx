@@ -42,7 +42,7 @@ const Site = ({ api }: SiteProps) => {
         }
     });
 
-    const defaultPage = config?.hasSensors
+    const defaultPage = config?.hasFloorplan
         ? "home"
         : config?.hasDevices
         ? "devices"
@@ -60,7 +60,7 @@ const Site = ({ api }: SiteProps) => {
 
                     {!isConfigLoading && !isConfigError && (
                         <nav className="menu">
-                            {config?.hasSensors && <MenuElement path="/home" name="Home" />}
+                            {config?.hasFloorplan && <MenuElement path="/home" name="Home" />}
                             {config?.hasDevices && <MenuElement path="/devices" name="Devices" />}
                             {config?.hasPersistence && (
                                 <>
@@ -80,7 +80,7 @@ const Site = ({ api }: SiteProps) => {
                             <Login />
                         </Route>
 
-                        {config?.hasSensors && (
+                        {config?.hasFloorplan && (
                             <Route path="/home">
                                 <Home api={api} />
                             </Route>
