@@ -1,12 +1,12 @@
-import { Message, MqttConsumer } from "@powerpi/common";
+import { ISensor } from "@powerpi/common";
 import { Service } from "@tsed/di";
-import { Sensor } from "../models/sensor";
 import ConfigService from "./config";
+import SensorStateListener from "./listeners/SensorStateListener";
 import MqttService from "./mqtt";
 
 @Service()
 export default class SensorStateService {
-    private _sensors: SensorConsumer[] | undefined;
+    private _sensors: SensorStateListener[] | undefined;
 
     constructor(private readonly config: ConfigService, private readonly mqttService: MqttService) {
         this._sensors = undefined;
@@ -19,54 +19,26 @@ export default class SensorStateService {
     public async $onInit() {
         this.initialise();
 
-        await Promise.all(this._sensors?.map((sensor) => sensor.initialise()) ?? []);
+        await Promise.all(this._sensors?.map((sensor) => sensor.$onInit()) ?? []);
     }
 
     private initialise() {
         this._sensors = this.config.sensors.map(
-            (sensor) =>
-                new SensorConsumer(this.mqttService, {
-                    name: sensor.name,
-                    display_name: sensor.display_name,
-                    type: sensor.type,
-                    location: sensor.location,
-                    entity: sensor.entity ?? sensor.location,
-                    action: sensor.action ?? sensor.type,
-                    visible: sensor.visible ?? true,
-                    state: undefined,
-                    value: undefined,
-                    unit: undefined,
-                    since: -1,
-                })
+            (sensor) => new SensorConsumer(this.mqttService, sensor)
         );
     }
 }
 
-interface EventMessage extends Message {
-    state?: string;
-    value?: number;
-    unit?: string;
-}
-
-class SensorConsumer implements MqttConsumer {
-    constructor(private readonly mqttService: MqttService, private _sensor: Sensor) {}
-
-    public get sensor() {
-        return this._sensor;
+class SensorConsumer extends SensorStateListener {
+    constructor(mqttService: MqttService, sensor: ISensor) {
+        super(mqttService, sensor);
     }
 
-    public async initialise() {
-        await this.mqttService.subscribe("event", this._sensor.entity, this._sensor.action, this);
+    protected onSensorStateMessage(_: string, __: string, ___?: number): void {
+        return;
     }
 
-    public message(_: string, __: string, ___: string, message: EventMessage) {
-        if (message.state) {
-            this._sensor.state = message.state;
-            this._sensor.since = message.timestamp ?? -1;
-        } else if (message.value !== undefined && message.unit) {
-            this._sensor.value = message.value;
-            this._sensor.unit = message.unit;
-            this._sensor.since = message.timestamp ?? -1;
-        }
+    protected onSensorDataMessage(_: string, __: number, ___: string, ____?: number): void {
+        return;
     }
 }

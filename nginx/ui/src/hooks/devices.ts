@@ -30,8 +30,8 @@ export function useGetDevices(api: PowerPiApi) {
             }
         };
 
-        api.addListener(onStatusUpdate);
-        return () => api.removeListener(onStatusUpdate);
+        api.addDeviceListener(onStatusUpdate);
+        return () => api.removeDeviceListener(onStatusUpdate);
     }, [devices, setDevices]);
 
     return {

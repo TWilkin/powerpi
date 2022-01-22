@@ -8,13 +8,17 @@ import { Floorplan } from "./Floorplan";
 import History from "./History";
 import PaginationResponse from "./Pagination";
 import Sensor from "./Sensor";
+import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus";
 
 type ErrorHandler = (error: { response: { status: number } }) => void;
 
 export default class PowerPiApi {
     private readonly instance: AxiosInstance;
     private socket: SocketIOClient.Socket | undefined;
-    private listeners: DeviceStatusCallback[];
+    private listeners: {
+        device: DeviceStatusCallback[];
+        sensor: SensorStatusCallback[];
+    };
     private headers: { [key: string]: string };
 
     constructor(private readonly apiBaseUrl: string) {
@@ -22,7 +26,10 @@ export default class PowerPiApi {
             baseURL: this.apiBaseUrl,
         });
 
-        this.listeners = [];
+        this.listeners = {
+            device: [],
+            sensor: [],
+        };
 
         this.headers = {};
     }
@@ -62,13 +69,22 @@ export default class PowerPiApi {
     public postMessage = (device: string, state: DeviceState) =>
         this.post(`topic/device/${device}/change`, { state });
 
-    public addListener(callback: DeviceStatusCallback) {
+    public addDeviceListener(callback: DeviceStatusCallback) {
         this.connectSocketIO();
-        this.listeners.push(callback);
+        this.listeners.device.push(callback);
     }
 
-    public removeListener(callback: DeviceStatusCallback) {
-        this.listeners = this.listeners.filter((listener) => listener === callback);
+    public addSensorListener(callback: SensorStatusCallback) {
+        this.connectSocketIO();
+        this.listeners.sensor.push(callback);
+    }
+
+    public removeDeviceListener(callback: DeviceStatusCallback) {
+        this.listeners.device = this.listeners.device.filter((listener) => listener === callback);
+    }
+
+    public removeSensorListener(callback: SensorStatusCallback) {
+        this.listeners.sensor = this.listeners.sensor.filter((listener) => listener === callback);
     }
 
     public setErrorHandler(handler: ErrorHandler) {
@@ -79,8 +95,11 @@ export default class PowerPiApi {
         this.headers.Authorization = `Bearer ${token}`;
     }
 
-    private onMessage = (message: DeviceStatusMessage) =>
-        this.listeners.forEach((listener) => listener(message));
+    private onDeviceMessage = (message: DeviceStatusMessage) =>
+        this.listeners.device.forEach((listener) => listener(message));
+
+    private onSensorMessage = (message: SensorStatusMessage) =>
+        this.listeners.sensor.forEach((listener) => listener(message));
 
     private async get<TResult>(path: string, params?: object) {
         const result = await this.instance.get<TResult>(path, {
@@ -111,7 +130,8 @@ export default class PowerPiApi {
                 path: "/api/socket.io",
             });
 
-            this.socket.on("message", this.onMessage);
+            this.socket.on("device", this.onDeviceMessage);
+            this.socket.on("sensor", this.onSensorMessage);
         }
     }
 }
