@@ -32,7 +32,7 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
             )
         );
 
-        // we have to wait until we get all the configs
+        // we have to wait until we get all the configs we're waiting for
         this.logger.info("Waiting for configuration from queue");
         const success = await this.waitForConfig();
 
