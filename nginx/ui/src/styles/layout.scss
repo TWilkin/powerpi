@@ -5,8 +5,10 @@ body {
 }
 
 .header {
+    $logo-width: calc(0.7rem + 12px);
+
     width: 100%;
-    height: $menu-height;
+    height: calc($menu-height + 2px);
     position: fixed;
     top: 0;
     left: 0;
@@ -16,11 +18,12 @@ body {
 
     .logo {
         width: $menu-height;
+        height: $logo-width;
         position: absolute;
         top: 0;
         left: 0;
         white-space: nowrap;
-        transform: rotate(-90deg) translateY(-#{$menu-height});
+        transform: rotate(-90deg) translateY(-#{$menu-height}) translateX(-2px);
         transform-origin: $menu-height 0;
         background-color: black;
         color: white;
@@ -30,7 +33,8 @@ body {
     }
 
     .menu {
-        width: 100%;
+        width: calc(100% - #{$logo-width});
+        margin-left: $logo-width;
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
