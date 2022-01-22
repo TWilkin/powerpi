@@ -11,20 +11,6 @@ interface HomeProps {
 const Home = ({ api }: HomeProps) => {
     const { sensors } = useGetSensors(api);
 
-    const sensorsByLocation = useMemo(
-        () =>
-            sensors?.reduce((dict, sensor) => {
-                if (!(sensor.location in dict)) {
-                    dict[sensor.location] = [];
-                }
-
-                dict[sensor.location].push(sensor);
-
-                return dict;
-            }, {} as { [key: string]: Sensor[] }) ?? {},
-        [sensors]
-    );
-
     const floorplan = {
         floors: [
             {
@@ -32,17 +18,33 @@ const Home = ({ api }: HomeProps) => {
                 rooms: [
                     { name: "Office", width: 300, height: 300 },
                     { name: "Hallway", x: 300, width: 300, height: 300 },
+                    { name: "Bedroom", x: 600, width: 300, height: 300 },
                 ],
             },
         ],
     };
 
+    const locations = useMemo(
+        () =>
+            floorplan.floors.reduce((locations, floor) => {
+                locations.push(
+                    ...floor.rooms.map((room) => ({
+                        name: room.name,
+                        sensors: sensors?.filter((sensor) => sensor.location === room.name) ?? [],
+                    }))
+                );
+
+                return locations;
+            }, [] as { name: string; sensors: Sensor[] }[]),
+        [floorplan, sensors]
+    );
+
     return (
         <div id="home">
             <Floorplan floorplan={floorplan} />
 
-            {Object.keys(sensorsByLocation).map((location) => (
-                <Tooltip key={location} location={location} sensors={sensorsByLocation[location]} />
+            {locations.map((location) => (
+                <Tooltip key={location.name} location={location.name} sensors={location.sensors} />
             ))}
         </div>
     );
