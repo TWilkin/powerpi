@@ -1,24 +1,24 @@
 export interface IFloorplan {
-    floors: Floor[];
+    floors: IFloor[];
 }
 
-export interface Floor {
+export interface IFloor {
     name: string;
     display_name?: string;
-    rooms: Room[];
+    rooms: IRoom[];
 }
 
-export interface Room {
+export interface IRoom {
     name: string;
     display_name?: string;
     x?: number;
     y?: number;
     width?: number;
     height?: number;
-    points?: Point[];
+    points?: IPoint[];
 }
 
-export interface Point {
+export interface IPoint {
     x: number;
     y: number;
 }
