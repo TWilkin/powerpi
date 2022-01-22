@@ -1,4 +1,4 @@
-export interface IFloorplan {
+export interface Floorplan {
     floors: Floor[];
 }
 

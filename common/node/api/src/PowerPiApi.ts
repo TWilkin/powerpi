@@ -4,6 +4,7 @@ import Config from "./Config";
 import Device from "./Device";
 import DeviceState from "./DeviceState";
 import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
+import { Floorplan } from "./Floorplan";
 import History from "./History";
 import PaginationResponse from "./Pagination";
 import Sensor from "./Sensor";
@@ -29,6 +30,8 @@ export default class PowerPiApi {
     public getConfig = () => this.get<Config>("config");
 
     public getDevices = () => this.get<Device[]>("device");
+
+    public getFloorplan = () => this.get<Floorplan>("floorplan");
 
     public getSensors = () => this.get<Sensor[]>("sensor");
 

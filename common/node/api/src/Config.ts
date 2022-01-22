@@ -1,5 +1,6 @@
 export default interface Config {
     hasDevices: boolean;
-    hasSensors: boolean;
+    hasFloorplan: boolean;
     hasPersistence: boolean;
+    hasSensors: boolean;
 }

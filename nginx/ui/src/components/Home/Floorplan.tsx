@@ -1,31 +1,13 @@
+import {
+    Floorplan as IFloorplan,
+    Floor as IFloor,
+    Room as IRoom,
+    Point as IPoint,
+} from "@powerpi/api";
 import classNames from "classnames";
 import React from "react";
 import { useMemo } from "react";
 import useOrientation from "../../hooks/orientation";
-
-export interface IFloorplan {
-    floors: IFloor[];
-}
-
-export interface IFloor {
-    name: string;
-    display_name?: string;
-    rooms: IRoom[];
-}
-
-export interface IRoom {
-    name: string;
-    x?: number;
-    y?: number;
-    width?: number;
-    height?: number;
-    points?: IPoint[];
-}
-
-export interface IPoint {
-    x: number;
-    y: number;
-}
 
 const Floorplan = ({ floorplan }: { floorplan: IFloorplan }) => {
     const { isLandscape, isPortrait } = useOrientation();
