@@ -1,5 +1,7 @@
+import classNames from "classnames";
 import React from "react";
 import { useMemo } from "react";
+import useOrientation from "../../hooks/orientation";
 
 export interface IFloorplan {
     floors: IFloor[];
@@ -25,18 +27,24 @@ export interface IPoint {
     y: number;
 }
 
-interface FloorplanProps {
-    floorplan: IFloorplan;
-}
+const Floorplan = ({ floorplan }: { floorplan: IFloorplan }) => {
+    const { isLandscape, isPortrait } = useOrientation();
 
-const Floorplan = ({ floorplan }: FloorplanProps) => {
     const size = useMemo(() => viewBoxByFloorplan(floorplan), [floorplan]);
+
+    const isWide = useMemo(() => size.maxX >= size.maxY, [size]);
+
+    const rotate = useMemo(
+        () => (isWide && isPortrait) || (!isWide && isLandscape),
+        [isWide, isLandscape, isPortrait]
+    );
 
     return (
         <div id="layout">
             <svg
                 viewBox={`${size.minX} ${size.minY} ${size.maxX} ${size.maxY}`}
                 preserveAspectRatio="xMidYMid"
+                className={classNames({ rotate, wide: isWide })}
             >
                 <defs>
                     {floorplan.floors.map((floor) => (

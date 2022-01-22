@@ -2,11 +2,26 @@
 
 #home {
     #layout {
+        height: calc(100vh - #{$menu-height} - 10px);
+        margin-top: 10px;
+
         svg {
             width: auto;
             max-width: 90vw;
             height: calc(90vh - #{$menu-height});
-            margin-top: $menu-height;
+
+            &.rotate {
+                width: calc(90vh - #{$menu-height});
+                max-width: initial;
+                height: auto;
+                max-height: 90vw;
+                transform: rotate(90deg) translateX(-35%);
+                transform-origin: center;
+
+                &.wide {
+                    transform: rotate(90deg) translateX(35%);
+                }
+            }
 
             polygon,
             rect {
