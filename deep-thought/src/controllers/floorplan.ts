@@ -1,6 +1,5 @@
-import { Controller } from "@tsed/di";
-import { Authorize } from "@tsed/passport";
-import { Get } from "@tsed/schema";
+import { Controller, Get } from "@tsed/common";
+import Authorize from "../middleware/auth";
 import ConfigService from "../services/config";
 
 @Controller("/floorplan")
