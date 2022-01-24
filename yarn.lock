@@ -729,6 +729,13 @@
     "@types/history" "*"
     "@types/react" "*"
 
+"@types/react-timeago@^4.1.3":
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/@types/react-timeago/-/react-timeago-4.1.3.tgz#957baaa9f8ea98457ee63b6a57b57a616066ba35"
+  integrity sha512-XaaMBzuXLw7lxPPDs/fenlohcf3NDqM5qP4oOL/Meu+Hb1QChW4Igw/SruS1llEqch18RQB3wDTIwvqq4nivvw==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*":
   version "17.0.37"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.37.tgz#6884d0aa402605935c397ae689deed115caad959"
@@ -2895,13 +2902,6 @@ jake@^10.6.1:
     filelist "^1.0.1"
     minimatch "^3.0.4"
 
-javascript-time-ago@^2.3.3:
-  version "2.3.10"
-  resolved "https://registry.yarnpkg.com/javascript-time-ago/-/javascript-time-ago-2.3.10.tgz#483e960d158a24394806aed96f34f00669b671e8"
-  integrity sha512-eeZx3B8ACZpFTiaow4Xl3YTIG9UjebwVjHEDnKyzJ1NBve1ZqJIgy97yoT9Esw+Vf+XgSk4YCpOsyK5X/ByRzQ==
-  dependencies:
-    relative-time-format "^1.0.6"
-
 jest-worker@^27.0.6:
   version "27.4.2"
   resolved "https://registry.yarnpkg.com/jest-worker/-/jest-worker-27.4.2.tgz#0fb123d50955af1a450267787f340a1bf7e12bc4"
@@ -3798,11 +3798,6 @@ pause@0.0.1:
   resolved "https://registry.yarnpkg.com/pause/-/pause-0.0.1.tgz#1d408b3fdb76923b9543d96fb4c9dfd535d9cb5d"
   integrity sha1-HUCLP9t2kjuVQ9lvtMnf1TXZy10=
 
-performance-now@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
-  integrity sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=
-
 pg-connection-string@^2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-2.5.0.tgz#538cadd0f7e603fc09a12590f3b8a452c2c0cf34"
@@ -4044,13 +4039,6 @@ queue-microtask@^1.2.2:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-raf@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.1.tgz#0742e99a4a6552f445d73e3ee0328af0ff1ede39"
-  integrity sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA==
-  dependencies:
-    performance-now "^2.1.0"
-
 random-bytes@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/random-bytes/-/random-bytes-1.0.0.tgz#4f68a1dc0ae58bd3fb95848c30324db75d64360b"
@@ -4171,14 +4159,10 @@ react-router@5.2.1:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-time-ago@^6.2.2:
-  version "6.2.4"
-  resolved "https://registry.yarnpkg.com/react-time-ago/-/react-time-ago-6.2.4.tgz#8ce678d2d776af94ff0dc0346c6ab3db65166bf4"
-  integrity sha512-pGFXSJGcn+QQTS42DqBkARX7J/wpFTKEIjVM4UCD1cpKeHFtxmg2Nepehr8vY21j4eyfUMZMcRwUi6pBRcq3Mg==
-  dependencies:
-    javascript-time-ago "^2.3.3"
-    prop-types "^15.7.2"
-    raf "^3.4.1"
+react-timeago@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/react-timeago/-/react-timeago-6.2.1.tgz#f19716811156617ceb9c9f9a44315d85197c7fba"
+  integrity sha512-b9EObWO8wy4qwfOzj+g/RQZRrPvtMv1Pz12FCdAWKWCXbDGt0rZLyiyTGEr0Lh1O8w5xa48CtRpl3LI+CtGCyw==
 
 react-tooltip@^4.2.21:
   version "4.2.21"
@@ -4270,11 +4254,6 @@ reinterval@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/reinterval/-/reinterval-1.1.0.tgz#3361ecfa3ca6c18283380dd0bb9546f390f5ece7"
   integrity sha1-M2Hs+jymwYKDOA3Qu5VG85D17Oc=
-
-relative-time-format@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/relative-time-format/-/relative-time-format-1.0.6.tgz#4956f6aa161f63cbab8a7f2d8b2e92d7b6a888a3"
-  integrity sha512-voemOJLxlKun4P1fAo4PEg2WXNGjhqfE/G8Xen4gcy24Hyu/djn5bT5axmhx4MnjynoZ8f0HCOjk3RZpsY6X/g==
 
 remove-accents@0.4.2:
   version "0.4.2"
