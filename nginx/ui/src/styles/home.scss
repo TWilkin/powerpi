@@ -1,17 +1,42 @@
 @import "./vars.scss";
 
 #home {
+    $floor-menu-height: 4rem;
+
+    .menu {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+
+        .menu-item {
+            width: 100%;
+            height: $floor-menu-height;
+            flex: 1;
+            font-size: 1.6rem;
+            line-height: $floor-menu-height;
+            text-align: center;
+            text-decoration: none;
+            background-color: lightcyan;
+            color: black;
+            border: 1px solid black;
+
+            &.active {
+                background-color: lightskyblue;
+            }
+        }
+    }
+
     #layout {
-        height: calc(100vh - #{$menu-height} - 10px);
+        height: calc(100vh - #{$menu-height} - 10px - #{$floor-menu-height});
         margin-top: 10px;
 
         svg {
             width: auto;
             max-width: 90vw;
-            height: calc(90vh - #{$menu-height});
+            height: calc(90vh - #{$menu-height} - #{$floor-menu-height});
 
             &.rotate {
-                width: calc(90vh - #{$menu-height});
+                width: calc(90vh - #{$menu-height} - #{$floor-menu-height});
                 max-width: initial;
                 height: auto;
                 max-height: 90vw;
@@ -20,6 +45,14 @@
 
                 &.wide {
                     transform: rotate(90deg) translateX(35%);
+                }
+            }
+
+            g {
+                display: none;
+
+                &.visible {
+                    display: initial;
                 }
             }
 

@@ -8,11 +8,12 @@ import SensorIcon from "../Components/SensorIcon";
 interface TooltipProps {
     title: string;
     location: string;
+    floor: string;
     sensors: Sensor[];
 }
 
-const Tooltip = ({ title, location, sensors }: TooltipProps) => (
-    <ReactTooltip id={location} clickable>
+const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => (
+    <ReactTooltip id={`${floor}${location}`} clickable>
         <h3>{title}</h3>
 
         {sensors.map((sensor) => (

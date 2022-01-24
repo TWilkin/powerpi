@@ -9,7 +9,12 @@ import React from "react";
 import { useMemo } from "react";
 import useOrientation from "../../hooks/orientation";
 
-const Floorplan = ({ floorplan }: { floorplan: IFloorplan }) => {
+interface FloorplanProps {
+    floorplan: IFloorplan;
+    current: string;
+}
+
+const Floorplan = ({ floorplan, current }: FloorplanProps) => {
     const { isLandscape, isPortrait } = useOrientation();
 
     const size = useMemo(() => viewBoxByFloorplan(floorplan), [floorplan]);
@@ -35,7 +40,7 @@ const Floorplan = ({ floorplan }: { floorplan: IFloorplan }) => {
                 </defs>
 
                 {floorplan.floors.map((floor) => (
-                    <Floor key={floor.name} floor={floor} />
+                    <Floor key={floor.name} floor={floor} visible={current === floor.name} />
                 ))}
             </svg>
         </div>
@@ -63,35 +68,47 @@ const RoomOutline = ({ floor }: { floor: IFloor }) => {
     );
 };
 
-const Floor = ({ floor }: { floor: IFloor }) => {
+interface FloorProps {
+    floor: IFloor;
+    visible: boolean;
+}
+
+const Floor = ({ floor, visible }: FloorProps) => {
     return (
-        <g id={floor.name} filter={`url(#${outlineId(floor)})`}>
+        <g id={floor.name} filter={`url(#${outlineId(floor)})`} className={classNames({ visible })}>
             <title>{floor.display_name ?? floor.name}</title>
 
             {floor.rooms.map((room) => (
-                <Room key={room.name} room={room} />
+                <Room key={room.name} room={room} floor={floor.name} />
             ))}
         </g>
     );
 };
 
-const Room = ({ room }: { room: IRoom }) => {
+interface RoomProps {
+    room: IRoom;
+    floor: string;
+}
+
+const Room = ({ room, floor }: RoomProps) => {
+    const id = useMemo(() => `${floor}${room.name}`, [floor, room]);
+
     if (isRect(room)) {
         return (
             <rect
-                id={room.name}
+                id={id}
                 x={room.x}
                 y={room.y}
                 width={room.width}
                 height={room.height}
                 data-tip
-                data-for={room.name}
+                data-for={id}
             />
         );
     } else if (isPolygon(room)) {
         const points = room.points?.map((point) => `${point.x},${point.y}`).join(" ");
 
-        return <polygon id={room.name} points={points} data-tip data-for={room.name} />;
+        return <polygon id={id} points={points} data-tip data-for={id} />;
     }
 
     return <></>;
