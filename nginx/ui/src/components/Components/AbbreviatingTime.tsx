@@ -5,15 +5,20 @@ import useNarrow from "../../hooks/narrow";
 
 interface AbbreviatingTimeProps {
     date: Date | number | string | undefined;
+    abbreviate?: boolean;
     undefinedText?: string;
 }
 
-const AbbreviatingTime = ({ date, undefinedText = "Unknown" }: AbbreviatingTimeProps) => {
+const AbbreviatingTime = ({
+    date,
+    abbreviate = false,
+    undefinedText = "Unknown",
+}: AbbreviatingTimeProps) => {
     const { isNarrow } = useNarrow();
 
     const formatter = useCallback(
         (value: number, unit: string, suffix: string) => {
-            if (isNarrow) {
+            if (isNarrow || abbreviate) {
                 unit = pluralise(value, abbreviateUnit(unit));
 
                 return `${value} ${unit}`;
