@@ -33,7 +33,7 @@ interface MenuItemProps {
 const MenuItem = ({ path, name, icon, visible = true }: MenuItemProps) => {
     if (visible) {
         return (
-            <NavLink exact to={path} className="menu-item" activeClassName="active">
+            <NavLink exact to={path} className="menu-item" activeClassName="active" title={name}>
                 {icon && (
                     <>
                         <FontAwesomeIcon icon={icon} />{" "}

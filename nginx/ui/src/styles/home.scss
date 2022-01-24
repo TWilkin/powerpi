@@ -30,7 +30,7 @@
                 stroke: black;
 
                 &:hover {
-                    fill: lightgrey;
+                    fill: lightblue;
                 }
             }
         }
@@ -40,6 +40,13 @@
         h3,
         p {
             margin: 0;
+            line-height: 1rem;
+
+            sup {
+                vertical-align: top;
+                position: relative;
+                top: -0.1rem;
+            }
         }
     }
 }
