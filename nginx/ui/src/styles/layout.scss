@@ -48,7 +48,7 @@ body {
         flex-flow: row nowrap;
         align-items: center;
 
-        .menu-element {
+        .menu-item {
             height: $menu-height;
             flex: 1;
             font-size: 1.6rem;
@@ -61,6 +61,12 @@ body {
 
             &.active {
                 background-color: lightskyblue;
+            }
+
+            @media (max-width: 500px) {
+                .text {
+                    display: none;
+                }
             }
         }
     }

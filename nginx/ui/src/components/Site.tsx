@@ -1,29 +1,17 @@
-import { faPlug } from "@fortawesome/free-solid-svg-icons";
+import { faChartLine, faHistory, faHome, faPlug } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PowerPiApi } from "@powerpi/api";
 import HttpStatusCodes from "http-status-codes";
-import React from "react";
+import React, { useMemo } from "react";
 import { BrowserRouter, NavLink, Redirect, Route, Switch } from "react-router-dom";
 import { LastLocationProvider } from "react-router-last-location";
 import { useGetConfig } from "../hooks/config";
 import Charts from "./Charts";
+import Menu from "./Components/Menu";
 import DeviceList from "./DeviceList";
 import HistoryList from "./HistoryList";
 import Home from "./Home/Home";
 import Login from "./Login";
-
-interface MenuElementProps {
-    path: string;
-    name: string;
-}
-
-const MenuElement = ({ path, name }: MenuElementProps) => {
-    return (
-        <NavLink exact to={path} className="menu-element" activeClassName="active">
-            {name}
-        </NavLink>
-    );
-};
 
 interface SiteProps {
     api: PowerPiApi;
@@ -42,13 +30,47 @@ const Site = ({ api }: SiteProps) => {
         }
     });
 
-    const defaultPage = config?.hasFloorplan
-        ? "home"
-        : config?.hasDevices
-        ? "devices"
-        : config?.hasPersistence
-        ? "history"
-        : "login";
+    const defaultPage = useMemo(
+        () =>
+            config?.hasFloorplan
+                ? "home"
+                : config?.hasDevices
+                ? "devices"
+                : config?.hasPersistence
+                ? "history"
+                : "login",
+        [config]
+    );
+
+    const menuItems = useMemo(
+        () => [
+            {
+                name: "Home",
+                path: "/home",
+                icon: faHome,
+                visible: config?.hasFloorplan,
+            },
+            {
+                name: "Devices",
+                path: "/devices",
+                icon: faPlug,
+                visible: config?.hasDevices,
+            },
+            {
+                name: "History",
+                path: "/history",
+                icon: faHistory,
+                visible: config?.hasPersistence,
+            },
+            {
+                name: "Charts",
+                path: "/charts",
+                icon: faChartLine,
+                visible: config?.hasPersistence,
+            },
+        ],
+        [config]
+    );
 
     return (
         <BrowserRouter>
@@ -60,18 +82,7 @@ const Site = ({ api }: SiteProps) => {
                         </NavLink>
                     </div>
 
-                    {!isConfigLoading && !isConfigError && (
-                        <nav className="menu">
-                            {config?.hasFloorplan && <MenuElement path="/home" name="Home" />}
-                            {config?.hasDevices && <MenuElement path="/devices" name="Devices" />}
-                            {config?.hasPersistence && (
-                                <>
-                                    <MenuElement path="/history" name="History" />
-                                    <MenuElement path="/charts" name="Charts" />
-                                </>
-                            )}
-                        </nav>
-                    )}
+                    <Menu items={menuItems} visible={!isConfigLoading && !isConfigError} />
                 </header>
 
                 <div className="content">
