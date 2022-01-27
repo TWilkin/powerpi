@@ -30,5 +30,5 @@ function useLogin(protocol: string) {
         }/${redirectUri}`;
 
         window.location.href = path;
-    }, [history]);
+    }, [lastLocation, protocol]);
 }

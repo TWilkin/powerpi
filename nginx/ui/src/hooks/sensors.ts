@@ -32,7 +32,7 @@ export default function useGetSensors(api: PowerPiApi) {
 
         api.addSensorListener(onStatusUpdate);
         return () => api.removeSensorListener(onStatusUpdate);
-    }, [sensors, setSensors]);
+    }, [api, sensors, setSensors]);
 
     return {
         isSensorsLoading: isLoading,

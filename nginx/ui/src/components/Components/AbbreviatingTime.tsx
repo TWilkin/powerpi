@@ -26,7 +26,7 @@ const AbbreviatingTime = ({
 
             return `${value} ${pluralise(value, unit)} ${suffix}`;
         },
-        [isNarrow]
+        [abbreviate, isNarrow]
     );
 
     if (date !== undefined) {

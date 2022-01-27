@@ -30,7 +30,7 @@ const DeviceFilter = ({ devices, updateFilters }: DeviceFilterProps) => {
 
     useEffect(() => setFilters({ types: types ?? [] }), [types]);
 
-    useEffect(() => updateFilters(filters), [filters]);
+    useEffect(() => updateFilters(filters), [filters, updateFilters]);
 
     const handleTypeFilterChange = (event: ChangeEvent<HTMLInputElement>) => {
         let filterTypes = [...filters.types];

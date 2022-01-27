@@ -30,7 +30,7 @@ export function useGetDevices(api: PowerPiApi) {
 
         api.addDeviceListener(onStatusUpdate);
         return () => api.removeDeviceListener(onStatusUpdate);
-    }, [devices, setDevices]);
+    }, [api, devices, setDevices]);
 
     return {
         isDevicesLoading: isLoading,
