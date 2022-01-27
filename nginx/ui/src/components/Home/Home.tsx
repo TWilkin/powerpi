@@ -1,6 +1,6 @@
 import { PowerPiApi, Sensor } from "@powerpi/api";
 import React, { useMemo } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import { useGetFloorplan } from "../../hooks/floorplan";
 import useGetSensors from "../../hooks/sensors";
 import Menu from "../Components/Menu";
@@ -59,7 +59,7 @@ const Home = ({ api }: HomeProps) => {
 
                         <Route
                             path="/home/:floor"
-                            render={(props) => (
+                            render={(props: RouteComponentProps<{ floor: string }>) => (
                                 <>
                                     <Floorplan
                                         floorplan={floorplan}

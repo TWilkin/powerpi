@@ -3,7 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PowerPiApi } from "@powerpi/api";
 import HttpStatusCodes from "http-status-codes";
 import React, { useMemo } from "react";
-import { BrowserRouter, NavLink, Redirect, Route, Switch } from "react-router-dom";
+import {
+    BrowserRouter,
+    NavLink,
+    Redirect,
+    Route,
+    RouteComponentProps,
+    Switch,
+} from "react-router-dom";
 import { LastLocationProvider } from "react-router-last-location";
 import { useGetConfig } from "../hooks/config";
 import Charts from "./Charts";
@@ -109,7 +116,7 @@ const Site = ({ api }: SiteProps) => {
                             <>
                                 <Route
                                     path="/history"
-                                    render={(props) => (
+                                    render={(props: RouteComponentProps) => (
                                         <HistoryList api={api} query={props.location.search} />
                                     )}
                                 />
