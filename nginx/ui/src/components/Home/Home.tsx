@@ -60,17 +60,22 @@ const Home = ({ api }: HomeProps) => {
                         <Route
                             path="/home/:floor"
                             render={(props) => (
-                                <Floorplan
-                                    floorplan={floorplan}
-                                    current={props.match.params.floor}
-                                />
+                                <>
+                                    <Floorplan
+                                        floorplan={floorplan}
+                                        current={props.match.params.floor}
+                                    />
+
+                                    {locations?.map((location) => (
+                                        <Tooltip
+                                            key={`${location.floor}${location.location}`}
+                                            {...location}
+                                        />
+                                    ))}
+                                </>
                             )}
                         />
                     </Switch>
-
-                    {locations?.map((location) => (
-                        <Tooltip key={`${location.floor}${location.location}`} {...location} />
-                    ))}
                 </>
             )}
         </div>
