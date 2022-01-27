@@ -1,10 +1,10 @@
 import {
-    faHourglassHalf,
     faLayerGroup,
     faLightbulb,
     faLock,
     faPlug,
     faQuestion,
+    faStopwatch,
     faTv,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,29 +23,35 @@ const DeviceIcon = ({ type }: DeviceIconProps) => {
 };
 
 function getDeviceTypeIcon(type: string) {
-    switch (type) {
-        case "composite":
-            return faLayerGroup;
+    const split = type.split("_");
+    const manufacturerType = split.length >= 2 ? split.at(0) ?? type : type;
+    const deviceType = split.length >= 2 ? type.substring(manufacturerType.length + 1) : type;
 
-        case "delay":
-            return faHourglassHalf;
-
-        case "harmony_activity":
-        case "harmony_hub":
+    switch (manufacturerType) {
+        case "harmony":
             return faTv;
 
-        case "lifx_light":
-            return faLightbulb;
-
-        case "mutex":
-            return faLock;
-
-        case "energenie_socket":
-        case "energenie_socket_group":
-            return faPlug;
-
         default:
-            return faQuestion;
+            switch (deviceType) {
+                case "composite":
+                    return faLayerGroup;
+
+                case "delay":
+                    return faStopwatch;
+
+                case "light":
+                    return faLightbulb;
+
+                case "mutex":
+                    return faLock;
+
+                case "socket":
+                case "socket_group":
+                    return faPlug;
+
+                default:
+                    return faQuestion;
+            }
     }
 }
 export default DeviceIcon;

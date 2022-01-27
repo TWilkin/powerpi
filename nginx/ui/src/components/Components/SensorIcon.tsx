@@ -1,7 +1,9 @@
 import {
     faBolt,
     faBurn,
-    faInfo,
+    faDoorOpen,
+    faHome,
+    faQuestion,
     faThermometerHalf,
     faTint,
     faWalking,
@@ -17,7 +19,14 @@ const SensorIcon = ({ type }: SensorIconProps) => <FontAwesomeIcon icon={mapSens
 export default SensorIcon;
 
 function mapSensorIcon(type: string) {
-    switch (type) {
+    const split = type.split("_");
+    const manufacturerType = split.length >= 2 ? split.at(0) ?? type : type;
+    const sensorType = split.length >= 2 ? type.substring(manufacturerType.length + 1) : type;
+
+    switch (sensorType) {
+        case "door":
+            return faDoorOpen;
+
         case "electricity":
             return faBolt;
 
@@ -33,7 +42,10 @@ function mapSensorIcon(type: string) {
         case "temperature":
             return faThermometerHalf;
 
+        case "window":
+            return faHome;
+
         default:
-            return faInfo;
+            return faQuestion;
     }
 }
