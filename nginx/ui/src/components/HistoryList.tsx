@@ -1,7 +1,7 @@
 import { PowerPiApi } from "@powerpi/api";
 import React, { useState } from "react";
-import ReactTimeAgo from "react-time-ago";
 import { useGetHistory } from "../hooks/history";
+import AbbreviatingTime from "./Components/AbbreviatingTime";
 import Filter from "./Filter";
 import HistoryFilter from "./HistoryFilter";
 import Loading from "./Loading";
@@ -63,7 +63,7 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
                                             <td>{row.entity}</td>
                                             <td>{row.action}</td>
                                             <td>
-                                                <ReactTimeAgo date={row.timestamp} locale="en-GB" />
+                                                <AbbreviatingTime date={row.timestamp} />
                                             </td>
                                             <td>{JSON.stringify(row.message)}</td>
                                         </tr>

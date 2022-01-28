@@ -1,11 +1,11 @@
 import { Service } from "@tsed/common";
 import { Device, DeviceState } from "../models/device";
 import ConfigService from "./config";
+import DeviceStateListener from "./listeners/DeviceStateListener";
 import MqttService from "./mqtt";
-import StateListener from "./stateListener";
 
 @Service()
-export default class DeviceStateService extends StateListener {
+export default class DeviceStateService extends DeviceStateListener {
     private _devices: Device[] | undefined;
 
     constructor(private readonly config: ConfigService, mqttService: MqttService) {
@@ -24,7 +24,7 @@ export default class DeviceStateService extends StateListener {
         await super.$onInit();
     }
 
-    protected onStateMessage(deviceName: string, state: DeviceState, timestamp?: number) {
+    protected onDeviceStateMessage(deviceName: string, state: DeviceState, timestamp?: number) {
         const device = this.devices.find((d) => d.name === deviceName);
 
         if (device) {

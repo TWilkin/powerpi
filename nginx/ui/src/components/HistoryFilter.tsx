@@ -21,9 +21,9 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
 
     useEffect(() => {
         setFilters(parseQuery(query));
-    }, []);
+    }, [query]);
 
-    useEffect(() => updateFilter(filters), [filters]);
+    useEffect(() => updateFilter(filters), [filters, updateFilter]);
 
     const selectFilter = (type: MessageFilterType, value: string) => {
         const newFilter = { ...filters };

@@ -1,13 +1,20 @@
 import fs from "fs";
 import Container, { Service } from "typedi";
 import util from "util";
-import { IDeviceConfigFile, IScheduleConfigFile, IUserConfigFile } from "../models/config";
+import {
+    IDeviceConfigFile,
+    IFloorplanConfigFile,
+    IScheduleConfigFile,
+    IUserConfigFile,
+} from "../models/config";
 import { Device, IDevice } from "../models/device";
+import { ISensor, Sensor } from "../models/sensor";
 import { IntervalParserService } from "./interval";
 
 export enum ConfigFileType {
     Devices = "devices",
     Events = "events",
+    Floorplan = "floorplan",
     Schedules = "schedules",
     Users = "users",
 }
@@ -89,7 +96,17 @@ export class ConfigService {
     get devices(): IDevice[] {
         const file = this.fileOrConfig<IDeviceConfigFile>("DEVICES_FILE", ConfigFileType.Devices);
 
-        return file.devices.map((device) => Object.assign(new Device(), device));
+        return file.devices?.map((device) => Object.assign(new Device(), device)) ?? [];
+    }
+
+    get sensors(): ISensor[] {
+        const file = this.fileOrConfig<IDeviceConfigFile>("DEVICES_FILE", ConfigFileType.Devices);
+
+        return file.sensors?.map((sensor) => Object.assign(new Sensor(), sensor)) ?? [];
+    }
+
+    get floorplan() {
+        return this.fileOrConfig<IFloorplanConfigFile>("FLOORPLAN_FILE", ConfigFileType.Floorplan);
     }
 
     get schedules() {
@@ -105,7 +122,7 @@ export class ConfigService {
     }
 
     public get isPopulated() {
-        return this.configFileTypes.every((key) =>
+        return this.getUsedConfig().every((key) =>
             Object.keys(this.configs).includes(key.toString())
         );
     }

@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PowerPiApi } from "@powerpi/api";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import ReactTimeAgo from "react-time-ago";
 import { useGetDevices } from "../hooks/devices";
+import AbbreviatingTime from "./Components/AbbreviatingTime";
 import DeviceFilter, { Filters } from "./DeviceFilter";
 import DeviceIcon from "./DeviceIcon";
 import DevicePowerButton from "./DevicePowerButton";
@@ -56,10 +56,7 @@ const DeviceList = ({ api }: DeviceListProps) => {
 
                                             <td className="device-since">
                                                 {device.since && device.since > -1 && (
-                                                    <ReactTimeAgo
-                                                        date={device.since}
-                                                        locale="en-GB"
-                                                    />
+                                                    <AbbreviatingTime date={device.since} />
                                                 )}
                                             </td>
 

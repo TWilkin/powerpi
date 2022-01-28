@@ -1,71 +1,131 @@
+import { faChartLine, faHistory, faHome, faPlug } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PowerPiApi } from "@powerpi/api";
 import HttpStatusCodes from "http-status-codes";
-import React from "react";
-import { BrowserRouter, NavLink, Redirect, Route, Switch } from "react-router-dom";
+import React, { useMemo } from "react";
+import {
+    BrowserRouter,
+    NavLink,
+    Redirect,
+    Route,
+    RouteComponentProps,
+    Switch,
+} from "react-router-dom";
 import { LastLocationProvider } from "react-router-last-location";
+import { useGetConfig } from "../hooks/config";
 import Charts from "./Charts";
+import Menu from "./Components/Menu";
 import DeviceList from "./DeviceList";
 import HistoryList from "./HistoryList";
+import Home from "./Home/Home";
 import Login from "./Login";
-
-interface MenuElementProps {
-    path: string;
-    name: string;
-}
-
-const MenuElement = ({ path, name }: MenuElementProps) => {
-    return (
-        <NavLink exact to={path} className="menu-element" activeClassName="active">
-            {name}
-        </NavLink>
-    );
-};
 
 interface SiteProps {
     api: PowerPiApi;
 }
 
 const Site = ({ api }: SiteProps) => {
+    const { isConfigLoading, isConfigError, config } = useGetConfig(api);
+
     // redirect to login on 401
     api.setErrorHandler((error) => {
-        if (error.response.status === HttpStatusCodes.UNAUTHORIZED) {
+        if (
+            error.response.status === HttpStatusCodes.UNAUTHORIZED &&
+            !window.location.pathname.endsWith("/login")
+        ) {
             window.location.pathname = "/login";
         }
     });
+
+    const defaultPage = useMemo(
+        () =>
+            config?.hasFloorplan
+                ? "home"
+                : config?.hasDevices
+                ? "devices"
+                : config?.hasPersistence
+                ? "history"
+                : "login",
+        [config]
+    );
+
+    const menuItems = useMemo(
+        () => [
+            {
+                name: "Home",
+                path: "/home",
+                icon: faHome,
+                visible: config?.hasFloorplan,
+            },
+            {
+                name: "Devices",
+                path: "/devices",
+                icon: faPlug,
+                visible: config?.hasDevices,
+            },
+            {
+                name: "History",
+                path: "/history",
+                icon: faHistory,
+                visible: config?.hasPersistence,
+            },
+            {
+                name: "Charts",
+                path: "/charts",
+                icon: faChartLine,
+                visible: config?.hasPersistence,
+            },
+        ],
+        [config]
+    );
 
     return (
         <BrowserRouter>
             <LastLocationProvider>
                 <header className="header">
-                    <nav className="menu">
-                        <MenuElement path="/devices" name="Devices" />
-                        <MenuElement path="/history" name="History" />
-                        <MenuElement path="/charts" name="Charts" />
-                    </nav>
+                    <div className="logo">
+                        <NavLink exact to="/">
+                            <FontAwesomeIcon icon={faPlug} /> PowerPi
+                        </NavLink>
+                    </div>
+
+                    <Menu items={menuItems} visible={!isConfigLoading && !isConfigError} />
                 </header>
 
                 <div className="content">
                     <Switch>
-                        <Redirect exact from="/" to="/devices" />
+                        <Redirect exact from="/" to={`/${defaultPage}`} />
 
                         <Route path="/login">
                             <Login />
                         </Route>
 
-                        <Route path="/devices">
-                            <DeviceList api={api} />
-                        </Route>
+                        {config?.hasFloorplan && (
+                            <Route path="/home">
+                                <Home api={api} />
+                            </Route>
+                        )}
 
-                        <Route
-                            path="/history"
-                            render={(props) => (
-                                <HistoryList api={api} query={props.location.search} />
-                            )}
-                        />
+                        {config?.hasDevices && (
+                            <Route path="/devices">
+                                <DeviceList api={api} />
+                            </Route>
+                        )}
 
-                        <Route path="/charts">
-                            <Charts api={api} />
-                        </Route>
+                        {config?.hasPersistence && (
+                            <>
+                                <Route
+                                    path="/history"
+                                    render={(props: RouteComponentProps) => (
+                                        <HistoryList api={api} query={props.location.search} />
+                                    )}
+                                />
+
+                                <Route path="/charts">
+                                    <Charts api={api} />
+                                </Route>
+                            </>
+                        )}
                     </Switch>
                 </div>
             </LastLocationProvider>
