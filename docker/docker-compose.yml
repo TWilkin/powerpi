@@ -80,9 +80,9 @@ services:
         depends_on:
             - mosquitto
 
-    device-mapper:
+    device-mapper-energenie:
         build: ../device-mapper
-        image: ${REGISTRY}/powerpi/device-mapper:0.0.4
+        image: ${REGISTRY}/powerpi/device-mapper:0.0.5
         networks:
             - powerpi
         deploy:
@@ -94,10 +94,10 @@ services:
             - mosquitto
         environment:
             - DEVICE_FATAL=true
-            - ENERGENIE_DEVICE=ENER314-RT
+            - ENV=ENERGENIE_DEVICE=ENER314-RT
             - CONTROLLER_NAME=energenie-controller
             - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.8
-            - GPIOMEM=/dev/gpiomem
+            - DEVICE=/dev/gpiomem
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
 

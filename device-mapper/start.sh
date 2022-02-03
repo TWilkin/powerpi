@@ -24,9 +24,9 @@ echo "Starting $CONTROLLER_NAME"
 docker run \
     --privileged \
     --name $NAME \
-    --device $GPIOMEM \
+    --device $DEVICE \
     --network powerpi \
     --env "DEVICE_FATAL=$DEVICE_FATAL" \
-    --env "ENERGENIE_DEVICE=$ENERGENIE_DEVICE" \
+    --env "$ENV" \
     $IMAGE \
     & wait ${!}
