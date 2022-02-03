@@ -19,3 +19,4 @@ python_version = "3"
 [scripts]
 start = "python -m zigbee_controller"
 test = "python -m pytest -v"
+scan = "python -m zigpy_znp.tools.network_scan"
