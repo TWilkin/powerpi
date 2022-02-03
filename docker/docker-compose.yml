@@ -119,6 +119,26 @@ services:
         depends_on:
             - mosquitto
 
+    device-mapper-zigbee:
+        image: ${REGISTRY}/powerpi/device-mapper:0.0.5
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.labels.zigbee == true
+        depends_on:
+            - mosquitto
+        environment:
+            - DEVICE_FATAL=true
+            - ENV=ZIGBEE_SERIAL=/dev/ttyACM0
+            - CONTROLLER_NAME=zigbee-controller
+            - IMAGE=${REGISTRY}/powerpi/controllers/zigbee:0.0.1
+            - DEVICE=/dev/ttyACM0
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+
     light-fantastic:
         build: ../light-fantastic
         image: ${REGISTRY}/powerpi/light-fantastic:0.2.1
