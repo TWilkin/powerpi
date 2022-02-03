@@ -7,16 +7,20 @@ from powerpi_common.config import ConfigRetriever
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from zigbee_controller.__version import __version__
+from zigbee_controller.config import ZigbeeConfig
 from zigbee_controller.container import ApplicationContainer
 
 
 @inject
 async def main(
+    config: ZigbeeConfig = Provide[ApplicationContainer.config],
     logger: Logger = Provide[ApplicationContainer.common.logger],
     config_retriever: ConfigRetriever = Provide[ApplicationContainer.common.config_retriever],
     mqtt_client: MQTTClient = Provide[ApplicationContainer.common.mqtt_client],
 ):
     logger.info(f'PowerPi Zigbee Controller v{__version__}')
+
+    logger.info(f'Using Zigbee device at {config.zigbee_serial}')
 
     # intially connect to MQTT
     mqtt_client.connect()

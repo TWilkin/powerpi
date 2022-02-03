@@ -2,6 +2,7 @@ from dependency_injector import containers, providers
 
 from powerpi_common.container import Container as CommonContainer
 from zigbee_controller.__version import __app_name__
+from zigbee_controller.config import ZigbeeConfig
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -15,4 +16,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
     common = providers.Container(
         CommonContainer,
         app_name=__app_name__
+    )
+
+    config = providers.Singleton(
+        ZigbeeConfig
     )
