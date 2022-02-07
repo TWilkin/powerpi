@@ -13,6 +13,9 @@ class DeviceImpl(Device):
         Device.__init__(
             self, self.config, self.logger, self.mqtt_client, 'test'
         )
+    
+    def poll(self):
+        pass
 
     def _turn_on(self):
         pass

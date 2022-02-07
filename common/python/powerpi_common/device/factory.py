@@ -1,4 +1,5 @@
 from powerpi_common.logger import Logger
+from .base import BaseDevice
 from .type import DeviceType
 
 
@@ -7,7 +8,7 @@ class DeviceFactory(object):
         self.__logger = logger
         self.__service_provider = service_provider
 
-    def build(self, device_type: DeviceType, instance_type: str, **kwargs):
+    def build(self, device_type: DeviceType, instance_type: str, **kwargs) -> BaseDevice:
         key = 'device' if device_type == DeviceType.DEVICE else 'sensor'
 
         device_attribute = f'{instance_type}_{key}'
