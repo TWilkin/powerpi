@@ -4,7 +4,6 @@ from powerpi_common.container import Container as CommonContainer
 from zigbee_controller.__version import __app_name__
 from zigbee_controller.config import ZigbeeConfig
 from zigbee_controller.device.container import DeviceContainer
-from zigbee_controller.sensor.container import SensorContainer
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -28,8 +27,4 @@ class ApplicationContainer(containers.DeclarativeContainer):
         DeviceContainer,
         config=config,
         logger=common.logger
-    )
-
-    sensor = providers.Container(
-        SensorContainer
     )

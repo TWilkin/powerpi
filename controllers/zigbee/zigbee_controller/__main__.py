@@ -8,7 +8,6 @@ from powerpi_common.device import DeviceManager, DeviceStatusChecker
 from powerpi_common.event import EventManager
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
-from powerpi_common.sensor import SensorManager
 from zigbee_controller.__version import __version__
 from zigbee_controller.config import ZigbeeConfig
 from zigbee_controller.container import ApplicationContainer
@@ -28,7 +27,6 @@ async def main(
     ],
     event_manager: EventManager = Provide[ApplicationContainer.common.event_manager],
     mqtt_client: MQTTClient = Provide[ApplicationContainer.common.mqtt_client],
-    sensor_manager: SensorManager = Provide[ApplicationContainer.common.sensor.sensor_manager],
     zigbee_controller: ZigbeeController = Provide[ApplicationContainer.device.zigbee_controller]
 ):
     logger.info(f'PowerPi Zigbee Controller v{__version__}')
@@ -46,7 +44,6 @@ async def main(
 
     # load the devices and sensors from the config
     device_manager.load()
-    sensor_manager.load()
 
     # load the events from the config
     event_manager.load()

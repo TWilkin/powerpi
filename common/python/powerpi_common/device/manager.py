@@ -1,6 +1,7 @@
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from .factory import DeviceFactory
+from .type import DeviceType
 
 
 class DeviceManager(object):
@@ -15,10 +16,15 @@ class DeviceManager(object):
         self.__factory = factory
 
         self.__devices = {}
+        self.__sensors = {}
 
     @property
     def devices(self):
         return self.__devices
+
+    @property
+    def sensors(self):
+        return self.__sensors
 
     def get_device(self, name):
         if self.__devices[name]:
@@ -26,18 +32,36 @@ class DeviceManager(object):
 
         raise Exception(f'Cannot find device "{name}"')
 
-    def load(self):
-        devices = self.__config.devices['devices']
+    def get_sensor(self, name):
+        if self.__sensors[name]:
+            return self.__sensors[name]
 
-        self.__devices = {}
+        raise Exception(f'Cannot find sensor "{name}"')
+    
+    def load(self):
+        self.__load(DeviceType.DEVICE)
+        self.__load(DeviceType.SENSOR)
+
+    def __load(self, device_type: DeviceType):
+        instances = {}
+
+        if device_type == DeviceType.DEVICE:
+            key = 'devices'
+            self.__devices = instances
+        else:
+            key = 'sensors'
+            self.__sensors = instances
+
+        devices = self.__config.devices[key]
+
         for device in devices:
-            device_type = device['type']
+            instance_type = device['type']
             del device['type']
 
-            instance = self.__factory.build(device_type, **device)
+            instance = self.__factory.build(device_type, instance_type, **device)
             if instance is not None:
                 self.__logger.info(f'Found {instance}')
 
-                self.__devices[device['name']] = instance
+                instances[device['name']] = instance
 
-        self.__logger.info(f'Found {len(self.__devices)} matching devices')
+        self.__logger.info(f'Found {len(instances)} matching {key}')

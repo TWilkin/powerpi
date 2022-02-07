@@ -5,7 +5,6 @@ from powerpi_common.logger import Logger
 from powerpi_common.device import DeviceContainer
 from powerpi_common.event import EventManager
 from powerpi_common.mqtt.client import MQTTClient
-from powerpi_common.sensor import SensorContainer
 
 class Container(containers.DeclarativeContainer):
     __self__ = providers.Self()
@@ -52,10 +51,4 @@ class Container(containers.DeclarativeContainer):
         logger=logger,
         mqtt_client=mqtt_client,
         device_manager=device.device_manager
-    )
-
-    sensor = providers.Container(
-        SensorContainer,
-        config=config,
-        logger=logger
     )

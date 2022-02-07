@@ -1,21 +1,13 @@
-from dependency_injector import containers, providers
+from dependency_injector import providers
 
 from .osram_switch_mini import OsramSwitchMiniSensor
 
 
-class SensorContainer(containers.DeclarativeContainer):
-    __self__ = providers.Self()
-
-    service_provider = providers.Singleton(
-        __self__
-    )
-
-
 def add_sensors(container):
-    sensor_container = container.common().sensor()
+    device_container = container.common().device()
 
     setattr(
-        sensor_container,
+        device_container,
         'osram_switch_mini_sensor',
         providers.Factory(
             OsramSwitchMiniSensor,
