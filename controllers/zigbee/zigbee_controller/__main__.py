@@ -20,7 +20,7 @@ async def main(
 ):
     logger.info(f'PowerPi Zigbee Controller v{__version__}')
 
-    logger.info(f'Using Zigbee device at {config.zigbee_serial}')
+    logger.info(f'Using Zigbee device at {config.zigbee_device}')
 
     # intially connect to MQTT
     mqtt_client.connect()

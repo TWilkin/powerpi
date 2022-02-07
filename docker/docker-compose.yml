@@ -132,7 +132,7 @@ services:
             - mosquitto
         environment:
             - DEVICE_FATAL=true
-            - ENV=ZIGBEE_SERIAL=/dev/ttyACM0
+            - ENV=ZIGBEE_DEVICE=/dev/ttyACM0
             - CONTROLLER_NAME=zigbee-controller
             - IMAGE=${REGISTRY}/powerpi/controllers/zigbee:0.0.1
             - DEVICE=/dev/ttyACM0
