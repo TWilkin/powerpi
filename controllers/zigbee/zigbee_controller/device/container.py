@@ -18,3 +18,6 @@ class DeviceContainer(containers.DeclarativeContainer):
         config=config,
         logger=logger
     )
+
+def add_devices(container):
+    pass
