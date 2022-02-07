@@ -32,6 +32,7 @@ async def main(
 
     # initialise the Zigbee device
     await zigbee_controller.startup()
+    await zigbee_controller.pair()
 
     # use MQTT loop to handle messages
     mqtt_client.loop()

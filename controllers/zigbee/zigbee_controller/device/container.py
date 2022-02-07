@@ -11,7 +11,10 @@ class DeviceContainer(containers.DeclarativeContainer):
 
     config = providers.Dependency()
 
+    logger = providers.Dependency()
+
     zigbee_controller = providers.Factory(
         ZigbeeController,
-        config=config
+        config=config,
+        logger=logger
     )
