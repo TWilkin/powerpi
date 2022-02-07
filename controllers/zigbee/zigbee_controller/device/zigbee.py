@@ -29,16 +29,8 @@ class ZigbeeController(object):
         await self.__controller.shutdown()
 
     async def pair(self, time=60):
-        self.__logger.info('Starting pair permit')
-
         await self.__controller.permit(time)
-        await asyncio.sleep(time)
-
-        self.__logger.info('Terminating pair permit')
-
-    def device_joined(self, device: DeviceType):
-        self.__logger.info(f'Device {device} joined')
-    
+  
     atexit.register
     def __shutdown(self):
         loop = asyncio.get_event_loop()
