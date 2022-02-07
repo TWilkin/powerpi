@@ -7,6 +7,7 @@ name = "pypi"
 powerpi-common = {path = "./../../common/python"}
 zigpy = "~=0.43.0"
 zigpy-znp = "~=0.7.0"
+pysqlite3-binary = "*"
 
 [dev-packages]
 autopep8 = "~=1.5.5"
