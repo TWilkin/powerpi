@@ -6,6 +6,7 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
         self,
         controller: ZigbeeController,
         ieee: str,
+        network: str,
         name: str, 
         location: str,
         display_name: str = None,
@@ -14,5 +15,7 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
         visible: bool = False,
     ):
         Sensor.__init__(self, name, location, display_name, entity, action, visible)
-        ZigbeeDevice.__init__(self, controller, ieee)
-
+        ZigbeeDevice.__init__(self, controller, ieee, network)
+    
+    def test(self):
+        return self._zigbee_device.model

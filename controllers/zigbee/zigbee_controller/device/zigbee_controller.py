@@ -1,6 +1,7 @@
 import asyncio
 import atexit
 
+from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 from zigpy_znp.zigbee.application import ControllerApplication
 
@@ -20,6 +21,9 @@ class ZigbeeController(object):
 
         self.__controller = ControllerApplication(config)
     
+    def get_device(self, ieee: EUI64, nwk: int) -> DeviceType:
+        return self.__controller.get_device(ieee, nwk)
+    
     async def startup(self):
         self.__controller.add_listener(self)
 
@@ -30,6 +34,13 @@ class ZigbeeController(object):
 
     async def pair(self, time=60):
         await self.__controller.permit(time)
+        await asyncio.sleep(time)
+
+    def register(self, ieee: EUI64, network: int):
+        device = self.__controller.add_device(ieee, network)
+
+        loop = asyncio.get_event_loop()
+        loop.create_task(device.initialize())
   
     atexit.register
     def __shutdown(self):
