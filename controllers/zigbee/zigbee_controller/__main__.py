@@ -13,7 +13,8 @@ from zigbee_controller.__version import __version__
 from zigbee_controller.config import ZigbeeConfig
 from zigbee_controller.container import ApplicationContainer
 from zigbee_controller.device.container import add_devices
-from zigbee_controller.device.zigbee import ZigbeeController
+from zigbee_controller.device.zigbee_controller import ZigbeeController
+from zigbee_controller.sensor.container import add_sensors
 
 
 @inject
@@ -62,6 +63,7 @@ if __name__ == '__main__':
     container = ApplicationContainer()
     container.wire(modules=[sys.modules[__name__]])
     add_devices(container)
+    add_sensors(container)
 
     coro = main()
     loop = asyncio.get_event_loop()
