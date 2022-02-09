@@ -1,6 +1,7 @@
 from powerpi_common.sensor import Sensor
 from zigbee_controller.device import ZigbeeController, ZigbeeDevice
 
+
 class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
     def __init__(
         self,
@@ -17,5 +18,5 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
         Sensor.__init__(self, name, location, display_name, entity, action, visible)
         ZigbeeDevice.__init__(self, controller, ieee, nwk)
     
-    def test(self):
-        return self._zigbee_device.model
+    def __str__(self):
+        return ZigbeeDevice.__str__(self)

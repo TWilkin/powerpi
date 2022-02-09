@@ -4,6 +4,7 @@ from zigpy.typing import DeviceType
 
 from .zigbee_controller import ZigbeeController
 
+
 class ZigbeeDevice(object):
     def __init__(
         self, 
@@ -18,3 +19,7 @@ class ZigbeeDevice(object):
     @lazy
     def _zigbee_device(self) -> DeviceType:
         return self.__controller.get_device(self.__ieee, self.__nwk)
+    
+    def __str__(self):
+        device = self._zigbee_device
+        return f'{type(self).__name__}({self._display_name}, {device.manufacturer}, {device.model})'
