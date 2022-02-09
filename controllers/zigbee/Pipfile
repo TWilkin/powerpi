@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-lazy = "~=1.4"
 powerpi-common = {path = "./../../common/python"}
 pysqlite3-binary = "~=0.4.6"
 zigpy = "~=0.43.0"

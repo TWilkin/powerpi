@@ -1,3 +1,4 @@
+from jsonpatch import JsonPatch
 from typing import List
 
 from powerpi_common.config import Config
@@ -73,12 +74,23 @@ class EventManager(object):
         except:
             pass
 
+        try:
+            patch = JsonPatch(action['patch'])            
+            return lambda device: device_additional_state_action(device, patch)
+        except:
+            pass
+
         return None
 
 
 def device_on_action(device: Device):
     device.turn_on()
 
-
 def device_off_action(device: Device):
     device.turn_off()
+
+def device_additional_state_action(device: Device, patch: JsonPatch):
+    current_state = device.additional_state
+
+    patched = patch.apply(current_state)
+    device.change_power_and_additional_state(None, patched)
