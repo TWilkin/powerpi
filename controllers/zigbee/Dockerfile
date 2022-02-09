@@ -1,5 +1,5 @@
 FROM python:3.9.2-alpine3.12 AS build-image
-LABEL description="Python application to control and response to Zigbee devices"
+LABEL description="Python application to control and respond to Zigbee devices"
 
 # ensure we have the dependencies to run pip
 RUN apk add --no-cache gcc musl-dev \

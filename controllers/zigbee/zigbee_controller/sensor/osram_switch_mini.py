@@ -60,6 +60,5 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
             ClusterListener(lambda _, __, ___: self.__button_press_handler(self.Button.MIDDLE, self.PressType.SINGLE))
         )
     
-    
     def __str__(self):
         return ZigbeeDevice.__str__(self)

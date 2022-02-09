@@ -48,13 +48,11 @@ class DeviceManager(object):
         instances = {}
 
         if device_type == DeviceType.DEVICE:
-            key = 'devices'
             self.__devices = instances
         else:
-            key = 'sensors'
             self.__sensors = instances
 
-        devices = self.__config.devices[key]
+        devices = self.__config.devices[f'{device_type}s']
 
         for device in devices:
             instance_type = device['type']
@@ -66,4 +64,4 @@ class DeviceManager(object):
 
                 instances[device['name']] = instance
 
-        self.__logger.info(f'Found {len(instances)} matching {key}')
+        self.__logger.info(f'Found {len(instances)} matching {device_type}')

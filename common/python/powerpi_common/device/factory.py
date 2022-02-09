@@ -9,15 +9,13 @@ class DeviceFactory(object):
         self.__service_provider = service_provider
 
     def build(self, device_type: DeviceType, instance_type: str, **kwargs) -> BaseDevice:
-        key = 'device' if device_type == DeviceType.DEVICE else 'sensor'
-
-        device_attribute = f'{instance_type}_{key}'
+        device_attribute = f'{instance_type}_{device_type}'
 
         try:
             factory = getattr(self.__service_provider, device_attribute)
 
             return factory(**kwargs)
         except AttributeError:
-            self.__logger.debug(f'Could not find {key} type "{instance_type}"')
+            self.__logger.debug(f'Could not find {device_type} type "{instance_type}"')
 
         return None
