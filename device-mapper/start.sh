@@ -12,7 +12,7 @@ function stop() {
 
 # ensure we have the latest version of the image
 echo "Updating image $IMAGE"
-docker pull $IMAGE
+#docker pull $IMAGE
 
 # trap so if this container is stopped, it will stop the spawned container
 echo "Setting exit trap condition"
@@ -25,7 +25,7 @@ args=()
 # optional volume
 if [ -v VOLUME ]
 then
-    args+=("--mount 'type=volume,src=$VOLUME,dst=/var/data'")
+    args+=("--mount type=bind,src=$VOLUME,dst=/var/data")
 fi
 
 # optional env array
