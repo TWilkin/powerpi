@@ -2,7 +2,7 @@ from abc import ABC
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 
-from .zigbee_controller import ZigbeeController
+from zigbee_controller.device import ZigbeeController
 
 
 class ZigbeeDevice(ABC):

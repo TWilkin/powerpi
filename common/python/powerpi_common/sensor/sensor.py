@@ -21,9 +21,9 @@ class Sensor(BaseDevice):
 
         self._producer = mqtt_client.add_producer()
     
-    def _broadcast(self, message: dict):
+    def _broadcast(self, action: str, message: dict):
         entity = self.__entity if self.__entity is not None else self.__location
-        action = self.__action if self.__action is not None else 'change'
+        action = action if action is not None else self.__action
         topic = f'event/{entity}/{action}'
 
         self._producer(topic, message)

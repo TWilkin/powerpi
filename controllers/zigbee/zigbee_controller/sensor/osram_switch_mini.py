@@ -1,10 +1,21 @@
+from enum import Enum
+
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
-from zigbee_controller.device import ZigbeeController, ZigbeeDevice
+from zigbee_controller.device import ZigbeeController
+from zigbee_controller.zigbee import ClusterListener, ZigbeeDevice
 
 
 class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
+    class Button(str, Enum):
+        UP = 'up',
+        MIDDLE = 'middle',
+        DOWN = 'down'
+    
+    class PressType(str, Enum):
+        SINGLE = 'single'
+    
     def __init__(
         self,
         logger: Logger,
@@ -24,23 +35,30 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
 
         self.__logger = logger
 
-        self.__initialise()
+        self.__register()
     
-    def cluster_command(self, tsn: int, command_id: int, *args):
-        self.__logger.info(f'cluster_command: {tsn} {command_id} {args}')
+    def __button_press_handler(self, button: Button, press_type: PressType):
+        self.__logger.info(f'Received {press_type} press of {button}')
 
-    def __initialise(self):
+        message = {
+            'button': button,
+            'type': press_type
+        }
+        self._broadcast('press', message)
+
+    def __register(self):
         device = self._zigbee_device
 
-        for i in range(1, 3):
-            endpoint = device[i]
-            print(endpoint)
-
-            for j in endpoint.out_clusters.keys():
-                cluster = endpoint.out_clusters[j]
-                print(cluster)
-
-                cluster.add_listener(self)
+        # single press
+        device[1].out_clusters[6].add_listener(
+            ClusterListener(lambda _, __, ___: self.__button_press_handler(self.Button.UP, self.PressType.SINGLE))
+        )
+        device[2].out_clusters[6].add_listener(
+            ClusterListener(lambda _, __, ___: self.__button_press_handler(self.Button.DOWN, self.PressType.SINGLE))
+        )
+        device[3].out_clusters[8].add_listener(
+            ClusterListener(lambda _, __, ___: self.__button_press_handler(self.Button.MIDDLE, self.PressType.SINGLE))
+        )
     
     
     def __str__(self):
