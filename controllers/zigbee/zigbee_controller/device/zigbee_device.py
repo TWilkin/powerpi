@@ -14,8 +14,6 @@ class ZigbeeDevice(object):
         self.__controller = controller
         self.__ieee = EUI64.convert(ieee)
         self.__network = int(network, 16)
-
-        self.__controller.register(self.__ieee, self.__network)
     
     @lazy
     def _zigbee_device(self) -> DeviceType:

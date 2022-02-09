@@ -13,7 +13,7 @@ class DeviceContainer(containers.DeclarativeContainer):
 
     logger = providers.Dependency()
 
-    zigbee_controller = providers.Factory(
+    zigbee_controller = providers.Singleton(
         ZigbeeController,
         config=config,
         logger=logger
