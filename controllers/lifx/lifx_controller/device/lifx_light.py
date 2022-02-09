@@ -56,9 +56,11 @@ class LIFXLightDevice(ThreadedDevice):
         colour = additional_state.get('colour', None)
 
         if colour is not None:
-            additional_state['colour'] = colour
+            lifx_colour = LIFXColour(self.additional_state.get('colour', None))
+            lifx_colour.patch(colour)
 
-            lifx_colour = LIFXColour(colour)
+            additional_state['colour'] = lifx_colour.to_json()
+
             self.__light.set_colour(lifx_colour, self.__duration)
         
         return additional_state
