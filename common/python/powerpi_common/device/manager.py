@@ -64,4 +64,4 @@ class DeviceManager(object):
 
                 instances[device['name']] = instance
 
-        self.__logger.info(f'Found {len(instances)} matching {device_type}')
+        self.__logger.info(f'Found {len(instances)} matching {device_type}(s)')

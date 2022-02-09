@@ -13,7 +13,7 @@ class RemoteDeviceFactory(DeviceFactory):
     def build(self, device_type: DeviceType, instance_type: str, **kwargs):
         device = super().build(device_type, instance_type, **kwargs)
 
-        if device is None:
+        if device is None and device_type == DeviceType.DEVICE:
             factory = getattr(self.__service_provider, 'remote_device')
 
             device = factory(**kwargs)

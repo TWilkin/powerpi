@@ -50,17 +50,18 @@ class EventManager(object):
 
                 events.append(EventHandler(device, event['condition'], action))
 
-            # create and register the consumer
-            consumer = EventConsumer(
-                self.__config, self.__logger, topic, events
-            )
-            self.__mqtt_client.add_consumer(consumer)
-            self.__consumers.append(consumer)
+            if len(events) > 0:
+                # create and register the consumer
+                consumer = EventConsumer(
+                    self.__config, self.__logger, topic, events
+                )
+                self.__mqtt_client.add_consumer(consumer)
+                self.__consumers.append(consumer)
 
-            self.__logger.info(f'Found listener {consumer} with {len(events)} event(s)')
+                self.__logger.info(f'Found listener {consumer} with {len(events)} event(s)')
 
         self.__logger.info(
-            f'Found {len(self.__consumers)} matching listeners'
+            f'Found {len(self.__consumers)} matching listener(s)'
         )
 
     def __get_action(self, action: object):
