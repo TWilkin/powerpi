@@ -1,6 +1,6 @@
 from dependency_injector.containers import Container
 
-from powerpi_common.device import DeviceFactory
+from powerpi_common.device import DeviceFactory, DeviceType
 from powerpi_common.logger import Logger
 
 
@@ -10,8 +10,8 @@ class RemoteDeviceFactory(DeviceFactory):
 
         self.__service_provider = service_provider
 
-    def build(self, device_type: str, **kwargs):
-        device = super().build(device_type, **kwargs)
+    def build(self, device_type: DeviceType, instance_type: str, **kwargs):
+        device = super().build(device_type, instance_type, **kwargs)
 
         if device is None:
             factory = getattr(self.__service_provider, 'remote_device')
