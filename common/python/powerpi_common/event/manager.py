@@ -1,9 +1,11 @@
-from typing import Callable, Dict, List
+from typing import List
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.device import Device, DeviceManager
-from powerpi_common.mqtt import MQTTClient, MQTTConsumer
+from powerpi_common.mqtt import MQTTClient
+from .consumer import EventConsumer
+from .handler import EventHandler
 
 
 class EventManager(object):
@@ -72,76 +74,6 @@ class EventManager(object):
             pass
 
         return None
-
-
-class EventHandler(object):
-    def __init__(
-        self,
-        device: Device,
-        condition: Dict[str, any],
-        action: Callable[[Device], None]
-    ):
-        self.__device = device
-        self.__condition = condition
-        self.__action = action
-    
-    def execute(self, message: dict):
-        # execute the action if the condition is met
-        if self.check_condition(message):
-            self.__action(self.__device)
-            return True
-        
-        return False
-
-    def check_condition(self, message: dict):
-        try:
-            if not super().is_timestamp_valid(message['timestamp']):
-                return False
-        except:
-            # if there is no timestamp that's not an error
-            pass
-
-        if 'message' in self.__condition:
-            compare = message.copy()
-
-            if 'timestamp' in message:
-                # remove the timestamp before comparison
-                del compare['timestamp']
-
-            if compare != self.__condition['message']:
-                return False
-        
-        if 'state' in self.__condition and self.__device.state != self.__condition['state']:
-            return False
-        
-        return True
-    
-    def __str__(self):
-        return f'{self.__device}:{self.__action}'
-
-
-class EventConsumer(MQTTConsumer):
-    def __init__(
-        self,
-        config: Config,
-        logger: Logger,
-        topic: str,
-        events: List[EventHandler]
-    ):
-        MQTTConsumer.__init__(self, topic, config, logger)
-
-        self.__events = events
-
-    def on_message(self, client, user_data, message: dict, entity, action):
-        for event in self.__events:
-            if event.execute(message):
-                self._logger.info(f'Condition match for "{self}"')
-                return
-
-    def __str__(self):
-        events = ', '.join([event.__str__() for event in self.__events])
-        return f'{self._topic}({events})'
-
 
 
 def device_on_action(device: Device):
