@@ -1,5 +1,6 @@
 import asyncio
 import atexit
+import zigpy
 
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
@@ -13,6 +14,8 @@ class ZigbeeController(object):
     def __init__(self, config: ZigbeeConfig, logger: Logger):
         self.__config = config
         self.__logger = logger
+
+        self.__logger.add_logger(zigpy.__name__)
     
     def get_device(self, ieee: EUI64, nwk: int) -> DeviceType:
         return self.__controller.get_device(ieee, nwk)

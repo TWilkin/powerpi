@@ -51,8 +51,8 @@ async def main(
     # start the thread to periodically check device status
     device_status_checker.start()
 
-    # use MQTT loop to handle messages
-    mqtt_client.loop()
+    # no need to join MQTT thread as we continue running for Zigbee
+    await asyncio.get_running_loop().create_future()
 
 
 if __name__ == '__main__':
