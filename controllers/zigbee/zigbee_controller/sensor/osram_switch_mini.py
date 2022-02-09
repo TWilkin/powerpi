@@ -24,7 +24,7 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
         ieee: str,
         nwk: str,
         name: str, 
-        location: str,
+        location: str = None,
         display_name: str = None,
         entity: str = None,
         action: str = None,
