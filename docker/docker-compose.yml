@@ -72,7 +72,7 @@ services:
             - deep-thought
 
     macro-controller:
-        image: ${REGISTRY}/powerpi/controllers/macro:1.0.4
+        image: ${REGISTRY}/powerpi/controllers/macro:1.0.5
         networks:
             - powerpi
         deploy:
@@ -96,13 +96,13 @@ services:
             - DEVICE_FATAL=true
             - ENV=ENERGENIE_DEVICE=ENER314-RT
             - CONTROLLER_NAME=energenie-controller
-            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.8
+            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.9
             - DEVICE=/dev/gpiomem
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
 
     harmony-controller:
-        image: ${REGISTRY}/powerpi/controllers/harmony:0.0.6
+        image: ${REGISTRY}/powerpi/controllers/harmony:0.0.7
         networks:
             - powerpi
         deploy:
