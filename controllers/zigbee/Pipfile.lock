@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d194c933404df858c58c91ed3e205cb1fd0a6d173916b7a3550f701e3d211cb0"
+            "sha256": "78be515750223a51ed96009f67ab9372ff76074c01ea38e994b1b4af7b7a9e54"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -131,7 +131,7 @@
                 "sha256:2842d8f5e82a1f6aa437380934d5e1cd4fcf2003b06fed6940769c164a480a45",
                 "sha256:98398a9d69ee80548c762ba991a4728bfc3836768ed226b3945908d1a688371c"
             ],
-            "markers": "python_version >= '3.5'",
+            "markers": "python_full_version >= '3.5.0'",
             "version": "==2.0.11"
         },
         "coloredlogs": {
@@ -296,7 +296,7 @@
                 "sha256:84d9dd047ffa80596e0f246e2eab0b391788b0503584e8945f2368256d2735ff",
                 "sha256:9d643ff0a55b762d5cdb124b8eaa99c66322e2157b69160bc32796e824360e6d"
             ],
-            "markers": "python_version >= '3.5'",
+            "markers": "python_full_version >= '3.5.0'",
             "version": "==3.3"
         },
         "importlib-resources": {
@@ -483,21 +483,6 @@
             ],
             "markers": "platform_system != 'Windows'",
             "version": "==0.6"
-        },
-        "pysqlite3-binary": {
-            "hashes": [
-                "sha256:2dcc462af7688b02abb724ed0d09ca28e439d8c501b083cace8c9be35a2c6298",
-                "sha256:3c9e6b95536c6fce4a1ef3f64ee3eab784b137f2e39a00d84673cfb692d70740",
-                "sha256:493eb11e365051966a1b228f83305d9a0107e9922794e744aa1eca21a665081f",
-                "sha256:9686ba689fb700b8d3259d049f3b50009412a6b010d77026f9eb6eceaf7272b7",
-                "sha256:b74e570cfe6fa3e809a43397c52d20862cdb62f3dfd20dbc4633ccd24a589a14",
-                "sha256:c8f9d3f659f09c3dacee15302fc6dfb4fe66a9759e4bc799e0bddbf3d437a0c1",
-                "sha256:c9a7871ee1f177fb6820184ad60ae7d463109280c16b50f0f7b874fa1befd7c2",
-                "sha256:cecdb37a7c5e35a8601cb68acee6e2c2bd756078f7a3c9ccc1db0629ce9f082b",
-                "sha256:d5666aef234e7b704f71df4ec0830f5fd013bef097c23e596ec0f75da8d8c1a9"
-            ],
-            "index": "pypi",
-            "version": "==0.4.6"
         },
         "schedule": {
             "hashes": [
@@ -773,6 +758,21 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==3.0.7"
+        },
+        "pysqlite3-binary": {
+            "hashes": [
+                "sha256:2dcc462af7688b02abb724ed0d09ca28e439d8c501b083cace8c9be35a2c6298",
+                "sha256:3c9e6b95536c6fce4a1ef3f64ee3eab784b137f2e39a00d84673cfb692d70740",
+                "sha256:493eb11e365051966a1b228f83305d9a0107e9922794e744aa1eca21a665081f",
+                "sha256:9686ba689fb700b8d3259d049f3b50009412a6b010d77026f9eb6eceaf7272b7",
+                "sha256:b74e570cfe6fa3e809a43397c52d20862cdb62f3dfd20dbc4633ccd24a589a14",
+                "sha256:c8f9d3f659f09c3dacee15302fc6dfb4fe66a9759e4bc799e0bddbf3d437a0c1",
+                "sha256:c9a7871ee1f177fb6820184ad60ae7d463109280c16b50f0f7b874fa1befd7c2",
+                "sha256:cecdb37a7c5e35a8601cb68acee6e2c2bd756078f7a3c9ccc1db0629ce9f082b",
+                "sha256:d5666aef234e7b704f71df4ec0830f5fd013bef097c23e596ec0f75da8d8c1a9"
+            ],
+            "index": "pypi",
+            "version": "==0.4.6"
         },
         "pytest": {
             "hashes": [

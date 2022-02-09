@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 powerpi-common = {path = "./../../common/python"}
-pysqlite3-binary = "~=0.4.6"
 zigpy = "~=0.43.0"
 zigpy-znp = "~=0.7.0"
 
@@ -13,6 +12,7 @@ zigpy-znp = "~=0.7.0"
 autopep8 = "~=1.5.5"
 powerpi-common-test = {editable = true, path = "./../../common/pytest"}
 pylint = "~=2.7.1"
+pysqlite3-binary = "~=0.4.6"
 
 [requires]
 python_version = "3"

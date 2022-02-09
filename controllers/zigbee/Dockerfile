@@ -15,6 +15,7 @@ RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --three --deploy --ignore-pipfile
 
 # use multi-stage build to remove compile dependencies
 FROM python:3.9.2-alpine3.12 AS run-image
+RUN apk add --no-cache sqlite-libs
 WORKDIR /usr/src/app
 RUN adduser --disabled-password powerpi \
     && addgroup powerpi dialout
