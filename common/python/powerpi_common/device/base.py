@@ -1,5 +1,6 @@
 from abc import ABC
 
+
 class BaseDevice(ABC):
     def __init__(self, name: str, display_name: str, visible: bool):
         self._name = name

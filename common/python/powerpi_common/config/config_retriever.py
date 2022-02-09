@@ -2,9 +2,9 @@ import asyncio
 import json
 import sys
 
-from ..config import Config
-from ..logger import Logger
-from ..mqtt import MQTTClient, MQTTConsumer
+from powerpi_common.config import Config
+from powerpi_common.logger import Logger
+from powerpi_common.mqtt import MQTTClient, MQTTConsumer
 
 
 class ConfigRetriever(object):
