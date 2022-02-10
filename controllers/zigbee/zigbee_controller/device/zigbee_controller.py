@@ -1,5 +1,6 @@
 import asyncio
 import atexit
+import os
 import zigpy
 
 from zigpy.types import EUI64
@@ -28,7 +29,11 @@ class ZigbeeController(object):
             }
         }
 
-        self.__controller = await ControllerApplication.new(config, auto_form=True)
+        try:
+            self.__controller = await ControllerApplication.new(config, auto_form=True)
+        except:
+            self.__logger.error('Could not initialise ZigBee device')
+            os._exit(-1)
 
     async def shutdown(self):
         await self.__controller.shutdown()
