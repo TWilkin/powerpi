@@ -13,7 +13,7 @@ from zigbee_controller.config import ZigbeeConfig
 from zigbee_controller.container import ApplicationContainer
 from zigbee_controller.device.container import add_devices
 from zigbee_controller.device.zigbee_controller import ZigbeeController
-from zigbee_controller.sensor.container import add_sensors
+from zigbee_controller.sensor import add_sensors
 
 
 @inject

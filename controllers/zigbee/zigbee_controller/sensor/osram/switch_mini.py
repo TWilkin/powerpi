@@ -8,6 +8,15 @@ from zigbee_controller.zigbee import ClusterListener, ZigbeeDevice
 
 
 class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
+    ''' Adds support for Osram Smart+ Switch Mini
+        Generates the following events on button clicks where NAME is the
+        configured name of the device.
+
+        Single press:
+        /event/NAME/press:{"button": "up", "type": "single"}
+        /event/NAME/press:{"button": "middle", "type": "single"}
+        /event/NAME/press:{"button": "down", "type": "single"}
+    '''
     class Button(str, Enum):
         UP = 'up',
         MIDDLE = 'middle',

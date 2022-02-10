@@ -1,9 +1,9 @@
 from dependency_injector import providers
 
-from .osram_switch_mini import OsramSwitchMiniSensor
+from .switch_mini import OsramSwitchMiniSensor
 
 
-def add_sensors(container):
+def add_osram_sensors(container):
     device_container = container.common().device()
 
     setattr(
