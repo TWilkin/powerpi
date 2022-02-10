@@ -8,6 +8,18 @@ from zigbee_controller.device import ZigbeeController
 from zigbee_controller.zigbee import ClusterListener, ZigbeeDevice
 
 
+class Button(str, Enum):
+    UP = 'up',
+    MIDDLE = 'middle',
+    DOWN = 'down'
+
+
+class PressType(str, Enum):
+    SINGLE = 'single',
+    HOLD = 'hold',
+    RELEASE = 'release'
+
+
 class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
     ''' Adds support for Osram Smart+ Switch Mini
         Generates the following events on button clicks where NAME is the
@@ -29,16 +41,6 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
         /event/NAME/press:{"button": "down", "type": "hold"}
         /event/NAME/press:{"button": "down", "type": "release"}
     '''
-
-    class __Button(str, Enum):
-        UP = 'up',
-        MIDDLE = 'middle',
-        DOWN = 'down'
-    
-    class __PressType(str, Enum):
-        SINGLE = 'single',
-        HOLD = 'hold',
-        RELEASE = 'release'
     
     def __init__(
         self,
@@ -61,7 +63,7 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
 
         self.__register()
     
-    def __button_press_handler(self, button: __Button, press_type: __PressType):
+    def button_press_handler(self, button: Button, press_type: PressType):
         self.__logger.info(f'Received {press_type} press of {button}')
 
         message = {
@@ -71,51 +73,51 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
 
         self._broadcast('press', message)
     
-    def __long_button_press_handler(self, button: __Button, args: List[List[int]]):
+    def long_button_press_handler(self, button: Button, args: List[List[int]]):
         if len(args) == 1:
             # identify which press it is
-            press_type = self.__PressType.HOLD if len(args[0]) == 2 and args[0][1] == 38 \
-                else self.__PressType.RELEASE
+            press_type = PressType.HOLD if len(args[0]) == 2 and args[0][1] == 38 \
+                else PressType.RELEASE
 
-            self.__button_press_handler(button, press_type)
+            self.button_press_handler(button, press_type)
     
-    def __long_middle_button_press_handler(self, args: List[List[int]]):
+    def long_middle_button_press_handler(self, args: List[List[int]]):
         if len(args) == 1 and len(args[0]) == 2:
             # identify which press it is
             press_type = None
             if args[0][0] == 254 and args[0][1] == 2:
-                press_type = self.__PressType.HOLD
+                press_type = PressType.HOLD
             elif args[0][0] == 0 and args[0][1] == 0:
-                press_type = self.__PressType.RELEASE
+                press_type = PressType.RELEASE
             else:
                 # for some reason it generates 2 events on long press
                 return
             
-            self.__button_press_handler(self.__Button.MIDDLE, press_type)
+            self.button_press_handler(Button.MIDDLE, press_type)
 
     def __register(self):
         device = self._zigbee_device
 
         # single press
         device[1].out_clusters[6].add_listener(
-            ClusterListener(lambda _, __, ___: self.__button_press_handler(self.__Button.UP, self.__PressType.SINGLE))
+            ClusterListener(lambda _, __, ___: self.button_press_handler(Button.UP, PressType.SINGLE))
         )
         device[2].out_clusters[6].add_listener(
-            ClusterListener(lambda _, __, ___: self.__button_press_handler(self.__Button.DOWN, self.__PressType.SINGLE))
+            ClusterListener(lambda _, __, ___: self.button_press_handler(Button.DOWN, PressType.SINGLE))
         )
         device[3].out_clusters[8].add_listener(
-            ClusterListener(lambda _, __, ___: self.__button_press_handler(self.__Button.MIDDLE, self.__PressType.SINGLE))
+            ClusterListener(lambda _, __, ___: self.button_press_handler(Button.MIDDLE, PressType.SINGLE))
         )
 
         # long press
         device[1].out_clusters[8].add_listener(
-            ClusterListener(lambda _, __, args: self.__long_button_press_handler(self.__Button.UP, args))
+            ClusterListener(lambda _, __, args: self.long_button_press_handler(Button.UP, args))
         )
         device[2].out_clusters[8].add_listener(
-            ClusterListener(lambda _, __, args: self.__long_button_press_handler(self.__Button.DOWN, args))
+            ClusterListener(lambda _, __, args: self.long_button_press_handler(Button.DOWN, args))
         )
         device[3].out_clusters[768].add_listener(
-            ClusterListener(lambda _, __, args: self.__long_middle_button_press_handler(args))
+            ClusterListener(lambda _, __, args: self.long_middle_button_press_handler(args))
         )
     
     def __str__(self):
