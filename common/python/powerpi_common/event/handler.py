@@ -23,13 +23,6 @@ class EventHandler(object):
         return False
 
     def check_condition(self, message: dict):
-        try:
-            if not super().is_timestamp_valid(message['timestamp']):
-                return False
-        except:
-            # if there is no timestamp that's not an error
-            pass
-
         if 'message' in self.__condition:
             compare = message.copy()
 

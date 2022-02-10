@@ -19,6 +19,13 @@ class EventConsumer(MQTTConsumer):
         self.__events = events
 
     def on_message(self, client, user_data, message: dict, entity, action):
+        try:
+            if not super().is_timestamp_valid(message['timestamp']):
+                return
+        except:
+            # if there is no timestamp that's not an error
+            pass
+        
         for event in self.__events:
             if event.execute(message):
                 self._logger.info(f'Condition match for "{self}"')
