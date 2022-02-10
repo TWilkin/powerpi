@@ -1,7 +1,6 @@
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.sensor import Sensor
-from .device import Device
+from .base import BaseDevice
 from .factory import DeviceFactory
 from .type import DeviceType
 
@@ -17,8 +16,8 @@ class DeviceManager(object):
         self.__logger = logger
         self.__factory = factory
 
-        self.__devices: dict[str, Device] = {}
-        self.__sensors: dict[str, Sensor] = {}
+        self.__devices: dict[str, BaseDevice] = {}
+        self.__sensors: dict[str, BaseDevice] = {}
 
     @property
     def devices(self):

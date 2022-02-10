@@ -3,7 +3,7 @@ import sys
 
 from dependency_injector.wiring import inject, Provide
 
-from powerpi_common.config import ConfigRetriever
+from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.logger import Logger
 from powerpi_common.device import DeviceManager, DeviceStatusChecker
 from powerpi_common.event import EventManager
@@ -11,6 +11,7 @@ from powerpi_common.mqtt import MQTTClient
 from lifx_controller.__version import __version__
 from lifx_controller.container import ApplicationContainer
 from lifx_controller.device.container import add_devices
+
 
 @inject
 async def main(

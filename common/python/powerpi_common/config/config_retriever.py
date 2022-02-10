@@ -1,10 +1,9 @@
 import asyncio
-import json
 import sys
 
-from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, MQTTConsumer
+from .config import Config
 
 
 class ConfigRetriever(object):
@@ -43,7 +42,6 @@ class ConfigRetriever(object):
             waitTime -= 1
             
             await asyncio.sleep(interval)
-
 
 
 class ConfigConsumer(MQTTConsumer):
