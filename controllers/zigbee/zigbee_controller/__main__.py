@@ -8,7 +8,7 @@ from powerpi_common.device import DeviceManager, DeviceStatusChecker
 from powerpi_common.event import EventManager
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
-from zigbee_controller.__version import __version__
+from zigbee_controller.__version__ import __version__
 from zigbee_controller.config import ZigbeeConfig
 from zigbee_controller.container import ApplicationContainer
 from zigbee_controller.device.container import add_devices
@@ -29,9 +29,9 @@ async def main(
     mqtt_client: MQTTClient = Provide[ApplicationContainer.common.mqtt_client],
     zigbee_controller: ZigbeeController = Provide[ApplicationContainer.device.zigbee_controller]
 ):
-    logger.info(f'PowerPi Zigbee Controller v{__version__}')
+    logger.info(f'PowerPi ZigBee Controller v{__version__}')
 
-    logger.info(f'Using Zigbee device at {config.zigbee_device}')
+    logger.info(f'Using ZigBee device at {config.zigbee_device}')
 
     # intially connect to MQTT
     mqtt_client.connect()

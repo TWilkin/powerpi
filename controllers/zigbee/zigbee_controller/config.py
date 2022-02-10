@@ -2,6 +2,7 @@ import os
 
 from powerpi_common.config import Config as CommonConfig
 
+
 class ZigbeeConfig(CommonConfig):
     @property
     def database_path(self):
