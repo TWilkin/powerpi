@@ -1,10 +1,10 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from datetime import datetime
 
 from pytest_mock import MockerFixture
 
 
-class DeviceTestBase(object):
+class DeviceTestBase(ABC):
     @abstractmethod
     def get_subject(self, mocker: MockerFixture):
         raise NotImplementedError

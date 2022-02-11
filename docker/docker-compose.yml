@@ -72,7 +72,7 @@ services:
             - deep-thought
 
     macro-controller:
-        image: ${REGISTRY}/powerpi/controllers/macro:1.0.4
+        image: ${REGISTRY}/powerpi/controllers/macro:1.0.5
         networks:
             - powerpi
         deploy:
@@ -80,9 +80,9 @@ services:
         depends_on:
             - mosquitto
 
-    device-mapper:
+    device-mapper-energenie:
         build: ../device-mapper
-        image: ${REGISTRY}/powerpi/device-mapper:0.0.4
+        image: ${REGISTRY}/powerpi/device-mapper:0.0.5
         networks:
             - powerpi
         deploy:
@@ -93,16 +93,15 @@ services:
         depends_on:
             - mosquitto
         environment:
-            - DEVICE_FATAL=true
-            - ENERGENIE_DEVICE=ENER314-RT
+            - ENV=ENERGENIE_DEVICE=ENER314-RT:DEVICE_FATAL=true
             - CONTROLLER_NAME=energenie-controller
-            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.8
-            - GPIOMEM=/dev/gpiomem
+            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.9
+            - DEVICE=/dev/gpiomem
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
 
     harmony-controller:
-        image: ${REGISTRY}/powerpi/controllers/harmony:0.0.6
+        image: ${REGISTRY}/powerpi/controllers/harmony:0.0.7
         networks:
             - powerpi
         deploy:
@@ -111,13 +110,33 @@ services:
             - mosquitto
 
     lifx-controller:
-        image: ${REGISTRY}/powerpi/controllers/lifx:0.0.4
+        image: ${REGISTRY}/powerpi/controllers/lifx:0.0.5
         networks:
             - powerpi
         deploy:
             replicas: 1
         depends_on:
             - mosquitto
+
+    device-mapper-zigbee:
+        image: ${REGISTRY}/powerpi/device-mapper:0.0.5
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.labels.zigbee == true
+        depends_on:
+            - mosquitto
+        environment:
+            - ENV=ZIGBEE_DEVICE=/dev/ttyACM0:DATABASE_PATH=/var/data/zigbee.db
+            - CONTROLLER_NAME=zigbee-controller
+            - IMAGE=${REGISTRY}/powerpi/controllers/zigbee:0.0.1
+            - DEVICE=/dev/ttyACM0
+            - VOLUME=/srv/docker-volumes/powerpi/zigbee-controller
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
 
     light-fantastic:
         build: ../light-fantastic

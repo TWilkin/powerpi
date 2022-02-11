@@ -1,9 +1,12 @@
-from typing import Callable
+from jsonpatch import JsonPatch
+from typing import List
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.device import Device, DeviceManager
-from powerpi_common.mqtt import MQTTClient, MQTTConsumer
+from powerpi_common.mqtt import MQTTClient
+from .consumer import EventConsumer
+from .handler import EventHandler
 
 
 class EventManager(object):
@@ -22,38 +25,43 @@ class EventManager(object):
         self.__consumers = []
 
     def load(self):
-        events = self.__config.events['events']
+        listeners = self.__config.events['listeners']
 
         # iterate over the configuration events and create listeners
-        for event in events:
-            # see if we can find the device
-            try:
-                device = self.__device_manager.get_device(
-                    event['action']['device']
-                )
-            except:
-                # not a problem, we didn't know if this is the correct controller
-                continue
-
-            # choose an action
-            action = self.__get_action(event['action'])
-            if action is None:
-                continue
-
+        for listener in listeners:
             # set the topic to listen to
-            topic = 'event/{}'.format(event['topic'])
+            topic = 'event/{}'.format(listener['topic'])
 
-            # create and register the consumer
-            consumer = EventConsumer(
-                self.__config, self.__logger, topic, device, event['condition'], action
-            )
-            self.__mqtt_client.add_consumer(consumer)
-            self.__consumers.append(consumer)
+            events: List[EventHandler] = []
+            for event in listener['events']:
+                # see if we can find the device
+                try:
+                    device = self.__device_manager.get_device(
+                        event['action']['device']
+                    )
+                except:
+                    # not a problem, we didn't know if this is the correct controller
+                    continue
 
-            self.__logger.info(f'Found event {consumer}')
+                # choose an action
+                action = self.__get_action(event['action'])
+                if action is None:
+                    continue
+
+                events.append(EventHandler(device, event['condition'], action))
+
+            if len(events) > 0:
+                # create and register the consumer
+                consumer = EventConsumer(
+                    self.__config, self.__logger, topic, events
+                )
+                self.__mqtt_client.add_consumer(consumer)
+                self.__consumers.append(consumer)
+
+                self.__logger.info(f'Found listener {consumer} with {len(events)} event(s)')
 
         self.__logger.info(
-            f'Found {len(self.__consumers)} matching events'
+            f'Found {len(self.__consumers)} matching listener(s)'
         )
 
     def __get_action(self, action: object):
@@ -67,50 +75,23 @@ class EventManager(object):
         except:
             pass
 
-        return None
-
-
-class EventConsumer(MQTTConsumer):
-    def __init__(
-        self,
-        config: Config,
-        logger: Logger,
-        topic: str,
-        device: Device,
-        condition: object,
-        action: Callable[[Device], None]
-    ):
-        MQTTConsumer.__init__(self, topic, config, logger)
-
-        self.__device = device
-        self.__condition = condition
-        self.__action = action
-
-    def on_message(self, client, user_data, message, entity, action):
-        compare = message.copy()
-
         try:
-            if not super().is_timestamp_valid(message['timestamp']):
-                return
-
-            # remove the timestamp before comparison
-            del compare['timestamp']
+            patch = JsonPatch(action['patch'])            
+            return lambda device: device_additional_state_action(device, patch)
         except:
-            # if there is no timestamp that's not an error
             pass
 
-        # execute the action if the condition is met
-        if compare == self.__condition:
-            self._logger.info(f'Condition match for "{self}"')
-            self.__action(self.__device)
-
-    def __str__(self):
-        return f'{self._topic}({self.__device}:{self.__action})'
+        return None
 
 
 def device_on_action(device: Device):
     device.turn_on()
 
-
 def device_off_action(device: Device):
     device.turn_off()
+
+def device_additional_state_action(device: Device, patch: JsonPatch):
+    current_state = device.additional_state
+
+    patched = patch.apply(current_state)
+    device.change_power_and_additional_state(None, patched)

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # generate a name for the container
 NAME=powerpi_$CONTROLLER_NAME.1.`hostname`
@@ -19,14 +19,29 @@ echo "Setting exit trap condition"
 trap 'kill ${!}; stop' SIGINT
 trap 'kill ${!}; stop' SIGTERM
 
+# add optional arguments
+args=()
+
+# optional volume
+if [ -v VOLUME ]
+then
+    args+=("--mount type=bind,src=$VOLUME,dst=/var/data")
+fi
+
+# optional env array
+IFS=':'; arrEnv=($ENV); unset IFS;
+for env in "${arrEnv[@]}"
+do
+    args+=("--env \"$env\"")
+done
+
 # start the container running on the node hosting this
 echo "Starting $CONTROLLER_NAME"
 docker run \
     --privileged \
     --name $NAME \
-    --device $GPIOMEM \
+    --device $DEVICE \
     --network powerpi \
-    --env "DEVICE_FATAL=$DEVICE_FATAL" \
-    --env "ENERGENIE_DEVICE=$ENERGENIE_DEVICE" \
+    ${args[@]} \
     $IMAGE \
     & wait ${!}

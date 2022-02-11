@@ -3,7 +3,7 @@ import sys
 
 from dependency_injector.wiring import inject, Provide
 
-from powerpi_common.config import ConfigRetriever
+from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.logger import Logger
 from powerpi_common.device import DeviceManager, DeviceStatusChecker
 from powerpi_common.event import EventManager

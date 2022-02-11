@@ -7,6 +7,20 @@ from powerpi_common_test.device import DeviceTestBase
 from energenie_controller.device.socket_group import SocketGroupDevice
 
 
+class MockSocket(Device):
+    def __init__(self, config, logger, mqtt_client):
+        Device.__init__(self, config, logger, mqtt_client, 'socket')
+    
+    def poll(self):
+        pass
+    
+    def _turn_on(self):
+        pass
+
+    def _turn_off(self):
+        pass
+
+
 class TestSocketGroupDevice(DeviceTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.config = mocker.Mock()
@@ -15,8 +29,8 @@ class TestSocketGroupDevice(DeviceTestBase):
         self.device_manager = mocker.Mock()
         self.energenie = mocker.Mock()
 
-        self.socket = Device(
-            self.config, self.logger, self.mqtt_client, 'socket'
+        self.socket = MockSocket(
+            self.config, self.logger, self.mqtt_client
         )
         mocker.patch.object(
             self.device_manager, 'get_device', return_value=self.socket

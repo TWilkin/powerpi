@@ -3,7 +3,8 @@ import os
 
 from enum import Enum
 
-class ConfigFileType(Enum):
+
+class ConfigFileType(str, Enum):
     Devices = 'devices'
     Events = 'events'
 

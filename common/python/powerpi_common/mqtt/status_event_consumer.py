@@ -1,6 +1,6 @@
-from ..config import Config
-from ..logger import Logger
-from . device_state_event_consumer import DeviceStateEventConsumer
+from powerpi_common.config import Config
+from powerpi_common.logger import Logger
+from .device_state_event_consumer import DeviceStateEventConsumer
 
 
 class StatusEventConsumer(DeviceStateEventConsumer):

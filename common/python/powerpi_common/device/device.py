@@ -3,9 +3,10 @@ from abc import abstractmethod
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, StatusEventConsumer, PowerEventConsumer
+from .base import BaseDevice
 
 
-class Device(PowerEventConsumer):
+class Device(BaseDevice, PowerEventConsumer):
     class __StatusEventConsumer(StatusEventConsumer):
         def __init__(self, device, mqtt_client: MQTTClient):
             StatusEventConsumer.__init__(
@@ -31,9 +32,7 @@ class Device(PowerEventConsumer):
         display_name: str = None,
         visible: bool = False
     ):
-        self._name = name
-        self._display_name = display_name if display_name is not None else name
-
+        BaseDevice.__init__(self, name, display_name, visible)
         PowerEventConsumer.__init__(self, self, config, logger)
 
         self._logger = logger
@@ -45,10 +44,6 @@ class Device(PowerEventConsumer):
         mqtt_client.add_consumer(self)
 
         self.__StatusEventConsumer(self, mqtt_client)
-
-    @property
-    def name(self):
-        return self._name
 
     @property
     def state(self):

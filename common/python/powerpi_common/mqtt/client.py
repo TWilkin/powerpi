@@ -9,9 +9,9 @@ from datetime import datetime
 from threading import Thread
 from urllib.parse import urlparse
 
-from ..config import Config
-from ..logger import Logger
-from . consumer import MQTTConsumer
+from powerpi_common.config import Config
+from powerpi_common.logger import Logger
+from .consumer import MQTTConsumer
 
 
 class MQTTClient(object):

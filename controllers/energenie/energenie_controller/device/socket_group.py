@@ -35,6 +35,9 @@ class SocketGroupDevice(Device):
         self.__delay = delay
 
         self.__energenie.set_ids(home_id, 0)
+    
+    def poll(self):
+        pass
 
     def _turn_on(self):
         self._run(self.__energenie.turn_on, 'on')

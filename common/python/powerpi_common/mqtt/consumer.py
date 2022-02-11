@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from datetime import datetime
 
-from ..config import Config
-from ..logger import Logger
+from powerpi_common.config import Config
+from powerpi_common.logger import Logger
 
 
 class MQTTConsumer:
