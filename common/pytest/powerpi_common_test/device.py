@@ -1,13 +1,20 @@
+import asyncio
+import pytest
+
 from abc import ABC, abstractmethod
 from datetime import datetime
-
 from pytest_mock import MockerFixture
 
 
 class DeviceTestBase(ABC):
+    pytestmark = pytest.mark.asyncio
+
     @abstractmethod
     def get_subject(self, mocker: MockerFixture):
         raise NotImplementedError
+
+    async def test_check(self):
+        await asyncio.sleep(1)
 
     def test_turn_on(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e04fd0156c6f8a40025427908ea135365ddff4afddc4df9a1a7e0f59e7a7d660"
+            "sha256": "d55d9349edce5f344f406d350b739ebea277326359597534dd7b31b3b193afc5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -241,8 +241,8 @@
             "version": "==1.0.0"
         },
         "powerpi-common-test": {
-            "path": "./../pytest",
-            "version": "==0.0.1"
+            "editable": true,
+            "path": "./../pytest"
         },
         "py": {
             "hashes": [
@@ -283,6 +283,14 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==6.2.5"
+        },
+        "pytest-asyncio": {
+            "hashes": [
+                "sha256:5f2a21273c47b331ae6aa5b36087047b4899e40f03f18397c0e65fa5cca54e9b",
+                "sha256:7496c5977ce88c34379df64a66459fe395cd05543f0a2f837016e7144391fcfb"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==0.16.0"
         },
         "pytest-mock": {
             "hashes": [
