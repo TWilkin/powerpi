@@ -17,8 +17,8 @@ class ThreadedDevice(Device):
     ):
         Device.__init__(self, config, logger, mqtt_client, name, **kwargs)
 
-    def on_message(self, client, user_data, message, entity, action):
-        def handler():
-            Device.on_message(self, client, user_data, message, entity, action)
-
-        Thread(target=handler).start()
+    #def on_message(self, client, user_data, message, entity, action):
+    #    def handler():
+    #        Device.on_message(self, client, user_data, message, entity, action)
+    #
+    #    Thread(target=handler).start()

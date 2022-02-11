@@ -1,4 +1,3 @@
-import asyncio
 import pytest
 
 from abc import ABC, abstractmethod
@@ -13,24 +12,21 @@ class DeviceTestBase(ABC):
     def get_subject(self, mocker: MockerFixture):
         raise NotImplementedError
 
-    async def test_check(self):
-        await asyncio.sleep(1)
-
-    def test_turn_on(self, mocker: MockerFixture):
+    async def test_turn_on(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         assert subject.state == 'unknown'
-        subject.turn_on()
+        await subject.turn_on()
         assert subject.state == 'on'
 
-    def test_turn_off(self, mocker: MockerFixture):
+    async def test_turn_off(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         assert subject.state == 'unknown'
-        subject.turn_off()
+        await subject.turn_off()
         assert subject.state == 'off'
 
-    def test_change_message(self, mocker: MockerFixture):
+    async def test_change_message(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         mocker.patch.object(self.config, 'message_age_cutoff', 120)
@@ -42,11 +38,11 @@ class DeviceTestBase(ABC):
 
         assert subject.state == 'unknown'
         assert subject.additional_state == {}
-        subject.on_message(None, None, message, subject.name, 'change')
+        await subject.on_message(None, None, message, subject.name, 'change')
         assert subject.state == 'on'
         assert subject.additional_state == {}
     
-    def test_change_message_with_additional_state(self, mocker: MockerFixture):
+    async def test_change_message_with_additional_state(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         mocker.patch.object(self.config, 'message_age_cutoff', 120)
@@ -59,11 +55,11 @@ class DeviceTestBase(ABC):
 
         assert subject.state == 'unknown'
         assert subject.additional_state.get('something', None) is None
-        subject.on_message(None, None, message, subject.name, 'change')
+        await subject.on_message(None, None, message, subject.name, 'change')
         assert subject.state == 'off'
         assert subject.additional_state.get('something', None) == 'else'
 
-    def test_old_change_message(self, mocker: MockerFixture):
+    async def test_old_change_message(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         mocker.patch.object(self.config, 'message_age_cutoff', 120)
@@ -74,10 +70,10 @@ class DeviceTestBase(ABC):
         }
 
         assert subject.state == 'unknown'
-        subject.on_message(None, None, message, subject.name, 'change')
+        await subject.on_message(None, None, message, subject.name, 'change')
         assert subject.state == 'unknown'
 
-    def test_wrong_change_message(self, mocker: MockerFixture):
+    async def test_wrong_change_message(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         mocker.patch.object(self.config, 'message_age_cutoff', 120)
@@ -88,10 +84,10 @@ class DeviceTestBase(ABC):
         }
 
         assert subject.state == 'unknown'
-        subject.on_message(None, None, message, 'other', 'change')
+        await subject.on_message(None, None, message, 'other', 'change')
         assert subject.state == 'unknown'
 
-    def test_bad_state_change_message(self, mocker: MockerFixture):
+    async def test_bad_state_change_message(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         mocker.patch.object(self.config, 'message_age_cutoff', 120)
@@ -102,10 +98,10 @@ class DeviceTestBase(ABC):
         }
 
         assert subject.state == 'unknown'
-        subject.on_message(None, None, message, subject.name, 'change')
+        await subject.on_message(None, None, message, subject.name, 'change')
         assert subject.state == 'unknown'
     
-    def test_missing_state_change_message(self, mocker: MockerFixture):
+    async def test_missing_state_change_message(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         mocker.patch.object(self.config, 'message_age_cutoff', 120)
@@ -115,5 +111,5 @@ class DeviceTestBase(ABC):
         }
 
         assert subject.state == 'unknown'
-        subject.on_message(None, None, message, subject.name, 'change')
+        await subject.on_message(None, None, message, subject.name, 'change')
         assert subject.state == 'unknown'

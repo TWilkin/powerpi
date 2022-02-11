@@ -16,9 +16,9 @@ class Device(BaseDevice, PowerEventConsumer):
 
             mqtt_client.add_consumer(self)
 
-        def _update_device(self, new_power_state, new_additional_state):
+        async def _update_device(self, new_power_state, new_additional_state):
             # override default behaviour to prevent events generated for state change
-            self._device._update_state_no_broadcast(new_power_state, new_additional_state)
+            await self._device._update_state_no_broadcast(new_power_state, new_additional_state)
 
             # remove this consumer as it has completed its job
             self.__mqtt_client.remove_consumer(self)
@@ -77,25 +77,25 @@ class Device(BaseDevice, PowerEventConsumer):
 
         self._broadcast_state_change()
 
-    def turn_on(self):
+    async def turn_on(self):
         self._logger.info(f'Turning on device {self}')
-        self._turn_on()
+        await self._turn_on()
         self.state = 'on'
 
-    def turn_off(self):
+    async def turn_off(self):
         self._logger.info(f'Turning off device {self}')
-        self._turn_off()
+        await self._turn_off()
         self.state = 'off'
     
-    def change_power_and_additional_state(self, new_power_state: str, new_additional_state: dict):
+    async def change_power_and_additional_state(self, new_power_state: str, new_additional_state: dict):
         try:
             if new_power_state is not None:
                 self._logger.info(f'Turning {new_power_state} device {self}')
 
                 if new_power_state == 'on':
-                    self._turn_on()
+                    await self._turn_on()
                 else:
-                    self._turn_off()
+                    await self._turn_off()
             
             if len(new_additional_state) > 0:
                 # there is other work to do
@@ -111,11 +111,11 @@ class Device(BaseDevice, PowerEventConsumer):
         raise NotImplementedError
 
     @abstractmethod
-    def _turn_on(self):
+    async def _turn_on(self):
         raise NotImplementedError
 
     @abstractmethod
-    def _turn_off(self):
+    async def _turn_off(self):
         raise NotImplementedError
     
     def _change_additional_state(self, new_additional_state: dict):
