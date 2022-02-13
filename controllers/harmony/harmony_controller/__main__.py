@@ -8,7 +8,7 @@ from powerpi_common.logger import Logger
 from powerpi_common.device import DeviceManager, DeviceStatusChecker
 from powerpi_common.event import EventManager
 from powerpi_common.mqtt import MQTTClient
-from harmony_controller.__version import __version__
+from harmony_controller.__version__ import __version__
 from harmony_controller.container import ApplicationContainer
 from harmony_controller.device.container import add_devices
 

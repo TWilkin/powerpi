@@ -101,7 +101,7 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
 
     harmony-controller:
-        image: ${REGISTRY}/powerpi/controllers/harmony:0.0.7
+        image: ${REGISTRY}/powerpi/controllers/harmony:0.1.0
         networks:
             - powerpi
         deploy:

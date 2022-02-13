@@ -44,13 +44,13 @@ class TestHarmonyHubDevice(DeviceTestBase):
             self.config, self.logger, self.mqtt_client, self.device_manager, self.harmony_client, 'TestHub'
         )
 
-    def test_power_off(self, mocker: MockerFixture):
+    async def test_power_off(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         assert self.activities[0].state == 'unknown'
         assert self.activities[1].state == 'unknown'
 
-        subject.turn_off()
+        await subject.turn_off()
 
         self.harmony_client.power_off.assert_called_once()
 
