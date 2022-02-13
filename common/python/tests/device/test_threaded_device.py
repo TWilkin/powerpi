@@ -10,7 +10,7 @@ class DeviceImpl(ThreadedDevice):
             self, config, logger, mqtt_client, 'test'
         )
     
-    def poll(self):
+    async def poll(self):
         pass
 
     async def _turn_on(self):

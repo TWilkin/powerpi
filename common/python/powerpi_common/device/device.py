@@ -107,7 +107,7 @@ class Device(BaseDevice, PowerEventConsumer):
             return
 
     @abstractmethod
-    def poll(self):
+    async def poll(self):
         raise NotImplementedError
 
     @abstractmethod

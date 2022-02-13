@@ -45,7 +45,7 @@ class TestHarmonyHubDevice(DeviceTestBase):
 
         future = Future()
         future.set_result(None)
-        for method in ['start_activity', 'power_off']:
+        for method in ['get_current_activity', 'start_activity', 'power_off']:
             mocker.patch.object(
                 self.harmony_client,
                 method,

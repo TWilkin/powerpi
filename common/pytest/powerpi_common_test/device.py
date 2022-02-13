@@ -12,6 +12,11 @@ class DeviceTestBase(ABC):
     def get_subject(self, mocker: MockerFixture):
         raise NotImplementedError
 
+    async def test_poll_implemented(self, mocker: MockerFixture):
+        subject = self.get_subject(mocker)
+
+        await subject.poll()
+
     async def test_turn_on(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
