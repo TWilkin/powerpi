@@ -31,7 +31,7 @@ class HarmonyActivityDevice(AsyncDevice):
     def activity_name(self):
         return self.__activity_name
 
-    def poll(self):
+    async def poll(self):
         pass
 
     @lazy
@@ -39,7 +39,7 @@ class HarmonyActivityDevice(AsyncDevice):
         return self.__device_manager.get_device(self.__hub_name)
 
     async def _turn_on(self):
-        self.__hub.start_activity(self.__activity_name)
+        await self.__hub.start_activity(self.__activity_name)
 
     async def _turn_off(self):
         await self.__hub.turn_off()

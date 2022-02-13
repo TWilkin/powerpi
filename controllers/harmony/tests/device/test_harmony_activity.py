@@ -21,18 +21,12 @@ class TestHarmonyActivityDevice(DeviceTestBase):
 
         future = Future()
         future.set_result(None)
-
-        mocker.patch.object(
-            self.harmony_hub,
-            'turn_on',
-            return_value=future
-        )
-
-        mocker.patch.object(
-            self.harmony_hub,
-            'turn_off',
-            return_value=future
-        )
+        for method in ['start_activity', 'turn_on', 'turn_off']:
+            mocker.patch.object(
+                self.harmony_hub,
+                method,
+                return_value=future
+            )
 
         return HarmonyActivityDevice(
             self.config, self.logger, self.mqtt_client, self.device_manager, 'test', 'hub', 'my activity'

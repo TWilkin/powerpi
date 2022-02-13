@@ -1,6 +1,6 @@
+import asyncio
 import atexit
 import pyharmony
-import time
 
 from powerpi_common.logger import Logger
 
@@ -35,33 +35,33 @@ class HarmonyClient(object):
     def port(self, new_port: int):
         self.__port = new_port
 
-    def get_config(self):
+    async def get_config(self):
         def func():
             return self.__client.get_config()
 
-        return self.__reconnect_and_run(func)
+        return await self.__reconnect_and_run(func)
 
-    def get_current_activity(self):
+    async def get_current_activity(self):
         def func():
             return self.__client.get_current_activity()
 
-        return self.__reconnect_and_run(func)
+        return await self.__reconnect_and_run(func)
 
-    def start_activity(self, activity_name: str):
+    async def start_activity(self, activity_name: str):
         def func():
             self.__client.start_activity(activity_name)
 
-        self.__reconnect_and_run(func)
+        await self.__reconnect_and_run(func)
 
-    def power_off(self):
+    async def power_off(self):
         def func():
             self.__client.power_off()
 
-        self.__reconnect_and_run(func)
+        await self.__reconnect_and_run(func)
 
     def connect(self, reconnect=False):
         if reconnect or not self.is_connected:
-            self.__logger.info('Connecting to hub at "{}"'.format(self))
+            self.__logger.info(f'Connecting to hub at "{self}"')
             self.__client = pyharmony.client.create_and_connect_client(
                 self.__address, self.__port
             )
@@ -69,16 +69,16 @@ class HarmonyClient(object):
             if self.__client == False:
                 self.__client = None
                 raise ConnectionError(
-                    'Failed to connect to hub at "{}"'.format(self)
+                    f'Failed to connect to hub at "{self}"'
                 )
 
     def disconnect(self):
         if self.is_connected:
-            self.__logger.info('Disconnecting from hub at "{}"'.format(self))
+            self.__logger.info(f'Disconnecting from hub at "{self}"')
             self.__client.disconnect()
             self.__client = None
 
-    def __reconnect_and_run(self, func, retries=2):
+    async def __reconnect_and_run(self, func, retries=2):
         first = True
 
         for retry in range(0, retries):
@@ -91,15 +91,13 @@ class HarmonyClient(object):
 
                 if retry == retries - 1:
                     self.__logger.error(
-                        'Failed to connect after retry {}, giving up.'.format(
-                            retries
-                        )
+                        f'Failed to connect after retry {retries}, giving up.'
                     )
                     self.__logger.exception(e)
                     raise e
 
                 # wait a little bit before retrying
-                time.sleep(2)
+                await asyncio.sleep(2)
 
     def __str__(self):
-        return 'harmony://{}:{}'.format(self.__address, self.__port)
+        return f'harmony://{self.__address}:{self.__port}'

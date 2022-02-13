@@ -53,50 +53,51 @@ class HarmonyHubDevice(AsyncDevice):
         self.__cache_lock = Lock()
         self.__activity_lock = Lock()
 
-    def poll(self):
-        current_activity_id = self.__client.get_current_activity()
+    async def poll(self):
+        current_activity_id = await self.__client.get_current_activity()
 
-        self.__update_activity_state(current_activity_id)
+        await self.__update_activity_state(current_activity_id)
 
     async def _turn_on(self):
         pass
 
     async def _turn_off(self):
         with self.__activity_lock:
-            self.__client.power_off()
+            await self.__client.power_off()
 
         # update the state to off for all activities
-        self.__update_activity_state(self.__POWER_OFF_ID)
+        await self.__update_activity_state(self.__POWER_OFF_ID)
 
-    def start_activity(self, name: str):
-        activities = self.__activities()
+    async def start_activity(self, name: str):
+        activities = await self.__activities()
 
         if name in activities:
             with self.__activity_lock:
-                self.__client.start_activity(activities[name].id)
+                await self.__client.start_activity(activities[name].id)
 
                 # only one activity can be started, so update the state
-                self.__update_activity_state(activities[name].id, False)
+                await self.__update_activity_state(activities[name].id, False)
         else:
             self._logger.error(
                 f'Activity "{name}" for {self} not found'
             )
 
-    @cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
-    def __config(self):
+    #@cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
+    async def __config(self):
         self._logger.info(
             f'Loading config for {self}'
         )
 
         with self.__cache_lock:
-            return self.__client.get_config()
+            return await self.__client.get_config()
 
-    @cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
-    def __activities(self):
+    #@cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
+    async def __activities(self):
         devices = self.__device_manager.devices.values()
         activities = {}
 
-        for activity in self.__config()['activity']:
+        config = await self.__config()
+        for activity in config['activity']:
             device = next(
                 (device for device in devices if
                     hasattr(device, 'activity_name')
@@ -117,8 +118,10 @@ class HarmonyHubDevice(AsyncDevice):
 
         return activities
 
-    def __update_activity_state(self, current_activity_id: int, update_current=True):
-        for activity in self.__activities().values():
+    async def __update_activity_state(self, current_activity_id: int, update_current=True):
+        activities = await self.__activities()
+
+        for activity in activities.values():
             # when we're running start_activity we don't want to update the current
             # as it will update itself when we return from that call
             if activity.id == current_activity_id and not update_current:
