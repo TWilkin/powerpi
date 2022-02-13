@@ -1,27 +1,20 @@
-from cachetools import cached, TTLCache
+from cache import AsyncTTL
 from threading import Lock
+from typing import Dict, NamedTuple
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.device import AsyncDevice, Device, DeviceManager
 from powerpi_common.mqtt import MQTTClient
-from harmony_controller.device.harmony_client import HarmonyClient
+from .harmony_client import HarmonyClient
 
 
-class Activity(object):
-    def __init__(
-        self, id: int, device: Device
-    ):
-        self.__id = id
-        self.__device = device
+class Activity(NamedTuple):
+    id: int
+    device: Device
 
-    @property
-    def id(self):
-        return self.__id
-
-    @property
-    def device(self):
-        return self.__device
+    def __str__(self):
+        return f'{self.id}: {self.device}'
 
 
 class HarmonyHubDevice(AsyncDevice):
@@ -82,7 +75,7 @@ class HarmonyHubDevice(AsyncDevice):
                 f'Activity "{name}" for {self} not found'
             )
 
-    #@cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
+    @AsyncTTL(maxsize=1, time_to_live=10 * 60, skip_args=1)
     async def __config(self):
         self._logger.info(
             f'Loading config for {self}'
@@ -91,8 +84,7 @@ class HarmonyHubDevice(AsyncDevice):
         with self.__cache_lock:
             return await self.__client.get_config()
 
-    #@cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
-    async def __activities(self):
+    async def __activities(self) -> Dict[str, Activity]:
         devices = self.__device_manager.devices.values()
         activities = {}
 
@@ -102,7 +94,7 @@ class HarmonyHubDevice(AsyncDevice):
                 (device for device in devices if
                     hasattr(device, 'activity_name')
                     and device.activity_name == activity['label']
-                 ),
+                ),
                 None
             )
 
@@ -118,7 +110,7 @@ class HarmonyHubDevice(AsyncDevice):
 
         return activities
 
-    async def __update_activity_state(self, current_activity_id: int, update_current=True):
+    async def __update_activity_state(self, current_activity_id: int, update_current: bool=True):
         activities = await self.__activities()
 
         for activity in activities.values():
