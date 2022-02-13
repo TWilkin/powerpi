@@ -1,4 +1,4 @@
-from typing import Callable, Dict
+from typing import Awaitable, Callable, Dict
 
 from powerpi_common.device import Device
 
@@ -8,16 +8,16 @@ class EventHandler(object):
         self,
         device: Device,
         condition: Dict[str, any],
-        action: Callable[[Device], None]
+        action: Callable[[Device], Awaitable[None]]
     ):
         self.__device = device
         self.__condition = condition
         self.__action = action
     
-    def execute(self, message: dict):
+    async def execute(self, message: dict):
         # execute the action if the condition is met
         if self.check_condition(message):
-            self.__action(self.__device)
+            await self.__action(self.__device)
             return True
         
         return False
