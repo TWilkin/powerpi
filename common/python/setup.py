@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='powerpi-common',
-    version='0.0.5',
+    version='0.1.0',
     description='PowerPi Common Python Library',
     author='TWilkin',
     classifiers=[
