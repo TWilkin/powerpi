@@ -31,7 +31,8 @@ class DeviceTestBase(ABC):
         await subject.turn_off()
         assert subject.state == 'off'
 
-    async def test_change_message(self, mocker: MockerFixture):
+    @pytest.mark.parametrize('times', [1, 2])
+    async def test_change_message(self, mocker: MockerFixture, times: int):
         subject = self.get_subject(mocker)
 
         mocker.patch.object(self.config, 'message_age_cutoff', 120)
@@ -41,11 +42,18 @@ class DeviceTestBase(ABC):
             'timestamp': int(datetime.utcnow().timestamp() * 1000)
         }
 
-        assert subject.state == 'unknown'
-        assert subject.additional_state == {}
-        await subject.on_message(message, subject.name, 'change')
-        assert subject.state == 'on'
-        assert subject.additional_state == {}
+        initial_state = 'unknown'
+        next_state = 'on'
+        for _ in range(1, times):
+            assert subject.state == initial_state
+            assert subject.additional_state == {}
+            await subject.on_message(message, subject.name, 'change')
+            assert subject.state == next_state
+            assert subject.additional_state == {}
+
+            initial_state = next_state
+            next_state = 'off' if initial_state == 'on' else 'on'
+            message['state'] = next_state
     
     async def test_change_message_with_additional_state(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
