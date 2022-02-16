@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+apscheduler = "~=3.8.1"
 dependency-injector = "~=4.27.0"
 gmqtt = "~=0.6.11"
 jsonpatch = "~=1.32"
-schedule = "~=1.0.0"
 
 [dev-packages]
 autopep8 = "~=1.5.5"
