@@ -1,11 +1,12 @@
 import atexit
 import json
-import paho.mqtt.client as mqtt
 import socket
 import sys
 import time
 
 from datetime import datetime
+from paho.mqtt.client import Client
+from typing import Dict, List
 from threading import Thread
 from urllib.parse import urlparse
 
@@ -15,6 +16,8 @@ from .consumer import MQTTConsumer
 
 
 class MQTTClient(object):
+    __consumers: Dict[str, List[MQTTConsumer]]
+
     def __init__(
         self,
         app_name: str,
@@ -24,7 +27,7 @@ class MQTTClient(object):
         self.__config = config
         self.__logger = logger
         self.__app_name = app_name
-        self.__consumers: dict(str, MQTTConsumer) = {}
+        self.__consumers = {}
         self.__connected = False
 
     def add_consumer(self, consumer: MQTTConsumer):
@@ -79,7 +82,7 @@ class MQTTClient(object):
         )
 
         url = urlparse(self.__config.mqtt_address)
-        self.__client = mqtt.Client(client_id)
+        self.__client = Client(client_id)
         self.__client.on_connect = self.__on_connect
         self.__client.on_disconnect = self.__on_disconnect
         self.__client.on_message = self.__on_message
