@@ -11,6 +11,7 @@ from urllib.parse import urlparse
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from .consumer import MQTTConsumer
+from .types import MQTTMessage
 
 
 class MQTTClient(object):
@@ -84,7 +85,7 @@ class MQTTClient(object):
         self.__client.on_log = self.__on_log
         await self.__client.connect(url.hostname, url.port, version=MqttConstants.MQTTv311)
 
-    def __on_connect(self, _, __, ___, result_code):
+    def __on_connect(self, _, __, ___, result_code: int):
         if result_code == 0:
             self.__connected = True
             self.__logger.info('MQTT connected')
@@ -92,7 +93,7 @@ class MQTTClient(object):
             self.__logger.error(f'MQTT connection failed with code {result_code}')
             return
 
-    def __on_disconnect(self, _, __, result_code):
+    def __on_disconnect(self, _, __, result_code: int):
         self.__connected = False
 
         if result_code == 0:
@@ -100,10 +101,10 @@ class MQTTClient(object):
         else:
             self.__logger.error(f'MQTT disconnected with code {result_code}')
 
-    async def __on_message(self, client, topic, payload, qos, properties):
+    async def __on_message(self, _, topic: str, payload: Dict, __, ___):
         # read the JSON
-        event = json.loads(payload)
-        self.__logger.debug(f'Received: {topic}:{json.dumps(event)}')
+        message: MQTTMessage = json.loads(payload)
+        self.__logger.debug(f'Received: {topic}:{json.dumps(message)}')
 
         # split the topic
         _, message_type, entity, action = topic.split('/', 3)
@@ -115,19 +116,19 @@ class MQTTClient(object):
         if listener_key in self.__consumers:
             for consumer in self.__consumers[listener_key]:
                 try:
-                    await consumer.on_message(client, None, event, entity, action)
+                    await consumer.on_message(message, entity, action)
                 except Exception as ex:
                     self.__logger.error(Exception(f'{type(consumer)}.on_message', ex))
         
         return MqttConstants.PubRecReasonCode.SUCCESS
 
-    def __on_log(self, _, __, level, message):
-        self.__logger.debug(f'MQTT({level}): {message}')
+    def __on_log(self, _, __, level: str, payload: Dict):
+        self.__logger.debug(f'MQTT({level}): {payload}')
 
-    def __publish(self, topic: str, message: dict):
+    def __publish(self, topic: str, payload: Dict):
         self.__wait_for_connection()
 
-        message = json.dumps(message)
+        message = json.dumps(payload)
         self.__logger.info(f'Publishing {topic}:{message}')
         self.__client.publish(topic, message, qos=2, retain=True)
 

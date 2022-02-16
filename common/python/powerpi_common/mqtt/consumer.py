@@ -3,6 +3,7 @@ from datetime import datetime
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
+from .types import MQTTMessage
 
 
 class MQTTConsumer:
@@ -17,7 +18,7 @@ class MQTTConsumer:
         return self._topic
 
     @abstractmethod
-    async def on_message(self, client, user_data, message, entity, action):
+    async def on_message(self, message: MQTTMessage, entity: str, action: str):
         raise NotImplementedError
 
     def is_timestamp_valid(self, timestamp):

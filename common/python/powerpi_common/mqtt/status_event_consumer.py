@@ -1,6 +1,7 @@
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from .device_state_event_consumer import DeviceStateEventConsumer
+from .types import MQTTMessage
 
 
 class StatusEventConsumer(DeviceStateEventConsumer):
@@ -11,7 +12,7 @@ class StatusEventConsumer(DeviceStateEventConsumer):
             self, topic, device, config, logger
         )
 
-    async def on_message(self, _, __, message, entity, action):
+    async def on_message(self, message: MQTTMessage, entity: str, action: str):
         # check if we should respond to this message
         if action == 'status':
             if self._is_message_valid(entity, message.get('state')):

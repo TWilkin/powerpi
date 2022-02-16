@@ -1,6 +1,7 @@
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from .device_state_event_consumer import DeviceStateEventConsumer
+from .types import MQTTMessage
 
 
 class PowerEventConsumer(DeviceStateEventConsumer):
@@ -12,7 +13,7 @@ class PowerEventConsumer(DeviceStateEventConsumer):
         )
 
     # MQTT message callback
-    async def on_message(self, _, __, message, entity, action):
+    async def on_message(self, message: MQTTMessage, entity: str, action: str):
         # check if we should respond to this message
         if action == 'change':
             if self._is_message_valid(entity, message.get('state'), message.get('timestamp')):

@@ -2,7 +2,7 @@ from typing import List
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTConsumer
+from powerpi_common.mqtt import MQTTConsumer, MQTTMessage
 from .handler import EventHandler
 
 
@@ -18,7 +18,7 @@ class EventConsumer(MQTTConsumer):
 
         self.__events = events
 
-    async def on_message(self, client, user_data, message: dict, entity, action):
+    async def on_message(self, message: MQTTMessage, _, __):
         try:
             if not super().is_timestamp_valid(message['timestamp']):
                 return

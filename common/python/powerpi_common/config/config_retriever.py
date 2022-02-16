@@ -2,7 +2,7 @@ import asyncio
 import os
 
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient, MQTTConsumer
+from powerpi_common.mqtt import MQTTClient, MQTTConsumer, MQTTMessage
 from .config import Config
 
 
@@ -50,7 +50,7 @@ class ConfigConsumer(MQTTConsumer):
             self, topic, config, logger
         )
     
-    async def on_message(self, _, __, message, entity, ___):
+    async def on_message(self, message: MQTTMessage, entity: str, _):
         self._logger.info(f'Received config for {entity}')
 
         if self._config.config_is_needed \
