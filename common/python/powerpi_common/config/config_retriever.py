@@ -50,7 +50,7 @@ class ConfigConsumer(MQTTConsumer):
             self, topic, config, logger
         )
     
-    def on_message(self, _, __, message, entity, ___):
+    async def on_message(self, _, __, message, entity, ___):
         self._logger.info(f'Received config for {entity}')
 
         if self._config.config_is_needed \

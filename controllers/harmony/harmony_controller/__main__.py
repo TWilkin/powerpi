@@ -27,7 +27,7 @@ async def main(
     logger.info(f'PowerPi Harmony Controller v{__version__}')
 
     # intially connect to MQTT
-    mqtt_client.connect()
+    await mqtt_client.connect()
 
     # retrieve any config from the queue
     await config_retriever.start()
@@ -41,8 +41,8 @@ async def main(
     # start the thread to periodically check device status
     device_status_checker.start()
 
-    # use MQTT loop to handle messages
-    mqtt_client.loop()
+    # loop
+    await asyncio.get_running_loop().create_future()
 
 
 if __name__ == '__main__':
@@ -51,6 +51,5 @@ if __name__ == '__main__':
     container.wire(modules=[sys.modules[__name__]])
     add_devices(container)
 
-    coro = main()
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(coro)
+    loop.run_until_complete(main())

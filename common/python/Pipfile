@@ -5,8 +5,8 @@ name = "pypi"
 
 [packages]
 dependency-injector = "~=4.27.0"
+gmqtt = "~=0.6.11"
 jsonpatch = "~=1.32"
-paho-mqtt = "~=1.5.1"
 schedule = "~=1.0.0"
 
 [dev-packages]

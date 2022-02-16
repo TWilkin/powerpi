@@ -16,9 +16,9 @@ class Device(BaseDevice, PowerEventConsumer):
 
             mqtt_client.add_consumer(self)
 
-        async def _update_device(self, new_power_state, new_additional_state):
+        def _update_device(self, new_power_state, new_additional_state):
             # override default behaviour to prevent events generated for state change
-            await self._device._update_state_no_broadcast(new_power_state, new_additional_state)
+            self._device._update_state_no_broadcast(new_power_state, new_additional_state)
 
             # remove this consumer as it has completed its job
             self.__mqtt_client.remove_consumer(self)

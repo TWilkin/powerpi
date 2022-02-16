@@ -1,13 +1,11 @@
-import atexit
 import json
 import socket
 import sys
 import time
 
 from datetime import datetime
-from paho.mqtt.client import Client
+from gmqtt import Client, constants as MqttConstants
 from typing import Dict, List
-from threading import Thread
 from urllib.parse import urlparse
 
 from powerpi_common.config import Config
@@ -66,10 +64,7 @@ class MQTTClient(object):
             return self.__publish(topic, message)
         return publish
 
-    def loop(self):
-        self.__thread.join()
-
-    def connect(self):
+    async def connect(self):
         if self.__config.mqtt_address is None:
             error = 'Cannot connect to MQTT, no address specified'
             self.__logger.error(error)
@@ -87,16 +82,7 @@ class MQTTClient(object):
         self.__client.on_disconnect = self.__on_disconnect
         self.__client.on_message = self.__on_message
         self.__client.on_log = self.__on_log
-        self.__client.connect(url.hostname, url.port, 60)
-
-        atexit.register(self.disconnect)
-        self.__thread = Thread(target = self.__client.loop_forever)
-        self.__thread.start()
-
-    def disconnect(self):
-        self.__logger.info('Disconnecting from MQTT')
-        self.__client.disconnect()
-        self.__client.loop_stop()
+        await self.__client.connect(url.hostname, url.port, version=MqttConstants.MQTTv311)
 
     def __on_connect(self, _, __, ___, result_code):
         if result_code == 0:
@@ -114,13 +100,13 @@ class MQTTClient(object):
         else:
             self.__logger.error(f'MQTT disconnected with code {result_code}')
 
-    def __on_message(self, client, user_data, message):
+    async def __on_message(self, client, topic, payload, qos, properties):
         # read the JSON
-        event = json.loads(message.payload)
-        self.__logger.debug(f'Received: {message.topic}:{json.dumps(event)}')
+        event = json.loads(payload)
+        self.__logger.debug(f'Received: {topic}:{json.dumps(event)}')
 
         # split the topic
-        _, message_type, entity, action = message.topic.split('/', 3)
+        _, message_type, entity, action = topic.split('/', 3)
 
         # define the listener this was registered for
         listener_key = f'{message_type}/{entity}/{action}'
@@ -128,7 +114,12 @@ class MQTTClient(object):
         # send the message to the correct consumers
         if listener_key in self.__consumers:
             for consumer in self.__consumers[listener_key]:
-                consumer.on_message(client, user_data, event, entity, action)
+                try:
+                    await consumer.on_message(client, None, event, entity, action)
+                except Exception as ex:
+                    self.__logger.error(Exception(f'{type(consumer)}.on_message', ex))
+        
+        return MqttConstants.PubRecReasonCode.SUCCESS
 
     def __on_log(self, _, __, level, message):
         self.__logger.debug(f'MQTT({level}): {message}')
