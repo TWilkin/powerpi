@@ -43,7 +43,7 @@ class DeviceTestBase(ABC):
 
         assert subject.state == 'unknown'
         assert subject.additional_state == {}
-        await subject.on_message(None, None, message, subject.name, 'change')
+        await subject.on_message(message, subject.name, 'change')
         assert subject.state == 'on'
         assert subject.additional_state == {}
     
@@ -60,7 +60,7 @@ class DeviceTestBase(ABC):
 
         assert subject.state == 'unknown'
         assert subject.additional_state.get('something', None) is None
-        await subject.on_message(None, None, message, subject.name, 'change')
+        await subject.on_message(message, subject.name, 'change')
         assert subject.state == 'off'
         assert subject.additional_state.get('something', None) == 'else'
 
@@ -75,7 +75,7 @@ class DeviceTestBase(ABC):
         }
 
         assert subject.state == 'unknown'
-        await subject.on_message(None, None, message, subject.name, 'change')
+        await subject.on_message(message, subject.name, 'change')
         assert subject.state == 'unknown'
 
     async def test_wrong_change_message(self, mocker: MockerFixture):
@@ -89,7 +89,7 @@ class DeviceTestBase(ABC):
         }
 
         assert subject.state == 'unknown'
-        await subject.on_message(None, None, message, 'other', 'change')
+        await subject.on_message(message, 'other', 'change')
         assert subject.state == 'unknown'
 
     async def test_bad_state_change_message(self, mocker: MockerFixture):
@@ -103,7 +103,7 @@ class DeviceTestBase(ABC):
         }
 
         assert subject.state == 'unknown'
-        await subject.on_message(None, None, message, subject.name, 'change')
+        await subject.on_message(message, subject.name, 'change')
         assert subject.state == 'unknown'
     
     async def test_missing_state_change_message(self, mocker: MockerFixture):
@@ -116,5 +116,5 @@ class DeviceTestBase(ABC):
         }
 
         assert subject.state == 'unknown'
-        await subject.on_message(None, None, message, subject.name, 'change')
+        await subject.on_message(message, subject.name, 'change')
         assert subject.state == 'unknown'
