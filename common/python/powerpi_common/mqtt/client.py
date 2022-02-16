@@ -1,10 +1,12 @@
+import gmqtt
 import json
+import logging
 import socket
 import sys
 import time
 
 from datetime import datetime
-from gmqtt import Client, constants as MqttConstants
+from gmqtt import Client
 from typing import Dict, List
 from urllib.parse import urlparse
 
@@ -29,6 +31,8 @@ class MQTTClient(object):
         self.__consumers = {}
         self.__connected = False
 
+        self.__logger.set_logger_level(gmqtt.__name__, logging.WARNING)
+
     def add_consumer(self, consumer: MQTTConsumer):
         key = consumer.topic
 
@@ -40,7 +44,7 @@ class MQTTClient(object):
         self.__consumers[key].append(consumer)
 
         if new_topic:
-            topic = '{}/{}'.format(self.__config.topic_base, key)
+            topic = f'{self.__config.topic_base}/{key}'
             self.__logger.info(f'Subcribing to topic "{topic}"')
             self.__client.subscribe(topic)
 
@@ -51,18 +55,18 @@ class MQTTClient(object):
             self.__consumers[key].remove(consumer)
 
         if len(self.__consumers.get(key, [])) == 0:
-            topic = '{}/{}'.format(self.__config.topic_base, key)
+            topic = f'{self.__config.topic_base}/{key}'
             self.__logger.info(f'Unsubcribing from topic "{topic}"')
             self.__client.unsubscribe(topic)
 
     def add_producer(self):
-        def publish(topic, message):
+        def publish(topic: str, message: MQTTMessage):
             # add the timestamp to the message
             message['timestamp'] = int(datetime.utcnow().timestamp() * 1000)
 
             topic = f'{self.__config.topic_base}/{topic}'
 
-            return self.__publish(topic, message)
+            self.__publish(topic, message)
         return publish
 
     async def connect(self):
@@ -82,8 +86,7 @@ class MQTTClient(object):
         self.__client.on_connect = self.__on_connect
         self.__client.on_disconnect = self.__on_disconnect
         self.__client.on_message = self.__on_message
-        self.__client.on_log = self.__on_log
-        await self.__client.connect(url.hostname, url.port, version=MqttConstants.MQTTv311)
+        await self.__client.connect(url.hostname, url.port, version=gmqtt.constants.MQTTv311)
 
     def __on_connect(self, _, __, ___, result_code: int):
         if result_code == 0:
@@ -120,12 +123,9 @@ class MQTTClient(object):
                 except Exception as ex:
                     self.__logger.error(Exception(f'{type(consumer)}.on_message', ex))
         
-        return MqttConstants.PubRecReasonCode.SUCCESS
+        return gmqtt.constants.PubRecReasonCode.SUCCESS
 
-    def __on_log(self, _, __, level: str, payload: Dict):
-        self.__logger.debug(f'MQTT({level}): {payload}')
-
-    def __publish(self, topic: str, payload: Dict):
+    def __publish(self, topic: str, payload: MQTTMessage):
         self.__wait_for_connection()
 
         message = json.dumps(payload)

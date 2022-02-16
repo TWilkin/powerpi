@@ -5,7 +5,6 @@ from .types import MQTTMessage
 
 
 class PowerEventConsumer(DeviceStateEventConsumer):
-
     def __init__(self, device, config: Config, logger: Logger):
         topic = f'device/{device.name}/change'
         DeviceStateEventConsumer.__init__(

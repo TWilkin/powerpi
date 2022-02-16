@@ -7,7 +7,6 @@ from .types import MQTTMessage
 
 
 class MQTTConsumer:
-
     def __init__(self, topic: str, config: Config, logger: Logger):
         self._topic = topic
         self._config = config

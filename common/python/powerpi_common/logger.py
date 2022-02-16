@@ -26,10 +26,14 @@ __________                         __________.__
                             \/                   
         """)
 
-    def add_logger(self, name):
+    def add_logger(self, name: str):
         logger = logging.getLogger(name)
         logger.addHandler(self.__handler)
         logger.setLevel(self.__logger.level)
+    
+    def set_logger_level(self, name: str, level: int):
+        logger = logging.getLogger(name)
+        logger.setLevel(level)
 
     def debug(self, *args):
         self.__logger.debug(*args)
