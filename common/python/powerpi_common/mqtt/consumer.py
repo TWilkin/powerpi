@@ -17,7 +17,7 @@ class MQTTConsumer:
         return self._topic
 
     @abstractmethod
-    async def on_message(self, message: MQTTMessage, entity: str, action: str):
+    def on_message(self, message: MQTTMessage, entity: str, action: str):
         raise NotImplementedError
 
     def is_timestamp_valid(self, timestamp):

@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
+from powerpi_common.util import await_or_sync
 from .consumer import MQTTConsumer
 from .types import MQTTMessage
 
@@ -119,7 +120,7 @@ class MQTTClient(object):
         if listener_key in self.__consumers:
             for consumer in self.__consumers[listener_key]:
                 try:
-                    await consumer.on_message(message, entity, action)
+                    await await_or_sync(consumer.on_message, message, entity, action)
                 except Exception as ex:
                     self.__logger.error(Exception(f'{type(consumer)}.on_message', ex))
         

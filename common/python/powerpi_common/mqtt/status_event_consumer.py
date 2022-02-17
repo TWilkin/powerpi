@@ -11,7 +11,7 @@ class StatusEventConsumer(DeviceStateEventConsumer):
             self, topic, device, config, logger
         )
 
-    async def on_message(self, message: MQTTMessage, entity: str, action: str):
+    def on_message(self, message: MQTTMessage, entity: str, action: str):
         # check if we should respond to this message
         if action == 'status':
             if self._is_message_valid(entity, message.get('state')):
