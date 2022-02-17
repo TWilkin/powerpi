@@ -6,6 +6,7 @@ from .device import DeviceManager, DeviceStatusChecker
 from .event import EventManager
 from .logger import Logger
 from .mqtt import MQTTClient
+from .util import await_or_sync
 
 
 class Controller(object):
@@ -20,7 +21,7 @@ class Controller(object):
         app_name: str,
         version: str
     ):
-        self.__logger = logger
+        self._logger = logger
         self.__config_retriever = config_retriever
         self.__device_manager = device_manager
         self.__event_manager = event_manager
@@ -40,9 +41,19 @@ class Controller(object):
             loop.run_until_complete(main)
         finally:
             loop.close()
+    
+    def _log_start(self):
+        pass
+    
+    def _initialise_devices(self):
+        pass
+
+    def _cleanup_devices(self):
+        pass
 
     async def __main(self):
-        self.__logger.info(f'PowerPi {self.__app_name} v{self.__version}')
+        self._logger.info(f'PowerPi {self.__app_name} v{self.__version}')
+        self._log_start()
 
         try:
             # intially connect to MQTT
@@ -50,6 +61,9 @@ class Controller(object):
 
             # retrieve any config from the queue
             await self.__config_retriever.start()
+
+            # perform any device initialisation
+            await await_or_sync(self._initialise_devices)
 
             # load the devices from the config
             self.__device_manager.load()
@@ -67,4 +81,7 @@ class Controller(object):
     
     async def __cleanup(self):
         self.__device_status_checker.stop()
+
+        await await_or_sync(self._cleanup_devices)
+
         await self.__mqtt_client.disconnect()

@@ -43,6 +43,10 @@ class EventManager(object):
                     # not a problem, we didn't know if this is the correct controller
                     continue
 
+                # check this is actually a device
+                if not issubclass(type(device), Device):
+                    continue
+
                 # choose an action
                 action = self.__get_action(event['action'])
                 if action is None:
