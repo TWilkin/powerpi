@@ -15,7 +15,7 @@ powerpi-common-test = {editable = true, path = "./../pytest"}
 pylint = "~=2.7.1"
 
 [requires]
-python_version = "3"
+python_version = "3.8"
 
 [scripts]
 test = "python -m pytest -v"

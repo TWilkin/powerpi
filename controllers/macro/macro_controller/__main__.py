@@ -7,7 +7,7 @@ from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.device import DeviceManager, DeviceStatusChecker
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
-from macro_controller.__version import __version__
+from macro_controller.__version__ import __version__
 from macro_controller.container import ApplicationContainer
 from macro_controller.device.container import add_devices
 

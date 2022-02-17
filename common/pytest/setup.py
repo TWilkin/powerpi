@@ -6,7 +6,7 @@ setup(
     description='PowerPi Common Python Test Library',
     author='TWilkin',
     classifiers=[
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.8',
     ],
     packages=find_packages(),
     install_requires=[
@@ -14,5 +14,5 @@ setup(
         'pytest-asyncio~=0.16.0',
         'pytest-mock~=3.5.1'
     ],
-    python_requires='>=3.6'
+    python_requires='>=3.8'
 )
