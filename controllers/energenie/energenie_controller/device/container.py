@@ -1,4 +1,4 @@
-from dependency_injector import containers, providers
+from dependency_injector import providers
 
 from .import_energenie import import_energenie
 from .socket import SocketDevice

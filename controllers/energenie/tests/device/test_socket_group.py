@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from pytest_mock import MockerFixture
 
 from powerpi_common.device import Device
@@ -11,7 +9,7 @@ class MockSocket(Device):
     def __init__(self, config, logger, mqtt_client):
         Device.__init__(self, config, logger, mqtt_client, 'socket')
     
-    def poll(self):
+    def _poll(self):
         pass
     
     def _turn_on(self):
@@ -43,7 +41,7 @@ class TestSocketGroupDevice(DeviceTestBase):
             self.energenie, 'test', self.devices, retries=2, delay=0
         )
 
-    def test_run_updates_devices(self, mocker: MockerFixture):
+    async def test_run_updates_devices(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         self.counter = 0
@@ -53,7 +51,7 @@ class TestSocketGroupDevice(DeviceTestBase):
 
         assert self.socket.state == 'unknown'
 
-        subject._run(func, 'on')
+        await subject._run(func, 'on')
 
         assert self.counter == 2
 
