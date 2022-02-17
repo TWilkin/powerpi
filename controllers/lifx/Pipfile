@@ -13,7 +13,7 @@ powerpi-common-test = {editable = true, path = "./../../common/pytest"}
 pylint = "~=2.7.1"
 
 [requires]
-python_version = "3"
+python_version = "3.8"
 
 [scripts]
 start = "python -m lifx_controller"

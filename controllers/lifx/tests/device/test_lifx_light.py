@@ -1,6 +1,5 @@
 from pytest_mock import MockerFixture
 
-from powerpi_common.device import Device
 from powerpi_common_test.device import DeviceTestBase
 from lifx_controller.device.lifx_light import LIFXLightDevice
 

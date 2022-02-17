@@ -1,12 +1,12 @@
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.device import ThreadedDevice
+from powerpi_common.device import Device
 from powerpi_common.mqtt import MQTTClient
 from lifx_controller.device.lifx_client import LIFXClient
 from lifx_controller.device.lifx_colour import LIFXColour
 
 
-class LIFXLightDevice(ThreadedDevice):
+class LIFXLightDevice(Device):
     def __init__(
         self,
         config: Config,
@@ -20,8 +20,9 @@ class LIFXLightDevice(ThreadedDevice):
         duration: int = 500,
         **kwargs
     ):
-        ThreadedDevice.__init__(self, config, logger,
-                                mqtt_client, name, **kwargs)
+        Device.__init__(
+            self, config, logger, mqtt_client, name, **kwargs
+        )
 
         self.__duration = duration
 
@@ -33,7 +34,7 @@ class LIFXLightDevice(ThreadedDevice):
     def colour(self):
         return LIFXColour(self.additional_state.get('colour'))
 
-    def poll(self):
+    def _poll(self):
         is_powered = self.__light.get_power()
         colour = self.__light.get_colour()
 
@@ -71,7 +72,7 @@ class LIFXLightDevice(ThreadedDevice):
         if colour is not None:
             new_additional_state['colour'] = colour
         
-        ThreadedDevice._update_state_no_broadcast(self, new_power_state, new_additional_state)
+        Device._update_state_no_broadcast(self, new_power_state, new_additional_state)
 
     def _turn_on(self):
         self.__light.set_power(True, self.__duration)
