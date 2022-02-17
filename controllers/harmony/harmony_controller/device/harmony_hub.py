@@ -4,7 +4,7 @@ from typing import Dict, NamedTuple
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.device import AsyncDevice, Device, DeviceManager
+from powerpi_common.device import Device, DeviceManager
 from powerpi_common.mqtt import MQTTClient
 from .harmony_client import HarmonyClient
 
@@ -17,7 +17,7 @@ class Activity(NamedTuple):
         return f'{self.id}: {self.device}'
 
 
-class HarmonyHubDevice(AsyncDevice):
+class HarmonyHubDevice(Device):
     __POWER_OFF_ID = -1
 
     def __init__(
@@ -33,7 +33,7 @@ class HarmonyHubDevice(AsyncDevice):
         port: int = 5222,
         **kwargs
     ):
-        AsyncDevice.__init__(
+        Device.__init__(
             self, config, logger, mqtt_client, name, **kwargs
         )
 
@@ -46,12 +46,12 @@ class HarmonyHubDevice(AsyncDevice):
         self.__cache_lock = Lock()
         self.__activity_lock = Lock()
 
-    async def poll(self):
+    async def _poll(self):
         current_activity_id = await self.__client.get_current_activity()
 
         await self.__update_activity_state(current_activity_id)
 
-    async def _turn_on(self):
+    def _turn_on(self):
         pass
 
     async def _turn_off(self):

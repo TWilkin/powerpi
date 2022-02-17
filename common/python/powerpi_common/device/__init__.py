@@ -1,4 +1,3 @@
-from .async_device import AsyncDevice
 from .container import DeviceContainer
 from .device import Device
 from .factory import DeviceFactory
