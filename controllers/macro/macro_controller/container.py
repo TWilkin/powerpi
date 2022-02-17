@@ -1,7 +1,7 @@
 from dependency_injector import containers, providers
 
 from powerpi_common.container import Container as CommonContainer
-from macro_controller.__version__ import __app_name__
+from macro_controller.__version__ import __app_name__, __version__
 from macro_controller.device.container import DeviceContainer
 
 
@@ -15,7 +15,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     common = providers.Container(
         CommonContainer,
-        app_name=__app_name__
+        app_name=__app_name__,
+        version=__version__
     )
 
     device = providers.Container(

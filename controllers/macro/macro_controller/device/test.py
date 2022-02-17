@@ -18,7 +18,7 @@ class TestDevice(Device):
 
         self.__message = message
 
-    def poll(self):
+    def _poll(self):
         pass
 
     def _turn_on(self):

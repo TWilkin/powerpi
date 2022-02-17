@@ -1,4 +1,4 @@
-from threading import Event
+from asyncio import Event
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
@@ -12,7 +12,7 @@ class RemoteDevice(StatusEventConsumer):
         logger: Logger,
         mqtt_client: MQTTClient,
         name: str,
-        **kwargs
+        **_
     ):
         self.__logger = logger
         self.__name = name
@@ -38,20 +38,20 @@ class RemoteDevice(StatusEventConsumer):
         self.__state = new_state
         self.__waiting.set()
 
-    def poll(self):
+    def _poll(self):
         pass
 
     def set_state_and_additional(self, state: str, _: dict):
         self.state = state
 
-    def turn_on(self):
-        self.__send_message('on')
+    async def turn_on(self):
+        await self.__send_message('on')
 
-    def turn_off(self):
-        self.__send_message('off')
+    async def turn_off(self):
+        await self.__send_message('off')
 
-    def __send_message(self, state: str):
-        topic = 'device/{}/change'.format(self.__name)
+    async def __send_message(self, state: str):
+        topic = f'device/{self.__name}/change'
 
         self.__producer(topic, {'state': state})
 
@@ -61,11 +61,11 @@ class RemoteDevice(StatusEventConsumer):
 
         self.__waiting.clear()
         while not self.__waiting.is_set():
-            self.__waiting.wait(12.5)
+            await self.__waiting.wait(12.5)
 
         self.__logger.info(
             f'Continuing after device "{self.__name}"'
         )
 
     def __str__(self):
-        return '{}({}, {})'.format(type(self).__name__, self.__name, self.__state)
+        return f'{type(self).__name__}({self.__name}, {self.__state})'
