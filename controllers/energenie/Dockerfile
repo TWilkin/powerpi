@@ -15,7 +15,7 @@ COPY controllers/energenie/Pipfile* ./
 RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --three --deploy
 
 # re-compile the binary
-WORKDIR /opt/powerpi/controllers/energenie/.venv/lib/python3.9/site-packages/pyenergenie/energenie/drv
+WORKDIR /opt/powerpi/controllers/energenie/.venv/lib/python3.8/site-packages/pyenergenie/energenie/drv
 RUN rm radio_rpi.so \
     && gcc -Wall -shared -o radio_rpi.so -fPIC radio.c hrfm69.c spis.c gpio_rpi.c delay_posix.c
 
