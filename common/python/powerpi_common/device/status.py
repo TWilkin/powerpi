@@ -1,5 +1,3 @@
-import atexit
-
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
@@ -25,8 +23,6 @@ class DeviceStatusChecker(object):
 
     def start(self):
         self.__logger.info(f'Polling for device state changes every {self.__poll_frequency} seconds')
-
-        atexit.register(self.stop)
 
         interval = IntervalTrigger(seconds=self.__poll_frequency)
         self.__scheduler.add_job(self.__run, trigger=interval)

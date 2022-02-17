@@ -88,8 +88,12 @@ class MQTTClient(object):
         self.__client.on_disconnect = self.__on_disconnect
         self.__client.on_message = self.__on_message
         await self.__client.connect(url.hostname, url.port, version=gmqtt.constants.MQTTv311)
+    
+    async def disconnect(self):
+        self.__logger.info('Disconnecting from MQTT')
+        await self.__client.disconnect()
 
-    def __on_connect(self, _, __, ___, result_code: int):
+    def __on_connect(self, _, __, result_code: int, ___):
         if result_code == 0:
             self.__connected = True
             self.__logger.info('MQTT connected')
@@ -97,13 +101,9 @@ class MQTTClient(object):
             self.__logger.error(f'MQTT connection failed with code {result_code}')
             return
 
-    def __on_disconnect(self, _, __, result_code: int):
+    def __on_disconnect(self, _, __):
         self.__connected = False
-
-        if result_code == 0:
-            self.__logger.info('MQTT disconnected')
-        else:
-            self.__logger.error(f'MQTT disconnected with code {result_code}')
+        self.__logger.info('MQTT disconnected')
 
     async def __on_message(self, _, topic: str, payload: Dict, __, ___):
         # read the JSON
