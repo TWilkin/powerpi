@@ -2,6 +2,7 @@ import json
 import os
 
 from enum import Enum
+from typing import Dict
 
 
 class ConfigFileType(str, Enum):
@@ -10,8 +11,10 @@ class ConfigFileType(str, Enum):
 
 
 class Config(object):
+    __configs: Dict[ConfigFileType, Dict]
+
     def __init__(self):
-        self.__configs: dict(ConfigFileType, dict) = {}
+        self.__configs = {}
 
     @property
     def log_level(self):
