@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 energenie = "~=1.0.1"
 powerpi-common = {path = "./../../common/python"}
-pyenergenie = {git = "https://****@github.com/whaleygeek/pyenergenie.git"}
+pyenergenie = {git = "https://****@github.com/whaleygeek/pyenergenie.git@eec562c140dd34027b3184d81f549c9d4a65f5db"}
 
 [dev-packages]
 autopep8 = "~=1.5.5"
