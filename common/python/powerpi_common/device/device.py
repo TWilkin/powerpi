@@ -112,15 +112,15 @@ class Device(BaseDevice, PowerEventConsumer):
 
     @abstractmethod
     def _poll(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     @abstractmethod
     def _turn_on(self):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     @abstractmethod
     def _turn_off(self):
-        raise NotImplementedError()
+        raise NotImplementedError
     
     def _change_additional_state(self, new_additional_state: dict):
         return new_additional_state

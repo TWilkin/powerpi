@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from datetime import datetime
 
 from powerpi_common.config import Config
@@ -6,7 +6,7 @@ from powerpi_common.logger import Logger
 from .types import MQTTMessage
 
 
-class MQTTConsumer:
+class MQTTConsumer(ABC):
     def __init__(self, topic: str, config: Config, logger: Logger):
         self._topic = topic
         self._config = config
