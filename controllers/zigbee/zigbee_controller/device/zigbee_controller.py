@@ -37,5 +37,8 @@ class ZigbeeController(object):
         self.__logger.info('Shutting down ZigBee device')
         await self.__controller.shutdown()
 
-    async def pair(self, time=60):
+    async def pair(self, time: int):
         await self.__controller.permit(time)
+
+    def add_listener(self, listener):
+        self.__controller.add_listener(listener)
