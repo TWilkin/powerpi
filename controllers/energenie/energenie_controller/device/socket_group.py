@@ -1,7 +1,5 @@
-import time
-
-from collections.abc import Callable
-from typing import List
+from asyncio import sleep
+from typing import Callable, List
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
@@ -36,19 +34,19 @@ class SocketGroupDevice(Device):
 
         self.__energenie.set_ids(home_id, 0)
     
-    def poll(self):
+    def _poll(self):
         pass
 
-    def _turn_on(self):
-        self._run(self.__energenie.turn_on, 'on')
+    async def _turn_on(self):
+        await self._run(self.__energenie.turn_on, 'on')
 
-    def _turn_off(self):
-        self._run(self.__energenie.turn_off, 'off')
+    async def _turn_off(self):
+        await self._run(self.__energenie.turn_off, 'off')
 
-    def _run(self, func: Callable, new_state: str):
+    async def _run(self, func: Callable, new_state: str):
         for _ in range(0, self.__retries):
             func()
-            time.sleep(self.__delay)
+            await sleep(self.__delay)
 
         for device in self.__devices:
             self.__device_manager.get_device(device).state = new_state

@@ -1,8 +1,7 @@
-import asyncio
-import atexit
 import os
 import zigpy
 
+from asyncio import sleep
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 from zigpy_znp.zigbee.application import ControllerApplication
@@ -36,13 +35,9 @@ class ZigbeeController(object):
             os._exit(-1)
 
     async def shutdown(self):
+        self.__logger.info('Shutting down ZigBee device')
         await self.__controller.shutdown()
 
     async def pair(self, time=60):
         await self.__controller.permit(time)
-        await asyncio.sleep(time)
-  
-    atexit.register
-    def __shutdown(self):
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.shutdown())
+        await sleep(time)

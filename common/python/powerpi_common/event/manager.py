@@ -43,6 +43,10 @@ class EventManager(object):
                     # not a problem, we didn't know if this is the correct controller
                     continue
 
+                # check this is actually a device
+                if not issubclass(type(device), Device):
+                    continue
+
                 # choose an action
                 action = self.__get_action(event['action'])
                 if action is None:
@@ -76,22 +80,26 @@ class EventManager(object):
             pass
 
         try:
-            patch = JsonPatch(action['patch'])            
-            return lambda device: device_additional_state_action(device, patch)
+            patch = JsonPatch(action['patch'])
+                     
+            return device_additional_state_action(patch)
         except:
             pass
 
         return None
 
 
-def device_on_action(device: Device):
-    device.turn_on()
+async def device_on_action(device: Device):
+    await device.turn_on()
 
-def device_off_action(device: Device):
-    device.turn_off()
+async def device_off_action(device: Device):
+    await device.turn_off()
 
-def device_additional_state_action(device: Device, patch: JsonPatch):
-    current_state = device.additional_state
+def device_additional_state_action(patch: JsonPatch):
+    async def wrapper(device: Device):
+        current_state = device.additional_state
 
-    patched = patch.apply(current_state)
-    device.change_power_and_additional_state(None, patched)
+        patched = patch.apply(current_state)
+        await device.change_power_and_additional_state(None, patched)
+    
+    return wrapper

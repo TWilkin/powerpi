@@ -4,18 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+apscheduler = "~=3.8.1"
 dependency-injector = "~=4.27.0"
+gmqtt = "~=0.6.11"
 jsonpatch = "~=1.32"
-paho-mqtt = "~=1.5.1"
-schedule = "~=1.0.0"
 
 [dev-packages]
 autopep8 = "~=1.5.5"
-powerpi-common-test = {path = "./../pytest"}
+powerpi-common-test = {editable = true, path = "./../pytest"}
 pylint = "~=2.7.1"
 
 [requires]
-python_version = "3"
+python_version = "3.8"
 
 [scripts]
 test = "python -m pytest -v"

@@ -1,3 +1,4 @@
+from asyncio import Future
 from pytest_mock import MockerFixture
 
 from powerpi_common_test.device import DeviceTestBase
@@ -18,20 +19,29 @@ class TestHarmonyActivityDevice(DeviceTestBase):
             return_value=self.harmony_hub
         )
 
+        future = Future()
+        future.set_result(None)
+        for method in ['start_activity', 'turn_on', 'turn_off']:
+            mocker.patch.object(
+                self.harmony_hub,
+                method,
+                return_value=future
+            )
+
         return HarmonyActivityDevice(
             self.config, self.logger, self.mqtt_client, self.device_manager, 'test', 'hub', 'my activity'
         )
 
-    def test_turn_on_hub(self, mocker: MockerFixture):
+    async def test_turn_on_hub(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
-        subject.turn_on()
+        await subject.turn_on()
 
         self.harmony_hub.start_activity.assert_called_once_with('my activity')
 
-    def test_turn_off_hub(self, mocker: MockerFixture):
+    async def test_turn_off_hub(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
-        subject.turn_off()
+        await subject.turn_off()
 
         self.harmony_hub.turn_off.assert_called_once()

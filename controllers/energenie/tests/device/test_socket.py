@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from pytest_mock import MockerFixture
 
 from powerpi_common_test.device import DeviceTestBase
@@ -18,7 +16,7 @@ class TestSocketDevice(DeviceTestBase):
             self.energenie, 'test', retries=2, delay=0
         )
 
-    def test_run(self, mocker: MockerFixture):
+    async def test_run(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         self.counter = 0
@@ -26,6 +24,6 @@ class TestSocketDevice(DeviceTestBase):
         def func():
             self.counter += 1
 
-        subject._run(func)
+        await subject._run(func)
 
         assert self.counter == 2
