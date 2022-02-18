@@ -150,7 +150,7 @@ services:
 
     freedns:
         build: ../freedns
-        image: ${REGISTRY}/powerpi/freedns:0.0.8
+        image: ${REGISTRY}/powerpi/freedns:0.0.9
         networks:
             - powerpi
         deploy:
