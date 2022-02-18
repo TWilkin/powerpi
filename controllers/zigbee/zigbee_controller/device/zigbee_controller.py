@@ -1,7 +1,6 @@
 import os
 import zigpy
 
-from asyncio import sleep
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 from zigpy_znp.zigbee.application import ControllerApplication
@@ -40,4 +39,3 @@ class ZigbeeController(object):
 
     async def pair(self, time=60):
         await self.__controller.permit(time)
-        await sleep(time)
