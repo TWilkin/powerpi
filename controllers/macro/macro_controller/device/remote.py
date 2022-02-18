@@ -1,4 +1,6 @@
-from asyncio import Event
+import contextlib
+
+from asyncio import Event, wait_for
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
@@ -38,7 +40,7 @@ class RemoteDevice(StatusEventConsumer):
         self.__state = new_state
         self.__waiting.set()
 
-    def _poll(self):
+    def poll(self):
         pass
 
     def set_state_and_additional(self, state: str, _: dict):
@@ -60,12 +62,15 @@ class RemoteDevice(StatusEventConsumer):
         )
 
         self.__waiting.clear()
-        while not self.__waiting.is_set():
-            await self.__waiting.wait(12.5)
+        await self.__wait(12.5)
 
         self.__logger.info(
             f'Continuing after device "{self.__name}"'
         )
+    
+    async def __wait(self, timeout: float):
+        with contextlib.suppress(TimeoutError):
+            await wait_for(self.__waiting.wait(), timeout)
 
     def __str__(self):
         return f'{type(self).__name__}({self.__name}, {self.__state})'
