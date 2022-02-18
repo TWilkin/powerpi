@@ -1,7 +1,7 @@
 import asyncio
 
 from powerpi_common.config import Config
-from powerpi_common.device import Device
+from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from .zigbee_controller import ZigbeeController
@@ -38,4 +38,4 @@ class ZigbeePairingDevice(Device):
         await self.__zigbee_controller.pair(time)
         await asyncio.sleep(time)
 
-        self.state = 'off'
+        self.state = DeviceStatus.OFF
