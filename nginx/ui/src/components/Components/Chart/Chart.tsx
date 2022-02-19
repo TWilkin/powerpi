@@ -12,9 +12,10 @@ import {
 } from "chart.js";
 import "chartjs-adapter-luxon";
 import { Line } from "react-chartjs-2";
-import { useGetHistoryRange } from "../../hooks/history";
-import useOrientation from "../../hooks/orientation";
-import Loading from "./Loading";
+import { Loading } from "..";
+import { useGetHistoryRange } from "../../../hooks/history";
+import useOrientation from "../../../hooks/orientation";
+import styles from "./Chart.module.scss";
 
 ChartJS.register(
     CategoryScale,
@@ -189,7 +190,7 @@ const Chart = ({ api, start, end, entity, action }: ChartProps) => {
     };
 
     return (
-        <div className="chart">
+        <div className={styles.chart}>
             <Loading loading={isHistoryLoading}>
                 <Line options={options} data={data} />
             </Loading>

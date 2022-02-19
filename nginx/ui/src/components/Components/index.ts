@@ -1,3 +1,4 @@
+import Chart from "./Chart/Chart";
 import DeviceIcon from "./DeviceIcon/DeviceIcon";
 import DevicePowerButton from "./DevicePowerButton/DevicePowerButton";
 import Filter from "./Filter/Filter";
@@ -6,4 +7,4 @@ import Loading from "./Loading";
 import Menu from "./Menu/Menu";
 import PaginationControls from "./PaginationControls/PaginationControls";
 
-export { DeviceIcon, DevicePowerButton, Filter, List, Loading, Menu, PaginationControls };
+export { Chart, DeviceIcon, DevicePowerButton, Filter, List, Loading, Menu, PaginationControls };

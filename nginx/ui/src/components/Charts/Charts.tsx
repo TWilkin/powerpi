@@ -1,8 +1,8 @@
 import { PowerPiApi } from "@powerpi/api";
 import { useState } from "react";
-import { Filter } from "../Components";
-import Chart from "../Components/Chart";
+import { Chart, Filter } from "../Components";
 import ChartFilter, { ChartFilters } from "./ChartFilter";
+import styles from "./Charts.module.scss";
 
 interface ChartsProps {
     api: PowerPiApi;
@@ -23,7 +23,7 @@ const Charts = ({ api }: ChartsProps) => {
                 <ChartFilter api={api} updateFilter={setFilters} />
             </Filter>
 
-            <div id="charts">
+            <div className={styles.charts}>
                 {(filters.entity || filters.action) && (
                     <Chart
                         api={api}

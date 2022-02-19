@@ -7,6 +7,7 @@ import MessageTypeFilter, {
     MessageFilterType,
     MessageTypeFilters,
 } from "../Components/MessageTypeFilter";
+import styles from "./Charts.module.scss";
 
 export interface ChartFilters extends MessageTypeFilters {
     start?: Date;
@@ -54,7 +55,7 @@ const ChartFilter = ({ api, updateFilter }: ChartFilterProps) => {
     );
 
     return (
-        <div id="chart-filters">
+        <div className={styles["chart-filters"]}>
             <DateFilter
                 name="From"
                 selected={filters.start}
