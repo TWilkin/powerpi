@@ -11,6 +11,7 @@ This project was devised to utilise open, reverse engineered or free home automa
 -   [LIFX](https://www.lifx.com/)
 -   [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html)
 -   [NodeMCU](https://en.wikipedia.org/wiki/NodeMCU)
+-   [ZigBee](https://en.wikipedia.org/wiki/Zigbee)
 
 ### Supported Services
 
@@ -29,6 +30,7 @@ The project is split into the following services, each of which have their own _
     -   [**harmony**](controllers/harmony/README.md) - Allows control of [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html) Smart Hub devices.
     -   [**lifx**](controllers/lifx/README.md) - Allows control of [LIFX](https://www.lifx.com/) light devices.
     -   [**macro**](controllers/macro/README.md) - Allows control of other devices with macros, delays, mutexes etc.
+    -   [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
 -   [**deep-thought**](deep-thought/README.md) - API
 -   [**device-mapper**](device-mapper/README.md) - Workaround for accessing Raspberry Pi _/dev/gpiomem_ in Docker Swarm mode using Docker-in-docker.
 -   [**energy-monitor**](energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
