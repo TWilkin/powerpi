@@ -15,9 +15,9 @@ import { LastLocationProvider } from "react-router-last-location";
 import { useGetConfig } from "../hooks/config";
 import Charts from "./Charts";
 import Menu from "./Components/Menu";
-import DeviceList from "./DeviceList";
-import HistoryList from "./HistoryList";
-import Home from "./Home/Home";
+import DeviceList from "./Devices";
+import HistoryList from "./History";
+import Home from "./Home";
 import Login from "./Login";
 
 interface SiteProps {

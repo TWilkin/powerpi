@@ -1,8 +1,8 @@
 import { PowerPiApi } from "@powerpi/api";
 import React, { useState } from "react";
+import Chart from "../Components/Chart";
+import Filter from "../Components/Filter";
 import ChartFilter, { ChartFilters } from "./ChartFilter";
-import Chart from "./Components/Chart";
-import Filter from "./Components/Filter";
 
 interface ChartsProps {
     api: PowerPiApi;
