@@ -16,7 +16,7 @@ class EnergeniePairingDevice(Device):
         logger: Logger,
         mqtt_client: MQTTClient,
         energenie: EnergenieInterface,
-        timeout: int = 120,
+        timeout: float = 120,
         **kwargs
     ):
         Device.__init__(self, config, logger, mqtt_client, **kwargs)
@@ -33,7 +33,7 @@ class EnergeniePairingDevice(Device):
         loop.create_task(self.pair())
     
     def _turn_off(self):
-        pass
+        self.__energenie.stop_pair()
 
     async def pair(self):
         home_id = self.find_free_home_id()
@@ -46,7 +46,7 @@ class EnergeniePairingDevice(Device):
             message = {'home_id': home_id}
             self._producer(topic, message)
 
-            await self.__energenie.pair(self.__timeout)
+            await self.__energenie.start_pair(self.__timeout)
         
         self.state = DeviceStatus.OFF
 

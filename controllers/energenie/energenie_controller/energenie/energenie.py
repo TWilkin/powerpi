@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from asyncio import wait_for, sleep
-from asyncio.exceptions import TimeoutError
+from asyncio import get_event_loop, wait_for, sleep
+from asyncio.exceptions import CancelledError, TimeoutError
 from contextlib import suppress
 from threading import Lock
 
@@ -20,10 +20,17 @@ class EnergenieInterface(ABC):
         with EnergenieInterface.__device_lock:
             self._turn_off()
     
-    async def pair(self, timeout: int):
+    async def start_pair(self, timeout: float):
         with EnergenieInterface.__device_lock:
-            with suppress(TimeoutError):
-                await wait_for(self._pair(), timeout)
+            with suppress(CancelledError) and suppress(TimeoutError):
+                self.__pair_task = get_event_loop().create_task(self.__pair())
+                await wait_for(self.__pair_task, timeout)
+            
+            self.__pair_task = None
+    
+    def stop_pair(self):
+        if self.__pair_task is not None:
+            self.__pair_task.cancel()
 
     @abstractmethod
     def _turn_on(self):
@@ -33,7 +40,7 @@ class EnergenieInterface(ABC):
     def _turn_off(self):
         raise NotImplementedError
     
-    async def _pair(self):
+    async def __pair(self):
         # to pair we simply turn the device on/off slowly
         while True:
             await sleep(1)

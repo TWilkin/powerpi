@@ -1,4 +1,6 @@
-from asyncio import Future
+import asyncio
+
+from asyncio import Future, sleep
 from unittest.mock import PropertyMock
 from pytest_mock import MockerFixture
 
@@ -8,13 +10,13 @@ from powerpi_common_test.mqtt import mock_producer
 
 
 class TestEnergeniePairingDevice(DeviceTestBase):
-    def get_subject(self, mocker: MockerFixture):
+    def get_subject(self, mocker: MockerFixture, timeout: float=0.1):
         self.config = mocker.Mock()
         self.logger = mocker.Mock()
         self.mqtt_client = mocker.Mock()
         self.energenie = mocker.Mock()
 
-        self.timeout = 1
+        self.timeout = timeout
 
         self.publish = mock_producer(mocker, self.mqtt_client)
 
@@ -22,7 +24,7 @@ class TestEnergeniePairingDevice(DeviceTestBase):
         future.set_result(None)
         mocker.patch.object(
             self.energenie,
-            'pair',
+            'start_pair',
             return_value=future
         )
 
@@ -40,7 +42,7 @@ class TestEnergeniePairingDevice(DeviceTestBase):
 
         await subject.pair()
 
-        self.energenie.pair.assert_called_once_with(self.timeout)
+        self.energenie.start_pair.assert_called_once_with(self.timeout)
 
         assert subject.state == 'off'
 
@@ -61,7 +63,37 @@ class TestEnergeniePairingDevice(DeviceTestBase):
 
         await subject.pair()
 
-        self.energenie.pair.assert_not_called()
+        assert subject.state == 'off'
+
+        self.energenie.start_pair.assert_not_called()
+    
+    async def test_pair_stop(self, mocker: MockerFixture):
+        subject = self.get_subject(mocker, 0.1)
+        
+        sleeper = asyncio.get_event_loop().create_task(sleep(0.2))
+        mocker.patch.object(
+            self.energenie,
+            'start_pair',
+            return_value=sleeper
+        )
+
+        type(self.config).devices = PropertyMock(return_value={'devices': []})
+
+        assert subject.state == 'unknown'
+
+        await subject.turn_on()
+
+        assert subject.state == 'on'
+
+        await subject.turn_off()
+        await sleeper
+
+        self.energenie.start_pair.assert_called_once_with(self.timeout)
+
+        self.energenie.stop_pair.assert_called_once_with()
+
+        assert subject.state == 'off'
+
     
     async def test_find_free_home_id_ener314(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
