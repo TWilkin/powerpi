@@ -26,7 +26,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     controller = providers.Singleton(
         Controller,
-        config=config,
+        config=common.config,
         logger=common.logger,
         config_retriever=common.config_retriever,
         device_manager=common.device.device_manager,
