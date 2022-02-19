@@ -17,13 +17,13 @@ class ZigbeePairingDevice(Device):
         logger: Logger,
         mqtt_client: MQTTClient,
         zigbee_controller: ZigbeeController,
-        pair_time: int = 120,
+        timeout: int = 120,
         **kwargs
     ):
         Device.__init__(self, config, logger, mqtt_client, **kwargs)
 
         self.__zigbee_controller = zigbee_controller
-        self.__pair_time = pair_time
+        self.__timeout = timeout
 
         self.__zigbee_controller.add_listener(self)
     
@@ -33,15 +33,15 @@ class ZigbeePairingDevice(Device):
     def _turn_on(self):
         # run in a separate task so the off state happens after the on
         loop = asyncio.get_event_loop()
-        loop.create_task(self.__pair())
+        loop.create_task(self.pair())
         
     
     def _turn_off(self):
         pass
 
-    async def __pair(self):
-        await self.__zigbee_controller.pair(self.__pair_time)
-        await asyncio.sleep(self.__pair_time)
+    async def pair(self):
+        await self.__zigbee_controller.pair(self.__timeout)
+        await asyncio.sleep(self.__timeout)
 
         self.state = DeviceStatus.OFF
     
