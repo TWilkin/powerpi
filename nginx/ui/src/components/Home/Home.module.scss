@@ -1,0 +1,78 @@
+@import "../../styles/vars.module.scss";
+
+.home {
+    $floor-menu-height: 4rem;
+
+    .layout {
+        height: calc(100vh - #{$menu-height} - 10px - #{$floor-menu-height});
+        margin-top: 10px;
+
+        svg {
+            width: auto;
+            max-width: 90vw;
+            height: calc(90vh - #{$menu-height} - #{$floor-menu-height});
+
+            &.rotate {
+                width: calc(90vh - #{$menu-height} - #{$floor-menu-height});
+                max-width: initial;
+                height: auto;
+                max-height: 90vw;
+                transform: rotate(90deg) translateX(-35%);
+                transform-origin: center;
+
+                &.wide {
+                    transform: rotate(90deg) translateX(35%);
+                }
+            }
+
+            g {
+                display: none;
+
+                &.visible {
+                    display: initial;
+                }
+            }
+
+            polygon,
+            rect {
+                pointer-events: all;
+                fill: none;
+                stroke: black;
+                outline: none;
+
+                &:hover {
+                    fill: lightblue;
+                }
+            }
+        }
+    }
+
+    div[data-id="tooltip"] {
+        h3,
+        p {
+            margin: 0;
+            line-height: 1rem;
+        }
+
+        p {
+            display: flex;
+            justify-content: space-between;
+
+            sup {
+                vertical-align: top;
+                position: relative;
+                top: -0.1rem;
+            }
+
+            time {
+                padding-left: 0.5rem;
+                font-style: italic;
+                font-size: 0.7rem;
+            }
+
+            & > * {
+                white-space: nowrap;
+            }
+        }
+    }
+}

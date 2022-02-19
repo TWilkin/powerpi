@@ -6,6 +6,7 @@ import useGetSensors from "../../hooks/sensors";
 import { Menu } from "../Components";
 import Floorplan from "./Floorplan";
 import Tooltip from "./Tooltip";
+import styles from "./Home.module.scss";
 
 interface HomeProps {
     api: PowerPiApi;
@@ -41,7 +42,7 @@ const Home = ({ api }: HomeProps) => {
     }, [floorplan]);
 
     return (
-        <div id="home">
+        <div className={styles.home}>
             {floorplan && (
                 <>
                     <Menu

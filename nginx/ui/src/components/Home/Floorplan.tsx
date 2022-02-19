@@ -7,6 +7,7 @@ import {
 import classNames from "classnames";
 import { useMemo } from "react";
 import useOrientation from "../../hooks/orientation";
+import styles from "./Home.module.scss";
 
 interface FloorplanProps {
     floorplan: IFloorplan;
@@ -26,11 +27,11 @@ const Floorplan = ({ floorplan, current }: FloorplanProps) => {
     );
 
     return (
-        <div id="layout">
+        <div className={styles.layout}>
             <svg
                 viewBox={`${size.minX} ${size.minY} ${size.maxX} ${size.maxY}`}
                 preserveAspectRatio="xMidYMid"
-                className={classNames({ rotate, wide: isWide })}
+                className={classNames({ [styles.rotate]: rotate, [styles.wide]: isWide })}
             >
                 <defs>
                     {floorplan.floors.map((floor) => (
@@ -74,7 +75,11 @@ interface FloorProps {
 
 const Floor = ({ floor, visible }: FloorProps) => {
     return (
-        <g id={floor.name} filter={`url(#${outlineId(floor)})`} className={classNames({ visible })}>
+        <g
+            id={floor.name}
+            filter={`url(#${outlineId(floor)})`}
+            className={classNames({ [styles.visible]: visible })}
+        >
             <title>{floor.display_name ?? floor.name}</title>
 
             {floor.rooms.map((room) => (
