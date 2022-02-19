@@ -35,7 +35,6 @@ class ZigbeePairingDevice(Device):
         loop = asyncio.get_event_loop()
         loop.create_task(self.pair())
         
-    
     def _turn_off(self):
         pass
 

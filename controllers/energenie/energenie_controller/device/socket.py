@@ -9,21 +9,19 @@ from energenie_controller.energenie import EnergenieInterface
 
 
 class SocketDevice(Device):
-
     def __init__(
         self,
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
         energenie: EnergenieInterface,
-        name: str,
         device_id=0,  # for individual socket in group,
         home_id=0,  # for ENER314
         retries=2,
         delay=0.2,
         **kwargs
     ):
-        Device.__init__(self, config, logger, mqtt_client, name, **kwargs)
+        Device.__init__(self, config, logger, mqtt_client, **kwargs)
 
         self.__energenie = energenie
         self.__retries = retries

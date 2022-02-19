@@ -142,7 +142,7 @@ class Device(BaseDevice, PowerEventConsumer):
 
         if self.__additional_state:
             for key in self.__additional_state:
-                to_json = getattr(self.__additional_state[key], "to_json", None)
+                to_json = getattr(self.__additional_state[key], 'to_json', None)
 
                 if callable(to_json):
                     result[key] = to_json()

@@ -7,7 +7,7 @@ from energenie_controller.device.socket_group import SocketGroupDevice
 
 class MockSocket(Device):
     def __init__(self, config, logger, mqtt_client):
-        Device.__init__(self, config, logger, mqtt_client, 'socket')
+        Device.__init__(self, config, logger, mqtt_client, name='socket')
     
     def _poll(self):
         pass
@@ -37,8 +37,8 @@ class TestSocketGroupDevice(DeviceTestBase):
         self.devices = ['device1', 'device2']
 
         return SocketGroupDevice(
-            self.config, self.logger, self.mqtt_client, self.device_manager,
-            self.energenie, 'test', self.devices, retries=2, delay=0
+            self.config, self.logger, self.mqtt_client, self.device_manager, self.energenie, 
+            name='test', devices=self.devices, retries=2, delay=0
         )
 
     async def test_run_updates_devices(self, mocker: MockerFixture):

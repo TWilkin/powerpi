@@ -9,7 +9,6 @@ from energenie_controller.energenie import EnergenieInterface
 
 
 class SocketGroupDevice(Device):
-
     def __init__(
         self,
         config: Config,
@@ -17,14 +16,13 @@ class SocketGroupDevice(Device):
         mqtt_client: MQTTClient,
         device_manager: DeviceManager,
         energenie: EnergenieInterface,
-        name: str,
         devices: List[str],
         home_id=0,  # for ENER314
         retries=2,
         delay=0.2,
         **kwargs
     ):
-        Device.__init__(self, config, logger, mqtt_client, name, **kwargs)
+        Device.__init__(self, config, logger, mqtt_client, **kwargs)
 
         self.__device_manager = device_manager
         self.__energenie = energenie
