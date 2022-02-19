@@ -1,4 +1,3 @@
-from asyncio import sleep
 from energenie import switch_on, switch_off
 
 from .energenie import EnergenieInterface

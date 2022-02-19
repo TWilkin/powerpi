@@ -5,7 +5,7 @@ from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.device import Device
 from powerpi_common.mqtt import MQTTClient
-from .energenie import EnergenieInterface
+from energenie_controller.energenie import EnergenieInterface
 
 
 class SocketDevice(Device):

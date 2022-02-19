@@ -1,5 +1,4 @@
 import asyncio
-import json
 
 from typing import Any, Dict, List
 
@@ -7,7 +6,7 @@ from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from energenie_controller.config import EnergenieConfig
-from .energenie import EnergenieInterface
+from energenie_controller.energenie import EnergenieInterface
 
 
 class EnergeniePairingDevice(Device):

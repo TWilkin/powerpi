@@ -1,7 +1,7 @@
 from dependency_injector import providers
 
+from energenie_controller.energenie import import_energenie
 from .energenie_pairing import EnergeniePairingDevice
-from .import_energenie import import_energenie
 from .socket import SocketDevice
 from .socket_group import SocketGroupDevice
 
@@ -9,7 +9,7 @@ from .socket_group import SocketGroupDevice
 def add_devices(container):
     device_container = container.common().device()
 
-    energenie_interface = import_energenie(
+    energenie_interface_type = import_energenie(
         container.config(), container.common().logger()
     )
 
@@ -17,7 +17,7 @@ def add_devices(container):
         device_container,
         'energenie',
         providers.Factory(
-            energenie_interface
+            energenie_interface_type
         )
     )
 

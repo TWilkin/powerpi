@@ -3,7 +3,7 @@ from energenie_controller.config import EnergenieConfig
 
 
 def import_energenie(config: EnergenieConfig, logger: Logger):
-    # import the appropriate implementation of SocketDevice
+    # import the appropriate implementation of EnergenieInterface
     try:
         if config.is_ener314_rt:
             from .ener314rt import EnergenieInterfaceImpl as EnergenieInterface
