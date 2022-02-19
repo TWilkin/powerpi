@@ -16,10 +16,12 @@ class RemoteDevice(StatusEventConsumer):
         logger: Logger,
         mqtt_client: MQTTClient,
         name: str,
+        timeout: float = 12.5,
         **_
     ):
         self.__logger = logger
         self.__name = name
+        self.__timeout = timeout
 
         StatusEventConsumer.__init__(self, self, config, logger)
 
@@ -64,7 +66,7 @@ class RemoteDevice(StatusEventConsumer):
         )
 
         self.__waiting.clear()
-        await self.__wait(12.5)
+        await self.__wait(self.__timeout)
 
         self.__logger.info(
             f'Continuing after device "{self.__name}"'
