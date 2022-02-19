@@ -3,6 +3,7 @@ import pytest
 from pytest_mock import MockerFixture
 from typing import List, Tuple
 
+from powerpi_common_test.mqtt import mock_producer
 from powerpi_common_test.sensor import SensorTestBase
 from zigbee_controller.sensor.osram.switch_mini \
     import Button, PressType, OsramSwitchMiniSensor
@@ -25,12 +26,7 @@ class TestOsramSwitchMiniSensor(SensorTestBase):
 
         self.controller.__getitem__.side_effect = getitem
 
-        mocker.patch('tests.sensor.osram.test_switch_mini.publish')
-        mocker.patch.object(
-            self.mqtt_client,
-            'add_producer',
-            return_value=publish
-        )
+        self.publish = mock_producer(mocker, self.mqtt_client)
 
         return OsramSwitchMiniSensor(
             self.logger, self.controller, self.mqtt_client,
@@ -74,7 +70,7 @@ class TestOsramSwitchMiniSensor(SensorTestBase):
 
         subject.long_middle_button_press_handler([[1, 1]])
 
-        publish.assert_not_called()
+        self.publish.assert_not_called()
     
     def __verify_publish(self, button: Button, press_type: PressType):
         topic = f'event/test/press'
@@ -84,9 +80,4 @@ class TestOsramSwitchMiniSensor(SensorTestBase):
             "type": press_type
         }
 
-        publish.assert_called_once_with(topic, message)
-
-
-def publish(topic: str, message: dict):
-    print(topic)
-    print(message)
+        self.publish.assert_called_once_with(topic, message)
