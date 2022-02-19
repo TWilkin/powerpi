@@ -12,3 +12,6 @@ class EnergenieInterfaceImpl(EnergenieInterface):
 
     def _turn_off(self):
         switch_off(self._device_id)
+    
+    async def _pair(self):
+        pass
