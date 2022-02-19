@@ -12,13 +12,13 @@ import {
     Switch,
 } from "react-router-dom";
 import { LastLocationProvider } from "react-router-last-location";
-import { useGetConfig } from "../hooks/config";
-import Charts from "./Charts";
-import { Menu } from "./Components";
-import DeviceList from "./Devices";
-import HistoryList from "./History";
-import Home from "./Home";
-import Login from "./Login";
+import { useGetConfig } from "../../hooks/config";
+import Charts from "../Charts";
+import { Menu } from "../Components";
+import DeviceList from "../Devices";
+import HistoryList from "../History";
+import Home from "../Home";
+import Login from "../Login";
 import styles from "./Site.module.scss";
 
 interface SiteProps {
