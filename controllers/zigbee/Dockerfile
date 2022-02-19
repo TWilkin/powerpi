@@ -1,5 +1,5 @@
 FROM python:3.8.10-alpine3.12 AS build-image
-LABEL description="Python application to control and respond to Zigbee devices"
+LABEL description="Python application to control and respond to ZigBee devices"
 
 # ensure we have the dependencies to run pip
 RUN apk add --no-cache gcc musl-dev \
@@ -25,6 +25,7 @@ USER powerpi
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/zigbee/.venv ./venv
 
 # add the application
+COPY --chown=powerpi LICENSE ./
 COPY --chown=powerpi controllers/zigbee/zigbee_controller ./zigbee_controller/
 
 # start the application once the container is ready
