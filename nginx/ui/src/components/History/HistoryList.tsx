@@ -1,8 +1,8 @@
 import { PowerPiApi } from "@powerpi/api";
 import { useState } from "react";
 import { useGetHistory } from "../../hooks/history";
+import { Filter, List } from "../Components";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
-import Filter from "../Components/Filter";
 import Loading from "../Components/Loading";
 import { MessageTypeFilters } from "../Components/MessageTypeFilter";
 import PaginationControls from "../Components/PaginationControls";
@@ -42,7 +42,7 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
 
             <div id="history-list">
                 <Loading loading={isHistoryLoading}>
-                    <div className="list">
+                    <List>
                         <PaginationControls page={page} lastPage={lastPage} setPage={setPage} />
                         <table>
                             <thead>
@@ -80,7 +80,7 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
                             </tbody>
                         </table>
                         <PaginationControls page={page} lastPage={lastPage} setPage={setPage} />
-                    </div>
+                    </List>
                 </Loading>
             </div>
         </>

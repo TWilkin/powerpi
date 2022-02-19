@@ -1,5 +1,6 @@
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import styles from "./Loading.module.scss";
 
 interface LoadingProps {
     loading: boolean;
@@ -8,7 +9,7 @@ interface LoadingProps {
 
 const Loading = ({ loading, children }: LoadingProps) =>
     loading ? (
-        <div className="loading">
+        <div className={styles.loading}>
             <FontAwesomeIcon icon={faSpinner} spin={true} />
         </div>
     ) : (

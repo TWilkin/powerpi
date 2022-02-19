@@ -4,10 +4,10 @@ import { PowerPiApi } from "@powerpi/api";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useGetDevices } from "../../hooks/devices";
+import { Filter, List } from "../Components";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import DeviceIcon from "../Components/DeviceIcon";
 import DevicePowerButton from "../Components/DevicePowerButton";
-import Filter from "../Components/Filter";
 import Loading from "../Components/Loading";
 import DeviceFilter, { Filters } from "./DeviceFilter";
 
@@ -32,7 +32,7 @@ const DeviceList = ({ api }: DeviceListProps) => {
 
             <div id="device-list">
                 <Loading loading={isDevicesLoading}>
-                    <div className="list">
+                    <List>
                         <table>
                             <tbody>
                                 {filtered && filtered.length > 0 ? (
@@ -80,7 +80,7 @@ const DeviceList = ({ api }: DeviceListProps) => {
                                 )}
                             </tbody>
                         </table>
-                    </div>
+                    </List>
                 </Loading>
             </div>
         </>

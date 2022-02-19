@@ -1,0 +1,49 @@
+@import "../../../styles/vars.module.scss";
+
+.filter {
+    height: 100%;
+    padding: 2px 30px 2px 2px;
+    position: fixed;
+    top: calc(#{$menu-height} + 1px);
+    left: 0;
+    z-index: 1;
+    background-color: black;
+    color: white;
+    transform: translateX(calc(25px - 100%));
+
+    .filter-button {
+        height: 100%;
+        display: inline-flex;
+        position: fixed;
+        right: 0;
+        align-items: flex-start;
+        cursor: pointer;
+        background-color: black;
+        color: white;
+        border: 0;
+        outline: none;
+    }
+
+    &.slide-in {
+        animation: filter-slide-in 0.8s forwards;
+    }
+
+    &.slide-out {
+        animation: filter-slide-out 0.8s forwards;
+    }
+
+    @keyframes filter-slide-in {
+        100% {
+            transform: translateX(0%);
+        }
+    }
+
+    @keyframes filter-slide-out {
+        0% {
+            transform: translateX(0%);
+        }
+        100% {
+            transform: translateX(calc(25px - 100%));
+        }
+    }
+}
