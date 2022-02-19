@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { useGetHistoryFilters } from "../../hooks/history";
 import DateFilter from "../Components/DateFilter";
-import MessageTypeFilter, { MessageFilterType, MessageTypeFilters } from "../MessageTypeFilter";
+import MessageTypeFilter, {
+    MessageFilterType,
+    MessageTypeFilters,
+} from "../Components/MessageTypeFilter";
 
 export interface ChartFilters extends MessageTypeFilters {
     start?: Date;

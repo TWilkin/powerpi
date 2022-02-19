@@ -4,8 +4,8 @@ import { useGetHistory } from "../../hooks/history";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import Filter from "../Components/Filter";
 import Loading from "../Components/Loading";
+import { MessageTypeFilters } from "../Components/MessageTypeFilter";
 import PaginationControls from "../Components/PaginationControls";
-import { MessageTypeFilters } from "../MessageTypeFilter";
 import HistoryFilter from "./HistoryFilter";
 
 interface HistoryListProps {
