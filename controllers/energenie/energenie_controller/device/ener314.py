@@ -1,3 +1,4 @@
+from asyncio import sleep
 from energenie import switch_on, switch_off
 
 from .energenie import EnergenieInterface
@@ -14,4 +15,10 @@ class EnergenieInterfaceImpl(EnergenieInterface):
         switch_off(self._device_id)
     
     async def _pair(self):
-        pass
+        # to pair we simply turn the device on/off slowly
+        while True:
+            await sleep(1)
+            self._turn_on()
+
+            await sleep(1)
+            self._turn_off()
