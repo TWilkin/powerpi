@@ -4,12 +4,11 @@ import { PowerPiApi } from "@powerpi/api";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useGetDevices } from "../../hooks/devices";
-import { Filter, List } from "../Components";
+import { DeviceIcon, DevicePowerButton, Filter, List } from "../Components";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
-import DeviceIcon from "../Components/DeviceIcon";
-import DevicePowerButton from "../Components/DevicePowerButton";
 import Loading from "../Components/Loading";
 import DeviceFilter, { Filters } from "./DeviceFilter";
+import styles from "./Devices.module.scss";
 
 interface DeviceListProps {
     api: PowerPiApi;
@@ -30,7 +29,7 @@ const DeviceList = ({ api }: DeviceListProps) => {
                 <DeviceFilter devices={devices} updateFilters={setFilters} />
             </Filter>
 
-            <div id="device-list">
+            <div className={styles["device-list"]}>
                 <Loading loading={isDevicesLoading}>
                     <List>
                         <table>
@@ -39,28 +38,26 @@ const DeviceList = ({ api }: DeviceListProps) => {
                                     filtered.map((device) => (
                                         <tr
                                             key={device.name}
-                                            className="device"
+                                            className={styles.device}
                                             title={`Device ${device.name} is currently ${device.state}.`}
                                         >
                                             <td>
                                                 <DeviceIcon type={device.type} />
                                             </td>
 
-                                            <td className="device-name">
-                                                {device.display_name ?? device.name}
-                                            </td>
+                                            <td>{device.display_name ?? device.name}</td>
 
-                                            <td className="device-state">
+                                            <td className={styles["device-state"]}>
                                                 <DevicePowerButton api={api} device={device} />
                                             </td>
 
-                                            <td className="device-since">
+                                            <td>
                                                 {device.since && device.since > -1 && (
                                                     <AbbreviatingTime date={device.since} />
                                                 )}
                                             </td>
 
-                                            <td className="device-history">
+                                            <td>
                                                 <Link
                                                     to={`/history?type=device&entity=${device.name}`}
                                                 >

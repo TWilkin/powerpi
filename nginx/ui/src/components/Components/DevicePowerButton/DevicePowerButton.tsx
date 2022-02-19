@@ -4,7 +4,8 @@ import { Device, DeviceState, PowerPiApi } from "@powerpi/api";
 import classNames from "classnames";
 import { MouseEvent, useState } from "react";
 import { useLongPress } from "use-long-press";
-import { useSetDeviceState } from "../../hooks/devices";
+import { useSetDeviceState } from "../../../hooks/devices";
+import styles from "./DevicePowerButton.module.scss";
 
 interface DevicePowerButtonProps {
     api: PowerPiApi;
@@ -54,14 +55,14 @@ const DevicePowerButton = ({ api, device }: DevicePowerButtonProps) => {
     // show the power toggle control
     if (toggle) {
         return (
-            <div className="slider" onClick={handleSliderClick} {...longPress}>
+            <div className={styles.slider} onClick={handleSliderClick} {...longPress}>
                 <span
                     className={classNames(
-                        "slider-bar",
-                        { on: device.state === DeviceState.On },
-                        { off: device.state === DeviceState.Off },
-                        { unknown: device.state === DeviceState.Unknown },
-                        { loading: isDeviceStateLoading }
+                        styles["slider-bar"],
+                        { [styles.on]: device.state === DeviceState.On },
+                        { [styles.off]: device.state === DeviceState.Off },
+                        { [styles.unknown]: device.state === DeviceState.Unknown },
+                        { [styles.loading]: isDeviceStateLoading }
                     )}
                 />
             </div>
@@ -70,11 +71,17 @@ const DevicePowerButton = ({ api, device }: DevicePowerButtonProps) => {
 
     // show an on/off button
     return (
-        <div className="buttons">
-            <button className="on" onClick={(event) => handleButtonClick(event, DeviceState.On)}>
+        <div className={styles.buttons}>
+            <button
+                className={styles.on}
+                onClick={(event) => handleButtonClick(event, DeviceState.On)}
+            >
                 <FontAwesomeIcon icon={faPowerOff} />
             </button>
-            <button className="off" onClick={(event) => handleButtonClick(event, DeviceState.Off)}>
+            <button
+                className={styles.off}
+                onClick={(event) => handleButtonClick(event, DeviceState.Off)}
+            >
                 <FontAwesomeIcon icon={faPowerOff} />
             </button>
         </div>

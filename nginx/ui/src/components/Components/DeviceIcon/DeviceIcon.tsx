@@ -9,6 +9,7 @@ import {
     faTv,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import styles from "./DeviceIcon.module.scss";
 
 interface DeviceIconProps {
     type: string;
@@ -16,7 +17,7 @@ interface DeviceIconProps {
 
 const DeviceIcon = ({ type }: DeviceIconProps) => {
     return (
-        <div className="device-icon">
+        <div className={styles["device-icon"]}>
             <FontAwesomeIcon icon={getDeviceTypeIcon(type)} />
         </div>
     );

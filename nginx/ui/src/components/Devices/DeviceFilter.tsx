@@ -1,7 +1,7 @@
 import { Device } from "@powerpi/api";
 import { ChangeEvent, useEffect, useState } from "react";
-import DeviceIcon from "../Components/DeviceIcon";
-import Loading from "../Components/Loading";
+import { DeviceIcon, Loading } from "../Components";
+import styles from "./Devices.module.scss";
 
 interface DeviceFilterProps {
     devices?: Device[];
@@ -45,7 +45,7 @@ const DeviceFilter = ({ devices, updateFilters }: DeviceFilterProps) => {
     };
 
     return (
-        <div id="device-filters">
+        <div className={styles["device-filters"]}>
             <Loading loading={!types}>
                 {types?.map((type) => (
                     <label key={type}>
@@ -57,7 +57,7 @@ const DeviceFilter = ({ devices, updateFilters }: DeviceFilterProps) => {
                             onChange={handleTypeFilterChange}
                         />
                         <DeviceIcon type={type} />
-                        <div className="device-type">{type}</div>
+                        <div>{type}</div>
                     </label>
                 ))}
             </Loading>

@@ -1,0 +1,32 @@
+@import "../../styles/vars.module.scss";
+
+.device-filters,
+.device-list {
+    label {
+        display: flex;
+    }
+}
+
+.device-list {
+    margin-left: calc(1rem + 8px);
+    flex-direction: column;
+    justify-content: center;
+
+    tbody {
+        tr {
+            &:nth-child(even) {
+                td {
+                    background-color: $highlight-colour;
+                }
+            }
+        }
+    }
+
+    .device {
+        max-width: 600px;
+
+        .device-state {
+            display: flex;
+        }
+    }
+}
