@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChangeEvent } from "react";
+import styles from "./PaginationControls.module.scss";
 
 interface PaginationControlsProps {
     page: number;
@@ -24,7 +25,7 @@ const PaginationControls = ({ page, setPage, lastPage = page }: PaginationContro
     };
 
     return (
-        <div className="pagination-controls">
+        <div className={styles["pagination-controls"]}>
             <PaginationButton
                 page={0}
                 title="First Page"

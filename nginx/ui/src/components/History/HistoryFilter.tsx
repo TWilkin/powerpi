@@ -6,6 +6,7 @@ import MessageTypeFilter, {
     MessageFilterType,
     MessageTypeFilters,
 } from "../Components/MessageTypeFilter";
+import styles from "./History.module.scss";
 
 interface HistoryFilterProps {
     api: PowerPiApi;
@@ -35,7 +36,7 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
     };
 
     return (
-        <div id="history-filters">
+        <div className={styles["history-filters"]}>
             <MessageTypeFilter
                 name="Type"
                 type="type"

@@ -1,12 +1,12 @@
 import { PowerPiApi } from "@powerpi/api";
 import { useState } from "react";
 import { useGetHistory } from "../../hooks/history";
-import { Filter, List } from "../Components";
+import { Filter, List, PaginationControls } from "../Components";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import Loading from "../Components/Loading";
 import { MessageTypeFilters } from "../Components/MessageTypeFilter";
-import PaginationControls from "../Components/PaginationControls";
 import HistoryFilter from "./HistoryFilter";
+import styles from "./History.module.scss";
 
 interface HistoryListProps {
     api: PowerPiApi;
@@ -40,7 +40,7 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
                 <HistoryFilter api={api} query={query} updateFilter={setFilters} />
             </Filter>
 
-            <div id="history-list">
+            <div className={styles["history-list"]}>
                 <Loading loading={isHistoryLoading}>
                     <List>
                         <PaginationControls page={page} lastPage={lastPage} setPage={setPage} />

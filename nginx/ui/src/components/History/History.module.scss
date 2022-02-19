@@ -1,0 +1,38 @@
+@import "../../styles/vars.module.scss";
+
+.history-filters {
+    label {
+        display: inline-block;
+        width: 3.75rem;
+    }
+
+    select {
+        width: calc(100% - 4rem);
+    }
+
+    .loading {
+        display: inline;
+    }
+}
+
+.history-list {
+    margin-left: calc(1rem + 8px);
+
+    table {
+        th,
+        td {
+            padding: 0 5px;
+            white-space: nowrap;
+        }
+
+        tbody {
+            tr {
+                &:nth-child(even) {
+                    td {
+                        background-color: $highlight-colour;
+                    }
+                }
+            }
+        }
+    }
+}
