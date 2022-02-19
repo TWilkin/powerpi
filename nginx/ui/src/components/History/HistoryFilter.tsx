@@ -1,17 +1,17 @@
 import { PowerPiApi } from "@powerpi/api";
-import queryString from "query-string";
+import { useCallback } from "react";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useGetHistoryFilters } from "../../hooks/history";
 import { MessageFilterType, MessageTypeFilter, MessageTypeFilters } from "../Components";
 import styles from "./History.module.scss";
 
 interface HistoryFilterProps {
     api: PowerPiApi;
-    query?: string;
     updateFilter: (filters: MessageTypeFilters) => void;
 }
 
-const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
+const HistoryFilter = ({ api, updateFilter }: HistoryFilterProps) => {
     const { actions, entities, types } = useGetHistoryFilters(api);
 
     const [filters, setFilters] = useState<MessageTypeFilters>({
@@ -20,17 +20,22 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
         action: undefined,
     });
 
+    const [query] = useSearchParams();
+
     useEffect(() => {
         setFilters(parseQuery(query));
     }, [query]);
 
     useEffect(() => updateFilter(filters), [filters, updateFilter]);
 
-    const selectFilter = (type: MessageFilterType, value: string) => {
-        const newFilter = { ...filters };
-        newFilter[type] = value;
-        setFilters(newFilter);
-    };
+    const selectFilter = useCallback(
+        (type: MessageFilterType, value: string) => {
+            const newFilter = { ...filters };
+            newFilter[type] = value;
+            setFilters(newFilter);
+        },
+        [filters]
+    );
 
     return (
         <div className={styles.filters}>
@@ -66,12 +71,10 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
 };
 export default HistoryFilter;
 
-function parseQuery(query: string | undefined): MessageTypeFilters {
-    const parsed = query ? queryString.parse(query) : undefined;
-
+function parseQuery(query: URLSearchParams): MessageTypeFilters {
     return {
-        type: (parsed?.type ?? undefined) as string | undefined,
-        entity: (parsed?.entity ?? undefined) as string | undefined,
-        action: (parsed?.action ?? undefined) as string | undefined,
+        type: query.get("type") ?? undefined,
+        entity: query.get("entity") ?? undefined,
+        action: query.get("action") ?? undefined,
     };
 }

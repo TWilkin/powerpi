@@ -37,10 +37,9 @@ const MenuItem = ({ path, name, icon, visible = true }: MenuItemProps) => {
     if (visible) {
         return (
             <NavLink
-                exact
                 to={path}
                 className={classNames(styles["menu-item"], {
-                    active: location.pathname.startsWith(path),
+                    [styles.active]: location.pathname.startsWith(path),
                 })}
                 title={name}
             >

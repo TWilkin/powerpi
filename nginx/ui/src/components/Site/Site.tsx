@@ -2,24 +2,17 @@ import { faChartLine, faHistory, faHome, faPlug } from "@fortawesome/free-solid-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PowerPiApi } from "@powerpi/api";
 import HttpStatusCodes from "http-status-codes";
-import { useMemo } from "react";
-import {
-    BrowserRouter,
-    NavLink,
-    Redirect,
-    Route,
-    RouteComponentProps,
-    Switch,
-} from "react-router-dom";
-import { LastLocationProvider } from "react-router-last-location";
+import { lazy, Suspense, useMemo } from "react";
+import { BrowserRouter, Navigate, NavLink, Route, Routes } from "react-router-dom";
 import { useGetConfig } from "../../hooks/config";
-import Charts from "../Charts";
 import { Menu } from "../Components";
-import DeviceList from "../Devices";
-import HistoryList from "../History";
-import Home from "../Home";
-import Login from "../Login";
 import styles from "./Site.module.scss";
+
+const Charts = lazy(() => import("../Charts"));
+const Devices = lazy(() => import("../Devices"));
+const History = lazy(() => import("../History"));
+const Home = lazy(() => import("../Home"));
+const Login = lazy(() => import("../Login"));
 
 interface SiteProps {
     api: PowerPiApi;
@@ -82,54 +75,43 @@ const Site = ({ api }: SiteProps) => {
 
     return (
         <BrowserRouter>
-            <LastLocationProvider>
-                <header className={styles.header}>
-                    <div className={styles.logo}>
-                        <NavLink exact to="/">
-                            <FontAwesomeIcon icon={faPlug} /> PowerPi
-                        </NavLink>
-                    </div>
+            <header className={styles.header}>
+                <div className={styles.logo}>
+                    <NavLink to="/">
+                        <FontAwesomeIcon icon={faPlug} /> PowerPi
+                    </NavLink>
+                </div>
 
-                    <Menu items={menuItems} visible={!isConfigLoading && !isConfigError} />
-                </header>
+                <Menu items={menuItems} visible={!isConfigLoading && !isConfigError} />
+            </header>
 
-                <div className={styles.content}>
-                    <Switch>
-                        <Redirect exact from="/" to={`/${defaultPage}`} />
+            <div className={styles.content}>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Routes>
+                        <Route path="/" element={<Navigate to={`/${defaultPage}`} />} />
 
-                        <Route path="/login">
-                            <Login />
-                        </Route>
+                        <Route path="/login" element={<Login />} />
 
                         {config?.hasFloorplan && (
-                            <Route path="/home">
-                                <Home api={api} />
+                            <Route path="/home" element={<Home api={api} />}>
+                                <Route path=":floor" element={<Home api={api} />} />
                             </Route>
                         )}
 
                         {config?.hasDevices && (
-                            <Route path="/devices">
-                                <DeviceList api={api} />
-                            </Route>
+                            <Route path="/devices" element={<Devices api={api} />} />
                         )}
 
                         {config?.hasPersistence && (
                             <>
-                                <Route
-                                    path="/history"
-                                    render={(props: RouteComponentProps) => (
-                                        <HistoryList api={api} query={props.location.search} />
-                                    )}
-                                />
+                                <Route path="/history" element={<History api={api} />} />
 
-                                <Route path="/charts">
-                                    <Charts api={api} />
-                                </Route>
+                                <Route path="/charts" element={<Charts api={api} />} />
                             </>
                         )}
-                    </Switch>
-                </div>
-            </LastLocationProvider>
+                    </Routes>
+                </Suspense>
+            </div>
         </BrowserRouter>
     );
 };

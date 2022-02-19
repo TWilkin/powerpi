@@ -1,6 +1,6 @@
 import { PowerPiApi, Sensor } from "@powerpi/api";
 import { useMemo } from "react";
-import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useGetFloorplan } from "../../hooks/floorplan";
 import useGetSensors from "../../hooks/sensors";
 import { Menu } from "../Components";
@@ -13,6 +13,7 @@ interface HomeProps {
 }
 
 const Home = ({ api }: HomeProps) => {
+    const { floor } = useParams();
     const { floorplan } = useGetFloorplan(api);
     const { sensors } = useGetSensors(api);
 
@@ -53,30 +54,11 @@ const Home = ({ api }: HomeProps) => {
                         visible={floorplan.floors.length > 1}
                     />
 
-                    <Switch>
-                        {defaultFloor && (
-                            <Redirect exact from="/home" to={`/home/${defaultFloor}`} />
-                        )}
+                    <Floorplan floorplan={floorplan} current={floor ?? defaultFloor} />
 
-                        <Route
-                            path="/home/:floor"
-                            render={(props: RouteComponentProps<{ floor: string }>) => (
-                                <>
-                                    <Floorplan
-                                        floorplan={floorplan}
-                                        current={props.match.params.floor}
-                                    />
-
-                                    {locations?.map((location) => (
-                                        <Tooltip
-                                            key={`${location.floor}${location.location}`}
-                                            {...location}
-                                        />
-                                    ))}
-                                </>
-                            )}
-                        />
-                    </Switch>
+                    {locations?.map((location) => (
+                        <Tooltip key={`${location.floor}${location.location}`} {...location} />
+                    ))}
                 </>
             )}
         </div>

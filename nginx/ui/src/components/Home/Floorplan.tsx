@@ -11,7 +11,7 @@ import styles from "./Home.module.scss";
 
 interface FloorplanProps {
     floorplan: IFloorplan;
-    current: string;
+    current: string | undefined;
 }
 
 const Floorplan = ({ floorplan, current }: FloorplanProps) => {

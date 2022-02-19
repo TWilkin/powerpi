@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { useLastLocation } from "react-router-last-location";
 import styles from "./Login.module.scss";
 
 interface LoginButtonProps {
@@ -22,14 +21,9 @@ const Login = () => {
 export default Login;
 
 function useLogin(protocol: string) {
-    const lastLocation = useLastLocation();
-
     return useCallback(() => {
-        const redirectUri = lastLocation ? lastLocation.pathname : "";
-        const path = `/api/auth/${protocol.toLowerCase()}?redirect_uri=${
-            window.location.origin
-        }/${redirectUri}`;
+        const path = `/api/auth/${protocol.toLowerCase()}?redirect_uri=${window.location.origin}/`;
 
         window.location.href = path;
-    }, [lastLocation, protocol]);
+    }, [protocol]);
 }

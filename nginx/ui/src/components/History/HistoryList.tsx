@@ -14,10 +14,9 @@ import styles from "./History.module.scss";
 
 interface HistoryListProps {
     api: PowerPiApi;
-    query: string | undefined;
 }
 
-const HistoryList = ({ api, query }: HistoryListProps) => {
+const HistoryList = ({ api }: HistoryListProps) => {
     const [page, setPage] = useState(0);
     const [filters, setFilters] = useState<MessageTypeFilters>({
         type: undefined,
@@ -41,7 +40,7 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
     return (
         <>
             <Filter>
-                <HistoryFilter api={api} query={query} updateFilter={setFilters} />
+                <HistoryFilter api={api} updateFilter={setFilters} />
             </Filter>
 
             <div className={styles.list}>
