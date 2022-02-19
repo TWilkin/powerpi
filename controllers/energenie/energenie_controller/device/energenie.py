@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from asyncio import wait_for, sleep
+from asyncio.exceptions import TimeoutError
 from contextlib import suppress
 from threading import Lock
 

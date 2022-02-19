@@ -18,6 +18,6 @@ def import_energenie(config: EnergenieConfig, logger: Logger):
         logger.warn(
             'DEVICE_FATAL=false, using dummy device, no sockets will turn on/off'
         )
-        from .energenie import EnergenieInterface
+        from .dummy import DummyEnergenieInterface as EnergenieInterface
 
     return EnergenieInterface
