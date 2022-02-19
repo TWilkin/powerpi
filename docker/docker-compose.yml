@@ -16,7 +16,7 @@ services:
               target: /mosquitto/config/mosquitto.conf
 
     clacks-config:
-        image: ${REGISTRY}/powerpi/clacks-config:0.0.2
+        image: ${REGISTRY}/powerpi/clacks-config:0.0.3
         networks:
             - powerpi
         deploy:
@@ -31,7 +31,7 @@ services:
             - FILE_PATH=docker/config
 
     deep-thought:
-        image: ${REGISTRY}/powerpi/deep-thought:0.5.9
+        image: ${REGISTRY}/powerpi/deep-thought:0.5.10
         networks:
             - powerpi
         deploy:
@@ -69,7 +69,7 @@ services:
             - deep-thought
 
     macro-controller:
-        image: ${REGISTRY}/powerpi/controllers/macro:1.0.4
+        image: ${REGISTRY}/powerpi/controllers/macro:1.1.0
         networks:
             - powerpi
         deploy:
@@ -77,8 +77,8 @@ services:
         depends_on:
             - mosquitto
 
-    device-mapper:
-        image: ${REGISTRY}/powerpi/device-mapper:0.0.4
+    device-mapper-energenie:
+        image: ${REGISTRY}/powerpi/device-mapper:0.0.5
         networks:
             - powerpi
         deploy:
@@ -89,16 +89,15 @@ services:
         depends_on:
             - mosquitto
         environment:
-            - DEVICE_FATAL=true
-            - ENERGENIE_DEVICE=ENER314-RT
+            - ENV=ENERGENIE_DEVICE=ENER314-RT:DEVICE_FATAL=true
             - CONTROLLER_NAME=energenie-controller
-            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.0.8
-            - GPIOMEM=/dev/gpiomem
+            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.1.0
+            - DEVICE=/dev/gpiomem
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
 
     harmony-controller:
-        image: ${REGISTRY}/powerpi/controllers/harmony:0.0.6
+        image: ${REGISTRY}/powerpi/controllers/harmony:0.1.0
         networks:
             - powerpi
         deploy:
@@ -107,13 +106,33 @@ services:
             - mosquitto
 
     lifx-controller:
-        image: ${REGISTRY}/powerpi/controllers/lifx:0.0.4
+        image: ${REGISTRY}/powerpi/controllers/lifx:0.1.0
         networks:
             - powerpi
         deploy:
             replicas: 1
         depends_on:
             - mosquitto
+
+    device-mapper-zigbee:
+        image: ${REGISTRY}/powerpi/device-mapper:0.0.5
+        networks:
+            - powerpi
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.labels.zigbee == true
+        depends_on:
+            - mosquitto
+        environment:
+            - ENV=ZIGBEE_DEVICE=/dev/ttyACM0:DATABASE_PATH=/var/data/zigbee.db
+            - CONTROLLER_NAME=zigbee-controller
+            - IMAGE=${REGISTRY}/powerpi/controllers/zigbee:0.1.0
+            - DEVICE=/dev/ttyACM0
+            - VOLUME=/srv/docker-volumes/powerpi/zigbee-controller
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
 
     light-fantastic:
         image: ${REGISTRY}/powerpi/light-fantastic:0.2.1
@@ -125,7 +144,7 @@ services:
             - mosquitto
 
     freedns:
-        image: ${REGISTRY}/powerpi/freedns:0.0.8
+        image: ${REGISTRY}/powerpi/freedns:0.0.9
         networks:
             - powerpi
         deploy:
@@ -137,7 +156,7 @@ services:
             - FREEDNS_PASSWORD=/var/run/secrets/powerpi_freedns
 
     nginx:
-        image: ${REGISTRY}/powerpi/nginx:1.2.5
+        image: ${REGISTRY}/powerpi/nginx:1.2.6
         networks:
             - powerpi
         ports:

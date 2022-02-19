@@ -4,8 +4,11 @@ from .energenie import EnergenieInterface
 
 
 class EnergenieInterfaceImpl(EnergenieInterface):
-    def turn_on(self):
+    def __init__(self):
+        EnergenieInterface.__init__(self)
+        
+    def _turn_on(self):
         switch_on(self._device_id)
 
-    def turn_off(self):
+    def _turn_off(self):
         switch_off(self._device_id)

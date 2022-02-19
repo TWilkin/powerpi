@@ -1,5 +1,6 @@
 import pytest
 
+from asyncio import Future
 from pytest_mock import MockerFixture
 from unittest.mock import PropertyMock
 
@@ -15,40 +16,50 @@ class TestCompositeDevice(DeviceTestBase):
         self.device_manager = mocker.Mock()
 
         self.device = mocker.Mock()
+
         mocker.patch.object(
             self.device_manager, 'get_device', return_value=self.device
         )
+
+        future = Future()
+        future.set_result(None)
+        for method in ['turn_on', 'turn_off']:
+            mocker.patch.object(
+                self.device,
+                method,
+                return_value=future
+            )
 
         return CompositeDevice(
             self.config, self.logger, self.mqtt_client, self.device_manager, 'composite',
             ['device1', 'device2']
         )
 
-    def test_all_on(self, mocker: MockerFixture):
+    async def test_all_on(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
-        subject.turn_on()
+        await subject.turn_on()
 
         self.device.turn_on.assert_has_calls(
             [mocker.call(), mocker.call()]
         )
 
-    def test_all_off(self, mocker: MockerFixture):
+    async def test_all_off(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
-        subject.turn_off()
+        await subject.turn_off()
 
         self.device.turn_off.assert_has_calls(
             [mocker.call(), mocker.call()]
         )
 
     @pytest.mark.parametrize('test_state', [('on'), ('off'), ('unknown')])
-    def test_poll(self, mocker: MockerFixture, test_state: str):
+    async def test_poll(self, mocker: MockerFixture, test_state: str):
         subject = self.get_subject(mocker)
 
         self.device_state = PropertyMock(return_value=test_state)
         type(self.device).state = self.device_state
 
         assert subject.state == 'unknown'
-        subject.poll()
+        await subject.poll()
         assert subject.state == test_state

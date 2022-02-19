@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-cachetools = "~=4.2.1"
+async-cache = "~=1.1.1"
 lazy = "~=1.4"
 powerpi-common = {path = "./../../common/python"}
 pyharmony = "~=1.0.21"
@@ -13,6 +13,7 @@ pyharmony = "~=1.0.21"
 autopep8 = "~=1.5.5"
 powerpi-common-test = {editable = true, path = "./../../common/pytest"}
 pylint = "~=2.7.1"
+pytest-ordering = "~=0.6"
 
 [requires]
 python_version = "3"

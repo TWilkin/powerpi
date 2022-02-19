@@ -1,10 +1,9 @@
 import asyncio
-import json
-import sys
+import os
 
-from ..config import Config
-from ..logger import Logger
-from ..mqtt import MQTTClient, MQTTConsumer
+from powerpi_common.logger import Logger
+from powerpi_common.mqtt import MQTTClient, MQTTConsumer, MQTTMessage
+from .config import Config
 
 
 class ConfigRetriever(object):
@@ -14,9 +13,9 @@ class ConfigRetriever(object):
         self.__mqtt_client = mqtt_client
 
     async def start(self):
-        # subscribe to change topic for each device type
-        for type in self.__config.used_config:
-            topic = f'config/{type}/change'
+        # subscribe to change topic for each file type
+        for file_type in self.__config.used_config:
+            topic = f'config/{file_type}/change'
             consumer = ConfigConsumer(topic, self.__config, self.__logger)
             self.__mqtt_client.add_consumer(consumer)
         
@@ -45,14 +44,13 @@ class ConfigRetriever(object):
             await asyncio.sleep(interval)
 
 
-
 class ConfigConsumer(MQTTConsumer):
     def __init__(self, topic: str, config: Config, logger: Logger):
         MQTTConsumer.__init__(
             self, topic, config, logger
         )
     
-    def on_message(self, _, __, message, entity, ___):
+    def on_message(self, message: MQTTMessage, entity: str, _):
         self._logger.info(f'Received config for {entity}')
 
         if self._config.config_is_needed \
@@ -60,7 +58,7 @@ class ConfigConsumer(MQTTConsumer):
             and self._config.get_config(entity) is not None:
                 # this is a changed config and used, so we should restart the service
                 self._logger.info(f'Restarting service due to changed {entity} config')
-                sys.exit(0)
+                os._exit(0)
         else:
             # this is a new or unused config, so just set it
             self._config.set_config(entity, message.get('payload'))

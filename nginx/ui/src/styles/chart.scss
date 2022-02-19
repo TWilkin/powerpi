@@ -1,6 +1,8 @@
 @import "./vars.scss";
 
 #charts {
+    margin-left: calc(1rem + 8px);
+
     .chart {
         $chart-size: 80vw;
 

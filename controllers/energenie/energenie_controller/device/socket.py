@@ -1,6 +1,5 @@
-import time
-
-from collections.abc import Callable
+from asyncio import sleep
+from typing import Callable
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
@@ -31,14 +30,17 @@ class SocketDevice(Device):
         self.__delay = delay
 
         self.__energenie.set_ids(home_id, device_id)
+    
+    def _poll(self):
+        pass
 
-    def _turn_on(self):
-        self._run(self.__energenie.turn_on)
+    async def _turn_on(self):
+        await self._run(self.__energenie.turn_on)
 
-    def _turn_off(self):
-        self._run(self.__energenie.turn_off)
+    async def _turn_off(self):
+        await self._run(self.__energenie.turn_off)
 
-    def _run(self, func: Callable):
+    async def _run(self, func: Callable):
         for _ in range(0, self.__retries):
             func()
-            time.sleep(self.__delay)
+            await sleep(self.__delay)

@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+powerpi-common = {path = "./../../common/python"}
+zigpy = "~=0.43.0"
+zigpy-znp = "~=0.7.0"
+
+[dev-packages]
+autopep8 = "~=1.5.5"
+powerpi-common-test = {editable = true, path = "./../../common/pytest"}
+pylint = "~=2.7.1"
+pysqlite3-binary = "~=0.4.6"
+
+[requires]
+python_version = "3.8"
+
+[scripts]
+start = "python -m zigbee_controller"
+test = "python -m pytest -v"
+scan = "python -m zigpy_znp.tools.network_scan"

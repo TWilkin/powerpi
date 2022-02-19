@@ -30,7 +30,7 @@ const ChartFilter = ({ api, updateFilter }: ChartFilterProps) => {
         action: undefined,
     });
 
-    useEffect(() => updateFilter(filters), [filters]);
+    useEffect(() => updateFilter(filters), [filters, updateFilter]);
 
     const selectFilter = useCallback(
         (type: MessageFilterType, value: string) => {

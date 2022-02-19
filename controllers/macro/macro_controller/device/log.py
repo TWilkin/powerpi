@@ -4,7 +4,7 @@ from powerpi_common.device import Device
 from powerpi_common.mqtt import MQTTClient
 
 
-class TestDevice(Device):
+class LogDevice(Device):
     def __init__(
         self,
         config: Config,
@@ -18,7 +18,7 @@ class TestDevice(Device):
 
         self.__message = message
 
-    def poll(self):
+    def _poll(self):
         pass
 
     def _turn_on(self):

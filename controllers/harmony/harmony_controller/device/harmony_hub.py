@@ -1,30 +1,23 @@
-from cachetools import cached, TTLCache
+from cache import AsyncTTL
 from threading import Lock
+from typing import Dict, NamedTuple
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.device import Device, DeviceManager, ThreadedDevice
+from powerpi_common.device import Device, DeviceManager
 from powerpi_common.mqtt import MQTTClient
-from harmony_controller.device.harmony_client import HarmonyClient
+from .harmony_client import HarmonyClient
 
 
-class Activity(object):
-    def __init__(
-        self, id: int, device: Device
-    ):
-        self.__id = id
-        self.__device = device
+class Activity(NamedTuple):
+    id: int
+    device: Device
 
-    @property
-    def id(self):
-        return self.__id
-
-    @property
-    def device(self):
-        return self.__device
+    def __str__(self):
+        return f'{self.id}: {self.device}'
 
 
-class HarmonyHubDevice(ThreadedDevice):
+class HarmonyHubDevice(Device):
     __POWER_OFF_ID = -1
 
     def __init__(
@@ -40,8 +33,9 @@ class HarmonyHubDevice(ThreadedDevice):
         port: int = 5222,
         **kwargs
     ):
-        ThreadedDevice.__init__(self, config, logger,
-                                mqtt_client, name, **kwargs)
+        Device.__init__(
+            self, config, logger, mqtt_client, name, **kwargs
+        )
 
         self.__device_manager = device_manager
 
@@ -52,55 +46,55 @@ class HarmonyHubDevice(ThreadedDevice):
         self.__cache_lock = Lock()
         self.__activity_lock = Lock()
 
-    def poll(self):
-        current_activity_id = self.__client.get_current_activity()
+    async def _poll(self):
+        current_activity_id = await self.__client.get_current_activity()
 
-        self.__update_activity_state(current_activity_id)
+        await self.__update_activity_state(current_activity_id)
 
     def _turn_on(self):
         pass
 
-    def _turn_off(self):
+    async def _turn_off(self):
         with self.__activity_lock:
-            self.__client.power_off()
+            await self.__client.power_off()
 
         # update the state to off for all activities
-        self.__update_activity_state(self.__POWER_OFF_ID)
+        await self.__update_activity_state(self.__POWER_OFF_ID)
 
-    def start_activity(self, name: str):
-        activities = self.__activities()
+    async def start_activity(self, name: str):
+        activities = await self.__activities()
 
         if name in activities:
             with self.__activity_lock:
-                self.__client.start_activity(activities[name].id)
+                await self.__client.start_activity(activities[name].id)
 
                 # only one activity can be started, so update the state
-                self.__update_activity_state(activities[name].id, False)
+                await self.__update_activity_state(activities[name].id, False)
         else:
             self._logger.error(
                 f'Activity "{name}" for {self} not found'
             )
 
-    @cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
-    def __config(self):
+    @AsyncTTL(maxsize=1, time_to_live=10 * 60, skip_args=1)
+    async def __config(self):
         self._logger.info(
             f'Loading config for {self}'
         )
 
         with self.__cache_lock:
-            return self.__client.get_config()
+            return await self.__client.get_config()
 
-    @cached(cache=TTLCache(maxsize=1, ttl=10 * 60))
-    def __activities(self):
+    async def __activities(self) -> Dict[str, Activity]:
         devices = self.__device_manager.devices.values()
         activities = {}
 
-        for activity in self.__config()['activity']:
+        config = await self.__config()
+        for activity in config['activity']:
             device = next(
                 (device for device in devices if
                     hasattr(device, 'activity_name')
                     and device.activity_name == activity['label']
-                 ),
+                ),
                 None
             )
 
@@ -116,8 +110,10 @@ class HarmonyHubDevice(ThreadedDevice):
 
         return activities
 
-    def __update_activity_state(self, current_activity_id: int, update_current=True):
-        for activity in self.__activities().values():
+    async def __update_activity_state(self, current_activity_id: int, update_current: bool=True):
+        activities = await self.__activities()
+
+        for activity in activities.values():
             # when we're running start_activity we don't want to update the current
             # as it will update itself when we return from that call
             if activity.id == current_activity_id and not update_current:

@@ -1,10 +1,22 @@
-from datetime import datetime
-
 from pytest_mock import MockerFixture
 
 from powerpi_common.device import Device
 from powerpi_common_test.device import DeviceTestBase
 from energenie_controller.device.socket_group import SocketGroupDevice
+
+
+class MockSocket(Device):
+    def __init__(self, config, logger, mqtt_client):
+        Device.__init__(self, config, logger, mqtt_client, 'socket')
+    
+    def _poll(self):
+        pass
+    
+    def _turn_on(self):
+        pass
+
+    def _turn_off(self):
+        pass
 
 
 class TestSocketGroupDevice(DeviceTestBase):
@@ -15,8 +27,8 @@ class TestSocketGroupDevice(DeviceTestBase):
         self.device_manager = mocker.Mock()
         self.energenie = mocker.Mock()
 
-        self.socket = Device(
-            self.config, self.logger, self.mqtt_client, 'socket'
+        self.socket = MockSocket(
+            self.config, self.logger, self.mqtt_client
         )
         mocker.patch.object(
             self.device_manager, 'get_device', return_value=self.socket
@@ -29,7 +41,7 @@ class TestSocketGroupDevice(DeviceTestBase):
             self.energenie, 'test', self.devices, retries=2, delay=0
         )
 
-    def test_run_updates_devices(self, mocker: MockerFixture):
+    async def test_run_updates_devices(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
         self.counter = 0
@@ -39,7 +51,7 @@ class TestSocketGroupDevice(DeviceTestBase):
 
         assert self.socket.state == 'unknown'
 
-        subject._run(func, 'on')
+        await subject._run(func, 'on')
 
         assert self.counter == 2
 

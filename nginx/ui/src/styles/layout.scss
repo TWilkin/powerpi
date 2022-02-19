@@ -5,19 +5,50 @@ body {
 }
 
 .header {
+    $logo-width: calc(0.7rem + 12px);
+
     width: 100%;
+    height: calc($menu-height + 2px);
     position: fixed;
     top: 0;
     left: 0;
     z-index: 1;
+    display: flex;
+    background-color: black;
+
+    .logo {
+        width: $menu-height;
+        height: $logo-width;
+        position: absolute;
+        top: 0;
+        left: 0;
+        white-space: nowrap;
+        transform: rotate(-90deg) translateY(-#{$menu-height}) translateX(-2px);
+        transform-origin: $menu-height 0;
+        background-color: black;
+        color: white;
+        line-height: $logo-width;
+        font-size: 0.8rem;
+        text-align: center;
+        border: 1px solid black;
+
+        a {
+            text-decoration: none;
+
+            &:visited {
+                color: white;
+            }
+        }
+    }
 
     .menu {
-        width: 100vw;
+        width: calc(100% - #{$logo-width});
+        margin-left: $logo-width;
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
 
-        .menu-element {
+        .menu-item {
             height: $menu-height;
             flex: 1;
             font-size: 1.6rem;
@@ -31,12 +62,18 @@ body {
             &.active {
                 background-color: lightskyblue;
             }
+
+            @media (max-width: 500px) {
+                .text {
+                    display: none;
+                }
+            }
         }
     }
 }
 
 .content {
-    margin: $menu-height 0 0 calc(1rem + 8px);
+    margin: $menu-height 0 0 0;
     display: flex;
     flex-flow: column nowrap;
     align-items: center;

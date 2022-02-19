@@ -3,9 +3,11 @@ from abc import abstractmethod
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, StatusEventConsumer, PowerEventConsumer
+from powerpi_common.util import await_or_sync
+from .base import BaseDevice
 
 
-class Device(PowerEventConsumer):
+class Device(BaseDevice, PowerEventConsumer):
     class __StatusEventConsumer(StatusEventConsumer):
         def __init__(self, device, mqtt_client: MQTTClient):
             StatusEventConsumer.__init__(
@@ -31,9 +33,7 @@ class Device(PowerEventConsumer):
         display_name: str = None,
         visible: bool = False
     ):
-        self._name = name
-        self._display_name = display_name if display_name is not None else name
-
+        BaseDevice.__init__(self, name, display_name, visible)
         PowerEventConsumer.__init__(self, self, config, logger)
 
         self._logger = logger
@@ -45,10 +45,6 @@ class Device(PowerEventConsumer):
         mqtt_client.add_consumer(self)
 
         self.__StatusEventConsumer(self, mqtt_client)
-
-    @property
-    def name(self):
-        return self._name
 
     @property
     def state(self):
@@ -81,26 +77,29 @@ class Device(PowerEventConsumer):
             self.__additional_state = additional_state
 
         self._broadcast_state_change()
+    
+    async def poll(self):
+        await await_or_sync(self._poll)
 
-    def turn_on(self):
+    async def turn_on(self):
         self._logger.info(f'Turning on device {self}')
-        self._turn_on()
+        await await_or_sync(self._turn_on)
         self.state = 'on'
 
-    def turn_off(self):
+    async def turn_off(self):
         self._logger.info(f'Turning off device {self}')
-        self._turn_off()
+        await await_or_sync(self._turn_off)
         self.state = 'off'
     
-    def change_power_and_additional_state(self, new_power_state: str, new_additional_state: dict):
+    async def change_power_and_additional_state(self, new_power_state: str, new_additional_state: dict):
         try:
             if new_power_state is not None:
                 self._logger.info(f'Turning {new_power_state} device {self}')
 
                 if new_power_state == 'on':
-                    self._turn_on()
+                    await await_or_sync(self._turn_on)
                 else:
-                    self._turn_off()
+                    await await_or_sync(self._turn_off)
             
             if len(new_additional_state) > 0:
                 # there is other work to do
@@ -112,7 +111,7 @@ class Device(PowerEventConsumer):
             return
 
     @abstractmethod
-    def poll(self):
+    def _poll(self):
         raise NotImplementedError
 
     @abstractmethod

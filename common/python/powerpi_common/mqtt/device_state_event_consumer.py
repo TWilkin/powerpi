@@ -1,8 +1,7 @@
-from datetime import datetime
-
-from ..config import Config
-from ..logger import Logger
-from . consumer import MQTTConsumer
+from powerpi_common.config import Config
+from powerpi_common.logger import Logger
+from .consumer import MQTTConsumer
+from .types import MQTTMessage
 
 
 class DeviceStateEventConsumer(MQTTConsumer):
@@ -30,7 +29,7 @@ class DeviceStateEventConsumer(MQTTConsumer):
 
         return valid
     
-    def _get_additional_state(self, message: dict):
+    def _get_additional_state(self, message: MQTTMessage):
         result = message.copy()
         result.pop('state', None)
         result.pop('timestamp', None)

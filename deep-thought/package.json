@@ -1,6 +1,6 @@
 {
     "name": "deep-thought",
-    "version": "0.5.9",
+    "version": "0.5.10",
     "description": "PowerPi API",
     "private": true,
     "license": "GPL-3.0-only",
@@ -15,7 +15,7 @@
         "start": "ts-node src/app.ts"
     },
     "dependencies": {
-        "@powerpi/common": "^0.0.5",
+        "@powerpi/common": "^0.0.6",
         "@tsed/common": "^6.95.4",
         "@tsed/core": "^6.95.4",
         "@tsed/di": "^6.95.4",
