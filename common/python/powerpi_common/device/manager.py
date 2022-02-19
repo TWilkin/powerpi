@@ -1,3 +1,6 @@
+from copy import deepcopy
+from typing import Any, Dict, List
+
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from .base import BaseDevice
@@ -51,13 +54,15 @@ class DeviceManager(object):
         else:
             self.__sensors = instances
 
-        devices = self.__config.devices[f'{device_type}s']
+        devices: List[Dict[str, Any]] = self.__config.devices[f'{device_type}s']
 
         for device in devices:
             instance_type = device['type']
-            del device['type']
 
-            instance = self.__factory.build(device_type, instance_type, **device)
+            device_args = deepcopy(device)
+            del device_args['type']
+
+            instance = self.__factory.build(device_type, instance_type, **device_args)
             if instance is not None:
                 self.__logger.info(f'Found {instance}')
 

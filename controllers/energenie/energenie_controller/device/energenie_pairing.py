@@ -21,6 +21,7 @@ class EnergeniePairingDevice(Device):
     ):
         Device.__init__(self, config, logger, mqtt_client, **kwargs)
 
+        self.__config = config
         self.__energenie = energenie
         self.__timeout = timeout
     
@@ -51,16 +52,17 @@ class EnergeniePairingDevice(Device):
         self.state = DeviceStatus.OFF
 
     def find_free_home_id(self):
-        if not self._config.is_ener314_rt:
+        if not self.__config.is_ener314_rt:
             # ENER314 only supports home_id 0
             return 0
 
         # ENER314-RT supports 16 home ids
         home_ids = [i for i in range(0, 17)]
 
-        devices: List[Dict[str, Any]] = self._config.devices['devices']
+        devices: List[Dict[str, Any]] = self.__config.devices['devices']
+        
         for device in devices:
-            if device['type'].startswith('energenie'):
+            if device.get('type', '').startswith('energenie'):
                 try:
                     home_ids.remove(device.get('home_id', None))
                 except ValueError:
