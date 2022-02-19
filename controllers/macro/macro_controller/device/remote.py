@@ -1,8 +1,10 @@
 import contextlib
 
 from asyncio import Event, wait_for
+from asyncio.exceptions import TimeoutError
 
 from powerpi_common.config import Config
+from powerpi_common.device import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, StatusEventConsumer
 
@@ -21,7 +23,7 @@ class RemoteDevice(StatusEventConsumer):
 
         StatusEventConsumer.__init__(self, self, config, logger)
 
-        self.__state = 'unknown'
+        self.__state = DeviceStatus.UNKNOWN
         self.__producer = mqtt_client.add_producer()
         self.__waiting = Event()
 
@@ -47,12 +49,12 @@ class RemoteDevice(StatusEventConsumer):
         self.state = state
 
     async def turn_on(self):
-        await self.__send_message('on')
+        await self.__send_message(DeviceStatus.ON)
 
     async def turn_off(self):
-        await self.__send_message('off')
+        await self.__send_message(DeviceStatus.OFF)
 
-    async def __send_message(self, state: str):
+    async def __send_message(self, state: DeviceStatus):
         topic = f'device/{self.__name}/change'
 
         self.__producer(topic, {'state': state})
