@@ -1,14 +1,22 @@
 from dependency_injector import providers
 
-from .import_energenie import import_energenie
+from energenie_controller.config import EnergenieConfig
+from energenie_controller.energenie import import_energenie
+from .energenie_pairing import EnergeniePairingDevice
 from .socket import SocketDevice
 from .socket_group import SocketGroupDevice
 
 
 def add_devices(container):
-    device_container = container.common().device()
+    common_container = container.common()
+    device_container = common_container.device()
 
-    EnergenieInterface = import_energenie(
+    # override the config
+    common_container.config.override(providers.Singleton(
+        EnergenieConfig
+    ))
+
+    energenie_interface_type = import_energenie(
         container.config(), container.common().logger()
     )
 
@@ -16,7 +24,7 @@ def add_devices(container):
         device_container,
         'energenie',
         providers.Factory(
-            EnergenieInterface
+            energenie_interface_type
         )
     )
 
@@ -41,6 +49,18 @@ def add_devices(container):
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
             device_manager=container.common.device.device_manager,
+            energenie=container.common.device.energenie
+        )
+    )
+
+    setattr(
+        device_container,
+        'energenie_pairing_device',
+        providers.Factory(
+            EnergeniePairingDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client,
             energenie=container.common.device.energenie
         )
     )

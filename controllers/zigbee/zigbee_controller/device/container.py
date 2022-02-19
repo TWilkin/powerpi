@@ -1,6 +1,9 @@
 from dependency_injector import containers, providers
 
+from zigbee_controller.config import ZigbeeConfig
 from .zigbee_controller import ZigbeeController
+from .zigbee_pairing import ZigbeePairingDevice
+
 
 class DeviceContainer(containers.DeclarativeContainer):
     __self__ = providers.Self()
@@ -20,4 +23,22 @@ class DeviceContainer(containers.DeclarativeContainer):
     )
 
 def add_devices(container):
-    pass
+    common_container = container.common()
+    device_container = common_container.device()
+
+    # override the config
+    common_container.config.override(providers.Singleton(
+        ZigbeeConfig
+    ))
+
+    setattr(
+        device_container,
+        'zigbee_pairing_device',
+        providers.Factory(
+            ZigbeePairingDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client,
+            zigbee_controller=container.device.zigbee_controller
+        )
+    )

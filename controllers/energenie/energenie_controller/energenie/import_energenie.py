@@ -3,7 +3,7 @@ from energenie_controller.config import EnergenieConfig
 
 
 def import_energenie(config: EnergenieConfig, logger: Logger):
-    # import the appropriate implementation of SocketDevice
+    # import the appropriate implementation of EnergenieInterface
     try:
         if config.is_ener314_rt:
             from .ener314rt import EnergenieInterfaceImpl as EnergenieInterface
@@ -18,6 +18,6 @@ def import_energenie(config: EnergenieConfig, logger: Logger):
         logger.warn(
             'DEVICE_FATAL=false, using dummy device, no sockets will turn on/off'
         )
-        from .energenie import EnergenieInterface
+        from .dummy import DummyEnergenieInterface as EnergenieInterface
 
     return EnergenieInterface

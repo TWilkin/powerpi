@@ -72,7 +72,7 @@ services:
             - deep-thought
 
     macro-controller:
-        image: ${REGISTRY}/powerpi/controllers/macro:1.1.0
+        image: ${REGISTRY}/powerpi/controllers/macro:1.1.1
         networks:
             - powerpi
         deploy:
@@ -95,7 +95,7 @@ services:
         environment:
             - ENV=ENERGENIE_DEVICE=ENER314-RT:DEVICE_FATAL=true
             - CONTROLLER_NAME=energenie-controller
-            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.1.0
+            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.1.1
             - DEVICE=/dev/gpiomem
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
@@ -132,7 +132,7 @@ services:
         environment:
             - ENV=ZIGBEE_DEVICE=/dev/ttyACM0:DATABASE_PATH=/var/data/zigbee.db
             - CONTROLLER_NAME=zigbee-controller
-            - IMAGE=${REGISTRY}/powerpi/controllers/zigbee:0.1.0
+            - IMAGE=${REGISTRY}/powerpi/controllers/zigbee:0.1.1
             - DEVICE=/dev/ttyACM0
             - VOLUME=/srv/docker-volumes/powerpi/zigbee-controller
         volumes:
@@ -163,7 +163,7 @@ services:
 
     nginx:
         build: ../nginx
-        image: ${REGISTRY}/powerpi/nginx:1.2.6
+        image: ${REGISTRY}/powerpi/nginx:1.2.7
         networks:
             - powerpi
         ports:

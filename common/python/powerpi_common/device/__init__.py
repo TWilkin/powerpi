@@ -3,4 +3,4 @@ from .device import Device
 from .factory import DeviceFactory
 from .manager import DeviceManager
 from .status import DeviceStatusChecker
-from .type import DeviceType
+from .type import DeviceType, DeviceStatus
