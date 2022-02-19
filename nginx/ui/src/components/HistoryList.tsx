@@ -2,11 +2,11 @@ import { PowerPiApi } from "@powerpi/api";
 import React, { useState } from "react";
 import { useGetHistory } from "../hooks/history";
 import AbbreviatingTime from "./Components/AbbreviatingTime";
-import Filter from "./Filter";
+import Filter from "./Components/Filter";
+import Loading from "./Components/Loading";
+import PaginationControls from "./Components/PaginationControls";
 import HistoryFilter from "./HistoryFilter";
-import Loading from "./Loading";
 import { MessageTypeFilters } from "./MessageTypeFilter";
-import PaginationControls from "./PaginationControls";
 
 interface HistoryListProps {
     api: PowerPiApi;

@@ -4,7 +4,7 @@ import { Device, DeviceState, PowerPiApi } from "@powerpi/api";
 import classNames from "classnames";
 import React, { MouseEvent, useState } from "react";
 import { useLongPress } from "use-long-press";
-import { useSetDeviceState } from "../hooks/devices";
+import { useSetDeviceState } from "../../hooks/devices";
 
 interface DevicePowerButtonProps {
     api: PowerPiApi;

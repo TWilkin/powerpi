@@ -5,11 +5,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useGetDevices } from "../hooks/devices";
 import AbbreviatingTime from "./Components/AbbreviatingTime";
+import DeviceIcon from "./Components/DeviceIcon";
+import DevicePowerButton from "./Components/DevicePowerButton";
+import Filter from "./Components/Filter";
+import Loading from "./Components/Loading";
 import DeviceFilter, { Filters } from "./DeviceFilter";
-import DeviceIcon from "./DeviceIcon";
-import DevicePowerButton from "./DevicePowerButton";
-import Filter from "./Filter";
-import Loading from "./Loading";
 
 interface DeviceListProps {
     api: PowerPiApi;
