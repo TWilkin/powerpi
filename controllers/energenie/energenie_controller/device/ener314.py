@@ -13,12 +13,3 @@ class EnergenieInterfaceImpl(EnergenieInterface):
 
     def _turn_off(self):
         switch_off(self._device_id)
-    
-    async def _pair(self):
-        # to pair we simply turn the device on/off slowly
-        while True:
-            await sleep(1)
-            self._turn_on()
-
-            await sleep(1)
-            self._turn_off()

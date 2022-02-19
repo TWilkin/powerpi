@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from asyncio import wait_for
+from asyncio import wait_for, sleep
 from contextlib import suppress
 from threading import Lock
 
@@ -32,6 +32,11 @@ class EnergenieInterface(ABC):
     def _turn_off(self):
         raise NotImplementedError
     
-    @abstractmethod
     async def _pair(self):
-        raise NotImplementedError
+        # to pair we simply turn the device on/off slowly
+        while True:
+            await sleep(1)
+            self._turn_on()
+
+            await sleep(1)
+            self._turn_off()

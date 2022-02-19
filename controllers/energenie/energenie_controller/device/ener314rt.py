@@ -25,6 +25,3 @@ class EnergenieInterfaceImpl(EnergenieInterface):
     
     def _turn_off(self):
         self.__device.turn_off()
-    
-    async def _pair(self):
-        pass
