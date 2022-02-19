@@ -40,7 +40,7 @@ const HistoryList = ({ api, query }: HistoryListProps) => {
                 <HistoryFilter api={api} query={query} updateFilter={setFilters} />
             </Filter>
 
-            <div className={styles["history-list"]}>
+            <div className={styles.list}>
                 <Loading loading={isHistoryLoading}>
                     <List>
                         <PaginationControls page={page} lastPage={lastPage} setPage={setPage} />

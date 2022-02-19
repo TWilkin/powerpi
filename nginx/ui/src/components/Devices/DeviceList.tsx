@@ -29,7 +29,7 @@ const DeviceList = ({ api }: DeviceListProps) => {
                 <DeviceFilter devices={devices} updateFilters={setFilters} />
             </Filter>
 
-            <div className={styles["device-list"]}>
+            <div className={styles.list}>
                 <Loading loading={isDevicesLoading}>
                     <List>
                         <table>
@@ -47,7 +47,7 @@ const DeviceList = ({ api }: DeviceListProps) => {
 
                                             <td>{device.display_name ?? device.name}</td>
 
-                                            <td className={styles["device-state"]}>
+                                            <td className={styles.state}>
                                                 <DevicePowerButton api={api} device={device} />
                                             </td>
 

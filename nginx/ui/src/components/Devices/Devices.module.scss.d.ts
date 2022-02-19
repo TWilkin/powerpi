@@ -2,9 +2,9 @@
 // Please do not change this file!
 interface CssExports {
   'device': string;
-  'device-filters': string;
-  'device-list': string;
-  'device-state': string;
+  'filters': string;
+  'list': string;
+  'state': string;
 }
 export const cssExports: CssExports;
 export default cssExports;

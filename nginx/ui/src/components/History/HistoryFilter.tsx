@@ -36,7 +36,7 @@ const HistoryFilter = ({ api, query, updateFilter }: HistoryFilterProps) => {
     };
 
     return (
-        <div className={styles["history-filters"]}>
+        <div className={styles.filters}>
             <MessageTypeFilter
                 name="Type"
                 type="type"

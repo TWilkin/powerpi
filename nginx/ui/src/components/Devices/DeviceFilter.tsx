@@ -45,7 +45,7 @@ const DeviceFilter = ({ devices, updateFilters }: DeviceFilterProps) => {
     };
 
     return (
-        <div className={styles["device-filters"]}>
+        <div className={styles.filters}>
             <Loading loading={!types}>
                 {types?.map((type) => (
                     <label key={type}>

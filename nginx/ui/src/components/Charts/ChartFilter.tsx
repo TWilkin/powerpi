@@ -55,7 +55,7 @@ const ChartFilter = ({ api, updateFilter }: ChartFilterProps) => {
     );
 
     return (
-        <div className={styles["chart-filters"]}>
+        <div className={styles.filters}>
             <DateFilter
                 name="From"
                 selected={filters.start}

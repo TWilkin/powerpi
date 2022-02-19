@@ -1,13 +1,13 @@
 @import "../../styles/vars.module.scss";
 
-.device-filters,
-.device-list {
+.filters,
+.list {
     label {
         display: flex;
     }
 }
 
-.device-list {
+.list {
     margin-left: calc(1rem + 8px);
     flex-direction: column;
     justify-content: center;
@@ -25,7 +25,7 @@
     .device {
         max-width: 600px;
 
-        .device-state {
+        .state {
             display: flex;
         }
     }

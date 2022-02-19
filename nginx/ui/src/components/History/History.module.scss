@@ -1,6 +1,6 @@
 @import "../../styles/vars.module.scss";
 
-.history-filters {
+.filters {
     label {
         display: inline-block;
         width: 3.75rem;
@@ -15,7 +15,7 @@
     }
 }
 
-.history-list {
+.list {
     margin-left: calc(1rem + 8px);
 
     table {
