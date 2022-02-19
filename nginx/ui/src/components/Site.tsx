@@ -14,11 +14,12 @@ import {
 import { LastLocationProvider } from "react-router-last-location";
 import { useGetConfig } from "../hooks/config";
 import Charts from "./Charts";
-import Menu from "./Components/Menu";
+import { Menu } from "./Components";
 import DeviceList from "./Devices";
 import HistoryList from "./History";
 import Home from "./Home";
 import Login from "./Login";
+import styles from "./Site.module.scss";
 
 interface SiteProps {
     api: PowerPiApi;
@@ -82,8 +83,8 @@ const Site = ({ api }: SiteProps) => {
     return (
         <BrowserRouter>
             <LastLocationProvider>
-                <header className="header">
-                    <div className="logo">
+                <header className={styles.header}>
+                    <div className={styles.logo}>
                         <NavLink exact to="/">
                             <FontAwesomeIcon icon={faPlug} /> PowerPi
                         </NavLink>
@@ -92,7 +93,7 @@ const Site = ({ api }: SiteProps) => {
                     <Menu items={menuItems} visible={!isConfigLoading && !isConfigError} />
                 </header>
 
-                <div className="content">
+                <div className={styles.content}>
                     <Switch>
                         <Redirect exact from="/" to={`/${defaultPage}`} />
 

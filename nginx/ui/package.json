@@ -5,7 +5,6 @@
     "main": "src/app.tsx",
     "scripts": {
         "build": "webpack --config webpack.prod.js",
-        "build-dev": "webpack --config webpack.dev.js",
         "start": "webpack serve --config webpack.dev.js"
     },
     "author": "TWilkin",

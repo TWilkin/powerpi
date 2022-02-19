@@ -2,6 +2,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { NavLink, useLocation } from "react-router-dom";
+import styles from "./Menu.module.scss";
 
 interface MenuProps {
     items: MenuItemProps[];
@@ -11,7 +12,7 @@ interface MenuProps {
 const Menu = ({ items, visible = true }: MenuProps) => {
     if (visible) {
         return (
-            <nav className="menu">
+            <nav className={styles.menu}>
                 {items.map((item) => (
                     <MenuItem key={item.path} {...item} />
                 ))}
@@ -38,7 +39,9 @@ const MenuItem = ({ path, name, icon, visible = true }: MenuItemProps) => {
             <NavLink
                 exact
                 to={path}
-                className={classNames("menu-item", { active: location.pathname.startsWith(path) })}
+                className={classNames(styles["menu-item"], {
+                    active: location.pathname.startsWith(path),
+                })}
                 title={name}
             >
                 {icon && (
@@ -46,7 +49,7 @@ const MenuItem = ({ path, name, icon, visible = true }: MenuItemProps) => {
                         <FontAwesomeIcon icon={icon} />{" "}
                     </>
                 )}
-                <span className="text">{name}</span>
+                <span className={styles.text}>{name}</span>
             </NavLink>
         );
     }

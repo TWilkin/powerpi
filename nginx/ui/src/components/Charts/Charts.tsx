@@ -3,7 +3,6 @@ import { useState } from "react";
 import Chart from "../Components/Chart";
 import Filter from "../Components/Filter";
 import ChartFilter, { ChartFilters } from "./ChartFilter";
-import styles from "./Charts.module.scss";
 
 interface ChartsProps {
     api: PowerPiApi;
@@ -24,7 +23,7 @@ const Charts = ({ api }: ChartsProps) => {
                 <ChartFilter api={api} updateFilter={setFilters} />
             </Filter>
 
-            <div id="charts" className={styles.testing}>
+            <div id="charts">
                 {(filters.entity || filters.action) && (
                     <Chart
                         api={api}

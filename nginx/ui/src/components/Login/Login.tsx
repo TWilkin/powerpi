@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useLastLocation } from "react-router-last-location";
+import styles from "./Login.module.scss";
 
 interface LoginButtonProps {
     protocol: string;
@@ -13,7 +14,7 @@ const LoginButton = ({ protocol }: LoginButtonProps) => {
 
 const Login = () => {
     return (
-        <div id="login">
+        <div className={styles.login}>
             <LoginButton protocol="Google" />
         </div>
     );
