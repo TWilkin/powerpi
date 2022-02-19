@@ -5,6 +5,7 @@ import {
     faPlug,
     faQuestion,
     faStopwatch,
+    faTowerBroadcast,
     faTv,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,6 +22,7 @@ const DeviceIcon = ({ type }: DeviceIconProps) => {
         </div>
     );
 };
+export default DeviceIcon;
 
 function getDeviceTypeIcon(type: string) {
     const split = type.split("_");
@@ -45,6 +47,9 @@ function getDeviceTypeIcon(type: string) {
                 case "mutex":
                     return faLock;
 
+                case "pairing":
+                    return faTowerBroadcast;
+
                 case "socket":
                 case "socket_group":
                     return faPlug;
@@ -54,4 +59,3 @@ function getDeviceTypeIcon(type: string) {
             }
     }
 }
-export default DeviceIcon;
