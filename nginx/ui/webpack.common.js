@@ -16,8 +16,16 @@ module.exports = {
                 exclude: "/node_modules/",
             },
             {
-                test: /\.s[ac]ss$/,
-                use: ["style-loader", "css-loader", "sass-loader"],
+                test: /\.module\.scss$/,
+                use: [
+                    "style-loader",
+                    "css-modules-typescript-loader",
+                    {
+                        loader: "css-loader",
+                        options: { modules: true },
+                    },
+                    "sass-loader",
+                ],
             },
             {
                 test: /\.(ttf|eot|svg|gif|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
