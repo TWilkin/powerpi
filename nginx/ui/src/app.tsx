@@ -1,5 +1,4 @@
 import { PowerPiApi } from "@powerpi/api";
-import React from "react";
 import ReactDOM from "react-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Site from "./components/Site";

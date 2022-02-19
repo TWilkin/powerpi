@@ -1,5 +1,5 @@
 import { PowerPiApi, Sensor } from "@powerpi/api";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import { useGetFloorplan } from "../../hooks/floorplan";
 import useGetSensors from "../../hooks/sensors";

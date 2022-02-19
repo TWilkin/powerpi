@@ -11,7 +11,6 @@ import {
     Tooltip,
 } from "chart.js";
 import "chartjs-adapter-luxon";
-import React from "react";
 import { Line } from "react-chartjs-2";
 import { useGetHistoryRange } from "../../hooks/history";
 import useOrientation from "../../hooks/orientation";

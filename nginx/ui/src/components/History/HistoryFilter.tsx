@@ -1,6 +1,6 @@
 import { PowerPiApi } from "@powerpi/api";
 import queryString from "query-string";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetHistoryFilters } from "../../hooks/history";
 import MessageTypeFilter, {
     MessageFilterType,

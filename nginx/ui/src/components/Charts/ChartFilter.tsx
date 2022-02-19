@@ -1,5 +1,5 @@
 import { PowerPiApi } from "@powerpi/api";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { useGetHistoryFilters } from "../../hooks/history";
 import DateFilter from "../Components/DateFilter";

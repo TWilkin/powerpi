@@ -2,7 +2,7 @@ import { faChartLine, faHistory, faHome, faPlug } from "@fortawesome/free-solid-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PowerPiApi } from "@powerpi/api";
 import HttpStatusCodes from "http-status-codes";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import {
     BrowserRouter,
     NavLink,

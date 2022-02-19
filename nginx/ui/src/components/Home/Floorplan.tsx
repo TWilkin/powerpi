@@ -5,7 +5,6 @@ import {
     Point as IPoint,
 } from "@powerpi/api";
 import classNames from "classnames";
-import React from "react";
 import { useMemo } from "react";
 import useOrientation from "../../hooks/orientation";
 

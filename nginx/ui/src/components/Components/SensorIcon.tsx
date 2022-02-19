@@ -9,7 +9,6 @@ import {
     faWalking,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
 
 interface SensorIconProps {
     type: string;

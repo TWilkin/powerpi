@@ -1,7 +1,7 @@
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface FilterProps {
     children: JSX.Element | JSX.Element[];

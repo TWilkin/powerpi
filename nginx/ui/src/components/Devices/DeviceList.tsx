@@ -1,7 +1,7 @@
 import { faHistory } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { PowerPiApi } from "@powerpi/api";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useGetDevices } from "../../hooks/devices";
 import AbbreviatingTime from "../Components/AbbreviatingTime";

@@ -1,5 +1,5 @@
 import { PowerPiApi } from "@powerpi/api";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useGetHistory } from "../../hooks/history";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import Filter from "../Components/Filter";

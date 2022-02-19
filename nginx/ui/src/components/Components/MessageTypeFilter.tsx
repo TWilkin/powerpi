@@ -1,6 +1,6 @@
 import { faExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { FormEvent } from "react";
+import { FormEvent } from "react";
 import Loading from "./Loading";
 
 export type MessageFilterType = "type" | "entity" | "action";

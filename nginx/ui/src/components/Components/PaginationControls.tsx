@@ -6,7 +6,7 @@ import {
     faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { ChangeEvent } from "react";
+import { ChangeEvent } from "react";
 
 interface PaginationControlsProps {
     page: number;
