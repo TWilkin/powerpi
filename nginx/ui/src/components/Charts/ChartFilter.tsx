@@ -2,11 +2,12 @@ import { PowerPiApi } from "@powerpi/api";
 import { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { useGetHistoryFilters } from "../../hooks/history";
-import DateFilter from "../Components/DateFilter";
-import MessageTypeFilter, {
+import {
+    DateFilter,
     MessageFilterType,
+    MessageTypeFilter,
     MessageTypeFilters,
-} from "../Components/MessageTypeFilter";
+} from "../Components";
 import styles from "./Charts.module.scss";
 
 export interface ChartFilters extends MessageTypeFilters {

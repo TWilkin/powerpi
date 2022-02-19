@@ -4,9 +4,14 @@ import { PowerPiApi } from "@powerpi/api";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useGetDevices } from "../../hooks/devices";
-import { DeviceIcon, DevicePowerButton, Filter, List } from "../Components";
-import AbbreviatingTime from "../Components/AbbreviatingTime";
-import Loading from "../Components/Loading";
+import {
+    AbbreviatingTime,
+    DeviceIcon,
+    DevicePowerButton,
+    Filter,
+    List,
+    Loading,
+} from "../Components";
 import DeviceFilter, { Filters } from "./DeviceFilter";
 import styles from "./Devices.module.scss";
 

@@ -2,10 +2,7 @@ import { PowerPiApi } from "@powerpi/api";
 import queryString from "query-string";
 import { useEffect, useState } from "react";
 import { useGetHistoryFilters } from "../../hooks/history";
-import MessageTypeFilter, {
-    MessageFilterType,
-    MessageTypeFilters,
-} from "../Components/MessageTypeFilter";
+import { MessageFilterType, MessageTypeFilter, MessageTypeFilters } from "../Components";
 import styles from "./History.module.scss";
 
 interface HistoryFilterProps {
