@@ -1,4 +1,3 @@
-import { PowerPiApi } from "@powerpi/api";
 import { useState } from "react";
 import { useGetHistory } from "../../hooks/history";
 import {
@@ -12,11 +11,7 @@ import {
 import HistoryFilter from "./HistoryFilter";
 import styles from "./History.module.scss";
 
-interface HistoryListProps {
-    api: PowerPiApi;
-}
-
-const HistoryList = ({ api }: HistoryListProps) => {
+const HistoryList = () => {
     const [page, setPage] = useState(0);
     const [filters, setFilters] = useState<MessageTypeFilters>({
         type: undefined,
@@ -27,7 +22,6 @@ const HistoryList = ({ api }: HistoryListProps) => {
     const records = 30;
 
     const { isHistoryLoading, isHistoryError, history } = useGetHistory(
-        api,
         page,
         records,
         filters.type !== "" ? filters.type : undefined,
@@ -40,7 +34,7 @@ const HistoryList = ({ api }: HistoryListProps) => {
     return (
         <>
             <Filter>
-                <HistoryFilter api={api} updateFilter={setFilters} />
+                <HistoryFilter updateFilter={setFilters} />
             </Filter>
 
             <div className={styles.list}>

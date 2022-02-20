@@ -1,7 +1,8 @@
-import { PowerPiApi } from "@powerpi/api";
 import { useQuery } from "react-query";
+import useAPI from "./api";
 
-export function useGetFloorplan(api: PowerPiApi) {
+export function useGetFloorplan() {
+    const api = useAPI();
     const { isLoading, isError, data } = useQuery("floorplan", () => api.getFloorplan());
 
     return {

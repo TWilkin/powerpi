@@ -1,7 +1,5 @@
 import { faChartLine, faHistory, faHome, faPlug } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PowerPiApi } from "@powerpi/api";
-import HttpStatusCodes from "http-status-codes";
 import { lazy, Suspense, useMemo } from "react";
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from "react-router-dom";
 import { useGetConfig } from "../../hooks/config";
@@ -14,22 +12,8 @@ const History = lazy(() => import("../History"));
 const Home = lazy(() => import("../Home"));
 const Login = lazy(() => import("../Login"));
 
-interface SiteProps {
-    api: PowerPiApi;
-}
-
-const Site = ({ api }: SiteProps) => {
-    const { isConfigLoading, isConfigError, config } = useGetConfig(api);
-
-    // redirect to login on 401
-    api.setErrorHandler((error) => {
-        if (
-            error.response.status === HttpStatusCodes.UNAUTHORIZED &&
-            !window.location.pathname.endsWith("/login")
-        ) {
-            window.location.pathname = "/login";
-        }
-    });
+const Site = () => {
+    const { isConfigLoading, isConfigError, config } = useGetConfig();
 
     const defaultPage = useMemo(
         () =>
@@ -93,20 +77,18 @@ const Site = ({ api }: SiteProps) => {
                         <Route path="/login" element={<Login />} />
 
                         {config?.hasFloorplan && (
-                            <Route path="/home" element={<Home api={api} />}>
-                                <Route path=":floor" element={<Home api={api} />} />
+                            <Route path="/home" element={<Home />}>
+                                <Route path=":floor" element={<Home />} />
                             </Route>
                         )}
 
-                        {config?.hasDevices && (
-                            <Route path="/devices" element={<Devices api={api} />} />
-                        )}
+                        {config?.hasDevices && <Route path="/devices" element={<Devices />} />}
 
                         {config?.hasPersistence && (
                             <>
-                                <Route path="/history" element={<History api={api} />} />
+                                <Route path="/history" element={<History />} />
 
-                                <Route path="/charts" element={<Charts api={api} />} />
+                                <Route path="/charts" element={<Charts />} />
                             </>
                         )}
                     </Routes>

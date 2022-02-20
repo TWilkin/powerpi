@@ -1,6 +1,6 @@
 import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Device, DeviceState, PowerPiApi } from "@powerpi/api";
+import { Device, DeviceState } from "@powerpi/api";
 import classNames from "classnames";
 import { MouseEvent, useState } from "react";
 import { useLongPress } from "use-long-press";
@@ -8,14 +8,13 @@ import { useSetDeviceState } from "../../../hooks/devices";
 import styles from "./DevicePowerButton.module.scss";
 
 interface DevicePowerButtonProps {
-    api: PowerPiApi;
     device: Device;
 }
 
-const DevicePowerButton = ({ api, device }: DevicePowerButtonProps) => {
+const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
     const [toggle, setToggle] = useState(true);
 
-    const { updateDeviceState, isDeviceStateLoading, changeState } = useSetDeviceState(api, device);
+    const { updateDeviceState, isDeviceStateLoading, changeState } = useSetDeviceState(device);
 
     // handle a click on the slider to toggle
     const handleSliderClick = async (event: MouseEvent<HTMLDivElement>) => {

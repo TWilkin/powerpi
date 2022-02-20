@@ -1,4 +1,3 @@
-import { PowerPiApi } from "@powerpi/api";
 import { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { useGetHistoryFilters } from "../../hooks/history";
@@ -16,12 +15,11 @@ export interface ChartFilters extends MessageTypeFilters {
 }
 
 interface ChartFilterProps {
-    api: PowerPiApi;
     updateFilter: (filters: ChartFilters) => void;
 }
 
-const ChartFilter = ({ api, updateFilter }: ChartFilterProps) => {
-    const { entities, actions } = useGetHistoryFilters(api, "event");
+const ChartFilter = ({ updateFilter }: ChartFilterProps) => {
+    const { entities, actions } = useGetHistoryFilters("event");
 
     const now = new Date();
     const lastHour = new Date();

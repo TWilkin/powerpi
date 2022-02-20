@@ -1,8 +1,10 @@
-import { Device, DeviceState, DeviceStatusMessage, PowerPiApi } from "@powerpi/api";
+import { Device, DeviceState, DeviceStatusMessage } from "@powerpi/api";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
+import useAPI from "./api";
 
-export function useGetDevices(api: PowerPiApi) {
+export function useGetDevices() {
+    const api = useAPI();
     const [devices, setDevices] = useState<Device[] | undefined>();
     const { isLoading, isError, data } = useQuery("devices", () => api.getDevices());
 
@@ -39,7 +41,8 @@ export function useGetDevices(api: PowerPiApi) {
     };
 }
 
-export function useSetDeviceState(api: PowerPiApi, device: Device) {
+export function useSetDeviceState(device: Device) {
+    const api = useAPI();
     const [changeState, setChangeState] = useState(DeviceState.Unknown);
     const [loading, setLoading] = useState(false);
 

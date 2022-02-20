@@ -1,4 +1,3 @@
-import { PowerPiApi } from "@powerpi/api";
 import {
     CategoryScale,
     Chart as ChartJS,
@@ -42,24 +41,16 @@ interface Dataset {
 }
 
 interface ChartProps {
-    api: PowerPiApi;
     start?: Date;
     end?: Date;
     entity?: string;
     action?: string;
 }
 
-const Chart = ({ api, start, end, entity, action }: ChartProps) => {
+const Chart = ({ start, end, entity, action }: ChartProps) => {
     const { isLandscape } = useOrientation();
 
-    const { isHistoryLoading, history } = useGetHistoryRange(
-        api,
-        start,
-        end,
-        "event",
-        entity,
-        action
-    );
+    const { isHistoryLoading, history } = useGetHistoryRange(start, end, "event", entity, action);
 
     const datasets = history?.reduce<Dataset[]>((datasets, record) => {
         // check this data point actually has data that we're looking for

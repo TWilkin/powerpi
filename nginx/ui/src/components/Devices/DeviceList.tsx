@@ -1,6 +1,5 @@
 import { faHistory } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PowerPiApi } from "@powerpi/api";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useGetDevices } from "../../hooks/devices";
@@ -15,14 +14,10 @@ import {
 import DeviceFilter, { Filters } from "./DeviceFilter";
 import styles from "./Devices.module.scss";
 
-interface DeviceListProps {
-    api: PowerPiApi;
-}
-
-const DeviceList = ({ api }: DeviceListProps) => {
+const DeviceList = () => {
     const [filters, setFilters] = useState<Filters>({ types: [] });
 
-    const { isDevicesLoading, isDevicesError, devices } = useGetDevices(api);
+    const { isDevicesLoading, isDevicesError, devices } = useGetDevices();
 
     const filtered = devices?.filter(
         (device) => device.visible && filters.types.includes(device.type)
@@ -53,7 +48,7 @@ const DeviceList = ({ api }: DeviceListProps) => {
                                             <td>{device.display_name ?? device.name}</td>
 
                                             <td className={styles.state}>
-                                                <DevicePowerButton api={api} device={device} />
+                                                <DevicePowerButton device={device} />
                                             </td>
 
                                             <td>

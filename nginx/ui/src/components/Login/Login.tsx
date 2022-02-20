@@ -21,6 +21,7 @@ const Login = () => {
 export default Login;
 
 function useLogin(protocol: string) {
+    // TODO get the last location again somehow
     return useCallback(() => {
         const path = `/api/auth/${protocol.toLowerCase()}?redirect_uri=${window.location.origin}/`;
 

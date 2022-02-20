@@ -1,4 +1,3 @@
-import { PowerPiApi } from "@powerpi/api";
 import { useCallback } from "react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -7,12 +6,11 @@ import { MessageFilterType, MessageTypeFilter, MessageTypeFilters } from "../Com
 import styles from "./History.module.scss";
 
 interface HistoryFilterProps {
-    api: PowerPiApi;
     updateFilter: (filters: MessageTypeFilters) => void;
 }
 
-const HistoryFilter = ({ api, updateFilter }: HistoryFilterProps) => {
-    const { actions, entities, types } = useGetHistoryFilters(api);
+const HistoryFilter = ({ updateFilter }: HistoryFilterProps) => {
+    const { actions, entities, types } = useGetHistoryFilters();
 
     const [filters, setFilters] = useState<MessageTypeFilters>({
         type: undefined,
@@ -20,6 +18,7 @@ const HistoryFilter = ({ api, updateFilter }: HistoryFilterProps) => {
         action: undefined,
     });
 
+    // TODO update the query filters so changing works properly
     const [query] = useSearchParams();
 
     useEffect(() => {

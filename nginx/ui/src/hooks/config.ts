@@ -1,7 +1,8 @@
-import { PowerPiApi } from "@powerpi/api";
 import { useQuery } from "react-query";
+import useAPI from "./api";
 
-export function useGetConfig(api: PowerPiApi) {
+export function useGetConfig() {
+    const api = useAPI();
     const { isLoading, isError, data } = useQuery("config", () => api.getConfig());
 
     return {

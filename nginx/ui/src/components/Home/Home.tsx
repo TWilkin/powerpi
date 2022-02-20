@@ -1,4 +1,4 @@
-import { PowerPiApi, Sensor } from "@powerpi/api";
+import { Sensor } from "@powerpi/api";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useGetFloorplan } from "../../hooks/floorplan";
@@ -8,14 +8,10 @@ import Floorplan from "./Floorplan";
 import Tooltip from "./Tooltip";
 import styles from "./Home.module.scss";
 
-interface HomeProps {
-    api: PowerPiApi;
-}
-
-const Home = ({ api }: HomeProps) => {
+const Home = () => {
     const { floor } = useParams();
-    const { floorplan } = useGetFloorplan(api);
-    const { sensors } = useGetSensors(api);
+    const { floorplan } = useGetFloorplan();
+    const { sensors } = useGetSensors();
 
     const locations = useMemo(
         () =>
