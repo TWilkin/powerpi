@@ -1,12 +1,11 @@
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
     faAngleDoubleLeft,
     faAngleDoubleRight,
     faAngleLeft,
     faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChangeEvent } from "react";
+import PaginationButton from "./PaginationButton";
 import styles from "./PaginationControls.module.scss";
 
 interface PaginationControlsProps {
@@ -25,7 +24,7 @@ const PaginationControls = ({ page, setPage, lastPage = page }: PaginationContro
     };
 
     return (
-        <div className={styles["pagination-controls"]}>
+        <div className={styles.controls}>
             <PaginationButton
                 page={0}
                 title="First Page"
@@ -67,25 +66,3 @@ const PaginationControls = ({ page, setPage, lastPage = page }: PaginationContro
     );
 };
 export default PaginationControls;
-
-interface PaginationButtonProps {
-    page: number;
-    icon: IconProp;
-    title: string;
-    setPage: (page: number) => void;
-    disabled?: boolean;
-}
-
-const PaginationButton = ({
-    page,
-    icon,
-    title,
-    setPage,
-    disabled = false,
-}: PaginationButtonProps) => {
-    return (
-        <button title={title} disabled={disabled} onClick={() => setPage(page)}>
-            <FontAwesomeIcon icon={icon} />
-        </button>
-    );
-};

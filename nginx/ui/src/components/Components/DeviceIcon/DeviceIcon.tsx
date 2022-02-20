@@ -17,7 +17,7 @@ interface DeviceIconProps {
 
 const DeviceIcon = ({ type }: DeviceIconProps) => {
     return (
-        <div className={styles["device-icon"]}>
+        <div className={styles.icon}>
             <FontAwesomeIcon icon={getDeviceTypeIcon(type)} />
         </div>
     );

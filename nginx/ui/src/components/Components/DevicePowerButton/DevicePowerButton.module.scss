@@ -11,25 +11,25 @@
     input {
         display: none;
 
-        &:indeterminate + .slider-bar {
+        &:indeterminate + .bar {
             background-color: gray;
         }
 
-        &:indeterminate + .slider-bar::before {
+        &:indeterminate + .bar::before {
             transform: translateX(14px);
             transition: 0.25s;
         }
 
-        &:checked + .slider-bar {
+        &:checked + .bar {
             background-color: green;
         }
 
-        &:checked + .slider-bar::before {
+        &:checked + .bar::before {
             transform: translateX(28px);
         }
     }
 
-    .slider-bar {
+    .bar {
         width: $slider-width;
         height: $slider-height;
         position: absolute;

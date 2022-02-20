@@ -57,7 +57,7 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
             <div className={styles.slider} onClick={handleSliderClick} {...longPress}>
                 <span
                     className={classNames(
-                        styles["slider-bar"],
+                        styles.bar,
                         { [styles.on]: device.state === DeviceState.On },
                         { [styles.off]: device.state === DeviceState.Off },
                         { [styles.unknown]: device.state === DeviceState.Unknown },

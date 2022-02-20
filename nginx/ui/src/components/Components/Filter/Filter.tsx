@@ -19,7 +19,7 @@ const Filter = ({ children }: FilterProps) => {
                 { [styles["slide-out"]]: showFilter === false }
             )}
         >
-            <button className={styles["filter-button"]} onClick={() => setShowFilter(!showFilter)}>
+            <button className={styles.button} onClick={() => setShowFilter(!showFilter)}>
                 <FontAwesomeIcon icon={faFilter} />
             </button>
             {children}
