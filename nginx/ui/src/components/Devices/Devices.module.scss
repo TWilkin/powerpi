@@ -1,12 +1,5 @@
 @import "../../styles/vars.scss";
 
-.filters,
-.list {
-    label {
-        display: flex;
-    }
-}
-
 .list {
     margin-left: calc(1rem + 8px);
     flex-direction: column;

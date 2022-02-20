@@ -1,7 +1,7 @@
 import { Device } from "@powerpi/api";
 import { ChangeEvent, useEffect, useState } from "react";
 import { DeviceIcon, Loading } from "../Components";
-import styles from "./Devices.module.scss";
+import styles from "./DeviceFilter.module.scss";
 
 interface DeviceFilterProps {
     devices?: Device[];

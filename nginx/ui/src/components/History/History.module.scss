@@ -1,20 +1,5 @@
 @import "../../styles/vars.scss";
 
-.filters {
-    label {
-        display: inline-block;
-        width: 3.75rem;
-    }
-
-    select {
-        width: calc(100% - 4rem);
-    }
-
-    .loading {
-        display: inline;
-    }
-}
-
 .list {
     margin-left: calc(1rem + 8px);
 

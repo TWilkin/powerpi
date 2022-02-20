@@ -7,7 +7,7 @@ import {
 import classNames from "classnames";
 import { useMemo } from "react";
 import useOrientation from "../../hooks/orientation";
-import styles from "./Home.module.scss";
+import styles from "./Floorplan.module.scss";
 
 interface FloorplanProps {
     floorplan: IFloorplan;

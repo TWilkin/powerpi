@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
-import Site from "./components/Site/Site";
+import Site from "./components/Site";
 import "./styles/main.scss";
 
 const queryClient = new QueryClient();

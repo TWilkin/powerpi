@@ -2,10 +2,6 @@
 // Please do not change this file!
 interface CssExports {
   'charts': string;
-  'filters': string;
-  'loading': string;
-  'react-datepicker': string;
-  'react-datepicker-wrapper': string;
 }
 export const cssExports: CssExports;
 export default cssExports;

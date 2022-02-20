@@ -1,2 +1,1 @@
-import DeviceList from "./DeviceList";
-export default DeviceList;
+export { default } from "./DeviceList";

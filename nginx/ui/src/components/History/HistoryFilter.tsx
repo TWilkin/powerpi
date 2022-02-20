@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useGetHistoryFilters } from "../../hooks/history";
 import { MessageFilterType, MessageTypeFilter, MessageTypeFilters } from "../Components";
-import styles from "./History.module.scss";
+import styles from "./HistoryFilter.module.scss";
 
 interface HistoryFilterProps {
     updateFilter: (filters: MessageTypeFilters) => void;

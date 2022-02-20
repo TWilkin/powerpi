@@ -2,10 +2,6 @@
 // Please do not change this file!
 interface CssExports {
   'home': string;
-  'layout': string;
-  'rotate': string;
-  'visible': string;
-  'wide': string;
 }
 export const cssExports: CssExports;
 export default cssExports;

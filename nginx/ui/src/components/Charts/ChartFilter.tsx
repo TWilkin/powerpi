@@ -7,7 +7,7 @@ import {
     MessageTypeFilter,
     MessageTypeFilters,
 } from "../Components";
-import styles from "./Charts.module.scss";
+import styles from "./ChartFilter.module.scss";
 
 export interface ChartFilters extends MessageTypeFilters {
     start?: Date;

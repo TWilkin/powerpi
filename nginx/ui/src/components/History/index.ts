@@ -1,2 +1,1 @@
-import HistoryList from "./HistoryList";
-export default HistoryList;
+export { default } from "./HistoryList";
