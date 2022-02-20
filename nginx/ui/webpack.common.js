@@ -32,8 +32,14 @@ module.exports = {
                 use: ["style-loader", "css-loader", "sass-loader"],
             },
             {
-                test: /\.(ttf|eot|svg|gif|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                use: "file-loader",
+                test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+                type: "assest/resource",
+                dependency: { not: ["url"] },
+            },
+            {
+                test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+                type: "assest/resource",
+                dependency: { not: ["url"] },
             },
         ],
     },
