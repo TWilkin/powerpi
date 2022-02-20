@@ -4,6 +4,7 @@ interface CssExports {
   'bar': string;
   'buttons': string;
   'loading': string;
+  'lock': string;
   'off': string;
   'on': string;
   'slide': string;

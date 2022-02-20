@@ -58,6 +58,7 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
                 <span
                     className={classNames(
                         styles.bar,
+                        { [styles.lock]: device.type.endsWith("pairing") },
                         { [styles.on]: device.state === DeviceState.On },
                         { [styles.off]: device.state === DeviceState.Off },
                         { [styles.unknown]: device.state === DeviceState.Unknown },

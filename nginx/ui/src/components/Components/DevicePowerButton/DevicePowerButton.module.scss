@@ -83,6 +83,26 @@
             transition: 0.25s;
         }
 
+        &.lock {
+            &.on {
+                background-color: red;
+
+                &::before {
+                    color: red;
+                    content: "\f3c1"; // unlocked
+                }
+            }
+
+            &.off {
+                background-color: orange;
+
+                &::before {
+                    color: orange;
+                    content: "\f023"; // locked
+                }
+            }
+        }
+
         &.loading {
             margin: 0;
             background-color: gray;
