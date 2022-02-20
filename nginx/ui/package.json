@@ -2,9 +2,10 @@
     "name": "@powerpi/ui",
     "version": "1.2.8",
     "description": "PowerPi UI",
-    "main": "src/app.tsx",
+    "main": "src/powerpi.tsx",
     "scripts": {
-        "build": "webpack --config webpack.prod.js",
+        "build": "webpack --config webpack.prod.js --mode production",
+        "clean": "rm -r dist",
         "start": "webpack serve --config webpack.dev.js"
     },
     "author": "TWilkin",
@@ -48,8 +49,8 @@
         "ts-loader": "^9.2.6",
         "typescript": "^4.2.3",
         "webpack": "^5.58.0",
-        "webpack-cli": "^4.9.0",
-        "webpack-dev-server": "^4.3.1",
+        "webpack-cli": "^4.9.2",
+        "webpack-dev-server": "^4.7.4",
         "webpack-merge": "^5.8.0"
     }
 }

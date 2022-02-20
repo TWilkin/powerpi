@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
     entry: {
-        app: path.join(__dirname, "src", "app.tsx"),
+        powerpi: path.join(__dirname, "src", "powerpi.tsx"),
     },
     target: "web",
     resolve: {
@@ -38,7 +38,7 @@ module.exports = {
         ],
     },
     output: {
-        filename: "bundle.js",
         path: path.resolve(__dirname, "dist"),
+        filename: "[name].bundle.js",
     },
 };

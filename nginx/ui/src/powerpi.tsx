@@ -5,7 +5,7 @@ import "./styles/main.scss";
 
 const queryClient = new QueryClient();
 
-const App = () => {
+const PowerPi = () => {
     return (
         <QueryClientProvider client={queryClient}>
             <Site />
@@ -13,4 +13,4 @@ const App = () => {
     );
 };
 
-ReactDOM.render(<App />, document.getElementById("content"));
+ReactDOM.render(<PowerPi />, document.getElementById("content"));
