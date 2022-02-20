@@ -1,4 +1,5 @@
 import DatePicker from "react-datepicker";
+import "./DateFilter.scss";
 
 interface DateFilterProps {
     name: string;

@@ -1,7 +1,8 @@
 import { faExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormEvent } from "react";
-import Loading from "./Loading";
+import Loading from "../Loading";
+import styles from "./MessageTypeFilter.module.scss";
 
 export type MessageFilterType = "type" | "entity" | "action";
 
@@ -39,7 +40,7 @@ const MessageTypeFilter = ({
         <div>
             <label htmlFor={`${type}-filter`}>{name}: </label>
 
-            <Loading loading={loading}>
+            <Loading className={styles.loading} loading={loading}>
                 {error ? (
                     <FontAwesomeIcon icon={faExclamation} />
                 ) : (
