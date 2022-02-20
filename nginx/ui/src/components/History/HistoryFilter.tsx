@@ -2,7 +2,10 @@ import { useCallback } from "react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useGetHistoryFilters } from "../../hooks/history";
-import { MessageFilterType, MessageTypeFilter, MessageTypeFilters } from "../Components";
+import MessageTypeFilter, {
+    MessageTypeFilters,
+    MessageFilterType,
+} from "../Components/MessageTypeFilter";
 import styles from "./HistoryFilter.module.scss";
 
 interface HistoryFilterProps {

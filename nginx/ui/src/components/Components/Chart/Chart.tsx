@@ -11,9 +11,9 @@ import {
 } from "chart.js";
 import "chartjs-adapter-luxon";
 import { Line } from "react-chartjs-2";
-import { Loading } from "..";
 import { useGetHistoryRange } from "../../../hooks/history";
 import useOrientation from "../../../hooks/orientation";
+import Loading from "../Loading";
 import styles from "./Chart.module.scss";
 
 ChartJS.register(

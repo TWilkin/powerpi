@@ -3,16 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useGetDevices } from "../../hooks/devices";
-import {
-    AbbreviatingTime,
-    DeviceIcon,
-    DevicePowerButton,
-    Filter,
-    List,
-    Loading,
-} from "../Components";
+import AbbreviatingTime from "../Components/AbbreviatingTime";
+import DeviceIcon from "../Components/DeviceIcon";
+import DevicePowerButton from "../Components/DevicePowerButton";
+import Filter from "../Components/Filter";
+import List from "../Components/List";
+import Loading from "../Components/Loading";
 import DeviceFilter, { Filters } from "./DeviceFilter";
-import styles from "./Devices.module.scss";
+import styles from "./DeviceList.module.scss";
 
 const DeviceList = () => {
     const [filters, setFilters] = useState<Filters>({ types: [] });

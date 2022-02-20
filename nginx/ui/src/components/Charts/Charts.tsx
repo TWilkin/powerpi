@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Chart, Filter } from "../Components";
+import Chart from "../Components/Chart";
+import Filter from "../Components/Filter";
 import ChartFilter, { ChartFilters } from "./ChartFilter";
 import styles from "./Charts.module.scss";
 

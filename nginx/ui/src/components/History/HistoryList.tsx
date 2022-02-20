@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { useGetHistory } from "../../hooks/history";
-import {
-    AbbreviatingTime,
-    Filter,
-    List,
-    Loading,
-    MessageTypeFilters,
-    PaginationControls,
-} from "../Components";
+import AbbreviatingTime from "../Components/AbbreviatingTime";
+import Filter from "../Components/Filter";
+import List from "../Components/List";
+import Loading from "../Components/Loading";
+import { MessageTypeFilters } from "../Components/MessageTypeFilter";
+import PaginationControls from "../Components/PaginationControls";
 import HistoryFilter from "./HistoryFilter";
-import styles from "./History.module.scss";
+import styles from "./HistoryList.module.scss";
 
 const HistoryList = () => {
     const [page, setPage] = useState(0);

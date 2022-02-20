@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { useGetHistoryFilters } from "../../hooks/history";
-import {
-    DateFilter,
+import DateFilter from "../Components/DateFilter";
+import MessageTypeFilter, {
     MessageFilterType,
-    MessageTypeFilter,
     MessageTypeFilters,
-} from "../Components";
+} from "../Components/MessageTypeFilter";
 import styles from "./ChartFilter.module.scss";
 
 export interface ChartFilters extends MessageTypeFilters {

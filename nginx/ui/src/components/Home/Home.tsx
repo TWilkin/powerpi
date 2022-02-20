@@ -3,10 +3,10 @@ import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useGetFloorplan } from "../../hooks/floorplan";
 import useGetSensors from "../../hooks/sensors";
-import { Menu } from "../Components";
 import Floorplan from "./Floorplan";
 import Tooltip from "./Tooltip";
 import styles from "./Home.module.scss";
+import Menu from "../Components/Menu";
 
 const Home = () => {
     const { floor } = useParams();

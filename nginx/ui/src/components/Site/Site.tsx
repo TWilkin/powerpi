@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { lazy, Suspense, useMemo } from "react";
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from "react-router-dom";
 import { useGetConfig } from "../../hooks/config";
-import { Menu } from "../Components";
+import Menu from "../Components/Menu";
 import styles from "./Site.module.scss";
 
 const Charts = lazy(() => import("../Charts"));

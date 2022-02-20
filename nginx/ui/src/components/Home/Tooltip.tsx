@@ -1,6 +1,8 @@
 import { Sensor } from "@powerpi/api";
 import ReactTooltip from "react-tooltip";
-import { SensorIcon, FormattedValue, AbbreviatingTime } from "../Components";
+import AbbreviatingTime from "../Components/AbbreviatingTime";
+import FormattedValue from "../Components/FormattedValue";
+import SensorIcon from "../Components/SensorIcon";
 
 interface TooltipProps {
     title: string;
