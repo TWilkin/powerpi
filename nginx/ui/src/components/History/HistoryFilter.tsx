@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { ParamKeyValuePair, useSearchParams } from "react-router-dom";
 import { useGetHistoryFilters } from "../../hooks/history";
 import MessageTypeFilter, {
     MessageTypeFilters,
@@ -15,18 +15,11 @@ interface HistoryFilterProps {
 const HistoryFilter = ({ updateFilter }: HistoryFilterProps) => {
     const { actions, entities, types } = useGetHistoryFilters();
 
-    const [filters, setFilters] = useState<MessageTypeFilters>({
-        type: undefined,
-        entity: undefined,
-        action: undefined,
-    });
+    const [query, setQuery] = useSearchParams();
 
-    // TODO update the query filters so changing works properly
-    const [query] = useSearchParams();
+    const [filters, setFilters] = useState<MessageTypeFilters>(parseQuery(query));
 
-    useEffect(() => {
-        setFilters(parseQuery(query));
-    }, [query]);
+    useEffect(() => setFilters(parseQuery(query)), [query]);
 
     useEffect(() => updateFilter(filters), [filters, updateFilter]);
 
@@ -35,8 +28,9 @@ const HistoryFilter = ({ updateFilter }: HistoryFilterProps) => {
             const newFilter = { ...filters };
             newFilter[type] = value;
             setFilters(newFilter);
+            setQuery(toQuery(newFilter));
         },
-        [filters]
+        [filters, setQuery]
     );
 
     return (
@@ -79,4 +73,22 @@ function parseQuery(query: URLSearchParams): MessageTypeFilters {
         entity: query.get("entity") ?? undefined,
         action: query.get("action") ?? undefined,
     };
+}
+
+function toQuery(filters: MessageTypeFilters) {
+    const params: ParamKeyValuePair[] = [];
+
+    if (filters.action) {
+        params.push(["action", filters.action]);
+    }
+
+    if (filters.entity) {
+        params.push(["entity", filters.entity]);
+    }
+
+    if (filters.type) {
+        params.push(["type", filters.type]);
+    }
+
+    return params;
 }
