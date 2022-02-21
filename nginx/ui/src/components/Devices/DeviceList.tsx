@@ -9,6 +9,7 @@ import DevicePowerButton from "../Components/DevicePowerButton";
 import Filter from "../Components/Filter";
 import List from "../Components/List";
 import Loading from "../Components/Loading";
+import Message from "../Components/Message";
 import DeviceFilter, { Filters } from "./DeviceFilter";
 import styles from "./DeviceList.module.scss";
 
@@ -67,9 +68,14 @@ const DeviceList = () => {
                                 ) : (
                                     <tr>
                                         <td colSpan={5}>
-                                            {isDevicesError
-                                                ? `An error occured when loading the device list`
-                                                : `No devices`}
+                                            {isDevicesError ? (
+                                                <Message
+                                                    error
+                                                    message="An error occurred loading the devices."
+                                                />
+                                            ) : (
+                                                <Message message="No devices." />
+                                            )}
                                         </td>
                                     </tr>
                                 )}

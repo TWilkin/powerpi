@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { lazy, Suspense, useMemo } from "react";
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from "react-router-dom";
 import { useGetConfig } from "../../hooks/config";
+import Loading from "../Components/Loading";
 import Menu from "../Components/Menu";
+import NotFound from "../NotFound";
 import styles from "./Site.module.scss";
 
 const Charts = lazy(() => import("../Charts"));
@@ -23,7 +25,7 @@ const Site = () => {
                 ? "devices"
                 : config?.hasPersistence
                 ? "history"
-                : "login",
+                : undefined,
         [config]
     );
 
@@ -72,7 +74,18 @@ const Site = () => {
             <div className={styles.content}>
                 <Suspense fallback={<div>Loading...</div>}>
                     <Routes>
-                        <Route index element={<Navigate to={defaultPage} replace />} />
+                        <Route
+                            index
+                            element={
+                                <Loading loading={isConfigLoading}>
+                                    {defaultPage ? (
+                                        <Navigate to={defaultPage} replace />
+                                    ) : (
+                                        <NotFound />
+                                    )}
+                                </Loading>
+                            }
+                        />
 
                         <Route path="login" element={<Login />} />
 
@@ -86,6 +99,8 @@ const Site = () => {
                                 <Route path="charts" element={<Charts />} />
                             </>
                         )}
+
+                        <Route path="*" element={<NotFound />} />
                     </Routes>
                 </Suspense>
             </div>

@@ -4,6 +4,7 @@ import AbbreviatingTime from "../Components/AbbreviatingTime";
 import Filter from "../Components/Filter";
 import List from "../Components/List";
 import Loading from "../Components/Loading";
+import Message from "../Components/Message";
 import { MessageTypeFilters } from "../Components/MessageTypeFilter";
 import PaginationControls from "../Components/PaginationControls";
 import HistoryFilter from "./HistoryFilter";
@@ -66,9 +67,14 @@ const HistoryList = () => {
                                 ) : (
                                     <tr>
                                         <td colSpan={5}>
-                                            {isHistoryError
-                                                ? `An error occured when loading the history list`
-                                                : `No data`}
+                                            {isHistoryError ? (
+                                                <Message
+                                                    error
+                                                    message="An error occurred loading the history."
+                                                />
+                                            ) : (
+                                                <Message message="No history." />
+                                            )}
                                         </td>
                                     </tr>
                                 )}

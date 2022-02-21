@@ -1,0 +1,13 @@
+.message {
+    margin-top: 1rem;
+
+    svg {
+        color: black;
+    }
+
+    &.error {
+        svg {
+            color: red;
+        }
+    }
+}
