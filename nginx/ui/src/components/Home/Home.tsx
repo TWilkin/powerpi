@@ -1,16 +1,16 @@
-import { Sensor } from "@powerpi/api";
+import { Floorplan as IFloorplan, Sensor } from "@powerpi/api";
 import { useMemo } from "react";
-import { useParams } from "react-router-dom";
-import { useGetFloorplan } from "../../hooks/floorplan";
 import useGetSensors from "../../hooks/sensors";
 import Floorplan from "./Floorplan";
 import Tooltip from "./Tooltip";
 import styles from "./Home.module.scss";
 import Menu from "../Components/Menu";
 
-const Home = () => {
-    const { floor } = useParams();
-    const { floorplan } = useGetFloorplan();
+interface HomeProps {
+    floorplan: IFloorplan;
+}
+
+const Home = ({ floorplan }: HomeProps) => {
     const { sensors } = useGetSensors();
 
     const locations = useMemo(
@@ -30,14 +30,6 @@ const Home = () => {
         [floorplan, sensors]
     );
 
-    const defaultFloor = useMemo(() => {
-        if ((floorplan?.floors?.length ?? 0) > 0) {
-            return floorplan?.floors[0].name;
-        }
-
-        return undefined;
-    }, [floorplan]);
-
     return (
         <div className={styles.home}>
             {floorplan && (
@@ -50,7 +42,7 @@ const Home = () => {
                         visible={floorplan.floors.length > 1}
                     />
 
-                    <Floorplan floorplan={floorplan} current={floor ?? defaultFloor} />
+                    <Floorplan floorplan={floorplan} />
 
                     {locations?.map((location) => (
                         <Tooltip key={`${location.floor}${location.location}`} {...location} />

@@ -72,23 +72,18 @@ const Site = () => {
             <div className={styles.content}>
                 <Suspense fallback={<div>Loading...</div>}>
                     <Routes>
-                        <Route path="/" element={<Navigate to={`/${defaultPage}`} />} />
+                        <Route index element={<Navigate to={defaultPage} replace />} />
 
-                        <Route path="/login" element={<Login />} />
+                        <Route path="login" element={<Login />} />
 
-                        {config?.hasFloorplan && (
-                            <Route path="/home" element={<Home />}>
-                                <Route path=":floor" element={<Home />} />
-                            </Route>
-                        )}
+                        {config?.hasFloorplan && <Route path="home/*" element={<Home />} />}
 
-                        {config?.hasDevices && <Route path="/devices" element={<Devices />} />}
+                        {config?.hasDevices && <Route path="devices" element={<Devices />} />}
 
                         {config?.hasPersistence && (
                             <>
-                                <Route path="/history" element={<History />} />
-
-                                <Route path="/charts" element={<Charts />} />
+                                <Route path="history" element={<History />} />
+                                <Route path="charts" element={<Charts />} />
                             </>
                         )}
                     </Routes>

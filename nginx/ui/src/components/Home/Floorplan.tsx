@@ -6,15 +6,16 @@ import {
 } from "@powerpi/api";
 import classNames from "classnames";
 import { useMemo } from "react";
+import { useParams } from "react-router-dom";
 import useOrientation from "../../hooks/orientation";
 import styles from "./Floorplan.module.scss";
 
 interface FloorplanProps {
     floorplan: IFloorplan;
-    current: string | undefined;
 }
 
-const Floorplan = ({ floorplan, current }: FloorplanProps) => {
+const Floorplan = ({ floorplan }: FloorplanProps) => {
+    const params = useParams();
     const { isLandscape, isPortrait } = useOrientation();
 
     const size = useMemo(() => viewBoxByFloorplan(floorplan), [floorplan]);
@@ -40,7 +41,7 @@ const Floorplan = ({ floorplan, current }: FloorplanProps) => {
                 </defs>
 
                 {floorplan.floors.map((floor) => (
-                    <Floor key={floor.name} floor={floor} visible={current === floor.name} />
+                    <Floor key={floor.name} floor={floor} visible={params.floor === floor.name} />
                 ))}
             </svg>
         </div>
