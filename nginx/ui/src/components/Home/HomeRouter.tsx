@@ -18,7 +18,7 @@ const HomeRouter = () => {
     return (
         <Routes>
             {defaultFloor && <Route index element={<Navigate to={defaultFloor} replace />} />}
-            {floorplan && <Route path=":floor" element={<Home floorplan={floorplan} />} />}
+            <Route path=":floor" element={<Home floorplan={floorplan} />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     );

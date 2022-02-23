@@ -5,9 +5,10 @@ import Floorplan from "./Floorplan";
 import Tooltip from "./Tooltip";
 import styles from "./Home.module.scss";
 import Menu from "../Components/Menu";
+import Loading from "../Components/Loading";
 
 interface HomeProps {
-    floorplan: IFloorplan;
+    floorplan: IFloorplan | undefined;
 }
 
 const Home = ({ floorplan }: HomeProps) => {
@@ -32,23 +33,23 @@ const Home = ({ floorplan }: HomeProps) => {
 
     return (
         <div className={styles.home}>
-            {floorplan && (
-                <>
-                    <Menu
-                        items={floorplan.floors.map((floor) => ({
+            <Loading loading={!floorplan}>
+                <Menu
+                    items={
+                        floorplan?.floors.map((floor) => ({
                             path: `/home/${floor.name}`,
                             name: floor.display_name ?? floor.name,
-                        }))}
-                        visible={floorplan.floors.length > 1}
-                    />
+                        })) ?? []
+                    }
+                    visible={(floorplan?.floors.length ?? 0) > 1}
+                />
 
-                    <Floorplan floorplan={floorplan} />
+                {floorplan && <Floorplan floorplan={floorplan} />}
 
-                    {locations?.map((location) => (
-                        <Tooltip key={`${location.floor}${location.location}`} {...location} />
-                    ))}
-                </>
-            )}
+                {locations?.map((location) => (
+                    <Tooltip key={`${location.floor}${location.location}`} {...location} />
+                ))}
+            </Loading>
         </div>
     );
 };

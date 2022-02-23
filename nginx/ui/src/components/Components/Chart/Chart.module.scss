@@ -6,6 +6,7 @@
     width: $chart-size;
     height: min(#{$chart-size} / 2, 90vh - #{$menu-height});
     padding: 0 2px;
+    text-align: center;
 
     @media (orientation: portrait) {
         $chart-size: calc(90vh - #{$menu-height});
