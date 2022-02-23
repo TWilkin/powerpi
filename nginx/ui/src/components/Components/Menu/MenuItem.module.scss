@@ -1,0 +1,23 @@
+@import "../../../styles/vars.scss";
+
+.item {
+    height: $menu-height;
+    flex: 1;
+    font-size: 1.6rem;
+    line-height: $menu-height;
+    text-align: center;
+    text-decoration: none;
+    background-color: lightcyan;
+    color: black;
+    border: 1px solid black;
+
+    &.active {
+        background-color: lightskyblue;
+    }
+
+    @media (max-width: 500px) {
+        .text {
+            display: none;
+        }
+    }
+}

@@ -1,5 +1,4 @@
 import { Sensor } from "@powerpi/api";
-import React from "react";
 import ReactTooltip from "react-tooltip";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import FormattedValue from "../Components/FormattedValue";

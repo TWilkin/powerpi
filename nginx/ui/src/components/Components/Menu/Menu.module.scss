@@ -1,0 +1,9 @@
+@import "../../../styles/vars.scss";
+
+.menu {
+    width: calc(100% - #{$logo-width});
+    margin-left: $logo-width;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}

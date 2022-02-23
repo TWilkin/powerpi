@@ -5,16 +5,17 @@ import {
     Point as IPoint,
 } from "@powerpi/api";
 import classNames from "classnames";
-import React from "react";
 import { useMemo } from "react";
+import { useParams } from "react-router-dom";
 import useOrientation from "../../hooks/orientation";
+import styles from "./Floorplan.module.scss";
 
 interface FloorplanProps {
     floorplan: IFloorplan;
-    current: string;
 }
 
-const Floorplan = ({ floorplan, current }: FloorplanProps) => {
+const Floorplan = ({ floorplan }: FloorplanProps) => {
+    const params = useParams();
     const { isLandscape, isPortrait } = useOrientation();
 
     const size = useMemo(() => viewBoxByFloorplan(floorplan), [floorplan]);
@@ -27,11 +28,11 @@ const Floorplan = ({ floorplan, current }: FloorplanProps) => {
     );
 
     return (
-        <div id="layout">
+        <div className={styles.layout}>
             <svg
                 viewBox={`${size.minX} ${size.minY} ${size.maxX} ${size.maxY}`}
                 preserveAspectRatio="xMidYMid"
-                className={classNames({ rotate, wide: isWide })}
+                className={classNames({ [styles.rotate]: rotate, [styles.wide]: isWide })}
             >
                 <defs>
                     {floorplan.floors.map((floor) => (
@@ -40,7 +41,7 @@ const Floorplan = ({ floorplan, current }: FloorplanProps) => {
                 </defs>
 
                 {floorplan.floors.map((floor) => (
-                    <Floor key={floor.name} floor={floor} visible={current === floor.name} />
+                    <Floor key={floor.name} floor={floor} visible={params.floor === floor.name} />
                 ))}
             </svg>
         </div>
@@ -75,7 +76,11 @@ interface FloorProps {
 
 const Floor = ({ floor, visible }: FloorProps) => {
     return (
-        <g id={floor.name} filter={`url(#${outlineId(floor)})`} className={classNames({ visible })}>
+        <g
+            id={floor.name}
+            filter={`url(#${outlineId(floor)})`}
+            className={classNames({ [styles.visible]: visible })}
+        >
             <title>{floor.display_name ?? floor.name}</title>
 
             {floor.rooms.map((room) => (

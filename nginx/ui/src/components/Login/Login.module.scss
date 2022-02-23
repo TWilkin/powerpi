@@ -1,0 +1,16 @@
+.login {
+    padding-top: 20px;
+
+    button {
+        padding: 20px 30px;
+        background-color: lightcyan;
+        color: black;
+        border: 1px solid black;
+        font-size: 1.2rem;
+
+        &:hover {
+            cursor: pointer;
+            background-color: lightskyblue;
+        }
+    }
+}

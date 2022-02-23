@@ -1,7 +1,8 @@
-import { PowerPiApi } from "@powerpi/api";
 import { useQuery, UseQueryResult } from "react-query";
+import useAPI from "./api";
 
-export function useGetHistoryFilters(api: PowerPiApi, type?: string) {
+export function useGetHistoryFilters(type?: string) {
+    const api = useAPI();
     const actions = useGetHistoryFilter("actions", api.getHistoryActions, type);
     const entities = useGetHistoryFilter("entities", api.getHistoryEntities, type);
     const types = useGetHistoryFilter("types", (_) => api.getHistoryTypes());
@@ -36,13 +37,13 @@ function extractResult<TRecord>(result: UseQueryResult<TRecord[], unknown>, prop
 }
 
 export function useGetHistory(
-    api: PowerPiApi,
     page: number,
     records: number,
     type?: string,
     entity?: string,
     action?: string
 ) {
+    const api = useAPI();
     const { isLoading, isError, data } = useQuery(
         ["history", type, entity, action, page, records],
         () => api.getHistory(type, entity, action, page, records),
@@ -59,13 +60,13 @@ export function useGetHistory(
 }
 
 export function useGetHistoryRange(
-    api: PowerPiApi,
     start?: Date,
     end?: Date,
     type?: string,
     entity?: string,
     action?: string
 ) {
+    const api = useAPI();
     const { isLoading, isError, data } = useQuery(
         ["history/range", start, end, type, entity, action],
         () => api.getHistoryRange(start, end, type, entity, action)

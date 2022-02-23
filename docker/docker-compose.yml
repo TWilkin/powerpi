@@ -163,7 +163,7 @@ services:
 
     nginx:
         build: ../nginx
-        image: ${REGISTRY}/powerpi/nginx:1.2.7
+        image: ${REGISTRY}/powerpi/nginx:1.2.8
         networks:
             - powerpi
         ports:

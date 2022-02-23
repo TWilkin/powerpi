@@ -1,8 +1,10 @@
-import { PowerPiApi, Sensor, SensorStatusMessage } from "@powerpi/api";
+import { Sensor, SensorStatusMessage } from "@powerpi/api";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import useAPI from "./api";
 
-export default function useGetSensors(api: PowerPiApi) {
+export default function useGetSensors() {
+    const api = useAPI();
     const [sensors, setSensors] = useState<Sensor[] | undefined>();
     const { isLoading, isError, data } = useQuery("sensors", () => api.getSensors());
 
