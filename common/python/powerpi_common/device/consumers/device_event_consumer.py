@@ -1,4 +1,5 @@
 from powerpi_common.config import Config
+from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTConsumer
 
@@ -16,7 +17,7 @@ class DeviceEventConsumer(MQTTConsumer):
         else:
             valid = True
 
-        if state is not None and state != 'on' and state != 'off':
+        if state is not None and state != DeviceStatus.ON and state != DeviceStatus.OFF:
             self._logger.error(f'Unrecognisable state {state}')
             valid = False
 

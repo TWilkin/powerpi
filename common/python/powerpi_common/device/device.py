@@ -6,6 +6,7 @@ from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util import await_or_sync
 from .base import BaseDevice
 from .consumers import DeviceChangeEventConsumer, DeviceStatusEventConsumer
+from .types import DeviceStatus
 
 
 class Device(BaseDevice, DeviceChangeEventConsumer):
@@ -36,7 +37,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         DeviceChangeEventConsumer.__init__(self, self, config, logger)
 
         self._logger = logger
-        self.__state = 'unknown'
+        self.__state = DeviceStatus.UNKNOWN
 
         self._producer = mqtt_client.add_producer()
 
@@ -57,17 +58,17 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
     async def turn_on(self):
         self._logger.info(f'Turning on device {self}')
         await await_or_sync(self._turn_on)
-        self.state = 'on'
+        self.state = DeviceStatus.ON
 
     async def turn_off(self):
         self._logger.info(f'Turning off device {self}')
         await await_or_sync(self._turn_off)
-        self.state = 'off'
+        self.state = DeviceStatus.OFF
     
-    async def change_power(self, new_power_state: str):
+    async def change_power(self, new_power_state: DeviceStatus):
         try:
             if new_power_state is not None:
-                if new_power_state == 'on':
+                if new_power_state == DeviceStatus.ON:
                     await self.turn_on()
                 else:
                     await self.turn_off()
@@ -83,7 +84,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
     def _turn_off(self):
         raise NotImplementedError
 
-    def _update_state_no_broadcast(self, new_power_state: str):
+    def _update_state_no_broadcast(self, new_power_state: DeviceStatus):
         self.__state = new_power_state
 
     def _broadcast_state_change(self):

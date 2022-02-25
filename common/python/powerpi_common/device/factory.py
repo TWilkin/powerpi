@@ -1,6 +1,6 @@
 from powerpi_common.logger import Logger
 from .base import BaseDevice
-from .type import DeviceType
+from .types import DeviceType
 
 
 class DeviceFactory(object):
