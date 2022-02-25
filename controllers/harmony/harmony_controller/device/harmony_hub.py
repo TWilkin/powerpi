@@ -5,6 +5,7 @@ from typing import Dict, NamedTuple
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.device import Device, DeviceManager
+from powerpi_common.device.mixin import PollableMixin
 from powerpi_common.mqtt import MQTTClient
 from .harmony_client import HarmonyClient
 
@@ -17,7 +18,7 @@ class Activity(NamedTuple):
         return f'{self.id}: {self.device}'
 
 
-class HarmonyHubDevice(Device):
+class HarmonyHubDevice(Device, PollableMixin):
     __POWER_OFF_ID = -1
 
     def __init__(
@@ -27,14 +28,13 @@ class HarmonyHubDevice(Device):
         mqtt_client: MQTTClient,
         device_manager: DeviceManager,
         harmony_client: HarmonyClient,
-        name: str,
         ip: str = None,
         hostname: str = None,
         port: int = 5222,
         **kwargs
     ):
         Device.__init__(
-            self, config, logger, mqtt_client, name, **kwargs
+            self, config, logger, mqtt_client, **kwargs
         )
 
         self.__device_manager = device_manager

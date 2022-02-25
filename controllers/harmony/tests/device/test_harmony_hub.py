@@ -5,11 +5,12 @@ from pytest_mock import MockerFixture
 from typing import Tuple
 
 from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import PollableMixinTestBase
 from harmony_controller.device.harmony_activity import HarmonyActivityDevice
 from harmony_controller.device.harmony_hub import HarmonyHubDevice
 
 
-class TestHarmonyHubDevice(DeviceTestBase):
+class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.config = mocker.Mock()
         self.logger = mocker.Mock()
@@ -56,7 +57,8 @@ class TestHarmonyHubDevice(DeviceTestBase):
             )
 
         return HarmonyHubDevice(
-            self.config, self.logger, self.mqtt_client, self.device_manager, self.harmony_client, self.__hub_name
+            self.config, self.logger, self.mqtt_client, self.device_manager, self.harmony_client, self.__hub_name,
+            name='testhub'
         )
     
     @pytest.mark.first

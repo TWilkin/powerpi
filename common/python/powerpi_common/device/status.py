@@ -34,7 +34,7 @@ class DeviceStatusChecker(object):
     def start(self):
         # only schedule if there are pollable devices
         if len(self.devices) > 0:
-            self.__logger.info(f'Polling for device state changes every {self.__poll_frequency} seconds')
+            self.__logger.info(f'Polling for device state changes every {self.__poll_frequency} seconds for {len(self.devices)} device(s)')
 
             interval = IntervalTrigger(seconds=self.__poll_frequency)
             self.__scheduler.add_job(self.__run, trigger=interval)
