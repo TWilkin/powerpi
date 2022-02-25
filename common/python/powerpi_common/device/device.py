@@ -4,10 +4,12 @@ from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, StatusEventConsumer, PowerEventConsumer
 from powerpi_common.util import await_or_sync
+from .mixin.pollable import PollableMixin
+
 from .base import BaseDevice
 
 
-class Device(BaseDevice, PowerEventConsumer):
+class Device(BaseDevice, PowerEventConsumer, PollableMixin):
     class __StatusEventConsumer(StatusEventConsumer):
         def __init__(self, device, mqtt_client: MQTTClient):
             StatusEventConsumer.__init__(
@@ -77,9 +79,6 @@ class Device(BaseDevice, PowerEventConsumer):
             self.__additional_state = additional_state
 
         self._broadcast_state_change()
-    
-    async def poll(self):
-        await await_or_sync(self._poll)
 
     async def turn_on(self):
         self._logger.info(f'Turning on device {self}')
@@ -109,10 +108,6 @@ class Device(BaseDevice, PowerEventConsumer):
         except Exception as e:
             self._logger.exception(e)
             return
-
-    @abstractmethod
-    def _poll(self):
-        raise NotImplementedError
 
     @abstractmethod
     def _turn_on(self):
