@@ -1,10 +1,9 @@
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from .consumer import MQTTConsumer
-from .types import MQTTMessage
+from powerpi_common.mqtt import MQTTConsumer
 
 
-class DeviceStateEventConsumer(MQTTConsumer):
+class DeviceEventConsumer(MQTTConsumer):
     def __init__(self, topic: str, device, config: Config, logger: Logger):
         MQTTConsumer.__init__(
             self, topic, config, logger

@@ -2,15 +2,16 @@ from abc import abstractmethod
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient, StatusEventConsumer, PowerEventConsumer
+from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util import await_or_sync
 from .base import BaseDevice
+from .consumers import DeviceChangeEventConsumer, DeviceStatusEventConsumer
 
 
-class Device(BaseDevice, PowerEventConsumer):
-    class __StatusEventConsumer(StatusEventConsumer):
+class Device(BaseDevice, DeviceChangeEventConsumer):
+    class __StatusEventConsumer(DeviceStatusEventConsumer):
         def __init__(self, device, mqtt_client: MQTTClient):
-            StatusEventConsumer.__init__(
+            DeviceStatusEventConsumer.__init__(
                 self, device, device._config, device._logger
             )
             self.__mqtt_client = mqtt_client
@@ -32,7 +33,7 @@ class Device(BaseDevice, PowerEventConsumer):
         **kwargs
     ):
         BaseDevice.__init__(self, **kwargs)
-        PowerEventConsumer.__init__(self, self, config, logger)
+        DeviceChangeEventConsumer.__init__(self, self, config, logger)
 
         self._logger = logger
         self.__state = 'unknown'
