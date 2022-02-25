@@ -26,9 +26,6 @@ class ZigbeePairingDevice(Device):
         self.__timeout = timeout
 
         self.__zigbee_controller.add_listener(self)
-    
-    def _poll(self):
-        pass
 
     def _turn_on(self):
         # run in a separate task so the off state happens after the on
