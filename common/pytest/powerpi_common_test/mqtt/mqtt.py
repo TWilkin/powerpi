@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 
 
 def mock_producer(mocker: MockerFixture, mqtt_client: MagicMock):
-    mocker.patch('powerpi_common_test.mqtt.__mocked_mqtt_publish')
+    mocker.patch('powerpi_common_test.mqtt.mqtt.__mocked_mqtt_publish')
     mocker.patch.object(
         mqtt_client,
         'add_producer',
