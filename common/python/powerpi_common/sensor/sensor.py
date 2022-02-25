@@ -6,14 +6,12 @@ class Sensor(BaseDevice):
     def __init__(
         self,
         mqtt_client: MQTTClient,
-        name: str, 
         location: str = None,
-        display_name: str = None,
         entity: str = None,
         action: str = None,
-        visible: bool = False
+        **kwargs
     ):
-        BaseDevice.__init__(self, name, display_name, visible)
+        BaseDevice.__init__(self, **kwargs)
 
         self.__location = location
         self.__entity = entity

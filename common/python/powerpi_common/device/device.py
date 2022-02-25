@@ -29,11 +29,9 @@ class Device(BaseDevice, PowerEventConsumer):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        name: str,
-        display_name: str = None,
-        visible: bool = False
+        **kwargs
     ):
-        BaseDevice.__init__(self, name, display_name, visible)
+        BaseDevice.__init__(self, **kwargs)
         PowerEventConsumer.__init__(self, self, config, logger)
 
         self._logger = logger

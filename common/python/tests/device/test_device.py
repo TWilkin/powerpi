@@ -7,7 +7,8 @@ from powerpi_common_test.device import DeviceTestBase
 class DeviceImpl(Device):
     def __init__(self, config, logger, mqtt_client):
         Device.__init__(
-            self, config, logger, mqtt_client, 'test'
+            self, config, logger, mqtt_client, 
+            name='test'
         )
 
     def _turn_on(self):
