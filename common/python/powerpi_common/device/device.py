@@ -17,9 +17,9 @@ class Device(BaseDevice, PowerEventConsumer):
 
             mqtt_client.add_consumer(self)
 
-        def _update_device(self, new_power_state, new_additional_state):
+        def _update_device(self, new_power_state):
             # override default behaviour to prevent events generated for state change
-            self._device._update_state_no_broadcast(new_power_state, new_additional_state)
+            self._device._update_state_no_broadcast(new_power_state)
 
             # remove this consumer as it has completed its job
             self.__mqtt_client.remove_consumer(self)
@@ -36,7 +36,6 @@ class Device(BaseDevice, PowerEventConsumer):
 
         self._logger = logger
         self.__state = 'unknown'
-        self.__additional_state = None
 
         self._producer = mqtt_client.add_producer()
 
@@ -53,28 +52,6 @@ class Device(BaseDevice, PowerEventConsumer):
         self.__state = new_state
 
         self._broadcast_state_change()
-    
-    @property
-    def additional_state(self):
-        if self.__additional_state:
-            return self.__additional_state
-        
-        return {}
-    
-    @additional_state.setter
-    def additional_state(self, new_state):
-        self.__additional_state = new_state
-
-        self._broadcast_state_change()
-    
-    def set_state_and_additional(self, state: str, additional_state: dict):
-        if state is not None:
-            self.__state = state
-        
-        if len(additional_state) > 0:
-            self.__additional_state = additional_state
-
-        self._broadcast_state_change()
 
     async def turn_on(self):
         self._logger.info(f'Turning on device {self}')
@@ -86,21 +63,13 @@ class Device(BaseDevice, PowerEventConsumer):
         await await_or_sync(self._turn_off)
         self.state = 'off'
     
-    async def change_power_and_additional_state(self, new_power_state: str, new_additional_state: dict):
+    async def change_power(self, new_power_state: str):
         try:
             if new_power_state is not None:
-                self._logger.info(f'Turning {new_power_state} device {self}')
-
                 if new_power_state == 'on':
-                    await await_or_sync(self._turn_on)
+                    await self.turn_on()
                 else:
-                    await await_or_sync(self._turn_off)
-            
-            if len(new_additional_state) > 0:
-                # there is other work to do
-                new_additional_state = self._change_additional_state(new_additional_state)
-            
-            self.set_state_and_additional(new_power_state, new_additional_state)
+                    await self.turn_off()
         except Exception as e:
             self._logger.exception(e)
             return
@@ -112,14 +81,10 @@ class Device(BaseDevice, PowerEventConsumer):
     @abstractmethod
     def _turn_off(self):
         raise NotImplementedError
-    
-    def _change_additional_state(self, new_additional_state: dict):
-        return new_additional_state
 
-    def _update_state_no_broadcast(self, new_power_state: str, new_additional_state: dict):
+    def _update_state_no_broadcast(self, new_power_state: str):
         self.__state = new_power_state
-        self.__additional_state = new_additional_state
-    
+
     def _broadcast_state_change(self):
         message = self._format_state()
 
@@ -129,18 +94,7 @@ class Device(BaseDevice, PowerEventConsumer):
         self._producer(topic, message)
 
     def _format_state(self):
-        result = {'state': self.state}
-
-        if self.__additional_state:
-            for key in self.__additional_state:
-                to_json = getattr(self.__additional_state[key], 'to_json', None)
-
-                if callable(to_json):
-                    result[key] = to_json()
-                else:
-                    result[key] = self.__additional_state[key]
-        
-        return result
+        return {'state': self.state}
 
     def __str__(self):
         return f'{type(self).__name__}({self._display_name}, {self._format_state()})'

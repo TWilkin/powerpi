@@ -17,6 +17,5 @@ class PowerEventConsumer(DeviceStateEventConsumer):
         if action == 'change':
             if self._is_message_valid(entity, message.get('state'), message.get('timestamp')):
                 new_state = message.get('state', None)
-                new_additional_state = self._get_additional_state(message)
 
-                await self._device.change_power_and_additional_state(new_state, new_additional_state)
+                await self._device.change_power(new_state)

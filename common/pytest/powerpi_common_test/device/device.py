@@ -41,31 +41,12 @@ class DeviceTestBase(ABC):
         next_state = 'on'
         for _ in range(1, times):
             assert subject.state == initial_state
-            assert subject.additional_state == {}
             await subject.on_message(message, subject.name, 'change')
             assert subject.state == next_state
-            assert subject.additional_state == {}
 
             initial_state = next_state
             next_state = 'off' if initial_state == 'on' else 'on'
             message['state'] = next_state
-    
-    async def test_change_message_with_additional_state(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
-
-        mocker.patch.object(self.config, 'message_age_cutoff', 120)
-
-        message = {
-            'state': 'off',
-            'timestamp': int(datetime.utcnow().timestamp() * 1000),
-            'something': 'else'
-        }
-
-        assert subject.state == 'unknown'
-        assert subject.additional_state.get('something', None) is None
-        await subject.on_message(message, subject.name, 'change')
-        assert subject.state == 'off'
-        assert subject.additional_state.get('something', None) == 'else'
 
     async def test_old_change_message(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
