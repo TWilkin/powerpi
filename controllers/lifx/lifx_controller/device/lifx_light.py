@@ -1,19 +1,19 @@
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.device import Device
+from powerpi_common.device.mixin import PollableMixin
 from powerpi_common.mqtt import MQTTClient
 from lifx_controller.device.lifx_client import LIFXClient
 from lifx_controller.device.lifx_colour import LIFXColour
 
 
-class LIFXLightDevice(Device):
+class LIFXLightDevice(Device, PollableMixin):
     def __init__(
         self,
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
         lifx_client: LIFXClient,
-        name: str,
         mac: str,
         ip: str = None,
         hostname: str = None,
@@ -21,7 +21,7 @@ class LIFXLightDevice(Device):
         **kwargs
     ):
         Device.__init__(
-            self, config, logger, mqtt_client, name, **kwargs
+            self, config, logger, mqtt_client, **kwargs
         )
 
         self.__duration = duration

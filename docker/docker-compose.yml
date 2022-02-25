@@ -110,7 +110,7 @@ services:
             - mosquitto
 
     lifx-controller:
-        image: ${REGISTRY}/powerpi/controllers/lifx:0.1.0
+        image: ${REGISTRY}/powerpi/controllers/lifx:0.1.1
         networks:
             - powerpi
         deploy:
