@@ -10,16 +10,12 @@ class LogDevice(Device):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        name: str,
         message: str,
         **kwargs
     ):
-        Device.__init__(self, config, logger, mqtt_client, name, **kwargs)
+        Device.__init__(self, config, logger, mqtt_client, **kwargs)
 
         self.__message = message
-
-    def _poll(self):
-        pass
 
     def _turn_on(self):
         self._logger.info(f'{self}: on: {self.__message}')

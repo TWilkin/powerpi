@@ -5,10 +5,11 @@ from pytest_mock import MockerFixture
 from unittest.mock import PropertyMock
 
 from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import PollableMixinTestBase
 from macro_controller.device import CompositeDevice
 
 
-class TestCompositeDevice(DeviceTestBase):
+class TestCompositeDevice(DeviceTestBase, PollableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.config = mocker.Mock()
         self.logger = mocker.Mock()
@@ -31,8 +32,9 @@ class TestCompositeDevice(DeviceTestBase):
             )
 
         return CompositeDevice(
-            self.config, self.logger, self.mqtt_client, self.device_manager, 'composite',
-            ['device1', 'device2']
+            self.config, self.logger, self.mqtt_client, self.device_manager,
+            ['device1', 'device2'],
+            name='composite'
         )
 
     async def test_all_on(self, mocker: MockerFixture):

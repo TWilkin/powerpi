@@ -44,9 +44,6 @@ class RemoteDevice(StatusEventConsumer):
         self.__state = new_state
         self.__waiting.set()
 
-    async def poll(self):
-        pass
-
     def set_state_and_additional(self, state: str, _: dict):
         self.state = state
 

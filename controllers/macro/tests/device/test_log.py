@@ -11,4 +11,7 @@ class TestLogDevice(DeviceTestBase):
         self.mqtt_client = mocker.Mock()
         self.message = 'test message'
 
-        return LogDevice(self.config, self.logger, self.mqtt_client, 'test', self.message)
+        return LogDevice(
+            self.config, self.logger, self.mqtt_client, self.message,
+            name='log'
+        )
