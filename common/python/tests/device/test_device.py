@@ -9,9 +9,6 @@ class DeviceImpl(Device):
         Device.__init__(
             self, config, logger, mqtt_client, 'test'
         )
-    
-    def _poll(self):
-        pass
 
     def _turn_on(self):
         pass

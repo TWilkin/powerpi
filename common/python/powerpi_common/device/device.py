@@ -4,12 +4,10 @@ from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, StatusEventConsumer, PowerEventConsumer
 from powerpi_common.util import await_or_sync
-from .mixin.pollable import PollableMixin
-
 from .base import BaseDevice
 
 
-class Device(BaseDevice, PowerEventConsumer, PollableMixin):
+class Device(BaseDevice, PowerEventConsumer):
     class __StatusEventConsumer(StatusEventConsumer):
         def __init__(self, device, mqtt_client: MQTTClient):
             StatusEventConsumer.__init__(
