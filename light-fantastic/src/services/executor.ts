@@ -15,10 +15,10 @@ export default class ScheduleExecutorService {
 
     public start() {
         // find the lights
-        const lights = this.config.devices.filter((device) => device.type === "lifx_light");
-        this.logger.info(`Found ${lights.length} LIFX lights`);
+        const lights = this.config.devices.filter((device) => device.type.endsWith("light"));
+        this.logger.info(`Found ${lights.length} lights`);
 
-        lights.forEach((light) => this.logger.info(`Found LIFX light "${light.displayName}"`));
+        lights.forEach((light) => this.logger.info(`Found light "${light.displayName}"`));
 
         // load the schedule
         const schedules = this.config.schedules;
