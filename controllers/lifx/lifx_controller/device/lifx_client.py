@@ -1,7 +1,7 @@
 import socket
 
 from lifxlan import Light, WorkflowException
-from typing import List
+from typing import Union
 
 from powerpi_common.logger import Logger
 from lifx_controller.device.lifx_colour import LIFXColour
@@ -12,6 +12,8 @@ class LIFXClient(object):
         self.__logger = logger
 
         self.__light = None
+        self.__supports_colour: Union[bool, None] = None
+        self.__supports_temperature: Union[bool, None] = None
 
     @property
     def address(self):
@@ -28,6 +30,14 @@ class LIFXClient(object):
     @mac_address.setter
     def mac_address(self, new_mac_address: str):
         self.__mac_address = new_mac_address
+    
+    @property
+    def supports_colour(self):
+        return self.__supports_colour
+    
+    @property
+    def supports_temperature(self):
+        return self.__supports_temperature
 
     def connect(self):
         self.__light = Light(
@@ -35,6 +45,12 @@ class LIFXClient(object):
             self.__address,
             source_id=self.__find_free_port()
         )
+
+        if self.__supports_colour is None:
+            self.__supports_colour = self.__light.supports_color()
+        
+        if self.__supports_temperature is None:
+            self.__supports_temperature = self.__light.supports_temperature()
 
     def get_power(self):
         def func():

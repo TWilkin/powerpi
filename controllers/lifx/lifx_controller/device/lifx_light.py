@@ -27,8 +27,6 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
         ip: str = None,
         hostname: str = None,
         duration: int = 500,
-        colour: bool = True,
-        temperature: bool = True,
         **kwargs
     ):
         AdditionalStateDevice.__init__(
@@ -36,8 +34,6 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
         )
 
         self.__duration = duration
-        self.__supports_colour = colour
-        self.__supports_temperature = temperature
 
         self.__light = lifx_client
         lifx_client.mac_address = mac
@@ -80,9 +76,9 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
     def _additional_state_keys(self):
         keys = ['brightness']
 
-        if self.__supports_temperature:
+        if self.__light.supports_temperature:
             keys.append('temperature')
-        if self.__supports_colour:
+        if self.__light.supports_colour:
             keys.extend(['hue', 'saturation'])
         
         return keys
