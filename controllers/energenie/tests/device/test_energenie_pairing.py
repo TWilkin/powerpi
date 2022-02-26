@@ -10,13 +10,10 @@ from powerpi_common_test.mqtt import mock_producer
 
 
 class TestEnergeniePairingDevice(DeviceTestBase):
-    def get_subject(self, mocker: MockerFixture, timeout: float=0.1):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
+    def get_subject(self, mocker: MockerFixture):
         self.energenie = mocker.Mock()
 
-        self.timeout = timeout
+        self.timeout = 0.1
 
         self.publish = mock_producer(mocker, self.mqtt_client)
 
@@ -34,7 +31,7 @@ class TestEnergeniePairingDevice(DeviceTestBase):
         )
     
     async def test_pair(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         type(self.config).devices = PropertyMock(return_value={'devices': []})
 
@@ -53,7 +50,7 @@ class TestEnergeniePairingDevice(DeviceTestBase):
         self.publish.assert_any_call(topic, message)
     
     async def test_pair_no_free_home_id(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         type(self.config).devices = PropertyMock(return_value={
             'devices': [{'type': 'energenie_socket', 'home_id': i } for i in range(0, 17)]
@@ -68,7 +65,7 @@ class TestEnergeniePairingDevice(DeviceTestBase):
         self.energenie.start_pair.assert_not_called()
     
     async def test_pair_stop(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker, 0.1)
+        subject = self.create_subject(mocker)
         
         sleeper = asyncio.get_event_loop().create_task(sleep(0.2))
         mocker.patch.object(
@@ -96,7 +93,7 @@ class TestEnergeniePairingDevice(DeviceTestBase):
 
     
     async def test_find_free_home_id_ener314(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         type(self.config).is_ener314_rt = PropertyMock(return_value=False)
 
@@ -109,7 +106,7 @@ class TestEnergeniePairingDevice(DeviceTestBase):
         assert home_id == 0
     
     async def test_find_free_home_id_ener314_rt(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         type(self.config).is_ener314_rt = PropertyMock(return_value=True)
 
@@ -128,7 +125,7 @@ class TestEnergeniePairingDevice(DeviceTestBase):
         assert home_id == 2
 
     async def test_find_free_home_id_ener314_rt_no_free_home_id(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         type(self.config).is_ener314_rt = PropertyMock(return_value=True)
 

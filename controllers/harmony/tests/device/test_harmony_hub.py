@@ -12,9 +12,6 @@ from harmony_controller.device.harmony_hub import HarmonyHubDevice
 
 class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
         self.device_manager = mocker.Mock()
         self.harmony_client = mocker.Mock()
 
@@ -64,7 +61,7 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
     @pytest.mark.first
     async def test_config_cache(self, mocker: MockerFixture):
         # this test has to run first because the cache is not reset
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         # will hit client once
         await subject.start_activity('')
@@ -73,7 +70,7 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         self.harmony_client.get_config.assert_called_once()
 
     async def test_power_off(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         assert self.activities[0].state == 'unknown'
         assert self.activities[1].state == 'unknown'
@@ -86,7 +83,7 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         assert self.activities[1].state == 'off'
 
     async def test_start_activity(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         assert self.activities[0].state == 'unknown'
         assert self.activities[1].state == 'unknown'
@@ -107,7 +104,7 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
 
     @pytest.mark.parametrize('test_state', [(-1, 'off', 'off'), (1000, 'on', 'off'), (13, 'off', 'on')])
     async def test_poll(self, mocker: MockerFixture, test_state: Tuple[int, str, str]):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         current_activity = Future()
         current_activity.set_result(test_state[0])

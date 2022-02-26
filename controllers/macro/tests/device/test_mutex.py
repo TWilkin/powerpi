@@ -11,9 +11,6 @@ from macro_controller.device import MutexDevice
 
 class TestMutexDevice(DeviceTestBase, PollableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
         self.device_manager = mocker.Mock()
 
         self.devices = [mocker.Mock() for _ in range(4)]
@@ -42,7 +39,7 @@ class TestMutexDevice(DeviceTestBase, PollableMixinTestBase):
         )
 
     async def test_all_on(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         await subject.turn_on()
 
@@ -53,7 +50,7 @@ class TestMutexDevice(DeviceTestBase, PollableMixinTestBase):
         self.devices[3].turn_on.assert_called_once()
 
     async def test_all_off(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         await subject.turn_off()
 
@@ -65,7 +62,7 @@ class TestMutexDevice(DeviceTestBase, PollableMixinTestBase):
 
     @pytest.mark.parametrize('test_state', [('on'), ('off'), ('unknown')])
     async def test_poll(self, mocker: MockerFixture, test_state: str):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         for device in self.devices[:2]:
             type(device).state = PropertyMock(return_value='off')

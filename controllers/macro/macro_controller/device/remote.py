@@ -5,11 +5,12 @@ from asyncio.exceptions import TimeoutError
 
 from powerpi_common.config import Config
 from powerpi_common.device import DeviceStatus
+from powerpi_common.device.consumers import DeviceStatusEventConsumer
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient, StatusEventConsumer
+from powerpi_common.mqtt import MQTTClient
 
 
-class RemoteDevice(StatusEventConsumer):
+class RemoteDevice(DeviceStatusEventConsumer):
     def __init__(
         self,
         config: Config,
@@ -23,7 +24,7 @@ class RemoteDevice(StatusEventConsumer):
         self.__name = name
         self.__timeout = timeout
 
-        StatusEventConsumer.__init__(self, self, config, logger)
+        DeviceStatusEventConsumer.__init__(self, self, config, logger)
 
         self.__state = DeviceStatus.UNKNOWN
         self.__producer = mqtt_client.add_producer()

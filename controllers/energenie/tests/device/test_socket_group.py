@@ -21,9 +21,6 @@ class MockSocket(Device):
 
 class TestSocketGroupDevice(DeviceTestBase):
     def get_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
         self.device_manager = mocker.Mock()
         self.energenie = mocker.Mock()
 
@@ -42,7 +39,7 @@ class TestSocketGroupDevice(DeviceTestBase):
         )
 
     async def test_run_updates_devices(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         self.counter = 0
 

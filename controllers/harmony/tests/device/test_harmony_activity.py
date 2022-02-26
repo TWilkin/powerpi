@@ -7,9 +7,6 @@ from harmony_controller.device.harmony_activity import HarmonyActivityDevice
 
 class TestHarmonyActivityDevice(DeviceTestBase):
     def get_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
         self.device_manager = mocker.Mock()
         self.harmony_hub = mocker.Mock()
 
@@ -34,14 +31,14 @@ class TestHarmonyActivityDevice(DeviceTestBase):
         )
 
     async def test_turn_on_hub(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         await subject.turn_on()
 
         self.harmony_hub.start_activity.assert_called_once_with('my activity')
 
     async def test_turn_off_hub(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         await subject.turn_off()
 

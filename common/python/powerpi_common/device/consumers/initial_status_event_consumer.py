@@ -2,15 +2,13 @@ from powerpi_common.config import Config
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, MQTTMessage
-from .device_event_consumer import DeviceEventConsumer
+from .status_event_consumer import DeviceStatusEventConsumer
 
 
-class DeviceInitialStatusEventConsumer(DeviceEventConsumer):
+class DeviceInitialStatusEventConsumer(DeviceStatusEventConsumer):
     def __init__(self, device, config: Config, logger: Logger, mqtt_client: MQTTClient):
-        topic = f'device/{device.name}/status'
-
-        DeviceEventConsumer.__init__(
-            self, topic, device, config, logger
+        DeviceStatusEventConsumer.__init__(
+            self, device, config, logger
         )
 
         self.__active = True

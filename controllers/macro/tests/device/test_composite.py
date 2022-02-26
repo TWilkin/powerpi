@@ -11,9 +11,6 @@ from macro_controller.device import CompositeDevice
 
 class TestCompositeDevice(DeviceTestBase, PollableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
         self.device_manager = mocker.Mock()
 
         self.device = mocker.Mock()
@@ -38,7 +35,7 @@ class TestCompositeDevice(DeviceTestBase, PollableMixinTestBase):
         )
 
     async def test_all_on(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         await subject.turn_on()
 
@@ -47,7 +44,7 @@ class TestCompositeDevice(DeviceTestBase, PollableMixinTestBase):
         )
 
     async def test_all_off(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         await subject.turn_off()
 
@@ -57,7 +54,7 @@ class TestCompositeDevice(DeviceTestBase, PollableMixinTestBase):
 
     @pytest.mark.parametrize('test_state', [('on'), ('off'), ('unknown')])
     async def test_poll(self, mocker: MockerFixture, test_state: str):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         self.device_state = PropertyMock(return_value=test_state)
         type(self.device).state = self.device_state

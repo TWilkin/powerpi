@@ -5,11 +5,7 @@ from macro_controller.device import DelayDevice
 
 
 class TestDelayDevice(DeviceTestBase):
-    def get_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
-
+    def get_subject(self, _: MockerFixture):
         return DelayDevice(
             self.config, self.logger, self.mqtt_client, 0.1, 0.1,
             name='delay'
