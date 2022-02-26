@@ -9,15 +9,11 @@ from lifx_controller.device.lifx_client import LIFXClient
 from lifx_controller.device.lifx_colour import LIFXColour
 
 
-class Colour(TypedDict):
+class AdditionalState(TypedDict):
     hue: int
     saturation: int
     brightness: int
     temperature: int
-
-
-class AdditionalState(TypedDict):
-    colour: Colour
 
 
 class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
@@ -45,7 +41,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
     
     @property
     def colour(self):
-        return LIFXColour(self.additional_state.get('colour'))
+        return LIFXColour(self.additional_state)
 
     def _poll(self):
         is_powered = self.__light.get_power()
@@ -61,23 +57,24 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
 
         if colour is not None:
             changed |= colour != self.colour
-            new_additional_state['colour'] = colour.to_json()
+            new_additional_state = colour.to_json()
         
         if changed:
             self.set_state_and_additional(new_state, new_additional_state)
     
-    def _on_additional_state_change(self, additional_state: AdditionalState):
-        colour = additional_state.get('colour', None)
+    def _on_additional_state_change(self, new_additional_state: AdditionalState):
+        if new_additional_state is not None:
+            lifx_colour = LIFXColour(self.additional_state)
+            lifx_colour.patch(new_additional_state)
 
-        if colour is not None:
-            lifx_colour = LIFXColour(self.additional_state.get('colour', None))
-            lifx_colour.patch(colour)
-
-            additional_state['colour'] = lifx_colour.to_json()
+            new_additional_state = lifx_colour.to_json()
 
             self.__light.set_colour(lifx_colour, self.__duration)
         
-        return additional_state
+        return new_additional_state
+    
+    def _additional_state_keys(self):
+        return ['hue', 'saturation', 'brightness', 'temperature']
 
     def _turn_on(self):
         self.__light.set_power(True, self.__duration)

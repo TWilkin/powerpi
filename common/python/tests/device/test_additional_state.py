@@ -20,6 +20,9 @@ class DeviceImpl(AdditionalStateDevice):
 
     def _on_additional_state_change(self, new_additional_state: Dict[str, Any]):
         return new_additional_state
+    
+    def _additional_state_keys(self):
+        return ['a', 'b', 'c']
 
 
 class TestAdditionalStateDevice(AdditionalStateDeviceTestBase):

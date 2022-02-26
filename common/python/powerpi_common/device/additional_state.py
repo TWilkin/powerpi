@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
@@ -32,19 +32,24 @@ class AdditionalStateDevice(Device):
         return {}
     
     @additional_state.setter
-    def additional_state(self, new_state):
-        self.__additional_state = new_state
+    def additional_state(self, new_additional_state: AdditionalState):
+        new_additional_state = self._filter_keys(new_additional_state)
 
-        self._broadcast_state_change()
+        if len(new_additional_state) > 0:
+            self.__additional_state = new_additional_state
+
+            self._broadcast_state_change()
     
     def update_state_no_broadcast(self, new_power_state: DeviceStatus, new_additional_state: AdditionalState):
         Device.update_state_no_broadcast(self, new_power_state)
-        self.__additional_state = new_additional_state
+        self.__additional_state = self._filter_keys(new_additional_state)
     
     def set_state_and_additional(self, state: DeviceStatus, new_additional_state: AdditionalState):
         if state is not None:
             Device.update_state_no_broadcast(self, state)
         
+        new_additional_state = self._filter_keys(new_additional_state)
+
         if len(new_additional_state) > 0:
             self.__additional_state = new_additional_state
 
@@ -60,6 +65,8 @@ class AdditionalStateDevice(Device):
                 else:
                     await await_or_sync(self._turn_off)
             
+            new_additional_state = self._filter_keys(new_additional_state)
+            
             if len(new_additional_state) > 0:
                 # there is other work to do
                 new_additional_state = self._on_additional_state_change(new_additional_state)
@@ -70,10 +77,17 @@ class AdditionalStateDevice(Device):
             return
         
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
-        await await_or_sync(self._on_additional_state_change, new_additional_state)
+        return await await_or_sync(self._on_additional_state_change, new_additional_state)
     
     @abstractmethod
-    def _on_additional_state_change(self, new_additional_state: AdditionalState):
+    def _on_additional_state_change(self, new_additional_state: AdditionalState) -> AdditionalState:
+        '''Handler for when the additional state changes, allowing the extending device to
+            notify the real device'''
+        raise NotImplementedError
+    
+    @abstractmethod
+    def _additional_state_keys(self) -> List[str]:
+        '''Returns the list of additional state keys this device supports'''
         raise NotImplementedError
     
     def _format_state(self):
@@ -89,3 +103,11 @@ class AdditionalStateDevice(Device):
                     result[key] = self.__additional_state[key]
         
         return result
+    
+    def _filter_keys(self, new_additional_state: AdditionalState):
+        keys = filter(
+            lambda key: new_additional_state.get(key, None) is not None,
+            [key for key in self._additional_state_keys()]
+        )
+
+        return { key: new_additional_state[key] for key in keys}
