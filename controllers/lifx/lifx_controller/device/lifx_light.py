@@ -1,13 +1,26 @@
+from typing import TypedDict
+
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.device import Device
+from powerpi_common.device import AdditionalStateDevice
 from powerpi_common.device.mixin import PollableMixin
 from powerpi_common.mqtt import MQTTClient
 from lifx_controller.device.lifx_client import LIFXClient
 from lifx_controller.device.lifx_colour import LIFXColour
 
 
-class LIFXLightDevice(Device, PollableMixin):
+class Colour(TypedDict):
+    hue: int
+    saturation: int
+    brightness: int
+    temperature: int
+
+
+class AdditionalState(TypedDict):
+    colour: Colour
+
+
+class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
     def __init__(
         self,
         config: Config,
@@ -20,7 +33,7 @@ class LIFXLightDevice(Device, PollableMixin):
         duration: int = 500,
         **kwargs
     ):
-        Device.__init__(
+        AdditionalStateDevice.__init__(
             self, config, logger, mqtt_client, **kwargs
         )
 
@@ -53,7 +66,7 @@ class LIFXLightDevice(Device, PollableMixin):
         if changed:
             self.set_state_and_additional(new_state, new_additional_state)
     
-    def _change_additional_state(self, additional_state: dict):
+    def _on_additional_state_change(self, additional_state: AdditionalState):
         colour = additional_state.get('colour', None)
 
         if colour is not None:
@@ -65,14 +78,6 @@ class LIFXLightDevice(Device, PollableMixin):
             self.__light.set_colour(lifx_colour, self.__duration)
         
         return additional_state
-    
-    def _update_state_no_broadcast(self, new_power_state: str, new_additional_state: dict):
-        colour = new_additional_state.get('colour', None)
-
-        if colour is not None:
-            new_additional_state['colour'] = colour
-        
-        Device._update_state_no_broadcast(self, new_power_state, new_additional_state)
 
     def _turn_on(self):
         self.__light.set_power(True, self.__duration)

@@ -1,11 +1,11 @@
 from pytest_mock import MockerFixture
 
-from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device import AdditionalStateDeviceTestBase
 from powerpi_common_test.device.mixin import PollableMixinTestBase
 from lifx_controller.device.lifx_light import LIFXLightDevice
 
 
-class TestLIFXLightDevice(DeviceTestBase, PollableMixinTestBase):
+class TestLIFXLightDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.lifx_client = mocker.Mock()
 
