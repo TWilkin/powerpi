@@ -14,12 +14,6 @@ export default class ScheduleExecutorService {
     }
 
     public start() {
-        // find the lights
-        const lights = this.config.devices.filter((device) => device.type.endsWith("light"));
-        this.logger.info(`Found ${lights.length} lights`);
-
-        lights.forEach((light) => this.logger.info(`Found light "${light.displayName}"`));
-
         // load the schedule
         const schedules = this.config.schedules;
 
@@ -30,7 +24,7 @@ export default class ScheduleExecutorService {
         schedules.schedules.map((schedule, i) => {
             const request = RootContainer.of(`DeviceSchedule${i}`);
             request.set(DeviceScheduleToken, {
-                device: lights.find((light) => light.name === schedule.device),
+                device: this.config.devices.find((light) => light.name === schedule.device),
                 schedule,
             });
 
