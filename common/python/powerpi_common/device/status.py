@@ -14,12 +14,13 @@ class DeviceStatusChecker(object):
         self,
         config: Config,
         logger: Logger,
-        device_manager: DeviceManager
+        device_manager: DeviceManager,
+        scheduler: AsyncIOScheduler
     ):
         self.__logger = logger
         self.__device_manager = device_manager
 
-        self.__scheduler = AsyncIOScheduler()
+        self.__scheduler = scheduler
 
         # no more frequently than 10s
         self.__poll_frequency = max(config.poll_frequency, 10)
@@ -37,7 +38,7 @@ class DeviceStatusChecker(object):
             self.__logger.info(f'Polling for device state changes every {self.__poll_frequency} seconds for {len(self.devices)} device(s)')
 
             interval = IntervalTrigger(seconds=self.__poll_frequency)
-            self.__scheduler.add_job(self.__run, trigger=interval)
+            self.__scheduler.add_job(self._run, trigger=interval)
             self.__scheduler.start()
 
     def stop(self):
@@ -45,7 +46,7 @@ class DeviceStatusChecker(object):
             self.__logger.info('Stopping device state change polling')
             self.__scheduler.shutdown()
 
-    async def __run(self):
+    async def _run(self):
         self.__logger.info('Checking devices state')
 
         for device in self.devices:
