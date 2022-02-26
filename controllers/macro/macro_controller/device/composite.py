@@ -30,7 +30,7 @@ class CompositeDevice(AdditionalStateDevice, PollableMixin):
         if new_state is not None or new_additional_state is not None:
             for device in self.__devices:
                 if ismixin(device, AdditionalStateMixin):
-                    device.change_power_and_additional_state(new_state, new_additional_state)
+                    await device.change_power_and_additional_state(new_state, new_additional_state)
                 else:
                     if new_state is not None:
                         func = self.turn_on if new_state == DeviceStatus.ON else self.turn_off
