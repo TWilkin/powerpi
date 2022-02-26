@@ -5,27 +5,11 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util import await_or_sync
 from .base import BaseDevice
-from .consumers import DeviceChangeEventConsumer, DeviceStatusEventConsumer
+from .consumers import DeviceChangeEventConsumer, DeviceInitialStatusEventConsumer
 from .types import DeviceStatus
 
 
 class Device(BaseDevice, DeviceChangeEventConsumer):
-    class __StatusEventConsumer(DeviceStatusEventConsumer):
-        def __init__(self, device, mqtt_client: MQTTClient):
-            DeviceStatusEventConsumer.__init__(
-                self, device, device._config, device._logger
-            )
-            self.__mqtt_client = mqtt_client
-
-            mqtt_client.add_consumer(self)
-
-        def _update_device(self, new_power_state):
-            # override default behaviour to prevent events generated for state change
-            self._device._update_state_no_broadcast(new_power_state)
-
-            # remove this consumer as it has completed its job
-            self.__mqtt_client.remove_consumer(self)
-
     def __init__(
         self,
         config: Config,
@@ -43,7 +27,8 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
         mqtt_client.add_consumer(self)
 
-        self.__StatusEventConsumer(self, mqtt_client)
+        # add listener to get the initial state from the queue, if there is one
+        DeviceInitialStatusEventConsumer(self, config, logger, mqtt_client)
 
     @property
     def state(self):
@@ -54,6 +39,9 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         self.__state = new_state
 
         self._broadcast_state_change()
+    
+    def update_state_no_broadcast(self, new_power_state: DeviceStatus):
+        self.__state = new_power_state
 
     async def turn_on(self):
         self._logger.info(f'Turning on device {self}')
@@ -83,9 +71,6 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
     @abstractmethod
     def _turn_off(self):
         raise NotImplementedError
-
-    def _update_state_no_broadcast(self, new_power_state: DeviceStatus):
-        self.__state = new_power_state
 
     def _broadcast_state_change(self):
         message = self._format_state()

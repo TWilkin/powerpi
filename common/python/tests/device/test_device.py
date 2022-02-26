@@ -19,9 +19,5 @@ class DeviceImpl(Device):
 
 
 class TestDevice(DeviceTestBase):
-    def get_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
-
+    def get_subject(self, _: MockerFixture):
         return DeviceImpl(self.config, self.logger, self.mqtt_client)
