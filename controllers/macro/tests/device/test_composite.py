@@ -4,12 +4,12 @@ from asyncio import Future
 from pytest_mock import MockerFixture
 from unittest.mock import PropertyMock
 
-from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device import AdditionalStateDeviceTestBase
 from powerpi_common_test.device.mixin import PollableMixinTestBase
 from macro_controller.device import CompositeDevice
 
 
-class TestCompositeDevice(DeviceTestBase, PollableMixinTestBase):
+class TestCompositeDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.device_manager = mocker.Mock()
 

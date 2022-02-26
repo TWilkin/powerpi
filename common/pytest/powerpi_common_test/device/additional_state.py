@@ -2,7 +2,6 @@ from datetime import datetime
 from pytest_mock import MockerFixture
 from typing import Any, Dict
 
-from powerpi_common_test.mqtt import mock_producer
 from .device import DeviceTestBase
 
 
@@ -30,7 +29,6 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         message = {
             'state': 'on',
             'timestamp': int(datetime.utcnow().timestamp() * 1000),
-            'something': 'else'
         }
         message[key] = 1
 
@@ -40,7 +38,6 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         await subject.on_message(message, subject.name, 'change')
     
         assert subject.state == 'on'
-        assert subject.additional_state.get('something', None) is None
         assert subject.additional_state.get(key, None) == 1
     
     async def test_state_change_outputs_additional_state(self, mocker: MockerFixture):
@@ -94,7 +91,6 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         message = {
             'state': 'on',
             'timestamp': 0,
-            'something': 'else'
         }
         message[key] = 1
 
@@ -104,7 +100,6 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         # first message should set the state
         self.initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
-        assert subject.additional_state.get('something', None) is None
         assert subject.additional_state.get(key, None) == 1
 
         # subsequent messages should be ignored
@@ -112,5 +107,4 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         message['something'] = 'more'
         self.initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
-        assert subject.additional_state.get('something', None) is None
         assert subject.additional_state.get(key, None) == 1

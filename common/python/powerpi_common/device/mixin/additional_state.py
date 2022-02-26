@@ -8,7 +8,7 @@ from powerpi_common.util import await_or_sync
 AdditionalState = Dict[str, Any]
 
 
-class AdditionalStateMixin(ABC):    
+class AdditionalStateMixin(ABC):
     async def change_power_and_additional_state(self, new_state: DeviceStatus, new_additional_state: AdditionalState):
         try:
             if new_state is not None:
@@ -27,7 +27,12 @@ class AdditionalStateMixin(ABC):
         except Exception as e:
             self._logger.exception(e)
             return
-    
+        
+    @property
+    @abstractmethod
+    def additional_state(self):
+        raise NotImplementedError
+
     @abstractmethod
     def set_state_and_additional(self, new_state: DeviceStatus, new_additional_state: AdditionalState):
         '''Update the state and additional state, then broadcase the message to the queue.'''
