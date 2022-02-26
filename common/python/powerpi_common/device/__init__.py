@@ -1,3 +1,4 @@
+from .additional_state import AdditionalStateDevice
 from .container import DeviceContainer
 from .device import Device
 from .factory import DeviceFactory

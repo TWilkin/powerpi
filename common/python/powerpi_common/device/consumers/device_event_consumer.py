@@ -1,7 +1,9 @@
+from copy import deepcopy
+
 from powerpi_common.config import Config
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTConsumer
+from powerpi_common.mqtt import MQTTConsumer, MQTTMessage
 
 
 class DeviceEventConsumer(MQTTConsumer):
@@ -28,3 +30,11 @@ class DeviceEventConsumer(MQTTConsumer):
             valid &= device_name == self._device.name
 
         return valid
+    
+    def _get_additional_state(self, message: MQTTMessage):
+        result = deepcopy(message)
+
+        result.pop('state', None)
+        result.pop('timestamp', None)
+        
+        return result

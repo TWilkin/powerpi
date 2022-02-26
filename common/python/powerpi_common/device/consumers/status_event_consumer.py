@@ -1,7 +1,7 @@
 from powerpi_common.config import Config
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient, MQTTMessage
+from powerpi_common.mqtt import MQTTMessage
 from .device_event_consumer import DeviceEventConsumer
 
 
