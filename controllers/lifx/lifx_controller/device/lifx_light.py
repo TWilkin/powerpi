@@ -2,7 +2,7 @@ from typing import TypedDict
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.device import AdditionalStateDevice
+from powerpi_common.device import AdditionalStateDevice, DeviceStatus
 from powerpi_common.device.mixin import PollableMixin
 from powerpi_common.mqtt import MQTTClient
 from lifx_controller.device.lifx_client import LIFXClient
@@ -56,7 +56,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
         new_additional_state = self.additional_state
 
         if is_powered is not None:
-            new_state = 'off' if is_powered == 0 else 'on'
+            new_state = DeviceStatus.OFF if is_powered == 0 else DeviceStatus.ON
             changed = new_state != self.state
 
         if colour is not None:
