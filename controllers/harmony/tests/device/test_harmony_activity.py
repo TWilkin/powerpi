@@ -33,13 +33,47 @@ class TestHarmonyActivityDevice(DeviceTestBase):
     async def test_turn_on_hub(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
+        assert subject.state == 'unknown'
+
         await subject.turn_on()
 
+        assert subject.state == 'on'
+
         self.harmony_hub.start_activity.assert_called_once_with('my activity')
+    
+    async def test_turn_on_hub_error(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        async def start_activity(_: str):
+            raise Exception('error')
+        self.harmony_hub.start_activity = start_activity
+
+        assert subject.state == 'unknown'
+
+        await subject.turn_on()
+
+        assert subject.state == 'unknown'
 
     async def test_turn_off_hub(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
+        assert subject.state == 'unknown'
+
         await subject.turn_off()
 
+        assert subject.state == 'off'
+
         self.harmony_hub.turn_off.assert_called_once()
+
+    async def test_turn_off_hub_error(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        async def turn_off(_: str):
+            raise Exception('error')
+        self.harmony_hub.turn_off = turn_off
+
+        assert subject.state == 'unknown'
+
+        await subject.turn_off()
+
+        assert subject.state == 'unknown'

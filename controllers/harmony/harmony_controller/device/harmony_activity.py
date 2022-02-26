@@ -25,6 +25,10 @@ class HarmonyActivityDevice(Device):
         self.__device_manager = device_manager
         self.__hub_name = hub
         self.__activity_name = activity_name if activity_name is not None else self.name
+    
+    @property
+    def hub_name(self):
+        return self.__hub_name
 
     @property
     def activity_name(self):
