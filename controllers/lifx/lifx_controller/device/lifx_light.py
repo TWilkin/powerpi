@@ -1,4 +1,5 @@
-from typing import TypedDict
+from lifxlan import WorkflowException
+from typing import TypedDict, Union
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
@@ -44,8 +45,15 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
         return LIFXColour(self.additional_state)
 
     def _poll(self):
-        is_powered = self.__light.get_power()
-        colour = self.__light.get_colour()
+        is_powered: Union[int, None] = None
+        colour: Union[LIFXColour, None] = None
+        
+        try:
+            is_powered = self.__light.get_power()
+            colour = self.__light.get_colour()
+        except WorkflowException as e:
+            # this means the light is probably off
+            pass
 
         changed = False
         new_state = self.state
@@ -53,7 +61,9 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
 
         if is_powered is not None:
             new_state = DeviceStatus.OFF if is_powered == 0 else DeviceStatus.ON
-            changed = new_state != self.state
+        else:
+            new_state = DeviceStatus.UNKNOWN
+        changed = new_state != self.state
 
         if colour is not None:
             changed |= colour != self.colour

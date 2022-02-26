@@ -1,5 +1,6 @@
 import pytest
 
+from lifxlan import WorkflowException
 from pytest_mock import MockerFixture
 from typing import Tuple, Union
 from unittest.mock import PropertyMock
@@ -24,6 +25,37 @@ class TestLIFXLightDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
             self.config, self.logger, self.mqtt_client, self.lifx_client, '00:00:00:00:00', 'mylight.home',
             name='light'
         )
+    
+    @pytest.mark.parametrize('status', ['on', 'off'])
+    async def test_turn_x_error(self, mocker: MockerFixture, status: str):
+        subject = self.create_subject(mocker)
+
+        def set_power(_: bool, __: int):
+            raise WorkflowException('error')
+        
+        self.lifx_client.set_power = set_power
+
+        func = subject.turn_on if status == 'on' else subject.turn_off
+
+        assert subject.state == 'unknown'
+        await func()
+        assert subject.state == 'unknown'
+    
+    async def test_change_colour_error(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        def set_colour(_: LIFXColour, __: int):
+            raise WorkflowException('error')
+        
+        self.lifx_client.set_colour = set_colour
+
+        new_additional_state = { 'brightness': 1 }
+
+        assert subject.state == 'unknown'
+        assert subject.additional_state == {}
+        await subject.change_power_and_additional_state('on', new_additional_state)
+        assert subject.state == 'unknown'
+        assert subject.additional_state == {}
     
     @pytest.mark.parametrize('supports_colour', [None, True, False])
     @pytest.mark.parametrize('supports_temperature', [None, True, False])

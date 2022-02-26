@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from typing import Awaitable, Callable, Union
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
@@ -45,24 +46,18 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
     async def turn_on(self):
         self._logger.info(f'Turning on device {self}')
-        await await_or_sync(self._turn_on)
-        self.state = DeviceStatus.ON
+        await self.__change_power_handler(self._turn_on, DeviceStatus.ON)
 
     async def turn_off(self):
         self._logger.info(f'Turning off device {self}')
-        await await_or_sync(self._turn_off)
-        self.state = DeviceStatus.OFF
+        await self.__change_power_handler(self._turn_off, DeviceStatus.OFF)
     
     async def change_power(self, new_power_state: DeviceStatus):
-        try:
-            if new_power_state is not None:
-                if new_power_state == DeviceStatus.ON:
-                    await self.turn_on()
-                else:
-                    await self.turn_off()
-        except Exception as e:
-            self._logger.exception(e)
-            return
+        if new_power_state is not None:
+            if new_power_state == DeviceStatus.ON:
+                await self.turn_on()
+            else:
+                await self.turn_off()
 
     @abstractmethod
     def _turn_on(self):
@@ -82,6 +77,14 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
     def _format_state(self):
         return {'state': self.state}
+    
+    async def __change_power_handler(self, func: Union[Awaitable[None], Callable[[], None]], new_status: DeviceStatus):
+        try:
+            await await_or_sync(func)
+            self.state = new_status
+        except Exception as e:
+            self._logger.exception(e)
+            self.state = DeviceStatus.UNKNOWN
 
     def __str__(self):
         return f'{type(self).__name__}({self._display_name}, {self._format_state()})'

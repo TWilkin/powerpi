@@ -1,6 +1,6 @@
 import socket
 
-from lifxlan import Light, WorkflowException
+from lifxlan import Light
 from typing import Union
 
 from powerpi_common.logger import Logger
@@ -53,39 +53,20 @@ class LIFXClient(object):
             self.__supports_temperature = self.__light.supports_temperature()
 
     def get_power(self):
-        def func():
-            return self.__light.get_power()
-
-        return self.__error_handling(func)
+        self.connect()
+        return self.__light.get_power()
 
     def set_power(self, on: bool, duration: int):
-        def func(on: bool, duration: int):
-            self.__light.set_power(on, duration)
-
-        self.__error_handling(func, on, duration)
+        self.connect()
+        self.__light.set_power(on, duration)
     
     def get_colour(self):
-        def func():
-            return LIFXColour(self.__light.get_color())
-        
-        return self.__error_handling(func)
+        self.connect()
+        return LIFXColour(self.__light.get_color())
     
     def set_colour(self, colour: LIFXColour, duration: int):
-        def func(colour: LIFXColour, duration: int):
-            self.__light.set_color(colour.list, duration)
-        
-        self.__error_handling(func, colour, duration)
-
-    def __error_handling(self, func, *args):
-        if self.__light is None:
-            self.connect()
-
-        try:
-            return func(*args)
-        except WorkflowException as e:
-            self.__logger.error(e)
-
-        return None
+        self.connect()
+        self.__light.set_color(colour.list, duration)
 
     def __find_free_port(self):
         connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
