@@ -20,4 +20,4 @@ python_version = "3"
 
 [scripts]
 start = "python -m harmony_controller"
-test = "python -m pytest -v"
+test = "python -m pytest -v --cov=harmony_controller"
