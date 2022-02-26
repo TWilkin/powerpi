@@ -1,7 +1,9 @@
 from powerpi_common.config import Config
+from powerpi_common.device.mixin import AdditionalStateMixin
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTMessage
+from powerpi_common.util import ismixin
 from .device_event_consumer import DeviceEventConsumer
 
 
@@ -17,4 +19,9 @@ class DeviceStatusEventConsumer(DeviceEventConsumer):
         if self._is_message_valid(entity, message.get('state')):
             new_power_state = message.pop('state', DeviceStatus.UNKNOWN)
 
-            self._device.state = new_power_state
+            if ismixin(self._device,AdditionalStateMixin):
+                new_additional_state = self._get_additional_state(message)
+                
+                self._device.set_state_and_additional(new_power_state, new_additional_state)
+            else:
+                self._device.state = new_power_state
