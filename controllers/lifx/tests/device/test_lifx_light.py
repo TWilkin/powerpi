@@ -7,6 +7,7 @@ from unittest.mock import PropertyMock
 
 from powerpi_common_test.device import AdditionalStateDeviceTestBase
 from powerpi_common_test.device.mixin import PollableMixinTestBase
+from powerpi_common_test.mqtt import mock_producer
 from lifx_controller.device.lifx_colour import LIFXColour
 from lifx_controller.device.lifx_light import LIFXLightDevice
 
@@ -126,7 +127,53 @@ class TestLIFXLightDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
             assert subject.additional_state.get('temperature', None) == colour[3]
         else:
             assert subject.additional_state.get('temperature', None) is None
+    
+    @pytest.mark.parametrize('supports_colour', [None, True, False])
+    @pytest.mark.parametrize('supports_temperature', [None, True, False])
+    async def test_poll_no_change(
+        self, 
+        mocker: MockerFixture, 
+        supports_colour: bool, 
+        supports_temperature: bool
+    ):
+        def mock_publish():
+            self.publish = mock_producer(mocker, self.mqtt_client)
+        
+        subject = self.create_subject(mocker, mock_publish)
+
+        self.__mock_supports(supports_colour, supports_temperature)
+
+        mocker.patch.object(
+            self.lifx_client,
+            'get_colour',
+            return_value=LIFXColour((1, 2, 3, 4))
+        )
+
+        mocker.patch.object(
+            self.lifx_client,
+            'get_power',
+            return_value=False
+        )
+
+        assert subject.state == 'unknown'
+        assert subject.additional_state == {}
+
+        await subject.poll()
+        await subject.poll()
+
+        topic = 'device/light/status'
+        message = {
+            'state': 'off',
+            'brightness': 3
+        }
+        if supports_colour:
+            message['hue'] = 1
+            message['saturation'] = 2
+        if supports_temperature:
+            message['temperature'] = 4
+        
+        self.publish.assert_called_once_with(topic, message)
 
     def __mock_supports(self, colour: Union[bool, None], temperature: Union[bool, None]):
         type(self.lifx_client).supports_colour = PropertyMock(return_value=colour)
-        type(self.lifx_client).supports_temperature = PropertyMock(return_value=temperature)    
+        type(self.lifx_client).supports_temperature = PropertyMock(return_value=temperature)   

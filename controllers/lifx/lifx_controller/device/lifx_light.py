@@ -66,6 +66,8 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
         changed = new_state != self.state
 
         if colour is not None:
+            # before we compare, let's remove any disabled keys
+            colour = LIFXColour(self._filter_keys(colour.to_json()))
             changed |= colour != self.colour
             new_additional_state = colour.to_json()
         
