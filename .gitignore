@@ -6,6 +6,7 @@
 **/node_modules/
 **/platforms/
 **/venv/
-**/.tsconfig-build.json
-**/*.pyc
+**/*.coverage
 **/*.log
+**/*.pyc
+**/.tsconfig-build.json
