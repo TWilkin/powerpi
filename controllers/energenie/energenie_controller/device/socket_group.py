@@ -44,4 +44,7 @@ class SocketGroupDevice(Device):
             await sleep(self.__delay)
 
         for device in self.__devices:
-            self.__device_manager.get_device(device).state = new_state
+            device = self.__device_manager.get_device(device)
+
+            if device.state != new_state:
+                device.state = new_state
