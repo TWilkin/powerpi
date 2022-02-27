@@ -40,11 +40,12 @@ class LIFXClient(object):
         return self.__supports_temperature
 
     def connect(self):
-        self.__light = Light(
-            self.__mac_address,
-            self.__address,
-            source_id=self.__find_free_port()
-        )
+        if self.__light is None:
+            self.__light = Light(
+                self.__mac_address,
+                self.__address,
+                source_id=self.__find_free_port()
+            )
 
         if self.__supports_colour is None:
             self.__supports_colour = self.__light.supports_color()
