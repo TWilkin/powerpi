@@ -1,0 +1,3 @@
+from .change_event_consumer import DeviceChangeEventConsumer
+from .initial_status_event_consumer import DeviceInitialStatusEventConsumer
+from .status_event_consumer import DeviceStatusEventConsumer

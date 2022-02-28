@@ -3,24 +3,24 @@ from typing import List
 
 from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceManager
+from powerpi_common.device.mixin import PollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
 
-class MutexDevice(Device):
+class MutexDevice(Device, PollableMixin):
     def __init__(
         self,
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
         device_manager: DeviceManager,
-        name: str,
         on_devices: List[str],
         off_devices: List[str],
         **kwargs
     ):
         Device.__init__(
-            self, config, logger, mqtt_client, name, **kwargs
+            self, config, logger, mqtt_client, **kwargs
         )
 
         self.__device_manager = device_manager

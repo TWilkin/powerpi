@@ -2,14 +2,17 @@ import contextlib
 
 from asyncio import Event, wait_for
 from asyncio.exceptions import TimeoutError
+from typing import List, Union
 
 from powerpi_common.config import Config
 from powerpi_common.device import DeviceStatus
+from powerpi_common.device.consumers import DeviceStatusEventConsumer
+from powerpi_common.device.mixin import AdditionalState, AdditionalStateMixin
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient, StatusEventConsumer
+from powerpi_common.mqtt import MQTTClient
 
 
-class RemoteDevice(StatusEventConsumer):
+class RemoteDevice(DeviceStatusEventConsumer, AdditionalStateMixin):
     def __init__(
         self,
         config: Config,
@@ -23,9 +26,11 @@ class RemoteDevice(StatusEventConsumer):
         self.__name = name
         self.__timeout = timeout
 
-        StatusEventConsumer.__init__(self, self, config, logger)
+        DeviceStatusEventConsumer.__init__(self, self, config, logger)
 
         self.__state = DeviceStatus.UNKNOWN
+        self.__additional_state = {}
+
         self.__producer = mqtt_client.add_producer()
         self.__waiting = Event()
 
@@ -43,12 +48,35 @@ class RemoteDevice(StatusEventConsumer):
     def state(self, new_state: str):
         self.__state = new_state
         self.__waiting.set()
+    
+    @property
+    def additional_state(self):
+        return self.__additional_state
+    
+    @additional_state.setter
+    def additional_state(self, new_additional_state: AdditionalState):
+        self.__additional_state = new_additional_state
+        self.__waiting.set()
+    
+    async def change_power_and_additional_state(self, new_state: DeviceStatus, new_additional_state: AdditionalState):
+        await self.__send_message(new_state, new_additional_state)
 
-    async def poll(self):
-        pass
-
-    def set_state_and_additional(self, state: str, _: dict):
-        self.state = state
+    def set_state_and_additional(self, state: DeviceStatus, new_additional_state: AdditionalState):
+        self.__state = state
+        self.__additional_state = new_additional_state
+        self.__waiting.set()
+    
+    def _on_additional_state_change(self, new_additional_state: AdditionalState) -> AdditionalState:
+        # we are doing everything in change_power_and_additional_state
+        return new_additional_state
+    
+    def _filter_keys(self, new_additional_state: AdditionalState):
+        # we don't know what the actual implementation supports, so keep it as it is
+        return new_additional_state
+    
+    def _additional_state_keys(self) -> List[str]:
+        # we don't know what the actual implementation supports, so we're not setting keys
+        return []
 
     async def turn_on(self):
         await self.__send_message(DeviceStatus.ON)
@@ -56,16 +84,26 @@ class RemoteDevice(StatusEventConsumer):
     async def turn_off(self):
         await self.__send_message(DeviceStatus.OFF)
 
-    async def __send_message(self, state: DeviceStatus):
+    async def __send_message(
+        self, 
+        state: Union[DeviceStatus, None], 
+        additional_state: Union[AdditionalState, None]=None
+    ):
         topic = f'device/{self.__name}/change'
+        message = {}
+        if additional_state is not None:
+            message = {**additional_state}
+        if state is not None:
+            message['state'] = state
 
-        self.__producer(topic, {'state': state})
+        self.__waiting.clear()
+
+        self.__producer(topic, message)
 
         self.__logger.info(
             f'Waiting for state update for device "{self.__name}"'
         )
 
-        self.__waiting.clear()
         await self.__wait(self.__timeout)
 
         self.__logger.info(

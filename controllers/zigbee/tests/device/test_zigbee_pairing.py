@@ -9,9 +9,6 @@ from zigbee_controller.device.zigbee_pairing import ZigbeePairingDevice
 
 class TestZigbeePairingDevice(DeviceTestBase):
     def get_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
         self.zigbee_controller = mocker.Mock()
 
         self.timeout = 1
@@ -32,7 +29,7 @@ class TestZigbeePairingDevice(DeviceTestBase):
         )
     
     async def test_pair(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         assert subject.state == 'unknown'
 
@@ -43,7 +40,7 @@ class TestZigbeePairingDevice(DeviceTestBase):
         assert subject.state == 'off'
     
     def test_device_joined(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         device = mocker.Mock()
 

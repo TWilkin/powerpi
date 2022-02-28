@@ -31,9 +31,6 @@ class SocketGroupDevice(Device):
         self.__delay = delay
 
         self.__energenie.set_ids(home_id, 0)
-    
-    def _poll(self):
-        pass
 
     async def _turn_on(self):
         await self._run(self.__energenie.turn_on, 'on')
@@ -47,4 +44,7 @@ class SocketGroupDevice(Device):
             await sleep(self.__delay)
 
         for device in self.__devices:
-            self.__device_manager.get_device(device).state = new_state
+            device = self.__device_manager.get_device(device)
+
+            if device.state != new_state:
+                device.state = new_state

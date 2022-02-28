@@ -5,15 +5,13 @@ from pytest_mock import MockerFixture
 from typing import Tuple
 
 from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import PollableMixinTestBase
 from harmony_controller.device.harmony_activity import HarmonyActivityDevice
 from harmony_controller.device.harmony_hub import HarmonyHubDevice
 
 
-class TestHarmonyHubDevice(DeviceTestBase):
+class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
         self.device_manager = mocker.Mock()
         self.harmony_client = mocker.Mock()
 
@@ -26,9 +24,13 @@ class TestHarmonyHubDevice(DeviceTestBase):
             hub=self.__hub_name
         ) for i in range(2)]
 
-        self.device_manager.devices = {
-            device.name: device for device in self.activities
-        }
+        # add an activity from a different hub
+        self.unmatched_activity = HarmonyActivityDevice(
+            self.config, self.logger, self.mqtt_client, self.device_manager,
+            name='wronghubactivity',
+            activity_name=f'Test Activity 0',
+            hub='WrongHub'
+        )
 
         self.config_data = {
             'activity': [
@@ -55,39 +57,81 @@ class TestHarmonyHubDevice(DeviceTestBase):
                 return_value=future
             )
 
-        return HarmonyHubDevice(
-            self.config, self.logger, self.mqtt_client, self.device_manager, self.harmony_client, self.__hub_name
+        hub = HarmonyHubDevice(
+            self.config, self.logger, self.mqtt_client, self.device_manager, self.harmony_client,
+            name=self.__hub_name
         )
+
+        # device manager will include other activities and the hub
+        devices = self.activities.copy()
+        devices.extend([hub, self.unmatched_activity])
+        self.device_manager.devices = {
+            device.name: device for device in devices
+        }
+
+        return hub
     
     @pytest.mark.first
     async def test_config_cache(self, mocker: MockerFixture):
         # this test has to run first because the cache is not reset
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         # will hit client once
         await subject.start_activity('')
         await subject.start_activity('')
 
         self.harmony_client.get_config.assert_called_once()
+    
+    def test_activities(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        activities = subject.activities
+        assert len(activities) == 2
+        assert all([activity.hub_name == self.__hub_name for activity in activities])
 
     async def test_power_off(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
+        assert subject.state == 'unknown'
         assert self.activities[0].state == 'unknown'
         assert self.activities[1].state == 'unknown'
+        assert self.unmatched_activity.state == 'unknown'
 
         await subject.turn_off()
 
         self.harmony_client.power_off.assert_called_once()
 
+        assert subject.state == 'off'
         assert self.activities[0].state == 'off'
         assert self.activities[1].state == 'off'
+        assert self.unmatched_activity.state == 'unknown'
+    
+    async def test_power_off_error(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
 
-    async def test_start_activity(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        async def power_off():
+            raise Exception('error')
+        self.harmony_client.power_off = power_off
 
+        assert subject.state == 'unknown'
         assert self.activities[0].state == 'unknown'
         assert self.activities[1].state == 'unknown'
+        assert self.unmatched_activity.state == 'unknown'
+
+        await subject.turn_off()
+
+        assert subject.state == 'unknown'
+        assert self.activities[0].state == 'unknown'
+        assert self.activities[1].state == 'unknown'
+        assert self.unmatched_activity.state == 'unknown'
+
+    async def test_start_activity(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        assert subject.state == 'unknown'
+        assert self.activities[0].state == 'unknown'
+        assert self.activities[1].state == 'unknown'
+        assert self.unmatched_activity.state == 'unknown'
 
         # will be called
         await subject.start_activity(self.config_data['activity'][1]['label'])
@@ -100,12 +144,39 @@ class TestHarmonyHubDevice(DeviceTestBase):
         )
 
         # update state of other activities, but not the one we're starting
+        assert subject.state == 'on'
         assert self.activities[0].state == 'unknown'
         assert self.activities[1].state == 'off'
+        assert self.unmatched_activity.state == 'unknown'
+    
+    async def test_start_activity_error(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
 
-    @pytest.mark.parametrize('test_state', [(-1, 'off', 'off'), (1000, 'on', 'off'), (13, 'off', 'on')])
-    async def test_poll(self, mocker: MockerFixture, test_state: Tuple[int, str, str]):
-        subject = self.get_subject(mocker)
+        async def start_activity(_: str):
+            raise Exception('error')
+        self.harmony_client.start_activity = start_activity
+
+        assert subject.state == 'unknown'
+        assert self.activities[0].state == 'unknown'
+        assert self.activities[1].state == 'unknown'
+        assert self.unmatched_activity.state == 'unknown'
+
+        error = None
+        try:
+            await subject.start_activity(self.config_data['activity'][1]['label'])
+        except Exception as e:
+            # we're expecting this
+            error = e
+        assert error is not None
+
+        assert subject.state == 'unknown'
+        assert self.activities[0].state == 'unknown'
+        assert self.activities[1].state == 'unknown'
+        assert self.unmatched_activity.state == 'unknown'
+
+    @pytest.mark.parametrize('test_state', [(-1, 'off', 'off', 'off'), (1000, 'on', 'on', 'off'), (13, 'on', 'off', 'on')])
+    async def test_poll(self, mocker: MockerFixture, test_state: Tuple[int, str, str, str]):
+        subject = self.create_subject(mocker)
 
         current_activity = Future()
         current_activity.set_result(test_state[0])
@@ -115,10 +186,33 @@ class TestHarmonyHubDevice(DeviceTestBase):
             return_value=current_activity
         )
 
+        assert subject.state == 'unknown'
         assert self.activities[0].state == 'unknown'
         assert self.activities[1].state == 'unknown'
+        assert self.unmatched_activity.state == 'unknown'
 
         await subject.poll()
 
-        assert self.activities[0].state == test_state[1]
-        assert self.activities[1].state == test_state[2]
+        assert subject.state == test_state[1]
+        assert self.activities[0].state == test_state[2]
+        assert self.activities[1].state == test_state[3]
+        assert self.unmatched_activity.state == 'unknown'
+    
+    async def test_poll_error(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        async def get_current_activity():
+            raise Exception('error')
+        self.harmony_client.get_current_activity = get_current_activity
+
+        assert subject.state == 'unknown'
+        assert self.activities[0].state == 'unknown'
+        assert self.activities[1].state == 'unknown'
+        assert self.unmatched_activity.state == 'unknown'
+
+        await subject.poll()
+
+        assert subject.state == 'unknown'
+        assert self.activities[0].state == 'unknown'
+        assert self.activities[1].state == 'unknown'
+        assert self.unmatched_activity.state == 'unknown'

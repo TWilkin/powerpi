@@ -4,7 +4,8 @@ from typing import Dict, NamedTuple
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.device import Device, DeviceManager
+from powerpi_common.device import Device, DeviceManager, DeviceStatus
+from powerpi_common.device.mixin import PollableMixin
 from powerpi_common.mqtt import MQTTClient
 from .harmony_client import HarmonyClient
 
@@ -17,7 +18,7 @@ class Activity(NamedTuple):
         return f'{self.id}: {self.device}'
 
 
-class HarmonyHubDevice(Device):
+class HarmonyHubDevice(Device, PollableMixin):
     __POWER_OFF_ID = -1
 
     def __init__(
@@ -27,14 +28,13 @@ class HarmonyHubDevice(Device):
         mqtt_client: MQTTClient,
         device_manager: DeviceManager,
         harmony_client: HarmonyClient,
-        name: str,
         ip: str = None,
         hostname: str = None,
         port: int = 5222,
         **kwargs
     ):
         Device.__init__(
-            self, config, logger, mqtt_client, name, **kwargs
+            self, config, logger, mqtt_client, **kwargs
         )
 
         self.__device_manager = device_manager
@@ -45,31 +45,57 @@ class HarmonyHubDevice(Device):
 
         self.__cache_lock = Lock()
         self.__activity_lock = Lock()
+    
+    @property
+    def activities(self):
+        return list(filter(
+            lambda device: getattr(device, 'hub_name', None) == self.name,
+            self.__device_manager.devices.values()
+        ))
 
     async def _poll(self):
-        current_activity_id = await self.__client.get_current_activity()
+        try:
+            current_activity_id = await self.__client.get_current_activity()
 
-        await self.__update_activity_state(current_activity_id)
+            await self.__update_activity_state(current_activity_id)
+
+            new_state = DeviceStatus.ON if current_activity_id != self.__POWER_OFF_ID else DeviceStatus.OFF
+            if self.state != new_state:
+                self.state = new_state
+        except:
+            self.__update_to_unknown()
 
     def _turn_on(self):
         pass
 
     async def _turn_off(self):
-        with self.__activity_lock:
-            await self.__client.power_off()
+        try:
+            with self.__activity_lock:
+                await self.__client.power_off()
 
-        # update the state to off for all activities
-        await self.__update_activity_state(self.__POWER_OFF_ID)
+            # update the state to off for all activities
+            await self.__update_activity_state(self.__POWER_OFF_ID)
+        except Exception as e:
+            self.__update_to_unknown(False)
+            raise e
 
     async def start_activity(self, name: str):
         activities = await self.__activities()
 
         if name in activities:
             with self.__activity_lock:
-                await self.__client.start_activity(activities[name].id)
+                try:
+                    await self.__client.start_activity(activities[name].id)
 
-                # only one activity can be started, so update the state
-                await self.__update_activity_state(activities[name].id, False)
+                    # only one activity can be started, so update the state
+                    await self.__update_activity_state(activities[name].id, False)
+
+                    new_state = DeviceStatus.ON
+                    if self.state != new_state:
+                        self.state = new_state
+                except Exception as e:
+                    self.__update_to_unknown()
+                    raise e
         else:
             self._logger.error(
                 f'Activity "{name}" for {self} not found'
@@ -85,7 +111,7 @@ class HarmonyHubDevice(Device):
             return await self.__client.get_config()
 
     async def __activities(self) -> Dict[str, Activity]:
-        devices = self.__device_manager.devices.values()
+        devices = self.activities
         activities = {}
 
         config = await self.__config()
@@ -119,7 +145,17 @@ class HarmonyHubDevice(Device):
             if activity.id == current_activity_id and not update_current:
                 continue
 
-            new_state = 'on' if activity.id == current_activity_id else 'off'
+            new_state = DeviceStatus.ON if activity.id == current_activity_id else DeviceStatus.OFF
 
             if activity.device.state != new_state:
                 activity.device.state = new_state
+
+    def __update_to_unknown(self, include_self: bool = False):
+        # there was an error so we don't know what state the hub is in
+        if include_self and self.state != DeviceStatus.UNKNOWN:
+            self.state = DeviceStatus.UNKNOWN
+
+        # find the device manager devices for this hub and update them
+        for activity in self.activities:
+            if activity.state != DeviceStatus.UNKNOWN:
+                activity.state = DeviceStatus.UNKNOWN

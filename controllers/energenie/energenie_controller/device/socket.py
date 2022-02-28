@@ -28,9 +28,6 @@ class SocketDevice(Device):
         self.__delay = delay
 
         self.__energenie.set_ids(home_id, device_id)
-    
-    def _poll(self):
-        pass
 
     async def _turn_on(self):
         await self._run(self.__energenie.turn_on)

@@ -5,7 +5,7 @@ from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from .base import BaseDevice
 from .factory import DeviceFactory
-from .type import DeviceType
+from .types import DeviceType
 
 
 class DeviceManager(object):

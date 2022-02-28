@@ -1,10 +1,12 @@
+from copy import deepcopy
+
 from powerpi_common.config import Config
+from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
-from .consumer import MQTTConsumer
-from .types import MQTTMessage
+from powerpi_common.mqtt import MQTTConsumer, MQTTMessage
 
 
-class DeviceStateEventConsumer(MQTTConsumer):
+class DeviceEventConsumer(MQTTConsumer):
     def __init__(self, topic: str, device, config: Config, logger: Logger):
         MQTTConsumer.__init__(
             self, topic, config, logger
@@ -17,7 +19,7 @@ class DeviceStateEventConsumer(MQTTConsumer):
         else:
             valid = True
 
-        if state is not None and state != 'on' and state != 'off':
+        if state is not None and state != DeviceStatus.ON and state != DeviceStatus.OFF:
             self._logger.error(f'Unrecognisable state {state}')
             valid = False
 
@@ -30,7 +32,9 @@ class DeviceStateEventConsumer(MQTTConsumer):
         return valid
     
     def _get_additional_state(self, message: MQTTMessage):
-        result = message.copy()
+        result = deepcopy(message)
+
         result.pop('state', None)
         result.pop('timestamp', None)
+        
         return result

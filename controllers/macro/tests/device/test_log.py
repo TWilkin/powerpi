@@ -5,10 +5,10 @@ from macro_controller.device import LogDevice
 
 
 class TestLogDevice(DeviceTestBase):
-    def get_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
+    def get_subject(self, _: MockerFixture):
         self.message = 'test message'
 
-        return LogDevice(self.config, self.logger, self.mqtt_client, 'test', self.message)
+        return LogDevice(
+            self.config, self.logger, self.mqtt_client, self.message,
+            name='log'
+        )

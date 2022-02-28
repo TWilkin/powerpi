@@ -24,9 +24,6 @@ class EnergeniePairingDevice(Device):
         self.__config = config
         self.__energenie = energenie
         self.__timeout = timeout
-    
-    def _poll(self):
-        pass
 
     def _turn_on(self):
         # run in a separate task so the off state happens after the on

@@ -6,9 +6,6 @@ from energenie_controller.device.socket import SocketDevice
 
 class TestSocketDevice(DeviceTestBase):
     def get_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
         self.energenie = mocker.Mock()
 
         return SocketDevice(
@@ -17,7 +14,7 @@ class TestSocketDevice(DeviceTestBase):
         )
 
     async def test_run(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         self.counter = 0
 
