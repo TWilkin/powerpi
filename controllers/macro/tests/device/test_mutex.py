@@ -5,11 +5,11 @@ from pytest_mock import MockerFixture
 from unittest.mock import PropertyMock
 
 from powerpi_common_test.device import DeviceTestBase
-from powerpi_common_test.device.mixin import PollableMixinTestBase
+from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase, PollableMixinTestBase
 from macro_controller.device import MutexDevice
 
 
-class TestMutexDevice(DeviceTestBase, PollableMixinTestBase):
+class TestMutexDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase, PollableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.device_manager = mocker.Mock()
 
@@ -60,15 +60,28 @@ class TestMutexDevice(DeviceTestBase, PollableMixinTestBase):
         self.devices[2].turn_off.assert_called_once()
         self.devices[3].turn_off.assert_called_once()
 
-    @pytest.mark.parametrize('test_state', [('on'), ('off'), ('unknown')])
-    async def test_poll(self, mocker: MockerFixture, test_state: str):
+    @pytest.mark.parametrize('state', ['on', 'off', 'unknown'])
+    async def test_poll(self, mocker: MockerFixture, state: str):
         subject = self.create_subject(mocker)
 
         for device in self.devices[:2]:
             type(device).state = PropertyMock(return_value='off')
         for device in self.devices[2:]:
-            type(device).state = PropertyMock(return_value=test_state)
+            type(device).state = PropertyMock(return_value=state)
 
         assert subject.state == 'unknown'
         await subject.poll()
-        assert subject.state == test_state
+        assert subject.state == state
+    
+    @pytest.mark.parametrize('state', ['on', 'off', 'unknown'])
+    def test_on_referenced_device_status(self, mocker: MockerFixture, state: str):
+        subject = self.create_subject(mocker)
+
+        for device in self.devices[:2]:
+            type(device).state = PropertyMock(return_value='off')
+        for device in self.devices[2:]:
+            type(device).state = PropertyMock(return_value=state)
+
+        assert subject.state == 'unknown'
+        subject.on_referenced_device_status('test_device', state)
+        assert subject.state == state
