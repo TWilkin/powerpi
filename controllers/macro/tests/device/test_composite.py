@@ -5,11 +5,11 @@ from pytest_mock import MockerFixture
 from unittest.mock import PropertyMock, patch
 
 from powerpi_common_test.device import AdditionalStateDeviceTestBase
-from powerpi_common_test.device.mixin import PollableMixinTestBase
+from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase, PollableMixinTestBase
 from macro_controller.device import CompositeDevice
 
 
-class TestCompositeDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
+class TestCompositeDevice(AdditionalStateDeviceTestBase, DeviceOrchestratorMixinTestBase, PollableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.device_manager = mocker.Mock()
 
@@ -92,4 +92,15 @@ class TestCompositeDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
 
         assert subject.state == 'unknown'
         await subject.poll()
+        assert subject.state == state
+    
+    @pytest.mark.parametrize('state', ['on', 'off', 'unknown'])
+    def test_on_referenced_device_status(self, mocker: MockerFixture, state: str):
+        subject = self.create_subject(mocker)
+
+        self.device_state = PropertyMock(return_value=state)
+        type(self.device).state = self.device_state
+
+        assert subject.state == 'unknown'
+        subject.on_referenced_device_status('test', state)
         assert subject.state == state
