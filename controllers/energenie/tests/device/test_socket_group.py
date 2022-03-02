@@ -5,6 +5,7 @@ from pytest_mock import MockerFixture
 from energenie_controller.device.socket_group import SocketGroupDevice
 from powerpi_common.device import Device
 from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase
 from powerpi_common_test.mqtt import mock_producer
 
 
@@ -22,7 +23,7 @@ class MockSocket(Device):
         pass
 
 
-class TestSocketGroupDevice(DeviceTestBase):
+class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.device_manager = mocker.Mock()
         self.energenie = mocker.Mock()
@@ -90,3 +91,21 @@ class TestSocketGroupDevice(DeviceTestBase):
 
         for socket in self.sockets.values():
             assert socket.state == state
+    
+    @pytest.mark.parametrize('state', ['on', 'off', 'unknown'])
+    def test_on_referenced_device_status(self, mocker: MockerFixture, state: str):
+        subject = self.create_subject(mocker)
+
+        assert subject.state == 'unknown'
+
+        sockets = [socket for socket in self.sockets.values()]
+        for device in sockets[:-1]:
+            device.state = state
+            subject.on_referenced_device_status(device.name, state)
+
+            assert subject.state == 'unknown'
+        
+        sockets[-1].state = state
+        subject.on_referenced_device_status(sockets[-1].name, state)
+
+        assert subject.state == state
