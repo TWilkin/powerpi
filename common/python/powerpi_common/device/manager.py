@@ -3,12 +3,14 @@ from typing import Any, Dict, List
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
+from powerpi_common.util import ismixin
 from .base import BaseDevice
 from .factory import DeviceFactory
+from .mixin import InitialisableMixin
 from .types import DeviceType
 
 
-class DeviceManager(object):
+class DeviceManager(InitialisableMixin):
     def __init__(
         self,
         config: Config,
@@ -40,6 +42,14 @@ class DeviceManager(object):
     def load(self):
         for device_type in DeviceType:
             self.__load(device_type)
+        
+        self.initialise()
+    
+    def initialise(self):
+        for device_type in DeviceType:
+            for device in self.__devices[device_type].values():
+                if ismixin(device, InitialisableMixin):
+                    device.initialise()
 
     def __get(self, device_type: DeviceType, name: str):
         try:
