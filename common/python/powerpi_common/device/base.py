@@ -2,7 +2,7 @@ from abc import ABC
 
 
 class BaseDevice(ABC):
-    def __init__(self, name: str, display_name: str = None, visible: bool = False):
+    def __init__(self, name: str, display_name: str = None, **_):
         self._name = name
         self._display_name = display_name if display_name is not None else name
     
