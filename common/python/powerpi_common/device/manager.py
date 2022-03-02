@@ -47,9 +47,13 @@ class DeviceManager(InitialisableMixin):
     
     def initialise(self):
         for device_type in DeviceType:
-            for device in self.__devices[device_type].values():
-                if ismixin(device, InitialisableMixin):
-                    device.initialise()
+            filtered = filter(
+                lambda device: ismixin(device, InitialisableMixin),
+                self.__devices[device_type].values()
+            )
+
+            for device in filtered:
+                device.initialise()
 
     def __get(self, device_type: DeviceType, name: str):
         try:
