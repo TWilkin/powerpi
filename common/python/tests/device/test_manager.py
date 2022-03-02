@@ -1,7 +1,7 @@
 from pytest import raises
 from pytest_mock import MockerFixture
 
-from powerpi_common.device.manager import DeviceManager, DeviceType
+from powerpi_common.device.manager import DeviceManager, DeviceNotFoundException, DeviceType
 
 
 class DummyDevice(object):
@@ -98,12 +98,13 @@ class TestDeviceManager(object):
     def test_get_device_missing(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
-        with raises(Exception):
+        with raises(DeviceNotFoundException) as ex:
             subject.get_device('unknown')
+        assert ex.match('Cannot find device "unknown"')
     
     def test_get_sensor_missing(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
-        with raises(Exception):
+        with raises(DeviceNotFoundException) as ex:
             subject.get_sensor('unknown')
-
+        assert ex.match('Cannot find sensor "unknown"')
