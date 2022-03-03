@@ -1,3 +1,5 @@
+from typing import Union
+
 from powerpi_common.device.base import BaseDevice
 from powerpi_common.mqtt import MQTTClient
 
@@ -6,9 +8,9 @@ class Sensor(BaseDevice):
     def __init__(
         self,
         mqtt_client: MQTTClient,
-        location: str = None,
-        entity: str = None,
-        action: str = None,
+        location: Union[str, None]=None,
+        entity: Union[str, None]=None,
+        action: Union[str, None]=None,
         **kwargs
     ):
         BaseDevice.__init__(self, **kwargs)
