@@ -13,15 +13,10 @@ class TestFactory(object):
     def test_build(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
-        self.args = None
-        def build(**kwargs):
-            self.args = kwargs
-            return True
-        self.service_provider.test_device = build
+        self.service_provider.test_device = lambda **kwargs: kwargs
 
-        result = subject.build(DeviceType.DEVICE, 'test', a=1, b=2)
-        assert result is not None
-        assert self.args == { 'a': 1, 'b': 2}
+        result = subject.build(DeviceType.DEVICE, 'test', a=1, b=2, c={'complex': 'thing'})
+        assert result == { 'a': 1, 'b': 2, 'c': { 'complex': 'thing' } }
     
     def test_build_no_factory(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)

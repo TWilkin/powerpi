@@ -42,6 +42,9 @@ class TestDeviceManager(InitialisableMixinTestBase):
         })
 
         subject.load()
+
+        assert len(subject.devices) == 0
+        assert len(subject.sensors) == 0
     
     def test_load_unknown(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)

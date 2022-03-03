@@ -25,6 +25,10 @@ class TestSensor(SensorTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.publish = mock_producer(mocker, self.mqtt_client)
         
+        self.location = getattr(self, 'location', None)
+        self.entity = getattr(self, 'entity', None)
+        self.action = getattr(self, 'action', None)
+        
         return SensorImpl(
             self.mqtt_client, self.location, self.entity, self.action,
             name='TestSensor'

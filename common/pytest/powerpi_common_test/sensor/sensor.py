@@ -1,11 +1,13 @@
-from typing import Callable
 import pytest
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from pytest_mock import MockerFixture
+from typing import Callable
+
+from powerpi_common_test.device.base import BaseDeviceTestBase
 
 
-class SensorTestBase(ABC):
+class SensorTestBase(BaseDeviceTestBase):
     pytestmark = pytest.mark.asyncio
 
     def create_subject(self, mocker: MockerFixture, func: Callable[[], None]=None):
