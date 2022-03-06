@@ -1,6 +1,7 @@
 import pytest
 
 from pytest_mock import MockerFixture
+from typing import List, Tuple
 
 from energenie_controller.device.socket_group import SocketGroupDevice
 from powerpi_common.device import Device
@@ -89,20 +90,34 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
         for socket in self.sockets.values():
             assert socket.state == state
     
-    @pytest.mark.parametrize('state', ['on', 'off', 'unknown'])
-    def test_on_referenced_device_status(self, mocker: MockerFixture, state: str):
+    @pytest.mark.parametrize('states', [
+        ('unknown', 'on', ['unknown', 'unknown', 'unknown', 'on']),
+        ('unknown', 'off', ['unknown', 'unknown', 'unknown', 'off']),
+        ('unknown', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown']),
+        ('on', 'on', ['on', 'on', 'on', 'on']),
+        ('on', 'off', ['on', 'on', 'on', 'off']),
+        ('on', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown']),
+        ('off', 'on', ['on', 'on', 'on', 'on']),
+        ('off', 'off', ['off', 'off', 'off', 'off']),
+        ('off', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown']),
+    ])
+    def test_on_referenced_device_status_from_unknown(self, mocker: MockerFixture, states: Tuple[str, str, List[str]]):
+        (initial_state, update_state, expected_states) = states
+
         subject = self.create_subject(mocker)
 
         assert subject.state == 'unknown'
 
         sockets = [socket for socket in self.sockets.values()]
-        for device in sockets[:-1]:
-            device.state = state
-            subject.on_referenced_device_status(device.name, state)
-
-            assert subject.state == 'unknown'
         
-        sockets[-1].state = state
-        subject.on_referenced_device_status(sockets[-1].name, state)
+        # initialise the devices
+        for device in sockets:
+            device.state = initial_state
 
-        assert subject.state == state
+        for device, expected in zip(sockets, expected_states):
+            device.state = update_state
+            subject.on_referenced_device_status(device.name, update_state)
+
+            assert subject.state == expected
+
+        assert subject.state == update_state

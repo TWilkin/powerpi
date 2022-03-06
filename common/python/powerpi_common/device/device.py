@@ -41,8 +41,12 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
         self._broadcast_state_change()
     
-    def update_state_no_broadcast(self, new_power_state: DeviceStatus):
-        self.__state = new_power_state
+    def update_state_no_broadcast(self, new_state: DeviceStatus):
+        self.__state = new_state
+    
+    def set_new_state(self, new_state: DeviceStatus):
+        if self.state != new_state:
+            self.state = new_state
 
     async def turn_on(self):
         self._logger.info(f'Turning on device {self}')
