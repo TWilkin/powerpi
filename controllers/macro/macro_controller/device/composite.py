@@ -35,7 +35,7 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
                     await device.change_power_and_additional_state(new_state, new_additional_state)
                 else:
                     if new_state is not None:
-                        func = self.turn_on if new_state == DeviceStatus.ON else self.turn_off
+                        func = device.turn_on if new_state == DeviceStatus.ON else device.turn_off
                         await func()
 
             self.set_state_and_additional(new_state, new_additional_state)
