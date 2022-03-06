@@ -101,7 +101,7 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
         ('off', 'off', ['off', 'off', 'off', 'off']),
         ('off', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown']),
     ])
-    def test_on_referenced_device_status_from_unknown(self, mocker: MockerFixture, states: Tuple[str, str, List[str]]):
+    def test_on_referenced_device_status(self, mocker: MockerFixture, states: Tuple[str, str, List[str]]):
         (initial_state, update_state, expected_states) = states
 
         subject = self.create_subject(mocker)

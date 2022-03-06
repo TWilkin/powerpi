@@ -34,23 +34,15 @@ class MutexDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         self._poll()
 
     def _poll(self):
-        all_on = True
-        all_unknown = True
-
-        for device in self.__on_devices:
-            all_on &= device.state == DeviceStatus.ON
-            all_unknown &= device.state == DeviceStatus.UNKNOWN
-
-        for device in self.__off_devices:
-            all_on &= device.state == DeviceStatus.OFF
-            all_unknown &= device.state == DeviceStatus.UNKNOWN
-
-        if all_on and self.state != DeviceStatus.ON:
-            self.state = DeviceStatus.ON
-        elif not all_unknown and self.state != DeviceStatus.OFF:
-            self.state = DeviceStatus.OFF
-        elif all_unknown and self.state != DeviceStatus.UNKNOWN:
-            self.state = DeviceStatus.UNKNOWN
+        # are any unknown
+        if any([device.state == DeviceStatus.UNKNOWN for device in self.devices]):
+            self.set_new_state(DeviceStatus.UNKNOWN)
+        # are all on devices on and off devices off
+        elif all([device.state == DeviceStatus.ON for device in self.__on_devices]) \
+                and all([device.state == DeviceStatus.OFF for device in self.__off_devices]):
+            self.set_new_state(DeviceStatus.ON)
+        else:
+            self.set_new_state(DeviceStatus.OFF)
 
     async def _turn_on(self):
         for device in self.__off_devices:

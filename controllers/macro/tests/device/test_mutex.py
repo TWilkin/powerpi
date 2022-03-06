@@ -2,10 +2,9 @@ import pytest
 
 from asyncio import Future
 from pytest_mock import MockerFixture
-from typing import Awaitable, Callable, Union
+from typing import List, Tuple
 from unittest.mock import PropertyMock
 
-from powerpi_common.util import await_or_sync
 from powerpi_common_test.device import DeviceTestBase
 from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase, PollableMixinTestBase
 from macro_controller.device import MutexDevice
@@ -61,57 +60,39 @@ class TestMutexDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase, PollableM
 
         self.devices[2].turn_off.assert_called_once()
         self.devices[3].turn_off.assert_called_once()
+    
+    @pytest.mark.parametrize('states', [
+        ('unknown', 'on', 'off', ['unknown', 'on'], ['unknown', 'unknown']),
+        ('unknown', 'off', 'on', ['unknown', 'off'], ['unknown', 'unknown']),
+        ('unknown', 'unknown', 'unknown', ['unknown', 'unknown'], ['unknown', 'unknown']),
+        ('on', 'on', 'off', ['on', 'on'], ['off', 'on']),
+        ('on', 'off', 'on', ['off', 'off'], ['off', 'off']),
+        ('on', 'unknown', 'on', ['unknown', 'unknown'], ['off', 'off']),
+        ('off', 'on', 'off', ['off', 'on'], ['off', 'off']),
+        ('off', 'off', 'on', ['off', 'off'], ['off', 'off']),
+        ('off', 'unknown', 'on', ['unknown', 'unknown'], ['off', 'off'])
+    ])
+    def test_on_referenced_device_status(self, mocker: MockerFixture, states: Tuple[str, str, str, List[str]]):
+        (initial_state, on_update_state, off_update_state, expected_on_states, expected_off_states) = states
 
-    @pytest.mark.parametrize('state', ['on', 'off', 'unknown'])
-    async def test_poll(self, mocker: MockerFixture, state: str):
-        async def func(subject: MutexDevice):
-            await subject.poll()
-        
-        await self.__check_device_all_x(mocker, state, func)
-        await self.__check_device_some_x(mocker, state, func)
-    
-    @pytest.mark.parametrize('state', ['on', 'off', 'unknown'])
-    async def test_on_referenced_device_status(self, mocker: MockerFixture, state: str):
-        def func(subject: MutexDevice):
-            subject.on_referenced_device_status('device3', state)
-        
-        await self.__check_device_all_x(mocker, state, func)
-        await self.__check_device_some_x(mocker, state, func)
-    
-    
-    async def __check_device_all_x(
-        self, 
-        mocker: MockerFixture, 
-        state: str, 
-        func: Union[Awaitable[MutexDevice], Callable[[MutexDevice], None]]
-    ):
         subject = self.create_subject(mocker)
-
-        for device in self.devices[:2]:
-            type(device).state = PropertyMock(return_value='unknown' if state == 'unknown' else 'off')
-        for device in self.devices[2:]:
-            type(device).state = PropertyMock(return_value=state)
-
-        assert subject.state == 'unknown' if state != 'unknown' else 'on'
-        await await_or_sync(func, subject)
-        assert subject.state == state
-    
-    async def __check_device_some_x(
-        self, 
-        mocker: MockerFixture, 
-        state: str, 
-        func: Union[Awaitable[MutexDevice], Callable[[MutexDevice], None]]
-    ):
-        subject = self.create_subject(mocker)
-
-        for device in self.devices[:2]:
-            type(device).state = PropertyMock(return_value='off')
-        for device in self.devices[2:]:
-            type(device).state = PropertyMock(return_value='off' if state == 'on' else 'on')
-        
-        # we only want one device reporting the state
-        type(self.devices[3]).state = PropertyMock(return_value=state)
 
         assert subject.state == 'unknown'
-        await await_or_sync(func, subject)
-        assert subject.state == 'off'
+
+        # initialise the devices
+        for device in self.devices:
+            type(device).state = PropertyMock(return_value=initial_state)
+
+        for device, expected in zip([self.devices[0], self.devices[1]], expected_off_states):
+            type(device).state = PropertyMock(return_value=off_update_state)
+            subject.on_referenced_device_status(device.name, off_update_state)
+
+            assert subject.state == expected
+        
+        for device, expected in zip([self.devices[2], self.devices[3]], expected_on_states):
+            type(device).state = PropertyMock(return_value=on_update_state)
+            subject.on_referenced_device_status(device.name, on_update_state)
+
+            assert subject.state == expected
+
+        assert subject.state == on_update_state
