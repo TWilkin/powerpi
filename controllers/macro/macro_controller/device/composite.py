@@ -54,19 +54,14 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
         return ['a']
 
     def _poll(self):
-        all_on = True
-        all_unknown = True
-
-        for device in self.devices:
-            all_on &= device.state == DeviceStatus.ON
-            all_unknown &= device.state == DeviceStatus.UNKNOWN
-
-        if all_on and self.state != DeviceStatus.ON:
-            self.state = DeviceStatus.ON
-        elif not all_unknown and self.state != DeviceStatus.OFF:
-            self.state = DeviceStatus.OFF
-        elif all_unknown and self.state != DeviceStatus.UNKNOWN:
-            self.state = DeviceStatus.UNKNOWN
+        # are any unknown
+        if any([device.state == DeviceStatus.UNKNOWN for device in self.devices]):
+            self.set_new_state(DeviceStatus.UNKNOWN)
+        # are all devices on
+        elif all([device.state == DeviceStatus.ON for device in self.devices]):
+            self.set_new_state(DeviceStatus.ON)
+        else:
+            self.set_new_state(DeviceStatus.OFF)
 
     async def _turn_on(self):
         for device in self.devices:
