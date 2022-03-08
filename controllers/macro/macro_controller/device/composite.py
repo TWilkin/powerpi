@@ -30,7 +30,10 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
     
     async def change_power_and_additional_state(self, new_state: DeviceStatus, new_additional_state: AdditionalState):
         if new_state is not None or new_additional_state is not None:
-            for device in self.devices:
+            # we need to run them in reverse order for off
+            ordered_devices = self.devices if new_state != DeviceStatus.OFF else reversed(self.devices)
+
+            for device in ordered_devices:
                 if ismixin(device, AdditionalStateMixin):
                     await device.change_power_and_additional_state(new_state, new_additional_state)
                 else:

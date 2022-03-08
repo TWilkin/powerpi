@@ -5,7 +5,6 @@ from pytest_mock import MockerFixture
 from typing import List, Tuple
 from unittest.mock import PropertyMock, patch
 
-from powerpi_common.util import await_or_sync
 from powerpi_common_test.device import AdditionalStateDeviceTestBase
 from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase, PollableMixinTestBase
 from macro_controller.device import CompositeDevice
@@ -31,30 +30,65 @@ class TestCompositeDevice(AdditionalStateDeviceTestBase, DeviceOrchestratorMixin
 
         return CompositeDevice(
             self.config, self.logger, self.mqtt_client, self.device_manager,
-            self.devices.keys(),
+            ['device0', 'device1', 'device2', 'device3'],
             name='composite'
         )
 
     async def test_all_on(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
+        # store the order they were called
+        self.order = []
+        def mock(name: str):
+            async def turn_on():
+                self.order.append(name)
+            return turn_on
+        
+        for name, device in self.devices.items():
+            device.turn_on = mock(name)
+
         await subject.turn_on()
 
-        for device in self.devices.values():
-            device.turn_on.assert_called_once()
+        # ensure they were called in the correct order
+        assert self.order == ['device0', 'device1', 'device2', 'device3']
 
     async def test_all_off(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
-        await subject.turn_off()
+        # store the order they were called
+        self.order = []
+        def mock(name: str):
+            async def turn_off():
+                self.order.append(name)
+            return turn_off
+        
+        for name, device in self.devices.items():
+            device.turn_off = mock(name)
 
-        for device in self.devices.values():
-            device.turn_off.assert_called_once()
-    
-    async def test_all_change_power_and_additional_state(self, mocker: MockerFixture):
+        await subject.turn_off()
+        
+        # ensure they were called in the correct order
+        assert self.order == ['device3', 'device2', 'device1', 'device0']
+
+    @pytest.mark.parametrize('states', [
+        ('on', ['device0', 'device1', 'device2', 'device3']),
+        ('off', ['device3', 'device2', 'device1', 'device0'])
+    ])
+    async def test_all_change_power_and_additional_state(self, mocker: MockerFixture, states: Tuple[str, List[str]]):
+        (new_state, expected_order) = states
+
         subject = self.create_subject(mocker)
 
-        new_state = 'on'
+        # store the order they were called
+        self.order = []
+        def mock(name: str):
+            async def change_power_and_additional_state(_: str, __: dict):
+                self.order.append(name)
+            return change_power_and_additional_state
+        
+        for name, device in self.devices.items():
+            device.change_power_and_additional_state = mock(name)
+
         new_additional_state = { 'something': 'else' }
 
         with patch('macro_controller.device.composite.ismixin') as ismixin:
@@ -62,10 +96,8 @@ class TestCompositeDevice(AdditionalStateDeviceTestBase, DeviceOrchestratorMixin
 
             await subject.change_power_and_additional_state(new_state, new_additional_state)
         
-        for device in self.devices.values():
-            device.change_power_and_additional_state.assert_called_once_with(
-                new_state, new_additional_state
-            )
+        # ensure they were called in the correct order
+        assert self.order == expected_order
     
     async def test_all_change_power_and_additional_state_unsupported(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
