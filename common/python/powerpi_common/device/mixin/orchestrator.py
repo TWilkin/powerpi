@@ -12,6 +12,10 @@ from .initialisable import InitialisableMixin
 
 
 class DeviceOrchestratorMixin(InitialisableMixin):
+    '''
+    Mixin to add device orchestrator functionality (for devices that
+    control other devices.)
+    '''
     class __ReferencedDeviceStateEventListener(DeviceStatusEventConsumer):
         def __init__(
             self, 
@@ -53,10 +57,16 @@ class DeviceOrchestratorMixin(InitialisableMixin):
     
     @property
     def devices(self) -> List[BaseDevice]:
+        '''
+        Return the list of devices this device controls.
+        '''
         return [self.__device_manager.get_device(device_name) for device_name in self.__devices]
 
     @abstractmethod
     def on_referenced_device_status(self, device_name: str, state: DeviceStatus):
-        '''Method to refresh the orchestrator devices' state based on the changed
-            state from the referenced device.'''
+        '''
+        Method to refresh the orchestrator devices' state based on the changed
+        state from the referenced device.
+        Supports both sync and async implementations.
+        '''
         raise NotImplementedError

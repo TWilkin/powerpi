@@ -9,7 +9,17 @@ AdditionalState = Dict[str, Any]
 
 
 class AdditionalStateMixin(ABC):
+    '''
+    Mixin to add additional state functionality. When change/status messages
+    are received alternate state update methods are called from this mixin
+    to allow an implementing device to set additional as well as power state.
+    '''
     async def change_power_and_additional_state(self, new_state: DeviceStatus, new_additional_state: AdditionalState):
+        '''
+        Turn this device on or off, depending on the value of new_state
+        as well as performing additional action from additional state.
+        If new_state and additional_state is none, do nothing.
+        '''
         try:
             if new_state is not None:
                 self._logger.info(f'Turning {new_state} device {self}')
@@ -31,20 +41,30 @@ class AdditionalStateMixin(ABC):
     @property
     @abstractmethod
     def additional_state(self):
+        '''
+        Implement this method to support returning additional state.
+        '''
         raise NotImplementedError
 
     @abstractmethod
     def set_state_and_additional(self, new_state: DeviceStatus, new_additional_state: AdditionalState):
-        '''Update the state and additional state, then broadcase the message to the queue.'''
+        '''
+        Update the state and additional state, then broadcast the message to the queue.
+        '''
         raise NotImplementedError
     
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
+        '''
+        Called when a message is received that contains additional state.
+        '''
         return await await_or_sync(self._on_additional_state_change, new_additional_state)
     
     @abstractmethod
     def _on_additional_state_change(self, new_additional_state: AdditionalState) -> AdditionalState:
-        '''Handler for when the additional state changes, allowing the extending device to
-            notify the real device.'''
+        '''
+        Handler for when the additional state changes, allowing the extending device to
+        perform any action on the physical device.
+        '''
         raise NotImplementedError
     
     def _filter_keys(self, new_additional_state: AdditionalState):
@@ -57,5 +77,7 @@ class AdditionalStateMixin(ABC):
     
     @abstractmethod
     def _additional_state_keys(self) -> List[str]:
-        '''Returns the list of additional state keys this device supports.'''
+        '''
+        Returns the list of additional state keys this device supports.
+        '''
         raise NotImplementedError

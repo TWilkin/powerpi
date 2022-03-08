@@ -5,6 +5,11 @@ from powerpi_common.mqtt import MQTTClient
 
 
 class Sensor(BaseDevice):
+    '''
+    Abstract base class for a "sensor", which supports reading data from a
+    physical device, or receiving asynchronous events from a device and
+    then broadcasting the data/events to the message queue.
+    '''
     def __init__(
         self,
         mqtt_client: MQTTClient,
