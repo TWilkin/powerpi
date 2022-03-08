@@ -7,6 +7,7 @@ from powerpi_common.device.consumers.status_event_consumer import DeviceStatusEv
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, MQTTMessage
+from powerpi_common.util import await_or_sync
 from .initialisable import InitialisableMixin
 
 
@@ -23,11 +24,11 @@ class DeviceOrchestratorMixin(InitialisableMixin):
 
             self.__main_device = main_device
         
-        def on_message(self, message: MQTTMessage, entity: str, _: str):
+        async def on_message(self, message: MQTTMessage, entity: str, _: str):
             if self._is_message_valid(entity, None):
                 new_power_state = message.get('state', DeviceStatus.UNKNOWN)
 
-                self.__main_device.on_referenced_device_status(self._device.name, new_power_state)
+                await await_or_sync(self.__main_device.on_referenced_device_status, self._device.name, new_power_state)
                 
 
     def __init__(

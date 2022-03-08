@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from asyncio import Lock
 from typing import Awaitable, Callable, Union
 
 from powerpi_common.config import Config
@@ -26,6 +27,8 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
         self._producer = mqtt_client.add_producer()
 
+        self.__lock = Lock()
+
         mqtt_client.add_consumer(self)
 
         # add listener to get the initial state from the queue, if there is one
@@ -44,17 +47,20 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
     def update_state_no_broadcast(self, new_state: DeviceStatus):
         self.__state = new_state
     
-    def set_new_state(self, new_state: DeviceStatus):
-        if self.state != new_state:
-            self.state = new_state
+    async def set_new_state(self, new_state: DeviceStatus):
+        async with self.__lock:
+            if self.state != new_state:
+                self.state = new_state
 
     async def turn_on(self):
-        self._logger.info(f'Turning on device {self}')
-        await self.__change_power_handler(self._turn_on, DeviceStatus.ON)
+        async with self.__lock:
+            self._logger.info(f'Turning on device {self}')
+            await self.__change_power_handler(self._turn_on, DeviceStatus.ON)
 
     async def turn_off(self):
-        self._logger.info(f'Turning off device {self}')
-        await self.__change_power_handler(self._turn_off, DeviceStatus.OFF)
+        async with self.__lock:
+            self._logger.info(f'Turning off device {self}')
+            await self.__change_power_handler(self._turn_off, DeviceStatus.OFF)
     
     async def change_power(self, new_power_state: DeviceStatus):
         if new_power_state is not None:

@@ -72,7 +72,7 @@ class TestMutexDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase, PollableM
         ('off', 'off', 'on', ['off', 'off'], ['off', 'off']),
         ('off', 'unknown', 'on', ['unknown', 'unknown'], ['off', 'off'])
     ])
-    def test_on_referenced_device_status(self, mocker: MockerFixture, states: Tuple[str, str, str, List[str]]):
+    async def test_on_referenced_device_status(self, mocker: MockerFixture, states: Tuple[str, str, str, List[str]]):
         (initial_state, on_update_state, off_update_state, expected_on_states, expected_off_states) = states
 
         subject = self.create_subject(mocker)
@@ -85,13 +85,13 @@ class TestMutexDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase, PollableM
 
         for device, expected in zip([self.devices[0], self.devices[1]], expected_off_states):
             type(device).state = PropertyMock(return_value=off_update_state)
-            subject.on_referenced_device_status(device.name, off_update_state)
+            await subject.on_referenced_device_status(device.name, off_update_state)
 
             assert subject.state == expected
         
         for device, expected in zip([self.devices[2], self.devices[3]], expected_on_states):
             type(device).state = PropertyMock(return_value=on_update_state)
-            subject.on_referenced_device_status(device.name, on_update_state)
+            await subject.on_referenced_device_status(device.name, on_update_state)
 
             assert subject.state == expected
 

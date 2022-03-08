@@ -33,6 +33,8 @@ class DummyDevice(object):
 
 
 class TestDeviceOrchestratorMixin(DeviceTestBase, DeviceOrchestratorMixinTestBase):
+    pytestmark = pytest.mark.asyncio
+    
     def get_subject(self, mocker: MockerFixture):
         self.device_manager = mocker.Mock()
         
@@ -47,7 +49,7 @@ class TestDeviceOrchestratorMixin(DeviceTestBase, DeviceOrchestratorMixinTestBas
         return device
 
     @pytest.mark.parametrize('state', ['on', 'off', 'unknown'])
-    def test_on_referenced_device_status_called(self, mocker: MockerFixture, state: str):
+    async def test_on_referenced_device_status_called(self, mocker: MockerFixture, state: str):
         self.consumers = {}
 
         def mock_add_consumer():
@@ -71,12 +73,12 @@ class TestDeviceOrchestratorMixin(DeviceTestBase, DeviceOrchestratorMixinTestBas
 
         assert subject.state == 'unknown'
 
-        self.consumers['device/device0/status'].on_message(message, self.devices[0], 'status')
+        await self.consumers['device/device0/status'].on_message(message, self.devices[0], 'status')
 
         assert subject.current_device == self.devices[0]
         assert subject.state == state
 
-        self.consumers['device/device2/status'].on_message(message, self.devices[2], 'status')
+        await self.consumers['device/device2/status'].on_message(message, self.devices[2], 'status')
 
         assert subject.current_device == self.devices[2]
         assert subject.state == state

@@ -25,8 +25,8 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
             self, config, logger, mqtt_client, device_manager, devices
         )
     
-    def on_referenced_device_status(self, _: str, __: DeviceStatus):
-        self._poll()
+    async def on_referenced_device_status(self, _: str, __: DeviceStatus):
+        await self._poll()
     
     async def change_power_and_additional_state(self, new_state: DeviceStatus, new_additional_state: AdditionalState):
         if new_state is not None or new_additional_state is not None:
@@ -53,15 +53,15 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
         # but the test expect at least one
         return ['a']
 
-    def _poll(self):
+    async def _poll(self):
         # are any unknown
         if any([device.state == DeviceStatus.UNKNOWN for device in self.devices]):
-            self.set_new_state(DeviceStatus.UNKNOWN)
+            await self.set_new_state(DeviceStatus.UNKNOWN)
         # are all devices on
         elif all([device.state == DeviceStatus.ON for device in self.devices]):
-            self.set_new_state(DeviceStatus.ON)
+            await self.set_new_state(DeviceStatus.ON)
         else:
-            self.set_new_state(DeviceStatus.OFF)
+            await self.set_new_state(DeviceStatus.OFF)
 
     async def _turn_on(self):
         for device in self.devices:

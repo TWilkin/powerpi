@@ -32,15 +32,15 @@ class SocketGroupDevice(Device, DeviceOrchestratorMixin):
 
         self.__energenie.set_ids(home_id, 0)
     
-    def on_referenced_device_status(self, _: str, state: DeviceStatus):
+    async def on_referenced_device_status(self, _: str, state: DeviceStatus):
         # are any unknown
         if any([device.state == DeviceStatus.UNKNOWN for device in self.devices]):
-            self.set_new_state(DeviceStatus.UNKNOWN)
+            await self.set_new_state(DeviceStatus.UNKNOWN)
         # are any on
         elif any([device.state == DeviceStatus.ON for device in self.devices]):
-            self.set_new_state(DeviceStatus.ON)
+            await self.set_new_state(DeviceStatus.ON)
         else:
-            self.set_new_state(DeviceStatus.OFF)
+            await self.set_new_state(DeviceStatus.OFF)
 
     async def _turn_on(self):
         await self._run(self.__energenie.turn_on, DeviceStatus.ON)

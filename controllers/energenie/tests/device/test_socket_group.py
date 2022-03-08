@@ -101,7 +101,7 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
         ('off', 'off', ['off', 'off', 'off', 'off']),
         ('off', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown'])
     ])
-    def test_on_referenced_device_status(self, mocker: MockerFixture, states: Tuple[str, str, List[str]]):
+    async def test_on_referenced_device_status(self, mocker: MockerFixture, states: Tuple[str, str, List[str]]):
         (initial_state, update_state, expected_states) = states
 
         subject = self.create_subject(mocker)
@@ -116,7 +116,7 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
 
         for device, expected in zip(sockets, expected_states):
             device.state = update_state
-            subject.on_referenced_device_status(device.name, update_state)
+            await subject.on_referenced_device_status(device.name, update_state)
 
             assert subject.state == expected
 
