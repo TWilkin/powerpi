@@ -16,7 +16,6 @@ class DeviceImpl(Device, DeviceOrchestratorMixin):
         self.current_device = None
 
     def on_referenced_device_status(self, device_name: str, state: DeviceStatus):
-        print(f'{device_name} {state}')
         self.current_device = device_name
         self.state = state
     
