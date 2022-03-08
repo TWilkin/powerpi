@@ -39,13 +39,13 @@ class DeviceManager(InitialisableMixin):
     def get_sensor(self, name: str):
         return self.__get(DeviceType.SENSOR, name)
     
-    def load(self):
+    async def load(self):
         for device_type in DeviceType:
             self.__load(device_type)
         
-        self.initialise()
+        await self.initialise()
     
-    def initialise(self):
+    async def _initialise(self):
         for device_type in DeviceType:
             filtered = filter(
                 lambda device: ismixin(device, InitialisableMixin),
@@ -53,7 +53,7 @@ class DeviceManager(InitialisableMixin):
             )
 
             for device in filtered:
-                device.initialise()
+                await device.initialise()
 
     def __get(self, device_type: DeviceType, name: str):
         try:

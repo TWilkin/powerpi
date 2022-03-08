@@ -64,7 +64,7 @@ class TestDeviceOrchestratorMixin(DeviceTestBase, DeviceOrchestratorMixinTestBas
             return DummyDevice(device_name)
         self.device_manager.get_device = get_device
 
-        subject.initialise()
+        await subject.initialise()
 
         message = {
             'state': state,

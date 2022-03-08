@@ -1,3 +1,5 @@
+import pytest
+
 from pytest import raises
 from pytest_mock import MockerFixture
 
@@ -14,7 +16,7 @@ class DummyDevice(object):
         self.kwargs = kwargs
         self.initialised = False
     
-    def initialise(self):
+    def _initialise(self):
         # this is implemented here to prove it's not called for the wrong devices
         self.initialised = True
 
@@ -24,6 +26,8 @@ class InitialisationDummyDevice(DummyDevice, InitialisableMixin):
 
 
 class TestDeviceManager(InitialisableMixinTestBase):
+    pytestmark = pytest.mark.asyncio
+
     def create_subject(self, mocker: MockerFixture):
         self.config = mocker.Mock()
         self.logger = mocker.Mock()
@@ -33,7 +37,7 @@ class TestDeviceManager(InitialisableMixinTestBase):
             self.config, self.logger, self.factory
         )
     
-    def test_load_no_content(self, mocker: MockerFixture):
+    async def test_load_no_content(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
         mocker.patch.object(self.config, 'devices', {
@@ -41,12 +45,12 @@ class TestDeviceManager(InitialisableMixinTestBase):
             'sensors': []
         })
 
-        subject.load()
+        await subject.load()
 
         assert len(subject.devices) == 0
         assert len(subject.sensors) == 0
     
-    def test_load_unknown(self, mocker: MockerFixture):
+    async def test_load_unknown(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
         def build(_, __, **___):
@@ -62,12 +66,12 @@ class TestDeviceManager(InitialisableMixinTestBase):
             ]
         })
 
-        subject.load()
+        await subject.load()
 
         assert len(subject.devices) == 0
         assert len(subject.sensors) == 0
     
-    def test_load_content(self, mocker: MockerFixture):
+    async def test_load_content(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
         def build(device_type: DeviceType, instance_type: str, **kwargs):
@@ -88,7 +92,7 @@ class TestDeviceManager(InitialisableMixinTestBase):
             ]
         })
 
-        subject.load()
+        await subject.load()
 
         for device_name, instance_type, additional, initialised in [('a', 'test_device', True, False), ('b', 'another_device', False, True)]:
             device = subject.get_device(device_name)

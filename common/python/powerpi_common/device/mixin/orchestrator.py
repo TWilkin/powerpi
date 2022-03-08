@@ -50,11 +50,6 @@ class DeviceOrchestratorMixin(InitialisableMixin):
         self.__device_manager = device_manager
         self.__devices = devices
     
-    def initialise(self):
-        for device in self.devices:
-            consumer = self.__ReferencedDeviceStateEventListener(self, device, self.__config, self.__logger)
-            self.__mqtt_client.add_consumer(consumer)
-    
     @property
     def devices(self) -> List[BaseDevice]:
         '''
@@ -70,3 +65,8 @@ class DeviceOrchestratorMixin(InitialisableMixin):
         Supports both sync and async implementations.
         '''
         raise NotImplementedError
+    
+    def _initialise(self):
+        for device in self.devices:
+            consumer = self.__ReferencedDeviceStateEventListener(self, device, self.__config, self.__logger)
+            self.__mqtt_client.add_consumer(consumer)
