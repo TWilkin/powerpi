@@ -1,18 +1,28 @@
-FROM python:3.8.10-alpine3.12 AS build-image
-LABEL description="Python application to listen to the queue and start/stop Energenie devices as requested"
-
-# ensure we have the dependencies to run pip
-RUN apk add --no-cache gcc git musl-dev \
-    && pip3 install pipenv
+# create a base image for building
+FROM python:3.8.10-alpine3.12 AS build-base-image
+RUN apk add --no-cache gcc git libffi-dev musl-dev
+RUN pip3 install pip==22.0.4
+RUN pip3 install poetry==1.1.13
+RUN poetry config virtualenvs.in-project true
 ENV CFLAGS=-fcommon
 
-# copy over the common library
-WORKDIR /opt/powerpi/controllers/energenie
-COPY common/python/ ./../../common/python/
+# create a venv with the common library
+FROM build-base-image AS build-common-image
+WORKDIR /opt/powerpi/common/python
+COPY common/pytest/poetry.lock common/pytest/pyproject.toml ./../pytest/
+COPY common/python/poetry.lock common/python/pyproject.toml ./
+RUN poetry install --no-dev --no-interaction --no-ansi
+COPY common/python/powerpi_common ./powerpi_common
+RUN poetry build \
+    && .venv/bin/pip install ./dist/*.whl
 
-# install the dependencies
-COPY controllers/energenie/Pipfile* ./
-RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --three --deploy
+# re-use the venv and install the controller's dependencies
+FROM build-base-image AS build-image
+WORKDIR /opt/powerpi/controllers/energenie
+COPY --from=build-common-image /opt/powerpi/common ./../../common
+COPY controllers/energenie/poetry.lock controllers/energenie/pyproject.toml ./
+RUN ln -s ../../common/python/.venv .venv \
+    && poetry install --no-dev --no-interaction --no-ansi
 
 # re-compile the binary
 WORKDIR /opt/powerpi/controllers/energenie/.venv/lib/python3.8/site-packages/pyenergenie/energenie/drv
@@ -21,13 +31,17 @@ RUN rm radio_rpi.so \
 
 # use multi-stage build to remove compile dependencies
 FROM python:3.8.10-alpine3.12 AS run-image
+LABEL description="PowerPi Energenie Controller"
+
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="Europe/London"
-WORKDIR /usr/src/app
+
 RUN addgroup -g 997 -S gpio \
     && adduser --disabled-password powerpi \
     && addgroup powerpi gpio
 USER powerpi
+
+WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/energenie/.venv ./venv
 
 # add the application

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "energenie-controller"
+name = "energenie_controller"
 version = "0.1.4"
 description = "PowerPi Engergenie Controller"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
