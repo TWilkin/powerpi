@@ -1,12 +1,14 @@
 import pytest
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from datetime import datetime
 from pytest_mock import MockerFixture
 from typing import Callable
 
+from powerpi_common_test.device.base import BaseDeviceTestBase
 
-class DeviceTestBase(ABC):
+
+class DeviceTestBase(BaseDeviceTestBase):
     pytestmark = pytest.mark.asyncio
 
     def create_subject(self, mocker: MockerFixture, func: Callable[[], None]=None):

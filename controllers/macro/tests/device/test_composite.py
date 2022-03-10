@@ -2,71 +2,102 @@ import pytest
 
 from asyncio import Future
 from pytest_mock import MockerFixture
+from typing import List, Tuple
 from unittest.mock import PropertyMock, patch
 
 from powerpi_common_test.device import AdditionalStateDeviceTestBase
-from powerpi_common_test.device.mixin import PollableMixinTestBase
+from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase, PollableMixinTestBase
 from macro_controller.device import CompositeDevice
 
 
-class TestCompositeDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
+class TestCompositeDevice(AdditionalStateDeviceTestBase, DeviceOrchestratorMixinTestBase, PollableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.device_manager = mocker.Mock()
 
-        self.device = mocker.Mock()
+        self.devices = { f'device{i}': mocker.Mock() for i in range(0, 4)}
 
-        mocker.patch.object(
-            self.device_manager, 'get_device', return_value=self.device
-        )
+        self.device_manager.get_device = lambda name: self.devices[name]
 
         future = Future()
         future.set_result(None)
-        for method in ['turn_on', 'turn_off', 'change_power_and_additional_state']:
-            mocker.patch.object(
-                self.device,
-                method,
-                return_value=future
-            )
+        for device in self.devices.values():
+            for method in ['turn_on', 'turn_off', 'change_power_and_additional_state']:
+                mocker.patch.object(
+                    device,
+                    method,
+                    return_value=future
+                )
 
         return CompositeDevice(
             self.config, self.logger, self.mqtt_client, self.device_manager,
-            ['device1', 'device2'],
+            ['device0', 'device1', 'device2', 'device3'],
             name='composite'
         )
 
     async def test_all_on(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
+        # store the order they were called
+        self.order = []
+        def mock(name: str):
+            async def turn_on():
+                self.order.append(name)
+            return turn_on
+        
+        for name, device in self.devices.items():
+            device.turn_on = mock(name)
+
         await subject.turn_on()
 
-        self.device.turn_on.assert_has_calls(
-            [mocker.call(), mocker.call()]
-        )
+        # ensure they were called in the correct order
+        assert self.order == ['device0', 'device1', 'device2', 'device3']
 
     async def test_all_off(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
-        await subject.turn_off()
+        # store the order they were called
+        self.order = []
+        def mock(name: str):
+            async def turn_off():
+                self.order.append(name)
+            return turn_off
+        
+        for name, device in self.devices.items():
+            device.turn_off = mock(name)
 
-        self.device.turn_off.assert_has_calls(
-            [mocker.call(), mocker.call()]
-        )
-    
-    async def test_all_change_power_and_additional_state(self, mocker: MockerFixture):
+        await subject.turn_off()
+        
+        # ensure they were called in the correct order
+        assert self.order == ['device3', 'device2', 'device1', 'device0']
+
+    @pytest.mark.parametrize('states', [
+        ('on', ['device0', 'device1', 'device2', 'device3']),
+        ('off', ['device3', 'device2', 'device1', 'device0'])
+    ])
+    async def test_all_change_power_and_additional_state(self, mocker: MockerFixture, states: Tuple[str, List[str]]):
+        (new_state, expected_order) = states
+
         subject = self.create_subject(mocker)
 
-        new_state = 'on'
+        # store the order they were called
+        self.order = []
+        def mock(name: str):
+            async def change_power_and_additional_state(_: str, __: dict):
+                self.order.append(name)
+            return change_power_and_additional_state
+        
+        for name, device in self.devices.items():
+            device.change_power_and_additional_state = mock(name)
+
         new_additional_state = { 'something': 'else' }
 
         with patch('macro_controller.device.composite.ismixin') as ismixin:
             ismixin.return_value = True
 
             await subject.change_power_and_additional_state(new_state, new_additional_state)
-
-        self.device.change_power_and_additional_state.assert_has_calls([
-            mocker.call(new_state, new_additional_state),
-            mocker.call(new_state, new_additional_state)
-        ])
+        
+        # ensure they were called in the correct order
+        assert self.order == expected_order
     
     async def test_all_change_power_and_additional_state_unsupported(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
@@ -79,17 +110,35 @@ class TestCompositeDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
 
             await subject.change_power_and_additional_state(new_state, new_additional_state)
 
-        self.device.turn_on.assert_has_calls(
-            [mocker.call(), mocker.call()]
-        )
+        for device in self.devices.values():
+            device.turn_on.assert_called_once()
+    
+    @pytest.mark.parametrize('states', [
+        ('unknown', 'on', ['unknown', 'unknown', 'unknown', 'on']),
+        ('unknown', 'off', ['unknown', 'unknown', 'unknown', 'off']),
+        ('unknown', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown']),
+        ('on', 'on', ['on', 'on', 'on', 'on']),
+        ('on', 'off', ['off', 'off', 'off', 'off']),
+        ('on', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown']),
+        ('off', 'on', ['off', 'off', 'off', 'on']),
+        ('off', 'off', ['off', 'off', 'off', 'off']),
+        ('off', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown'])
+    ])
+    async def test_on_referenced_device_status(self, mocker: MockerFixture, states: Tuple[str, str, List[str]]):
+        (initial_state, update_state, expected_states) = states
 
-    @pytest.mark.parametrize('state', ['on', 'off', 'unknown'])
-    async def test_poll(self, mocker: MockerFixture, state: str):
         subject = self.create_subject(mocker)
 
-        self.device_state = PropertyMock(return_value=state)
-        type(self.device).state = self.device_state
-
         assert subject.state == 'unknown'
-        await subject.poll()
-        assert subject.state == state
+        
+        # initialise the devices
+        for device in self.devices.values():
+            type(device).state = PropertyMock(return_value=initial_state)
+
+        for device, expected in zip(self.devices.values(), expected_states):
+            type(device).state = PropertyMock(return_value=update_state)
+            await subject.on_referenced_device_status(device.name, update_state)
+
+            assert subject.state == expected
+
+        assert subject.state == update_state

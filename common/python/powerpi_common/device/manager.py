@@ -3,12 +3,14 @@ from typing import Any, Dict, List
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
+from powerpi_common.util import ismixin
 from .base import BaseDevice
 from .factory import DeviceFactory
+from .mixin import InitialisableMixin
 from .types import DeviceType
 
 
-class DeviceManager(object):
+class DeviceManager(InitialisableMixin):
     def __init__(
         self,
         config: Config,
@@ -19,41 +21,47 @@ class DeviceManager(object):
         self.__logger = logger
         self.__factory = factory
 
-        self.__devices: dict[str, BaseDevice] = {}
-        self.__sensors: dict[str, BaseDevice] = {}
+        self.__devices: Dict[DeviceType, Dict[str, BaseDevice]] = {}
+        for device_type in DeviceType:
+            self.__devices[device_type] = {}
 
     @property
     def devices(self):
-        return self.__devices
+        return self.__devices[DeviceType.DEVICE]
 
     @property
     def sensors(self):
-        return self.__sensors
+        return self.__devices[DeviceType.SENSOR]
 
-    def get_device(self, name):
-        if self.__devices[name]:
-            return self.__devices[name]
+    def get_device(self, name: str):
+        return self.__get(DeviceType.DEVICE, name)
 
-        raise Exception(f'Cannot find device "{name}"')
-
-    def get_sensor(self, name):
-        if self.__sensors[name]:
-            return self.__sensors[name]
-
-        raise Exception(f'Cannot find sensor "{name}"')
+    def get_sensor(self, name: str):
+        return self.__get(DeviceType.SENSOR, name)
     
-    def load(self):
-        self.__load(DeviceType.DEVICE)
-        self.__load(DeviceType.SENSOR)        
+    async def load(self):
+        for device_type in DeviceType:
+            self.__load(device_type)
+        
+        await self.initialise()
+    
+    async def _initialise(self):
+        for device_type in DeviceType:
+            filtered = filter(
+                lambda device: ismixin(device, InitialisableMixin),
+                self.__devices[device_type].values()
+            )
+
+            for device in filtered:
+                await device.initialise()
+
+    def __get(self, device_type: DeviceType, name: str):
+        try:
+            return self.__devices[device_type][name]
+        except KeyError:
+            raise DeviceNotFoundException(device_type, name)
 
     def __load(self, device_type: DeviceType):
-        instances = {}
-
-        if device_type == DeviceType.DEVICE:
-            self.__devices = instances
-        else:
-            self.__sensors = instances
-
         devices: List[Dict[str, Any]] = self.__config.devices[f'{device_type}s']
 
         for device in devices:
@@ -66,6 +74,12 @@ class DeviceManager(object):
             if instance is not None:
                 self.__logger.info(f'Found {instance}')
 
-                instances[device['name']] = instance
+                self.__devices[device_type][device['name']] = instance
 
-        self.__logger.info(f'Found {len(instances)} matching {device_type}(s)')
+        self.__logger.info(f'Found {len(self.__devices[device_type])} matching {device_type}(s)')
+
+
+class DeviceNotFoundException(Exception):
+    def __init__(self, device_type: DeviceType, name: str):
+        message = f'Cannot find {device_type} "{name}"'
+        Exception.__init__(self, message)

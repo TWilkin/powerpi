@@ -1,19 +1,18 @@
 import pytest
 
 from pytest_mock import MockerFixture
+from typing import List, Tuple
 
 from energenie_controller.device.socket_group import SocketGroupDevice
 from powerpi_common.device import Device
 from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase
 from powerpi_common_test.mqtt import mock_producer
 
 
 class MockSocket(Device):
     def __init__(self, config, logger, mqtt_client, name):
         Device.__init__(self, config, logger, mqtt_client, name=name)
-    
-    def _poll(self):
-        pass
     
     def _turn_on(self):
         pass
@@ -22,7 +21,7 @@ class MockSocket(Device):
         pass
 
 
-class TestSocketGroupDevice(DeviceTestBase):
+class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.device_manager = mocker.Mock()
         self.energenie = mocker.Mock()
@@ -90,3 +89,35 @@ class TestSocketGroupDevice(DeviceTestBase):
 
         for socket in self.sockets.values():
             assert socket.state == state
+    
+    @pytest.mark.parametrize('states', [
+        ('unknown', 'on', ['unknown', 'unknown', 'unknown', 'on']),
+        ('unknown', 'off', ['unknown', 'unknown', 'unknown', 'off']),
+        ('unknown', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown']),
+        ('on', 'on', ['on', 'on', 'on', 'on']),
+        ('on', 'off', ['on', 'on', 'on', 'off']),
+        ('on', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown']),
+        ('off', 'on', ['on', 'on', 'on', 'on']),
+        ('off', 'off', ['off', 'off', 'off', 'off']),
+        ('off', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown'])
+    ])
+    async def test_on_referenced_device_status(self, mocker: MockerFixture, states: Tuple[str, str, List[str]]):
+        (initial_state, update_state, expected_states) = states
+
+        subject = self.create_subject(mocker)
+
+        assert subject.state == 'unknown'
+
+        sockets = [socket for socket in self.sockets.values()]
+        
+        # initialise the devices
+        for device in sockets:
+            device.state = initial_state
+
+        for device, expected in zip(sockets, expected_states):
+            device.state = update_state
+            await subject.on_referenced_device_status(device.name, update_state)
+
+            assert subject.state == expected
+
+        assert subject.state == update_state

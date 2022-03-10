@@ -1,13 +1,14 @@
 from copy import deepcopy
 
 from powerpi_common.config import Config
+from powerpi_common.device.base import BaseDevice
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTConsumer, MQTTMessage
 
 
 class DeviceEventConsumer(MQTTConsumer):
-    def __init__(self, topic: str, device, config: Config, logger: Logger):
+    def __init__(self, topic: str, device: BaseDevice, config: Config, logger: Logger):
         MQTTConsumer.__init__(
             self, topic, config, logger
         )

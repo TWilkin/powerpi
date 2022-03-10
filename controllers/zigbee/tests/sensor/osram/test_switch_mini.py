@@ -11,9 +11,7 @@ from zigbee_controller.sensor.osram.switch_mini \
 
 class TestOsramSwitchMiniSensor(SensorTestBase):
     def get_subject(self, mocker: MockerFixture):
-        self.logger = mocker.Mock()
         self.controller = mocker.MagicMock()
-        self.mqtt_client = mocker.Mock()
 
         self.endpoints = {
             1: mocker.Mock(),
@@ -35,7 +33,7 @@ class TestOsramSwitchMiniSensor(SensorTestBase):
 
     @pytest.mark.parametrize('button', [Button.UP, Button.MIDDLE, Button.DOWN])
     def test_single_press_handler(self, mocker: MockerFixture, button: Button):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         subject.button_press_handler(button, PressType.SINGLE)
 
@@ -43,7 +41,7 @@ class TestOsramSwitchMiniSensor(SensorTestBase):
     
     @pytest.mark.parametrize('button', [Button.UP, Button.DOWN])
     def test_long_button_press_handler_hold(self, mocker: MockerFixture, button: Button):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         subject.long_button_press_handler(button, [[0, 38]])
 
@@ -51,7 +49,7 @@ class TestOsramSwitchMiniSensor(SensorTestBase):
     
     @pytest.mark.parametrize('button', [Button.UP, Button.DOWN])
     def test_long_button_press_handler_release(self, mocker: MockerFixture, button: Button):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         subject.long_button_press_handler(button, [[]])
 
@@ -59,14 +57,14 @@ class TestOsramSwitchMiniSensor(SensorTestBase):
     
     @pytest.mark.parametrize('args', [(PressType.HOLD, [254, 2]), (PressType.RELEASE, [0, 0])])
     def test_long_middle_button_press_handler(self, mocker: MockerFixture, args: Tuple[PressType, List[int]]):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         subject.long_middle_button_press_handler([args[1]])
 
         self.__verify_publish(Button.MIDDLE, args[0])
     
     def test_long_middle_button_press_handler_skip(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         subject.long_middle_button_press_handler([[1, 1]])
 

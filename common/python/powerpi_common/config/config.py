@@ -2,7 +2,7 @@ import json
 import os
 
 from enum import Enum
-from typing import Dict
+from typing import Any, Dict
 
 
 class ConfigFileType(str, Enum):
@@ -11,7 +11,7 @@ class ConfigFileType(str, Enum):
 
 
 class Config(object):
-    __configs: Dict[ConfigFileType, Dict]
+    __configs: Dict[ConfigFileType, Dict[str, Any]]
 
     def __init__(self):
         self.__configs = {}

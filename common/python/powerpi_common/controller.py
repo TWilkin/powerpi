@@ -66,7 +66,7 @@ class Controller(object):
             await await_or_sync(self._initialise_devices)
 
             # load the devices from the config
-            self.__device_manager.load()
+            await self.__device_manager.load()
 
             # load the events from the config
             self.__event_manager.load()

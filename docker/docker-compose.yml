@@ -72,7 +72,7 @@ services:
             - deep-thought
 
     macro-controller:
-        image: ${REGISTRY}/powerpi/controllers/macro:1.1.2
+        image: ${REGISTRY}/powerpi/controllers/macro:1.1.3
         networks:
             - powerpi
         deploy:
@@ -95,7 +95,7 @@ services:
         environment:
             - ENV=ENERGENIE_DEVICE=ENER314-RT:DEVICE_FATAL=true
             - CONTROLLER_NAME=energenie-controller
-            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.1.2
+            - IMAGE=${REGISTRY}/powerpi/controllers/energenie:0.1.3
             - DEVICE=/dev/gpiomem
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock

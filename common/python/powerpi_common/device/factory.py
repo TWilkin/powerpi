@@ -11,11 +11,10 @@ class DeviceFactory(object):
     def build(self, device_type: DeviceType, instance_type: str, **kwargs) -> BaseDevice:
         device_attribute = f'{instance_type}_{device_type}'
 
-        try:
-            factory = getattr(self.__service_provider, device_attribute)
-
-            return factory(**kwargs)
-        except AttributeError:
+        factory = getattr(self.__service_provider, device_attribute, None)
+        
+        if factory is None:
             self.__logger.debug(f'Could not find {device_type} type "{instance_type}"')
+            return None
 
-        return None
+        return factory(**kwargs)

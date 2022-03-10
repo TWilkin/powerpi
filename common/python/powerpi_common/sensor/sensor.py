@@ -1,14 +1,21 @@
+from typing import Union
+
 from powerpi_common.device.base import BaseDevice
 from powerpi_common.mqtt import MQTTClient
 
 
 class Sensor(BaseDevice):
+    '''
+    Abstract base class for a "sensor", which supports reading data from a
+    physical device, or receiving asynchronous events from a device and
+    then broadcasting the data/events to the message queue.
+    '''
     def __init__(
         self,
         mqtt_client: MQTTClient,
-        location: str = None,
-        entity: str = None,
-        action: str = None,
+        location: Union[str, None]=None,
+        entity: Union[str, None]=None,
+        action: Union[str, None]=None,
         **kwargs
     ):
         BaseDevice.__init__(self, **kwargs)
