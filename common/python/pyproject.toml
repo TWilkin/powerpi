@@ -10,6 +10,7 @@ apscheduler = "~=3.8.1"
 dependency-injector = "~=4.27.0"
 gmqtt = "~=0.6.11"
 jsonpatch = "~=1.32"
+toml = "^0.10.2"
 
 [tool.poetry.dev-dependencies]
 powerpi-common-test = {path = "../pytest", develop = true}
