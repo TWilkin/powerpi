@@ -1,8 +1,6 @@
 # create a base image for building
-FROM python:3.8.10-alpine3.12 AS build-base-image
-RUN apk add --no-cache gcc git libffi-dev musl-dev
-RUN pip3 install pip==22.0.4
-RUN pip3 install poetry==1.1.13
+FROM python:3.9.5-alpine3.12 AS build-base-image
+RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.1.13
 RUN poetry config virtualenvs.in-project true
 ENV CFLAGS=-fcommon
 
@@ -25,14 +23,13 @@ RUN ln -s ../../common/python/.venv .venv \
     && poetry install --no-dev --no-interaction --no-ansi
 
 # use multi-stage build to remove compile dependencies
-FROM python:3.8.10-alpine3.12 AS run-image
+FROM python:3.9.5-alpine3.12 AS run-image
 LABEL description="PowerPi Logitech Harmony Controller"
 
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="Europe/London"
 
-RUN addgroup -g 997 -S gpio \
-    && adduser --disabled-password powerpi
+RUN adduser --disabled-password powerpi
 USER powerpi
 
 WORKDIR /usr/src/app

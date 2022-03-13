@@ -6,13 +6,17 @@ authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-lifxlan = "^1.2.7"
+lifxlan = "~=1.2.7"
 powerpi-common = {path = "../../common/python", develop = true}
 
 [tool.poetry.dev-dependencies]
-autopep8 = "^1.6.0"
+autopep8 = "~=1.6.0"
 powerpi-common-test = {path = "../../common/pytest", develop = true}
-pylint = "^2.12.2"
+pylint = "~=2.12.2"
+
+[[tool.poetry.source]]
+name = "piwheels"
+url = "https://www.piwheels.org/simple/"
 
 [tool.pytest.ini_options]
 addopts = "-v --cov=lifx_controller"
