@@ -3,7 +3,7 @@ import logging
 from powerpi_common.config import Config
 
 
-class Logger(object):
+class Logger:
     def __init__(self, config: Config):
         log_level = logging.getLevelName(config.log_level)
 
@@ -17,7 +17,7 @@ class Logger(object):
         self.__logger.setLevel(log_level)
         self.__logger.addHandler(self.__handler)
 
-        self.info("""
+        self.info(r"""
 __________                         __________.__ 
 \______   \______  _  __ __________\______   \__|
  |     ___/  _ \ \/ \/ // __ \_  __ \     ___/  |
@@ -30,8 +30,9 @@ __________                         __________.__
         logger = logging.getLogger(name)
         logger.addHandler(self.__handler)
         logger.setLevel(self.__logger.level)
-    
-    def set_logger_level(self, name: str, level: int):
+
+    @classmethod
+    def set_logger_level(cls, name: str, level: int):
         logger = logging.getLogger(name)
         logger.setLevel(level)
 
@@ -42,7 +43,7 @@ __________                         __________.__
         self.__logger.info(*args)
 
     def warn(self, *args):
-        self.__logger.warn(*args)
+        self.__logger.warning(*args)
 
     def error(self, *args):
         self.__logger.error(*args)

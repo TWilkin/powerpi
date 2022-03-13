@@ -9,7 +9,7 @@ from .manager import DeviceManager
 from .mixin.pollable import PollableMixin
 
 
-class DeviceStatusChecker(object):
+class DeviceStatusChecker:
     def __init__(
         self,
         config: Config,
@@ -24,18 +24,21 @@ class DeviceStatusChecker(object):
 
         # no more frequently than 10s
         self.__poll_frequency = max(config.poll_frequency, 10)
-    
+
     @property
     def devices(self) -> List[PollableMixin]:
         return list(filter(
             lambda device: ismixin(device, PollableMixin),
-            [device for device in self.__device_manager.devices.values()]
+            list(self.__device_manager.devices.values())
         ))
 
     def start(self):
         # only schedule if there are pollable devices
         if len(self.devices) > 0:
-            self.__logger.info(f'Polling for device state changes every {self.__poll_frequency} seconds for {len(self.devices)} device(s)')
+            self.__logger.info(
+                f'Polling for device state changes every {self.__poll_frequency} seconds'
+                + f' for {len(self.devices)} device(s)'
+            )
 
             interval = IntervalTrigger(seconds=self.__poll_frequency)
             self.__scheduler.add_job(self._run, trigger=interval)

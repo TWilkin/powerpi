@@ -64,7 +64,9 @@ class EventManager:
                 self.__mqtt_client.add_consumer(consumer)
                 self.__consumers.append(consumer)
 
-                self.__logger.info(f'Found listener {consumer} with {len(events)} event(s)')
+                self.__logger.info(
+                    f'Found listener {consumer} with {len(events)} event(s)'
+                )
 
         self.__logger.info(
             f'Found {len(self.__consumers)} matching listener(s)'
@@ -75,7 +77,7 @@ class EventManager:
         try:
             state = action['state']
 
-            #pylint: disable=no-else-return
+            # pylint: disable=no-else-return
             if state == 'on':
                 return device_on_action
             elif state == 'off':
@@ -85,7 +87,7 @@ class EventManager:
 
         try:
             patch = JsonPatch(action['patch'])
-                     
+
             return device_additional_state_action(patch)
         except KeyError:
             pass
@@ -96,8 +98,10 @@ class EventManager:
 async def device_on_action(device: Device):
     await device.turn_on()
 
+
 async def device_off_action(device: Device):
     await device.turn_off()
+
 
 def device_additional_state_action(patch: JsonPatch):
     async def wrapper(device: Device):

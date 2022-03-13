@@ -7,6 +7,6 @@ class DeviceConfigType(str, Enum):
 
 
 class DeviceStatus(str, Enum):
-    ON = 'on',
-    OFF = 'off',
+    ON = 'on'
+    OFF = 'off'
     UNKNOWN = 'unknown'

@@ -33,10 +33,12 @@ class AdditionalStateMixin(ABC):
                 await await_or_sync(func)
 
             new_additional_state = self._filter_keys(new_additional_state)
- 
+
             if len(new_additional_state) > 0:
                 # there is other work to do
-                new_additional_state = self._on_additional_state_change(new_additional_state)
+                new_additional_state = self._on_additional_state_change(
+                    new_additional_state
+                )
 
             self.set_state_and_additional(new_state, new_additional_state)
         except Exception as ex:
@@ -52,7 +54,11 @@ class AdditionalStateMixin(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def set_state_and_additional(self, new_state: DeviceStatus, new_additional_state: AdditionalState):
+    def set_state_and_additional(
+        self,
+        new_state: DeviceStatus,
+        new_additional_state: AdditionalState
+    ):
         '''
         Update the state and additional state, then broadcast the message to the queue.
         '''
@@ -78,7 +84,7 @@ class AdditionalStateMixin(ABC):
             list(self._additional_state_keys())
         )
 
-        return { key: new_additional_state[key] for key in keys}
+        return {key: new_additional_state[key] for key in keys}
 
     @abstractmethod
     def _additional_state_keys(self) -> List[str]:

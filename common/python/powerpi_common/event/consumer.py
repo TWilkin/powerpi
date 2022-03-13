@@ -25,7 +25,7 @@ class EventConsumer(MQTTConsumer):
         except KeyError:
             # if there is no timestamp that's not an error
             pass
-        
+
         for event in self.__events:
             complete = await event.execute(message)
 

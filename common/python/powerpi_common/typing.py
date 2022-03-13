@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 
-# pylint: disable=invalid-name
+#pylint: disable=invalid-name
 AdditionalStateDeviceType = "AdditionalStateDevice"
 DeviceType = "Device"
 SensorType = "Sensor"

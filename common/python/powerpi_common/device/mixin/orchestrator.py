@@ -37,6 +37,7 @@ class DeviceOrchestratorMixin(InitialisableMixin):
                     self._device.name, new_power_state
                 )
 
+    #pylint: disable=too-many-arguments
     def __init__(
         self,
         config: Config,

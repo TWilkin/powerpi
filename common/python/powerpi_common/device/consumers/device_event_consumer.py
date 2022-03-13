@@ -9,7 +9,13 @@ from powerpi_common.typing import AdditionalStateDeviceType, DeviceType
 
 
 class DeviceEventConsumer(MQTTConsumer):
-    def __init__(self, topic: str, device: Union[DeviceType, AdditionalStateDeviceType], config: Config, logger: Logger):
+    def __init__(
+        self,
+        topic: str,
+        device: Union[DeviceType, AdditionalStateDeviceType],
+        config: Config,
+        logger: Logger
+    ):
         MQTTConsumer.__init__(
             self, topic, config, logger
         )
@@ -32,12 +38,12 @@ class DeviceEventConsumer(MQTTConsumer):
             valid &= device_name == self._device.name
 
         return valid
-    
+
     @classmethod
     def _get_additional_state(cls, message: MQTTMessage):
         result = deepcopy(message)
 
         result.pop('state', None)
         result.pop('timestamp', None)
-        
+
         return result

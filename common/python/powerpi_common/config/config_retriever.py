@@ -6,7 +6,7 @@ from powerpi_common.mqtt import MQTTClient, MQTTConsumer, MQTTMessage
 from .config import Config
 
 
-class ConfigRetriever(object):
+class ConfigRetriever:
     def __init__(self, config: Config, logger: Logger, mqtt_client: MQTTClient):
         self.__config = config
         self.__logger = logger
@@ -18,7 +18,7 @@ class ConfigRetriever(object):
             topic = f'config/{file_type}/change'
             consumer = ConfigConsumer(topic, self.__config, self.__logger)
             self.__mqtt_client.add_consumer(consumer)
-        
+
         # wait until we have the config
         if self.__config.config_is_needed:
             self.__logger.info('Waiting for configuration from queue')
@@ -30,17 +30,17 @@ class ConfigRetriever(object):
                 error = 'Failed to retrieve all expected config from queue'
                 self.__logger.error(error)
                 raise EnvironmentError(error)
-    
-    async def __wait_for_config(self):
-        interval = 1 # seconds
-        waitTime = self.__config.config_wait_time / interval
 
-        while waitTime > 0:
+    async def __wait_for_config(self):
+        interval = 1  # seconds
+        wait_time = self.__config.config_wait_time / interval
+
+        while wait_time > 0:
             if self.__config.is_populated:
                 return True
-            
-            waitTime -= 1
-            
+
+            wait_time -= 1
+
             await asyncio.sleep(interval)
 
 
@@ -49,16 +49,19 @@ class ConfigConsumer(MQTTConsumer):
         MQTTConsumer.__init__(
             self, topic, config, logger
         )
-    
+
     def on_message(self, message: MQTTMessage, entity: str, _):
         self._logger.info(f'Received config for {entity}')
 
         if self._config.config_is_needed \
-            and entity in self._config.used_config \
-            and self._config.get_config(entity) is not None:
-                # this is a changed config and used, so we should restart the service
-                self._logger.info(f'Restarting service due to changed {entity} config')
-                os._exit(0)
+                and entity in self._config.used_config \
+                and self._config.get_config(entity) is not None:
+            # this is a changed config and used, so we should restart the service
+            self._logger.info(
+                f'Restarting service due to changed {entity} config')
+
+            #pylint: disable=protected-access
+            os._exit(0)
         else:
             # this is a new or unused config, so just set it
             self._config.set_config(entity, message.get('payload'))

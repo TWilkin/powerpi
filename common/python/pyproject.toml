@@ -13,6 +13,7 @@ jsonpatch = "~=1.32"
 toml = "^0.10.2"
 
 [tool.poetry.dev-dependencies]
+autopep8 = "^1.6.0"
 powerpi-common-test = {path = "../pytest", develop = true}
 pylint = "^2.12.2"
 

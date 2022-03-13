@@ -11,7 +11,12 @@ from .device_event_consumer import DeviceEventConsumer
 
 
 class DeviceStatusEventConsumer(DeviceEventConsumer):
-    def __init__(self, device: Union[DeviceType, AdditionalStateDeviceType], config: Config, logger: Logger):
+    def __init__(
+        self,
+        device: Union[DeviceType, AdditionalStateDeviceType],
+        config: Config,
+        logger: Logger
+    ):
         topic = f'device/{device.name}/status'
 
         DeviceEventConsumer.__init__(
@@ -22,9 +27,11 @@ class DeviceStatusEventConsumer(DeviceEventConsumer):
         if self._is_message_valid(entity, message.get('state')):
             new_power_state = message.get('state', DeviceStatus.UNKNOWN)
 
-            if ismixin(self._device,AdditionalStateMixin):
+            if ismixin(self._device, AdditionalStateMixin):
                 new_additional_state = self._get_additional_state(message)
-                
-                self._device.set_state_and_additional(new_power_state, new_additional_state)
+
+                self._device.set_state_and_additional(
+                    new_power_state, new_additional_state
+                )
             else:
                 self._device.state = new_power_state

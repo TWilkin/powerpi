@@ -32,7 +32,7 @@ class EventHandler:
 
             if compare != self.__condition['message']:
                 return False
- 
+
         if 'state' in self.__condition and self.__device.state != self.__condition['state']:
             return False
 
