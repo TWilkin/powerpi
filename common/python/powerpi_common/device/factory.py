@@ -1,6 +1,8 @@
+from typing import Union
+
 from powerpi_common.logger import Logger
-from .base import BaseDevice
-from .types import DeviceType
+from powerpi_common.typing import DeviceType, SensorType
+from .types import DeviceConfigType
 
 
 class DeviceFactory(object):
@@ -8,7 +10,7 @@ class DeviceFactory(object):
         self.__logger = logger
         self.__service_provider = service_provider
 
-    def build(self, device_type: DeviceType, instance_type: str, **kwargs) -> BaseDevice:
+    def build(self, device_type: DeviceConfigType, instance_type: str, **kwargs) -> Union[DeviceType, SensorType]:
         device_attribute = f'{instance_type}_{device_type}'
 
         factory = getattr(self.__service_provider, device_attribute, None)

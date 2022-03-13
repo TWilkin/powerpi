@@ -1,6 +1,6 @@
+from typing import List
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
-from typing import List
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
@@ -47,10 +47,11 @@ class DeviceStatusChecker(object):
             self.__scheduler.shutdown()
 
     async def _run(self):
+        # pylint: disable=broad-except
         self.__logger.info('Checking devices state')
 
         for device in self.devices:
             try:
                 await device.poll()
-            except Exception as e:
-                self.__logger.exception(e)
+            except Exception as ex:
+                self.__logger.exception(ex)

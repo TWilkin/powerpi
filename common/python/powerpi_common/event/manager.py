@@ -1,7 +1,8 @@
-from jsonpatch import JsonPatch
 from typing import List
+from jsonpatch import JsonPatch
 
 from powerpi_common.config import Config
+from powerpi_common.device.manager import DeviceNotFoundException
 from powerpi_common.logger import Logger
 from powerpi_common.device import Device, DeviceManager
 from powerpi_common.mqtt import MQTTClient
@@ -9,7 +10,7 @@ from .consumer import EventConsumer
 from .handler import EventHandler
 
 
-class EventManager(object):
+class EventManager:
     def __init__(
         self,
         config: Config,
@@ -30,7 +31,8 @@ class EventManager(object):
         # iterate over the configuration events and create listeners
         for listener in listeners:
             # set the topic to listen to
-            topic = 'event/{}'.format(listener['topic'])
+            topic = listener['topic']
+            topic = f'event/{topic}'
 
             events: List[EventHandler] = []
             for event in listener['events']:
@@ -39,7 +41,7 @@ class EventManager(object):
                     device = self.__device_manager.get_device(
                         event['action']['device']
                     )
-                except:
+                except DeviceNotFoundException:
                     # not a problem, we didn't know if this is the correct controller
                     continue
 
@@ -68,22 +70,24 @@ class EventManager(object):
             f'Found {len(self.__consumers)} matching listener(s)'
         )
 
-    def __get_action(self, action: object):
+    @classmethod
+    def __get_action(cls, action: object):
         try:
             state = action['state']
 
+            #pylint: disable=no-else-return
             if state == 'on':
                 return device_on_action
             elif state == 'off':
                 return device_off_action
-        except:
+        except KeyError:
             pass
 
         try:
             patch = JsonPatch(action['patch'])
                      
             return device_additional_state_action(patch)
-        except:
+        except KeyError:
             pass
 
         return None
@@ -101,5 +105,5 @@ def device_additional_state_action(patch: JsonPatch):
 
         patched = patch.apply(current_state)
         await device.change_power_and_additional_state(None, patched)
-    
+
     return wrapper

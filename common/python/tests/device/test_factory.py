@@ -1,6 +1,6 @@
 from pytest_mock import MockerFixture
 
-from powerpi_common.device import DeviceFactory, DeviceType
+from powerpi_common.device import DeviceFactory, DeviceConfigType
 
 
 class TestFactory(object):
@@ -15,7 +15,7 @@ class TestFactory(object):
 
         self.service_provider.test_device = lambda **kwargs: kwargs
 
-        result = subject.build(DeviceType.DEVICE, 'test', a=1, b=2, c={'complex': 'thing'})
+        result = subject.build(DeviceConfigType.DEVICE, 'test', a=1, b=2, c={'complex': 'thing'})
         assert result == { 'a': 1, 'b': 2, 'c': { 'complex': 'thing' } }
     
     def test_build_no_factory(self, mocker: MockerFixture):
@@ -23,5 +23,5 @@ class TestFactory(object):
 
         self.service_provider.test_device = None
 
-        result = subject.build(DeviceType.DEVICE, 'test')
+        result = subject.build(DeviceConfigType.DEVICE, 'test')
         assert result is None

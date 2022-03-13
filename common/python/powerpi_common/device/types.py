@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class DeviceType(str, Enum):
+class DeviceConfigType(str, Enum):
     DEVICE = 'device'
     SENSOR = 'sensor'
 

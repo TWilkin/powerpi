@@ -122,13 +122,14 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         return {'state': self.state}
     
     async def __change_power_handler(self, func: Union[Awaitable[None], Callable[[], None]], new_status: DeviceStatus):
+        # pylint: disable=broad-except
         try:
             async with self.__lock:
                 self._logger.info(f'Turning {new_status} device {self}')
                 await await_or_sync(func)
                 self.state = new_status
-        except Exception as e:
-            self._logger.exception(e)
+        except Exception as ex:
+            self._logger.exception(ex)
             self.state = DeviceStatus.UNKNOWN
 
     def __str__(self):

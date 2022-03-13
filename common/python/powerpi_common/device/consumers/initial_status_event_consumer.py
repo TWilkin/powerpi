@@ -1,15 +1,18 @@
+from typing import Union
+
 import powerpi_common
 
 from powerpi_common.config import Config
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, MQTTMessage
+from powerpi_common.typing import AdditionalStateDeviceType, DeviceType
 from powerpi_common.util import ismixin
 from .status_event_consumer import DeviceStatusEventConsumer
 
 
 class DeviceInitialStatusEventConsumer(DeviceStatusEventConsumer):
-    def __init__(self, device, config: Config, logger: Logger, mqtt_client: MQTTClient):
+    def __init__(self, device: Union[DeviceType, AdditionalStateDeviceType], config: Config, logger: Logger, mqtt_client: MQTTClient):
         DeviceStatusEventConsumer.__init__(
             self, device, config, logger
         )

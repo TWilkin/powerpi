@@ -3,13 +3,13 @@ import pytest
 from pytest import raises
 from pytest_mock import MockerFixture
 
-from powerpi_common.device import DeviceManager, DeviceNotFoundException, DeviceType
+from powerpi_common.device import DeviceManager, DeviceNotFoundException, DeviceConfigType
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common_test.device.mixin import InitialisableMixinTestBase
 
 
 class DummyDevice(object):
-    def __init__(self, device_type: DeviceType, instance_type: str, name: str, **kwargs):
+    def __init__(self, device_type: DeviceConfigType, instance_type: str, name: str, **kwargs):
         self.device_type = device_type
         self.instance_type = instance_type
         self.name = name
@@ -74,7 +74,7 @@ class TestDeviceManager(InitialisableMixinTestBase):
     async def test_load_content(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
-        def build(device_type: DeviceType, instance_type: str, **kwargs):
+        def build(device_type: DeviceConfigType, instance_type: str, **kwargs):
             if instance_type.startswith('another'):
                 return InitialisationDummyDevice(device_type, instance_type, **kwargs)
             else:
@@ -97,7 +97,7 @@ class TestDeviceManager(InitialisableMixinTestBase):
         for device_name, instance_type, additional, initialised in [('a', 'test_device', True, False), ('b', 'another_device', False, True)]:
             device = subject.get_device(device_name)
             assert device is not None
-            assert device.device_type == DeviceType.DEVICE
+            assert device.device_type == DeviceConfigType.DEVICE
             assert device.instance_type == instance_type
             assert device.name == device_name
             assert device.initialised == initialised
@@ -110,7 +110,7 @@ class TestDeviceManager(InitialisableMixinTestBase):
         for sensor_name, instance_type, additional, initialised in [('c', 'test_sensor', True, False), ('d', 'another_sensor', False, True)]:
             sensor = subject.get_sensor(sensor_name)
             assert sensor is not None
-            assert sensor.device_type == DeviceType.SENSOR
+            assert sensor.device_type == DeviceConfigType.SENSOR
             assert sensor.instance_type == instance_type
             assert sensor.name == sensor_name
             assert sensor.initialised == initialised

@@ -56,13 +56,13 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         Device.update_state_no_broadcast(self, new_state)
         self.__additional_state = self._filter_keys(new_additional_state)
     
-    def set_state_and_additional(self, state: DeviceStatus, new_additional_state: AdditionalState):
+    def set_state_and_additional(self, new_state: DeviceStatus, new_additional_state: AdditionalState):
         '''
         Update the state of this device to new_state, update the additional state
         to new_additional_state and broadcast the changes to the message queue.
         '''
-        if state is not None:
-            Device.update_state_no_broadcast(self, state)
+        if new_state is not None:
+            Device.update_state_no_broadcast(self, new_state)
         
         new_additional_state = self._filter_keys(new_additional_state)
 

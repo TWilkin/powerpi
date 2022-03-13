@@ -1,14 +1,15 @@
 from copy import deepcopy
+from typing import Union
 
 from powerpi_common.config import Config
-from powerpi_common.device.base import BaseDevice
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTConsumer, MQTTMessage
+from powerpi_common.typing import AdditionalStateDeviceType, DeviceType
 
 
 class DeviceEventConsumer(MQTTConsumer):
-    def __init__(self, topic: str, device: BaseDevice, config: Config, logger: Logger):
+    def __init__(self, topic: str, device: Union[DeviceType, AdditionalStateDeviceType], config: Config, logger: Logger):
         MQTTConsumer.__init__(
             self, topic, config, logger
         )
@@ -32,7 +33,8 @@ class DeviceEventConsumer(MQTTConsumer):
 
         return valid
     
-    def _get_additional_state(self, message: MQTTMessage):
+    @classmethod
+    def _get_additional_state(cls, message: MQTTMessage):
         result = deepcopy(message)
 
         result.pop('state', None)

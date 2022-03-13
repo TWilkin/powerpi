@@ -13,7 +13,7 @@ class InitialisableMixin(ABC):
         Initialise this device.
         '''
         await await_or_sync(self._initialise)
-    
+
     def _initialise(self):
         '''
         Implement this method to support initialisation on instantiation.

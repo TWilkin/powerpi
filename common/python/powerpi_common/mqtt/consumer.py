@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
+from typing import Union
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
@@ -20,7 +21,7 @@ class MQTTConsumer(ABC):
     def on_message(self, message: MQTTMessage, entity: str, action: str):
         raise NotImplementedError
 
-    def is_timestamp_valid(self, timestamp):
+    def is_timestamp_valid(self, timestamp: Union[int, None]):
         # check age of message is within cutoff
         now = int(datetime.utcnow().timestamp() * 1000)
         if timestamp < now - (self._config.message_age_cutoff * 1000):
