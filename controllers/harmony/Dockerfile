@@ -32,8 +32,7 @@ ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="Europe/London"
 
 RUN addgroup -g 997 -S gpio \
-    && adduser --disabled-password powerpi \
-    && addgroup powerpi gpio
+    && adduser --disabled-password powerpi
 USER powerpi
 
 WORKDIR /usr/src/app

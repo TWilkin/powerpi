@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "lifx_controller"
+version = "0.1.2"
+description = "PowerPi LIFX Controller"
+authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+lifxlan = "^1.2.7"
+powerpi-common = {path = "../../common/python", develop = true}
+
+[tool.poetry.dev-dependencies]
+powerpi-common-test = {path = "../../common/pytest", develop = true}
+pylint = "^2.12.2"
+
+[tool.pytest.ini_options]
+addopts = "-v --cov=lifx_controller"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
