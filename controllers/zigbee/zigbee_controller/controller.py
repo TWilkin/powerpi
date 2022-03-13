@@ -10,6 +10,7 @@ from zigbee_controller.device import ZigbeeController
 
 
 class Controller(CommonController):
+    #pylint: disable=too-many-arguments
     def __init__(
         self,
         config: ZigbeeConfig,
@@ -31,7 +32,9 @@ class Controller(CommonController):
         self.__zigbee_controller = zigbee_controller
 
     def _log_start(self):
-        self._logger.info(f'Using ZigBee device at {self.__config.zigbee_device}')
+        self._logger.info(
+            f'Using ZigBee device at {self.__config.zigbee_device}'
+        )
 
     async def _initialise_devices(self):
         await self.__zigbee_controller.startup()
