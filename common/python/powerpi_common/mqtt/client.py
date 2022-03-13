@@ -5,7 +5,7 @@ import sys
 import time
 
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Union
 from urllib.parse import urlparse
 
 import gmqtt
@@ -35,6 +35,8 @@ class MQTTClient:
         self.__connected = False
 
         self.__logger.set_logger_level(gmqtt.__name__, logging.WARNING)
+
+        self.__client = Union[Client, None]
 
     def add_consumer(self, consumer: MQTTConsumer):
         key = consumer.topic
@@ -127,8 +129,9 @@ class MQTTClient:
                 try:
                     await await_or_sync(consumer.on_message, message, entity, action)
                 except Exception as ex:
-                    self.__logger.error(
-                        Exception(f'{type(consumer)}.on_message', ex))
+                    self.__logger.exception(
+                        Exception(f'{type(consumer)}.on_message', ex)
+                    )
 
         return gmqtt.constants.PubRecReasonCode.SUCCESS
 

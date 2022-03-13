@@ -58,7 +58,8 @@ class ConfigConsumer(MQTTConsumer):
                 and self._config.get_config(entity) is not None:
             # this is a changed config and used, so we should restart the service
             self._logger.info(
-                f'Restarting service due to changed {entity} config')
+                f'Restarting service due to changed {entity} config'
+            )
 
             #pylint: disable=protected-access
             os._exit(0)

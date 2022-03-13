@@ -32,6 +32,8 @@ RUN rm radio_rpi.so \
 FROM python:3.9.5-alpine3.12 AS run-image
 LABEL description="PowerPi Energenie Controller"
 
+RUN apk add --no-cache libc6-compat
+
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="Europe/London"
 

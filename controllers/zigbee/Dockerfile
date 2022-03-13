@@ -26,13 +26,16 @@ RUN ln -s ../../common/python/.venv .venv \
 FROM python:3.9.5-alpine3.12 AS run-image
 LABEL description="PowerPi ZigBee Controller"
 
+RUN apk add --no-cache libc6-compat
+
 # zigpy requires SQLite
 RUN apk add --no-cache sqlite-libs
 
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="Europe/London"
 
-RUN adduser --disabled-password powerpi
+RUN adduser --disabled-password powerpi \
+    && addgroup powerpi dialout
 USER powerpi
 
 WORKDIR /usr/src/app
