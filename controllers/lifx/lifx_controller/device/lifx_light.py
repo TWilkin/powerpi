@@ -1,13 +1,14 @@
-from lifxlan import WorkflowException
 from typing import TypedDict, Union
 
+from lifxlan import WorkflowException
+
+from lifx_controller.device.lifx_client import LIFXClient
+from lifx_controller.device.lifx_colour import LIFXColour
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.device import AdditionalStateDevice, DeviceStatus
 from powerpi_common.device.mixin import PollableMixin
 from powerpi_common.mqtt import MQTTClient
-from lifx_controller.device.lifx_client import LIFXClient
-from lifx_controller.device.lifx_colour import LIFXColour
 
 
 class AdditionalState(TypedDict):
@@ -17,7 +18,9 @@ class AdditionalState(TypedDict):
     temperature: int
 
 
+#pylint: disable=too-many-ancestors
 class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
+    #pylint: disable=too-many-arguments
     def __init__(
         self,
         config: Config,
@@ -39,7 +42,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
         self.__light = lifx_client
         lifx_client.mac_address = mac
         lifx_client.address = hostname if hostname is not None else ip
-    
+
     @property
     def colour(self):
         return LIFXColour(self.additional_state)
@@ -47,11 +50,11 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
     def _poll(self):
         is_powered: Union[int, None] = None
         colour: Union[LIFXColour, None] = None
-        
+
         try:
             is_powered = self.__light.get_power()
             colour = self.__light.get_colour()
-        except WorkflowException as e:
+        except WorkflowException:
             # this means the light is probably off
             pass
 
@@ -70,10 +73,10 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
             colour = LIFXColour(self._filter_keys(colour.to_json()))
             changed |= colour != self.colour
             new_additional_state = colour.to_json()
-        
+
         if changed:
             self.set_state_and_additional(new_state, new_additional_state)
-    
+
     def _on_additional_state_change(self, new_additional_state: AdditionalState):
         if new_additional_state is not None:
             lifx_colour = LIFXColour(self.additional_state)
@@ -82,9 +85,9 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
             new_additional_state = lifx_colour.to_json()
 
             self.__light.set_colour(lifx_colour, self.__duration)
-        
+
         return new_additional_state
-    
+
     def _additional_state_keys(self):
         keys = ['brightness']
 
@@ -92,7 +95,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
             keys.append('temperature')
         if self.__light.supports_colour:
             keys.extend(['hue', 'saturation'])
-        
+
         return keys
 
     def _turn_on(self):
