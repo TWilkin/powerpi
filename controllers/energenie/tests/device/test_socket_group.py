@@ -1,7 +1,8 @@
+from typing import List, Tuple
+
 import pytest
 
 from pytest_mock import MockerFixture
-from typing import List, Tuple
 
 from energenie_controller.device.socket_group import SocketGroupDevice
 from powerpi_common.device import Device
@@ -13,7 +14,7 @@ from powerpi_common_test.mqtt import mock_producer
 class MockSocket(Device):
     def __init__(self, config, logger, mqtt_client, name):
         Device.__init__(self, config, logger, mqtt_client, name=name)
-    
+
     def _turn_on(self):
         pass
 
@@ -28,7 +29,7 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
 
         self.publish = mock_producer(mocker, self.mqtt_client)
 
-        self.sockets = { f'socket{i}': MockSocket(
+        self.sockets = {f'socket{i}': MockSocket(
             self.config, self.logger, self.mqtt_client, f'socket{i}'
         ) for i in range(0, 4)}
 
@@ -37,10 +38,10 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
         self.devices = self.sockets.keys()
 
         return SocketGroupDevice(
-            self.config, self.logger, self.mqtt_client, self.device_manager, self.energenie, 
+            self.config, self.logger, self.mqtt_client, self.device_manager, self.energenie,
             name='socket_group', devices=self.devices, retries=2, delay=0
         )
-    
+
     @pytest.mark.parametrize('state', ['on', 'off'])
     async def test_turn_x_only_updates_state_once(self, mocker: MockerFixture, state: str):
         subject = self.create_subject(mocker)
@@ -57,7 +58,7 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
         assert subject.state == state
         for socket in self.sockets.values():
             assert socket.state == state
-        
+
         # 2 for the group (turn_x always broadcasts) and 1 for each socket
         assert self.publish.call_count == 2 + len(self.sockets)
 
@@ -76,6 +77,7 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
         subject = self.create_subject(mocker)
 
         self.counter = 0
+
         def func():
             self.counter += 1
 
@@ -89,7 +91,7 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
 
         for socket in self.sockets.values():
             assert socket.state == state
-    
+
     @pytest.mark.parametrize('states', [
         ('unknown', 'on', ['unknown', 'unknown', 'unknown', 'on']),
         ('unknown', 'off', ['unknown', 'unknown', 'unknown', 'off']),
@@ -108,8 +110,8 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
 
         assert subject.state == 'unknown'
 
-        sockets = [socket for socket in self.sockets.values()]
-        
+        sockets = list(self.sockets.values())
+
         # initialise the devices
         for device in sockets:
             device.state = initial_state

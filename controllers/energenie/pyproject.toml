@@ -11,6 +11,7 @@ powerpi-common = {path = "../../common/python", develop = true}
 pyenergenie = {git = "https://github.com/whaleygeek/pyenergenie.git", rev = "eec562c140dd34027b3184d81f549c9d4a65f5db"}
 
 [tool.poetry.dev-dependencies]
+autopep8 = "^1.6.0"
 powerpi-common-test = {path = "../../common/pytest", develop = true}
 pylint = "^2.12.2"
 

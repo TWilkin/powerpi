@@ -2,14 +2,15 @@ import asyncio
 
 from typing import Any, Dict, List
 
+from energenie_controller.config import EnergenieConfig
+from energenie_controller.energenie import EnergenieInterface
 from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
-from energenie_controller.config import EnergenieConfig
-from energenie_controller.energenie import EnergenieInterface
 
 
 class EnergeniePairingDevice(Device):
+    #pylint: disable=too-many-arguments
     def __init__(
         self,
         config: EnergenieConfig,
@@ -29,7 +30,7 @@ class EnergeniePairingDevice(Device):
         # run in a separate task so the off state happens after the on
         loop = asyncio.get_event_loop()
         loop.create_task(self.pair())
-    
+
     def _turn_off(self):
         self.__energenie.stop_pair()
 
@@ -45,7 +46,7 @@ class EnergeniePairingDevice(Device):
             self._producer(topic, message)
 
             await self.__energenie.start_pair(self.__timeout)
-        
+
         self.state = DeviceStatus.OFF
 
     def find_free_home_id(self):
@@ -54,18 +55,19 @@ class EnergeniePairingDevice(Device):
             return 0
 
         # ENER314-RT supports 16 home ids
-        home_ids = [i for i in range(0, 17)]
+        home_ids = list(range(0, 17))
 
         devices: List[Dict[str, Any]] = self.__config.devices['devices']
-        
+
         for device in devices:
             if device.get('type', '').startswith('energenie'):
                 try:
                     home_ids.remove(device.get('home_id', None))
                 except ValueError:
-                    pass # fine if it's already removed
-        
+                    # fine if it's already removed
+                    pass
+
         if len(home_ids) > 0:
             return home_ids[0]
-        
+
         return None
