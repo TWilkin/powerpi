@@ -11,14 +11,16 @@ from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase
 class DeviceImpl(Device, DeviceOrchestratorMixin):
     def __init__(self, config, logger, mqtt_client, device_manager, **kwargs):
         Device.__init__(self, config, logger, mqtt_client, **kwargs)
-        DeviceOrchestratorMixin.__init__(self, config, logger, mqtt_client, device_manager, **kwargs)
-        
+        DeviceOrchestratorMixin.__init__(
+            self, config, logger, mqtt_client, device_manager, **kwargs
+        )
+
         self.current_device = None
 
     def on_referenced_device_status(self, device_name: str, state: DeviceStatus):
         self.current_device = device_name
         self.state = state
-    
+
     def _turn_on(self):
         pass
 
@@ -26,17 +28,17 @@ class DeviceImpl(Device, DeviceOrchestratorMixin):
         pass
 
 
-class DummyDevice(object):
+class DummyDevice:
     def __init__(self, name: str):
         self.name = name
 
 
 class TestDeviceOrchestratorMixin(DeviceTestBase, DeviceOrchestratorMixinTestBase):
     pytestmark = pytest.mark.asyncio
-    
+
     def get_subject(self, mocker: MockerFixture):
         self.device_manager = mocker.Mock()
-        
+
         self.devices = [f'device{i}' for i in range(0, 4)]
 
         device = DeviceImpl(

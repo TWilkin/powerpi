@@ -11,12 +11,12 @@ class PollableDeviceImpl(PollableMixin):
     def __init__(self, name: str):
         self.name = name
         self.count = 0
-    
+
     def _poll(self):
         self.count += 1
 
 
-class TestDeviceStatusChecker(object):
+class TestDeviceStatusChecker:
     pytestmark = pytest.mark.asyncio
 
     def get_subject(self, mocker: MockerFixture):
@@ -30,7 +30,7 @@ class TestDeviceStatusChecker(object):
         return DeviceStatusChecker(
             self.config, self.logger, self.device_manager, self.scheduler
         )
-    
+
     @pytest.mark.parametrize('normal_devices', [0, 5])
     @pytest.mark.parametrize('pollable_devices', [0, 3])
     def test_devices(self, mocker: MockerFixture, normal_devices: int, pollable_devices: int):
@@ -55,7 +55,7 @@ class TestDeviceStatusChecker(object):
         else:
             self.scheduler.add_job.assert_not_called()
             self.scheduler.start.assert_not_called()
-    
+
     @pytest.mark.parametrize('running', [True, False])
     def test_stop(self, mocker: MockerFixture, running: bool):
         subject = self.get_subject(mocker)
@@ -68,7 +68,7 @@ class TestDeviceStatusChecker(object):
             self.scheduler.shutdown.assert_called()
         else:
             self.scheduler.shutdown.assert_not_called()
-    
+
     async def test_run(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
 
@@ -91,7 +91,10 @@ class TestDeviceStatusChecker(object):
             type(device).name = PropertyMock(return_value=f'device{i}')
             normal_devices.append(device)
 
-        pollable_devices = [PollableDeviceImpl(f'pollable{i}') for i in range(0, pollable)]
+        pollable_devices = [
+            PollableDeviceImpl(f'pollable{i}')
+            for i in range(0, pollable)
+        ]
 
         all_devices = []
         all_devices.extend(normal_devices)

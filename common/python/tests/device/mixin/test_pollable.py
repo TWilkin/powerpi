@@ -6,10 +6,10 @@ from powerpi_common_test.device import DeviceTestBase
 from powerpi_common_test.device.mixin import PollableMixinTestBase
 
 
-class DeviceImpl(Device, PollableMixin):    
+class DeviceImpl(Device, PollableMixin):
     def _poll(self):
         pass
-    
+
     def _turn_on(self):
         pass
 
