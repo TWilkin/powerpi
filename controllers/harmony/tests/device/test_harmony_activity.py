@@ -1,8 +1,9 @@
 from asyncio import Future
+
 from pytest_mock import MockerFixture
 
-from powerpi_common_test.device import DeviceTestBase
 from harmony_controller.device.harmony_activity import HarmonyActivityDevice
+from powerpi_common_test.device import DeviceTestBase
 
 
 class TestHarmonyActivityDevice(DeviceTestBase):
@@ -40,7 +41,7 @@ class TestHarmonyActivityDevice(DeviceTestBase):
         assert subject.state == 'on'
 
         self.harmony_hub.start_activity.assert_called_once_with('my activity')
-    
+
     async def test_turn_on_hub_error(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 

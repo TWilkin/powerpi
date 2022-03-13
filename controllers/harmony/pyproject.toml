@@ -12,6 +12,7 @@ powerpi-common = {path = "../../common/python", develop = true}
 pyharmony = "^1.0.21"
 
 [tool.poetry.dev-dependencies]
+autopep8 = "^1.6.0"
 powerpi-common-test = {path = "../../common/pytest", develop = true}
 pylint = "^2.12.2"
 pytest-ordering = "^0.6"
