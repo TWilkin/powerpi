@@ -12,6 +12,7 @@ pytest-cov = "~=3.0.0"
 pytest-mock = "~=3.5.1"
 
 [tool.poetry.dev-dependencies]
+autopep8 = "^1.6.0"
 pylint = "^2.12.2"
 
 [build-system]

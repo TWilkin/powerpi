@@ -1,6 +1,7 @@
+from abc import ABC
+
 import pytest
 
-from abc import ABC
 from pytest_mock import MockerFixture
 
 

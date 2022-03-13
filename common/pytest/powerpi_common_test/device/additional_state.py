@@ -1,6 +1,7 @@
 from datetime import datetime
-from pytest_mock import MockerFixture
 from typing import Any, Dict
+
+from pytest_mock import MockerFixture
 
 from .device import DeviceTestBase
 
@@ -11,7 +12,7 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
 
         additional_state = await subject.on_additional_state_change({})
         assert additional_state is not None
-    
+
     def test_additional_state_keys_implemented(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
@@ -19,7 +20,7 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
 
         assert keys is not None
         assert len(keys) > 0
-    
+
     async def test_change_additional_state_message(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
@@ -36,22 +37,23 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         assert subject.additional_state == {}
 
         await subject.on_message(message, subject.name, 'change')
-    
+
         assert subject.state == 'on'
         assert subject.additional_state.get(key, None) == 1
-    
+
     async def test_state_change_outputs_additional_state(self, mocker: MockerFixture):
         # capture the published messages
         self.messages = []
+
         def mock_add_producer():
             def add_producer():
                 def publish(_: str, message: Dict[str, Any]):
                     self.messages.append(message)
-                
+
                 return publish
-            
+
             self.mqtt_client.add_producer = add_producer
-        
+
         subject = self.create_subject(mocker, mock_add_producer)
 
         mocker.patch.object(self.config, 'message_age_cutoff', 120)
@@ -74,7 +76,7 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         # ensure all message are present and contain the additional state
         assert len(self.messages) == 3
         assert all([key in message for message in self.messages])
-    
+
     def test_initial_additional_state_message(self, mocker: MockerFixture):
         self.initial_state_consumer = None
 
