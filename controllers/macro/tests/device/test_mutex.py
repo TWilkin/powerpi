@@ -1,13 +1,14 @@
-import pytest
-
 from asyncio import Future
-from pytest_mock import MockerFixture
 from typing import List, Tuple
 from unittest.mock import PropertyMock
 
+import pytest
+
+from pytest_mock import MockerFixture
+
+from macro_controller.device import MutexDevice
 from powerpi_common_test.device import DeviceTestBase
 from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase, PollableMixinTestBase
-from macro_controller.device import MutexDevice
 
 
 class TestMutexDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase, PollableMixinTestBase):
@@ -60,11 +61,12 @@ class TestMutexDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase, PollableM
 
         self.devices[2].turn_off.assert_called_once()
         self.devices[3].turn_off.assert_called_once()
-    
+
     @pytest.mark.parametrize('states', [
         ('unknown', 'on', 'off', ['unknown', 'on'], ['unknown', 'unknown']),
         ('unknown', 'off', 'on', ['unknown', 'off'], ['unknown', 'unknown']),
-        ('unknown', 'unknown', 'unknown', ['unknown', 'unknown'], ['unknown', 'unknown']),
+        ('unknown', 'unknown', 'unknown', [
+         'unknown', 'unknown'], ['unknown', 'unknown']),
         ('on', 'on', 'off', ['on', 'on'], ['off', 'on']),
         ('on', 'off', 'on', ['off', 'off'], ['off', 'off']),
         ('on', 'unknown', 'on', ['unknown', 'unknown'], ['off', 'off']),
@@ -72,8 +74,13 @@ class TestMutexDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase, PollableM
         ('off', 'off', 'on', ['off', 'off'], ['off', 'off']),
         ('off', 'unknown', 'on', ['unknown', 'unknown'], ['off', 'off'])
     ])
-    async def test_on_referenced_device_status(self, mocker: MockerFixture, states: Tuple[str, str, str, List[str]]):
-        (initial_state, on_update_state, off_update_state, expected_on_states, expected_off_states) = states
+    async def test_on_referenced_device_status(
+        self,
+        mocker: MockerFixture,
+        states: Tuple[str, str, str, List[str]]
+    ):
+        (initial_state, on_update_state, off_update_state,
+         expected_on_states, expected_off_states) = states
 
         subject = self.create_subject(mocker)
 
@@ -88,7 +95,7 @@ class TestMutexDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase, PollableM
             await subject.on_referenced_device_status(device.name, off_update_state)
 
             assert subject.state == expected
-        
+
         for device, expected in zip([self.devices[2], self.devices[3]], expected_on_states):
             type(device).state = PropertyMock(return_value=on_update_state)
             await subject.on_referenced_device_status(device.name, on_update_state)

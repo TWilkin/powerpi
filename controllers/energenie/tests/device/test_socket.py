@@ -1,7 +1,7 @@
 from pytest_mock import MockerFixture
 
-from powerpi_common_test.device import DeviceTestBase
 from energenie_controller.device.socket import SocketDevice
+from powerpi_common_test.device import DeviceTestBase
 
 
 class TestSocketDevice(DeviceTestBase):
@@ -9,7 +9,7 @@ class TestSocketDevice(DeviceTestBase):
         self.energenie = mocker.Mock()
 
         return SocketDevice(
-            self.config, self.logger, self.mqtt_client, self.energenie, 
+            self.config, self.logger, self.mqtt_client, self.energenie,
             name='test', retries=2, delay=0
         )
 

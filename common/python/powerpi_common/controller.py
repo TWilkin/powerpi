@@ -9,7 +9,9 @@ from .mqtt import MQTTClient
 from .util import await_or_sync
 
 
-class Controller(object):
+#pylint: disable=too-many-instance-attributes
+class Controller:
+    #pylint: disable=too-many-arguments
     def __init__(
         self,
         logger: Logger,
@@ -36,15 +38,15 @@ class Controller(object):
 
         for signal in [SIGINT, SIGTERM]:
             loop.add_signal_handler(signal, main.cancel)
-        
+
         try:
             loop.run_until_complete(main)
         finally:
             loop.close()
-    
+
     def _log_start(self):
         pass
-    
+
     def _initialise_devices(self):
         pass
 
@@ -78,7 +80,7 @@ class Controller(object):
             await get_running_loop().create_future()
         except CancelledError:
             await self.__cleanup()
-    
+
     async def __cleanup(self):
         self.__device_status_checker.stop()
 

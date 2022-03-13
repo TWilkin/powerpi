@@ -8,7 +8,7 @@ class BaseDeviceTestBase(ABC):
         subject = self.create_subject(mocker)
 
         assert subject.name is not None
-    
+
     def test_display_name(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 

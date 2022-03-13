@@ -17,6 +17,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
     change messages from the message queue. Will broadcast status change 
     messages once it has moved between the on/off states.
     '''
+
     def __init__(
         self,
         config: Config,
@@ -55,13 +56,13 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         self.__state = new_state
 
         self._broadcast_state_change()
-    
+
     def update_state_no_broadcast(self, new_state: DeviceStatus):
         '''
         Update this devices' state but do not broadcast to the message queue.
         '''
         self.__state = new_state
-    
+
     async def set_new_state(self, new_state: DeviceStatus):
         '''
         Update this devices' state and broadcast to the message queue 
@@ -82,7 +83,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         Turn this device off, and broadcast the state change to the message queue.
         '''
         await self.__change_power_handler(self._turn_off, DeviceStatus.OFF)
-    
+
     async def change_power(self, new_state: DeviceStatus):
         '''
         Turn this device on or off, depending on the value of new_state.
@@ -120,15 +121,20 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
     def _format_state(self):
         return {'state': self.state}
-    
-    async def __change_power_handler(self, func: Union[Awaitable[None], Callable[[], None]], new_status: DeviceStatus):
+
+    async def __change_power_handler(
+        self,
+        func: Union[Awaitable[None], Callable[[], None]],
+        new_status: DeviceStatus
+    ):
+        # pylint: disable=broad-except
         try:
             async with self.__lock:
                 self._logger.info(f'Turning {new_status} device {self}')
                 await await_or_sync(func)
                 self.state = new_status
-        except Exception as e:
-            self._logger.exception(e)
+        except Exception as ex:
+            self._logger.exception(ex)
             self.state = DeviceStatus.UNKNOWN
 
     def __str__(self):

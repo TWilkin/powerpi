@@ -1,8 +1,8 @@
 from dependency_injector import containers, providers
 
-from powerpi_common.container import Container as CommonContainer
 from lifx_controller.__version__ import __app_name__, __version__
 from lifx_controller.device.container import DeviceContainer
+from powerpi_common.container import Container as CommonContainer
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -20,6 +20,5 @@ class ApplicationContainer(containers.DeclarativeContainer):
     )
 
     device = providers.Container(
-        DeviceContainer,
-        logger=common.logger
+        DeviceContainer
     )

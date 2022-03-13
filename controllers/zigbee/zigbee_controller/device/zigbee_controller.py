@@ -1,4 +1,7 @@
 import os
+
+from typing import Union
+
 import zigpy
 
 from zigpy.types import EUI64
@@ -9,16 +12,18 @@ from powerpi_common.logger import Logger
 from zigbee_controller.config import ZigbeeConfig
 
 
-class ZigbeeController(object):
+class ZigbeeController:
     def __init__(self, config: ZigbeeConfig, logger: Logger):
         self.__config = config
         self.__logger = logger
 
         self.__logger.add_logger(zigpy.__name__)
-    
+
+        self.__controller: Union[ControllerApplication, None] = None
+
     def get_device(self, ieee: EUI64, nwk: int) -> DeviceType:
         return self.__controller.get_device(ieee, nwk)
-    
+
     async def startup(self):
         config = {
             "database_path": self.__config.database_path,
@@ -27,10 +32,12 @@ class ZigbeeController(object):
             }
         }
 
+        # pylint: disable=broad-except,protected-access
         try:
             self.__controller = await ControllerApplication.new(config, auto_form=True)
-        except:
+        except Exception as ex:
             self.__logger.error('Could not initialise ZigBee device')
+            self.__logger.exception(ex)
             os._exit(-1)
 
     async def shutdown(self):

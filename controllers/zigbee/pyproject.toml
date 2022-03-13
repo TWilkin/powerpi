@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "zigbee_controller"
+version = "0.1.3"
+description = "PowerPi ZigBee Controller"
+authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+powerpi-common = {path = "../../common/python", develop = true}
+zigpy = "~=0.43.0"
+zigpy-znp = "~=0.7.0"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "~=1.6.0"
+powerpi-common-test = {path = "../../common/pytest", develop = true}
+pylint = "~=2.12.2"
+pysqlite3-binary = "~=0.4.6"
+
+[[tool.poetry.source]]
+name = "piwheels"
+url = "https://www.piwheels.org/simple/"
+
+[tool.pytest.ini_options]
+addopts = "-v --cov=zigbee_controller"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

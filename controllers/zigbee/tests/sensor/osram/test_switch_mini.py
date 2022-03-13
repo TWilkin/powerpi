@@ -1,12 +1,12 @@
+from typing import List, Tuple
+
 import pytest
 
 from pytest_mock import MockerFixture
-from typing import List, Tuple
 
 from powerpi_common_test.mqtt import mock_producer
 from powerpi_common_test.sensor import SensorTestBase
-from zigbee_controller.sensor.osram.switch_mini \
-    import Button, PressType, OsramSwitchMiniSensor
+from zigbee_controller.sensor.osram.switch_mini import Button, PressType, OsramSwitchMiniSensor
 
 
 class TestOsramSwitchMiniSensor(SensorTestBase):
@@ -38,7 +38,7 @@ class TestOsramSwitchMiniSensor(SensorTestBase):
         subject.button_press_handler(button, PressType.SINGLE)
 
         self.__verify_publish(button, PressType.SINGLE)
-    
+
     @pytest.mark.parametrize('button', [Button.UP, Button.DOWN])
     def test_long_button_press_handler_hold(self, mocker: MockerFixture, button: Button):
         subject = self.create_subject(mocker)
@@ -46,7 +46,7 @@ class TestOsramSwitchMiniSensor(SensorTestBase):
         subject.long_button_press_handler(button, [[0, 38]])
 
         self.__verify_publish(button, PressType.HOLD)
-    
+
     @pytest.mark.parametrize('button', [Button.UP, Button.DOWN])
     def test_long_button_press_handler_release(self, mocker: MockerFixture, button: Button):
         subject = self.create_subject(mocker)
@@ -54,25 +54,29 @@ class TestOsramSwitchMiniSensor(SensorTestBase):
         subject.long_button_press_handler(button, [[]])
 
         self.__verify_publish(button, PressType.RELEASE)
-    
+
     @pytest.mark.parametrize('args', [(PressType.HOLD, [254, 2]), (PressType.RELEASE, [0, 0])])
-    def test_long_middle_button_press_handler(self, mocker: MockerFixture, args: Tuple[PressType, List[int]]):
+    def test_long_middle_button_press_handler(
+        self,
+        mocker: MockerFixture,
+        args: Tuple[PressType, List[int]]
+    ):
         subject = self.create_subject(mocker)
 
         subject.long_middle_button_press_handler([args[1]])
 
         self.__verify_publish(Button.MIDDLE, args[0])
-    
+
     def test_long_middle_button_press_handler_skip(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
         subject.long_middle_button_press_handler([[1, 1]])
 
         self.publish.assert_not_called()
-    
+
     def __verify_publish(self, button: Button, press_type: PressType):
-        topic = f'event/test/press'
-        
+        topic = 'event/test/press'
+
         message = {
             "button": button,
             "type": press_type

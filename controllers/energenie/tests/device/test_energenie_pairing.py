@@ -29,7 +29,7 @@ class TestEnergeniePairingDevice(DeviceTestBase):
             self.config, self.logger, self.mqtt_client, self.energenie,
             self.timeout, name='EnergeniePairing'
         )
-    
+
     async def test_pair(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
@@ -48,12 +48,12 @@ class TestEnergeniePairingDevice(DeviceTestBase):
             'home_id': 0
         }
         self.publish.assert_any_call(topic, message)
-    
+
     async def test_pair_no_free_home_id(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
         type(self.config).devices = PropertyMock(return_value={
-            'devices': [{'type': 'energenie_socket', 'home_id': i } for i in range(0, 17)]
+            'devices': [{'type': 'energenie_socket', 'home_id': i} for i in range(0, 17)]
         })
 
         assert subject.state == 'unknown'
@@ -63,10 +63,10 @@ class TestEnergeniePairingDevice(DeviceTestBase):
         assert subject.state == 'off'
 
         self.energenie.start_pair.assert_not_called()
-    
+
     async def test_pair_stop(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
-        
+
         sleeper = asyncio.get_event_loop().create_task(sleep(0.2))
         mocker.patch.object(
             self.energenie,
@@ -91,20 +91,19 @@ class TestEnergeniePairingDevice(DeviceTestBase):
 
         assert subject.state == 'off'
 
-    
     async def test_find_free_home_id_ener314(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
         type(self.config).is_ener314_rt = PropertyMock(return_value=False)
 
         type(self.config).devices = PropertyMock(return_value={
-            'devices': [{'type': 'energenie_socket', 'home_id': 0 }]
+            'devices': [{'type': 'energenie_socket', 'home_id': 0}]
         })
 
         home_id = subject.find_free_home_id()
 
         assert home_id == 0
-    
+
     async def test_find_free_home_id_ener314_rt(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
@@ -112,11 +111,11 @@ class TestEnergeniePairingDevice(DeviceTestBase):
 
         type(self.config).devices = PropertyMock(return_value={
             'devices': [
-                {'type': 'energenie_socket', 'home_id': 10 },
-                {'type': 'energenie_socket_group', 'home_id': 0 },
-                {'type': 'energenie_pairing' },
-                {'type': 'something_else', 'home_id': 2 },
-                {'type': 'energenie_test', 'home_id': 1 },
+                {'type': 'energenie_socket', 'home_id': 10},
+                {'type': 'energenie_socket_group', 'home_id': 0},
+                {'type': 'energenie_pairing'},
+                {'type': 'something_else', 'home_id': 2},
+                {'type': 'energenie_test', 'home_id': 1},
             ]
         })
 
@@ -130,7 +129,7 @@ class TestEnergeniePairingDevice(DeviceTestBase):
         type(self.config).is_ener314_rt = PropertyMock(return_value=True)
 
         type(self.config).devices = PropertyMock(return_value={
-            'devices': [{'type': 'energenie_socket', 'home_id': i } for i in range(0, 17)]
+            'devices': [{'type': 'energenie_socket', 'home_id': i} for i in range(0, 17)]
         })
 
         home_id = subject.find_free_home_id()

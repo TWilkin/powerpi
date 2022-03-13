@@ -1,2 +1,5 @@
-__app_name__ = 'lifx-controller'
-__version__ = '0.1.1'
+from powerpi_common.util.metadata import get_name, get_version
+
+
+__app_name__ = get_name()
+__version__ = get_version()

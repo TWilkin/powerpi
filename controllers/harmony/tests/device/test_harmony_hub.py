@@ -1,13 +1,14 @@
-import pytest
-
 from asyncio import Future
-from pytest_mock import MockerFixture
 from typing import Tuple
 
-from powerpi_common_test.device import DeviceTestBase
-from powerpi_common_test.device.mixin import PollableMixinTestBase
+import pytest
+
+from pytest_mock import MockerFixture
+
 from harmony_controller.device.harmony_activity import HarmonyActivityDevice
 from harmony_controller.device.harmony_hub import HarmonyHubDevice
+from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import PollableMixinTestBase
 
 
 class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
@@ -70,7 +71,7 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         }
 
         return hub
-    
+
     @pytest.mark.first
     async def test_config_cache(self, mocker: MockerFixture):
         # this test has to run first because the cache is not reset
@@ -81,13 +82,15 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         await subject.start_activity('')
 
         self.harmony_client.get_config.assert_called_once()
-    
+
     def test_activities(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
         activities = subject.activities
         assert len(activities) == 2
-        assert all([activity.hub_name == self.__hub_name for activity in activities])
+        assert all(
+            (activity.hub_name == self.__hub_name for activity in activities)
+        )
 
     async def test_power_off(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
@@ -105,7 +108,7 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         assert self.activities[0].state == 'off'
         assert self.activities[1].state == 'off'
         assert self.unmatched_activity.state == 'unknown'
-    
+
     async def test_power_off_error(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
@@ -148,7 +151,7 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         assert self.activities[0].state == 'unknown'
         assert self.activities[1].state == 'off'
         assert self.unmatched_activity.state == 'unknown'
-    
+
     async def test_start_activity_error(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
@@ -162,6 +165,7 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         assert self.unmatched_activity.state == 'unknown'
 
         error = None
+        # pylint: disable=broad-except
         try:
             await subject.start_activity(self.config_data['activity'][1]['label'])
         except Exception as e:
@@ -197,7 +201,7 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         assert self.activities[0].state == test_state[2]
         assert self.activities[1].state == test_state[3]
         assert self.unmatched_activity.state == 'unknown'
-    
+
     async def test_poll_error(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 

@@ -14,7 +14,7 @@ class PollableMixin(ABC):
         Poll for any state change for this device.
         '''
         await await_or_sync(self._poll)
-    
+
     @abstractmethod
     def _poll(self):
         '''

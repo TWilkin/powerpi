@@ -1,4 +1,3 @@
-import gmqtt
 import json
 import logging
 import socket
@@ -6,9 +5,12 @@ import sys
 import time
 
 from datetime import datetime
-from gmqtt import Client
-from typing import Dict, List
+from typing import Dict, List, Union
 from urllib.parse import urlparse
+
+import gmqtt
+
+from gmqtt import Client
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
@@ -17,7 +19,7 @@ from .consumer import MQTTConsumer
 from .types import MQTTMessage
 
 
-class MQTTClient(object):
+class MQTTClient:
     __consumers: Dict[str, List[MQTTConsumer]]
 
     def __init__(
@@ -33,6 +35,8 @@ class MQTTClient(object):
         self.__connected = False
 
         self.__logger.set_logger_level(gmqtt.__name__, logging.WARNING)
+
+        self.__client = Union[Client, None]
 
     def add_consumer(self, consumer: MQTTConsumer):
         key = consumer.topic
@@ -88,7 +92,7 @@ class MQTTClient(object):
         self.__client.on_disconnect = self.__on_disconnect
         self.__client.on_message = self.__on_message
         await self.__client.connect(url.hostname, url.port, version=gmqtt.constants.MQTTv311)
-    
+
     async def disconnect(self):
         self.__logger.info('Disconnecting from MQTT')
         await self.__client.disconnect()
@@ -98,7 +102,9 @@ class MQTTClient(object):
             self.__connected = True
             self.__logger.info('MQTT connected')
         else:
-            self.__logger.error(f'MQTT connection failed with code {result_code}')
+            self.__logger.error(
+                f'MQTT connection failed with code {result_code}'
+            )
             return
 
     def __on_disconnect(self, _, __):
@@ -119,11 +125,14 @@ class MQTTClient(object):
         # send the message to the correct consumers
         if listener_key in self.__consumers:
             for consumer in self.__consumers[listener_key]:
+                # pylint: disable=broad-except
                 try:
                     await await_or_sync(consumer.on_message, message, entity, action)
                 except Exception as ex:
-                    self.__logger.error(Exception(f'{type(consumer)}.on_message', ex))
-        
+                    self.__logger.exception(
+                        Exception(f'{type(consumer)}.on_message', ex)
+                    )
+
         return gmqtt.constants.PubRecReasonCode.SUCCESS
 
     def __publish(self, topic: str, payload: MQTTMessage):

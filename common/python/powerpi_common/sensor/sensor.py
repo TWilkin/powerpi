@@ -10,12 +10,13 @@ class Sensor(BaseDevice):
     physical device, or receiving asynchronous events from a device and
     then broadcasting the data/events to the message queue.
     '''
+
     def __init__(
         self,
         mqtt_client: MQTTClient,
-        location: Union[str, None]=None,
-        entity: Union[str, None]=None,
-        action: Union[str, None]=None,
+        location: Union[str, None] = None,
+        entity: Union[str, None] = None,
+        action: Union[str, None] = None,
         **kwargs
     ):
         BaseDevice.__init__(self, **kwargs)
@@ -25,12 +26,12 @@ class Sensor(BaseDevice):
         self.__action = action
 
         self._producer = mqtt_client.add_producer()
-    
+
     def _broadcast(self, action: str, message: dict):
         entity = self.__entity if self.__entity is not None \
             else self.__location if self.__location is not None \
             else self._name
-        
+
         action = action if action is not None else self.__action
 
         topic = f'event/{entity}/{action}'

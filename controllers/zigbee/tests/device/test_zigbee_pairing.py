@@ -1,5 +1,6 @@
 from asyncio import Future
 from unittest.mock import PropertyMock
+
 from pytest_mock import MockerFixture
 
 from powerpi_common_test.device import DeviceTestBase
@@ -27,7 +28,7 @@ class TestZigbeePairingDevice(DeviceTestBase):
             self.config, self.logger, self.mqtt_client, self.zigbee_controller,
             self.timeout, name='ZigBeePairing'
         )
-    
+
     async def test_pair(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
@@ -38,13 +39,15 @@ class TestZigbeePairingDevice(DeviceTestBase):
         self.zigbee_controller.pair.assert_called_once()
 
         assert subject.state == 'off'
-    
+
     def test_device_joined(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
         device = mocker.Mock()
 
-        type(device).ieee = PropertyMock(return_value=[(i * 2) - 1  for i in range(1, 9)])
+        type(device).ieee = PropertyMock(
+            return_value=[(i * 2) - 1 for i in range(1, 9)]
+        )
         type(device).nwk = PropertyMock(return_value=2748)
 
         subject.device_joined(device)

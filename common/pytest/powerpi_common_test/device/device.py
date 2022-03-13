@@ -1,9 +1,10 @@
-import pytest
-
 from abc import abstractmethod
 from datetime import datetime
-from pytest_mock import MockerFixture
 from typing import Callable
+
+import pytest
+
+from pytest_mock import MockerFixture
 
 from powerpi_common_test.device.base import BaseDeviceTestBase
 
@@ -11,7 +12,7 @@ from powerpi_common_test.device.base import BaseDeviceTestBase
 class DeviceTestBase(BaseDeviceTestBase):
     pytestmark = pytest.mark.asyncio
 
-    def create_subject(self, mocker: MockerFixture, func: Callable[[], None]=None):
+    def create_subject(self, mocker: MockerFixture, func: Callable[[], None] = None):
         self.config = mocker.Mock()
         self.logger = mocker.Mock()
         self.mqtt_client = mocker.Mock()
@@ -19,7 +20,7 @@ class DeviceTestBase(BaseDeviceTestBase):
         # allow us to do extra mocking before setting up the subject
         if func is not None:
             func()
-        
+
         return self.get_subject(mocker)
 
     @abstractmethod
@@ -103,7 +104,7 @@ class DeviceTestBase(BaseDeviceTestBase):
         assert subject.state == 'unknown'
         await subject.on_message(message, subject.name, 'change')
         assert subject.state == 'unknown'
-    
+
     async def test_missing_state_change_message(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 

@@ -1,5 +1,6 @@
+from unittest.mock import MagicMock, create_autospec
+
 from pytest_mock import MockerFixture
-from unittest.mock import MagicMock
 
 
 def mock_producer(mocker: MockerFixture, mqtt_client: MagicMock):
@@ -12,5 +13,7 @@ def mock_producer(mocker: MockerFixture, mqtt_client: MagicMock):
 
     return __mocked_mqtt_publish
 
+
+@create_autospec
 def __mocked_mqtt_publish(topic: str, message: str):
     print(f'topic: {topic} message: {message}')

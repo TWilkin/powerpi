@@ -1,15 +1,24 @@
+from typing import Union
+
 import powerpi_common
 
 from powerpi_common.config import Config
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, MQTTMessage
+from powerpi_common.typing import AdditionalStateDeviceType, DeviceType
 from powerpi_common.util import ismixin
 from .status_event_consumer import DeviceStatusEventConsumer
 
 
 class DeviceInitialStatusEventConsumer(DeviceStatusEventConsumer):
-    def __init__(self, device, config: Config, logger: Logger, mqtt_client: MQTTClient):
+    def __init__(
+        self,
+        device: Union[DeviceType, AdditionalStateDeviceType],
+        config: Config,
+        logger: Logger,
+        mqtt_client: MQTTClient
+    ):
         DeviceStatusEventConsumer.__init__(
             self, device, config, logger
         )
@@ -26,8 +35,10 @@ class DeviceInitialStatusEventConsumer(DeviceStatusEventConsumer):
             # don't broadcast as this is the device's initial state on startup
             if ismixin(self._device, powerpi_common.device.additional_state.AdditionalStateDevice):
                 new_additional_state = self._get_additional_state(message)
-                
-                self._device.update_state_no_broadcast(new_power_state, new_additional_state)
+
+                self._device.update_state_no_broadcast(
+                    new_power_state, new_additional_state
+                )
             else:
                 self._device.update_state_no_broadcast(new_power_state)
 

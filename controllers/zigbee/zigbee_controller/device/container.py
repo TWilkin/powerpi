@@ -22,6 +22,7 @@ class DeviceContainer(containers.DeclarativeContainer):
         logger=logger
     )
 
+
 def add_devices(container):
     common_container = container.common()
     device_container = common_container.device()

@@ -4,4 +4,4 @@ from .device import Device
 from .factory import DeviceFactory
 from .manager import DeviceManager, DeviceNotFoundException
 from .status import DeviceStatusChecker
-from .types import DeviceType, DeviceStatus
+from .types import DeviceConfigType, DeviceStatus

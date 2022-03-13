@@ -1,14 +1,15 @@
 from asyncio import sleep
 from typing import Callable
 
+from energenie_controller.energenie import EnergenieInterface
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.device import Device
 from powerpi_common.mqtt import MQTTClient
-from energenie_controller.energenie import EnergenieInterface
 
 
 class SocketDevice(Device):
+    #pylint: disable=too-many-arguments
     def __init__(
         self,
         config: Config,

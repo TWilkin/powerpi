@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "powerpi-common"
+version = "0.2.0"
+description = "PowerPi Common Python Library"
+authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+apscheduler = "~=3.8.1"
+dependency-injector = "~=4.38.0"
+gmqtt = "~=0.6.11"
+jsonpatch = "~=1.32"
+toml = "~=0.10.2"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "~=1.6.0"
+powerpi-common-test = {path = "../pytest", develop = true}
+pylint = "~=2.12.2"
+
+[[tool.poetry.source]]
+name = "piwheels"
+url = "https://www.piwheels.org/simple/"
+
+[tool.pytest.ini_options]
+addopts = "-v --cov=powerpi_common"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

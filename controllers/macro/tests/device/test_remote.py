@@ -1,8 +1,10 @@
 import asyncio
+
+from typing import Union
+
 import pytest
 
 from pytest_mock import MockerFixture
-from typing import Union
 
 from macro_controller.device.remote import RemoteDevice
 from powerpi_common_test.mqtt import mock_producer
@@ -21,7 +23,7 @@ class TestRemoteDevice(object):
         return RemoteDevice(
             self.config, self.logger, self.mqtt_client, 'remote', timeout
         )
-    
+
     @pytest.mark.parametrize('state', ['on', 'off'])
     async def test_turn_x(self, mocker: MockerFixture, state: str):
         subject = self.get_subject(mocker, 0.2)
@@ -57,16 +59,23 @@ class TestRemoteDevice(object):
         self.publish.assert_any_call(topic, message)
 
         assert subject.state == 'unknown'
-    
+
     @pytest.mark.parametrize('state', [None, 'on', 'off'])
     @pytest.mark.parametrize('use_additional_state', [True, False])
-    async def test_change_power_and_additional_state(self, mocker: MockerFixture, state: Union[str, None], use_additional_state: bool):
+    async def test_change_power_and_additional_state(
+        self,
+        mocker: MockerFixture,
+        state: Union[str, None],
+        use_additional_state: bool
+    ):
         subject = self.get_subject(mocker, 0.2)
 
         assert subject.state == 'unknown'
         assert subject.additional_state == {}
 
-        additional_state = {'something': 'else'} if use_additional_state else None
+        additional_state = {'something': 'else'} if use_additional_state \
+            else None
+
         self.__schedule_state_change(subject, state, additional_state)
 
         await subject.change_power_and_additional_state(state, additional_state)
@@ -81,10 +90,10 @@ class TestRemoteDevice(object):
         self.publish.assert_any_call(topic, message)
 
         assert subject.state == state if state is not None else 'unknown'
-        
+
         if use_additional_state:
             assert subject.additional_state.get('something', None) == 'else'
-    
+
     async def test_change_power_and_additional_state_timeout(self, mocker: MockerFixture):
         subject = self.get_subject(mocker, 0.1)
 
@@ -103,10 +112,13 @@ class TestRemoteDevice(object):
         assert subject.state == 'unknown'
         assert subject.additional_state == {}
 
-    def __schedule_state_change(self, subject: RemoteDevice, state: str, additional_state={}):
+    def __schedule_state_change(self, subject: RemoteDevice, state: str, additional_state=None):
+        if additional_state == None:
+            additional_state = {}
+
         async def update():
             await asyncio.sleep(0.1)
             subject.set_state_and_additional(state, additional_state)
-        
+
         loop = asyncio.get_event_loop()
         loop.create_task(update())

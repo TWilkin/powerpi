@@ -9,6 +9,7 @@ from energenie_controller.config import EnergenieConfig
 
 
 class Controller(CommonController):
+    #pylint: disable=too-many-arguments
     def __init__(
         self,
         config: EnergenieConfig,
@@ -28,4 +29,6 @@ class Controller(CommonController):
         self.__config = config
 
     def _log_start(self):
-        self._logger.info(f'Using Energenie module {self.__config.energenie_device}')
+        self._logger.info(
+            f'Using Energenie module {self.__config.energenie_device}'
+        )

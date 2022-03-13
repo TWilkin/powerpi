@@ -31,7 +31,7 @@ class ZigbeePairingDevice(Device):
         # run in a separate task so the off state happens after the on
         loop = asyncio.get_event_loop()
         loop.create_task(self.pair())
-        
+
     def _turn_off(self):
         pass
 
@@ -40,7 +40,7 @@ class ZigbeePairingDevice(Device):
         await asyncio.sleep(self.__timeout)
 
         self.state = DeviceStatus.OFF
-    
+
     def device_joined(self, device: DeviceType):
         topic = f'device/{self.name}/join'
 

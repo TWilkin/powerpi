@@ -1,13 +1,16 @@
+from typing import Union
+
 from powerpi_common.config import Config
 from powerpi_common.device.mixin import AdditionalStateMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTMessage
+from powerpi_common.typing import AdditionalStateDeviceType, DeviceType
 from powerpi_common.util import ismixin
 from .device_event_consumer import DeviceEventConsumer
 
 
 class DeviceChangeEventConsumer(DeviceEventConsumer):
-    def __init__(self, device, config: Config, logger: Logger):
+    def __init__(self, device: Union[DeviceType, AdditionalStateDeviceType], config: Config, logger: Logger):
         topic = f'device/{device.name}/change'
 
         DeviceEventConsumer.__init__(
