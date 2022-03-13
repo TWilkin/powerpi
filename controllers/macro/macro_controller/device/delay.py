@@ -7,6 +7,7 @@ from powerpi_common.mqtt import MQTTClient
 
 
 class DelayDevice(Device):
+    #pylint: disable=too-many-arguments
     def __init__(
         self,
         config: Config,
@@ -33,5 +34,5 @@ class DelayDevice(Device):
         self._logger.debug(f'{self.name}: Delay of {delay}s starting')
 
         await sleep(delay)
-        
+
         self._logger.debug(f'{self.name}: Delay of {delay}s complete')

@@ -1,7 +1,7 @@
 from pytest_mock import MockerFixture
 
-from powerpi_common_test.device import DeviceTestBase
 from macro_controller.device import DelayDevice
+from powerpi_common_test.device import DeviceTestBase
 
 
 class TestDelayDevice(DeviceTestBase):

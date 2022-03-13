@@ -6,7 +6,7 @@ from powerpi_common.device.consumers.status_event_consumer import DeviceStatusEv
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, MQTTMessage
-from powerpi_common.typing import DeviceType
+from powerpi_common.typing import DeviceManagerType, DeviceType
 from powerpi_common.util import await_or_sync
 from .initialisable import InitialisableMixin
 
@@ -43,7 +43,7 @@ class DeviceOrchestratorMixin(InitialisableMixin):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        device_manager,
+        device_manager: DeviceManagerType,
         devices: List[str],
         **_
     ):

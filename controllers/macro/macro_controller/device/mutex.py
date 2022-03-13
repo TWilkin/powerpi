@@ -1,4 +1,3 @@
-from lazy import lazy
 from typing import List
 
 from powerpi_common.config import Config
@@ -29,17 +28,17 @@ class MutexDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         self.__device_manager = device_manager
         self.__on_device_names = on_devices
         self.__off_device_names = off_devices
-    
+
     async def on_referenced_device_status(self, _: str, __: DeviceStatus):
         await self._poll()
 
     async def _poll(self):
         # are any unknown
-        if any([device.state == DeviceStatus.UNKNOWN for device in self.devices]):
+        if any((device.state == DeviceStatus.UNKNOWN for device in self.devices)):
             await self.set_new_state(DeviceStatus.UNKNOWN)
         # are all on devices on and off devices off
-        elif all([device.state == DeviceStatus.ON for device in self.__on_devices]) \
-                and all([device.state == DeviceStatus.OFF for device in self.__off_devices]):
+        elif all((device.state == DeviceStatus.ON for device in self.__on_devices)) \
+                and all((device.state == DeviceStatus.OFF for device in self.__off_devices)):
             await self.set_new_state(DeviceStatus.ON)
         else:
             await self.set_new_state(DeviceStatus.OFF)
@@ -55,10 +54,16 @@ class MutexDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         for device in self.devices:
             await device.turn_off()
 
-    @lazy
+    @property
     def __on_devices(self) -> List[Device]:
-        return [self.__device_manager.get_device(device_name) for device_name in self.__on_device_names]
+        return [
+            self.__device_manager.get_device(device_name)
+            for device_name in self.__on_device_names
+        ]
 
-    @lazy
+    @property
     def __off_devices(self) -> List[Device]:
-        return [self.__device_manager.get_device(device_name) for device_name in self.__off_device_names]
+        return [
+            self.__device_manager.get_device(device_name)
+            for device_name in self.__off_device_names
+        ]
