@@ -2,7 +2,7 @@
 
 Home automation microservice stack communicating via MQTT (using [mosquitto](https://mosquitto.org/)) built with Typescript, Python and [NodeMCU](https://en.wikipedia.org/wiki/NodeMCU) C deployable with [Docker Swarm](https://docs.docker.com/engine/swarm/) on a [Raspberry Pi](https://www.raspberrypi.com/) cluster.
 
-This project was devised to utilise open, reverse engineered or free home automation hardware and software together without the need for third-party hubs, cloud services or subscriptions.
+This project was devised to utilise open, reverse engineered or free home automation hardware and software together without the need for third-party hubs, cloud services or subscriptions wherever possible.
 
 ### Supported IoT Hardware
 
@@ -32,10 +32,10 @@ The project is split into the following services, each of which have their own _
     -   [**macro**](controllers/macro/README.md) - Allows control of other devices with macros, delays, mutexes etc.
     -   [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
 -   [**deep-thought**](deep-thought/README.md) - API
--   [**device-mapper**](device-mapper/README.md) - Workaround for accessing Raspberry Pi _/dev/gpiomem_ in Docker Swarm mode using Docker-in-docker.
+-   [**device-mapper**](device-mapper/README.md) - Workaround for accessing system devices using privileged mode in Docker Swarm mode using Docker-in-docker.
 -   [**energy-monitor**](energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
 -   [**freedns**](freedns/README.md) - Overcome changing public IP addresses of consumer ISPs by pointing a free hostname at the current public IP via [FreeDNS](https://freedns.afraid.org/)
--   [**light-fantastic**](light-fantastic/README.md) - Schedule based control of light devices (LIFX), e.g. brightness, colour temperature etc.
+-   [**light-fantastic**](light-fantastic/README.md) - Schedule based control of light devices (LIFX), e.g. brightness, colour, temperature etc.
 -   [**nginx**](nginx/README.md) - NGINX acts as a proxy to _deep-thought_ and _babel-fish_ as well as hosting the UI.
 -   [**persistence**](persistence/README.md) - Service for writing all the messages that appear in the MQTT message queue to a database.
 
@@ -47,7 +47,7 @@ The images can be build with Docker's [_buildx_](https://docs.docker.com/buildx/
 
 ```bash
 # From the root of your checkout of PowerPi
-# Build an image with buildx, the image version tags can be found in docker/docker-compose.yml
+# Build an image with buildx, the image version tags can be found in docker/docker-compose.yaml
 docker buildx build --platform linux/arm/v7 --push -t MY_DOCKER_REGISTRY/powerpi/clacks-config:0.0.2 -f clacks-config/Dockerfile .
 ```
 
@@ -83,13 +83,13 @@ Finally once the network and secrets are created, the docker images built the st
 ```bash
 # From the root of your checkout of PowerPi
 # Deploy stack
-docker stack deploy -c docker/docker-compose.yml powerpi
+docker stack deploy -c docker/docker-compose.yaml powerpi
 ```
 
 ## Authors
 
 -   **Tom Wilkin** - Most of what you see - [TWilkin](https://github.com/TWilkin)
--   **Paul Sandwell** - Testing, feedback and the occasional good idea - [peasandwell](https://github.com/peasandwell)
+-   **Paul Sandwell** - Testing, feedback and some excellent ideas - [peasandwell](https://github.com/peasandwell)
 
 See also the list of [contributors](https://github.com/TWilkin/powerpi/contributors) who participated in this project.
 
