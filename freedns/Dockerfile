@@ -7,7 +7,7 @@ RUN mkdir -p /home/node/app/freedns
 
 # install the dependencies
 WORKDIR /home/node/app
-COPY --chown=node:node package.json yarn.lock tsconfig.json ./
+COPY --chown=node:node package.json yarn.lock tsconfig.json LICENSE ./
 COPY --chown=node:node freedns/package.json ./freedns/
 RUN yarn workspace freedns install --production
 

@@ -38,7 +38,7 @@ WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/macro/.venv ./venv
 
 # add the application
-COPY --chown=powerpi controllers/macro/pyproject.toml ./
+COPY --chown=powerpi controllers/macro/pyproject.toml LICENSE ./
 COPY --chown=powerpi controllers/macro/macro_controller ./macro_controller/
 
 # start the application once the container is ready

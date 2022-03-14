@@ -42,7 +42,7 @@ WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/zigbee/.venv ./venv
 
 # add the application
-COPY --chown=powerpi controllers/zigbee/pyproject.toml ./
+COPY --chown=powerpi controllers/zigbee/pyproject.toml LICENSE ./
 COPY --chown=powerpi controllers/zigbee/zigbee_controller ./zigbee_controller/
 
 # start the application once the container is ready

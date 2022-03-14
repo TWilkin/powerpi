@@ -2,11 +2,18 @@
     "name": "deep-thought",
     "version": "0.5.10",
     "description": "PowerPi API",
+    "private": true,
+    "license": "GPL-3.0-only",
+    "author": "TWilkin",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TWilkin/powerpi.git",
+        "directory": "deep-thought"
+    },
     "main": "src/app.ts",
     "scripts": {
         "start": "ts-node src/app.ts"
     },
-    "author": "TWilkin",
     "dependencies": {
         "@powerpi/common": "^0.0.6",
         "@tsed/common": "^6.95.4",

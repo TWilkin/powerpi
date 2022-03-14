@@ -38,7 +38,7 @@ WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/harmony/.venv ./venv
 
 # add the application
-COPY --chown=powerpi controllers/harmony/pyproject.toml ./
+COPY --chown=powerpi controllers/harmony/pyproject.toml LICENSE ./
 COPY --chown=powerpi controllers/harmony/harmony_controller ./harmony_controller/
 
 # start the application once the container is ready

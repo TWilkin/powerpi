@@ -1,6 +1,12 @@
 {
-    "private": true,
     "name": "powerpi",
+    "private": true,
+    "license": "GPL-3.0-only",
+    "author": "TWilkin",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TWilkin/powerpi.git"
+    },
     "workspaces": {
         "packages": [
             "common/node/api",
@@ -22,9 +28,18 @@
     "scripts": {
         "build:api": "yarn workspace @powerpi/api build",
         "build:common": "yarn workspace @powerpi/common build",
+        "build:ui": "yarn workspace @powerpi/ui build",
         "clean": "find . -name \"node_modules\" -type d -prune -exec rm -rf '{}' +",
         "lint": "eslint . --ext .ts --ext .tsx",
-        "prettier": "prettier --write ."
+        "prettier": "prettier --write .",
+        "start:babel-fish": "yarn workspace babel-fish start",
+        "start:clacks-config": "yarn workspace clacks-config start",
+        "start:deep-thought": "yarn workspace deep-thought start",
+        "start:energy-monitor": "yarn workspace energy-monitor start",
+        "start:freedns": "yarn workspace freedns start",
+        "start:light-fantastic": "yarn workspace light-fantastic start",
+        "start:persistence": "yarn workspace persistence start",
+        "start:ui": "yarn workspace @powerpi/ui start"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.5.0",

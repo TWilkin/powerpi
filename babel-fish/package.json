@@ -2,13 +2,20 @@
     "name": "babel-fish",
     "version": "0.0.5",
     "description": "PowerPi home automation voice service",
+    "private": true,
+    "license": "GPL-3.0-only",
+    "author": "TWilkin",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TWilkin/powerpi.git",
+        "directory": "babel-fish"
+    },
     "main": "./src/index.ts",
     "scripts": {
         "start": "ts-node src/index.ts",
         "install-platform": "npm install jovo-cli",
         "build-platform": "./node_modules/jovo-cli/bin/run build"
     },
-    "author": "TWilkin",
     "dependencies": {
         "@powerpi/api": "^0.0.7",
         "@powerpi/common": "^0.0.6",

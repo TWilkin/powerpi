@@ -46,7 +46,7 @@ WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/energenie/.venv ./venv
 
 # add the application
-COPY --chown=powerpi controllers/energenie/pyproject.toml ./
+COPY --chown=powerpi controllers/energenie/pyproject.toml LICENSE ./
 COPY --chown=powerpi controllers/energenie/energenie_controller ./energenie_controller/
 
 # start the application once the container is ready

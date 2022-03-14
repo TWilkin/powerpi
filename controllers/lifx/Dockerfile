@@ -38,7 +38,7 @@ WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/lifx/.venv ./venv
 
 # add the application
-COPY --chown=powerpi controllers/lifx/pyproject.toml ./
+COPY --chown=powerpi controllers/lifx/pyproject.toml LICENSE ./
 COPY --chown=powerpi controllers/lifx/lifx_controller ./lifx_controller/
 
 # start the application once the container is ready

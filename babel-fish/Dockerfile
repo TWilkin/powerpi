@@ -36,7 +36,7 @@ RUN mkdir -p /home/node/app/common/node/api/dist \
 
 # copy the built common libraries
 WORKDIR /home/node/app
-COPY --chown=node:node package.json yarn.lock tsconfig.json ./
+COPY --chown=node:node package.json yarn.lock tsconfig.json LICENSE ./
 COPY --from=build-api-image --chown=node:node /home/node/app/common/node/api/package.json ./common/node/api/
 COPY --from=build-api-image --chown=node:node /home/node/app/common/node/api/dist/ ./common/node/api/dist/
 COPY --from=build-common-image --chown=node:node /home/node/app/common/node/common/package.json ./common/node/common/

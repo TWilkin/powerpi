@@ -20,7 +20,7 @@ RUN mkdir -p /home/node/app/common/node/common/dist \
 
 # copy the built common library
 WORKDIR /home/node/app
-COPY --chown=node:node package.json yarn.lock tsconfig.json ./
+COPY --chown=node:node package.json yarn.lock tsconfig.json LICENSE ./
 COPY --from=build-image --chown=node:node /home/node/app/common/node/common/package.json ./common/node/common/
 COPY --from=build-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 
