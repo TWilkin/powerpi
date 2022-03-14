@@ -33,6 +33,7 @@
         "lint": "eslint . --ext .ts --ext .tsx",
         "prettier": "prettier --write .",
         "start:clacks-config": "yarn workspace clacks-config start",
+        "start:deep-thought": "yarn workspace deep-thought start",
         "start:energy-monitor": "yarn workspace energy-monitor start",
         "start:freedns": "yarn workspace freedns start",
         "start:light-fantastic": "yarn workspace light-fantastic start",
