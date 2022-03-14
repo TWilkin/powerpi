@@ -1,0 +1,50 @@
+@import "../../styles/vars.scss";
+
+body {
+    margin: 0;
+}
+
+.header {
+    width: 100%;
+    height: calc($menu-height + 2px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    background-color: black;
+
+    .logo {
+        width: $menu-height;
+        height: $logo-width;
+        position: absolute;
+        top: 0;
+        left: 0;
+        white-space: nowrap;
+        transform: rotate(-90deg) translateY(-#{$menu-height}) translateX(-2px);
+        transform-origin: $menu-height 0;
+        background-color: black;
+        color: white;
+        line-height: $logo-width;
+        font-size: 0.8rem;
+        text-align: center;
+        border: 1px solid black;
+
+        a {
+            text-decoration: none;
+            color: white;
+
+            &:visited {
+                color: white;
+            }
+        }
+    }
+}
+
+.content {
+    margin: $menu-height 0 0 0;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    overflow: hidden;
+}

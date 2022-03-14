@@ -1,8 +1,6 @@
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dependency_injector import containers, providers
 
-from powerpi_common.config import Config
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt.client import MQTTClient
 from .factory import DeviceFactory
 from .manager import DeviceManager
 from .status import DeviceStatusChecker
@@ -21,6 +19,10 @@ class DeviceContainer(containers.DeclarativeContainer):
 
     mqtt_client = providers.Dependency()
 
+    scheduler = providers.Factory(
+        AsyncIOScheduler
+    )
+
     device_factory = providers.Factory(
         DeviceFactory,
         logger=logger,
@@ -38,5 +40,6 @@ class DeviceContainer(containers.DeclarativeContainer):
         DeviceStatusChecker,
         config=config,
         logger=logger,
-        device_manager=device_manager
+        device_manager=device_manager,
+        scheduler=scheduler
     )

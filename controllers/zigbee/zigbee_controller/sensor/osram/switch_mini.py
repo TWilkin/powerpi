@@ -9,14 +9,14 @@ from zigbee_controller.zigbee import ClusterListener, ZigbeeDevice
 
 
 class Button(str, Enum):
-    UP = 'up',
-    MIDDLE = 'middle',
+    UP = 'up'
+    MIDDLE = 'middle'
     DOWN = 'down'
 
 
 class PressType(str, Enum):
-    SINGLE = 'single',
-    HOLD = 'hold',
+    SINGLE = 'single'
+    HOLD = 'hold'
     RELEASE = 'release'
 
 
@@ -41,7 +41,8 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
         /event/NAME/press:{"button": "down", "type": "hold"}
         /event/NAME/press:{"button": "down", "type": "release"}
     '''
-    
+
+    #pylint: disable=too-many-arguments
     def __init__(
         self,
         logger: Logger,
@@ -49,19 +50,15 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
         mqtt_client: MQTTClient,
         ieee: str,
         nwk: str,
-        name: str, 
-        location: str = None,
-        entity: str = None,
-        action: str = None,
         **kwargs
     ):
-        Sensor.__init__(self, mqtt_client, name, location, entity, action, **kwargs)
+        Sensor.__init__(self, mqtt_client, **kwargs)
         ZigbeeDevice.__init__(self, controller, ieee, nwk)
 
         self.__logger = logger
 
         self.__register()
-    
+
     def button_press_handler(self, button: Button, press_type: PressType):
         self.__logger.info(f'Received {press_type} press of {button}')
 
@@ -71,7 +68,7 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
         }
 
         self._broadcast('press', message)
-    
+
     def long_button_press_handler(self, button: Button, args: List[List[int]]):
         if len(args) == 1:
             # identify which press it is
@@ -79,7 +76,7 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
                 else PressType.RELEASE
 
             self.button_press_handler(button, press_type)
-    
+
     def long_middle_button_press_handler(self, args: List[List[int]]):
         if len(args) == 1 and len(args[0]) == 2:
             # identify which press it is
@@ -91,7 +88,7 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
             else:
                 # for some reason it generates 2 events on long press
                 return
-            
+
             self.button_press_handler(Button.MIDDLE, press_type)
 
     def __register(self):
@@ -99,25 +96,32 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
 
         # single press
         device[1].out_clusters[6].add_listener(
-            ClusterListener(lambda _, __, ___: self.button_press_handler(Button.UP, PressType.SINGLE))
+            ClusterListener(lambda _, __, ___: self.button_press_handler(
+                Button.UP, PressType.SINGLE)
+            )
         )
         device[2].out_clusters[6].add_listener(
-            ClusterListener(lambda _, __, ___: self.button_press_handler(Button.DOWN, PressType.SINGLE))
+            ClusterListener(lambda _, __, ___: self.button_press_handler(
+                Button.DOWN, PressType.SINGLE))
         )
         device[3].out_clusters[8].add_listener(
-            ClusterListener(lambda _, __, ___: self.button_press_handler(Button.MIDDLE, PressType.SINGLE))
+            ClusterListener(lambda _, __, ___: self.button_press_handler(
+                Button.MIDDLE, PressType.SINGLE))
         )
 
         # long press
         device[1].out_clusters[8].add_listener(
-            ClusterListener(lambda _, __, args: self.long_button_press_handler(Button.UP, args))
+            ClusterListener(
+                lambda _, __, args: self.long_button_press_handler(Button.UP, args))
         )
         device[2].out_clusters[8].add_listener(
-            ClusterListener(lambda _, __, args: self.long_button_press_handler(Button.DOWN, args))
+            ClusterListener(
+                lambda _, __, args: self.long_button_press_handler(Button.DOWN, args))
         )
         device[3].out_clusters[768].add_listener(
-            ClusterListener(lambda _, __, args: self.long_middle_button_press_handler(args))
+            ClusterListener(
+                lambda _, __, args: self.long_middle_button_press_handler(args))
         )
-    
+
     def __str__(self):
         return ZigbeeDevice.__str__(self)

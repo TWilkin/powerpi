@@ -1,4 +1,7 @@
 {
-    "devices": [],
+    "devices": [
+        { "type": "energenie_pairing", "name": "EnergeniePairing" },
+        { "type": "zigbee_pairing", "name": "ZigBeePairing" }
+    ],
     "sensors": []
 }

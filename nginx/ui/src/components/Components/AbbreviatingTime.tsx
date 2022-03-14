@@ -1,4 +1,3 @@
-import React from "react";
 import { useCallback } from "react";
 import TimeAgo from "react-timeago";
 import useNarrow from "../../hooks/narrow";

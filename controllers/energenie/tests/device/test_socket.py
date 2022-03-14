@@ -1,23 +1,20 @@
 from pytest_mock import MockerFixture
 
-from powerpi_common_test.device import DeviceTestBase
 from energenie_controller.device.socket import SocketDevice
+from powerpi_common_test.device import DeviceTestBase
 
 
 class TestSocketDevice(DeviceTestBase):
     def get_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
         self.energenie = mocker.Mock()
 
         return SocketDevice(
-            self.config, self.logger, self.mqtt_client,
-            self.energenie, 'test', retries=2, delay=0
+            self.config, self.logger, self.mqtt_client, self.energenie,
+            name='test', retries=2, delay=0
         )
 
     async def test_run(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
+        subject = self.create_subject(mocker)
 
         self.counter = 0
 

@@ -148,7 +148,7 @@ export default class DeviceSchedule {
             this.logger.info(`Setting power of ${this.device.displayName} to ${state}`);
         }
 
-        const message = { state, colour };
+        const message = { state, ...colour };
         this.mqtt.publish("device", this.device.name, "change", message);
     }
 

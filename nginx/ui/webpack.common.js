@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
     entry: {
-        app: path.join(__dirname, "src", "app.tsx"),
+        powerpi: path.join(__dirname, "src", "powerpi.tsx"),
     },
     target: "web",
     resolve: {
@@ -16,17 +16,35 @@ module.exports = {
                 exclude: "/node_modules/",
             },
             {
-                test: /\.s[ac]ss$/,
+                test: /\.module\.scss$/,
+                use: [
+                    "style-loader",
+                    "css-modules-typescript-loader",
+                    {
+                        loader: "css-loader",
+                        options: { modules: true },
+                    },
+                    "sass-loader",
+                ],
+            },
+            {
+                test: /[^module]\.scss$/,
                 use: ["style-loader", "css-loader", "sass-loader"],
             },
             {
-                test: /\.(ttf|eot|svg|gif|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                use: "file-loader",
+                test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+                type: "assest/resource",
+                dependency: { not: ["url"] },
+            },
+            {
+                test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+                type: "assest/resource",
+                dependency: { not: ["url"] },
             },
         ],
     },
     output: {
-        filename: "bundle.js",
         path: path.resolve(__dirname, "dist"),
+        filename: "[name].bundle.js",
     },
 };

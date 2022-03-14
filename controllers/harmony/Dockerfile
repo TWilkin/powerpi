@@ -1,29 +1,44 @@
-FROM python:3.8.10-alpine3.12 AS build-image
-LABEL description="Python application to listen to the queue and start/stop Logitech Harmony activities as requested"
+# create a base image for building
+FROM python:3.9.5-alpine3.12 AS build-base-image
+RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.1.13
+RUN poetry config virtualenvs.in-project true
+ENV CFLAGS=-fcommon
 
-# ensure we have the dependencies to run pip
-RUN apk add --no-cache gcc musl-dev \
-    && pip3 install pipenv
+# create a venv with the common library
+FROM build-base-image AS build-common-image
+WORKDIR /opt/powerpi/common/python
+COPY common/pytest/poetry.lock common/pytest/pyproject.toml ./../pytest/
+COPY common/python/poetry.lock common/python/pyproject.toml ./
+RUN poetry install --no-dev --no-interaction --no-ansi
+COPY common/python/powerpi_common ./powerpi_common
+RUN poetry build \
+    && .venv/bin/pip install ./dist/*.whl
 
-# copy over the common library
+# re-use the venv and install the controller's dependencies
+FROM build-base-image AS build-image
 WORKDIR /opt/powerpi/controllers/harmony
-COPY common/python/ ./../../common/python/
-
-# install the dependencies
-COPY controllers/harmony/Pipfile* ./
-RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --three --deploy
+COPY --from=build-common-image /opt/powerpi/common ./../../common
+COPY controllers/harmony/poetry.lock controllers/harmony/pyproject.toml ./
+RUN ln -s ../../common/python/.venv .venv \
+    && poetry install --no-dev --no-interaction --no-ansi
 
 # use multi-stage build to remove compile dependencies
-FROM python:3.8.10-alpine3.12 AS run-image
+FROM python:3.9.5-alpine3.12 AS run-image
+LABEL description="PowerPi Logitech Harmony Controller"
+
+RUN apk add --no-cache libc6-compat
+
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="Europe/London"
-WORKDIR /usr/src/app
+
 RUN adduser --disabled-password powerpi
 USER powerpi
+
+WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/harmony/.venv ./venv
 
 # add the application
-COPY --chown=powerpi LICENSE ./
+COPY --chown=powerpi controllers/harmony/pyproject.toml LICENSE ./
 COPY --chown=powerpi controllers/harmony/harmony_controller ./harmony_controller/
 
 # start the application once the container is ready

@@ -22,10 +22,10 @@ class EventConsumer(MQTTConsumer):
         try:
             if not super().is_timestamp_valid(message['timestamp']):
                 return
-        except:
+        except KeyError:
             # if there is no timestamp that's not an error
             pass
-        
+
         for event in self.__events:
             complete = await event.execute(message)
 

@@ -1,134 +1,116 @@
 from abc import abstractmethod
+from asyncio import Lock
+from typing import Awaitable, Callable, Union
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient, StatusEventConsumer, PowerEventConsumer
+from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util import await_or_sync
 from .base import BaseDevice
+from .consumers import DeviceChangeEventConsumer, DeviceInitialStatusEventConsumer
+from .types import DeviceStatus
 
 
-class Device(BaseDevice, PowerEventConsumer):
-    class __StatusEventConsumer(StatusEventConsumer):
-        def __init__(self, device, mqtt_client: MQTTClient):
-            StatusEventConsumer.__init__(
-                self, device, device._config, device._logger
-            )
-            self.__mqtt_client = mqtt_client
-
-            mqtt_client.add_consumer(self)
-
-        def _update_device(self, new_power_state, new_additional_state):
-            # override default behaviour to prevent events generated for state change
-            self._device._update_state_no_broadcast(new_power_state, new_additional_state)
-
-            # remove this consumer as it has completed its job
-            self.__mqtt_client.remove_consumer(self)
+class Device(BaseDevice, DeviceChangeEventConsumer):
+    '''
+    Abstract base class for a "device", which supports being turned on/off via
+    change messages from the message queue. Will broadcast status change 
+    messages once it has moved between the on/off states.
+    '''
 
     def __init__(
         self,
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        name: str,
-        display_name: str = None,
-        visible: bool = False
+        **kwargs
     ):
-        BaseDevice.__init__(self, name, display_name, visible)
-        PowerEventConsumer.__init__(self, self, config, logger)
+        BaseDevice.__init__(self, **kwargs)
+        DeviceChangeEventConsumer.__init__(self, self, config, logger)
 
         self._logger = logger
-        self.__state = 'unknown'
-        self.__additional_state = None
+        self.__state = DeviceStatus.UNKNOWN
 
         self._producer = mqtt_client.add_producer()
 
+        self.__lock = Lock()
+
         mqtt_client.add_consumer(self)
 
-        self.__StatusEventConsumer(self, mqtt_client)
+        # add listener to get the initial state from the queue, if there is one
+        DeviceInitialStatusEventConsumer(self, config, logger, mqtt_client)
 
     @property
     def state(self):
+        '''
+        Returns the current state (on/off/unknown) of this device.
+        '''
         return self.__state
 
     @state.setter
-    def state(self, new_state):
+    def state(self, new_state: DeviceStatus):
+        '''
+        Update the state of this device to new_state, and broadcast the change
+        to the message queue.
+        '''
         self.__state = new_state
 
         self._broadcast_state_change()
-    
-    @property
-    def additional_state(self):
-        if self.__additional_state:
-            return self.__additional_state
-        
-        return {}
-    
-    @additional_state.setter
-    def additional_state(self, new_state):
-        self.__additional_state = new_state
 
-        self._broadcast_state_change()
-    
-    def set_state_and_additional(self, state: str, additional_state: dict):
-        if state is not None:
-            self.__state = state
-        
-        if len(additional_state) > 0:
-            self.__additional_state = additional_state
+    def update_state_no_broadcast(self, new_state: DeviceStatus):
+        '''
+        Update this devices' state but do not broadcast to the message queue.
+        '''
+        self.__state = new_state
 
-        self._broadcast_state_change()
-    
-    async def poll(self):
-        await await_or_sync(self._poll)
+    async def set_new_state(self, new_state: DeviceStatus):
+        '''
+        Update this devices' state and broadcast to the message queue 
+        if the new_state is different from the current state.
+        '''
+        async with self.__lock:
+            if self.state != new_state:
+                self.state = new_state
 
     async def turn_on(self):
-        self._logger.info(f'Turning on device {self}')
-        await await_or_sync(self._turn_on)
-        self.state = 'on'
+        '''
+        Turn this device on, and broadcast the state change to the message queue.
+        '''
+        await self.__change_power_handler(self._turn_on, DeviceStatus.ON)
 
     async def turn_off(self):
-        self._logger.info(f'Turning off device {self}')
-        await await_or_sync(self._turn_off)
-        self.state = 'off'
-    
-    async def change_power_and_additional_state(self, new_power_state: str, new_additional_state: dict):
-        try:
-            if new_power_state is not None:
-                self._logger.info(f'Turning {new_power_state} device {self}')
+        '''
+        Turn this device off, and broadcast the state change to the message queue.
+        '''
+        await self.__change_power_handler(self._turn_off, DeviceStatus.OFF)
 
-                if new_power_state == 'on':
-                    await await_or_sync(self._turn_on)
-                else:
-                    await await_or_sync(self._turn_off)
-            
-            if len(new_additional_state) > 0:
-                # there is other work to do
-                new_additional_state = self._change_additional_state(new_additional_state)
-            
-            self.set_state_and_additional(new_power_state, new_additional_state)
-        except Exception as e:
-            self._logger.exception(e)
-            return
-
-    @abstractmethod
-    def _poll(self):
-        raise NotImplementedError
+    async def change_power(self, new_state: DeviceStatus):
+        '''
+        Turn this device on or off, depending on the value of new_state.
+        If new_state is none, do nothing.
+        '''
+        if new_state is not None:
+            if new_state == DeviceStatus.ON:
+                await self.turn_on()
+            else:
+                await self.turn_off()
 
     @abstractmethod
     def _turn_on(self):
+        '''
+        Implement this method to turn the concrete device implementation on.
+        Supports both sync and async implementations.
+        '''
         raise NotImplementedError
 
     @abstractmethod
     def _turn_off(self):
+        '''
+        Implement this method to turn the concrete device implementation off.
+        Supports both sync and async implementations.
+        '''
         raise NotImplementedError
-    
-    def _change_additional_state(self, new_additional_state: dict):
-        return new_additional_state
 
-    def _update_state_no_broadcast(self, new_power_state: str, new_additional_state: dict):
-        self.__state = new_power_state
-        self.__additional_state = new_additional_state
-    
     def _broadcast_state_change(self):
         message = self._format_state()
 
@@ -138,18 +120,22 @@ class Device(BaseDevice, PowerEventConsumer):
         self._producer(topic, message)
 
     def _format_state(self):
-        result = {'state': self.state}
+        return {'state': self.state}
 
-        if self.__additional_state:
-            for key in self.__additional_state:
-                to_json = getattr(self.__additional_state[key], "to_json", None)
-
-                if callable(to_json):
-                    result[key] = to_json()
-                else:
-                    result[key] = self.__additional_state[key]
-        
-        return result
+    async def __change_power_handler(
+        self,
+        func: Union[Awaitable[None], Callable[[], None]],
+        new_status: DeviceStatus
+    ):
+        # pylint: disable=broad-except
+        try:
+            async with self.__lock:
+                self._logger.info(f'Turning {new_status} device {self}')
+                await await_or_sync(func)
+                self.state = new_status
+        except Exception as ex:
+            self._logger.exception(ex)
+            self.state = DeviceStatus.UNKNOWN
 
     def __str__(self):
         return f'{type(self).__name__}({self._display_name}, {self._format_state()})'

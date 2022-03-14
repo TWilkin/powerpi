@@ -1,0 +1,830 @@
+[[package]]
+name = "apscheduler"
+version = "3.8.1"
+description = "In-process task scheduler with Cron-like capabilities"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
+
+[package.dependencies]
+pytz = "*"
+six = ">=1.4.0"
+tzlocal = ">=2.0,<3.0.0 || >=4.0.0"
+
+[package.extras]
+asyncio = ["trollius"]
+doc = ["sphinx", "sphinx-rtd-theme"]
+gevent = ["gevent"]
+mongodb = ["pymongo (>=3.0)"]
+redis = ["redis (>=3.0)"]
+rethinkdb = ["rethinkdb (>=2.4.0)"]
+sqlalchemy = ["sqlalchemy (>=0.8)"]
+testing = ["pytest (<6)", "pytest-cov", "pytest-tornado5", "mock", "pytest-asyncio (<0.6)", "pytest-asyncio"]
+tornado = ["tornado (>=4.3)"]
+twisted = ["twisted"]
+zookeeper = ["kazoo"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "astroid"
+version = "2.9.3"
+description = "An abstract syntax tree for Python with inference support."
+category = "dev"
+optional = false
+python-versions = ">=3.6.2"
+
+[package.dependencies]
+lazy-object-proxy = ">=1.4.0"
+typing-extensions = {version = ">=3.10", markers = "python_version < \"3.10\""}
+wrapt = ">=1.11,<1.14"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "atomicwrites"
+version = "1.4.0"
+description = "Atomic file writes."
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "attrs"
+version = "21.4.0"
+description = "Classes Without Boilerplate"
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.extras]
+dev = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface", "furo", "sphinx", "sphinx-notfound-page", "pre-commit", "cloudpickle"]
+docs = ["furo", "sphinx", "zope.interface", "sphinx-notfound-page"]
+tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface", "cloudpickle"]
+tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "cloudpickle"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "autopep8"
+version = "1.6.0"
+description = "A tool that automatically formats Python code to conform to the PEP 8 style guide"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+pycodestyle = ">=2.8.0"
+toml = "*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "backports.zoneinfo"
+version = "0.2.1"
+description = "Backport of the standard library zoneinfo module"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+tzdata = ["tzdata"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "colorama"
+version = "0.4.4"
+description = "Cross-platform colored terminal text."
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "coverage"
+version = "6.3.2"
+description = "Code coverage measurement for Python"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+tomli = {version = "*", optional = true, markers = "extra == \"toml\""}
+
+[package.extras]
+toml = ["tomli"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "dependency-injector"
+version = "4.38.0"
+description = "Dependency injection framework for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+six = ">=1.7.0,<=1.16.0"
+
+[package.extras]
+aiohttp = ["aiohttp"]
+flask = ["flask"]
+pydantic = ["pydantic"]
+yaml = ["pyyaml"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "energenie"
+version = "1.0.1"
+description = "Remotely control power sockets from the Raspberry Pi"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+"RPi.GPIO" = "*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "gmqtt"
+version = "0.6.11"
+description = "Client for MQTT protocol"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.extras]
+test = ["atomicwrites (>=1.3.0)", "attrs (>=19.1.0)", "codecov (>=2.0.15)", "coverage (>=4.5.3)", "more-itertools (>=7.0.0)", "pluggy (>=0.11.0)", "py (>=1.8.0)", "pytest-asyncio (>=0.12.0)", "pytest-cov (>=2.7.1)", "pytest (>=5.4.0)", "six (>=1.12.0)", "uvloop (>=0.14.0)"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "iniconfig"
+version = "1.1.1"
+description = "iniconfig: brain-dead simple config-ini parsing"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "isort"
+version = "5.10.1"
+description = "A Python utility / library to sort Python imports."
+category = "dev"
+optional = false
+python-versions = ">=3.6.1,<4.0"
+
+[package.extras]
+colors = ["colorama (>=0.4.3,<0.5.0)"]
+requirements_deprecated_finder = ["pip-api", "pipreqs"]
+pipfile_deprecated_finder = ["pipreqs", "requirementslib"]
+plugins = ["setuptools"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "jsonpatch"
+version = "1.32"
+description = "Apply JSON-Patches (RFC 6902)"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.dependencies]
+jsonpointer = ">=1.9"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "jsonpointer"
+version = "2.2"
+description = "Identify specific nodes in a JSON document (RFC 6901)"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "lazy-object-proxy"
+version = "1.7.1"
+description = "A fast and thorough lazy object proxy."
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "mccabe"
+version = "0.6.1"
+description = "McCabe checker, plugin for flake8"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "packaging"
+version = "21.3"
+description = "Core utilities for Python packages"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "platformdirs"
+version = "2.5.1"
+description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+docs = ["Sphinx (>=4)", "furo (>=2021.7.5b38)", "proselint (>=0.10.2)", "sphinx-autodoc-typehints (>=1.12)"]
+test = ["appdirs (==1.4.4)", "pytest (>=6)", "pytest-cov (>=2.7)", "pytest-mock (>=3.6)"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "pluggy"
+version = "1.0.0"
+description = "plugin and hook calling mechanisms for python"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+dev = ["pre-commit", "tox"]
+testing = ["pytest", "pytest-benchmark"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "powerpi-common"
+version = "0.2.0"
+description = "PowerPi Common Python Library"
+category = "main"
+optional = false
+python-versions = "^3.8"
+develop = true
+
+[package.dependencies]
+apscheduler = "~=3.8.1"
+dependency-injector = "~=4.38.0"
+gmqtt = "~=0.6.11"
+jsonpatch = "~=1.32"
+toml = "~=0.10.2"
+
+[package.source]
+type = "directory"
+url = "../../common/python"
+
+[[package]]
+name = "powerpi-common-test"
+version = "0.2.0"
+description = "PowerPi Common Python Test Library"
+category = "dev"
+optional = false
+python-versions = "^3.8"
+develop = true
+
+[package.dependencies]
+pytest = "~=6.2.2"
+pytest-asyncio = "~=0.16.0"
+pytest-cov = "~=3.0.0"
+pytest-mock = "~=3.5.1"
+
+[package.source]
+type = "directory"
+url = "../../common/pytest"
+
+[[package]]
+name = "py"
+version = "1.11.0"
+description = "library with cross-python path, ini-parsing, io, code, log facilities"
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "pycodestyle"
+version = "2.8.0"
+description = "Python style guide checker"
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "pyenergenie"
+version = "0.0.1"
+description = "A python interface to the Energenie line of products"
+category = "main"
+optional = false
+python-versions = "*"
+develop = false
+
+[package.dependencies]
+"RPi.GPIO" = "*"
+
+[package.source]
+type = "git"
+url = "https://github.com/whaleygeek/pyenergenie.git"
+reference = "eec562c140dd34027b3184d81f549c9d4a65f5db"
+resolved_reference = "eec562c140dd34027b3184d81f549c9d4a65f5db"
+
+[[package]]
+name = "pylint"
+version = "2.12.2"
+description = "python code static checker"
+category = "dev"
+optional = false
+python-versions = ">=3.6.2"
+
+[package.dependencies]
+astroid = ">=2.9.0,<2.10"
+colorama = {version = "*", markers = "sys_platform == \"win32\""}
+isort = ">=4.2.5,<6"
+mccabe = ">=0.6,<0.7"
+platformdirs = ">=2.2.0"
+toml = ">=0.9.2"
+typing-extensions = {version = ">=3.10.0", markers = "python_version < \"3.10\""}
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "pyparsing"
+version = "3.0.7"
+description = "Python parsing module"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+diagrams = ["railroad-diagrams", "jinja2"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "pytest"
+version = "6.2.5"
+description = "pytest: simple powerful testing with Python"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+atomicwrites = {version = ">=1.0", markers = "sys_platform == \"win32\""}
+attrs = ">=19.2.0"
+colorama = {version = "*", markers = "sys_platform == \"win32\""}
+iniconfig = "*"
+packaging = "*"
+pluggy = ">=0.12,<2.0"
+py = ">=1.8.2"
+toml = "*"
+
+[package.extras]
+testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "pytest-asyncio"
+version = "0.16.0"
+description = "Pytest support for asyncio."
+category = "dev"
+optional = false
+python-versions = ">= 3.6"
+
+[package.dependencies]
+pytest = ">=5.4.0"
+
+[package.extras]
+testing = ["coverage", "hypothesis (>=5.7.1)"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "pytest-cov"
+version = "3.0.0"
+description = "Pytest plugin for measuring coverage."
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+coverage = {version = ">=5.2.1", extras = ["toml"]}
+pytest = ">=4.6"
+
+[package.extras]
+testing = ["fields", "hunter", "process-tests", "six", "pytest-xdist", "virtualenv"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "pytest-mock"
+version = "3.5.1"
+description = "Thin-wrapper around the mock package for easier use with pytest"
+category = "dev"
+optional = false
+python-versions = ">=3.5"
+
+[package.dependencies]
+pytest = ">=5.0"
+
+[package.extras]
+dev = ["pre-commit", "tox", "pytest-asyncio"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "pytz"
+version = "2021.3"
+description = "World timezone definitions, modern and historical"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "pytz-deprecation-shim"
+version = "0.1.0.post0"
+description = "Shims to make deprecation of pytz easier"
+category = "main"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,>=2.7"
+
+[package.dependencies]
+"backports.zoneinfo" = {version = "*", markers = "python_version >= \"3.6\" and python_version < \"3.9\""}
+tzdata = {version = "*", markers = "python_version >= \"3.6\""}
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "rpi.gpio"
+version = "0.7.1"
+description = "A module to control Raspberry Pi GPIO channels"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "six"
+version = "1.16.0"
+description = "Python 2 and 3 compatibility utilities"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "toml"
+version = "0.10.2"
+description = "Python Library for Tom's Obvious, Minimal Language"
+category = "main"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "tomli"
+version = "2.0.1"
+description = "A lil' TOML parser"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "typing-extensions"
+version = "4.1.1"
+description = "Backported and Experimental Type Hints for Python 3.6+"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "tzdata"
+version = "2021.5"
+description = "Provider of IANA time zone data"
+category = "main"
+optional = false
+python-versions = ">=2"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "tzlocal"
+version = "4.1"
+description = "tzinfo object for the local timezone"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+"backports.zoneinfo" = {version = "*", markers = "python_version < \"3.9\""}
+pytz-deprecation-shim = "*"
+tzdata = {version = "*", markers = "platform_system == \"Windows\""}
+
+[package.extras]
+devenv = ["pytest-cov", "black", "pyroma", "zest.releaser"]
+test = ["pytest (>=4.3)", "pytest-mock (>=3.3)"]
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[[package]]
+name = "wrapt"
+version = "1.13.3"
+description = "Module for decorators, wrappers and monkey patching."
+category = "dev"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
+
+[package.source]
+type = "legacy"
+url = "https://www.piwheels.org/simple"
+reference = "piwheels"
+
+[metadata]
+lock-version = "1.1"
+python-versions = "^3.8"
+content-hash = "10595ea2613686f1e8682eb5798ceec37eb681fd94f5a4a6048258de598c683c"
+
+[metadata.files]
+apscheduler = [
+    {file = "APScheduler-3.8.1-py2.py3-none-any.whl", hash = "sha256:36d38d7228b7017552ee231783b3890fdd30f6622c7665cbbaf0040e7fd4085f"},
+]
+astroid = [
+    {file = "astroid-2.9.3-py3-none-any.whl", hash = "sha256:f094565baf85c40d6b47290e644815ee2bdbe337612b6ffc39e016ae960fe7e5"},
+]
+atomicwrites = [
+    {file = "atomicwrites-1.4.0-py2.py3-none-any.whl", hash = "sha256:6d1784dea7c0c8d4a5172b6c620f40b6e4cbfdf96d783691f2e1302a7b88e197"},
+]
+attrs = [
+    {file = "attrs-21.4.0-py2.py3-none-any.whl", hash = "sha256:fe43ed2c8b43d4b1f97b342b2a798b0ece766c86a249ac8bd8ae940f9e62f4ab"},
+]
+autopep8 = [
+    {file = "autopep8-1.6.0-py2.py3-none-any.whl", hash = "sha256:51288377de5d82707275dcc44f9ae5408190ee152b20b7a9c4dccae8bfa1fa0a"},
+]
+"backports.zoneinfo" = [
+    {file = "backports.zoneinfo-0.2.1-cp37-cp37m-linux_armv6l.whl", hash = "sha256:dff179a489c57d2c9ccd60720f1ec13173bc1aa1c15c2714649581b32eab56ca"},
+    {file = "backports.zoneinfo-0.2.1-cp37-cp37m-linux_armv7l.whl", hash = "sha256:dff179a489c57d2c9ccd60720f1ec13173bc1aa1c15c2714649581b32eab56ca"},
+    {file = "backports.zoneinfo-0.2.1-cp39-cp39-linux_armv6l.whl", hash = "sha256:e34cdbc646438368c17100e3dafeb88626d3b5467b89681d20ef6731a29e2895"},
+    {file = "backports.zoneinfo-0.2.1-cp39-cp39-linux_armv7l.whl", hash = "sha256:e34cdbc646438368c17100e3dafeb88626d3b5467b89681d20ef6731a29e2895"},
+]
+colorama = [
+    {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
+]
+coverage = [
+    {file = "coverage-6.3.2-cp37-cp37m-linux_armv6l.whl", hash = "sha256:040d812cb863940b26c18913c6c302ef8e8c34cde906e4fa682031ebcdc8b68c"},
+    {file = "coverage-6.3.2-cp37-cp37m-linux_armv7l.whl", hash = "sha256:040d812cb863940b26c18913c6c302ef8e8c34cde906e4fa682031ebcdc8b68c"},
+    {file = "coverage-6.3.2-cp39-cp39-linux_armv6l.whl", hash = "sha256:31f68786fcb8490ba09d1f0011670250721724dd7c782440ef935ccee68cc4d0"},
+    {file = "coverage-6.3.2-cp39-cp39-linux_armv7l.whl", hash = "sha256:31f68786fcb8490ba09d1f0011670250721724dd7c782440ef935ccee68cc4d0"},
+]
+dependency-injector = [
+    {file = "dependency_injector-4.38.0-cp37-cp37m-linux_armv6l.whl", hash = "sha256:b26141bca9a2a43d8440a0ccb82e36104cbc22ec09215a911d25aba9b13daea1"},
+    {file = "dependency_injector-4.38.0-cp37-cp37m-linux_armv7l.whl", hash = "sha256:b26141bca9a2a43d8440a0ccb82e36104cbc22ec09215a911d25aba9b13daea1"},
+    {file = "dependency_injector-4.38.0-cp39-cp39-linux_armv6l.whl", hash = "sha256:6775c9f07c5f8e7aab97692cdd3c134a2bcc8eb976db04520193c84858ceac6d"},
+    {file = "dependency_injector-4.38.0-cp39-cp39-linux_armv7l.whl", hash = "sha256:6775c9f07c5f8e7aab97692cdd3c134a2bcc8eb976db04520193c84858ceac6d"},
+]
+energenie = [
+    {file = "energenie-1.0.1-py3-none-any.whl", hash = "sha256:e3ad737a08b8816b88ec17d3da9b168e0c92bea25a99920649280e98d0ce0522"},
+]
+gmqtt = [
+    {file = "gmqtt-0.6.11-py3-none-any.whl", hash = "sha256:8ca1391107f74387d9c95ab6989da613c7b2d316b55566f1574f7716e070b5ff"},
+]
+iniconfig = [
+    {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:8647b85c03813b8680f4ae9c9db2fd7293f8591ea536a10d73d90f6eb4b10aac"},
+]
+isort = [
+    {file = "isort-5.10.1-py3-none-any.whl", hash = "sha256:eea14d9ea804d971049b4a1f35d1fde5a1988a3d6adc52a01f84f6ed4afca079"},
+]
+jsonpatch = [
+    {file = "jsonpatch-1.32-py2.py3-none-any.whl", hash = "sha256:26ac385719ac9f54df8a2f0827bb8253aa3ea8ab7b3368457bcdb8c14595a397"},
+]
+jsonpointer = [
+    {file = "jsonpointer-2.2-py2.py3-none-any.whl", hash = "sha256:e4c8cd0374104c850aec3dd2e4ed91a411aa830e885d9e220c326ab0cf2982ad"},
+]
+lazy-object-proxy = [
+    {file = "lazy_object_proxy-1.7.1-cp37-cp37m-linux_armv6l.whl", hash = "sha256:5f229a46fa65c91c91a604ab9e20933e53551d5976a5627cc5c47108d244dbf1"},
+    {file = "lazy_object_proxy-1.7.1-cp37-cp37m-linux_armv7l.whl", hash = "sha256:5f229a46fa65c91c91a604ab9e20933e53551d5976a5627cc5c47108d244dbf1"},
+    {file = "lazy_object_proxy-1.7.1-cp39-cp39-linux_armv6l.whl", hash = "sha256:70ac8c12c48873f932afe4413a69e6cbcb7723a092e80b1f73864cf09e1abf36"},
+    {file = "lazy_object_proxy-1.7.1-cp39-cp39-linux_armv7l.whl", hash = "sha256:70ac8c12c48873f932afe4413a69e6cbcb7723a092e80b1f73864cf09e1abf36"},
+]
+mccabe = [
+    {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},
+]
+packaging = [
+    {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:36bb3108f8e33f88e52e7985b4068e2585b67e5b7b3a0fa2817f9852bc39d2ef"},
+]
+platformdirs = [
+    {file = "platformdirs-2.5.1-py3-none-any.whl", hash = "sha256:1cbcd0d3febfbf69fceaedaa02bf485f6ed773573cf90423e6df11a694f44e1e"},
+]
+pluggy = [
+    {file = "pluggy-1.0.0-py2.py3-none-any.whl", hash = "sha256:f2d9abbfd1465ce5d1e261e51cc15afc87ede2ae079c7c7c8d894b1cc37ba123"},
+]
+powerpi-common = []
+powerpi-common-test = []
+py = [
+    {file = "py-1.11.0-py2.py3-none-any.whl", hash = "sha256:ec07ead4a92be3fe6be916f57ee869b9b4cb7ec17a0add2a5366cc7efa0521c8"},
+]
+pycodestyle = [
+    {file = "pycodestyle-2.8.0-py2.py3-none-any.whl", hash = "sha256:9bb211a46105ee6e2345cea7a357be836b6fdc2fe7073afce4e61365efd840dd"},
+]
+pyenergenie = []
+pylint = [
+    {file = "pylint-2.12.2-py3-none-any.whl", hash = "sha256:faf80aea248f25c7b872965f13d77c8bd1ef8db27cb408bf77bfe4dfd27248c0"},
+]
+pyparsing = [
+    {file = "pyparsing-3.0.7-py3-none-any.whl", hash = "sha256:9cac03df81a32c5a08393d4aaed42318304684e9abc1336deff3a84feb2e1260"},
+]
+pytest = [
+    {file = "pytest-6.2.5-py3-none-any.whl", hash = "sha256:b0739f541bdb0648760adda3ecc43ebdd8334a8694a6fcbf56ff8af207fc00b8"},
+]
+pytest-asyncio = [
+    {file = "pytest_asyncio-0.16.0-py3-none-any.whl", hash = "sha256:d88a0d90f6fb0638ebeab5ce09546e3e3f76a25f652ce2791e3caa3a3235ede7"},
+]
+pytest-cov = [
+    {file = "pytest_cov-3.0.0-py3-none-any.whl", hash = "sha256:ed9d58a2c8d54d985d7a9c985fba3a2061be5434a47e45524a35bd3c1a879d2c"},
+]
+pytest-mock = [
+    {file = "pytest_mock-3.5.1-py3-none-any.whl", hash = "sha256:379b391cfad22422ea2e252bdfc008edd08509029bcde3c25b2c0bd741e0424e"},
+]
+pytz = [
+    {file = "pytz-2021.3-py3-none-any.whl", hash = "sha256:3f0820049ea2e942b7852a85801bc97e29913d278baa5c984e1a4a2075d173d2"},
+]
+pytz-deprecation-shim = [
+    {file = "pytz_deprecation_shim-0.1.0.post0-py2.py3-none-any.whl", hash = "sha256:934bfb4602cec24c7c207032735ab18632b23424a3d4637fe6d59a4ace56a5e1"},
+]
+"rpi.gpio" = [
+    {file = "RPi.GPIO-0.7.1-cp35-cp35m-linux_armv6l.whl", hash = "sha256:5073d1972727cfad38a1a42f02da91dc41f137679290aa804ab6c410168347ac"},
+    {file = "RPi.GPIO-0.7.1-cp35-cp35m-linux_armv7l.whl", hash = "sha256:5073d1972727cfad38a1a42f02da91dc41f137679290aa804ab6c410168347ac"},
+    {file = "RPi.GPIO-0.7.1-cp37-cp37m-linux_armv6l.whl", hash = "sha256:e5dfec2c4ccb7dbe9eef3dfc76a3b04121fc62d77fd8fbe1a8e841468a1b0c4c"},
+    {file = "RPi.GPIO-0.7.1-cp37-cp37m-linux_armv7l.whl", hash = "sha256:e5dfec2c4ccb7dbe9eef3dfc76a3b04121fc62d77fd8fbe1a8e841468a1b0c4c"},
+    {file = "RPi.GPIO-0.7.1-cp39-cp39-linux_armv6l.whl", hash = "sha256:231f6142c25975a7e39b96faf4905f05f97dba6809e8c5f0d58f284b35b4b821"},
+    {file = "RPi.GPIO-0.7.1-cp39-cp39-linux_armv7l.whl", hash = "sha256:231f6142c25975a7e39b96faf4905f05f97dba6809e8c5f0d58f284b35b4b821"},
+]
+six = [
+    {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
+]
+toml = [
+    {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
+]
+tomli = [
+    {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
+]
+typing-extensions = [
+    {file = "typing_extensions-4.1.1-py3-none-any.whl", hash = "sha256:31b902ea3c3297255b2ce9b5d9335e6555068dd767d3c514f263c43d9411fcab"},
+]
+tzdata = [
+    {file = "tzdata-2021.5-py2.py3-none-any.whl", hash = "sha256:e6bb85f1434e30236adcc1168e2372a3a2b8efb99bcb733802c1fed7c442157d"},
+]
+tzlocal = [
+    {file = "tzlocal-4.1-py3-none-any.whl", hash = "sha256:62973be930e9570aac9ca8adcec9efd6b9076b68b1eb26f32b177b0fbae99bf6"},
+]
+wrapt = [
+    {file = "wrapt-1.13.3-cp35-cp35m-linux_armv6l.whl", hash = "sha256:a32f76ef391a3fc7f6f8de779ad9607c2769fb96693bcdc2c79449bc1a97cb28"},
+    {file = "wrapt-1.13.3-cp35-cp35m-linux_armv7l.whl", hash = "sha256:a32f76ef391a3fc7f6f8de779ad9607c2769fb96693bcdc2c79449bc1a97cb28"},
+    {file = "wrapt-1.13.3-cp37-cp37m-linux_armv6l.whl", hash = "sha256:0f1c728f7faa4909baf802060647c91582b3061d3aa9725277d47e206eed4362"},
+    {file = "wrapt-1.13.3-cp37-cp37m-linux_armv7l.whl", hash = "sha256:0f1c728f7faa4909baf802060647c91582b3061d3aa9725277d47e206eed4362"},
+    {file = "wrapt-1.13.3-cp39-cp39-linux_armv6l.whl", hash = "sha256:a92b3569a9ef00a853e51f5ca424d800fbe0393bd248036c68f7b23e69b498ef"},
+    {file = "wrapt-1.13.3-cp39-cp39-linux_armv7l.whl", hash = "sha256:a92b3569a9ef00a853e51f5ca424d800fbe0393bd248036c68f7b23e69b498ef"},
+]

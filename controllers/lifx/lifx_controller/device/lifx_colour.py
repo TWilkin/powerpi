@@ -1,6 +1,7 @@
 from typing import Dict, Tuple
 
-class LIFXColour(object):
+
+class LIFXColour:
     def __init__(self, colour: Tuple[int] or Dict[str, int]):
         if colour is None:
             self.hue = 0
@@ -21,7 +22,7 @@ class LIFXColour(object):
     @property
     def list(self):
         return (self.hue, self.saturation, self.brightness, self.temperature)
-    
+
     def patch(self, colour: Dict[str, int or str]):
         if colour is not None:
             for key, value in colour.items():
@@ -36,8 +37,8 @@ class LIFXColour(object):
                     else:
                         new_value = int(value)
 
-                self[key] = new_value          
-    
+                self[key] = new_value
+
     def to_json(self):
         return {
             'hue': self.hue,
@@ -45,7 +46,7 @@ class LIFXColour(object):
             'brightness': self.brightness,
             'temperature': self.temperature
         }
-    
+
     def __getitem__(self, key: str) -> int:
         if key == 'hue':
             return self.hue
@@ -57,7 +58,7 @@ class LIFXColour(object):
             return self.temperature
 
         raise KeyError(key)
-    
+
     def __setitem__(self, key: str, value: int or str):
         if key == 'hue':
             self.hue = value
@@ -69,12 +70,12 @@ class LIFXColour(object):
             self.temperature = value
         else:
             raise KeyError(key)
-    
+
     def __str__(self):
         return f'HSBK({self.hue}, {self.saturation}, {self.brightness}, {self.temperature})'
-    
+
     def __eq__(self, other):
         if isinstance(other, LIFXColour):
             return self.list == other.list
-        
+
         return False

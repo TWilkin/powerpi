@@ -1,11 +1,16 @@
+from copy import deepcopy
+from typing import Any, Dict, List, Union
+
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from .base import BaseDevice
+from powerpi_common.typing import DeviceType, SensorType
+from powerpi_common.util import ismixin
 from .factory import DeviceFactory
-from .type import DeviceType
+from .mixin import InitialisableMixin
+from .types import DeviceConfigType
 
 
-class DeviceManager(object):
+class DeviceManager(InitialisableMixin):
     def __init__(
         self,
         config: Config,
@@ -16,51 +21,72 @@ class DeviceManager(object):
         self.__logger = logger
         self.__factory = factory
 
-        self.__devices: dict[str, BaseDevice] = {}
-        self.__sensors: dict[str, BaseDevice] = {}
+        self.__devices: Dict[DeviceConfigType,
+                             Dict[str, Union[DeviceType, SensorType]]] = {}
+        for device_type in DeviceConfigType:
+            self.__devices[device_type] = {}
 
     @property
-    def devices(self):
-        return self.__devices
+    def devices(self) -> DeviceType:
+        return self.__devices[DeviceConfigType.DEVICE]
 
     @property
-    def sensors(self):
-        return self.__sensors
+    def sensors(self) -> SensorType:
+        return self.__devices[DeviceConfigType.SENSOR]
 
-    def get_device(self, name):
-        if self.__devices[name]:
-            return self.__devices[name]
+    def get_device(self, name: str) -> DeviceType:
+        return self.__get(DeviceConfigType.DEVICE, name)
 
-        raise Exception(f'Cannot find device "{name}"')
+    def get_sensor(self, name: str) -> SensorType:
+        return self.__get(DeviceConfigType.SENSOR, name)
 
-    def get_sensor(self, name):
-        if self.__sensors[name]:
-            return self.__sensors[name]
+    async def load(self):
+        for device_type in DeviceConfigType:
+            self.__load(device_type)
 
-        raise Exception(f'Cannot find sensor "{name}"')
-    
-    def load(self):
-        self.__load(DeviceType.DEVICE)
-        self.__load(DeviceType.SENSOR)        
+        await self.initialise()
 
-    def __load(self, device_type: DeviceType):
-        instances = {}
+    async def _initialise(self):
+        for device_type in DeviceConfigType:
+            filtered = filter(
+                lambda device: ismixin(device, InitialisableMixin),
+                self.__devices[device_type].values()
+            )
 
-        if device_type == DeviceType.DEVICE:
-            self.__devices = instances
-        else:
-            self.__sensors = instances
+            for device in filtered:
+                await device.initialise()
 
-        devices = self.__config.devices[f'{device_type}s']
+    def __get(self, device_type: DeviceConfigType, name: str):
+        try:
+            return self.__devices[device_type][name]
+        except KeyError as ex:
+            raise DeviceNotFoundException(device_type, name) from ex
+
+    def __load(self, device_type: DeviceConfigType):
+        devices: List[Dict[str, Any]] \
+            = self.__config.devices[f'{device_type}s']
 
         for device in devices:
             instance_type = device['type']
-            del device['type']
 
-            instance = self.__factory.build(device_type, instance_type, **device)
+            device_args = deepcopy(device)
+            del device_args['type']
+
+            instance = self.__factory.build(
+                device_type, instance_type, **device_args
+            )
+
             if instance is not None:
                 self.__logger.info(f'Found {instance}')
 
-                instances[device['name']] = instance
+                self.__devices[device_type][device['name']] = instance
 
-        self.__logger.info(f'Found {len(instances)} matching {device_type}(s)')
+        self.__logger.info(
+            f'Found {len(self.__devices[device_type])} matching {device_type}(s)'
+        )
+
+
+class DeviceNotFoundException(Exception):
+    def __init__(self, device_type: DeviceConfigType, name: str):
+        message = f'Cannot find {device_type} "{name}"'
+        Exception.__init__(self, message)

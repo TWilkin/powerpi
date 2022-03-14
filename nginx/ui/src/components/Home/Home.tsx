@@ -1,19 +1,18 @@
-import { PowerPiApi, Sensor } from "@powerpi/api";
-import React, { useMemo } from "react";
-import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
-import { useGetFloorplan } from "../../hooks/floorplan";
+import { Floorplan as IFloorplan, Sensor } from "@powerpi/api";
+import { useMemo } from "react";
 import useGetSensors from "../../hooks/sensors";
-import Menu from "../Components/Menu";
 import Floorplan from "./Floorplan";
 import Tooltip from "./Tooltip";
+import styles from "./Home.module.scss";
+import Menu from "../Components/Menu";
+import Loading from "../Components/Loading";
 
 interface HomeProps {
-    api: PowerPiApi;
+    floorplan: IFloorplan | undefined;
 }
 
-const Home = ({ api }: HomeProps) => {
-    const { floorplan } = useGetFloorplan(api);
-    const { sensors } = useGetSensors(api);
+const Home = ({ floorplan }: HomeProps) => {
+    const { sensors } = useGetSensors();
 
     const locations = useMemo(
         () =>
@@ -32,52 +31,25 @@ const Home = ({ api }: HomeProps) => {
         [floorplan, sensors]
     );
 
-    const defaultFloor = useMemo(() => {
-        if ((floorplan?.floors?.length ?? 0) > 0) {
-            return floorplan?.floors[0].name;
-        }
-
-        return undefined;
-    }, [floorplan]);
-
     return (
-        <div id="home">
-            {floorplan && (
-                <>
-                    <Menu
-                        items={floorplan.floors.map((floor) => ({
+        <div className={styles.home}>
+            <Loading loading={!floorplan}>
+                <Menu
+                    items={
+                        floorplan?.floors.map((floor) => ({
                             path: `/home/${floor.name}`,
                             name: floor.display_name ?? floor.name,
-                        }))}
-                        visible={floorplan.floors.length > 1}
-                    />
+                        })) ?? []
+                    }
+                    visible={(floorplan?.floors.length ?? 0) > 1}
+                />
 
-                    <Switch>
-                        {defaultFloor && (
-                            <Redirect exact from="/home" to={`/home/${defaultFloor}`} />
-                        )}
+                {floorplan && <Floorplan floorplan={floorplan} />}
 
-                        <Route
-                            path="/home/:floor"
-                            render={(props: RouteComponentProps<{ floor: string }>) => (
-                                <>
-                                    <Floorplan
-                                        floorplan={floorplan}
-                                        current={props.match.params.floor}
-                                    />
-
-                                    {locations?.map((location) => (
-                                        <Tooltip
-                                            key={`${location.floor}${location.location}`}
-                                            {...location}
-                                        />
-                                    ))}
-                                </>
-                            )}
-                        />
-                    </Switch>
-                </>
-            )}
+                {locations?.map((location) => (
+                    <Tooltip key={`${location.floor}${location.location}`} {...location} />
+                ))}
+            </Loading>
         </div>
     );
 };
