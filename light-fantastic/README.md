@@ -1,6 +1,6 @@
 # PowerPi - Light Fantastic
 
-PowerPi service which adjusts the temperature, colour, brightness and on/off status of [LIFX](https://www.lifx.com/) bulbs via a schedule.
+PowerPi service which adjusts the temperature, colour, brightness and on/off status of light devices via a schedule.
 
 The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../common/node/common/README.md) which needs to be compiled before use.
 

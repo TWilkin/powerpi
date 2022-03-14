@@ -34,6 +34,7 @@
         "prettier": "prettier --write .",
         "start:clacks-config": "yarn workspace clacks-config start",
         "start:energy-monitor": "yarn workspace energy-monitor start",
+        "start:freedns": "yarn workspace freedns start",
         "start:light-fantastic": "yarn workspace light-fantastic start",
         "start:persistence": "yarn workspace persistence start",
         "start:ui": "yarn workspace @powerpi/ui start"
