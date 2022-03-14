@@ -152,7 +152,7 @@ The _schedules.json_ file contains the scheduled events that _light-fantastic_ u
 }
 ```
 
-### users.json
+#### users.json
 
 The _users.json_ file contains the users who are authorised to use the _deep-thought_ API, and therefore the UI and _babel-fish_ services. The file takes the following format:
 

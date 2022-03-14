@@ -8,7 +8,7 @@ The service is built using python, with dependencies using [poetry](https://pyth
 
 This controller service currently supports the following ZigBee devices:
 
-- Osram Smart+ Switch Mini - ZigBee remote with 3 buttons (centre, up and down) supporting single and long press.
+-   Osram Smart+ Switch Mini - ZigBee remote with 3 buttons (centre, up and down) supporting single and long press.
 
 ## Building
 
@@ -31,8 +31,8 @@ This service expects the following environment variables to be set before it wil
 
 This service requires two configuration files, both of which are described on the following [_clacks-config_](../../clacks-config/README.md) pages.
 
--   [devices.json](../../clacks-config/README.md#devices.json)
--   [events.json](../../clacks-config/README.md#events.json)
+-   [devices.json](../../clacks-config/README.md#devicesjson)
+-   [events.json](../../clacks-config/README.md#eventsjson)
 
 ## Testing
 

@@ -8,8 +8,8 @@ The service is built using python, with dependencies using [poetry](https://pyth
 
 This controller service currently supports LIFX lights that support the LIFX LAN protocol, supporting colour and temperature control. The following devices have been directly tested:
 
-- LIFX Mini Day & Dusk
-- LIFX Mini White
+-   LIFX Mini Day & Dusk
+-   LIFX Mini White
 
 ## Building
 
@@ -30,8 +30,8 @@ This service expects the following environment variables to be set before it wil
 
 This service requires two configuration files, both of which are described on the following [_clacks-config_](../../clacks-config/README.md) pages.
 
--   [devices.json](../../clacks-config/README.md#devices.json)
--   [events.json](../../clacks-config/README.md#events.json)
+-   [devices.json](../../clacks-config/README.md#devicesjson)
+-   [events.json](../../clacks-config/README.md#eventsjson)
 
 ## Testing
 

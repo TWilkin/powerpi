@@ -23,8 +23,8 @@ This service expects the following environment variables to be set before it wil
 
 This service requires two configuration files, both of which are described on the following [_clacks-config_](../clacks-config/README.md) pages.
 
--   [devices.json](../clacks-config/README.md#devices.json)
--   [schedules.json](../clacks-config/README.md#schedules.json)
+-   [devices.json](../clacks-config/README.md#devicesjson)
+-   [schedules.json](../clacks-config/README.md#schedulesjson)
 
 ## Testing
 

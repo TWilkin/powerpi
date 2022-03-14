@@ -24,7 +24,7 @@ The project is split into the following services, each of which have their own _
 
 -   [**babel-fish**](babel-fish/README.md) - Integration with Amazon Alexa skill to receive voice commands.
 -   [**certbot**](certbot/README.md) - Use Let's Encrypt to provide SSL certificates for NGINX.
--   [**clacks-config**](clacks-config/READEME.md) - Retrieve configuration files from GitHub.
+-   [**clacks-config**](clacks-config/README.md) - Retrieve configuration files from GitHub.
 -   **controllers**:
     -   [**energenie**](controllers/energenie/README.md) - Allows control of [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories) devices using the ENER314 or ENER314-RT Pi module.
     -   [**harmony**](controllers/harmony/README.md) - Allows control of [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html) Smart Hub devices.

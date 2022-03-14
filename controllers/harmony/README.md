@@ -8,9 +8,9 @@ The service is built using python, with dependencies using [poetry](https://pyth
 
 This controller service supports the following Logitech Harmony devices (any including a WiFi smart hub):
 
-- [Harmony Elite](https://www.logitech.com/en-gb/products/harmony/harmony-elite.html)
-- [Harmony Companion](https://www.logitech.com/en-gb/products/harmony/harmony-companion.html)
-- [Harmony Hub](https://www.logitech.com/en-gb/products/harmony/harmony-hub.html)
+-   [Harmony Elite](https://www.logitech.com/en-gb/products/harmony/harmony-elite.html)
+-   [Harmony Companion](https://www.logitech.com/en-gb/products/harmony/harmony-companion.html)
+-   [Harmony Hub](https://www.logitech.com/en-gb/products/harmony/harmony-hub.html)
 
 ## Building
 
@@ -31,8 +31,8 @@ This service expects the following environment variables to be set before it wil
 
 This service requires two configuration files, both of which are described on the following [_clacks-config_](../../clacks-config/README.md) pages.
 
--   [devices.json](../../clacks-config/README.md#devices.json)
--   [events.json](../../clacks-config/README.md#events.json)
+-   [devices.json](../../clacks-config/README.md#devicesjson)
+-   [events.json](../../clacks-config/README.md#eventsjson)
 
 ## Testing
 

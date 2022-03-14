@@ -8,13 +8,13 @@ The service is built using python, with dependencies using [poetry](https://pyth
 
 This controller requires one of the following Raspberry Pi modules to wirelessly communicate with the other Energenie devices:
 
-- [ENER314-RT](https://energenie4u.co.uk/catalogue/product/ENER314-RT) - Two Way Pi-mote, preferred option, supports two way communication and up to 16 devices.
-- [ENER314](https://energenie4u.co.uk/catalogue/product/ENER314) - Pi-mote control board, one way communication, no support for MiHome and just one supported device.
+-   [ENER314-RT](https://energenie4u.co.uk/catalogue/product/ENER314-RT) - Two Way Pi-mote, preferred option, supports two way communication and up to 16 devices.
+-   [ENER314](https://energenie4u.co.uk/catalogue/product/ENER314) - Pi-mote control board, one way communication, no support for MiHome and just one supported device.
 
 This controller service currently supports the following Energenie devices:
 
-- [ENER002](https://energenie4u.co.uk/catalogue/product/ENER002) - Individual Remote Control Socket
-- [ENER010](https://energenie4u.co.uk/catalogue/product/ENER010) - 4 Way Radio Controlled Extension Lead
+-   [ENER002](https://energenie4u.co.uk/catalogue/product/ENER002) - Individual Remote Control Socket
+-   [ENER010](https://energenie4u.co.uk/catalogue/product/ENER010) - 4 Way Radio Controlled Extension Lead
 
 ## Building
 
@@ -37,8 +37,8 @@ This service expects the following environment variables to be set before it wil
 
 This service requires two configuration files, both of which are described on the following [_clacks-config_](../../clacks-config/README.md) pages.
 
--   [devices.json](../../clacks-config/README.md#devices.json)
--   [events.json](../../clacks-config/README.md#events.json)
+-   [devices.json](../../clacks-config/README.md#devicesjson)
+-   [events.json](../../clacks-config/README.md#eventsjson)
 
 ## Testing
 

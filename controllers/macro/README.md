@@ -8,10 +8,10 @@ The service is built using python, with dependencies using [poetry](https://pyth
 
 This controller provides the following virtual devices:
 
-- **Composite** - Group several devices together so they can be turned on/off together (in the order they are defined), as well as have additional settings applied in a group (e.g. brightness).
-- **Delay** - Wait for the specified interval for turn on or turn off. Used if a device takes a few seconds to start-up, and we don't want the next step to happen before it's ready.
-- **Log** - A device used for testing, will simply output the specified log message when turned on or off.
-- **Mutex** - A device that will ensure all the devices in the off device specification are off before attempting to turn the devices in the on device specification, akin to a mutually exclusive lock, the on devices cannot be on if the off devices are on.
+-   **Composite** - Group several devices together so they can be turned on/off together (in the order they are defined), as well as have additional settings applied in a group (e.g. brightness).
+-   **Delay** - Wait for the specified interval for turn on or turn off. Used if a device takes a few seconds to start-up, and we don't want the next step to happen before it's ready.
+-   **Log** - A device used for testing, will simply output the specified log message when turned on or off.
+-   **Mutex** - A device that will ensure all the devices in the off device specification are off before attempting to turn the devices in the on device specification, akin to a mutually exclusive lock, the on devices cannot be on if the off devices are on.
 
 ## Building
 
@@ -32,8 +32,8 @@ This service expects the following environment variables to be set before it wil
 
 This service requires two configuration files, both of which are described on the following [_clacks-config_](../../clacks-config/README.md) pages.
 
--   [devices.json](../../clacks-config/README.md#devices.json)
--   [events.json](../../clacks-config/README.md#events.json)
+-   [devices.json](../../clacks-config/README.md#devicesjson)
+-   [events.json](../../clacks-config/README.md#eventsjson)
 
 ## Testing
 
