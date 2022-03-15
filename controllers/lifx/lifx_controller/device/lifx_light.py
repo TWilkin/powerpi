@@ -98,8 +98,8 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
 
         return keys
 
-    def _turn_on(self):
+    async def _turn_on(self):
         self.__light.set_power(True, self.__duration)
 
-    def _turn_off(self):
+    async def _turn_off(self):
         self.__light.set_power(False, self.__duration)

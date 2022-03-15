@@ -26,12 +26,12 @@ class EnergeniePairingDevice(Device):
         self.__energenie = energenie
         self.__timeout = timeout
 
-    def _turn_on(self):
+    async def _turn_on(self):
         # run in a separate task so the off state happens after the on
         loop = asyncio.get_event_loop()
         loop.create_task(self.pair())
 
-    def _turn_off(self):
+    async def _turn_off(self):
         self.__energenie.stop_pair()
 
     async def pair(self):

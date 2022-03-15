@@ -5,7 +5,6 @@ from typing import Awaitable, Callable, Union
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
-from powerpi_common.util import await_or_sync
 from .base import BaseDevice
 from .consumers import DeviceChangeEventConsumer, DeviceInitialStatusEventConsumer
 from .types import DeviceStatus
@@ -96,18 +95,18 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
                 await self.turn_off()
 
     @abstractmethod
-    def _turn_on(self):
+    async def _turn_on(self):
         '''
         Implement this method to turn the concrete device implementation on.
-        Supports both sync and async implementations.
+        Must be async.
         '''
         raise NotImplementedError
 
     @abstractmethod
-    def _turn_off(self):
+    async def _turn_off(self):
         '''
         Implement this method to turn the concrete device implementation off.
-        Supports both sync and async implementations.
+        Must be async.
         '''
         raise NotImplementedError
 
@@ -131,7 +130,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         try:
             async with self.__lock:
                 self._logger.info(f'Turning {new_status} device {self}')
-                await await_or_sync(func)
+                await func()
                 self.state = new_status
         except Exception as ex:
             self._logger.exception(ex)

@@ -10,10 +10,10 @@ class DeviceImpl(Device, PollableMixin):
     async def poll(self):
         pass
 
-    def _turn_on(self):
+    async def _turn_on(self):
         pass
 
-    def _turn_off(self):
+    async def _turn_off(self):
         pass
 
 

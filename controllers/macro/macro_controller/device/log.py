@@ -17,8 +17,8 @@ class LogDevice(Device):
 
         self.__message = message
 
-    def _turn_on(self):
+    async def _turn_on(self):
         self._logger.info(f'{self}: on: {self.__message}')
 
-    def _turn_off(self):
+    async def _turn_off(self):
         self._logger.info(f'{self}: off: {self.__message}')

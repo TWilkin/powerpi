@@ -7,10 +7,10 @@ from powerpi_common_test.device.mixin import InitialisableMixinTestBase
 
 
 class DeviceImpl(Device, InitialisableMixin):
-    def _turn_on(self):
+    async def _turn_on(self):
         pass
 
-    def _turn_off(self):
+    async def _turn_off(self):
         pass
 
     async def initialise(self):

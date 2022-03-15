@@ -70,7 +70,7 @@ class HarmonyHubDevice(Device, PollableMixin):
         except Exception:
             self.__update_to_unknown()
 
-    def _turn_on(self):
+    async def _turn_on(self):
         pass
 
     async def _turn_off(self):

@@ -14,10 +14,10 @@ class DeviceImpl(AdditionalStateDevice):
             name='test'
         )
 
-    def _turn_on(self):
+    async def _turn_on(self):
         pass
 
-    def _turn_off(self):
+    async def _turn_off(self):
         pass
 
     async def on_additional_state_change(self, new_additional_state: Dict[str, Any]):

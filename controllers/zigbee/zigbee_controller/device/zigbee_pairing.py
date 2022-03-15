@@ -27,12 +27,12 @@ class ZigbeePairingDevice(Device):
 
         self.__zigbee_controller.add_listener(self)
 
-    def _turn_on(self):
+    async def _turn_on(self):
         # run in a separate task so the off state happens after the on
         loop = asyncio.get_event_loop()
         loop.create_task(self.pair())
 
-    def _turn_off(self):
+    async def _turn_off(self):
         pass
 
     async def pair(self):

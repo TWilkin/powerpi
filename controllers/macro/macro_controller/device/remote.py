@@ -75,7 +75,7 @@ class RemoteDevice(DeviceStatusEventConsumer, AdditionalStateMixin):
         self.__additional_state = new_additional_state
         self.__waiting.set()
 
-    def _on_additional_state_change(self, new_additional_state: AdditionalState) -> AdditionalState:
+    async def on_additional_state_change(self, new_additional_state: AdditionalState) -> AdditionalState:
         # we are doing everything in change_power_and_additional_state
         return new_additional_state
 

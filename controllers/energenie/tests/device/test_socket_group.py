@@ -15,10 +15,10 @@ class MockSocket(Device):
     def __init__(self, config, logger, mqtt_client, name):
         Device.__init__(self, config, logger, mqtt_client, name=name)
 
-    def _turn_on(self):
+    async def _turn_on(self):
         pass
 
-    def _turn_off(self):
+    async def _turn_off(self):
         pass
 
 

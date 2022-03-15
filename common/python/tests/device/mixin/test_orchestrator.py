@@ -21,10 +21,10 @@ class DeviceImpl(Device, DeviceOrchestratorMixin):
         self.current_device = device_name
         self.state = state
 
-    def _turn_on(self):
+    async def _turn_on(self):
         pass
 
-    def _turn_off(self):
+    async def _turn_off(self):
         pass
 
 
