@@ -6,7 +6,6 @@ from .device import DeviceManager, DeviceStatusChecker
 from .event import EventManager
 from .logger import Logger
 from .mqtt import MQTTClient
-from .util import await_or_sync
 
 
 #pylint: disable=too-many-instance-attributes
@@ -47,10 +46,10 @@ class Controller:
     def _log_start(self):
         pass
 
-    def _initialise_devices(self):
+    async def _initialise_devices(self):
         pass
 
-    def _cleanup_devices(self):
+    async def _cleanup_devices(self):
         pass
 
     async def __main(self):
@@ -65,7 +64,7 @@ class Controller:
             await self.__config_retriever.start()
 
             # perform any device initialisation
-            await await_or_sync(self._initialise_devices)
+            await self._initialise_devices()
 
             # load the devices from the config
             await self.__device_manager.load()
@@ -84,6 +83,6 @@ class Controller:
     async def __cleanup(self):
         self.__device_status_checker.stop()
 
-        await await_or_sync(self._cleanup_devices)
+        await self._cleanup_devices()
 
         await self.__mqtt_client.disconnect()
