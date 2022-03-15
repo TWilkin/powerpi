@@ -36,7 +36,7 @@ class DeviceInitialStatusEventConsumer(DeviceStatusEventConsumer):
             if ismixin(self._device, powerpi_common.device.additional_state.AdditionalStateDevice):
                 new_additional_state = self._get_additional_state(message)
 
-                self._device.update_state_no_broadcast(
+                self._device.update_state_and_additional_no_broadcast(
                     new_power_state, new_additional_state
                 )
             else:
