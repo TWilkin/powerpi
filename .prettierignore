@@ -14,5 +14,6 @@
 **/.eslintignore
 **/.eslintrc
 **/.gitignore
+**/.pylintrc
 **/Dockerfile
-**/Pipfile.lock
+**/poetry.lock
