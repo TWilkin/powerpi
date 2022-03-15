@@ -28,7 +28,7 @@ class DeviceInitialStatusEventConsumer(DeviceStatusEventConsumer):
         self.__mqtt_client = mqtt_client
         self.__mqtt_client.add_consumer(self)
 
-    def on_message(self, message: MQTTMessage, entity: str, _: str):
+    async def on_message(self, message: MQTTMessage, entity: str, _: str):
         if self.__active and self._is_message_valid(entity, message.get('state')):
             new_power_state = message.pop('state', DeviceStatus.UNKNOWN)
 

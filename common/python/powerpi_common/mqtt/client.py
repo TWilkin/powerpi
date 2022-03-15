@@ -14,7 +14,6 @@ from gmqtt import Client
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.util import await_or_sync
 from .consumer import MQTTConsumer
 from .types import MQTTMessage
 
@@ -127,7 +126,7 @@ class MQTTClient:
             for consumer in self.__consumers[listener_key]:
                 # pylint: disable=broad-except
                 try:
-                    await await_or_sync(consumer.on_message, message, entity, action)
+                    await consumer.on_message(message, entity, action)
                 except Exception as ex:
                     self.__logger.exception(
                         Exception(f'{type(consumer)}.on_message', ex)

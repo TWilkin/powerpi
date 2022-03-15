@@ -23,7 +23,7 @@ class DeviceStatusEventConsumer(DeviceEventConsumer):
             self, topic, device, config, logger
         )
 
-    def on_message(self, message: MQTTMessage, entity: str, _: str):
+    async def on_message(self, message: MQTTMessage, entity: str, _: str):
         if self._is_message_valid(entity, message.get('state')):
             new_power_state = message.get('state', DeviceStatus.UNKNOWN)
 

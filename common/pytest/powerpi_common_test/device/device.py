@@ -118,7 +118,7 @@ class DeviceTestBase(BaseDeviceTestBase):
         await subject.on_message(message, subject.name, 'change')
         assert subject.state == 'unknown'
 
-    def test_initial_state_message(self, mocker: MockerFixture):
+    async def test_initial_state_message(self, mocker: MockerFixture):
         self.initial_state_consumer = None
 
         def mock_add_consumer():
@@ -138,10 +138,10 @@ class DeviceTestBase(BaseDeviceTestBase):
         assert subject.state == 'unknown'
 
         # first message should set the state
-        self.initial_state_consumer.on_message(message, subject.name, 'status')
+        await self.initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
 
         # subsequent messages should be ignored
         message['state'] = 'off'
-        self.initial_state_consumer.on_message(message, subject.name, 'status')
+        await self.initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
