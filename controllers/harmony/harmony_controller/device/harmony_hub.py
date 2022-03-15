@@ -55,7 +55,7 @@ class HarmonyHubDevice(Device, PollableMixin):
             self.__device_manager.devices.values()
         ))
 
-    async def _poll(self):
+    async def poll(self):
         # pylint: disable=broad-except
         try:
             current_activity_id = await self.__client.get_current_activity()

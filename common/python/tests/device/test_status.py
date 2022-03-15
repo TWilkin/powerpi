@@ -12,7 +12,7 @@ class PollableDeviceImpl(PollableMixin):
         self.name = name
         self.count = 0
 
-    def _poll(self):
+    async def poll(self):
         self.count += 1
 
 

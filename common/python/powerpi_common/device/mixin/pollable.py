@@ -1,6 +1,4 @@
-from abc import ABC, abstractmethod
-
-from powerpi_common.util import await_or_sync
+from abc import ABC
 
 
 class PollableMixin(ABC):
@@ -11,14 +9,7 @@ class PollableMixin(ABC):
     '''
     async def poll(self):
         '''
-        Poll for any state change for this device.
-        '''
-        await await_or_sync(self._poll)
-
-    @abstractmethod
-    def _poll(self):
-        '''
         Implement this method to support polling in a concrete device implementation.
-        Supports both sync and async implementations.
+        Must be async.
         '''
         raise NotImplementedError

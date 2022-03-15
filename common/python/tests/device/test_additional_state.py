@@ -20,7 +20,7 @@ class DeviceImpl(AdditionalStateDevice):
     def _turn_off(self):
         pass
 
-    def _on_additional_state_change(self, new_additional_state: Dict[str, Any]):
+    async def on_additional_state_change(self, new_additional_state: Dict[str, Any]):
         return new_additional_state
 
     def _additional_state_keys(self):

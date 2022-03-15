@@ -46,7 +46,7 @@ class DeviceManager(InitialisableMixin):
 
         await self.initialise()
 
-    async def _initialise(self):
+    async def initialise(self):
         for device_type in DeviceConfigType:
             filtered = filter(
                 lambda device: ismixin(device, InitialisableMixin),

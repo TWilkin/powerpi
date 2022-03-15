@@ -47,7 +47,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
     def colour(self):
         return LIFXColour(self.additional_state)
 
-    def _poll(self):
+    async def poll(self):
         is_powered: Union[int, None] = None
         colour: Union[LIFXColour, None] = None
 
@@ -77,7 +77,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
         if changed:
             self.set_state_and_additional(new_state, new_additional_state)
 
-    def _on_additional_state_change(self, new_additional_state: AdditionalState):
+    async def on_additional_state_change(self, new_additional_state: AdditionalState):
         if new_additional_state is not None:
             lifx_colour = LIFXColour(self.additional_state)
             lifx_colour.patch(new_additional_state)

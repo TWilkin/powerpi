@@ -13,7 +13,7 @@ class DeviceImpl(Device, InitialisableMixin):
     def _turn_off(self):
         pass
 
-    def _initialise(self):
+    async def initialise(self):
         pass
 
 

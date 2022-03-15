@@ -36,7 +36,7 @@ class AdditionalStateMixin(ABC):
 
             if len(new_additional_state) > 0:
                 # there is other work to do
-                new_additional_state = self._on_additional_state_change(
+                new_additional_state = await self.on_additional_state_change(
                     new_additional_state
                 )
 
@@ -66,15 +66,9 @@ class AdditionalStateMixin(ABC):
 
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
         '''
-        Called when a message is received that contains additional state.
-        '''
-        return await await_or_sync(self._on_additional_state_change, new_additional_state)
-
-    @abstractmethod
-    def _on_additional_state_change(self, new_additional_state: AdditionalState) -> AdditionalState:
-        '''
         Handler for when the additional state changes, allowing the extending device to
         perform any action on the physical device.
+        Must be async
         '''
         raise NotImplementedError
 

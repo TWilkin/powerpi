@@ -7,7 +7,7 @@ from powerpi_common_test.device.mixin import PollableMixinTestBase
 
 
 class DeviceImpl(Device, PollableMixin):
-    def _poll(self):
+    async def poll(self):
         pass
 
     def _turn_on(self):

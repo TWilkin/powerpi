@@ -29,7 +29,7 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
         )
 
     async def on_referenced_device_status(self, _: str, __: DeviceStatus):
-        await self._poll()
+        await self.poll()
 
     async def change_power_and_additional_state(
         self,
@@ -51,7 +51,7 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
 
             self.set_state_and_additional(new_state, new_additional_state)
 
-    def _on_additional_state_change(self, new_additional_state: AdditionalState) -> AdditionalState:
+    async def on_additional_state_change(self, new_additional_state: AdditionalState) -> AdditionalState:
         # we are doing everything in change_power_and_additional_state
         return new_additional_state
 
@@ -64,7 +64,7 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
         # but the test expect at least one
         return ['a']
 
-    async def _poll(self):
+    async def poll(self):
         # are any unknown
         if any((device.state == DeviceStatus.UNKNOWN for device in self.devices)):
             await self.set_new_state(DeviceStatus.UNKNOWN)

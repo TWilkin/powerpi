@@ -18,7 +18,4 @@ class DeviceOrchestratorMixinTestBase(ABC):
     async def test_on_referenced_device_status_implemented(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
-        result = subject.on_referenced_device_status('test_device', 'on')
-
-        if result is not None:
-            await result
+        await subject.on_referenced_device_status('test_device', 'on')

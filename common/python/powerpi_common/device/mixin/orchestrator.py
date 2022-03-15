@@ -7,7 +7,6 @@ from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, MQTTMessage
 from powerpi_common.typing import DeviceManagerType, DeviceType
-from powerpi_common.util import await_or_sync
 from .initialisable import InitialisableMixin
 
 
@@ -32,10 +31,7 @@ class DeviceOrchestratorMixin(InitialisableMixin):
             if self._is_message_valid(entity, None):
                 new_power_state = message.get('state', DeviceStatus.UNKNOWN)
 
-                await await_or_sync(
-                    self.__main_device.on_referenced_device_status,
-                    self._device.name, new_power_state
-                )
+                await self.__main_device.on_referenced_device_status(self._device.name, new_power_state)
 
     #pylint: disable=too-many-arguments
     def __init__(
@@ -61,15 +57,15 @@ class DeviceOrchestratorMixin(InitialisableMixin):
         return [self.__device_manager.get_device(device_name) for device_name in self.__devices]
 
     @abstractmethod
-    def on_referenced_device_status(self, device_name: str, state: DeviceStatus):
+    async def on_referenced_device_status(self, device_name: str, state: DeviceStatus):
         '''
         Method to refresh the orchestrator devices' state based on the changed
         state from the referenced device.
-        Supports both sync and async implementations.
+        Must be async.
         '''
         raise NotImplementedError
 
-    def _initialise(self):
+    async def initialise(self):
         for device in self.devices:
             consumer = self.ReferencedDeviceStateEventListener(
                 self, device, self.__config, self.__logger
