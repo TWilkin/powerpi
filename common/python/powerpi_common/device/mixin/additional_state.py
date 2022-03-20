@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, List
 
 from powerpi_common.device.types import DeviceStatus
-from powerpi_common.util import await_or_sync
 
 
 AdditionalState = Dict[str, Any]
@@ -30,13 +29,13 @@ class AdditionalStateMixin(ABC):
                 self._logger.info(f'Turning {new_state} device {self}')
 
                 func = self._turn_on if new_state == DeviceStatus.ON else self._turn_off
-                await await_or_sync(func)
+                await func()
 
             new_additional_state = self._filter_keys(new_additional_state)
 
             if len(new_additional_state) > 0:
                 # there is other work to do
-                new_additional_state = self._on_additional_state_change(
+                new_additional_state = await self.on_additional_state_change(
                     new_additional_state
                 )
 
@@ -66,15 +65,9 @@ class AdditionalStateMixin(ABC):
 
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
         '''
-        Called when a message is received that contains additional state.
-        '''
-        return await await_or_sync(self._on_additional_state_change, new_additional_state)
-
-    @abstractmethod
-    def _on_additional_state_change(self, new_additional_state: AdditionalState) -> AdditionalState:
-        '''
         Handler for when the additional state changes, allowing the extending device to
         perform any action on the physical device.
+        Must be async
         '''
         raise NotImplementedError
 

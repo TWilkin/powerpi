@@ -77,7 +77,7 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         assert len(self.messages) == 3
         assert all([key in message for message in self.messages])
 
-    def test_initial_additional_state_message(self, mocker: MockerFixture):
+    async def test_initial_additional_state_message(self, mocker: MockerFixture):
         self.initial_state_consumer = None
 
         def mock_add_consumer():
@@ -100,13 +100,13 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         assert subject.additional_state == {}
 
         # first message should set the state
-        self.initial_state_consumer.on_message(message, subject.name, 'status')
+        await self.initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
         assert subject.additional_state.get(key, None) == 1
 
         # subsequent messages should be ignored
         message['state'] = 'off'
         message['something'] = 'more'
-        self.initial_state_consumer.on_message(message, subject.name, 'status')
+        await self.initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
         assert subject.additional_state.get(key, None) == 1

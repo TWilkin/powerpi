@@ -1,7 +1,5 @@
 from abc import ABC
 
-from powerpi_common.util import await_or_sync
-
 
 class InitialisableMixin(ABC):
     '''
@@ -10,13 +8,7 @@ class InitialisableMixin(ABC):
     '''
     async def initialise(self):
         '''
-        Initialise this device.
-        '''
-        await await_or_sync(self._initialise)
-
-    def _initialise(self):
-        '''
         Implement this method to support initialisation on instantiation.
-        Supports both sync and async implementations.
+        Must be async.
         '''
         raise NotImplementedError

@@ -16,7 +16,7 @@ class DummyDevice:
         self.kwargs = kwargs
         self.initialised = False
 
-    def _initialise(self):
+    async def initialise(self):
         # this is implemented here to prove it's not called for the wrong devices
         self.initialised = True
 
