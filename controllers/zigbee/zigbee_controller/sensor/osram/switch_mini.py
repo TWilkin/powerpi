@@ -5,7 +5,7 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from zigbee_controller.device import ZigbeeController
-from zigbee_controller.zigbee import ClusterListener, ZigbeeDevice
+from zigbee_controller.zigbee import ClusterListener, ZigbeeMixin
 
 
 class Button(str, Enum):
@@ -20,7 +20,7 @@ class PressType(str, Enum):
     RELEASE = 'release'
 
 
-class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
+class OsramSwitchMiniSensor(Sensor, ZigbeeMixin):
     ''' Adds support for Osram Smart+ Switch Mini
         Generates the following events on button clicks where NAME is the
         configured name of the device.
@@ -53,7 +53,7 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
         **kwargs
     ):
         Sensor.__init__(self, mqtt_client, **kwargs)
-        ZigbeeDevice.__init__(self, controller, ieee, nwk)
+        ZigbeeMixin.__init__(self, controller, ieee, nwk)
 
         self.__logger = logger
 
@@ -124,4 +124,4 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
         )
 
     def __str__(self):
-        return ZigbeeDevice.__str__(self)
+        return ZigbeeMixin.__str__(self)

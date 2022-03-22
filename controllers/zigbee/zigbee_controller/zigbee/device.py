@@ -6,7 +6,7 @@ from zigpy.typing import DeviceType
 from zigbee_controller.device import ZigbeeController
 
 
-class ZigbeeDevice(ABC):
+class ZigbeeMixin(ABC):
     def __init__(
         self,
         controller: ZigbeeController,

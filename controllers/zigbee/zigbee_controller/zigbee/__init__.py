@@ -1,2 +1,2 @@
 from .cluster_listener import ClusterListener
-from .device import ZigbeeDevice
+from .device import ZigbeeMixin
