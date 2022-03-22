@@ -5,7 +5,7 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from zigbee_controller.device import ZigbeeController
-from zigbee_controller.zigbee import ClusterListener, ZigbeeMixin
+from zigbee_controller.zigbee import ClusterCommandListener, ZigbeeMixin
 
 
 class Button(str, Enum):
@@ -96,30 +96,30 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin):
 
         # single press
         device[1].out_clusters[6].add_listener(
-            ClusterListener(lambda _, __, ___: self.button_press_handler(
+            ClusterCommandListener(lambda _, __, ___: self.button_press_handler(
                 Button.UP, PressType.SINGLE)
             )
         )
         device[2].out_clusters[6].add_listener(
-            ClusterListener(lambda _, __, ___: self.button_press_handler(
+            ClusterCommandListener(lambda _, __, ___: self.button_press_handler(
                 Button.DOWN, PressType.SINGLE))
         )
         device[3].out_clusters[8].add_listener(
-            ClusterListener(lambda _, __, ___: self.button_press_handler(
+            ClusterCommandListener(lambda _, __, ___: self.button_press_handler(
                 Button.MIDDLE, PressType.SINGLE))
         )
 
         # long press
         device[1].out_clusters[8].add_listener(
-            ClusterListener(
+            ClusterCommandListener(
                 lambda _, __, args: self.long_button_press_handler(Button.UP, args))
         )
         device[2].out_clusters[8].add_listener(
-            ClusterListener(
+            ClusterCommandListener(
                 lambda _, __, args: self.long_button_press_handler(Button.DOWN, args))
         )
         device[3].out_clusters[768].add_listener(
-            ClusterListener(
+            ClusterCommandListener(
                 lambda _, __, args: self.long_middle_button_press_handler(args))
         )
 
