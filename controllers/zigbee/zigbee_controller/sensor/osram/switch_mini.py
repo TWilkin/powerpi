@@ -1,11 +1,20 @@
 from enum import Enum
 from typing import List
 
+from zigpy.zcl.clusters.general import LevelControl, OnOff
+from zigpy.zcl.clusters.lighting import Color
+
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from zigbee_controller.device import ZigbeeController
 from zigbee_controller.zigbee import ClusterCommandListener, ZigbeeMixin
+
+
+class ButtonEndpoint(int, Enum):
+    UP = 1
+    MIDDLE = 3
+    DOWN = 2
 
 
 class Button(str, Enum):
@@ -95,32 +104,41 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin):
         device = self._zigbee_device
 
         # single press
-        device[1].out_clusters[6].add_listener(
+        device[ButtonEndpoint.UP].out_clusters[OnOff.cluster_id].add_listener(
             ClusterCommandListener(lambda _, __, ___: self.button_press_handler(
-                Button.UP, PressType.SINGLE)
-            )
+                Button.UP, PressType.SINGLE
+            ))
         )
-        device[2].out_clusters[6].add_listener(
+        device[ButtonEndpoint.DOWN].out_clusters[OnOff.cluster_id].add_listener(
             ClusterCommandListener(lambda _, __, ___: self.button_press_handler(
-                Button.DOWN, PressType.SINGLE))
+                Button.DOWN, PressType.SINGLE
+            ))
         )
-        device[3].out_clusters[8].add_listener(
+        device[ButtonEndpoint.MIDDLE].out_clusters[LevelControl.cluster_id].add_listener(
             ClusterCommandListener(lambda _, __, ___: self.button_press_handler(
-                Button.MIDDLE, PressType.SINGLE))
+                Button.MIDDLE, PressType.SINGLE
+            ))
         )
 
         # long press
-        device[1].out_clusters[8].add_listener(
+        device[ButtonEndpoint.UP].out_clusters[LevelControl.cluster_id].add_listener(
             ClusterCommandListener(
-                lambda _, __, args: self.long_button_press_handler(Button.UP, args))
+                lambda _, __, args: self.long_button_press_handler(
+                    Button.UP, args
+                )
+            )
         )
-        device[2].out_clusters[8].add_listener(
+        device[ButtonEndpoint.DOWN].out_clusters[LevelControl.cluster_id].add_listener(
             ClusterCommandListener(
-                lambda _, __, args: self.long_button_press_handler(Button.DOWN, args))
+                lambda _, __, args: self.long_button_press_handler(
+                    Button.DOWN, args
+                )
+            )
         )
-        device[3].out_clusters[768].add_listener(
+        device[ButtonEndpoint.MIDDLE].out_clusters[Color.cluster_id].add_listener(
             ClusterCommandListener(
-                lambda _, __, args: self.long_middle_button_press_handler(args))
+                lambda _, __, args: self.long_middle_button_press_handler(args)
+            )
         )
 
     def __str__(self):

@@ -1,15 +1,10 @@
-from enum import Enum
+from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt.client import MQTTClient
 from powerpi_common.sensor.sensor import Sensor
 from zigbee_controller.device import ZigbeeController
-from zigbee_controller.zigbee import ClusterGeneralCommandListener, ZigbeeMixin
-
-
-class OnOff(int, Enum):
-    OFF = 0
-    ON = 1
+from zigbee_controller.zigbee import ClusterGeneralCommandListener, OnOff, ZigbeeMixin
 
 
 class AqaraDoorWindowSensor(Sensor, ZigbeeMixin):
@@ -40,7 +35,7 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin):
         if on_off == OnOff.ON:
             state = 'open'
         elif on_off == OnOff.OFF:
-            state = 'closed'
+            state = 'close'
 
         if state:
             message = {"state": state}
@@ -51,7 +46,7 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin):
         device = self._zigbee_device
 
         # open/close
-        device[1].in_clusters[6].add_listener(
+        device[1].in_clusters[OnOffCluster.cluster_id].add_listener(
             ClusterGeneralCommandListener(
                 lambda _, args: self.open_close_handler(args[0][0].value.value)
             )
