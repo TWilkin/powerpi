@@ -1,4 +1,7 @@
+from typing import List
+
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
+from zigpy.zcl.foundation import Attribute
 
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt.client import MQTTClient
@@ -45,9 +48,19 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin):
     def __register(self):
         device = self._zigbee_device
 
+        def parse(args: List[List[Attribute]]):
+            attribute_id = OnOffCluster.attridx['on_off']
+
+            for reports in args:
+                try:
+                    return reports[attribute_id].value.value
+                except KeyError:
+                    # this is probably the wrong report
+                    pass
+
         # open/close
         device[1].in_clusters[OnOffCluster.cluster_id].add_listener(
             ClusterGeneralCommandListener(
-                lambda _, args: self.open_close_handler(args[0][0].value.value)
+                lambda _, args: self.open_close_handler(parse(args))
             )
         )

@@ -1,6 +1,8 @@
 from abc import ABC
 from typing import Any, Callable, List
 
+from zigpy.zcl.foundation import Attribute, ZCLHeader
+
 
 class ClusterListener(ABC):
     def __init__(self, method: Callable):
@@ -16,9 +18,9 @@ class ClusterCommandListener(ClusterListener):
 
 
 class ClusterGeneralCommandListener(ClusterListener):
-    def __init__(self, method: Callable[[Any, List[Any]], None]):
+    def __init__(self, method: Callable[[ZCLHeader, List[List[Attribute]]], None]):
         ClusterListener.__init__(self, method)
 
-    def general_command(self, hdr, args: List[Any]):
+    def general_command(self, hdr: ZCLHeader, args: List[List[Attribute]]):
         print(args)
         self._listener(hdr, args)
