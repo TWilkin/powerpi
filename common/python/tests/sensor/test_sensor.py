@@ -12,24 +12,22 @@ class SensorImpl(Sensor):
     def __init__(
         self,
         mqtt_client: MQTTClient,
-        location: Union[str, None],
         entity: Union[str, None],
         action: Union[str, None],
         **kwargs
     ):
-        Sensor.__init__(self, mqtt_client, location, entity, action, **kwargs)
+        Sensor.__init__(self, mqtt_client, entity, action, **kwargs)
 
 
 class TestSensor(SensorTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.publish = mock_producer(mocker, self.mqtt_client)
 
-        self.location = getattr(self, 'location', None)
         self.entity = getattr(self, 'entity', None)
         self.action = getattr(self, 'action', None)
 
         return SensorImpl(
-            self.mqtt_client, self.location, self.entity, self.action,
+            self.mqtt_client, self.entity, self.action,
             name='TestSensor'
         )
 
@@ -37,13 +35,7 @@ class TestSensor(SensorTestBase):
         self.__broadcast(
             mocker,
             'event/Entity/Action',
-            entity='Entity', location='Location', action='Action'
-        )
-
-    def test_broadcast_location(self, mocker: MockerFixture):
-        self.__broadcast(
-            mocker, 'event/Location/Action',
-            location='Location', action='Action'
+            entity='Entity', action='Action'
         )
 
     def test_broadcast_name(self, mocker: MockerFixture):
@@ -59,12 +51,10 @@ class TestSensor(SensorTestBase):
         self,
         mocker: MockerFixture,
         topic: str,
-        location: Union[str, None] = None,
         entity: Union[str, None] = None,
         action: Union[str, None] = None,
         action_param: Union[str, None] = None
     ):
-        self.location = location
         self.entity = entity
         self.action = action
 
