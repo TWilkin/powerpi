@@ -30,25 +30,26 @@ class PressType(str, Enum):
 
 
 class OsramSwitchMiniSensor(Sensor, ZigbeeMixin):
-    ''' Adds support for Osram Smart+ Switch Mini
-        Generates the following events on button clicks where NAME is the
-        configured name of the device.
+    ''' 
+    Adds support for Osram Smart+ Switch Mini
+    Generates the following events on button clicks where NAME is the
+    configured name of the device.
 
-        Single press:
-        /event/NAME/press:{"button": "up", "type": "single"}
-        /event/NAME/press:{"button": "middle", "type": "single"}
-        /event/NAME/press:{"button": "down", "type": "single"}
+    Single press:
+    /event/NAME/press:{"button": "up", "type": "single"}
+    /event/NAME/press:{"button": "middle", "type": "single"}
+    /event/NAME/press:{"button": "down", "type": "single"}
 
-        Long press generates an event pair, one when the button is pressed and
-        the other when it's released:
-        /event/NAME/press:{"button": "up", "type": "hold"}
-        /event/NAME/press:{"button": "up", "type": "release"}
+    Long press generates an event pair, one when the button is pressed and
+    the other when it's released:
+    /event/NAME/press:{"button": "up", "type": "hold"}
+    /event/NAME/press:{"button": "up", "type": "release"}
 
-        /event/NAME/press:{"button": "middle", "type": "hold"}
-        /event/NAME/press:{"button": "middle", "type": "release"}
+    /event/NAME/press:{"button": "middle", "type": "hold"}
+    /event/NAME/press:{"button": "middle", "type": "release"}
 
-        /event/NAME/press:{"button": "down", "type": "hold"}
-        /event/NAME/press:{"button": "down", "type": "release"}
+    /event/NAME/press:{"button": "down", "type": "hold"}
+    /event/NAME/press:{"button": "down", "type": "release"}
     '''
 
     #pylint: disable=too-many-arguments

@@ -11,6 +11,17 @@ from zigbee_controller.zigbee import ClusterGeneralCommandListener, OnOff, Zigbe
 
 
 class AqaraDoorWindowSensor(Sensor, ZigbeeMixin):
+    '''
+    Adds support for Aqara Door/Window Sensor.
+    Generates the following events on open/close.
+
+    Open:
+    /event/NAME/change:{"state": "open"}
+
+    Close:
+    /event/NAME/change:{"state": "close"}
+    '''
+
     # pylint: disable=too-many-arguments
     def __init__(
         self,
@@ -57,6 +68,8 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin):
                 except KeyError:
                     # this is probably the wrong report
                     pass
+
+            return None
 
         # open/close
         device[1].in_clusters[OnOffCluster.cluster_id].add_listener(

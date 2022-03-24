@@ -22,5 +22,4 @@ class ClusterGeneralCommandListener(ClusterListener):
         ClusterListener.__init__(self, method)
 
     def general_command(self, hdr: ZCLHeader, args: List[List[Attribute]]):
-        print(args)
         self._listener(hdr, args)
