@@ -8,6 +8,7 @@ The service is built using python, with dependencies using [poetry](https://pyth
 
 This controller service currently supports the following ZigBee devices:
 
+-   [Aqara Door and Window Sensor](https://www.aqara.com/en/door_and_window_sensor.html) - Magnetic door and window sensor supporting open and close events as well as battery life.
 -   Osram Smart+ Switch Mini - ZigBee remote with 3 buttons (centre, up and down) supporting single and long press.
 
 ## Building
@@ -33,6 +34,14 @@ This service requires two configuration files, both of which are described on th
 
 -   [devices.json](../../clacks-config/README.md#devicesjson)
 -   [events.json](../../clacks-config/README.md#eventsjson)
+
+### Docker
+
+When running this service in Docker Swarm using the `docker-compose.yaml` file via [_device-mapper_](../../device-mapper/README.md), docker needs to know which node has the ZigBee device. The following command will add a label to the node `NODE_NAME` which should host this service.
+
+```bash
+docker node update --label-add zigbee=true NODE_NAME
+```
 
 ## Testing
 

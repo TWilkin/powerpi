@@ -40,6 +40,14 @@ This service requires two configuration files, both of which are described on th
 -   [devices.json](../../clacks-config/README.md#devicesjson)
 -   [events.json](../../clacks-config/README.md#eventsjson)
 
+### Docker
+
+When running this service in Docker Swarm using the `docker-compose.yaml` file via [_device-mapper_](../../device-mapper/README.md), docker needs to know which node has the ENER314 or ENER314-RT device. The following command will add a label to the node `NODE_NAME` which should host this service.
+
+```bash
+docker node update --label-add energenie=true NODE_NAME
+```
+
 ## Testing
 
 This service can be tested by executing the following commands.
