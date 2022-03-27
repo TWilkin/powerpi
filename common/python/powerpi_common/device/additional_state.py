@@ -70,13 +70,13 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         Update the state of this device to new_state, update the additional state
         to new_additional_state and broadcast the changes to the message queue.
         '''
-        if new_state is not None:
-            self.update_state_no_broadcast(new_state)
-
         new_additional_state = self._filter_keys(new_additional_state)
 
         if len(new_additional_state) > 0:
             self.__additional_state = new_additional_state
+
+        if new_state is not None:
+            self.update_state_no_broadcast(new_state)
 
         self._broadcast_state_change()
 
