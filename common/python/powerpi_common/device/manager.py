@@ -30,8 +30,8 @@ class DeviceManager(InitialisableMixin):
             self.__devices[device_type] = {}
 
     @property
-    def devices_and_sensors(self):
-        return self.__devices
+    def devices_and_sensors(self) -> List[Union[DeviceType, SensorType]]:
+        return list(self.devices.values()) + list(self.sensors.values())
 
     @property
     def devices(self) -> Dict[str, DeviceType]:

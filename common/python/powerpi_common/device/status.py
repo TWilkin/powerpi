@@ -26,7 +26,7 @@ class DeviceStatusChecker:
             lambda device:
                 ismixin(device, PollableMixin)
                 and device.polling_enabled,
-            list(self.__device_manager.devices_and_sensors.values())
+            list(self.__device_manager.devices_and_sensors)
         ))
 
         # only schedule if there are pollable devices

@@ -49,6 +49,7 @@ class TestDeviceManager(InitialisableMixinTestBase):
 
         assert len(subject.devices) == 0
         assert len(subject.sensors) == 0
+        assert len(subject.devices_and_sensors) == 0
 
     async def test_load_unknown(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
@@ -70,6 +71,7 @@ class TestDeviceManager(InitialisableMixinTestBase):
 
         assert len(subject.devices) == 0
         assert len(subject.sensors) == 0
+        assert len(subject.devices_and_sensors) == 0
 
     async def test_load_content(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
@@ -92,6 +94,10 @@ class TestDeviceManager(InitialisableMixinTestBase):
         })
 
         await subject.load()
+
+        assert len(subject.devices) == 2
+        assert len(subject.sensors) == 2
+        assert len(subject.devices_and_sensors) == 4
 
         for device_name, instance_type, additional, initialised in \
                 [('a', 'test_device', True, False), ('b', 'another_device', False, True)]:

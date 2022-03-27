@@ -181,9 +181,7 @@ class TestDeviceStatusChecker:
         all_devices.extend(pollable_3_devices)
         all_devices.extend(disabled_pollable_devices)
 
-        self.device_manager.devices_and_sensors = {
-            device.name: device for device in all_devices
-        }
+        self.device_manager.devices_and_sensors = all_devices
 
         return (
             pollable_none_devices + pollable_60_devices + pollable_3_devices,
