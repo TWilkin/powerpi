@@ -10,7 +10,7 @@ from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from powerpi_common.sensor.mixin.battery import BatteryMixin
 from zigbee_controller.device import ZigbeeController
-from zigbee_controller.zigbee import ClusterGeneralCommandListener, OnOff, ZigbeeMixin
+from zigbee_controller.zigbee import ClusterGeneralCommandListener, OnOff, OpenClose, ZigbeeMixin
 
 
 class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, PollableMixin, BatteryMixin):
@@ -40,8 +40,6 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, PollableMixin, BatteryMixin):
 
         self.__logger = logger
 
-        self.__register()
-
     async def poll(self):
         pass
 
@@ -50,16 +48,16 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, PollableMixin, BatteryMixin):
 
         state = None
         if on_off == OnOff.ON:
-            state = 'open'
+            state = OpenClose.OPEN
         elif on_off == OnOff.OFF:
-            state = 'close'
+            state = OpenClose.CLOSE
 
         if state:
             message = {"state": state}
 
             self._broadcast('change', message)
 
-    def __register(self):
+    async def initialise(self):
         device = self._zigbee_device
 
         def parse(args: List[List[Attribute]]):

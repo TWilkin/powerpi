@@ -1,12 +1,11 @@
-from abc import ABC
-
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 
+from powerpi_common.device.mixin import InitialisableMixin
 from zigbee_controller.device import ZigbeeController
 
 
-class ZigbeeMixin(ABC):
+class ZigbeeMixin(InitialisableMixin):
     def __init__(
         self,
         controller: ZigbeeController,

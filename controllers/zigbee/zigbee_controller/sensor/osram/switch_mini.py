@@ -65,8 +65,6 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin):
 
         self.__logger = logger
 
-        self.__register()
-
     def button_press_handler(self, button: Button, press_type: PressType):
         self.__logger.info(f'Received {press_type} press of {button}')
 
@@ -99,7 +97,7 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin):
 
             self.button_press_handler(Button.MIDDLE, press_type)
 
-    def __register(self):
+    async def initialise(self):
         device = self._zigbee_device
 
         # single press
