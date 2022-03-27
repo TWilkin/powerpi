@@ -21,17 +21,24 @@ class DeviceManager(InitialisableMixin):
         self.__logger = logger
         self.__factory = factory
 
-        self.__devices: Dict[DeviceConfigType,
-                             Dict[str, Union[DeviceType, SensorType]]] = {}
+        self.__devices: Dict[
+            DeviceConfigType,
+            Dict[str, Union[DeviceType, SensorType]]
+        ] = {}
+
         for device_type in DeviceConfigType:
             self.__devices[device_type] = {}
 
     @property
-    def devices(self) -> DeviceType:
+    def devices_and_sensors(self):
+        return self.__devices
+
+    @property
+    def devices(self) -> Dict[str, DeviceType]:
         return self.__devices[DeviceConfigType.DEVICE]
 
     @property
-    def sensors(self) -> SensorType:
+    def sensors(self) -> Dict[str, SensorType]:
         return self.__devices[DeviceConfigType.SENSOR]
 
     def get_device(self, name: str) -> DeviceType:
