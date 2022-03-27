@@ -60,7 +60,7 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
 
         hub = HarmonyHubDevice(
             self.config, self.logger, self.mqtt_client, self.device_manager, self.harmony_client,
-            name=self.__hub_name
+            name=self.__hub_name, poll_frequency=120
         )
 
         # device manager will include other activities and the hub

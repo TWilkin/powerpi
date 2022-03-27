@@ -24,6 +24,7 @@ class MutexDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         DeviceOrchestratorMixin.__init__(
             self, config, logger, mqtt_client, device_manager, on_devices + off_devices
         )
+        PollableMixin.__init__(self, config, **kwargs)
 
         self.__device_manager = device_manager
         self.__on_device_names = on_devices

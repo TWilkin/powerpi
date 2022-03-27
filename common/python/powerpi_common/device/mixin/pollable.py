@@ -11,7 +11,12 @@ class PollableMixin(ABC):
     this mixin if the state of said device has been externally modified.
     '''
 
-    def __init__(self, config: Config, poll_frequency: Union[int, None] = None):
+    def __init__(
+        self,
+        config: Config,
+        poll_frequency: Union[int, None] = None,
+        **_
+    ):
         if poll_frequency is None:
             self.__pollable = True
             self.__poll_frequency = max(config.poll_frequency, 10)

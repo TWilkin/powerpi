@@ -36,6 +36,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
         AdditionalStateDevice.__init__(
             self, config, logger, mqtt_client, **kwargs
         )
+        PollableMixin.__init__(self, config, **kwargs)
 
         self.__duration = duration
 

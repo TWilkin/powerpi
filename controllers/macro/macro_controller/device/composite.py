@@ -27,6 +27,7 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
         DeviceOrchestratorMixin.__init__(
             self, config, logger, mqtt_client, device_manager, devices
         )
+        PollableMixin.__init__(self, config, **kwargs)
 
     async def on_referenced_device_status(self, _: str, __: DeviceStatus):
         await self.poll()
