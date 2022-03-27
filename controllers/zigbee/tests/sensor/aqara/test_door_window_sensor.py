@@ -4,12 +4,14 @@ import pytest
 
 from pytest_mock import MockerFixture
 
-from powerpi_common_test.mqtt.mqtt import mock_producer
-from powerpi_common_test.sensor.sensor import SensorTestBase
+from powerpi_common_test.device.mixin import PollableMixinTestBase
+from powerpi_common_test.mqtt import mock_producer
+from powerpi_common_test.sensor import SensorTestBase
+from powerpi_common_test.sensor.mixin import BatteryMixinTestBase
 from zigbee_controller.sensor.aqara.door_window_sensor import AqaraDoorWindowSensor
 
 
-class TestAqaraDoorWindowSensor(SensorTestBase):
+class TestAqaraDoorWindowSensor(SensorTestBase, PollableMixinTestBase, BatteryMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.controller = mocker.MagicMock()
 
@@ -22,18 +24,20 @@ class TestAqaraDoorWindowSensor(SensorTestBase):
 
         self.controller.__getitem__.side_effect = getitem
 
-        self.publish = mock_producer(mocker, self.mqtt_client)
-
         return AqaraDoorWindowSensor(
-            self.logger, self.controller, self.mqtt_client,
-            '00:00:00:00:00:00:00:00', '0xAAAA', name='test'
+            self.config, self.logger, self.controller, self.mqtt_client,
+            '00:00:00:00:00:00:00:00', '0xAAAA',
+            name='test', poll_frequency=60
         )
 
     @pytest.mark.parametrize('values', [(0, 'close'), (1, 'open'), (False, 'close'), (True, 'open')])
     def test_open_close_handler(self, mocker: MockerFixture, values: Tuple[Union[int, bool], str]):
         (arg, state) = values
 
-        subject = self.create_subject(mocker)
+        def mock():
+            self.publish = mock_producer(mocker, self.mqtt_client)
+
+        subject = self.create_subject(mocker, mock)
 
         subject.open_close_handler(arg)
 
@@ -41,7 +45,10 @@ class TestAqaraDoorWindowSensor(SensorTestBase):
 
     @pytest.mark.parametrize('arg', [2, -1, None])
     def test_open_close_handler_bad_args(self, mocker: MockerFixture, arg: Union[int, None]):
-        subject = self.create_subject(mocker)
+        def mock():
+            self.publish = mock_producer(mocker, self.mqtt_client)
+
+        subject = self.create_subject(mocker, mock)
 
         subject.open_close_handler(arg)
 

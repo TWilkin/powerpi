@@ -12,6 +12,7 @@ class SensorTestBase(BaseDeviceTestBase):
     pytestmark = pytest.mark.asyncio
 
     def create_subject(self, mocker: MockerFixture, func: Callable[[], None] = None):
+        self.config = mocker.Mock()
         self.logger = mocker.Mock()
         self.mqtt_client = mocker.Mock()
 
