@@ -58,12 +58,10 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin):
         logger: Logger,
         controller: ZigbeeController,
         mqtt_client: MQTTClient,
-        ieee: str,
-        nwk: str,
         **kwargs
     ):
         Sensor.__init__(self, mqtt_client, **kwargs)
-        ZigbeeMixin.__init__(self, controller, ieee, nwk)
+        ZigbeeMixin.__init__(self, controller, **kwargs)
 
         self.__logger = logger
 

@@ -26,7 +26,7 @@ class TestAqaraDoorWindowSensor(SensorTestBase, PollableMixinTestBase, BatteryMi
 
         return AqaraDoorWindowSensor(
             self.config, self.logger, self.controller, self.mqtt_client,
-            '00:00:00:00:00:00:00:00', '0xAAAA',
+            ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA',
             name='test', poll_frequency=60
         )
 

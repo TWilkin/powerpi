@@ -11,7 +11,8 @@ class ZigbeeMixin(ABC):
         self,
         controller: ZigbeeController,
         ieee: str,
-        nwk: str
+        nwk: str,
+        **_
     ):
         self.__controller = controller
         self.__ieee = EUI64.convert(ieee)
