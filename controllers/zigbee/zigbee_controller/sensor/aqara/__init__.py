@@ -12,7 +12,6 @@ def add_aqara_sensors(container):
             f'aqara_{sensor_type}_sensor',
             providers.Factory(
                 AqaraDoorWindowSensor,
-                config=container.common.config,
                 logger=container.common.logger,
                 controller=container.device.zigbee_controller,
                 mqtt_client=container.common.mqtt_client

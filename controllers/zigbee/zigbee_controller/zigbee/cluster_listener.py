@@ -9,6 +9,14 @@ class ClusterListener(ABC):
         self._listener = method
 
 
+class ClusterAttributeListener(ClusterListener):
+    def __init__(self, method: Callable[[int, Any], None]):
+        ClusterListener.__init__(self, method)
+
+    def attribute_updated(self, attribute_id: int, value: Any):
+        self._listener(attribute_id, value)
+
+
 class ClusterCommandListener(ClusterListener):
     def __init__(self, method: Callable[[int, int, List[Any]], None]):
         ClusterListener.__init__(self, method)

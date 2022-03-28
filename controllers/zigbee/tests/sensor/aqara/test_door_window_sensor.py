@@ -4,7 +4,7 @@ import pytest
 
 from pytest_mock import MockerFixture
 
-from powerpi_common_test.device.mixin import InitialisableMixinTestBase, PollableMixinTestBase
+from powerpi_common_test.device.mixin import InitialisableMixinTestBase
 from powerpi_common_test.mqtt import mock_producer
 from powerpi_common_test.sensor import SensorTestBase
 from powerpi_common_test.sensor.mixin import BatteryMixinTestBase
@@ -12,7 +12,7 @@ from zigbee_controller.sensor.aqara.door_window_sensor import AqaraDoorWindowSen
 
 
 class TestAqaraDoorWindowSensor(
-    SensorTestBase, PollableMixinTestBase, BatteryMixinTestBase, InitialisableMixinTestBase
+    SensorTestBase, BatteryMixinTestBase, InitialisableMixinTestBase
 ):
     def get_subject(self, mocker: MockerFixture):
         self.controller = mocker.MagicMock()
@@ -27,9 +27,9 @@ class TestAqaraDoorWindowSensor(
         self.controller.__getitem__.side_effect = getitem
 
         return AqaraDoorWindowSensor(
-            self.config, self.logger, self.controller, self.mqtt_client,
+            self.logger, self.controller, self.mqtt_client,
             ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA',
-            name='test', poll_frequency=60
+            name='test'
         )
 
     @pytest.mark.parametrize('values', [(0, 'close'), (1, 'open'), (False, 'close'), (True, 'open')])
