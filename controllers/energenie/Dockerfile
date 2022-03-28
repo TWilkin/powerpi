@@ -35,7 +35,7 @@ LABEL description="PowerPi Energenie Controller"
 RUN apk add --no-cache libc6-compat
 
 ENV PATH="/usr/src/app/venv/bin:$PATH"
-ENV TZ="Europe/London"
+ENV TZ="UTC"
 
 RUN addgroup -g 997 -S gpio \
     && adduser --disabled-password powerpi \
