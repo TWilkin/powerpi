@@ -37,7 +37,8 @@ class TestMutexDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase, PollableM
             self.config, self.logger, self.mqtt_client, self.device_manager,
             off_devices=[0, 1],
             on_devices=[2, 3],
-            name='mutex'
+            name='mutex',
+            poll_frequency=60
         )
 
     async def test_all_on(self, mocker: MockerFixture):

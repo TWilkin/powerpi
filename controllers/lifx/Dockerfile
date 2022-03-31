@@ -29,7 +29,7 @@ LABEL description="PowerPi LIFX Controller"
 RUN apk add --no-cache libc6-compat
 
 ENV PATH="/usr/src/app/venv/bin:$PATH"
-ENV TZ="Europe/London"
+ENV TZ="UTC"
 
 RUN adduser --disabled-password powerpi
 USER powerpi

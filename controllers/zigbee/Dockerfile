@@ -32,7 +32,7 @@ RUN apk add --no-cache libc6-compat
 RUN apk add --no-cache sqlite-libs
 
 ENV PATH="/usr/src/app/venv/bin:$PATH"
-ENV TZ="Europe/London"
+ENV TZ="UTC"
 
 RUN adduser --disabled-password powerpi \
     && addgroup powerpi dialout

@@ -38,6 +38,7 @@ class HarmonyHubDevice(Device, PollableMixin):
         Device.__init__(
             self, config, logger, mqtt_client, **kwargs
         )
+        PollableMixin.__init__(self, config, **kwargs)
 
         self.__device_manager = device_manager
 

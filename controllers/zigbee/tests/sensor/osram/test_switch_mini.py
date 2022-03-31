@@ -4,12 +4,13 @@ import pytest
 
 from pytest_mock import MockerFixture
 
+from powerpi_common_test.device.mixin import InitialisableMixinTestBase
 from powerpi_common_test.mqtt import mock_producer
 from powerpi_common_test.sensor import SensorTestBase
 from zigbee_controller.sensor.osram.switch_mini import Button, PressType, OsramSwitchMiniSensor
 
 
-class TestOsramSwitchMiniSensor(SensorTestBase):
+class TestOsramSwitchMiniSensor(SensorTestBase, InitialisableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.controller = mocker.MagicMock()
 
@@ -28,7 +29,7 @@ class TestOsramSwitchMiniSensor(SensorTestBase):
 
         return OsramSwitchMiniSensor(
             self.logger, self.controller, self.mqtt_client,
-            '00:00:00:00:00:00:00:00', '0xAAAA', name='test'
+            ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA', name='test'
         )
 
     @pytest.mark.parametrize('button', [Button.UP, Button.MIDDLE, Button.DOWN])

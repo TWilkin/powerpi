@@ -38,7 +38,6 @@ class DeviceContainer(containers.DeclarativeContainer):
 
     device_status_checker = providers.Singleton(
         DeviceStatusChecker,
-        config=config,
         logger=logger,
         device_manager=device_manager,
         scheduler=scheduler

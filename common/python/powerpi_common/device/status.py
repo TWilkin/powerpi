@@ -1,8 +1,8 @@
-from typing import List
+from typing import Dict, List
+
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 
-from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.util import ismixin
 from .manager import DeviceManager
@@ -12,36 +12,39 @@ from .mixin.pollable import PollableMixin
 class DeviceStatusChecker:
     def __init__(
         self,
-        config: Config,
         logger: Logger,
         device_manager: DeviceManager,
         scheduler: AsyncIOScheduler
     ):
         self.__logger = logger
         self.__device_manager = device_manager
-
         self.__scheduler = scheduler
 
-        # no more frequently than 10s
-        self.__poll_frequency = max(config.poll_frequency, 10)
-
-    @property
-    def devices(self) -> List[PollableMixin]:
-        return list(filter(
-            lambda device: ismixin(device, PollableMixin),
-            list(self.__device_manager.devices.values())
+    def start(self):
+        # create a list of pollable devices/sensors
+        devices: List[PollableMixin] = list(filter(
+            lambda device:
+                ismixin(device, PollableMixin)
+                and device.polling_enabled,
+            list(self.__device_manager.devices_and_sensors)
         ))
 
-    def start(self):
         # only schedule if there are pollable devices
-        if len(self.devices) > 0:
-            self.__logger.info(
-                f'Polling for device state changes every {self.__poll_frequency} seconds'
-                + f' for {len(self.devices)} device(s)'
-            )
+        if len(devices) > 0:
+            groups: Dict[int, List[PollableMixin]] = {}
 
-            interval = IntervalTrigger(seconds=self.__poll_frequency)
-            self.__scheduler.add_job(self._run, trigger=interval)
+            # group them by poll frequency
+            for device in devices:
+                if device.poll_frequency not in groups:
+                    groups[device.poll_frequency] = []
+
+                groups[device.poll_frequency].append(device)
+
+            for poll_frequency, devices in groups.items():
+                ScheduledDeviceGroup(
+                    self.__logger, self.__scheduler, poll_frequency, devices
+                )
+
             self.__scheduler.start()
 
     def stop(self):
@@ -49,11 +52,42 @@ class DeviceStatusChecker:
             self.__logger.info('Stopping device state change polling')
             self.__scheduler.shutdown()
 
-    async def _run(self):
-        # pylint: disable=broad-except
-        self.__logger.info('Checking devices state')
 
-        for device in self.devices:
+class ScheduledDeviceGroup:
+    def __init__(
+        self,
+        logger: Logger,
+        scheduler: AsyncIOScheduler,
+        poll_frequency: int,
+        devices: List[PollableMixin]
+    ):
+        self.__logger = logger
+        self.__scheduler = scheduler
+
+        self.__poll_frequency = poll_frequency
+        self.__devices = devices
+
+        self.__logger.info(
+            f'Polling {len(self.__devices)} device(s)/sensor(s)'
+            + f' every {poll_frequency} seconds'
+        )
+
+        interval = IntervalTrigger(seconds=poll_frequency)
+        self.__scheduler.add_job(self.run, trigger=interval)
+
+    @property
+    def poll_frequency(self):
+        return self.__poll_frequency
+
+    @property
+    def devices(self):
+        return self.__devices
+
+    async def run(self):
+        # pylint: disable=broad-except
+        self.__logger.info('Checking device(s)/sensor(s) state')
+
+        for device in self.__devices:
             try:
                 await device.poll()
             except Exception as ex:

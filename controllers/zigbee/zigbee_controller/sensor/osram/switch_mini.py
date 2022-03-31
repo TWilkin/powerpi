@@ -1,11 +1,20 @@
 from enum import Enum
 from typing import List
 
+from zigpy.zcl.clusters.general import LevelControl, OnOff
+from zigpy.zcl.clusters.lighting import Color
+
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from zigbee_controller.device import ZigbeeController
-from zigbee_controller.zigbee import ClusterListener, ZigbeeDevice
+from zigbee_controller.zigbee import ClusterCommandListener, ZigbeeMixin
+
+
+class ButtonEndpoint(int, Enum):
+    UP = 1
+    MIDDLE = 3
+    DOWN = 2
 
 
 class Button(str, Enum):
@@ -20,26 +29,27 @@ class PressType(str, Enum):
     RELEASE = 'release'
 
 
-class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
-    ''' Adds support for Osram Smart+ Switch Mini
-        Generates the following events on button clicks where NAME is the
-        configured name of the device.
+class OsramSwitchMiniSensor(Sensor, ZigbeeMixin):
+    ''' 
+    Adds support for Osram Smart+ Switch Mini
+    Generates the following events on button clicks where NAME is the
+    configured name of the device.
 
-        Single press:
-        /event/NAME/press:{"button": "up", "type": "single"}
-        /event/NAME/press:{"button": "middle", "type": "single"}
-        /event/NAME/press:{"button": "down", "type": "single"}
+    Single press:
+    /event/NAME/press:{"button": "up", "type": "single"}
+    /event/NAME/press:{"button": "middle", "type": "single"}
+    /event/NAME/press:{"button": "down", "type": "single"}
 
-        Long press generates an event pair, one when the button is pressed and
-        the other when it's released:
-        /event/NAME/press:{"button": "up", "type": "hold"}
-        /event/NAME/press:{"button": "up", "type": "release"}
+    Long press generates an event pair, one when the button is pressed and
+    the other when it's released:
+    /event/NAME/press:{"button": "up", "type": "hold"}
+    /event/NAME/press:{"button": "up", "type": "release"}
 
-        /event/NAME/press:{"button": "middle", "type": "hold"}
-        /event/NAME/press:{"button": "middle", "type": "release"}
+    /event/NAME/press:{"button": "middle", "type": "hold"}
+    /event/NAME/press:{"button": "middle", "type": "release"}
 
-        /event/NAME/press:{"button": "down", "type": "hold"}
-        /event/NAME/press:{"button": "down", "type": "release"}
+    /event/NAME/press:{"button": "down", "type": "hold"}
+    /event/NAME/press:{"button": "down", "type": "release"}
     '''
 
     #pylint: disable=too-many-arguments
@@ -48,19 +58,15 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
         logger: Logger,
         controller: ZigbeeController,
         mqtt_client: MQTTClient,
-        ieee: str,
-        nwk: str,
         **kwargs
     ):
         Sensor.__init__(self, mqtt_client, **kwargs)
-        ZigbeeDevice.__init__(self, controller, ieee, nwk)
+        ZigbeeMixin.__init__(self, controller, **kwargs)
 
-        self.__logger = logger
-
-        self.__register()
+        self._logger = logger
 
     def button_press_handler(self, button: Button, press_type: PressType):
-        self.__logger.info(f'Received {press_type} press of {button}')
+        self.log_info(f'Received {press_type} press of {button}')
 
         message = {
             'button': button,
@@ -91,37 +97,46 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeDevice):
 
             self.button_press_handler(Button.MIDDLE, press_type)
 
-    def __register(self):
+    async def initialise(self):
         device = self._zigbee_device
 
         # single press
-        device[1].out_clusters[6].add_listener(
-            ClusterListener(lambda _, __, ___: self.button_press_handler(
-                Button.UP, PressType.SINGLE)
-            )
+        device[ButtonEndpoint.UP].out_clusters[OnOff.cluster_id].add_listener(
+            ClusterCommandListener(lambda _, __, ___: self.button_press_handler(
+                Button.UP, PressType.SINGLE
+            ))
         )
-        device[2].out_clusters[6].add_listener(
-            ClusterListener(lambda _, __, ___: self.button_press_handler(
-                Button.DOWN, PressType.SINGLE))
+        device[ButtonEndpoint.DOWN].out_clusters[OnOff.cluster_id].add_listener(
+            ClusterCommandListener(lambda _, __, ___: self.button_press_handler(
+                Button.DOWN, PressType.SINGLE
+            ))
         )
-        device[3].out_clusters[8].add_listener(
-            ClusterListener(lambda _, __, ___: self.button_press_handler(
-                Button.MIDDLE, PressType.SINGLE))
+        device[ButtonEndpoint.MIDDLE].out_clusters[LevelControl.cluster_id].add_listener(
+            ClusterCommandListener(lambda _, __, ___: self.button_press_handler(
+                Button.MIDDLE, PressType.SINGLE
+            ))
         )
 
         # long press
-        device[1].out_clusters[8].add_listener(
-            ClusterListener(
-                lambda _, __, args: self.long_button_press_handler(Button.UP, args))
+        device[ButtonEndpoint.UP].out_clusters[LevelControl.cluster_id].add_listener(
+            ClusterCommandListener(
+                lambda _, __, args: self.long_button_press_handler(
+                    Button.UP, args
+                )
+            )
         )
-        device[2].out_clusters[8].add_listener(
-            ClusterListener(
-                lambda _, __, args: self.long_button_press_handler(Button.DOWN, args))
+        device[ButtonEndpoint.DOWN].out_clusters[LevelControl.cluster_id].add_listener(
+            ClusterCommandListener(
+                lambda _, __, args: self.long_button_press_handler(
+                    Button.DOWN, args
+                )
+            )
         )
-        device[3].out_clusters[768].add_listener(
-            ClusterListener(
-                lambda _, __, args: self.long_middle_button_press_handler(args))
+        device[ButtonEndpoint.MIDDLE].out_clusters[Color.cluster_id].add_listener(
+            ClusterCommandListener(
+                lambda _, __, args: self.long_middle_button_press_handler(args)
+            )
         )
 
     def __str__(self):
-        return ZigbeeDevice.__str__(self)
+        return ZigbeeMixin.__str__(self)

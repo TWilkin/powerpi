@@ -26,7 +26,7 @@ class TestLIFXLightDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
         return LIFXLightDevice(
             self.config, self.logger, self.mqtt_client, self.lifx_client,
             '00:00:00:00:00', 'mylight.home',
-            name='light'
+            name='light', poll_frequency=120
         )
 
     @pytest.mark.parametrize('status', ['on', 'off'])

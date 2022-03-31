@@ -32,7 +32,7 @@ class TestCompositeDevice(AdditionalStateDeviceTestBase, DeviceOrchestratorMixin
         return CompositeDevice(
             self.config, self.logger, self.mqtt_client, self.device_manager,
             ['device0', 'device1', 'device2', 'device3'],
-            name='composite'
+            name='composite', poll_frequency=60
         )
 
     async def test_all_on(self, mocker: MockerFixture):
