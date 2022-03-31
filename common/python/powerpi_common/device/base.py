@@ -1,7 +1,7 @@
-from abc import ABC
+from powerpi_common.logger import LogMixin
 
 
-class BaseDevice(ABC):
+class BaseDevice(LogMixin):
     '''
     Abstact base class for both "devices" and "sensors".
     '''
@@ -26,3 +26,22 @@ class BaseDevice(ABC):
 
     def __str__(self):
         return f'{type(self).__name__}({self._display_name})'
+
+    def log_debug(self, *args):
+        LogMixin.log_debug(self, *self.__update_log_message(*args))
+
+    def log_info(self, *args):
+        LogMixin.log_info(self, *self.__update_log_message(*args))
+
+    def log_warning(self, *args):
+        LogMixin.log_warning(self, *self.__update_log_message(*args))
+
+    def log_error(self, *args):
+        LogMixin.log_error(self, *self.__update_log_message(*args))
+
+    def log_exception(self, *args):
+        LogMixin.log_exception(self, *self.__update_log_message(*args))
+
+    def __update_log_message(self, *args):
+        message = f'[{self._name}]: {args[0]}'
+        return (message,) + args[1:]

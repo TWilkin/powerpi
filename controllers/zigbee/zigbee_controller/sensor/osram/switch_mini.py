@@ -63,10 +63,10 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin):
         Sensor.__init__(self, mqtt_client, **kwargs)
         ZigbeeMixin.__init__(self, controller, **kwargs)
 
-        self.__logger = logger
+        self._logger = logger
 
     def button_press_handler(self, button: Button, press_type: PressType):
-        self.__logger.info(f'Received {press_type} press of {button}')
+        self.log_info(f'Received {press_type} press of {button}')
 
         message = {
             'button': button,

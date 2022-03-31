@@ -47,10 +47,10 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
         Sensor.__init__(self, mqtt_client, **kwargs)
         ZigbeeMixin.__init__(self, controller, **kwargs)
 
-        self.__logger = logger
+        self._logger = logger
 
     def open_close_handler(self, on_off: OnOff):
-        self.__logger.info(f'Received {on_off} from door/window sensor')
+        self.log_info(f'Received {on_off} from door/window sensor')
 
         state = None
         if on_off == OnOff.ON:
@@ -73,7 +73,9 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
                 key = int(data[0])
                 data_value, data = TypeValue.deserialize(data[1:])
 
-                additional_attributes[key] = data_value
+                additional_attributes[key] = data_value.value
+
+                self.log_debug(f'{key}: {additional_attributes[key]}')
 
                 # we only care about the battery voltage
                 if key == self.BATTERY_VOLTAGE_ATTRIBUTE:
@@ -81,7 +83,8 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
 
             # if the battery voltage attribute is included
             if self.BATTERY_VOLTAGE_ATTRIBUTE in additional_attributes:
-                voltage = additional_attributes[self.BATTERY_VOLTAGE_ATTRIBUTE].value
+                voltage = additional_attributes[self.BATTERY_VOLTAGE_ATTRIBUTE]
+                self.log_info(f'Received battery value of {voltage}mV')
 
                 # ensure voltage is in the expected range
                 voltage = max(voltage, self.MIN_VOLTAGE)

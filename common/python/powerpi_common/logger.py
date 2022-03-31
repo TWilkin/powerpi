@@ -45,8 +45,32 @@ __________                         __________.__
     def warn(self, *args):
         self.__logger.warning(*args)
 
+    def warning(self, *args):
+        self.__logger.warning(*args)
+
     def error(self, *args):
         self.__logger.error(*args)
 
     def exception(self, *args):
         self.__logger.exception(*args)
+
+
+class LogMixin:
+    '''
+    Mixin to add methods for logging to a class.
+    '''
+
+    def log_debug(self, *args):
+        self._logger.debug(*args)
+
+    def log_info(self, *args):
+        self._logger.info(*args)
+
+    def log_warning(self, *args):
+        self._logger.warning(*args)
+
+    def log_error(self, *args):
+        self._logger.error(*args)
+
+    def log_exception(self, *args):
+        self._logger.exception(*args)
