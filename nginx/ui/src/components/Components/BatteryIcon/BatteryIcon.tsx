@@ -53,7 +53,7 @@ const BatteryIcon = ({ sensor, className }: BatteryIconProps) => {
         const weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
 
-        return (sensor.batterySince ?? 0) <= weekAgo.getMilliseconds();
+        return (sensor.batterySince ?? 0) <= weekAgo.getTime();
     }, [sensor.batterySince]);
 
     return (
