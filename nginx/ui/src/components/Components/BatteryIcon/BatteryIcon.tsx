@@ -6,34 +6,35 @@ import {
     faBatteryThreeQuarters,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Sensor } from "@powerpi/api";
 import classNames from "classnames";
 import { useMemo } from "react";
 import styles from "./BatteryIcon.module.scss";
 
 interface BatteryIconProps {
-    level: number | undefined;
+    sensor: Sensor;
     className?: string;
 }
 
-const BatteryIcon = ({ level, className }: BatteryIconProps) => {
+const BatteryIcon = ({ sensor, className }: BatteryIconProps) => {
     const icon = useMemo(() => {
-        if (level !== undefined) {
-            if (level <= 5) {
+        if (sensor.battery !== undefined) {
+            if (sensor.battery <= 5) {
                 return faBatteryEmpty;
             }
-            if (level <= 25) {
+            if (sensor.battery <= 25) {
                 return faBatteryQuarter;
             }
-            if (level <= 50) {
+            if (sensor.battery <= 50) {
                 return faBatteryHalf;
             }
-            if (level <= 75) {
+            if (sensor.battery <= 75) {
                 return faBatteryThreeQuarters;
             }
             return faBattery;
         }
         return undefined;
-    }, [level]);
+    }, [sensor.battery]);
 
     return (
         <>

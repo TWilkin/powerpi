@@ -10,4 +10,6 @@ export default interface Sensor {
     value?: number;
     unit?: string;
     since: number;
+    battery?: number;
+    batterySince?: number;
 }

@@ -36,7 +36,7 @@ const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
                             )}
                         </p>
 
-                        <BatteryIcon level={undefined} className={styles.battery} />
+                        <BatteryIcon sensor={sensor} className={styles.battery} />
 
                         <AbbreviatingTime date={sensor.since} abbreviate className={styles.time} />
                     </Fragment>
