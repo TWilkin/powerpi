@@ -49,6 +49,6 @@ COPY --from=build-image --chown=nginx:nginx /usr/src/app/ssl-dhparams.pem ./
 
 # copy the built UI application into the NGINX container
 WORKDIR /var/www/powerpi
-COPY -chown=nginx:nginx LICENSE ./
+COPY --chown=nginx:nginx LICENSE ./
 COPY --from=build-image --chown=nginx:nginx /home/node/app/nginx/ui/public/ ./
 COPY --from=build-image --chown=nginx:nginx /home/node/app/nginx/ui/dist/ ./
