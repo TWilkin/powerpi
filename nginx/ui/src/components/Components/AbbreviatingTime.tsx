@@ -11,7 +11,7 @@ interface AbbreviatingTimeProps {
 const AbbreviatingTime = ({
     date,
     abbreviate = false,
-    undefinedText = "Unknown",
+    undefinedText = "never",
 }: AbbreviatingTimeProps) => {
     const { isNarrow } = useNarrow();
 
@@ -28,7 +28,7 @@ const AbbreviatingTime = ({
         [abbreviate, isNarrow]
     );
 
-    if (date !== undefined) {
+    if (date !== undefined && date > 24 * 60 * 60 * 1000) {
         return <TimeAgo date={date} formatter={formatter} title={formatTitle(date)} />;
     }
 
