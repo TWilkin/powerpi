@@ -1,0 +1,49 @@
+.tooltip {
+    h3,
+    p {
+        margin: 0;
+        line-height: 1rem;
+    }
+
+    .sensors {
+        display: grid;
+        grid-template-columns: 1rem 1fr 1fr 1rem 0.5fr;
+
+        & > * {
+            padding-left: 0.2rem;
+            white-space: nowrap;
+        }
+
+        .icon {
+            grid-column: 1;
+            padding: 0;
+        }
+
+        .title {
+            grid-column: 2;
+            font-weight: 500;
+        }
+
+        .data {
+            grid-column: 3;
+
+            sup {
+                vertical-align: top;
+                position: relative;
+                top: -0.1rem;
+            }
+        }
+
+        .battery {
+            grid-column: 4;
+        }
+
+        .time {
+            grid-column: 5;
+            text-align: right;
+            font-style: italic;
+            font-size: 0.7rem;
+            line-height: 1rem;
+        }
+    }
+}

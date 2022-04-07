@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import useGetSensors from "../../hooks/sensors";
 import Floorplan from "./Floorplan";
 import Tooltip from "./Tooltip";
-import styles from "./Home.module.scss";
 import Menu from "../Components/Menu";
 import Loading from "../Components/Loading";
 
@@ -35,7 +34,7 @@ const Home = ({ floorplan }: HomeProps) => {
     );
 
     return (
-        <div className={styles.home}>
+        <div>
             <Loading loading={!floorplan}>
                 <Menu
                     items={

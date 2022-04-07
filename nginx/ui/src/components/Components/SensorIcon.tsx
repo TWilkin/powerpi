@@ -12,9 +12,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface SensorIconProps {
     type: string;
+    className?: string;
 }
 
-const SensorIcon = ({ type }: SensorIconProps) => <FontAwesomeIcon icon={mapSensorIcon(type)} />;
+const SensorIcon = ({ type, className }: SensorIconProps) => (
+    <FontAwesomeIcon icon={mapSensorIcon(type)} className={className} />
+);
 export default SensorIcon;
 
 function mapSensorIcon(type: string) {

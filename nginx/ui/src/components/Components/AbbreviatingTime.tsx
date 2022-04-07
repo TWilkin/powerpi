@@ -6,12 +6,14 @@ interface AbbreviatingTimeProps {
     date: Date | number | string | undefined;
     abbreviate?: boolean;
     undefinedText?: string;
+    className?: string;
 }
 
 const AbbreviatingTime = ({
     date,
     abbreviate = false,
     undefinedText = "never",
+    className,
 }: AbbreviatingTimeProps) => {
     const { isNarrow } = useNarrow();
 
@@ -43,9 +45,14 @@ const AbbreviatingTime = ({
     }, [date]);
 
     return date && isDateDefined ? (
-        <TimeAgo date={date} formatter={formatter} title={formatTitle(date)} />
+        <TimeAgo
+            date={date}
+            formatter={formatter}
+            title={formatTitle(date)}
+            className={className}
+        />
     ) : (
-        <>{undefinedText}</>
+        <p className={className}>{undefinedText}</p>
     );
 };
 export default AbbreviatingTime;
