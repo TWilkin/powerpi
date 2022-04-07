@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import TimeAgo from "react-timeago";
 import useNarrow from "../../hooks/narrow";
 
@@ -28,11 +28,25 @@ const AbbreviatingTime = ({
         [abbreviate, isNarrow]
     );
 
-    if (date !== undefined && date > 24 * 60 * 60 * 1000) {
-        return <TimeAgo date={date} formatter={formatter} title={formatTitle(date)} />;
-    }
+    const isDateDefined = useMemo(() => {
+        if (date !== undefined) {
+            const timestamp =
+                typeof date === "number"
+                    ? (date as number)
+                    : date instanceof Date
+                    ? (date as Date).getTime()
+                    : new Date(date).getTime();
 
-    return <>{undefinedText}</>;
+            return timestamp > 24 * 60 * 60 * 1000;
+        }
+        return false;
+    }, [date]);
+
+    return date && isDateDefined ? (
+        <TimeAgo date={date} formatter={formatter} title={formatTitle(date)} />
+    ) : (
+        <>{undefinedText}</>
+    );
 };
 export default AbbreviatingTime;
 
