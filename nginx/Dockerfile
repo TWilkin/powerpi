@@ -1,5 +1,8 @@
-FROM node:16.13.1-alpine3.12 AS build-image
-LABEL description="Node.js to compile PowerPi UI"
+FROM amd64/node:16.13.1-alpine3.12 AS build-image
+LABEL description="Compile PowerPi UI"
+
+# overcome network error when downloading libraries
+RUN yarn config set network-timeout 600000 -g
 
 # install curl and download the letsencrypt configuration files
 WORKDIR /usr/src/app
@@ -9,25 +12,23 @@ RUN curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/cer
 
 # install the libraries
 WORKDIR /home/node/app
-RUN mkdir -p /home/node/app/common/node/api \
-    /home/node/app/nginx/ui
+RUN mkdir -p ./common/node/api ./nginx/ui
 COPY package.json yarn.lock tsconfig.json ./
 COPY common/node/api/package.json ./common/node/api/
-RUN yarn workspace @powerpi/api install
+RUN yarn workspace @powerpi/api install --frozen-lockfile
 COPY common/node/api ./common/node/api/
 RUN yarn workspace @powerpi/api build
 
 # install the dependencies
 COPY nginx/ui/package.json ./nginx/ui
-RUN yarn config set network-timeout 600000 -g
-RUN yarn workspace @powerpi/ui install
+RUN yarn workspace @powerpi/ui install --frozen-lockfile
 
 # transpile the application
-COPY nginx/ui ./nginx/ui
+COPY nginx/ui ./nginx/ui/
 RUN yarn workspace @powerpi/ui build
 
 FROM nginx:1.18.0-alpine AS run-image
-LABEL description="NGINX reverse proxy to protect web accessible endpoints with SSL and host UI"
+LABEL description="PowerPi NGINX"
 
 # use non-root user
 RUN mkdir -p /var/www/powerpi
@@ -39,8 +40,7 @@ RUN touch /var/run/nginx.pid \
     && chown -R nginx:nginx /var/run/nginx.pid
 USER nginx
 
-EXPOSE 8080
-EXPOSE 8443
+EXPOSE 8080 8443
 
 # copy the letsencrypt configuration files
 WORKDIR /etc/nginx/
