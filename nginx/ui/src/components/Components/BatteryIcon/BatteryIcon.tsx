@@ -36,9 +36,41 @@ const BatteryIcon = ({ sensor, className }: BatteryIconProps) => {
         return undefined;
     }, [sensor.battery]);
 
+    const warningStyle = useMemo(() => {
+        if (sensor.battery !== undefined) {
+            if (sensor.battery <= 10) {
+                return styles.low;
+            }
+            if (sensor.battery <= 25) {
+                return styles.warning;
+            }
+        }
+
+        return undefined;
+    }, [sensor.battery]);
+
+    const outdated = useMemo(() => {
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+
+        return (sensor.batterySince ?? 0) <= weekAgo.getMilliseconds();
+    }, [sensor.batterySince]);
+
     return (
         <>
-            {icon && <FontAwesomeIcon icon={icon} className={classNames(styles.icon, className)} />}
+            {icon && (
+                <FontAwesomeIcon
+                    icon={icon}
+                    className={classNames(
+                        styles.icon,
+                        className,
+                        {
+                            [styles.outdated]: outdated,
+                        },
+                        warningStyle
+                    )}
+                />
+            )}
         </>
     );
 };
