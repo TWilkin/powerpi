@@ -22,7 +22,10 @@ const Home = ({ floorplan }: HomeProps) => {
                         title: room.display_name ?? room.name,
                         location: room.name,
                         floor: floor.name,
-                        sensors: sensors?.filter((sensor) => sensor.location === room.name) ?? [],
+                        sensors:
+                            sensors?.filter(
+                                (sensor) => sensor.visible && sensor.location === room.name
+                            ) ?? [],
                     }))
                 );
 
