@@ -24,14 +24,14 @@ const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
     const { backgroundColour, textColour } = useMemo(() => {
         if (isDark) {
             return {
-                backgroundColour: scss.darkmenu,
-                textColour: scss.darktext,
+                backgroundColour: scss.darkMenu,
+                textColour: scss.darkText,
             };
         }
 
         return {
-            backgroundColour: scss.lightmenu,
-            textColour: scss.lighttext,
+            backgroundColour: scss.lightMenu,
+            textColour: scss.lightText,
         };
     }, [isDark]);
 

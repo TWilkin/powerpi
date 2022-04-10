@@ -98,16 +98,16 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
     const { textColour, lineColour, tooltipColour } = useMemo(() => {
         if (isDark) {
             return {
-                textColour: scss.darktext,
-                lineColour: scss.darkchartline,
-                tooltipColour: scss.darkmenu,
+                textColour: scss.darkText,
+                lineColour: scss.darkChartLine,
+                tooltipColour: scss.darkMenu,
             };
         }
 
         return {
-            textColour: scss.lighttext,
-            lineColour: scss.lightchartline,
-            tooltipColour: scss.lightmenu,
+            textColour: scss.lightText,
+            lineColour: scss.lightChartLine,
+            tooltipColour: scss.lightMenu,
         };
     }, [isDark]);
 

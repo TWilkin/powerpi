@@ -3,10 +3,10 @@
 
 :export {
     @each $key, $value in $light-colours {
-        #{"light" + unquote(str-replace($key, "-", ""))}: $value;
+        #{str-camel-case("light-" + unquote($key))}: $value;
     }
 
     @each $key, $value in $dark-colours {
-        #{"dark" + unquote(str-replace($key, "-", ""))}: $value;
+        #{str-camel-case("dark-" + unquote($key))}: $value;
     }
 }

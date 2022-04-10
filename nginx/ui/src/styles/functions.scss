@@ -1,10 +1,21 @@
-@function str-replace($string, $search, $replace) {
-    $index: str-index($string, $search);
+@function str-camel-case($string) {
+    $remaining: $string;
+    $result: "";
 
-    @if $index {
-        @return str-slice($string, 1, $index - 1) + $replace +
-            str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+    @while str-length($remaining) > 0 {
+        $char: str-slice($remaining, 1, 1);
+
+        @if $char == "-" {
+            $remaining: str-proper-case(str-slice($remaining, 2, 2)) + str-slice($remaining, 3);
+        } @else {
+            $result: $result + $char;
+            $remaining: str-slice($remaining, 2);
+        }
     }
 
-    @return $string;
+    @return $result;
+}
+
+@function str-proper-case($string) {
+    @return to-upper-case(str-slice($string, 1, 1)) + str-slice($string, 2);
 }
