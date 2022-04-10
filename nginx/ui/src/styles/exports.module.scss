@@ -1,0 +1,12 @@
+@import "./colours.scss";
+@import "./functions.scss";
+
+:export {
+    @each $key, $value in $light-colours {
+        #{"light" + unquote(str-replace($key, "-", ""))}: $value;
+    }
+
+    @each $key, $value in $dark-colours {
+        #{"dark" + unquote(str-replace($key, "-", ""))}: $value;
+    }
+}

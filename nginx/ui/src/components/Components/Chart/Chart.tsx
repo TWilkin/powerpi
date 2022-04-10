@@ -15,6 +15,9 @@ import { useGetHistoryRange } from "../../../hooks/history";
 import useOrientation from "../../../hooks/orientation";
 import Loading from "../Loading";
 import styles from "./Chart.module.scss";
+import scss from "../../../styles/exports.module.scss";
+import useColourMode from "../../../hooks/colour";
+import { useMemo } from "react";
 
 ChartJS.register(
     CategoryScale,
@@ -49,6 +52,7 @@ interface ChartProps {
 
 const Chart = ({ start, end, entity, action }: ChartProps) => {
     const { isLandscape } = useOrientation();
+    const { isDark } = useColourMode();
 
     const { isHistoryLoading, history } = useGetHistoryRange(start, end, "event", entity, action);
 
@@ -89,6 +93,21 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
         return datasets;
     }, []);
 
+    // set the chart colours in light/dark mode
+    const { textColour, lineColour } = useMemo(() => {
+        if (isDark) {
+            return {
+                textColour: scss.darktext,
+                lineColour: scss.darkchartline,
+            };
+        }
+
+        return {
+            textColour: scss.lighttext,
+            lineColour: scss.lightchartline,
+        };
+    }, [isDark]);
+
     // add the time axis by default
     const scales: {
         [key: string]: {
@@ -103,6 +122,13 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                 minUnit: "minute",
             },
             reverse: !isLandscape,
+            grid: {
+                color: lineColour,
+                borderColor: lineColour,
+            },
+            ticks: {
+                color: textColour,
+            },
         },
     };
 
@@ -111,6 +137,11 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+            legend: {
+                labels: {
+                    color: textColour,
+                },
+            },
             tooltip: {
                 callbacks: {
                     title: (context) =>
@@ -132,6 +163,7 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                     title: {
                         display: true,
                         text: dataset.unit ? `${dataset.action} (${dataset.unit})` : dataset.action,
+                        color: textColour,
                     },
                     type: "linear" as const,
                     position: isLandscape
@@ -141,10 +173,13 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                         : "bottom",
                     grid: {
                         drawOnChartArea: i === 0,
+                        color: lineColour,
+                        borderColor: lineColour,
                     },
                     beginAtZero: true,
                     ticks: {
                         includeBounds: false,
+                        color: textColour,
                     },
                 };
             }
