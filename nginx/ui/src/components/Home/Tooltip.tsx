@@ -1,11 +1,13 @@
 import { Sensor } from "@powerpi/api";
-import { Fragment, useCallback } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 import ReactTooltip from "react-tooltip";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import BatteryIcon from "../Components/BatteryIcon";
 import FormattedValue from "../Components/FormattedValue";
 import SensorIcon from "../Components/SensorIcon";
 import styles from "./Tooltip.module.scss";
+import scss from "../../styles/exports.module.scss";
+import useColourMode from "../../hooks/colour";
 
 interface TooltipProps {
     title: string;
@@ -15,10 +17,32 @@ interface TooltipProps {
 }
 
 const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
+    const { isDark } = useColourMode();
+
     const getType = useCallback((sensor: Sensor) => sensor.type.split("_").at(-1), []);
 
+    const { backgroundColour, textColour } = useMemo(() => {
+        if (isDark) {
+            return {
+                backgroundColour: scss.darkmenu,
+                textColour: scss.darktext,
+            };
+        }
+
+        return {
+            backgroundColour: scss.lightmenu,
+            textColour: scss.lighttext,
+        };
+    }, [isDark]);
+
     return (
-        <ReactTooltip id={`${floor}${location}`} className={styles.tooltip} clickable>
+        <ReactTooltip
+            id={`${floor}${location}`}
+            className={styles.tooltip}
+            clickable
+            backgroundColor={backgroundColour}
+            textColor={textColour}
+        >
             <h3>{title}</h3>
 
             <div className={styles.sensors}>

@@ -9,8 +9,8 @@
     text-align: center;
     text-decoration: none;
     @include colour("background-color", "menu");
-    @include colour("color", "menu-text");
-    @include colour("border-color", "menu-text");
+    @include colour("color", "text");
+    @include colour("border-color", "text");
     border: 1px solid;
 
     &.active {

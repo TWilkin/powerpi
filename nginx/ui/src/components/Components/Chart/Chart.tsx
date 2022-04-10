@@ -95,17 +95,19 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
     }, []);
 
     // set the chart colours in light/dark mode
-    const { textColour, lineColour } = useMemo(() => {
+    const { textColour, lineColour, tooltipColour } = useMemo(() => {
         if (isDark) {
             return {
                 textColour: scss.darktext,
                 lineColour: scss.darkchartline,
+                tooltipColour: scss.darkmenu,
             };
         }
 
         return {
             textColour: scss.lighttext,
             lineColour: scss.lightchartline,
+            tooltipColour: scss.lightmenu,
         };
     }, [isDark]);
 
@@ -144,6 +146,7 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                 },
             },
             tooltip: {
+                backgroundColor: tooltipColour,
                 callbacks: {
                     title: (context) =>
                         context.map((item) => (isLandscape ? item.label : item.formattedValue)),
