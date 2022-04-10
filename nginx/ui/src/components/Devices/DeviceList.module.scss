@@ -1,20 +1,9 @@
-@import "../../styles/colours.scss";
 @import "../../styles/vars.scss";
 
 .list {
     margin-left: calc(1rem + 8px);
     flex-direction: column;
     justify-content: center;
-
-    tbody {
-        tr {
-            &:nth-child(even) {
-                td {
-                    @include colour("background-color", "highlight");
-                }
-            }
-        }
-    }
 
     .device {
         max-width: 600px;

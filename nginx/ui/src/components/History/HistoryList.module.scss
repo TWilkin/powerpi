@@ -1,4 +1,3 @@
-@import "../../styles/colours.scss";
 @import "../../styles/vars.scss";
 
 .list {
@@ -9,16 +8,6 @@
         td {
             padding: 0 5px;
             white-space: nowrap;
-        }
-
-        tbody {
-            tr {
-                &:nth-child(even) {
-                    td {
-                        @include colour("background-color", "highlight");
-                    }
-                }
-            }
         }
     }
 }

@@ -7,9 +7,9 @@
         padding: 20px 30px;
         font-size: 1.2rem;
         @include colour("background-color", "menu");
-        @include colour("color", "menu-text");
-        @include colour("border-color", "menu-text");
+        @include colour("color", "text");
         border: 1px solid;
+        @include colour("border-color", "menu-border");
 
         &:hover {
             cursor: pointer;

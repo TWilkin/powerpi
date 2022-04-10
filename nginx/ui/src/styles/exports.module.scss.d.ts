@@ -7,6 +7,7 @@ interface CssExports {
   'darkFilterText': string;
   'darkHighlight': string;
   'darkMenu': string;
+  'darkMenuBorder': string;
   'darkText': string;
   'lightBackground': string;
   'lightChartLine': string;
@@ -14,6 +15,7 @@ interface CssExports {
   'lightFilterText': string;
   'lightHighlight': string;
   'lightMenu': string;
+  'lightMenuBorder': string;
   'lightText': string;
 }
 export const cssExports: CssExports;

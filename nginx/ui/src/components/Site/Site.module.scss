@@ -4,6 +4,7 @@
 body {
     margin: 0;
     @include colour("background-color", "background");
+    @include colour("color", "text");
 }
 
 .header {
@@ -30,8 +31,8 @@ body {
         text-align: center;
         @include colour("background-color", "filter-background");
         @include colour("color", "filter-text");
-        @include colour("border-color", "filter-background");
         border: 1px solid;
+        @include colour("border-color", "menu-border");
 
         a {
             text-decoration: none;
@@ -50,4 +51,18 @@ body {
     flex-flow: column nowrap;
     align-items: center;
     overflow: hidden;
+}
+
+table {
+    border-spacing: 0;
+
+    tbody {
+        tr {
+            &:nth-child(even) {
+                td {
+                    @include colour("background-color", "highlight");
+                }
+            }
+        }
+    }
 }
