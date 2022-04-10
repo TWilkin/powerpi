@@ -1,7 +1,9 @@
+@import "../../styles/colours.scss";
 @import "../../styles/vars.scss";
 
 body {
     margin: 0;
+    @include colour("background-color", "background");
 }
 
 .header {
@@ -12,7 +14,7 @@ body {
     left: 0;
     z-index: 1;
     display: flex;
-    background-color: black;
+    @include colour("background-color", "filter-background");
 
     .logo {
         width: $menu-height;
@@ -23,19 +25,20 @@ body {
         white-space: nowrap;
         transform: rotate(-90deg) translateY(-#{$menu-height}) translateX(-2px);
         transform-origin: $menu-height 0;
-        background-color: black;
-        color: white;
         line-height: $logo-width;
         font-size: 0.8rem;
         text-align: center;
-        border: 1px solid black;
+        @include colour("background-color", "filter-background");
+        @include colour("color", "filter-text");
+        @include colour("border-color", "filter-background");
+        border: 1px solid;
 
         a {
             text-decoration: none;
-            color: white;
+            color: currentColor;
 
             &:visited {
-                color: white;
+                color: currentColor;
             }
         }
     }

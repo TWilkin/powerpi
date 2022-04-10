@@ -1,3 +1,4 @@
+@import "../../../styles/colours.scss";
 @import "../../../styles/vars.scss";
 
 .filter {
@@ -7,9 +8,9 @@
     top: calc(#{$menu-height} + 1px);
     left: 0;
     z-index: 1;
-    background-color: black;
-    color: white;
     transform: translateX(calc(25px - 100%));
+    @include colour("background-color", "filter-background");
+    @include colour("color", "filter-text");
 
     .button {
         height: 100%;
@@ -18,10 +19,10 @@
         right: 0;
         align-items: flex-start;
         cursor: pointer;
-        background-color: black;
-        color: white;
         border: 0;
         outline: none;
+        @include colour("background-color", "filter-background");
+        @include colour("color", "filter-text");
     }
 
     &.slide-in {

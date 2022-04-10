@@ -15,7 +15,7 @@
             tr {
                 &:nth-child(even) {
                     td {
-                        background-color: $highlight-colour;
+                        @include colour("background-color", "highlight");
                     }
                 }
             }

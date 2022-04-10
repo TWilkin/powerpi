@@ -1,3 +1,4 @@
+@import "../../../styles/colours.scss";
 @import "../../../styles/vars.scss";
 
 .item {
@@ -7,12 +8,13 @@
     line-height: $menu-height;
     text-align: center;
     text-decoration: none;
-    background-color: lightcyan;
-    color: black;
-    border: 1px solid black;
+    @include colour("background-color", "menu");
+    @include colour("color", "menu-text");
+    @include colour("border-color", "menu-text");
+    border: 1px solid;
 
     &.active {
-        background-color: lightskyblue;
+        @include colour("background-color", "highlight");
     }
 
     @media (max-width: 500px) {

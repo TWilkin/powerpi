@@ -1,5 +1,34 @@
-$hover-colour: lightcyan;
-$highlight-colour: lighten(lightgrey, 10%);
+@use "sass:map";
 
 $critical: red;
 $warning: #ffc;
+
+// light mode colours
+$light-colours: (
+    "background": white,
+    "text": black,
+    "menu": lightcyan,
+    "menu-text": black,
+    "highlight": lightskyblue,
+    "filter-background": black,
+    "filter-text": white,
+);
+
+// dark mode colours
+$dark-colours: (
+    "background": #161519,
+    "text": white,
+    "menu": #5c408d,
+    "menu-text": black,
+    "highlight": #382754,
+    "filter-background": black,
+    "filter-text": white,
+);
+
+@mixin colour($property, $colour) {
+    #{$property}: map.get($light-colours, $colour);
+
+    @media (prefers-color-scheme: dark) {
+        #{$property}: map.get($dark-colours, $colour);
+    }
+}
