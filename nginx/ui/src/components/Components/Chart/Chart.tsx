@@ -18,6 +18,7 @@ import styles from "./Chart.module.scss";
 import scss from "../../../styles/exports.module.scss";
 import useColourMode from "../../../hooks/colour";
 import { useMemo } from "react";
+import { getFormattedUnit } from "../FormattedValue";
 
 ChartJS.register(
     CategoryScale,
@@ -148,7 +149,10 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                         context.map((item) => (isLandscape ? item.label : item.formattedValue)),
                     label: (context) => {
                         const value = isLandscape ? context.parsed.y : context.parsed.x;
-                        const unit = datasets && datasets[context.datasetIndex].unit;
+                        const unit =
+                            datasets && datasets[context.datasetIndex].unit
+                                ? getFormattedUnit(datasets[context.datasetIndex].unit)
+                                : "";
                         return `${value} ${unit}`;
                     },
                 },
@@ -156,13 +160,16 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
         },
         scales: datasets?.reduce((scales, dataset, i) => {
             const key = `${dataset.action}-${dataset.unit}`.toLowerCase();
+            const formattedUnit = dataset.unit ? getFormattedUnit(dataset.unit) : undefined;
 
             if (!scales[key]) {
                 scales[key] = {
                     axis: isLandscape ? "y" : "x",
                     title: {
                         display: true,
-                        text: dataset.unit ? `${dataset.action} (${dataset.unit})` : dataset.action,
+                        text: dataset.unit
+                            ? `${dataset.action} (${formattedUnit})`
+                            : dataset.action,
                         color: textColour,
                     },
                     type: "linear" as const,

@@ -12,15 +12,22 @@ const FormattedValue = ({ value, unit }: FormattedValueProps) => {
         case "%":
             return <>{`${value}%`}</>;
 
-        case "m3":
-            return (
-                <>
-                    {value} m<sup>3</sup>
-                </>
-            );
-
         default:
-            return <>{`${value} ${unit}`}</>;
+            return <>{`${value} ${getFormattedUnit(unit)}`}</>;
     }
 };
 export default FormattedValue;
+
+export function getFormattedUnit(unit: string | undefined) {
+    if (!unit) {
+        return "";
+    }
+
+    switch (unit.toLowerCase()) {
+        case "m3":
+            return "m\u00B3";
+
+        default:
+            return unit;
+    }
+}
