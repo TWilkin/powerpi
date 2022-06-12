@@ -30,8 +30,6 @@ ChartJS.register(
     Tooltip
 );
 
-const colours = ["#003f5c", "#bc5090", "#ff6361", "#ffa600", "#58508d"];
-
 interface DataPoint {
     value: number;
     timestamp: Date;
@@ -54,6 +52,11 @@ interface ChartProps {
 const Chart = ({ start, end, entity, action }: ChartProps) => {
     const { isLandscape } = useOrientation();
     const { isDark } = useColourMode();
+
+    const colours = useMemo(
+        () => (isDark ? scss.darkChart : scss.lightChart).split(", "),
+        [isDark]
+    );
 
     const { isHistoryLoading, history } = useGetHistoryRange(start, end, "event", entity, action);
 

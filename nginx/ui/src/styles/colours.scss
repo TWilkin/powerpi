@@ -13,6 +13,13 @@ $light-colours: (
     "filter-background": black,
     "filter-text": white,
     "chart-line": #ccc,
+    "chart": (
+        #003f5c,
+        #bc5090,
+        #ff6361,
+        #ffa600,
+        #58508d,
+    ),
 );
 
 // dark mode colours
@@ -25,6 +32,13 @@ $dark-colours: (
     "filter-background": black,
     "filter-text": white,
     "chart-line": #444,
+    "chart": (
+        lighten(#003f5c, 20%),
+        lighten(#bc5090, 10%),
+        lighten(#ff6361, 10%),
+        lighten(#ffa600, 10%),
+        lighten(#58508d, 20%),
+    ),
 );
 
 @mixin colour($property, $colour) {

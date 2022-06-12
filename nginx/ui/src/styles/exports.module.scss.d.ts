@@ -2,6 +2,7 @@
 // Please do not change this file!
 interface CssExports {
   'darkBackground': string;
+  'darkChart': string;
   'darkChartLine': string;
   'darkFilterBackground': string;
   'darkFilterText': string;
@@ -10,6 +11,7 @@ interface CssExports {
   'darkMenuBorder': string;
   'darkText': string;
   'lightBackground': string;
+  'lightChart': string;
   'lightChartLine': string;
   'lightFilterBackground': string;
   'lightFilterText': string;
