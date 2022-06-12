@@ -149,6 +149,8 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                 },
             },
             tooltip: {
+                titleColor: textColour,
+                bodyColor: textColour,
                 backgroundColor: tooltipColour,
                 callbacks: {
                     title: (context) =>
