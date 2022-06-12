@@ -94,12 +94,14 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
 
     // set the chart colours in light/dark mode
     const { textColour, lineColour, tooltipColour, lineColours } = useMemo(() => {
+        const lineColourRegex = /,\s*/;
+
         if (isDark) {
             return {
                 textColour: scss.darkText,
                 lineColour: scss.darkChartLine,
                 tooltipColour: scss.darkMenu,
-                lineColours: scss.darkChart.split(", "),
+                lineColours: scss.darkChart.split(lineColourRegex),
             };
         }
 
@@ -107,7 +109,7 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
             textColour: scss.lightText,
             lineColour: scss.lightChartLine,
             tooltipColour: scss.lightMenu,
-            lineColours: scss.lightChart.split(", "),
+            lineColours: scss.lightChart.split(lineColourRegex),
         };
     }, [isDark]);
 
