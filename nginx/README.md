@@ -24,7 +24,19 @@ The Docker container can be built utilising _buildx_ as described in the [projec
 
 ## Testing
 
-There are currently no automated tests for this service.
+This service can be tested by executing the following commands.
+
+```bash
+# From the root of your PowerPi checkout
+# Download the dependencies
+yarn
+
+# Build the common API library
+yarn build:api
+
+# Run the UI locally
+yarn test:ui
+```
 
 ## Local
 

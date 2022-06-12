@@ -9,15 +9,5 @@
             padding: 0 5px;
             white-space: nowrap;
         }
-
-        tbody {
-            tr {
-                &:nth-child(even) {
-                    td {
-                        background-color: $highlight-colour;
-                    }
-                }
-            }
-        }
     }
 }

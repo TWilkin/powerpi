@@ -1,0 +1,17 @@
+@import "../../../styles/colours.scss";
+
+.icon {
+    transform: rotate(-90deg);
+
+    &.outdated {
+        opacity: 30%;
+    }
+
+    &.low {
+        color: $critical;
+    }
+
+    &.warning {
+        color: $warning;
+    }
+}

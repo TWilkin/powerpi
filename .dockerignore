@@ -9,6 +9,8 @@
 **/venv/
 **/.converage
 **/*.dev.js
+**/*.test.ts
+**/*.test.tsx
 **/*.pyc
 **/*.log
 **/.eslintignore

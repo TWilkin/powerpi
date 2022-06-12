@@ -1,16 +1,19 @@
+@import "../../styles/colours.scss";
+
 .login {
     padding-top: 20px;
 
     button {
         padding: 20px 30px;
-        background-color: lightcyan;
-        color: black;
-        border: 1px solid black;
         font-size: 1.2rem;
+        @include colour("background-color", "menu");
+        @include colour("color", "text");
+        border: 1px solid;
+        @include colour("border-color", "menu-border");
 
         &:hover {
             cursor: pointer;
-            background-color: lightskyblue;
+            @include colour("background-color", "highlight");
         }
     }
 }

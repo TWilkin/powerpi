@@ -15,6 +15,10 @@ import { useGetHistoryRange } from "../../../hooks/history";
 import useOrientation from "../../../hooks/orientation";
 import Loading from "../Loading";
 import styles from "./Chart.module.scss";
+import scss from "../../../styles/exports.module.scss";
+import useColourMode from "../../../hooks/colour";
+import { useMemo } from "react";
+import { getFormattedUnit, getFormattedValue } from "../FormattedValue";
 
 ChartJS.register(
     CategoryScale,
@@ -25,8 +29,6 @@ ChartJS.register(
     TimeSeriesScale,
     Tooltip
 );
-
-const colours = ["#003f5c", "#bc5090", "#ff6361", "#ffa600", "#58508d"];
 
 interface DataPoint {
     value: number;
@@ -49,6 +51,7 @@ interface ChartProps {
 
 const Chart = ({ start, end, entity, action }: ChartProps) => {
     const { isLandscape } = useOrientation();
+    const { isDark } = useColourMode();
 
     const { isHistoryLoading, history } = useGetHistoryRange(start, end, "event", entity, action);
 
@@ -89,6 +92,27 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
         return datasets;
     }, []);
 
+    // set the chart colours in light/dark mode
+    const { textColour, lineColour, tooltipColour, lineColours } = useMemo(() => {
+        const lineColourRegex = /,\s*/;
+
+        if (isDark) {
+            return {
+                textColour: scss.darkText,
+                lineColour: scss.darkChartLine,
+                tooltipColour: scss.darkMenu,
+                lineColours: scss.darkChart.split(lineColourRegex),
+            };
+        }
+
+        return {
+            textColour: scss.lightText,
+            lineColour: scss.lightChartLine,
+            tooltipColour: scss.lightMenu,
+            lineColours: scss.lightChart.split(lineColourRegex),
+        };
+    }, [isDark]);
+
     // add the time axis by default
     const scales: {
         [key: string]: {
@@ -103,6 +127,13 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                 minUnit: "minute",
             },
             reverse: !isLandscape,
+            grid: {
+                color: lineColour,
+                borderColor: lineColour,
+            },
+            ticks: {
+                color: textColour,
+            },
         },
     };
 
@@ -111,27 +142,42 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+            legend: {
+                labels: {
+                    color: textColour,
+                },
+            },
             tooltip: {
+                titleColor: textColour,
+                bodyColor: textColour,
+                backgroundColor: tooltipColour,
                 callbacks: {
                     title: (context) =>
                         context.map((item) => (isLandscape ? item.label : item.formattedValue)),
                     label: (context) => {
                         const value = isLandscape ? context.parsed.y : context.parsed.x;
-                        const unit = datasets && datasets[context.datasetIndex].unit;
-                        return `${value} ${unit}`;
+                        const formatted =
+                            datasets && datasets[context.datasetIndex].unit
+                                ? getFormattedValue(value, datasets[context.datasetIndex].unit)
+                                : value;
+                        return `${formatted ?? value}`;
                     },
                 },
             },
         },
         scales: datasets?.reduce((scales, dataset, i) => {
             const key = `${dataset.action}-${dataset.unit}`.toLowerCase();
+            const formattedUnit = dataset.unit ? getFormattedUnit(dataset.unit) : undefined;
 
             if (!scales[key]) {
                 scales[key] = {
                     axis: isLandscape ? "y" : "x",
                     title: {
                         display: true,
-                        text: dataset.unit ? `${dataset.action} (${dataset.unit})` : dataset.action,
+                        text: dataset.unit
+                            ? `${dataset.action} (${formattedUnit})`
+                            : dataset.action,
+                        color: textColour,
                     },
                     type: "linear" as const,
                     position: isLandscape
@@ -141,10 +187,13 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                         : "bottom",
                     grid: {
                         drawOnChartArea: i === 0,
+                        color: lineColour,
+                        borderColor: lineColour,
                     },
                     beginAtZero: true,
                     ticks: {
                         includeBounds: false,
+                        color: textColour,
                     },
                 };
             }
@@ -173,8 +222,8 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                 })),
                 xAxisID: isLandscape ? "time" : `${dataset.action}-${dataset.unit}`.toLowerCase(),
                 yAxisID: isLandscape ? `${dataset.action}-${dataset.unit}`.toLowerCase() : "time",
-                backgroundColor: colours[i],
-                borderColor: colours[i],
+                backgroundColor: lineColours[i],
+                borderColor: lineColours[i],
                 borderWidth: 1,
                 pointRadius: 2,
             })) ?? [],

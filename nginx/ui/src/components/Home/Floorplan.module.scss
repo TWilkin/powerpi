@@ -1,3 +1,4 @@
+@import "../../styles/colours.scss";
 @import "../../styles/vars.scss";
 
 .layout {
@@ -34,11 +35,11 @@
         rect {
             pointer-events: all;
             fill: none;
-            stroke: black;
+            @include colour("stroke", "text");
             outline: none;
 
             &:hover {
-                fill: lightblue;
+                @include colour("fill", "highlight");
             }
         }
     }

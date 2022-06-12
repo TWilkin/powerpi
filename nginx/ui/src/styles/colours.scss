@@ -1,0 +1,50 @@
+@use "sass:map";
+
+$critical: red;
+$warning: #ffc;
+
+// light mode colours
+$light-colours: (
+    "background": white,
+    "text": black,
+    "menu": lightcyan,
+    "menu-border": black,
+    "highlight": lightskyblue,
+    "filter-background": black,
+    "filter-text": white,
+    "chart-line": #ccc,
+    "chart": (
+        #003f5c,
+        #bc5090,
+        #ff6361,
+        #ffa600,
+        #58508d,
+    ),
+);
+
+// dark mode colours
+$dark-colours: (
+    "background": #161519,
+    "text": white,
+    "menu": #5c408d,
+    "menu-border": black,
+    "highlight": #382754,
+    "filter-background": black,
+    "filter-text": white,
+    "chart-line": #444,
+    "chart": (
+        lighten(#003f5c, 20%),
+        lighten(#bc5090, 10%),
+        lighten(#ff6361, 10%),
+        lighten(#ffa600, 10%),
+        lighten(#58508d, 20%),
+    ),
+);
+
+@mixin colour($property, $colour) {
+    #{$property}: map.get($light-colours, $colour);
+
+    @media (prefers-color-scheme: dark) {
+        #{$property}: map.get($dark-colours, $colour);
+    }
+}

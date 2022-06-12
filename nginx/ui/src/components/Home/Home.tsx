@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import useGetSensors from "../../hooks/sensors";
 import Floorplan from "./Floorplan";
 import Tooltip from "./Tooltip";
-import styles from "./Home.module.scss";
 import Menu from "../Components/Menu";
 import Loading from "../Components/Loading";
 
@@ -22,7 +21,10 @@ const Home = ({ floorplan }: HomeProps) => {
                         title: room.display_name ?? room.name,
                         location: room.name,
                         floor: floor.name,
-                        sensors: sensors?.filter((sensor) => sensor.location === room.name) ?? [],
+                        sensors:
+                            sensors?.filter(
+                                (sensor) => sensor.visible && sensor.location === room.name
+                            ) ?? [],
                     }))
                 );
 
@@ -32,7 +34,7 @@ const Home = ({ floorplan }: HomeProps) => {
     );
 
     return (
-        <div className={styles.home}>
+        <div>
             <Loading loading={!floorplan}>
                 <Menu
                     items={
