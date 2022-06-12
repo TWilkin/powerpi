@@ -56,7 +56,7 @@ const DeviceList = () => {
                                                 )}
                                             </td>
 
-                                            <td>
+                                            <td className={styles.history}>
                                                 <Link
                                                     to={`/history?type=device&entity=${device.name}`}
                                                 >

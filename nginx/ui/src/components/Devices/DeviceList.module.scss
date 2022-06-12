@@ -1,3 +1,4 @@
+@import "../../styles/colours.scss";
 @import "../../styles/vars.scss";
 
 .list {
@@ -10,6 +11,13 @@
 
         .state {
             display: flex;
+        }
+
+        .history {
+            a,
+            a:visited {
+                @include colour("color", "text");
+            }
         }
     }
 }
