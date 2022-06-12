@@ -53,11 +53,6 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
     const { isLandscape } = useOrientation();
     const { isDark } = useColourMode();
 
-    const colours = useMemo(
-        () => (isDark ? scss.darkChart : scss.lightChart).split(", "),
-        [isDark]
-    );
-
     const { isHistoryLoading, history } = useGetHistoryRange(start, end, "event", entity, action);
 
     const datasets = history?.reduce<Dataset[]>((datasets, record) => {
@@ -98,12 +93,13 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
     }, []);
 
     // set the chart colours in light/dark mode
-    const { textColour, lineColour, tooltipColour } = useMemo(() => {
+    const { textColour, lineColour, tooltipColour, lineColours } = useMemo(() => {
         if (isDark) {
             return {
                 textColour: scss.darkText,
                 lineColour: scss.darkChartLine,
                 tooltipColour: scss.darkMenu,
+                lineColours: scss.darkChart.split(", "),
             };
         }
 
@@ -111,6 +107,7 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
             textColour: scss.lightText,
             lineColour: scss.lightChartLine,
             tooltipColour: scss.lightMenu,
+            lineColours: scss.lightChart.split(", "),
         };
     }, [isDark]);
 
@@ -223,8 +220,8 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                 })),
                 xAxisID: isLandscape ? "time" : `${dataset.action}-${dataset.unit}`.toLowerCase(),
                 yAxisID: isLandscape ? `${dataset.action}-${dataset.unit}`.toLowerCase() : "time",
-                backgroundColor: colours[i],
-                borderColor: colours[i],
+                backgroundColor: lineColours[i],
+                borderColor: lineColours[i],
                 borderWidth: 1,
                 pointRadius: 2,
             })) ?? [],
