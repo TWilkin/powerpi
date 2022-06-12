@@ -18,7 +18,7 @@ import styles from "./Chart.module.scss";
 import scss from "../../../styles/exports.module.scss";
 import useColourMode from "../../../hooks/colour";
 import { useMemo } from "react";
-import { getFormattedUnit } from "../FormattedValue";
+import { getFormattedUnit, getFormattedValue } from "../FormattedValue";
 
 ChartJS.register(
     CategoryScale,
@@ -157,11 +157,11 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                         context.map((item) => (isLandscape ? item.label : item.formattedValue)),
                     label: (context) => {
                         const value = isLandscape ? context.parsed.y : context.parsed.x;
-                        const unit =
+                        const formatted =
                             datasets && datasets[context.datasetIndex].unit
-                                ? getFormattedUnit(datasets[context.datasetIndex].unit)
-                                : "";
-                        return `${value} ${unit}`;
+                                ? getFormattedValue(value, datasets[context.datasetIndex].unit)
+                                : value;
+                        return `${formatted ?? value}`;
                     },
                 },
             },

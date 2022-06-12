@@ -3,20 +3,24 @@ interface FormattedValueProps {
     unit?: string;
 }
 
-const FormattedValue = ({ value, unit }: FormattedValueProps) => {
+const FormattedValue = ({ value, unit }: FormattedValueProps) => (
+    <>{getFormattedValue(value, unit)}</>
+);
+export default FormattedValue;
+
+export function getFormattedValue(value: number | undefined, unit: string | undefined) {
     if (value === undefined || !unit) {
-        return <></>;
+        return undefined;
     }
 
     switch (unit.toLowerCase()) {
         case "%":
-            return <>{`${value}%`}</>;
+            return `${value}%`;
 
         default:
-            return <>{`${value} ${getFormattedUnit(unit)}`}</>;
+            return `${value} ${getFormattedUnit(unit)}`;
     }
-};
-export default FormattedValue;
+}
 
 export function getFormattedUnit(unit: string | undefined) {
     if (!unit) {
