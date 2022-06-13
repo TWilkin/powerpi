@@ -156,7 +156,7 @@ services:
             - FREEDNS_PASSWORD=/var/run/secrets/powerpi_freedns
 
     nginx:
-        image: ${REGISTRY}/powerpi/nginx:1.2.9
+        image: ${REGISTRY}/powerpi/nginx:1.2.10
         networks:
             - powerpi
         ports:
