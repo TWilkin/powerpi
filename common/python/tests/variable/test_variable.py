@@ -1,6 +1,6 @@
-from powerpi_common.variable.types import VariableType
 from pytest_mock import MockerFixture
 
+from powerpi_common.variable.types import VariableType
 from powerpi_common.variable.variable import Variable
 from powerpi_common_test.variable import VariableTestBase
 
