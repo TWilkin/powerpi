@@ -3,8 +3,9 @@ from typing import Dict, Union
 from powerpi_common.device import DeviceManager
 from powerpi_common.device.manager import DeviceNotFoundException
 from powerpi_common.logger import Logger
-from powerpi_common.typing import DeviceType
+from powerpi_common.typing import DeviceType, SensorType
 from powerpi_common.variable.device import DeviceVariable
+from powerpi_common.variable.sensor import SensorVariable
 from powerpi_common.variable.types import VariableType
 
 
@@ -35,6 +36,12 @@ class VariableManager:
         '''
         return self.__get(VariableType.DEVICE, name)
 
+    def get_sensor(self, name: str) -> Union[SensorVariable, SensorType]:
+        '''
+        Returns the sensor variable if it exists, or the actual sensor if that exists.
+        '''
+        return self.__get(VariableType.SENSOR, name)
+
     def __add(self, variable_type: VariableType, name: str):
         variable_attribute = f'{variable_type}_variable'
 
@@ -60,8 +67,11 @@ class VariableManager:
             try:
                 if variable_type == VariableType.DEVICE:
                     return self.__device_manager.get_device(name)
-            except DeviceNotFoundException:
-                # no local device, so let's create a variable
-                return self.__add(variable_type, name)
 
-        return None
+                if variable_type == VariableType.SENSOR:
+                    return self.__device_manager.get_sensor(name)
+            except DeviceNotFoundException:
+                pass
+
+            # no local device, so let's create a variable
+            return self.__add(variable_type, name)
