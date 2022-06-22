@@ -1,14 +1,11 @@
 import re
-from abc import ABC, abstractmethod
 
 from pytest_mock import MockerFixture
 
+from powerpi_common_test.base import BaseTest
 
-class VariableTestBase(ABC):
-    @abstractmethod
-    def create_subject(self, _: MockerFixture):
-        raise NotImplementedError
 
+class VariableTestBase(BaseTest):
     def test_name(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 

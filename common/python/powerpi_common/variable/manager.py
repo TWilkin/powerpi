@@ -10,7 +10,7 @@ from powerpi_common.variable.types import VariableType
 
 class VariableManager:
     '''
-    Class to retrieve a variable, or if it's a local device/sensor, the actual device 
+    Class to retrieve a variable, or if it's a local device/sensor, the actual device
     from DeviceManager, which has the live state.
     '''
 
@@ -42,7 +42,8 @@ class VariableManager:
 
         if factory is None:
             self.__logger.debug(
-                f'Could not find variable type "{variable_type}')
+                f'Could not find variable type "{variable_type}'
+            )
             return None
 
         instance = factory(name)
@@ -62,3 +63,5 @@ class VariableManager:
             except DeviceNotFoundException:
                 # no local device, so let's create a variable
                 return self.__add(variable_type, name)
+
+        return None
