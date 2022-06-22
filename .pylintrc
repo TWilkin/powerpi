@@ -1,5 +1,6 @@
 [MESSAGES CONTROL]
 disable=
+    c-extension-no-member,
     missing-class-docstring,
     missing-function-docstring,
     missing-module-docstring,
