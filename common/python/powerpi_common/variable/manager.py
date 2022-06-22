@@ -25,7 +25,10 @@ class VariableManager:
         self.__device_manager = device_manager
         self.__service_provider = service_provider
 
-        self.__variables: Dict[VariableType, Dict[str, DeviceVariable]] = {}
+        self.__variables: Dict[
+            VariableType,
+            Dict[str, Union[DeviceVariable, SensorVariable]]
+        ] = {}
 
         for variable_type in VariableType:
             self.__variables[variable_type] = {}

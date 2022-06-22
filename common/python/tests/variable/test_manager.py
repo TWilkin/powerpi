@@ -86,5 +86,6 @@ class TestVariableManager(BaseTest):
 
         self.device_manager.get_device.assert_not_called()
         self.device_manager.get_sensor.assert_not_called()
+
         self.service_provider.device_variable.assert_not_called()
         self.service_provider.sensor_variable.assert_not_called()

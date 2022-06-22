@@ -26,6 +26,6 @@ class VariableTestBase(BaseTest):
         subject = self.create_subject(mocker)
 
         assert bool(re.match(
-            r"^var\.(device|sensor)\..*=\{.*\}$",
-            str(subject))
-        ) is True
+            r'^var\.(device|sensor)\..*=\{.*\}$',
+            str(subject)
+        )) is True
