@@ -31,7 +31,7 @@ services:
             - FILE_PATH=docker/config
 
     deep-thought:
-        image: ${REGISTRY}/powerpi/deep-thought:0.5.11
+        image: ${REGISTRY}/powerpi/deep-thought:0.5.12
         networks:
             - powerpi
         deploy:
@@ -156,7 +156,7 @@ services:
             - FREEDNS_PASSWORD=/var/run/secrets/powerpi_freedns
 
     nginx:
-        image: ${REGISTRY}/powerpi/nginx:1.2.9
+        image: ${REGISTRY}/powerpi/nginx:1.2.10
         networks:
             - powerpi
         ports:

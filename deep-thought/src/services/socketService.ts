@@ -50,7 +50,9 @@ export default class ApiSocketService {
         state?: string,
         value?: number,
         unit?: string,
-        timestamp?: number
+        timestamp?: number,
+        battery?: number,
+        batteryTimestamp?: number
     ) {
         this.namespace?.emit("sensor", {
             sensor: sensorName,
@@ -58,6 +60,8 @@ export default class ApiSocketService {
             value,
             unit,
             timestamp,
+            battery,
+            batteryTimestamp,
         });
     }
 
@@ -104,5 +108,17 @@ class SensorListener extends SensorStateListener {
         timestamp?: number
     ): void {
         this.socketService.onEventMessage(sensorName, undefined, value, unit, timestamp);
+    }
+
+    protected onSensorBatteryMessage(sensorName: string, value: number, timestamp?: number): void {
+        this.socketService.onEventMessage(
+            sensorName,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            value,
+            timestamp
+        );
     }
 }

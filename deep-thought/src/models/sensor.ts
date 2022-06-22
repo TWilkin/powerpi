@@ -7,4 +7,6 @@ export interface Sensor extends ISensor {
     value: number | undefined;
     unit: string | undefined;
     since: number;
+    battery: number | undefined;
+    batterySince: number | undefined;
 }

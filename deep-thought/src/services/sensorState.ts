@@ -41,4 +41,8 @@ class SensorConsumer extends SensorStateListener {
     protected onSensorDataMessage(_: string, __: number, ___: string, ____?: number): void {
         return;
     }
+
+    protected onSensorBatteryMessage(_: string, __: number, ___?: number): void {
+        return;
+    }
 }

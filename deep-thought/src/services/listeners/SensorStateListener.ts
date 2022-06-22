@@ -17,13 +17,15 @@ export default abstract class SensorStateListener implements MqttConsumer<EventM
             display_name: sensor.display_name,
             type: sensor.type,
             location: sensor.location,
-            entity: sensor.entity ?? sensor.location,
+            entity: sensor.entity ?? sensor.name,
             action: sensor.action ?? sensor.type,
             visible: sensor.visible ?? true,
             state: undefined,
             value: undefined,
             unit: undefined,
             since: -1,
+            battery: undefined,
+            batterySince: undefined,
         };
     }
 
@@ -33,6 +35,11 @@ export default abstract class SensorStateListener implements MqttConsumer<EventM
 
     public async $onInit() {
         await this.mqttService.subscribe("event", this._sensor.entity, this._sensor.action, this);
+
+        await this.mqttService.subscribe("event", this._sensor.entity, "battery", {
+            message: (_: string, __: string, ___: string, message: EventMessage) =>
+                this.batteryMessage(message),
+        });
     }
 
     public message(_: string, __: string, ___: string, message: EventMessage) {
@@ -55,6 +62,15 @@ export default abstract class SensorStateListener implements MqttConsumer<EventM
         }
     }
 
+    private batteryMessage(message: EventMessage) {
+        if (message.value !== undefined) {
+            this._sensor.battery = message.value;
+            this._sensor.batterySince = message.timestamp;
+
+            this.onSensorBatteryMessage(this._sensor.name, message.value, message.timestamp);
+        }
+    }
+
     protected abstract onSensorStateMessage(
         sensorName: string,
         state: string,
@@ -65,6 +81,12 @@ export default abstract class SensorStateListener implements MqttConsumer<EventM
         sensorName: string,
         value: number,
         unit: string,
+        timestamp?: number
+    ): void;
+
+    protected abstract onSensorBatteryMessage(
+        sensorName: string,
+        value: number,
         timestamp?: number
     ): void;
 }

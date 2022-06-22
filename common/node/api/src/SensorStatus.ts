@@ -4,6 +4,8 @@ export interface SensorStatusMessage {
     value?: number;
     unit?: string;
     timestamp: number;
+    battery?: number;
+    batteryTimestamp?: number;
 }
 
 export type SensorStatusCallback = (message: SensorStatusMessage) => void;

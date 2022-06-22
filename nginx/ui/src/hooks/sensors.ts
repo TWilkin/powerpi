@@ -22,11 +22,24 @@ export default function useGetSensors() {
             if (index !== -1) {
                 const newSensors = [...sensors];
 
-                newSensors[index] = { ...newSensors[index] };
-                newSensors[index].state = message.state;
-                newSensors[index].value = message.value;
-                newSensors[index].unit = message.unit;
-                newSensors[index].since = message.timestamp;
+                const newSensor = { ...newSensors[index] };
+                newSensors[index] = newSensor;
+
+                if (message.state !== undefined) {
+                    newSensor.state = message.state;
+                    newSensor.since = message.timestamp;
+                }
+
+                if (message.value !== undefined) {
+                    newSensor.value = message.value;
+                    newSensor.unit = message.unit;
+                    newSensor.since = message.timestamp;
+                }
+
+                if (message.battery !== undefined) {
+                    newSensor.battery = message.battery;
+                    newSensor.batterySince = message.batteryTimestamp;
+                }
 
                 setSensors(newSensors);
             }
