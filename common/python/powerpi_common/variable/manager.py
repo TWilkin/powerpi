@@ -1,12 +1,12 @@
 from typing import Dict, Union
 
-from powerpi_common.device import DeviceManager
-from powerpi_common.device.manager import DeviceNotFoundException
+from powerpi_common.device import DeviceManager, DeviceNotFoundException
 from powerpi_common.logger import Logger
 from powerpi_common.typing import DeviceType, SensorType
 from powerpi_common.variable.device import DeviceVariable
 from powerpi_common.variable.sensor import SensorVariable
 from powerpi_common.variable.types import VariableType
+from powerpi_common.variable.variable import Variable
 
 
 class VariableManager:
@@ -45,7 +45,20 @@ class VariableManager:
         '''
         return self.__get(VariableType.SENSOR, name, action)
 
-    def __add(self, variable_type: VariableType, name: str, action: Union[str, None]):
+    def add(self, variable: Variable):
+        variable_type = variable.variable_type
+        kwargs = {}
+
+        if variable_type == VariableType.SENSOR:
+            kwargs['action'] = variable.action
+
+        key = self.__key(variable_type, variable.name, **kwargs)
+
+        self.__variables[variable_type][key] = variable
+
+        self.__logger.info(f'Adding variable {variable}')
+
+    def __create(self, variable_type: VariableType, name: str, action: Union[str, None]):
         variable_attribute = f'{variable_type}_variable'
 
         factory = getattr(self.__service_provider, variable_attribute, None)
@@ -62,29 +75,29 @@ class VariableManager:
 
         instance = factory(**kwargs)
 
-        key = self.__key(variable_type, name, action)
-        self.__variables[variable_type][key] = instance
+        self.add(instance)
 
         return instance
 
     def __get(self, variable_type: VariableType, name: str, action: Union[str, None] = None):
         key = self.__key(variable_type, name, action)
 
+        variable = self.__variables[variable_type].get(key)
+        if variable is not None:
+            return variable
+
+        # no variable yet, so try getting it from DeviceManager
         try:
-            return self.__variables[variable_type][key]
-        except KeyError:
-            # no variable yet, so try getting it from DeviceManager
-            try:
-                if variable_type == VariableType.DEVICE:
-                    return self.__device_manager.get_device(name)
+            if variable_type == VariableType.DEVICE:
+                return self.__device_manager.get_device(name)
 
-                if variable_type == VariableType.SENSOR:
-                    return self.__device_manager.get_sensor(name)
-            except DeviceNotFoundException:
-                pass
+            if variable_type == VariableType.SENSOR:
+                return self.__device_manager.get_sensor(name)
+        except DeviceNotFoundException:
+            pass
 
-            # no local device, so let's create a variable
-            return self.__add(variable_type, name, action)
+        # no local device, so let's create a variable
+        return self.__create(variable_type, name, action)
 
     @classmethod
     def __key(cls, variable_type: VariableType, name: str, action: Union[str, None] = None):

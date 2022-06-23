@@ -27,6 +27,7 @@ class SensorVariable(Variable, SensorEventConsumer):
             self, f'sensor/{name}/{action}', self, config, logger
         )
 
+        self.__action = action
         self.__value = SensorValue(None, None)
 
         mqtt_client.add_consumer(self)
@@ -34,6 +35,10 @@ class SensorVariable(Variable, SensorEventConsumer):
     @property
     def variable_type(self):
         return VariableType.SENSOR
+
+    @property
+    def action(self):
+        return self.__action
 
     @property
     def value(self):

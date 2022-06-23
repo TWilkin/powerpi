@@ -6,6 +6,19 @@ from powerpi_common.variable import VariableManager, VariableType
 from powerpi_common_test.base import BaseTest
 
 
+class DeviceVariableImpl:
+    def __init__(self, name: str):
+        self.name = name
+        self.variable_type = VariableType.DEVICE
+
+
+class SensorVariableImpl:
+    def __init__(self, name: str, action: str):
+        self.name = name
+        self.action = action
+        self.variable_type = VariableType.SENSOR
+
+
 class TestVariableManager(BaseTest):
     def create_subject(self, mocker: MockerFixture):
         self.logger = mocker.Mock()
@@ -23,8 +36,8 @@ class TestVariableManager(BaseTest):
         self.device_manager.get_device = not_found
         self.device_manager.get_sensor = not_found
 
-        self.service_provider.device_variable = lambda name: f'device: {name}'
-        self.service_provider.sensor_variable = lambda name, action: f'sensor: {name}'
+        self.service_provider.device_variable = DeviceVariableImpl
+        self.service_provider.sensor_variable = SensorVariableImpl
 
         name = 'new_variable'
 
@@ -32,14 +45,17 @@ class TestVariableManager(BaseTest):
             else subject.get_sensor(name, 'action')
 
         assert result is not None
-        assert result == f'{variable_type}: new_variable'
+        assert result.name == name
+        assert result.variable_type == variable_type
 
     @pytest.mark.parametrize('variable_type', [VariableType.DEVICE, VariableType.SENSOR])
     def test_get_x_from_manager(self, mocker: MockerFixture, variable_type: VariableType):
         subject = self.create_subject(mocker)
 
-        self.device_manager.get_device = lambda name: f'device: {name}'
-        self.device_manager.get_sensor = lambda name: f'sensor: {name}'
+        self.device_manager.get_device = DeviceVariableImpl
+        self.device_manager.get_sensor = lambda name: SensorVariableImpl(
+            name, 'action'
+        )
 
         name = 'found_device'
 
@@ -47,7 +63,8 @@ class TestVariableManager(BaseTest):
             else subject.get_sensor(name, 'action')
 
         assert result is not None
-        assert result == f'{variable_type}: found_device'
+        assert result.name == name
+        assert result.variable_type == variable_type
 
         self.service_provider.device_variable.assert_not_called()
         self.service_provider.sensor_variable.assert_not_called()
@@ -56,33 +73,19 @@ class TestVariableManager(BaseTest):
     def test_get_x_exists(self, mocker: MockerFixture, variable_type: VariableType):
         subject = self.create_subject(mocker)
 
-        def not_found(name: str):
-            raise DeviceNotFoundException(DeviceConfigType.DEVICE, name)
-        self.device_manager.get_device = not_found
-        self.device_manager.get_sensor = not_found
-
-        self.service_provider.device_variable = lambda name: f'device: {name}'
-        self.service_provider.sensor_variable = lambda name, action: f'sensor: {name}'
-
         name = 'found_variable'
 
-        # ensure it's already there
-        if variable_type == VariableType.DEVICE:
-            subject.get_device(name)
-        else:
-            subject.get_sensor(name, 'action')
+        variable = DeviceVariableImpl(name) if variable_type == VariableType.DEVICE \
+            else SensorVariableImpl(name, 'action')
 
-        # then reset
-        self.device_manager.get_device = mocker.Mock()
-        self.device_manager.get_sensor = mocker.Mock()
-        self.service_provider.device_variable = mocker.Mock()
-        self.service_provider.sensor_variable = mocker.Mock()
+        # ensure it's already there
+        subject.add(variable)
 
         result = subject.get_device(name) if variable_type == VariableType.DEVICE \
             else subject.get_sensor(name, 'action')
 
         assert result is not None
-        assert result == f'{variable_type}: found_variable'
+        assert result == variable
 
         self.device_manager.get_device.assert_not_called()
         self.device_manager.get_sensor.assert_not_called()

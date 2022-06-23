@@ -103,7 +103,9 @@ class RemoteDevice(DeviceVariable):
         try:
             await wait_for(self.__waiting.wait(), timeout)
         except AsyncTimeoutError:
-            self.__logger.info(f'Timed out waiting for device "{self.name}"')
+            self.__logger.warning(
+                f'Timed out waiting for device "{self.name}"'
+            )
 
     def __str__(self):
         return f'{type(self).__name__}({self.name}, {self.json})'
