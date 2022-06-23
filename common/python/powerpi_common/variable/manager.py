@@ -39,13 +39,13 @@ class VariableManager:
         '''
         return self.__get(VariableType.DEVICE, name)
 
-    def get_sensor(self, name: str) -> Union[SensorVariable, SensorType]:
+    def get_sensor(self, name: str, action: str) -> Union[SensorVariable, SensorType]:
         '''
         Returns the sensor variable if it exists, or the actual sensor if that exists.
         '''
-        return self.__get(VariableType.SENSOR, name)
+        return self.__get(VariableType.SENSOR, name, action)
 
-    def __add(self, variable_type: VariableType, name: str):
+    def __add(self, variable_type: VariableType, name: str, action: Union[str, None]):
         variable_attribute = f'{variable_type}_variable'
 
         factory = getattr(self.__service_provider, variable_attribute, None)
@@ -56,15 +56,22 @@ class VariableManager:
             )
             return None
 
-        instance = factory(name)
+        kwargs = {'name': name}
+        if variable_type == VariableType.SENSOR:
+            kwargs['action'] = action
 
-        self.__variables[variable_type][name] = instance
+        instance = factory(**kwargs)
+
+        key = self.__key(variable_type, name, action)
+        self.__variables[variable_type][key] = instance
 
         return instance
 
-    def __get(self, variable_type: VariableType, name: str):
+    def __get(self, variable_type: VariableType, name: str, action: Union[str, None] = None):
+        key = self.__key(variable_type, name, action)
+
         try:
-            return self.__variables[variable_type][name]
+            return self.__variables[variable_type][key]
         except KeyError:
             # no variable yet, so try getting it from DeviceManager
             try:
@@ -77,4 +84,13 @@ class VariableManager:
                 pass
 
             # no local device, so let's create a variable
-            return self.__add(variable_type, name)
+            return self.__add(variable_type, name, action)
+
+    @classmethod
+    def __key(cls, variable_type: VariableType, name: str, action: Union[str, None] = None):
+        if variable_type == VariableType.DEVICE:
+            return name
+        if variable_type == VariableType.SENSOR and action is not None:
+            return f'{name}/{action}'
+
+        return None

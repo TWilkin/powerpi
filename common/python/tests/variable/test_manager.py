@@ -24,12 +24,12 @@ class TestVariableManager(BaseTest):
         self.device_manager.get_sensor = not_found
 
         self.service_provider.device_variable = lambda name: f'device: {name}'
-        self.service_provider.sensor_variable = lambda name: f'sensor: {name}'
+        self.service_provider.sensor_variable = lambda name, action: f'sensor: {name}'
 
         name = 'new_variable'
 
         result = subject.get_device(name) if variable_type == VariableType.DEVICE \
-            else subject.get_sensor(name)
+            else subject.get_sensor(name, 'action')
 
         assert result is not None
         assert result == f'{variable_type}: new_variable'
@@ -44,7 +44,7 @@ class TestVariableManager(BaseTest):
         name = 'found_device'
 
         result = subject.get_device(name) if variable_type == VariableType.DEVICE \
-            else subject.get_sensor(name)
+            else subject.get_sensor(name, 'action')
 
         assert result is not None
         assert result == f'{variable_type}: found_device'
@@ -62,7 +62,7 @@ class TestVariableManager(BaseTest):
         self.device_manager.get_sensor = not_found
 
         self.service_provider.device_variable = lambda name: f'device: {name}'
-        self.service_provider.sensor_variable = lambda name: f'sensor: {name}'
+        self.service_provider.sensor_variable = lambda name, action: f'sensor: {name}'
 
         name = 'found_variable'
 
@@ -70,7 +70,7 @@ class TestVariableManager(BaseTest):
         if variable_type == VariableType.DEVICE:
             subject.get_device(name)
         else:
-            subject.get_sensor(name)
+            subject.get_sensor(name, 'action')
 
         # then reset
         self.device_manager.get_device = mocker.Mock()
@@ -79,7 +79,7 @@ class TestVariableManager(BaseTest):
         self.service_provider.sensor_variable = mocker.Mock()
 
         result = subject.get_device(name) if variable_type == VariableType.DEVICE \
-            else subject.get_sensor(name)
+            else subject.get_sensor(name, 'action')
 
         assert result is not None
         assert result == f'{variable_type}: found_variable'

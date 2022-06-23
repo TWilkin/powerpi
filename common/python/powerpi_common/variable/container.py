@@ -36,5 +36,7 @@ class VariableContainer(containers.DeclarativeContainer):
 
     sensor_variable = providers.Factory(
         SensorVariable,
+        config=config,
+        logger=logger,
         mqtt_client=mqtt_client
     )
