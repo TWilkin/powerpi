@@ -10,7 +10,7 @@ from macro_controller.device.remote import RemoteDevice
 from powerpi_common_test.mqtt import mock_producer
 
 
-class TestRemoteDevice(object):
+class TestRemoteDevice:
     pytestmark = pytest.mark.asyncio
 
     def get_subject(self, mocker: MockerFixture, timeout: float):
@@ -21,7 +21,8 @@ class TestRemoteDevice(object):
         self.publish = mock_producer(mocker, self.mqtt_client)
 
         return RemoteDevice(
-            self.config, self.logger, self.mqtt_client, 'remote', timeout
+            self.config, self.logger, self.mqtt_client, timeout,
+            name='remote'
         )
 
     @pytest.mark.parametrize('state', ['on', 'off'])
