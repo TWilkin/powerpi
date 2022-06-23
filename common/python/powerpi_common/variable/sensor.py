@@ -24,7 +24,7 @@ class SensorVariable(Variable, SensorEventConsumer):
     ):
         Variable.__init__(self, name, **kwargs)
         SensorEventConsumer.__init__(
-            self, f'sensor/{name}/{action}', self, config, logger
+            self, f'event/{name}/{action}', self, config, logger
         )
 
         self.__action = action
