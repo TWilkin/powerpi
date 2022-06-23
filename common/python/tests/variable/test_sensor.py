@@ -22,7 +22,7 @@ class TestSensorVariable(VariableTestBase):
     def test_topic(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
 
-        assert subject.topic == 'sensor/TestSensor/detect'
+        assert subject.topic == 'event/TestSensor/detect'
 
     async def test_on_message_updates(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)
