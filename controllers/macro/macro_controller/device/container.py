@@ -25,8 +25,7 @@ def add_devices(container):
     device_container.device_factory.override(providers.Factory(
         RemoteDeviceFactory,
         logger=container.common.logger,
-        device_service_provider=container.common.device.service_provider,
-        variable_service_provider=container.common.variable.service_provider
+        service_provider=container.common.device.service_provider
     ))
 
     setattr(

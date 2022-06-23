@@ -53,10 +53,13 @@ class VariableManager:
             kwargs['action'] = variable.action
 
         key = self.__key(variable_type, variable.name, **kwargs)
+        if key in self.__variables[variable_type]:
+            return False
 
         self.__variables[variable_type][key] = variable
 
         self.__logger.info(f'Adding variable {variable}')
+        return True
 
     def __create(self, variable_type: VariableType, name: str, action: Union[str, None]):
         variable_attribute = f'{variable_type}_variable'
