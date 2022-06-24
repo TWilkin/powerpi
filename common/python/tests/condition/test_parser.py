@@ -1,4 +1,4 @@
-from typing import List
+from typing import Union
 
 import pytest
 from pytest_mock import MockerFixture
@@ -25,15 +25,28 @@ class TestConditionParser(BaseTest):
 
         return ConditionParser(self.variable_manager)
 
-    @pytest.mark.parametrize('data', [
-        ['device.socket.state', 'socket'],
-        ['device.light.brightness', 'light'],
-        ['sensor.office.temperature.value', 'office/temperature'],
-        ['sensor.office.temperature.unit', 'temperature/office']
+    @pytest.mark.parametrize('constant,expected', [
+        ('strING', 'strING'),
+        ('10', 10),
+        ('10.23', 10.23),
+        ('true', True),
+        ('FALSE', False),
     ])
-    def test_identifier_success(self, mocker: MockerFixture, data: List[str]):
-        (identifier, expected) = data
+    def test_constant(self, mocker: MockerFixture, constant: str, expected: Union[str, float]):
+        subject = self.create_subject(mocker)
 
+        result = subject.constant(constant)
+
+        assert result is not None
+        assert result == expected
+
+    @pytest.mark.parametrize('identifier,expected', [
+        ('device.socket.state', 'socket'),
+        ('device.light.brightness', 'light'),
+        ('sensor.office.temperature.value', 'office/temperature'),
+        ('sensor.office.temperature.unit', 'temperature/office')
+    ])
+    def test_identifier_success(self, mocker: MockerFixture, identifier: str, expected: str):
         subject = self.create_subject(mocker)
 
         self.variable_manager.get_device = DeviceVariableImpl

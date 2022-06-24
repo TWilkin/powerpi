@@ -9,6 +9,20 @@ class ConditionParser:
     ):
         self.__variable_manager = variable_manager
 
+    def constant(self, constant: str):
+        try:
+            return float(constant)
+        except ValueError:
+            pass
+
+        lower = constant.lower()
+        if lower == 'true':
+            return True
+        if lower == 'false':
+            return False
+
+        return constant
+
     def identifier(self, identifier: str):
         split = identifier.split('.')
 
