@@ -1,4 +1,5 @@
-from powerpi_common.variable import Variable, VariableManager, VariableType
+from powerpi_common.condition.errors import InvalidIdentifierException
+from powerpi_common.variable import VariableManager, VariableType
 
 
 class ConditionParser:
@@ -46,12 +47,3 @@ class ConditionParser:
             return variable.unit
 
         raise InvalidIdentifierException(identifier)
-
-
-class ParseException(Exception):
-    pass
-
-
-class InvalidIdentifierException(ParseException):
-    def __init__(self, identifier: str):
-        ParseException.__init__(self, f'Invalid identifier "{identifier}"')
