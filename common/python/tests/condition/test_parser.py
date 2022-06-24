@@ -91,11 +91,12 @@ class TestConditionParser(BaseTest):
     @pytest.mark.parametrize('values,expected', [
         ([1, 1.0, '1'], True),
         ([1.1, 1.0], False),
+        ([1, 1.0, 'a'], False),
         ([True, 'true', 1], True),
         (['device.socket.state', 'socket'], True),
         (['sensor.office.temperature.unit', 'temperature/office'], True),
         ([{'not': False}, True], True),
-        ([{'equals': ['a']}, 1], False)
+        ([{'equals': [1, 1.0]}, '1'], True)
     ])
     def test_equality_expression_success(self, mocker: MockerFixture, values: List, expected: bool):
         subject = self.create_subject(mocker)

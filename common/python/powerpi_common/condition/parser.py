@@ -1,5 +1,6 @@
 import re
 from functools import reduce
+from itertools import product
 from typing import Dict, List, Union
 
 from powerpi_common.condition.errors import InvalidArgumentException, InvalidIdentifierException
@@ -90,13 +91,18 @@ class ConditionParser:
             if not isinstance(expressions, list):
                 raise InvalidArgumentException(Lexeme.EQUALS, expressions)
 
-            comparisons = []
+            # get all the values
+            values = [self.equality_expression(value) for value in expressions]
 
-            for value in expressions:
-                comparisons.append(self.equality_expression(value))
+            # check all the values match each other
+            comparisons = map(
+                lambda t: t[0] == t[1],
+                product(values, values)
+            )
 
+            # if all the values are true, it's equal
             return reduce(
-                lambda a, b: a == b,
+                lambda a, b: a and b,
                 comparisons,
             )
 
