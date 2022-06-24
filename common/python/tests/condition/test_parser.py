@@ -29,7 +29,7 @@ class TestConditionParser(BaseTest):
 
         message = {'timestamp': 1337}
 
-        return ConditionParser(message, variable_manager)
+        return ConditionParser(variable_manager, message)
 
     @pytest.mark.parametrize('constant,expected', [
         ('strING', 'strING'),

@@ -1,11 +1,8 @@
 import re
 from typing import Dict, List, Union
 
-from dependency_injector.wiring import Provide, inject
-
 from powerpi_common.condition.errors import InvalidArgumentException, InvalidIdentifierException
 from powerpi_common.condition.lexeme import Lexeme
-from powerpi_common.container import Container
 from powerpi_common.mqtt import MQTTMessage
 from powerpi_common.variable import VariableManager, VariableType
 
@@ -14,13 +11,12 @@ Expression = Union[Dict, List, str, float, bool]
 
 
 class ConditionParser:
-    __IDENTIFIER_REGEX = r'^(device|sensor)(\.[A-Za-z][A-Za-z0-9_]*){2,3}$'
+    __IDENTIFIER_REGEX = r'^(device|sensor|message)(\.[A-Za-z][A-Za-z0-9_]*){1,3}$'
 
-    @inject
     def __init__(
         self,
-        message: MQTTMessage,
-        variable_manager: VariableManager = Provide[Container.variable.variable_manager],
+        variable_manager: VariableManager,
+        message: MQTTMessage
     ):
         self.__variable_manager = variable_manager
         self.__message = message
