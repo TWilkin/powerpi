@@ -1,62 +1,41 @@
-import contextlib
-
 from asyncio import Event, wait_for
 from asyncio.exceptions import TimeoutError as AsyncTimeoutError
-from typing import List, Union
+from typing import Union
 
 from powerpi_common.config import Config
 from powerpi_common.device import DeviceStatus
-from powerpi_common.device.consumers import DeviceStatusEventConsumer
-from powerpi_common.device.mixin import AdditionalState, AdditionalStateMixin
+from powerpi_common.device.mixin import AdditionalState
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+from powerpi_common.variable import DeviceVariable
 
 
-class RemoteDevice(DeviceStatusEventConsumer, AdditionalStateMixin):
+class RemoteDevice(DeviceVariable):
     #pylint: disable=too-many-arguments
     def __init__(
         self,
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        name: str,
         timeout: float = 12.5,
-        **_
+        **kwargs
     ):
         self.__logger = logger
-        self.__name = name
         self.__timeout = timeout
-
-        DeviceStatusEventConsumer.__init__(self, self, config, logger)
-
-        self.__state = DeviceStatus.UNKNOWN
-        self.__additional_state = {}
 
         self.__producer = mqtt_client.add_producer()
         self.__waiting = Event()
 
-        mqtt_client.add_consumer(self)
+        DeviceVariable.__init__(self, config, logger, mqtt_client, **kwargs)
 
-    @property
-    def name(self):
-        return self.__name
-
-    @property
-    def state(self):
-        return self.__state
-
-    @state.setter
+    @DeviceVariable.state.setter
     def state(self, new_state: str):
-        self.__state = new_state
+        DeviceVariable.state.fset(self, new_state)
         self.__waiting.set()
 
-    @property
-    def additional_state(self):
-        return self.__additional_state
-
-    @additional_state.setter
+    @DeviceVariable.additional_state.setter
     def additional_state(self, new_additional_state: AdditionalState):
-        self.__additional_state = new_additional_state
+        DeviceVariable.additional_state.fset(self, new_additional_state)
         self.__waiting.set()
 
     async def change_power_and_additional_state(
@@ -71,21 +50,20 @@ class RemoteDevice(DeviceStatusEventConsumer, AdditionalStateMixin):
         new_state: DeviceStatus,
         new_additional_state: AdditionalState
     ):
-        self.__state = new_state
-        self.__additional_state = new_additional_state
+        DeviceVariable.set_state_and_additional(
+            self, new_state, new_additional_state
+        )
         self.__waiting.set()
 
-    async def on_additional_state_change(self, new_additional_state: AdditionalState) -> AdditionalState:
+    async def on_additional_state_change(
+        self, new_additional_state: AdditionalState
+    ) -> AdditionalState:
         # we are doing everything in change_power_and_additional_state
         return new_additional_state
 
     def _filter_keys(self, new_additional_state: AdditionalState):
         # we don't know what the actual implementation supports, so keep it as it is
         return new_additional_state
-
-    def _additional_state_keys(self) -> List[str]:
-        # we don't know what the actual implementation supports, so we're not setting keys
-        return []
 
     async def turn_on(self):
         await self.__send_message(DeviceStatus.ON)
@@ -98,7 +76,7 @@ class RemoteDevice(DeviceStatusEventConsumer, AdditionalStateMixin):
         state: Union[DeviceStatus, None],
         additional_state: Union[AdditionalState, None] = None
     ):
-        topic = f'device/{self.__name}/change'
+        topic = f'device/{self.name}/change'
         message = {}
 
         if additional_state is not None:
@@ -112,18 +90,22 @@ class RemoteDevice(DeviceStatusEventConsumer, AdditionalStateMixin):
         self.__producer(topic, message)
 
         self.__logger.info(
-            f'Waiting for state update for device "{self.__name}"'
+            f'Waiting for state update for device "{self.name}"'
         )
 
         await self.__wait(self.__timeout)
 
         self.__logger.info(
-            f'Continuing after device "{self.__name}"'
+            f'Continuing after device "{self.name}"'
         )
 
     async def __wait(self, timeout: float):
-        with contextlib.suppress(AsyncTimeoutError):
+        try:
             await wait_for(self.__waiting.wait(), timeout)
+        except AsyncTimeoutError:
+            self.__logger.warning(
+                f'Timed out waiting for device "{self.name}"'
+            )
 
     def __str__(self):
-        return f'{type(self).__name__}({self.__name}, {self.__state})'
+        return f'{type(self).__name__}({self.name}, {self.json})'

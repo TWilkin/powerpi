@@ -6,7 +6,8 @@ from powerpi_common.controller import Controller
 from powerpi_common.logger import Logger
 from powerpi_common.device import DeviceContainer
 from powerpi_common.event import EventManager
-from powerpi_common.mqtt.client import MQTTClient
+from powerpi_common.mqtt import MQTTClient
+from powerpi_common.variable import VariableContainer
 
 
 class Container(containers.DeclarativeContainer):
@@ -48,6 +49,14 @@ class Container(containers.DeclarativeContainer):
         config=config,
         logger=logger,
         mqtt_client=mqtt_client
+    )
+
+    variable = providers.Container(
+        VariableContainer,
+        config=config,
+        logger=logger,
+        mqtt_client=mqtt_client,
+        device_manager=device.device_manager
     )
 
     event_manager = providers.Singleton(
