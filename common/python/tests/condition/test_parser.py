@@ -88,6 +88,36 @@ class TestConditionParser(BaseTest):
 
         assert result is expected
 
+    @pytest.mark.parametrize('operator,values,expected', [
+        ('>', [3, 2], True),
+        ('>=', [2, 3], False),
+        ('<', [2, 3], True),
+        ('<=', [3, 2], False),
+        ('greater than', [3, 2], True),
+        ('greater than equal', [2, 3], False),
+        ('less than', [2, 3], True),
+        ('less than equal', [3, 2], False),
+    ])
+    def test_relational_expression_success(
+        self, mocker: MockerFixture, operator: str, values: List, expected: bool
+    ):
+        subject = self.create_subject(mocker)
+
+        result = subject.relational_expression({operator: values})
+
+        assert result is expected
+
+    @pytest.mark.parametrize('operator', ['>', '<', '>=', '<='])
+    @pytest.mark.parametrize('values', [
+        'not a list',
+        [1, 2, 3]
+    ])
+    def test_relational_expression_fail(self, mocker: MockerFixture, operator: str, values: List):
+        subject = self.create_subject(mocker)
+
+        with pytest.raises(InvalidArgumentException):
+            subject.relational_expression({operator: values})
+
     @pytest.mark.parametrize('values,expected', [
         ([1, 1.0, '1'], True),
         ([1.1, 1.0], False),
