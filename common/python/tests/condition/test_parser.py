@@ -1,4 +1,4 @@
-from typing import Union
+from typing import List, Union
 
 import pytest
 from pytest_mock import MockerFixture
@@ -21,9 +21,12 @@ class SensorVariableImpl:
 
 class TestConditionParser(BaseTest):
     def create_subject(self, mocker: MockerFixture):
-        self.variable_manager = mocker.Mock()
+        variable_manager = mocker.Mock()
 
-        return ConditionParser(self.variable_manager)
+        variable_manager.get_device = DeviceVariableImpl
+        variable_manager.get_sensor = SensorVariableImpl
+
+        return ConditionParser(variable_manager)
 
     @pytest.mark.parametrize('constant,expected', [
         ('strING', 'strING'),
@@ -49,9 +52,6 @@ class TestConditionParser(BaseTest):
     def test_identifier_success(self, mocker: MockerFixture, identifier: str, expected: str):
         subject = self.create_subject(mocker)
 
-        self.variable_manager.get_device = DeviceVariableImpl
-        self.variable_manager.get_sensor = SensorVariableImpl
-
         result = subject.identifier(identifier)
 
         assert result is not None
@@ -70,7 +70,19 @@ class TestConditionParser(BaseTest):
     def test_identifier_invalid(self, mocker: MockerFixture, identifier: str):
         subject = self.create_subject(mocker)
 
-        self.variable_manager.get_device = DeviceVariableImpl
-
         with pytest.raises(InvalidIdentifierException):
             subject.identifier(identifier)
+
+    @pytest.mark.parametrize('values,expected', [
+        ([1, 1.0, '1'], True),
+        ([1.1, 1.0], False),
+        ([True, 'true', 1], True),
+        (['device.socket.state', 'socket'], True),
+        (['sensor.office.temperature.unit', 'temperature/office'], True),
+    ])
+    def test_equals(self, mocker: MockerFixture, values: List[str], expected: bool):
+        subject = self.create_subject(mocker)
+
+        result = subject.equals(values)
+
+        assert result == expected

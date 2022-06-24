@@ -1,8 +1,13 @@
+import re
+from typing import List
+
 from powerpi_common.condition.errors import InvalidIdentifierException
 from powerpi_common.variable import VariableManager, VariableType
 
 
 class ConditionParser:
+    __IDENTIFIER_REGEX = r'^(device|sensor)(\.[A-Za-z][A-Za-z0-9_]*){2,3}$'
+
     def __init__(
         self,
         variable_manager: VariableManager
@@ -61,3 +66,14 @@ class ConditionParser:
             return variable.unit
 
         raise InvalidIdentifierException(identifier)
+
+    def equals(self, values: List[str]):
+        comparisons = []
+
+        for value in values:
+            if isinstance(value, str) and re.match(self.__IDENTIFIER_REGEX, value):
+                comparisons.append(self.identifier(value))
+            else:
+                comparisons.append(self.constant(value))
+
+        return len(set(comparisons)) == 1
