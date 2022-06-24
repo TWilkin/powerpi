@@ -79,7 +79,7 @@ class TestConditionParser(BaseTest):
         (False, True),
         (1, False),
         (0, True),
-        ({'not': True}, True)
+        ({'!': True}, True)
     ])
     def test_unary_expression(self, mocker: MockerFixture, operand, expected: bool):
         subject = self.create_subject(mocker)
@@ -96,7 +96,7 @@ class TestConditionParser(BaseTest):
         (['device.socket.state', 'socket'], True),
         (['sensor.office.temperature.unit', 'temperature/office'], True),
         ([{'not': False}, True], True),
-        ([{'equals': [1, 1.0]}, '1'], True)
+        ([{'=': [1, 1.0]}, '1'], True)
     ])
     def test_equality_expression_success(self, mocker: MockerFixture, values: List, expected: bool):
         subject = self.create_subject(mocker)
@@ -115,7 +115,7 @@ class TestConditionParser(BaseTest):
         ([True, True], True),
         ([True, False], False),
         ([True, True, True, False], False),
-        ([{'and': [True, True]}, True], True),
+        ([{'&': [True, True]}, True], True),
         ([{'not': False}, True], True)
     ])
     def test_logical_and_expression_success(
@@ -138,7 +138,7 @@ class TestConditionParser(BaseTest):
         ([True, False], True),
         ([True, True, True, False], True),
         ([False, False], False),
-        ([{'or': [False, True]}, False], True),
+        ([{'|': [False, True]}, False], True),
         ([{'not': True}, False], False)
     ])
     def test_logical_or_expression_success(

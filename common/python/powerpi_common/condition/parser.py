@@ -85,7 +85,7 @@ class ConditionParser:
             value = self.unary_expression(expression)
             return not value
 
-        return self.__expression(Lexeme.NOT, expression, invert, self.primary_expression)
+        return self.__expression(expression, invert, self.primary_expression, Lexeme.NOT, Lexeme.S_NOT)
 
     def equality_expression(self, expression: Expression):
         def equals(expressions: List[Expression]):
@@ -98,7 +98,7 @@ class ConditionParser:
             # if the set only has one value, they're all equal
             return len(set(values)) == 1
 
-        return self.__expression(Lexeme.EQUALS, expression, equals, self.unary_expression)
+        return self.__expression(expression, equals, self.unary_expression, Lexeme.EQUALS, Lexeme.S_EQUAL)
 
     def logical_and_expression(self, expression: Expression):
         def logical_and(expressions: List[Expression]):
@@ -112,7 +112,7 @@ class ConditionParser:
 
             return all(values)
 
-        return self.__expression(Lexeme.AND, expression, logical_and, self.equality_expression)
+        return self.__expression(expression, logical_and, self.equality_expression, Lexeme.AND, Lexeme.S_AND)
 
     def logical_or_expression(self, expression: Expression):
         def logical_or(expressions: List[Expression]):
@@ -126,13 +126,20 @@ class ConditionParser:
 
             return any(values)
 
-        return self.__expression(Lexeme.OR, expression, logical_or, self.logical_and_expression)
+        return self.__expression(expression, logical_or, self.logical_and_expression, Lexeme.OR, Lexeme.S_OR)
 
     @classmethod
-    def __expression(cls, operator: str, expression: Expression, func, chain):
-        if isinstance(expression, dict) and operator in expression:
-            argument = expression[operator]
+    def __expression(cls, expression: Expression, func, chain, *operators: List[Lexeme]):
+        if isinstance(expression, Dict):
+            # is one of the operators in the expression
+            operator = next(
+                (operator for operator in operators if operator in expression),
+                None
+            )
 
-            return func(argument)
+            if operator is not None:
+                argument = expression[operator]
+
+                return func(argument)
 
         return chain(expression)
