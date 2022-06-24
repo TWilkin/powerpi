@@ -78,8 +78,18 @@ class ConditionParser:
 
         return self.constant(value)
 
+    def unary_expression(self, expression: Expression):
+        def invert(expression: Expression):
+            value = self.unary_expression(expression)
+            return not value
+
+        return self.__expression(Lexeme.NOT, expression, invert, self.primary_expression)
+
     def equality_expression(self, expression: Expression):
         def equals(expressions: List[Expression]):
+            if not isinstance(expressions, list):
+                raise InvalidArgumentException(Lexeme.EQUALS, expressions)
+
             comparisons = []
 
             for value in expressions:
@@ -90,16 +100,13 @@ class ConditionParser:
                 comparisons,
             )
 
-        return self.__expression(Lexeme.EQUALS, expression, equals, self.primary_expression)
+        return self.__expression(Lexeme.EQUALS, expression, equals, self.unary_expression)
 
     @classmethod
     def __expression(cls, operator: str, expression: Expression, func, chain):
         if isinstance(expression, dict) and operator in expression:
-            expressions = expression[operator]
+            argument = expression[operator]
 
-            if isinstance(expressions, list):
-                return func(expressions)
-
-            raise InvalidArgumentException(operator, expressions)
+            return func(argument)
 
         return chain(expression)

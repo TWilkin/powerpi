@@ -74,13 +74,27 @@ class TestConditionParser(BaseTest):
         with pytest.raises(InvalidIdentifierException):
             subject.identifier(identifier)
 
+    @pytest.mark.parametrize('operand,expected', [
+        (True, False),
+        (False, True),
+        (1, False),
+        (0, True),
+        ({'not': True}, True)
+    ])
+    def test_unary_expression(self, mocker: MockerFixture, operand, expected: bool):
+        subject = self.create_subject(mocker)
+
+        result = subject.unary_expression({'not': operand})
+
+        assert result is expected
+
     @pytest.mark.parametrize('values,expected', [
         ([1, 1.0, '1'], True),
         ([1.1, 1.0], False),
         ([True, 'true', 1], True),
         (['device.socket.state', 'socket'], True),
         (['sensor.office.temperature.unit', 'temperature/office'], True),
-        ([{'equals': [True]}, True], True),
+        ([{'not': False}, True], True),
         ([{'equals': ['a']}, 1], False)
     ])
     def test_equality_expression_success(self, mocker: MockerFixture, values: List, expected: bool):
