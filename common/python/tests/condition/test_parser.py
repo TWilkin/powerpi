@@ -3,7 +3,8 @@ from typing import List, Union
 import pytest
 from pytest_mock import MockerFixture
 
-from powerpi_common.condition import ConditionParser, InvalidIdentifierException
+from powerpi_common.condition import ConditionParser, InvalidArgumentException, \
+    InvalidIdentifierException
 from powerpi_common_test.base import BaseTest
 
 
@@ -79,10 +80,18 @@ class TestConditionParser(BaseTest):
         ([True, 'true', 1], True),
         (['device.socket.state', 'socket'], True),
         (['sensor.office.temperature.unit', 'temperature/office'], True),
+        ([{'equals': [True]}, True], True),
+        ([{'equals': ['a']}, 1], False)
     ])
-    def test_equals(self, mocker: MockerFixture, values: List[str], expected: bool):
+    def test_equality_expression_success(self, mocker: MockerFixture, values: List, expected: bool):
         subject = self.create_subject(mocker)
 
-        result = subject.equals(values)
+        result = subject.equality_expression({'equals': values})
 
-        assert result == expected
+        assert result is expected
+
+    def test_equality_expression_fail(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        with pytest.raises(InvalidArgumentException):
+            subject.equality_expression({'equals': 'not a list'})

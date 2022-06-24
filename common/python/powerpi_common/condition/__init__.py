@@ -1,2 +1,2 @@
-from .errors import InvalidIdentifierException, ParseException
+from .errors import InvalidArgumentException, InvalidIdentifierException, ParseException
 from .parser import ConditionParser

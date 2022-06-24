@@ -1,8 +1,13 @@
 import re
-from typing import List
+from functools import reduce
+from typing import Dict, List, Union
 
-from powerpi_common.condition.errors import InvalidIdentifierException
+from powerpi_common.condition.errors import InvalidArgumentException, InvalidIdentifierException
+from powerpi_common.condition.lexeme import Lexeme
 from powerpi_common.variable import VariableManager, VariableType
+
+
+Expression = Union[Dict, List, str, float, bool]
 
 
 class ConditionParser:
@@ -67,13 +72,34 @@ class ConditionParser:
 
         raise InvalidIdentifierException(identifier)
 
-    def equals(self, values: List[str]):
-        comparisons = []
+    def primary_expression(self, value: str):
+        if isinstance(value, str) and re.match(self.__IDENTIFIER_REGEX, value):
+            return self.identifier(value)
 
-        for value in values:
-            if isinstance(value, str) and re.match(self.__IDENTIFIER_REGEX, value):
-                comparisons.append(self.identifier(value))
-            else:
-                comparisons.append(self.constant(value))
+        return self.constant(value)
 
-        return len(set(comparisons)) == 1
+    def equality_expression(self, expression: Expression):
+        def equals(expressions: List[Expression]):
+            comparisons = []
+
+            for value in expressions:
+                comparisons.append(self.equality_expression(value))
+
+            return reduce(
+                lambda a, b: a == b,
+                comparisons,
+            )
+
+        return self.__expression(Lexeme.EQUALS, expression, equals, self.primary_expression)
+
+    @classmethod
+    def __expression(cls, operator: str, expression: Expression, func, chain):
+        if isinstance(expression, dict) and operator in expression:
+            expressions = expression[operator]
+
+            if isinstance(expressions, list):
+                return func(expressions)
+
+            raise InvalidArgumentException(operator, expressions)
+
+        return chain(expression)
