@@ -21,6 +21,9 @@ class ConditionParser:
         self.__variable_manager = variable_manager
 
     def constant(self, constant: str):
+        if isinstance(constant, (bool, float)):
+            return constant
+
         try:
             return float(constant)
         except ValueError:
@@ -107,6 +110,40 @@ class ConditionParser:
             )
 
         return self.__expression(Lexeme.EQUALS, expression, equals, self.unary_expression)
+
+    def logical_and_expression(self, expression: Expression):
+        def logical_and(expressions: List[Expression]):
+            if not isinstance(expressions, list):
+                raise InvalidArgumentException(Lexeme.AND, expressions)
+
+            values = [
+                self.logical_and_expression(value)
+                for value in expressions
+            ]
+
+            return reduce(
+                lambda a, b: a and b,
+                values
+            )
+
+        return self.__expression(Lexeme.AND, expression, logical_and, self.equality_expression)
+
+    def logical_or_expression(self, expression: Expression):
+        def logical_or(expressions: List[Expression]):
+            if not isinstance(expressions, list):
+                raise InvalidArgumentException(Lexeme.OR, expressions)
+
+            values = [
+                self.logical_or_expression(value)
+                for value in expressions
+            ]
+
+            return reduce(
+                lambda a, b: a or b,
+                values
+            )
+
+        return self.__expression(Lexeme.OR, expression, logical_or, self.logical_and_expression)
 
     @classmethod
     def __expression(cls, operator: str, expression: Expression, func, chain):

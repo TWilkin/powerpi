@@ -110,3 +110,48 @@ class TestConditionParser(BaseTest):
 
         with pytest.raises(InvalidArgumentException):
             subject.equality_expression({'equals': 'not a list'})
+
+    @pytest.mark.parametrize('values,expected', [
+        ([True, True], True),
+        ([True, False], False),
+        ([True, True, True, False], False),
+        ([{'and': [True, True]}, True], True),
+        ([{'not': False}, True], True)
+    ])
+    def test_logical_and_expression_success(
+        self, mocker: MockerFixture, values: List, expected: bool
+    ):
+        subject = self.create_subject(mocker)
+
+        result = subject.logical_and_expression({'and': values})
+
+        assert result is expected
+
+    def test_logical_and_expression_fail(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        with pytest.raises(InvalidArgumentException):
+            subject.logical_and_expression({'and': 'not a list'})
+
+    @pytest.mark.parametrize('values,expected', [
+        ([True, True], True),
+        ([True, False], True),
+        ([True, True, True, False], True),
+        ([False, False], False),
+        ([{'or': [False, True]}, False], True),
+        ([{'not': True}, False], False)
+    ])
+    def test_logical_or_expression_success(
+        self, mocker: MockerFixture, values: List, expected: bool
+    ):
+        subject = self.create_subject(mocker)
+
+        result = subject.logical_or_expression({'or': values})
+
+        assert result is expected
+
+    def test_logical_or_expression_fail(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        with pytest.raises(InvalidArgumentException):
+            subject.logical_or_expression({'or': 'not a list'})
