@@ -1,6 +1,4 @@
 import re
-from functools import reduce
-from itertools import product
 from typing import Dict, List, Union
 
 from powerpi_common.condition.errors import InvalidArgumentException, InvalidIdentifierException
@@ -97,17 +95,8 @@ class ConditionParser:
             # get all the values
             values = [self.equality_expression(value) for value in expressions]
 
-            # check all the values match each other
-            comparisons = map(
-                lambda t: t[0] == t[1],
-                product(values, values)
-            )
-
-            # if all the values are true, it's equal
-            return reduce(
-                lambda a, b: a and b,
-                comparisons,
-            )
+            # if the set only has one value, they're all equal
+            return len(set(values)) == 1
 
         return self.__expression(Lexeme.EQUALS, expression, equals, self.unary_expression)
 
@@ -121,10 +110,7 @@ class ConditionParser:
                 for value in expressions
             ]
 
-            return reduce(
-                lambda a, b: a and b,
-                values
-            )
+            return all(values)
 
         return self.__expression(Lexeme.AND, expression, logical_and, self.equality_expression)
 
@@ -138,10 +124,7 @@ class ConditionParser:
                 for value in expressions
             ]
 
-            return reduce(
-                lambda a, b: a or b,
-                values
-            )
+            return any(values)
 
         return self.__expression(Lexeme.OR, expression, logical_or, self.logical_and_expression)
 
