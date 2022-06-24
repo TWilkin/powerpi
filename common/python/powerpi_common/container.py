@@ -1,5 +1,6 @@
 from dependency_injector import containers, providers
 
+from powerpi_common.condition import ConditionParser
 from powerpi_common.config import Config
 from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.controller import Controller
@@ -57,6 +58,11 @@ class Container(containers.DeclarativeContainer):
         logger=logger,
         mqtt_client=mqtt_client,
         device_manager=device.device_manager
+    )
+
+    condition_parser = providers.Factory(
+        ConditionParser,
+        variable_manager=variable.variable_manager
     )
 
     event_manager = providers.Singleton(
