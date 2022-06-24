@@ -27,7 +27,9 @@ class TestConditionParser(BaseTest):
         variable_manager.get_device = DeviceVariableImpl
         variable_manager.get_sensor = SensorVariableImpl
 
-        return ConditionParser(variable_manager)
+        message = {'timestamp': 1337}
+
+        return ConditionParser(message, variable_manager)
 
     @pytest.mark.parametrize('constant,expected', [
         ('strING', 'strING'),
@@ -48,7 +50,8 @@ class TestConditionParser(BaseTest):
         ('device.socket.state', 'socket'),
         ('device.light.brightness', 'light'),
         ('sensor.office.temperature.value', 'office/temperature'),
-        ('sensor.office.temperature.unit', 'temperature/office')
+        ('sensor.office.temperature.unit', 'temperature/office'),
+        ('message.timestamp', 1337)
     ])
     def test_identifier_success(self, mocker: MockerFixture, identifier: str, expected: str):
         subject = self.create_subject(mocker)
@@ -66,7 +69,9 @@ class TestConditionParser(BaseTest):
         'sensor',
         'sensor.office',
         'sensor.office.temperature',
-        'sensor.office.temperature.whatever'
+        'sensor.office.temperature.whatever',
+        'message',
+        'message.whatever'
     ])
     def test_identifier_invalid(self, mocker: MockerFixture, identifier: str):
         subject = self.create_subject(mocker)

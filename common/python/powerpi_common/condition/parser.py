@@ -1,8 +1,12 @@
 import re
 from typing import Dict, List, Union
 
+from dependency_injector.wiring import Provide, inject
+
 from powerpi_common.condition.errors import InvalidArgumentException, InvalidIdentifierException
 from powerpi_common.condition.lexeme import Lexeme
+from powerpi_common.container import Container
+from powerpi_common.mqtt import MQTTMessage
 from powerpi_common.variable import VariableManager, VariableType
 
 
@@ -12,11 +16,14 @@ Expression = Union[Dict, List, str, float, bool]
 class ConditionParser:
     __IDENTIFIER_REGEX = r'^(device|sensor)(\.[A-Za-z][A-Za-z0-9_]*){2,3}$'
 
+    @inject
     def __init__(
         self,
-        variable_manager: VariableManager
+        message: MQTTMessage,
+        variable_manager: VariableManager = Provide[Container.variable.variable_manager],
     ):
         self.__variable_manager = variable_manager
+        self.__message = message
 
     def constant(self, constant: str):
         if isinstance(constant, (bool, float)):
@@ -38,7 +45,7 @@ class ConditionParser:
     def identifier(self, identifier: str):
         split = identifier.split('.')
 
-        if len(split) >= 3:
+        if len(split) >= 2:
             identifier_type = split[0]
 
             if identifier_type == VariableType.DEVICE:
@@ -50,6 +57,11 @@ class ConditionParser:
                 if len(split) == 4:
                     name, action, prop = split[1:]
                     return self.sensor_identifier(identifier, name, action, prop)
+
+            if identifier_type == 'message':
+                if len(split) == 2:
+                    prop = split[1]
+                    return self.message_identifier(identifier, prop)
 
         raise InvalidIdentifierException(identifier)
 
@@ -73,6 +85,12 @@ class ConditionParser:
             return variable.unit
 
         raise InvalidIdentifierException(identifier)
+
+    def message_identifier(self, identifier: str, prop: str):
+        try:
+            return self.__message[prop]
+        except KeyError as ex:
+            raise InvalidIdentifierException(identifier) from ex
 
     def primary_expression(self, value: str):
         if isinstance(value, str) and re.match(self.__IDENTIFIER_REGEX, value):
@@ -168,6 +186,9 @@ class ConditionParser:
             expression, logical_or, self.logical_and_expression,
             Lexeme.OR, Lexeme.S_OR
         )
+
+    def conditional_expression(self, expression: Expression):
+        return self.logical_or_expression(expression)
 
     @classmethod
     def __expression(cls, expression: Expression, func, chain, *operators: List[Lexeme]):
