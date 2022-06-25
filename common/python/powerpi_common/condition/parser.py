@@ -163,7 +163,7 @@ class ConditionParser:
 
         return self.__expression(
             expression, logical_and, self.equality_expression,
-            Lexeme.AND, Lexeme.S_AND
+            Lexeme.WHEN, Lexeme.AND, Lexeme.S_AND
         )
 
     def logical_or_expression(self, expression: Expression):
@@ -180,7 +180,7 @@ class ConditionParser:
 
         return self.__expression(
             expression, logical_or, self.logical_and_expression,
-            Lexeme.OR, Lexeme.S_OR
+            Lexeme.EITHER, Lexeme.OR, Lexeme.S_OR
         )
 
     def conditional_expression(self, expression: Expression):

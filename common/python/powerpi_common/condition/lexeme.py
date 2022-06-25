@@ -3,6 +3,7 @@ from enum import Enum
 
 class Lexeme(str, Enum):
     AND = 'and'
+    EITHER = 'either'
     EQUALS = 'equals'
     GREATER_THAN = 'greater than'
     GREATER_THAN_EQUAL = 'greater than equal'
@@ -10,6 +11,7 @@ class Lexeme(str, Enum):
     LESS_THAN_EQUAL = 'less than equal'
     NOT = 'not'
     OR = 'or'
+    WHEN = 'when'
 
     # symbol aliases
     S_AND = '&'
