@@ -12,7 +12,7 @@ Expression = Union[Dict, List, str, float, bool]
 
 
 class ConditionParser:
-    __IDENTIFIER_REGEX = r'^(device|sensor|message)(\.[A-Za-z][A-Za-z0-9_]*){1,3}$'
+    __IDENTIFIER_REGEX = r'^var\.(device|sensor|message)(\.[A-Za-z][A-Za-z0-9_]*){1,3}$'
 
     def __init__(
         self,
@@ -31,22 +31,22 @@ class ConditionParser:
     def identifier(self, identifier: str):
         split = identifier.split('.')
 
-        if len(split) >= 2:
-            identifier_type = split[0]
+        if len(split) >= 3:
+            identifier_type = split[1]
 
             if identifier_type == VariableType.DEVICE:
-                if len(split) == 3:
-                    name, prop = split[1:]
+                if len(split) == 4:
+                    name, prop = split[2:]
                     return self.device_identifier(identifier, name, prop)
 
             if identifier_type == VariableType.SENSOR:
-                if len(split) == 4:
-                    name, action, prop = split[1:]
+                if len(split) == 5:
+                    name, action, prop = split[2:]
                     return self.sensor_identifier(identifier, name, action, prop)
 
             if identifier_type == 'message':
-                if len(split) == 2:
-                    prop = split[1]
+                if len(split) == 3:
+                    prop = split[2]
                     return self.message_identifier(identifier, prop)
 
         raise InvalidIdentifierException(identifier)

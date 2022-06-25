@@ -51,11 +51,11 @@ class TestConditionParser(BaseTest):
             subject.constant({'too-complex': True})
 
     @pytest.mark.parametrize('identifier,expected', [
-        ('device.socket.state', 'socket'),
-        ('device.light.brightness', 'light'),
-        ('sensor.office.temperature.value', 'office/temperature'),
-        ('sensor.office.temperature.unit', 'temperature/office'),
-        ('message.timestamp', 1337)
+        ('var.device.socket.state', 'socket'),
+        ('var.device.light.brightness', 'light'),
+        ('var.sensor.office.temperature.value', 'office/temperature'),
+        ('var.sensor.office.temperature.unit', 'temperature/office'),
+        ('var.message.timestamp', 1337)
     ])
     def test_identifier_success(self, mocker: MockerFixture, identifier: str, expected: str):
         subject = self.create_subject(mocker)
@@ -67,15 +67,19 @@ class TestConditionParser(BaseTest):
 
     @pytest.mark.parametrize('identifier', [
         'socket',
+        'var.socket',
         'device',
-        'device.socket',
-        'device.socket.whatever',
+        'var.device',
+        'var.device.socket',
+        'var.device.socket.whatever',
         'sensor',
-        'sensor.office',
-        'sensor.office.temperature',
-        'sensor.office.temperature.whatever',
+        'var.sensor',
+        'var.sensor.office',
+        'var.sensor.office.temperature',
+        'var.sensor.office.temperature.whatever',
         'message',
-        'message.whatever'
+        'var.message',
+        'var.message.whatever'
     ])
     def test_identifier_invalid(self, mocker: MockerFixture, identifier: str):
         subject = self.create_subject(mocker)
@@ -138,8 +142,8 @@ class TestConditionParser(BaseTest):
         ([1.1, 1.0], False),
         ([1, 1.0, 'a'], False),
         ([True, True, 1], True),
-        (['device.socket.state', 'socket'], True),
-        (['sensor.office.temperature.unit', 'temperature/office'], True),
+        (['var.device.socket.state', 'socket'], True),
+        (['var.sensor.office.temperature.unit', 'temperature/office'], True),
         ([{'not': False}, True], True),
         ([{'=': [1, 1.0]}, 1], True)
     ])
