@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, Union
+from typing import Callable, Dict, List, Union
 
 from powerpi_common.condition.errors import InvalidArgumentException, InvalidIdentifierException
 from powerpi_common.condition.lexeme import Lexeme
@@ -95,22 +95,23 @@ class ConditionParser:
         return self.constant(value)
 
     def unary_expression(self, expression: Expression):
-        def invert(_, expression: Expression):
-            value = self.unary_expression(expression)
+        def invert(_, values: List[bool]):
+            if len(values) != 1:
+                raise InvalidArgumentException(Lexeme.NOT, values)
+            value = values[0]
             return not value
 
         return self.__expression(
-            expression, invert, self.primary_expression,
+            expression, invert, self.primary_expression, False,
             Lexeme.NOT, Lexeme.S_NOT
         )
 
     def relational_expression(self, expression: Expression):
-        def relation(operator: Lexeme, expressions: List[Expression]):
-            if not isinstance(expressions, list) or len(expressions) != 2:
-                raise InvalidArgumentException(operator, expressions)
+        def relation(operator: Lexeme, values: List[bool]):
+            if len(values) != 2:
+                raise InvalidArgumentException(operator, values)
 
-            (value1, value2) = [self.relational_expression(value)
-                                for value in expressions]
+            (value1, value2) = values
 
             switch = {
                 Lexeme.GREATER_THAN: value1 > value2,
@@ -126,7 +127,7 @@ class ConditionParser:
             return switch[operator]
 
         return self.__expression(
-            expression, relation, self.unary_expression,
+            expression, relation, self.unary_expression, True,
             Lexeme.GREATER_THAN, Lexeme.S_GREATER_THAN,
             Lexeme.GREATER_THAN_EQUAL, Lexeme.S_GREATER_THAN_EQUAL,
             Lexeme.LESS_THAN, Lexeme.S_LESS_THAN,
@@ -134,60 +135,44 @@ class ConditionParser:
         )
 
     def equality_expression(self, expression: Expression):
-        def equals(_, expressions: List[Expression]):
-            if not isinstance(expressions, list):
-                raise InvalidArgumentException(Lexeme.EQUALS, expressions)
-
-            # get all the values
-            values = [self.equality_expression(value) for value in expressions]
-
+        def equals(_, values: List[bool]):
             # if the set only has one value, they're all equal
             return len(set(values)) == 1
 
         return self.__expression(
-            expression, equals, self.relational_expression,
+            expression, equals, self.relational_expression, True,
             Lexeme.EQUALS, Lexeme.S_EQUAL
         )
 
     def logical_and_expression(self, expression: Expression):
-        def logical_and(_, expressions: List[Expression]):
-            if not isinstance(expressions, list):
-                raise InvalidArgumentException(Lexeme.AND, expressions)
-
-            values = [
-                self.logical_and_expression(value)
-                for value in expressions
-            ]
-
+        def logical_and(_, values: List[bool]):
             return all(values)
 
         return self.__expression(
-            expression, logical_and, self.equality_expression,
+            expression, logical_and, self.equality_expression, True,
             Lexeme.WHEN, Lexeme.AND, Lexeme.S_AND
         )
 
     def logical_or_expression(self, expression: Expression):
-        def logical_or(_, expressions: List[Expression]):
-            if not isinstance(expressions, list):
-                raise InvalidArgumentException(Lexeme.OR, expressions)
-
-            values = [
-                self.logical_or_expression(value)
-                for value in expressions
-            ]
-
+        def logical_or(_, values: List[bool]):
             return any(values)
 
         return self.__expression(
-            expression, logical_or, self.logical_and_expression,
+            expression, logical_or, self.logical_and_expression, True,
             Lexeme.EITHER, Lexeme.OR, Lexeme.S_OR
         )
 
     def conditional_expression(self, expression: Expression):
         return self.logical_or_expression(expression)
 
-    @classmethod
-    def __expression(cls, expression: Expression, func, chain, *operators: List[Lexeme]):
+    def __expression(
+        self,
+        expression: Expression,
+        func: Callable[[Lexeme, List[bool]], bool],
+        chain: Callable[[Expression], bool],
+        expects_list: bool,
+        *operators: List[Lexeme]
+    ):
         if isinstance(expression, Dict):
             # is one of the operators in the expression
             operator = next(
@@ -196,8 +181,22 @@ class ConditionParser:
             )
 
             if operator is not None:
-                argument = expression[operator]
+                expressions = expression[operator]
 
-                return func(operator, argument)
+                if expects_list:
+                    if not isinstance(expressions, list):
+                        raise InvalidArgumentException(operator, expression)
+                else:
+                    if isinstance(expressions, list):
+                        raise InvalidArgumentException(operator, expression)
+
+                    expressions = [expressions]
+
+                values = [
+                    self.conditional_expression(expression)
+                    for expression in expressions
+                ]
+
+                return func(operator, values)
 
         return chain(expression)

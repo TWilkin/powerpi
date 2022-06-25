@@ -86,12 +86,18 @@ class TestConditionParser(BaseTest):
         (0, True),
         ({'!': True}, True)
     ])
-    def test_unary_expression(self, mocker: MockerFixture, operand, expected: bool):
+    def test_unary_expression_success(self, mocker: MockerFixture, operand, expected: bool):
         subject = self.create_subject(mocker)
 
         result = subject.unary_expression({'not': operand})
 
         assert result is expected
+
+    def test_unary_expression_fail(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        with pytest.raises(InvalidArgumentException):
+            subject.unary_expression({'not': [1, 2]})
 
     @pytest.mark.parametrize('operator,values,expected', [
         ('>', [3, 2], True),
@@ -151,7 +157,8 @@ class TestConditionParser(BaseTest):
         ([True, False], False),
         ([True, True, True, False], False),
         ([{'&': [True, True]}, True], True),
-        ([{'not': False}, True], True)
+        ([{'not': False}, True], True),
+        ([True, {'either': [False, True]}], True)
     ])
     def test_logical_and_expression_success(
         self, mocker: MockerFixture, values: List, expected: bool
