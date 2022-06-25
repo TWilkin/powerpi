@@ -1,15 +1,23 @@
-from typing import Awaitable, Callable, Dict
+from typing import Awaitable, Callable
 
+from powerpi_common.condition import ConditionParser, Expression, ParseException
 from powerpi_common.device import Device
+from powerpi_common.logger import Logger
+from powerpi_common.mqtt import MQTTMessage
+from powerpi_common.variable import VariableManager
 
 
 class EventHandler:
     def __init__(
         self,
+        logger: Logger,
+        variable_manager: VariableManager,
         device: Device,
-        condition: Dict[str, any],
+        condition: Expression,
         action: Callable[[Device], Awaitable[None]]
     ):
+        self.__logger = logger
+        self.__variable_manager = variable_manager
         self.__device = device
         self.__condition = condition
         self.__action = action
@@ -22,21 +30,15 @@ class EventHandler:
 
         return False
 
-    def check_condition(self, message: dict):
-        if 'message' in self.__condition:
-            compare = message.copy()
+    def check_condition(self, message: MQTTMessage):
+        parser = ConditionParser(self.__variable_manager, message)
 
-            if 'timestamp' in message:
-                # remove the timestamp before comparison
-                del compare['timestamp']
+        try:
+            return parser.conditional_expression(self.__condition)
+        except ParseException as ex:
+            self.__logger.exception('Could not evaluate condition', ex)
 
-            if compare != self.__condition['message']:
-                return False
-
-        if 'state' in self.__condition and self.__device.state != self.__condition['state']:
-            return False
-
-        return True
+        return False
 
     def __str__(self):
         return f'{self.__device}:{self.__action}'

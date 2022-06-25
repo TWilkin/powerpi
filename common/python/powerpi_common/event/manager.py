@@ -6,6 +6,7 @@ from powerpi_common.device.manager import DeviceNotFoundException
 from powerpi_common.logger import Logger
 from powerpi_common.device import Device, DeviceManager
 from powerpi_common.mqtt import MQTTClient
+from powerpi_common.variable import VariableManager
 from .consumer import EventConsumer
 from .handler import EventHandler
 
@@ -16,12 +17,15 @@ class EventManager:
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        device_manager: DeviceManager
+        device_manager: DeviceManager,
+        variable_manager: VariableManager
     ):
+        #pylint: disable=too-many-arguments
         self.__config = config
         self.__logger = logger
         self.__mqtt_client = mqtt_client
         self.__device_manager = device_manager
+        self.__variable_manager = variable_manager
 
         self.__consumers = []
 
@@ -54,7 +58,9 @@ class EventManager:
                 if action is None:
                     continue
 
-                events.append(EventHandler(device, event['condition'], action))
+                events.append(EventHandler(
+                    self.__logger, self.__variable_manager, device, event['condition'], action
+                ))
 
             if len(events) > 0:
                 # create and register the consumer
