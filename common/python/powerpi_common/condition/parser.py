@@ -12,6 +12,36 @@ Expression = Union[Dict, List, str, float, bool]
 
 
 class ConditionParser:
+    '''
+    Class to interpret a complex conditional expression, evaluate that expression and return
+    true or false based on that evaluation. Supports boolean and/or, boolean inversion,
+    equality check, relational check and retrieving values from any type of variable
+    (device, sensor or the message that triggered the condition)
+
+    e.g.
+    parser = ConditionParser(
+        variable_manager,
+        {'button': 'middle', 'type': 'single', 'timestamp': 12345}
+    )
+
+    parser.conditional_expression(
+        {
+            'when': [
+              { 'equals': ['var.message.button', 'middle'] },
+              { 'equals': ['var.message.type', 'single'] },
+              {
+                'either': [
+                  { 'equals': ['var.device.Light.state', 'off'] },
+                  { 'equals': ['var.device.Light.state', 'unknown'] }
+                ]
+              }
+        }
+    )
+
+    Which will evaluate to true, if the message is for a single middle button press,
+    and the light is currently off, or that state of the light is unknown.
+    '''
+
     __IDENTIFIER_REGEX = r'^var\.(device|sensor|message)(\.[A-Za-z][A-Za-z0-9_]*){1,3}$'
 
     def __init__(
@@ -22,7 +52,11 @@ class ConditionParser:
         self.__variable_manager = variable_manager
         self.__message = message
 
-    def constant(self, constant: str):
+    @classmethod
+    def constant(cls, constant: str):
+        '''
+        Evaluate and return the constant in the parameter.
+        '''
         if constant is None:
             return None
 
@@ -32,6 +66,10 @@ class ConditionParser:
         raise UnexpectedTokenException(constant)
 
     def identifier(self, identifier: str):
+        '''
+        Evaluate and return the value of the identifier in the parameter,
+        either a device, sensor or message.
+        '''
         split = identifier.split('.')
 
         if len(split) >= 3:
@@ -55,6 +93,10 @@ class ConditionParser:
         raise InvalidIdentifierException(identifier)
 
     def device_identifier(self, identifier: str, name: str, prop: str):
+        '''
+        Return the value of the device identifier.
+        e.g. var.device.Light.state
+        '''
         variable = self.__variable_manager.get_device(name)
 
         if prop == 'state':
@@ -66,6 +108,10 @@ class ConditionParser:
             raise InvalidIdentifierException(identifier) from ex
 
     def sensor_identifier(self, identifier: str, name: str, action: str, prop: str):
+        '''
+        Return the value of the sensor identifier.
+        e.g. var.sensor.Hallway.motion.state
+        '''
         variable = self.__variable_manager.get_sensor(name, action)
 
         if prop == 'value':
@@ -78,18 +124,30 @@ class ConditionParser:
         raise InvalidIdentifierException(identifier)
 
     def message_identifier(self, _: str, prop: str):
+        '''
+        Return the value of the message identifier.
+        e.g. var.message.state
+        '''
         try:
             return self.__message[prop]
         except KeyError:
             return None
 
     def primary_expression(self, value: str):
+        '''
+        Evaluate and return the primary expression in the parameter,
+        either an identifier or a constant.
+        '''
         if isinstance(value, str) and re.match(self.__IDENTIFIER_REGEX, value):
             return self.identifier(value)
 
         return self.constant(value)
 
     def unary_expression(self, expression: Expression):
+        '''
+        Evaluate and return the unary expression in the parameter.
+        e.g. {'not': true}
+        '''
         def invert(_, values: List[bool]):
             if len(values) != 1:
                 raise InvalidArgumentException(Lexeme.NOT, values)
@@ -102,6 +160,10 @@ class ConditionParser:
         )
 
     def relational_expression(self, expression: Expression):
+        '''
+        Evaluate and return the relational expression in the parameter.
+        e.g. {'>=': [1, 2]}
+        '''
         def relation(operator: Lexeme, values: List[bool]):
             if len(values) != 2:
                 raise InvalidArgumentException(operator, values)
@@ -130,6 +192,10 @@ class ConditionParser:
         )
 
     def equality_expression(self, expression: Expression):
+        '''
+        Evaluate and return the equality expression in the parameter.
+        e.g. {'equals': [1, 1.0]}
+        '''
         def equals(_, values: List[bool]):
             # if the set only has one value, they're all equal
             return len(set(values)) == 1
@@ -140,6 +206,10 @@ class ConditionParser:
         )
 
     def logical_and_expression(self, expression: Expression):
+        '''
+        Evaluate and return the logical and expression in the parameter.
+        e.g. {'when': [True, True]}
+        '''
         def logical_and(_, values: List[bool]):
             return all(values)
 
@@ -149,6 +219,10 @@ class ConditionParser:
         )
 
     def logical_or_expression(self, expression: Expression):
+        '''
+        Evaluate and return the logical or expression in the parameter.
+        e.g. {'either': [True, False]}
+        '''
         def logical_or(_, values: List[bool]):
             return any(values)
 
@@ -158,6 +232,10 @@ class ConditionParser:
         )
 
     def conditional_expression(self, expression: Expression):
+        '''
+        Evaluate and return the conditional expression in the parameter.
+        e.g. {'when': [True, True]}
+        '''
         return self.logical_or_expression(expression)
 
     def __expression(
