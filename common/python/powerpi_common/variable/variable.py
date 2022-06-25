@@ -30,5 +30,10 @@ class Variable(ABC):
     def json(self) -> Dict[str, Any]:
         raise NotImplementedError
 
+    @property
+    @abstractmethod
+    def suffix(self) -> str:
+        raise NotImplementedError
+
     def __str__(self):
-        return f'var.{self.variable_type}.{self._name}={self.json}'
+        return f'var.{self.variable_type}.{self.suffix}={self.json}'

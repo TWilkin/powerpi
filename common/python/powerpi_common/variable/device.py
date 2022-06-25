@@ -58,6 +58,10 @@ class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
     def json(self):
         return {'state': self.__state, **self.__additional_state}
 
+    @property
+    def suffix(self):
+        return f'{self._name}'
+
     def _additional_state_keys(self) -> List[str]:
         # we don't know what the actual implementation supports, so we're not setting keys
         return []

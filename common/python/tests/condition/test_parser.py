@@ -5,6 +5,7 @@ from pytest_mock import MockerFixture
 
 from powerpi_common.condition import ConditionParser, InvalidArgumentException, \
     InvalidIdentifierException, UnexpectedTokenException
+from powerpi_common.variable import SensorValue
 from powerpi_common_test.base import BaseTest
 
 
@@ -16,8 +17,7 @@ class DeviceVariableImpl:
 
 class SensorVariableImpl:
     def __init__(self, name: str, action: str):
-        self.value = f'{name}/{action}'
-        self.unit = f'{action}/{name}'
+        self.value = SensorValue(f'{name}/{action}', f'{action}/{name}')
 
 
 class TestConditionParser(BaseTest):

@@ -14,6 +14,10 @@ class VariableImpl(Variable):
     def json(self):
         return {}
 
+    @property
+    def suffix(self):
+        return self._name
+
 
 class TestVariable(VariableTestBase):
     def create_subject(self, _: MockerFixture):
