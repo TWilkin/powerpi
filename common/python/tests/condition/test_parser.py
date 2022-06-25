@@ -1,10 +1,10 @@
-from typing import List, Union
+from typing import List
 
 import pytest
 from pytest_mock import MockerFixture
 
 from powerpi_common.condition import ConditionParser, InvalidArgumentException, \
-    InvalidIdentifierException
+    InvalidIdentifierException, UnexpectedTokenException
 from powerpi_common_test.base import BaseTest
 
 
@@ -31,20 +31,24 @@ class TestConditionParser(BaseTest):
 
         return ConditionParser(variable_manager, message)
 
-    @pytest.mark.parametrize('constant,expected', [
-        ('strING', 'strING'),
-        ('10', 10),
-        ('10.23', 10.23),
-        ('true', True),
-        ('FALSE', False),
+    @pytest.mark.parametrize('constant', [
+        'strING',
+        10,
+        10.23,
+        True
     ])
-    def test_constant(self, mocker: MockerFixture, constant: str, expected: Union[str, float]):
+    def test_constant_success(self, mocker: MockerFixture, constant: str):
         subject = self.create_subject(mocker)
 
         result = subject.constant(constant)
 
-        assert result is not None
-        assert result == expected
+        assert result == constant
+
+    def test_constant_invalid(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        with pytest.raises(UnexpectedTokenException):
+            subject.constant({'too-complex': True})
 
     @pytest.mark.parametrize('identifier,expected', [
         ('device.socket.state', 'socket'),
@@ -130,14 +134,14 @@ class TestConditionParser(BaseTest):
             subject.relational_expression({operator: values})
 
     @pytest.mark.parametrize('values,expected', [
-        ([1, 1.0, '1'], True),
+        ([1, 1.0], True),
         ([1.1, 1.0], False),
         ([1, 1.0, 'a'], False),
-        ([True, 'true', 1], True),
+        ([True, True, 1], True),
         (['device.socket.state', 'socket'], True),
         (['sensor.office.temperature.unit', 'temperature/office'], True),
         ([{'not': False}, True], True),
-        ([{'=': [1, 1.0]}, '1'], True)
+        ([{'=': [1, 1.0]}, 1], True)
     ])
     def test_equality_expression_success(self, mocker: MockerFixture, values: List, expected: bool):
         subject = self.create_subject(mocker)

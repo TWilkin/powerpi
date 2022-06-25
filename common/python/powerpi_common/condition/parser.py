@@ -1,7 +1,8 @@
 import re
 from typing import Callable, Dict, List, Union
 
-from powerpi_common.condition.errors import InvalidArgumentException, InvalidIdentifierException
+from powerpi_common.condition.errors import InvalidArgumentException, InvalidIdentifierException, \
+    UnexpectedTokenException
 from powerpi_common.condition.lexeme import Lexeme
 from powerpi_common.mqtt import MQTTMessage
 from powerpi_common.variable import VariableManager, VariableType
@@ -22,21 +23,10 @@ class ConditionParser:
         self.__message = message
 
     def constant(self, constant: str):
-        if isinstance(constant, (bool, float)):
+        if isinstance(constant, (bool, float, int, str)):
             return constant
 
-        try:
-            return float(constant)
-        except ValueError:
-            pass
-
-        lower = constant.lower()
-        if lower == 'true':
-            return True
-        if lower == 'false':
-            return False
-
-        return constant
+        raise UnexpectedTokenException(constant)
 
     def identifier(self, identifier: str):
         split = identifier.split('.')
