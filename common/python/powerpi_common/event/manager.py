@@ -2,13 +2,12 @@ from typing import List
 from jsonpatch import JsonPatch
 
 from powerpi_common.config import Config
-from powerpi_common.device.manager import DeviceNotFoundException
+from powerpi_common.device import Device, DeviceManager, DeviceNotFoundException
+from powerpi_common.event.consumer import EventConsumer
+from powerpi_common.event.handler import EventHandler
 from powerpi_common.logger import Logger
-from powerpi_common.device import Device, DeviceManager
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import VariableManager
-from .consumer import EventConsumer
-from .handler import EventHandler
 
 
 class EventManager:
@@ -28,6 +27,10 @@ class EventManager:
         self.__variable_manager = variable_manager
 
         self.__consumers = []
+
+    @property
+    def consumers(self):
+        return self.__consumers
 
     def load(self):
         listeners = self.__config.events['listeners']

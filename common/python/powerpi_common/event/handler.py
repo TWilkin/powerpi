@@ -23,6 +23,14 @@ class EventHandler:
         self.__condition = condition
         self.__action = action
 
+    @property
+    def device(self):
+        return self.__device
+
+    @property
+    def condition(self):
+        return self.__condition
+
     def validate(self):
         # run the condition to see if it's valid and initialise any variables
         try:
