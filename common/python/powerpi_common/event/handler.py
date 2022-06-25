@@ -35,13 +35,13 @@ class EventHandler:
 
     async def execute(self, message: dict):
         # execute the action if the condition is met
-        if self.check_condition(message):
+        if self.__check_condition(message):
             await self.__action(self.__device)
             return True
 
         return False
 
-    def check_condition(self, message: MQTTMessage):
+    def __check_condition(self, message: MQTTMessage):
         try:
             return self.__execute_parser(message)
         except ParseException as ex:
