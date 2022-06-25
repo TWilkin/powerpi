@@ -22,9 +22,9 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         mqtt_client: MQTTClient,
         **kwargs
     ):
-        Device.__init__(self, config, logger, mqtt_client, **kwargs)
-
         self.__additional_state = None
+
+        Device.__init__(self, config, logger, mqtt_client, **kwargs)
 
     @property
     def additional_state(self):

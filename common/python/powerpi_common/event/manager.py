@@ -33,6 +33,7 @@ class EventManager:
         listeners = self.__config.events['listeners']
 
         # iterate over the configuration events and create listeners
+        handlers = {}
         for listener in listeners:
             # set the topic to listen to
             topic = listener['topic']
@@ -58,21 +59,31 @@ class EventManager:
                 if action is None:
                     continue
 
-                events.append(EventHandler(
+                handler = EventHandler(
                     self.__logger, self.__variable_manager, device, event['condition'], action
-                ))
+                )
+
+                # only append the handler if it's going to work
+                if handler.validate():
+                    events.append(handler)
 
             if len(events) > 0:
-                # create and register the consumer
-                consumer = EventConsumer(
-                    self.__config, self.__logger, topic, events
-                )
-                self.__mqtt_client.add_consumer(consumer)
-                self.__consumers.append(consumer)
+                if topic not in handlers:
+                    handlers[topic] = []
+                handlers[topic] += events
 
-                self.__logger.info(
-                    f'Found listener {consumer} with {len(events)} event(s)'
-                )
+        # now we have everything initialised create and register the consumers
+        # we do this late so any variables will pick up initial messages if the topic is used twice
+        for topic, events in handlers.items():
+            consumer = EventConsumer(
+                self.__config, self.__logger, topic, events
+            )
+            self.__mqtt_client.add_consumer(consumer)
+            self.__consumers.append(consumer)
+
+            self.__logger.info(
+                f'Found listener {consumer} with {len(events)} event(s)'
+            )
 
         self.__logger.info(
             f'Found {len(self.__consumers)} matching listener(s)'

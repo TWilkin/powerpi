@@ -23,6 +23,9 @@ class ConditionParser:
         self.__message = message
 
     def constant(self, constant: str):
+        if constant is None:
+            return None
+
         if isinstance(constant, (bool, float, int, str)):
             return constant
 
@@ -74,11 +77,11 @@ class ConditionParser:
 
         raise InvalidIdentifierException(identifier)
 
-    def message_identifier(self, identifier: str, prop: str):
+    def message_identifier(self, _: str, prop: str):
         try:
             return self.__message[prop]
-        except KeyError as ex:
-            raise InvalidIdentifierException(identifier) from ex
+        except KeyError:
+            return None
 
     def primary_expression(self, value: str):
         if isinstance(value, str) and re.match(self.__IDENTIFIER_REGEX, value):

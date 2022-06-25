@@ -19,7 +19,11 @@ class SensorEventConsumer(MQTTConsumer):
     async def on_message(self, message: MQTTMessage, entity: str, action: str):
         value = message.get('value')
         unit = message.get('unit')
+        state = message.get('state')
 
         if value is not None and unit is not None:
             value = float(value)
             self._sensor.value = (value, unit)
+
+        if state is not None:
+            self._sensor.state = state

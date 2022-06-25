@@ -16,11 +16,22 @@ class EventHandler:
         condition: Expression,
         action: Callable[[Device], Awaitable[None]]
     ):
+        #pylint: disable=too-many-arguments
         self.__logger = logger
         self.__variable_manager = variable_manager
         self.__device = device
         self.__condition = condition
         self.__action = action
+
+    def validate(self):
+        # run the condition to see if it's valid and initialise any variables
+        try:
+            self.__execute_parser({})
+            return True
+        except ParseException as ex:
+            self.__logger.exception(ex)
+
+        return False
 
     async def execute(self, message: dict):
         # execute the action if the condition is met
@@ -31,14 +42,16 @@ class EventHandler:
         return False
 
     def check_condition(self, message: MQTTMessage):
-        parser = ConditionParser(self.__variable_manager, message)
-
         try:
-            return parser.conditional_expression(self.__condition)
+            return self.__execute_parser(message)
         except ParseException as ex:
-            self.__logger.exception('Could not evaluate condition', ex)
+            self.__logger.exception(ex)
 
         return False
+
+    def __execute_parser(self, message: MQTTMessage):
+        parser = ConditionParser(self.__variable_manager, message)
+        return parser.conditional_expression(self.__condition)
 
     def __str__(self):
         return f'{self.__device}:{self.__action}'

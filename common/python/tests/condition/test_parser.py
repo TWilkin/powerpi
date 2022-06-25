@@ -35,7 +35,8 @@ class TestConditionParser(BaseTest):
         'strING',
         10,
         10.23,
-        True
+        True,
+        None
     ])
     def test_constant_success(self, mocker: MockerFixture, constant: str):
         subject = self.create_subject(mocker)
@@ -55,14 +56,14 @@ class TestConditionParser(BaseTest):
         ('var.device.light.brightness', 'light'),
         ('var.sensor.office.temperature.value', 'office/temperature'),
         ('var.sensor.office.temperature.unit', 'temperature/office'),
-        ('var.message.timestamp', 1337)
+        ('var.message.timestamp', 1337),
+        ('var.message.whatever', None),
     ])
     def test_identifier_success(self, mocker: MockerFixture, identifier: str, expected: str):
         subject = self.create_subject(mocker)
 
         result = subject.identifier(identifier)
 
-        assert result is not None
         assert result == expected
 
     @pytest.mark.parametrize('identifier', [
@@ -78,8 +79,7 @@ class TestConditionParser(BaseTest):
         'var.sensor.office.temperature',
         'var.sensor.office.temperature.whatever',
         'message',
-        'var.message',
-        'var.message.whatever'
+        'var.message'
     ])
     def test_identifier_invalid(self, mocker: MockerFixture, identifier: str):
         subject = self.create_subject(mocker)
@@ -142,6 +142,7 @@ class TestConditionParser(BaseTest):
         ([1.1, 1.0], False),
         ([1, 1.0, 'a'], False),
         ([True, True, 1], True),
+        ([None, None], True),
         (['var.device.socket.state', 'socket'], True),
         (['var.sensor.office.temperature.unit', 'temperature/office'], True),
         ([{'not': False}, True], True),
