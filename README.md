@@ -22,22 +22,22 @@ This project was devised to utilise open, reverse engineered or free home automa
 
 The project is split into the following services, each of which have their own _README_ describing the configuration interface they support as well as how to modify and test them.
 
--   [**babel-fish**](babel-fish/README.md) - Integration with Amazon Alexa skill to receive voice commands.
--   [**certbot**](certbot/README.md) - Use Let's Encrypt to provide SSL certificates for NGINX.
--   [**clacks-config**](clacks-config/README.md) - Retrieve configuration files from GitHub.
+-   [**babel-fish**](services/babel-fish/README.md) - Integration with Amazon Alexa skill to receive voice commands.
+-   [**certbot**](services/certbot/README.md) - Use Let's Encrypt to provide SSL certificates for NGINX.
+-   [**clacks-config**](services/clacks-config/README.md) - Retrieve configuration files from GitHub.
 -   **controllers**:
     -   [**energenie**](controllers/energenie/README.md) - Allows control of [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories) devices using the ENER314 or ENER314-RT Pi module.
     -   [**harmony**](controllers/harmony/README.md) - Allows control of [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html) Smart Hub devices.
     -   [**lifx**](controllers/lifx/README.md) - Allows control of [LIFX](https://www.lifx.com/) light devices.
     -   [**macro**](controllers/macro/README.md) - Allows control of other devices with macros, delays, mutexes etc.
     -   [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
--   [**deep-thought**](deep-thought/README.md) - API
--   [**device-mapper**](device-mapper/README.md) - Workaround for accessing system devices using privileged mode in Docker Swarm mode using Docker-in-docker.
--   [**energy-monitor**](energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
--   [**freedns**](freedns/README.md) - Overcome changing public IP addresses of consumer ISPs by pointing a free hostname at the current public IP via [FreeDNS](https://freedns.afraid.org/)
--   [**light-fantastic**](light-fantastic/README.md) - Schedule based control of light devices (LIFX), e.g. brightness, colour, temperature etc.
--   [**nginx**](nginx/README.md) - NGINX acts as a proxy to _deep-thought_ and _babel-fish_ as well as hosting the UI.
--   [**persistence**](persistence/README.md) - Service for writing all the messages that appear in the MQTT message queue to a database.
+-   [**deep-thought**](services/deep-thought/README.md) - API
+-   [**device-mapper**](services/device-mapper/README.md) - Workaround for accessing system devices using privileged mode in Docker Swarm mode using Docker-in-docker.
+-   [**energy-monitor**](services/energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
+-   [**freedns**](services/freedns/README.md) - Overcome changing public IP addresses of consumer ISPs by pointing a free hostname at the current public IP via [FreeDNS](https://freedns.afraid.org/)
+-   [**light-fantastic**](services/light-fantastic/README.md) - Schedule based control of light devices (LIFX), e.g. brightness, colour, temperature etc.
+-   [**nginx**](services/nginx/README.md) - NGINX acts as a proxy to _deep-thought_ and _babel-fish_ as well as hosting the UI.
+-   [**persistence**](services/persistence/README.md) - Service for writing all the messages that appear in the MQTT message queue to a database.
 
 The project also includes sensor NodeMCU code in the [_esp8266_](esp8266/README.md) directory which can be used to generate events when motion is detected, or temperature/humidity readings at an interval.
 
@@ -55,7 +55,7 @@ docker buildx build --platform linux/arm/v7 --push -t MY_DOCKER_REGISTRY/powerpi
 
 Deploying the services is simply a matter of building images with docker, and deploying the stack using docker-compose.
 
-The deployment expects the network to already be created and deployed, this is to allow the docker-in-docker container for [_device-mapper_](device-mapper/README.md) to join any created pods to the network.
+The deployment expects the network to already be created and deployed, this is to allow the docker-in-docker container for [_device-mapper_](services/device-mapper/README.md) to join any created pods to the network.
 
 ```bash
 # Create powerpi docker network
