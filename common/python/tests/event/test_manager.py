@@ -1,6 +1,5 @@
 from unittest.mock import patch
 
-import pytest
 from pytest_mock import MockerFixture
 
 from powerpi_common.device import DeviceConfigType, DeviceNotFoundException
