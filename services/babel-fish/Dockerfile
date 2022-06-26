@@ -47,7 +47,7 @@ COPY --chown=node:node babel-fish/package.json ./babel-fish
 RUN yarn workspace babel-fish install --production
 
 # copy the application
-COPY --chown=node:node babel-fish ./babel-fish
+COPY --chown=node:node services/babel-fish ./babel-fish
 
 # start the application once the container is ready
 CMD yarn workspace babel-fish start

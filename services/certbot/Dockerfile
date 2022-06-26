@@ -13,7 +13,7 @@ COPY --chown=certbot:certbot certbot/crontab /etc/crontabs/certbot
 
 # add the renew script
 WORKDIR /opt/certbot
-COPY --chown=certbot:certbot certbot/renew.sh ./
+COPY --chown=certbot:certbot services/certbot/renew.sh ./
 RUN chmod +x renew.sh
 
 # wait on cron

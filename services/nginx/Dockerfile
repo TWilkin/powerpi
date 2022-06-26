@@ -24,7 +24,7 @@ COPY nginx/ui/package.json ./nginx/ui
 RUN yarn workspace @powerpi/ui install --frozen-lockfile
 
 # transpile the application
-COPY nginx/ui ./nginx/ui/
+COPY services/nginx/ui ./services/nginx/ui/
 RUN yarn workspace @powerpi/ui build
 
 FROM nginx:1.18.0-alpine AS run-image
@@ -50,5 +50,5 @@ COPY --from=build-image --chown=nginx:nginx /usr/src/app/ssl-dhparams.pem ./
 # copy the built UI application into the NGINX container
 WORKDIR /var/www/powerpi
 COPY --chown=nginx:nginx LICENSE ./
-COPY --from=build-image --chown=nginx:nginx /home/node/app/nginx/ui/public/ ./
-COPY --from=build-image --chown=nginx:nginx /home/node/app/nginx/ui/dist/ ./
+COPY --from=build-image --chown=nginx:nginx /home/node/app/services/nginx/ui/public/ ./
+COPY --from=build-image --chown=nginx:nginx /home/node/app/services/nginx/ui/dist/ ./

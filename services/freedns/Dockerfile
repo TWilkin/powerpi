@@ -15,4 +15,4 @@ RUN yarn workspace freedns install --production
 COPY --chown=node:node freedns ./freedns
 
 # start the application once the container is ready
-CMD yarn workspace freedns start
+CMD yarn workspace services/freedns start

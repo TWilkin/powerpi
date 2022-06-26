@@ -32,7 +32,7 @@ COPY --chown=node:node deep-thought/package.json ./deep-thought
 RUN yarn workspace deep-thought install --production
 
 # copy across the application code
-COPY --chown=node:node deep-thought ./deep-thought
+COPY --chown=node:node services/deep-thought ./deep-thought
 
 # start the application once the container is ready
 CMD yarn workspace deep-thought start

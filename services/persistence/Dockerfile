@@ -29,7 +29,7 @@ COPY --chown=node:node persistence/package.json ./persistence
 RUN yarn workspace persistence install --production
 
 # copy the application
-COPY --chown=node:node persistence ./persistence
+COPY --chown=node:node services/persistence ./persistence
 
 # start the application once the container is ready
 CMD yarn workspace persistence start

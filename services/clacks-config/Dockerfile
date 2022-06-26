@@ -32,7 +32,7 @@ COPY --chown=node:node clacks-config/package.json ./clacks-config
 RUN yarn workspace clacks-config install --production
 
 # copy the application
-COPY --chown=node:node clacks-config ./clacks-config
+COPY --chown=node:node services/clacks-config ./clacks-config
 
 # start the application once the container is ready
 CMD yarn workspace clacks-config start

@@ -3,7 +3,7 @@ LABEL description="Docker-in-docker container to launch containers that need dev
 
 # install the start script
 RUN apk add --no-cache bash
-COPY device-mapper/start.sh ./
+COPY services/device-mapper/start.sh ./
 
 # set the signal the script is expecting
 STOPSIGNAL SIGINT

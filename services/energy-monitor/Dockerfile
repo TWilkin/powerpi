@@ -29,7 +29,7 @@ COPY --chown=node:node energy-monitor/package.json ./energy-monitor
 RUN yarn workspace energy-monitor install --production
 
 # copy the application
-COPY --chown=node:node energy-monitor ./energy-monitor
+COPY --chown=node:node services/energy-monitor ./energy-monitor
 
 # start the application once the container is ready
 CMD yarn workspace energy-monitor start

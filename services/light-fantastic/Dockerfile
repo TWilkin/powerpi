@@ -29,7 +29,7 @@ COPY --chown=node:node light-fantastic/package.json ./light-fantastic
 RUN yarn workspace light-fantastic install --production
 
 # copy across the application code
-COPY --chown=node:node light-fantastic ./light-fantastic
+COPY --chown=node:node services/light-fantastic ./light-fantastic
 
 # start the application once the container is ready
 CMD yarn workspace light-fantastic start
