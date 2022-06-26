@@ -10,7 +10,7 @@ To use this service you must first register with [FreeDNS](https://freedns.afrai
 
 ## Building
 
-The Docker container can be built utilising _buildx_ as described in the [project documentation](../README.md#Building).
+The Docker container can be built utilising _buildx_ as described in the [project documentation](../../README.md#Building).
 
 ## Configuration
 

@@ -6,7 +6,7 @@ Cerbot will automatically renew the certificate every Sunday morning at 2 AM. Ho
 
 ## Building
 
-The Docker container can be built utilising _buildx_ as described in the [project documentation](../README.md#Building).
+The Docker container can be built utilising _buildx_ as described in the [project documentation](../../README.md#Building).
 
 ## Configuration
 

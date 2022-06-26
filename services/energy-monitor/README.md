@@ -2,7 +2,7 @@
 
 PowerPi service retrieving gas and electricity usage from UK smart meter data collection service [N3rgy](http://www.n3rgy.com/).
 
-The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../common/node/common/README.md) which needs to be compiled before use.
+The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) which needs to be compiled before use.
 
 ## Grant N3rgy access
 
@@ -10,7 +10,7 @@ To use this service you must first grant [N3rgy](http://www.n3rgy.com/) access t
 
 ## Building
 
-The Docker container can be built utilising _buildx_ as described in the [project documentation](../README.md#Building).
+The Docker container can be built utilising _buildx_ as described in the [project documentation](../../README.md#Building).
 
 ## Configuration
 

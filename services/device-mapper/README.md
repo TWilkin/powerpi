@@ -6,7 +6,7 @@ Used by _energenie_controller_ to access the ENER314/ENER314-RT Raspberry Pi mod
 
 ## Building
 
-The Docker container can be built utilising _buildx_ as described in the [project documentation](../README.md#Building).
+The Docker container can be built utilising _buildx_ as described in the [project documentation](../../README.md#Building).
 
 ## Configuration
 

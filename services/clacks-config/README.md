@@ -2,11 +2,11 @@
 
 PowerPi service which downloads the configuration files from GitHub on an interval, publishing the changed configuration files to the MQTT message queue notifying the other services that configuration has been modified.
 
-The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../common/node/common/README.md) which needs to be compiled before use.
+The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) which needs to be compiled before use.
 
 ## Building
 
-The Docker container can be built utilising _buildx_ as described in the [project documentation](../README.md#Building).
+The Docker container can be built utilising _buildx_ as described in the [project documentation](../../README.md#Building).
 
 ## Configuration
 

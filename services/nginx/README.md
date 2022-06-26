@@ -20,7 +20,7 @@ yarn build:api
 yarn build:ui
 ```
 
-The Docker container can be built utilising _buildx_ as described in the [project documentation](../README.md#Building).
+The Docker container can be built utilising _buildx_ as described in the [project documentation](../../README.md#Building).
 
 ## Testing
 
@@ -56,15 +56,15 @@ yarn start:ui
 
 Additionally, the _ui/webpack.dev.js_ file can be modified as follows to utilise a deployed version of _deep-thought_ for convenient development, where _POWERPI_URL_ is the URL base for your PowerPI deployment and _TOKEN_ is the API token after authentication as stored in your cookies under _jwt_.
 
-```json
+```js
 {
-    "devServer": {
-        "proxy": {
-            "/api": {
-                "changeOrigin": true,
-                "target": "https://POWERPI_URL:3000",
-                "headers": {
-                    "Authorization": "Bearer TOKEN"
+    devServer: {
+        proxy: {
+            /api: {
+                changeOrigin: true,
+                target: "https://POWERPI_URL:3000",
+                headers: {
+                    Authorization: "Bearer TOKEN"
                 }
             }
         }
