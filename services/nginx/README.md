@@ -60,7 +60,7 @@ Additionally, the _ui/webpack.dev.js_ file can be modified as follows to utilise
 {
     devServer: {
         proxy: {
-            /api: {
+            "/api": {
                 changeOrigin: true,
                 target: "https://POWERPI_URL:3000",
                 headers: {
