@@ -6,7 +6,6 @@ from pytest_mock import MockerFixture
 from powerpi_common.condition import ConditionParser, InvalidArgumentException, \
     InvalidIdentifierException, UnexpectedTokenException
 from powerpi_common.variable import SensorValue
-from powerpi_common_test.base import BaseTest
 
 
 class DeviceVariableImpl:
@@ -20,14 +19,12 @@ class SensorVariableImpl:
         self.value = SensorValue(f'{name}/{action}', f'{action}/{name}')
 
 
-class TestConditionParser(BaseTest):
-    def create_subject(self, mocker: MockerFixture):
+class TestConditionParser:
+    def create_subject(self, mocker: MockerFixture, message=None):
         variable_manager = mocker.Mock()
 
         variable_manager.get_device = DeviceVariableImpl
         variable_manager.get_sensor = SensorVariableImpl
-
-        message = {'timestamp': 1337}
 
         return ConditionParser(variable_manager, message)
 
@@ -60,7 +57,9 @@ class TestConditionParser(BaseTest):
         ('var.message.whatever', None),
     ])
     def test_identifier_success(self, mocker: MockerFixture, identifier: str, expected: str):
-        subject = self.create_subject(mocker)
+        message = {'timestamp': 1337}
+
+        subject = self.create_subject(mocker, message)
 
         result = subject.identifier(identifier)
 
@@ -79,7 +78,8 @@ class TestConditionParser(BaseTest):
         'var.sensor.office.temperature',
         'var.sensor.office.temperature.whatever',
         'message',
-        'var.message'
+        'var.message',
+        'var.message.timestamp'
     ])
     def test_identifier_invalid(self, mocker: MockerFixture, identifier: str):
         subject = self.create_subject(mocker)

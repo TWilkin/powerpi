@@ -1,4 +1,5 @@
 import pytest
+from pytest_mock import MockerFixture
 
 from powerpi_common.event.action import device_additional_state_action, device_off_action, \
     device_on_action
@@ -11,7 +12,7 @@ class DeviceImpl:
         self.state = None
         self.additional_state = {
             'brightness': None,
-            'other': True
+            'other': 'untouched'
         }
 
     async def turn_on(self):
@@ -44,14 +45,16 @@ async def test_device_off_action():
     assert device.state == 'off'
 
 
-async def test_device_additional_state_action():
+async def test_device_additional_state_action(mocker: MockerFixture):
+    variable_manager = mocker.Mock()
+
     device = DeviceImpl()
 
     patch = [
         {
             'op': 'replace',
             'path': '/brightness',
-            'value': '+5000'
+            'value': 5000
         },
         {
             'op': 'add',
@@ -60,13 +63,39 @@ async def test_device_additional_state_action():
         }
     ]
 
-    func = device_additional_state_action(patch)
+    func = device_additional_state_action(patch, variable_manager)
 
     assert device.additional_state['brightness'] is None
-    assert device.additional_state['other'] is True
+    assert device.additional_state['other'] == 'untouched'
 
     await func(device)
 
-    assert device.additional_state['brightness'] == '+5000'
+    assert device.additional_state['brightness'] == 5000
     assert device.additional_state['something'] == 'boom'
-    assert device.additional_state['other'] is True
+    assert device.additional_state['other'] == 'untouched'
+
+
+async def test_device_additional_state_action_with_variable(mocker: MockerFixture):
+    variable_manager = mocker.Mock()
+
+    device = DeviceImpl()
+
+    variable_manager.get_device = lambda _: device
+
+    patch = [
+        {
+            'op': 'replace',
+            'path': '/brightness',
+            'value': 'var.device.Light.other'
+        },
+    ]
+
+    func = device_additional_state_action(patch, variable_manager)
+
+    assert device.additional_state['brightness'] is None
+    assert device.additional_state['other'] == 'untouched'
+
+    await func(device)
+
+    assert device.additional_state['brightness'] == 'untouched'
+    assert device.additional_state['other'] == 'untouched'

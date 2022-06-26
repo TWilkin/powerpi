@@ -93,21 +93,19 @@ class EventManager:
             f'Found {len(self.__consumers)} matching listener(s)'
         )
 
-    @classmethod
-    def __get_action(cls, action: object):
+    def __get_action(self, action: dict):
         try:
             state = action['state']
 
-            # pylint: disable=no-else-return
             if state == DeviceStatus.ON:
                 return device_on_action
-            elif state == DeviceStatus.OFF:
+            if state == DeviceStatus.OFF:
                 return device_off_action
         except KeyError:
             pass
 
         try:
-            return device_additional_state_action(action['patch'])
+            return device_additional_state_action(action['patch'], self.__variable_manager)
         except KeyError:
             pass
 

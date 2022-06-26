@@ -47,7 +47,7 @@ class ConditionParser:
     def __init__(
         self,
         variable_manager: VariableManager,
-        message: MQTTMessage
+        message: Union[MQTTMessage, None] = None
     ):
         self.__variable_manager = variable_manager
         self.__message = message
@@ -123,11 +123,14 @@ class ConditionParser:
 
         raise InvalidIdentifierException(identifier)
 
-    def message_identifier(self, _: str, prop: str):
+    def message_identifier(self, identifier: str, prop: str):
         '''
         Return the value of the message identifier.
         e.g. var.message.state
         '''
+        if self.__message is None:
+            raise InvalidIdentifierException(identifier)
+
         try:
             return self.__message[prop]
         except KeyError:
