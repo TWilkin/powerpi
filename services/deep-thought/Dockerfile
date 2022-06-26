@@ -19,7 +19,7 @@ EXPOSE 3000
 # use non-root account
 USER node
 RUN mkdir -p /home/node/app/common/node/common/dist \
-    /home/node/app/deep-thought
+    /home/node/app/services/deep-thought
 
 # copy the built common library
 WORKDIR /home/node/app
@@ -28,11 +28,11 @@ COPY --from=build-image --chown=node:node /home/node/app/common/node/common/pack
 COPY --from=build-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 
 # install the dependencies
-COPY --chown=node:node deep-thought/package.json ./deep-thought
-RUN yarn workspace deep-thought install --production
+COPY --chown=node:node services/deep-thought/package.json ./services/deep-thought
+RUN yarn workspace @powerpi/deep-thought install --production
 
 # copy across the application code
-COPY --chown=node:node services/deep-thought ./deep-thought
+COPY --chown=node:node services/deep-thought ./services/deep-thought
 
 # start the application once the container is ready
-CMD yarn workspace deep-thought start
+CMD yarn workspace @powerpi/deep-thought start

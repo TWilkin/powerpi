@@ -16,7 +16,7 @@ LABEL description="Node.js application to persist MQTT messages to database"
 # use non-root account
 USER node
 RUN mkdir -p /home/node/app/common/node/common/dist \
-     /home/node/app/persistence
+     /home/node/app/services/persistence
 
 # copy the built common library
 WORKDIR /home/node/app
@@ -25,11 +25,11 @@ COPY --from=build-image --chown=node:node /home/node/app/common/node/common/pack
 COPY --from=build-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 
 # install the dependencies
-COPY --chown=node:node persistence/package.json ./persistence
-RUN yarn workspace persistence install --production
+COPY --chown=node:node services/persistence/package.json ./services/persistence
+RUN yarn workspace @powerpi/persistence install --production
 
 # copy the application
-COPY --chown=node:node services/persistence ./persistence
+COPY --chown=node:node services/persistence ./services/persistence
 
 # start the application once the container is ready
-CMD yarn workspace persistence start
+CMD yarn workspace @powerpi/persistence start

@@ -1,5 +1,5 @@
 {
-    "name": "deep-thought",
+    "name": "@powerpi/deep-thought",
     "version": "0.5.12",
     "description": "PowerPi API",
     "private": true,
@@ -8,7 +8,7 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/TWilkin/powerpi.git",
-        "directory": "deep-thought"
+        "directory": "services/deep-thought"
     },
     "main": "src/app.ts",
     "scripts": {

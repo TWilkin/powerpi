@@ -32,7 +32,7 @@ EXPOSE 3000
 USER node
 RUN mkdir -p /home/node/app/common/node/api/dist \
     /home/node/app/common/node/common/dist \
-    /home/node/app/babel-fish
+    /home/node/app/services/babel-fish
 
 # copy the built common libraries
 WORKDIR /home/node/app
@@ -43,11 +43,12 @@ COPY --from=build-common-image --chown=node:node /home/node/app/common/node/comm
 COPY --from=build-common-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 
 # install the dependencies
-COPY --chown=node:node babel-fish/package.json ./babel-fish
-RUN yarn workspace babel-fish install --production
+COPY --chown=node:node services/babel-fish/package.json ./services/babel-fish
+RUN ls -lah
+RUN yarn workspace @powerpi/babel-fish install --production
 
 # copy the application
-COPY --chown=node:node services/babel-fish ./babel-fish
+COPY --chown=node:node services/babel-fish ./services/babel-fish
 
 # start the application once the container is ready
-CMD yarn workspace babel-fish start
+CMD yarn workspace @powerpi/babel-fish start

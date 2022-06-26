@@ -16,7 +16,7 @@ LABEL description="Node.js application to control LIFX light colour and brightne
 # use non-root account
 USER node
 RUN mkdir -p /home/node/app/common/node/common/dist \
-    /home/node/app/light-fantastic
+    /home/node/app/services/light-fantastic
 
 # copy the built common library
 WORKDIR /home/node/app
@@ -25,11 +25,11 @@ COPY --from=build-image --chown=node:node /home/node/app/common/node/common/pack
 COPY --from=build-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 
 # install the dependencies
-COPY --chown=node:node light-fantastic/package.json ./light-fantastic
-RUN yarn workspace light-fantastic install --production
+COPY --chown=node:node services/light-fantastic/package.json ./services/light-fantastic
+RUN yarn workspace @powerpi/light-fantastic install --production
 
 # copy across the application code
-COPY --chown=node:node services/light-fantastic ./light-fantastic
+COPY --chown=node:node services/light-fantastic ./services/light-fantastic
 
 # start the application once the container is ready
-CMD yarn workspace light-fantastic start
+CMD yarn workspace @powerpi/light-fantastic start

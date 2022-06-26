@@ -9,7 +9,7 @@ RUN mkdir -p /opt/certbot \
 USER certbot
 
 # setup crontab to renew
-COPY --chown=certbot:certbot certbot/crontab /etc/crontabs/certbot
+COPY --chown=certbot:certbot services/certbot/crontab /etc/crontabs/certbot
 
 # add the renew script
 WORKDIR /opt/certbot

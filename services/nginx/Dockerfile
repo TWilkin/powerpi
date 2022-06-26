@@ -12,7 +12,7 @@ RUN curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/cer
 
 # install the libraries
 WORKDIR /home/node/app
-RUN mkdir -p ./common/node/api ./nginx/ui
+RUN mkdir -p ./common/node/api ./services/nginx/ui
 COPY package.json yarn.lock tsconfig.json ./
 COPY common/node/api/package.json ./common/node/api/
 RUN yarn workspace @powerpi/api install --frozen-lockfile
@@ -20,7 +20,7 @@ COPY common/node/api ./common/node/api/
 RUN yarn workspace @powerpi/api build
 
 # install the dependencies
-COPY nginx/ui/package.json ./nginx/ui
+COPY services/nginx/ui/package.json ./services/nginx/ui
 RUN yarn workspace @powerpi/ui install --frozen-lockfile
 
 # transpile the application

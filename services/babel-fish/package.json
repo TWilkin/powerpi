@@ -1,5 +1,5 @@
 {
-    "name": "babel-fish",
+    "name": "@powerpi/babel-fish",
     "version": "0.0.5",
     "description": "PowerPi home automation voice service",
     "private": true,
@@ -8,7 +8,7 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/TWilkin/powerpi.git",
-        "directory": "babel-fish"
+        "directory": "services/babel-fish"
     },
     "main": "./src/index.ts",
     "scripts": {

@@ -16,7 +16,7 @@ LABEL description="Node.js energy monitor service"
 # use non-root account
 USER node
 RUN mkdir -p /home/node/app/common/node/common/dist \
-     /home/node/app/energy-monitor
+     /home/node/app/services/energy-monitor
 
 # copy the built common library
 WORKDIR /home/node/app
@@ -25,11 +25,11 @@ COPY --from=build-image --chown=node:node /home/node/app/common/node/common/pack
 COPY --from=build-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 
 # install the dependencies
-COPY --chown=node:node energy-monitor/package.json ./energy-monitor
-RUN yarn workspace energy-monitor install --production
+COPY --chown=node:node services/energy-monitor/package.json ./services/energy-monitor
+RUN yarn workspace @powerpi/energy-monitor install --production
 
 # copy the application
-COPY --chown=node:node services/energy-monitor ./energy-monitor
+COPY --chown=node:node services/energy-monitor ./services/energy-monitor
 
 # start the application once the container is ready
-CMD yarn workspace energy-monitor start
+CMD yarn workspace @powerpi/energy-monitor start

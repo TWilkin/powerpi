@@ -19,7 +19,7 @@ EXPOSE 3000
 # use non-root account
 USER node
 RUN mkdir -p /home/node/app/common/node/common/dist \
-     /home/node/app/clacks-config
+     /home/node/app/services/clacks-config
 
 # copy the built common library
 WORKDIR /home/node/app
@@ -28,11 +28,11 @@ COPY --from=build-image --chown=node:node /home/node/app/common/node/common/pack
 COPY --from=build-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 
 # install the dependencies
-COPY --chown=node:node clacks-config/package.json ./clacks-config
-RUN yarn workspace clacks-config install --production
+COPY --chown=node:node services/clacks-config/package.json ./services/clacks-config
+RUN yarn workspace @powerpi/clacks-config install --production
 
 # copy the application
-COPY --chown=node:node services/clacks-config ./clacks-config
+COPY --chown=node:node services/clacks-config ./services/clacks-config
 
 # start the application once the container is ready
-CMD yarn workspace clacks-config start
+CMD yarn workspace @powerpi/clacks-config start
