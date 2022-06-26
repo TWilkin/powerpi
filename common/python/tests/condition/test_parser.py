@@ -21,12 +21,13 @@ class SensorVariableImpl:
 
 class TestConditionParser:
     def create_subject(self, mocker: MockerFixture, message=None):
-        variable_manager = mocker.Mock()
+        # pylint: disable=attribute-defined-outside-init
+        self.variable_manager = mocker.Mock()
 
-        variable_manager.get_device = DeviceVariableImpl
-        variable_manager.get_sensor = SensorVariableImpl
+        self.variable_manager.get_device = DeviceVariableImpl
+        self.variable_manager.get_sensor = SensorVariableImpl
 
-        return ConditionParser(variable_manager, message)
+        return ConditionParser(self.variable_manager, message)
 
     @pytest.mark.parametrize('constant', [
         'strING',
@@ -83,6 +84,22 @@ class TestConditionParser:
     ])
     def test_identifier_invalid(self, mocker: MockerFixture, identifier: str):
         subject = self.create_subject(mocker)
+
+        with pytest.raises(InvalidIdentifierException):
+            subject.identifier(identifier)
+
+    @pytest.mark.parametrize('identifier', [
+        "var.sensor.office.temperature.state",
+        "var.sensor.office.temperature.value",
+        "var.sensor.office.temperature.unit"
+    ])
+    def test_sensor_identifier_invalid(self, mocker: MockerFixture, identifier: str):
+        subject = self.create_subject(mocker)
+
+        class NoValueSensor:
+            pass
+
+        self.variable_manager.get_sensor = lambda _, __: NoValueSensor
 
         with pytest.raises(InvalidIdentifierException):
             subject.identifier(identifier)

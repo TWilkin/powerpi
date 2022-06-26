@@ -114,12 +114,15 @@ class ConditionParser:
         '''
         variable = self.__variable_manager.get_sensor(name, action)
 
-        if prop == 'value':
-            return variable.value.value
-        if prop == 'unit':
-            return variable.value.unit
-        if prop == 'state':
-            return variable.state
+        try:
+            if prop == 'value':
+                return variable.value.value
+            if prop == 'unit':
+                return variable.value.unit
+            if prop == 'state':
+                return variable.state
+        except AttributeError:
+            pass
 
         raise InvalidIdentifierException(identifier)
 
