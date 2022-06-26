@@ -18,6 +18,10 @@ class EventConsumer(MQTTConsumer):
 
         self.__events = events
 
+    @property
+    def events(self):
+        return self.__events
+
     async def on_message(self, message: MQTTMessage, _, __):
         try:
             if not super().is_timestamp_valid(message['timestamp']):

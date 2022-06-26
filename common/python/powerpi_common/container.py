@@ -64,7 +64,8 @@ class Container(containers.DeclarativeContainer):
         config=config,
         logger=logger,
         mqtt_client=mqtt_client,
-        device_manager=device.device_manager
+        device_manager=device.device_manager,
+        variable_manager=variable.variable_manager
     )
 
     controller = providers.Singleton(

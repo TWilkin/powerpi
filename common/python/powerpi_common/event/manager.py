@@ -2,12 +2,12 @@ from typing import List
 from jsonpatch import JsonPatch
 
 from powerpi_common.config import Config
-from powerpi_common.device.manager import DeviceNotFoundException
+from powerpi_common.device import Device, DeviceManager, DeviceNotFoundException
+from powerpi_common.event.consumer import EventConsumer
+from powerpi_common.event.handler import EventHandler
 from powerpi_common.logger import Logger
-from powerpi_common.device import Device, DeviceManager
 from powerpi_common.mqtt import MQTTClient
-from .consumer import EventConsumer
-from .handler import EventHandler
+from powerpi_common.variable import VariableManager
 
 
 class EventManager:
@@ -16,19 +16,27 @@ class EventManager:
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        device_manager: DeviceManager
+        device_manager: DeviceManager,
+        variable_manager: VariableManager
     ):
+        #pylint: disable=too-many-arguments
         self.__config = config
         self.__logger = logger
         self.__mqtt_client = mqtt_client
         self.__device_manager = device_manager
+        self.__variable_manager = variable_manager
 
         self.__consumers = []
+
+    @property
+    def consumers(self):
+        return self.__consumers
 
     def load(self):
         listeners = self.__config.events['listeners']
 
         # iterate over the configuration events and create listeners
+        handlers = {}
         for listener in listeners:
             # set the topic to listen to
             topic = listener['topic']
@@ -54,19 +62,31 @@ class EventManager:
                 if action is None:
                     continue
 
-                events.append(EventHandler(device, event['condition'], action))
+                handler = EventHandler(
+                    self.__logger, self.__variable_manager, device, event['condition'], action
+                )
+
+                # only append the handler if it's going to work
+                if handler.validate():
+                    events.append(handler)
 
             if len(events) > 0:
-                # create and register the consumer
-                consumer = EventConsumer(
-                    self.__config, self.__logger, topic, events
-                )
-                self.__mqtt_client.add_consumer(consumer)
-                self.__consumers.append(consumer)
+                if topic not in handlers:
+                    handlers[topic] = []
+                handlers[topic] += events
 
-                self.__logger.info(
-                    f'Found listener {consumer} with {len(events)} event(s)'
-                )
+        # now we have everything initialised create and register the consumers
+        # we do this late so any variables will pick up initial messages if the topic is used twice
+        for topic, events in handlers.items():
+            consumer = EventConsumer(
+                self.__config, self.__logger, topic, events
+            )
+            self.__mqtt_client.add_consumer(consumer)
+            self.__consumers.append(consumer)
+
+            self.__logger.info(
+                f'Found listener {consumer} with {len(events)} event(s)'
+            )
 
         self.__logger.info(
             f'Found {len(self.__consumers)} matching listener(s)'

@@ -1,42 +1,65 @@
-from typing import Awaitable, Callable, Dict
+from typing import Awaitable, Callable
 
+from powerpi_common.condition import ConditionParser, Expression, ParseException
 from powerpi_common.device import Device
+from powerpi_common.logger import Logger
+from powerpi_common.mqtt import MQTTMessage
+from powerpi_common.variable import VariableManager
 
 
 class EventHandler:
     def __init__(
         self,
+        logger: Logger,
+        variable_manager: VariableManager,
         device: Device,
-        condition: Dict[str, any],
+        condition: Expression,
         action: Callable[[Device], Awaitable[None]]
     ):
+        #pylint: disable=too-many-arguments
+        self.__logger = logger
+        self.__variable_manager = variable_manager
         self.__device = device
         self.__condition = condition
         self.__action = action
 
+    @property
+    def device(self):
+        return self.__device
+
+    @property
+    def condition(self):
+        return self.__condition
+
+    def validate(self):
+        # run the condition to see if it's valid and initialise any variables
+        try:
+            self.__execute_parser({})
+            return True
+        except ParseException as ex:
+            self.__logger.exception(ex)
+
+        return False
+
     async def execute(self, message: dict):
         # execute the action if the condition is met
-        if self.check_condition(message):
+        if self.__check_condition(message):
             await self.__action(self.__device)
             return True
 
         return False
 
-    def check_condition(self, message: dict):
-        if 'message' in self.__condition:
-            compare = message.copy()
+    def __check_condition(self, message: MQTTMessage):
+        try:
+            return self.__execute_parser(message)
+        except ParseException as ex:
+            self.__logger.exception(ex)
 
-            if 'timestamp' in message:
-                # remove the timestamp before comparison
-                del compare['timestamp']
+        return False
 
-            if compare != self.__condition['message']:
-                return False
-
-        if 'state' in self.__condition and self.__device.state != self.__condition['state']:
-            return False
-
-        return True
+    def __execute_parser(self, message: MQTTMessage):
+        parser = ConditionParser(self.__variable_manager, message)
+        return parser.conditional_expression(self.__condition)
 
     def __str__(self):
         return f'{self.__device}:{self.__action}'

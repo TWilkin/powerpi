@@ -29,6 +29,7 @@ class SensorVariable(Variable, SensorEventConsumer):
 
         self.__action = action
         self.__value = SensorValue(None, None)
+        self.__state = None
 
         mqtt_client.add_consumer(self)
 
@@ -50,5 +51,25 @@ class SensorVariable(Variable, SensorEventConsumer):
         self.__value = SensorValue(new_value, new_unit)
 
     @property
+    def state(self):
+        return self.__state
+
+    @state.setter
+    def state(self, new_state: str):
+        self.__state = new_state
+
+    @property
     def json(self):
-        return {'value': self.__value.value, 'unit': self.__value.unit}
+        result = {}
+
+        if self.__value.value is not None or self.__value.unit is not None:
+            result['value'] = self.__value.value
+            result['unit'] = self.__value.unit
+        if self.__state is not None:
+            result['state'] = self.__state
+
+        return result
+
+    @property
+    def suffix(self):
+        return f'{self._name}.{self.__action}'
