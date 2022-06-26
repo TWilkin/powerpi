@@ -11,14 +11,14 @@
         "packages": [
             "common/node/api",
             "common/node/common",
-            "babel-fish",
-            "clacks-config",
-            "deep-thought",
-            "energy-monitor",
-            "freedns",
-            "light-fantastic",
-            "nginx/ui",
-            "persistence"
+            "services/babel-fish",
+            "services/clacks-config",
+            "services/deep-thought",
+            "services/energy-monitor",
+            "services/freedns",
+            "services/light-fantastic",
+            "services/nginx/ui",
+            "services/persistence"
         ],
         "nohoist": [
             "**/@fortawesome/fontawesome-free",
