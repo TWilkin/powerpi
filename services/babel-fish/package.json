@@ -17,7 +17,7 @@
         "build-platform": "./node_modules/jovo-cli/bin/run build"
     },
     "dependencies": {
-        "@powerpi/api": "^0.0.9",
+        "@powerpi/api": "^0.0.10",
         "@powerpi/common": "^0.0.6",
         "@types/express": "^4.17.12",
         "@types/node": "^16.11.12",
