@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "@octokit/rest": "^18.12.0",
-        "@powerpi/common": "^0.0.6",
+        "@powerpi/common": "^0.0.7",
         "@types/node": "^16.11.4",
         "ts-node": "^10.4.0",
         "typedi": "^0.10.0",

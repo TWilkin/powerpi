@@ -1,5 +1,5 @@
+import { DeviceState } from "@powerpi/api";
 import { Message, MqttConsumer } from "@powerpi/common";
-import { DeviceState } from "../../models/device";
 import MqttService from "../mqtt";
 
 interface StateMessage extends Message {

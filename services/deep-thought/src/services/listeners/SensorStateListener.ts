@@ -1,5 +1,5 @@
+import { Sensor } from "@powerpi/api";
 import { ISensor, Message, MqttConsumer } from "@powerpi/common";
-import { Sensor } from "../../models/sensor";
 import MqttService from "../mqtt";
 
 interface EventMessage extends Message {
@@ -14,7 +14,7 @@ export default abstract class SensorStateListener implements MqttConsumer<EventM
     constructor(private readonly mqttService: MqttService, sensor: ISensor) {
         this._sensor = {
             name: sensor.name,
-            display_name: sensor.display_name,
+            display_name: sensor.display_name ?? sensor.name,
             type: sensor.type,
             location: sensor.location,
             entity: sensor.entity ?? sensor.name,
@@ -34,9 +34,10 @@ export default abstract class SensorStateListener implements MqttConsumer<EventM
     }
 
     public async $onInit() {
-        await this.mqttService.subscribe("event", this._sensor.entity, this._sensor.action, this);
+        /* eslint-disable @typescript-eslint/no-non-null-assertion */
+        await this.mqttService.subscribe("event", this._sensor.entity!, this._sensor.action!, this);
 
-        await this.mqttService.subscribe("event", this._sensor.entity, "battery", {
+        await this.mqttService.subscribe("event", this._sensor.entity!, "battery", {
             message: (_: string, __: string, ___: string, message: EventMessage) =>
                 this.batteryMessage(message),
         });
