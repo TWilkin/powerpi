@@ -1,8 +1,9 @@
 from typing import List
-from jsonpatch import JsonPatch
 
 from powerpi_common.config import Config
-from powerpi_common.device import Device, DeviceManager, DeviceNotFoundException
+from powerpi_common.device import Device, DeviceManager, DeviceNotFoundException, DeviceStatus
+from powerpi_common.event.action import device_additional_state_action, device_off_action, \
+    device_on_action
 from powerpi_common.event.consumer import EventConsumer
 from powerpi_common.event.handler import EventHandler
 from powerpi_common.logger import Logger
@@ -92,42 +93,20 @@ class EventManager:
             f'Found {len(self.__consumers)} matching listener(s)'
         )
 
-    @classmethod
-    def __get_action(cls, action: object):
+    def __get_action(self, action: dict):
         try:
             state = action['state']
 
-            # pylint: disable=no-else-return
-            if state == 'on':
+            if state == DeviceStatus.ON:
                 return device_on_action
-            elif state == 'off':
+            if state == DeviceStatus.OFF:
                 return device_off_action
         except KeyError:
             pass
 
         try:
-            patch = JsonPatch(action['patch'])
-
-            return device_additional_state_action(patch)
+            return device_additional_state_action(action['patch'], self.__variable_manager)
         except KeyError:
             pass
 
         return None
-
-
-async def device_on_action(device: Device):
-    await device.turn_on()
-
-
-async def device_off_action(device: Device):
-    await device.turn_off()
-
-
-def device_additional_state_action(patch: JsonPatch):
-    async def wrapper(device: Device):
-        current_state = device.additional_state
-
-        patched = patch.apply(current_state)
-        await device.change_power_and_additional_state(None, patched)
-
-    return wrapper

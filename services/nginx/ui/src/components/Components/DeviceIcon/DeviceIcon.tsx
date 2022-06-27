@@ -1,4 +1,5 @@
 import {
+    faEquals,
     faLayerGroup,
     faLightbulb,
     faLock,
@@ -53,6 +54,9 @@ function getDeviceTypeIcon(type: string) {
                 case "socket":
                 case "socket_group":
                     return faPlug;
+
+                case "variable":
+                    return faEquals;
 
                 default:
                     return faQuestion;
