@@ -1,5 +1,5 @@
+import { Device, DeviceState } from "@powerpi/api";
 import { Service } from "@tsed/common";
-import { Device, DeviceState } from "../models/device";
 import ConfigService from "./config";
 import DeviceStateListener from "./listeners/DeviceStateListener";
 import MqttService from "./mqtt";
@@ -39,7 +39,7 @@ export default class DeviceStateService extends DeviceStateListener {
             display_name: device.displayName,
             type: device.type,
             visible: device.visible ?? true,
-            state: "unknown",
+            state: DeviceState.Unknown,
             since: -1,
         }));
     }

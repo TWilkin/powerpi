@@ -1,8 +1,8 @@
+import { DeviceState } from "@powerpi/api";
 import { ISensor } from "@powerpi/common";
 import { $log } from "@tsed/common";
 import { Nsp, SocketService } from "@tsed/socketio";
 import { Namespace } from "socket.io";
-import { DeviceState } from "../models/device";
 import ConfigService from "./config";
 import DeviceStateListener from "./listeners/DeviceStateListener";
 import SensorStateListener from "./listeners/SensorStateListener";
