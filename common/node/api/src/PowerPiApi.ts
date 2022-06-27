@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from "axios";
-import io from "socket.io-client";
+import { connect, Socket } from "socket.io-client";
 import Config from "./Config";
 import Device from "./Device";
 import DeviceState from "./DeviceState";
@@ -14,7 +14,7 @@ type ErrorHandler = (error: { response: { status: number } }) => void;
 
 export default class PowerPiApi {
     private readonly instance: AxiosInstance;
-    private socket: SocketIOClient.Socket | undefined;
+    private socket: Socket | undefined;
     private listeners: {
         device: DeviceStatusCallback[];
         sensor: SensorStatusCallback[];
@@ -126,7 +126,7 @@ export default class PowerPiApi {
 
     private connectSocketIO() {
         if (!this.socket) {
-            this.socket = io.connect(this.apiBaseUrl, {
+            this.socket = connect(this.apiBaseUrl, {
                 path: "/api/socket.io",
             });
 
