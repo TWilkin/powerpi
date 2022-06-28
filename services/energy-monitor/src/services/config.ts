@@ -47,6 +47,16 @@ export default class ConfigService extends CommonConfigService {
 
         return undefined;
     }
+
+    get messageWriteDelay() {
+        const delay = process.env["MESSAGE_WRITE_DELAY"] ?? 100;
+
+        if (typeof delay === "string") {
+            return parseInt(delay);
+        }
+
+        return delay;
+    }
 }
 
 Container.override(CommonConfigService, ConfigService);

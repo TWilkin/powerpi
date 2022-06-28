@@ -18,11 +18,13 @@ export default class EnergyMonitorService {
     constructor(private n3rgy: N3rgyService, private config: ConfigService) {
         this.mqtt = Container.get(MqttService);
         this.logger = Container.get(LoggerService);
+
         this.lastUpdate = {};
     }
 
     public start() {
         this.update(EnergyType.Electricity);
+
         this.update(EnergyType.Gas);
     }
 
@@ -74,7 +76,7 @@ export default class EnergyMonitorService {
                 }
             }
 
-            const lastDate = this.publishMessage(energyType, result.value);
+            const lastDate = await this.publishMessage(energyType, result.value);
             if (lastDate) {
                 this.lastUpdate[energyType] = lastDate;
                 this.logger.info("Received", energyType, "usage up to", lastDate);
@@ -121,7 +123,9 @@ export default class EnergyMonitorService {
         return this.config.retryInterval.next();
     }
 
-    private publishMessage(energyType: EnergyType, data: N3rgyData) {
+    private async publishMessage(energyType: EnergyType, data: N3rgyData) {
+        const writeDelay = this.config.messageWriteDelay;
+
         const messages = data.values
             .map((value) => ({
                 value: value.value,
@@ -131,11 +135,15 @@ export default class EnergyMonitorService {
             .sort((a, b) => a.timestamp - b.timestamp);
 
         let lastDate = 0;
-        messages.forEach((message) => {
+
+        for (const message of messages) {
             this.mqtt.publish("event", energyType, "usage", message);
 
             lastDate = message.timestamp;
-        });
+
+            // sleep for a moment so we don't overwhelm the queue
+            await new Promise((resolve) => setTimeout(resolve, writeDelay));
+        }
 
         this.logger.info("Published", messages.length, "message(s) to queue");
 
