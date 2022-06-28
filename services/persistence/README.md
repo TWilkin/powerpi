@@ -1,8 +1,8 @@
 # PowerPi - Persistence
 
-PowerPi service which writes all broadcast MQTT messages by the other services to a database. These messages can then be retrieved by [_deep-thought_ (API)](../../deep-thought/README.md) to show history, and charts of sensor data in the UI.
+PowerPi service which writes all broadcast MQTT messages by the other services to a database. These messages can then be retrieved by [_deep-thought_ (API)](../deep-thought/README.md) to show history, and charts of sensor data in the UI.
 
-The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../common/node/common/README.md) which needs to be compiled before use.
+The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) which needs to be compiled before use.
 
 ## Building
 
