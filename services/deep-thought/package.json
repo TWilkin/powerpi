@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "@powerpi/api": "^0.0.10",
-        "@powerpi/common": "^0.0.7",
+        "@powerpi/common": "^0.0.8",
         "@tsed/common": "^6.115.0",
         "@tsed/core": "^6.115.0",
         "@tsed/di": "^6.115.0",

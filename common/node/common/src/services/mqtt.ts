@@ -25,7 +25,11 @@ export class MqttService {
     }
 
     private get clientId() {
-        return `${this.config.service}-${os.hostname}`;
+        const prefix = this.config.service.indexOf("/")
+            ? this.config.service.split("/").slice(-1)[0]
+            : this.config.service;
+
+        return `${prefix}-${os.hostname}`;
     }
 
     public async connect() {
