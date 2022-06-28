@@ -51,6 +51,9 @@ Next, we need to configure the compiler with the options we wish to include, we 
 Finally we can compile and deploy the code, connect your NodeMCU to your computer with the USB cable and execute the following:
 
 ```bash
-# Download Arduino libraries, compile the code, flash the ESP8266 and start the serial monitor
+# Download Arduino libraries, 
+# compile the code, 
+# flash the ESP8266 
+# and start the serial monitor
 make
 ```
