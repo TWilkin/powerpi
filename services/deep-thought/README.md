@@ -6,7 +6,7 @@ The API is not directly accessible, as NGINX acts as a reverse proxy.
 
 Authentication is handled utilising Google social login.
 
-The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) which needs to be compiled before use.
+The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) and a common API library [_@powerpi/api_](../../common/node/api/README.md), both of which need to be compiled before use.
 
 ## Building
 
@@ -56,6 +56,9 @@ The service can be started locally with the following commands.
 # From the root of your PowerPi checkout
 # Download the dependencies
 yarn
+
+# Build the API library
+yarn build:api
 
 # Build the common library
 yarn build:common
