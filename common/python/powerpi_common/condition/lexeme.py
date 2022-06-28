@@ -11,6 +11,7 @@ class Lexeme(str, Enum):
     LESS_THAN_EQUAL = 'less than equal'
     NOT = 'not'
     OR = 'or'
+    VAR = 'var'
     WHEN = 'when'
 
     # symbol aliases
