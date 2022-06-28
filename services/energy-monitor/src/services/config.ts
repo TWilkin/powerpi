@@ -38,6 +38,15 @@ export default class ConfigService extends CommonConfigService {
         const str = process.env["TIMEOUT_OFFSET"] ?? "30 minutes";
         return this.interval.parse(str);
     }
+
+    get maximumThreshold() {
+        const threshold = process.env["MAXIMUM_THRESHOLD"];
+        if (threshold) {
+            return parseInt(threshold);
+        }
+
+        return undefined;
+    }
 }
 
 Container.override(CommonConfigService, ConfigService);

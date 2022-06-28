@@ -1,7 +1,7 @@
 import { LoggerService, MqttService } from "@powerpi/common";
 import { Service } from "typedi";
 import Container from "../container";
-import N3rgyData from "../models/n3rgy";
+import N3rgyData, { N3rgyDataPoint } from "../models/n3rgy";
 import ConfigService from "./config";
 import N3rgyService, { EnergyType } from "./n3rgy";
 
@@ -50,6 +50,29 @@ export default class EnergyMonitorService {
             }
 
             rows += result.value.values.length;
+
+            // if we have outliers, remove them
+            const threshold = this.config.maximumThreshold;
+            if (threshold) {
+                const originalLength = result.value.values.length;
+
+                result.value.values = result.value.values.reduce((values, dataPoint) => {
+                    if (dataPoint.value < threshold) {
+                        values.push(dataPoint);
+                    }
+                    return values;
+                }, [] as N3rgyDataPoint[]);
+
+                const removed = originalLength - result.value.values.length;
+                if (removed > 0) {
+                    this.logger.warn(
+                        "Removed",
+                        removed,
+                        "values greater than threshold of",
+                        threshold
+                    );
+                }
+            }
 
             const lastDate = this.publishMessage(energyType, result.value);
             if (lastDate) {
