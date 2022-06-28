@@ -78,7 +78,7 @@ docker secret create powerpi_SECRET_NAME /path/to/secret/file
 -   **powerpi_ihd** - The MAC address of your smart energy meter IHD (In Home Device) for use with _energy-monitor_.
 -   **powerpi_github** - A GitHub personal access token which allows _clacks-config_ to retrieve configuration files from a GitHub repository.
 
-Finally once the network and secrets are created, the docker images built the stack can be deployed:
+Finally once the network and secrets are created, the docker images are built; the stack can be deployed:
 
 ```bash
 # From the root of your checkout of PowerPi
