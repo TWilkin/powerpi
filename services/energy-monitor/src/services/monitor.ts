@@ -22,8 +22,8 @@ export default class EnergyMonitorService {
     }
 
     public start() {
-        this.update("electricity");
-        this.update("gas");
+        this.update(EnergyType.Electricity);
+        this.update(EnergyType.Gas);
     }
 
     private async update(energyType: EnergyType) {
@@ -33,7 +33,7 @@ export default class EnergyMonitorService {
         this.logger.info("Retrieving", energyType, "usage between", start, "and", end);
 
         const generator = getData(
-            energyType === "electricity" ? this.n3rgy.getElecticity : this.n3rgy.getGas,
+            energyType === EnergyType.Electricity ? this.n3rgy.getElecticity : this.n3rgy.getGas,
             energyType,
             start,
             end,
