@@ -57,10 +57,8 @@ The service can be started locally with the following commands.
 # Download the dependencies
 yarn
 
-# Build the API library
+# Build the api and common library
 yarn build:api
-
-# Build the common library
 yarn build:common
 
 # Run the service locally
