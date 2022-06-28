@@ -20,6 +20,8 @@ This service expects the following environment variables to be set before it wil
 
 -   **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
 -   **IHD_SECRET_FILE** - The path to a file which contains the IHD (In Home Device) MAC address, which is used to authenticate against N3rgy. In the form _00-00-00-00-00-00-00-00_.
+-   **MAXIUM_THRESHOLD** - The maximum value to publish in a message, used to prevent large erroneous valeus from upsetting charts (default _undefined_).
+-   **MESSAGE_WRITE_DELAY** - The number of milliseconds to wait between publishing each message, to ensure we don't overwhelm the message queue (default _100_).
 
 ## Testing
 
