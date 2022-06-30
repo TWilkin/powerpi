@@ -86,7 +86,7 @@ async def test_device_additional_state_action_with_variable(mocker: MockerFixtur
         {
             'op': 'replace',
             'path': '/brightness',
-            'value': 'var.device.Light.other'
+            'value': {'var': 'device.Light.other'}
         },
     ]
 

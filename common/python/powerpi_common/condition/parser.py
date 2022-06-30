@@ -1,4 +1,3 @@
-import re
 from typing import Callable, Dict, List, Union
 
 from powerpi_common.condition.errors import InvalidArgumentException, InvalidIdentifierException, \
@@ -42,8 +41,6 @@ class ConditionParser:
     and the light is currently off, or that state of the light is unknown.
     '''
 
-    __IDENTIFIER_REGEX = r'^var\.(device|sensor|message)(\.[A-Za-z][A-Za-z0-9_]*){1,3}$'
-
     def __init__(
         self,
         variable_manager: VariableManager,
@@ -65,37 +62,47 @@ class ConditionParser:
 
         raise UnexpectedTokenException(constant)
 
-    def identifier(self, identifier: str):
+    def identifier(self, expression: Expression):
         '''
         Evaluate and return the value of the identifier in the parameter,
         either a device, sensor or message.
         '''
-        split = identifier.split('.')
+        def variable(_, values: List[str]):
+            if len(values) != 1:
+                raise InvalidArgumentException(Lexeme.VAR, values)
 
-        if len(split) >= 3:
-            identifier_type = split[1]
+            identifier = values[0]
+            split = identifier.split('.')
 
-            if identifier_type == VariableType.DEVICE:
-                if len(split) == 4:
-                    name, prop = split[2:]
-                    return self.device_identifier(identifier, name, prop)
+            if len(split) >= 2:
+                identifier_type = split[0]
 
-            if identifier_type == VariableType.SENSOR:
-                if len(split) == 5:
-                    name, action, prop = split[2:]
-                    return self.sensor_identifier(identifier, name, action, prop)
+                if identifier_type == VariableType.DEVICE:
+                    if len(split) == 3:
+                        name, prop = split[1:]
+                        return self.device_identifier(identifier, name, prop)
 
-            if identifier_type == 'message':
-                if len(split) == 3:
-                    prop = split[2]
-                    return self.message_identifier(identifier, prop)
+                if identifier_type == VariableType.SENSOR:
+                    if len(split) == 4:
+                        name, action, prop = split[1:]
+                        return self.sensor_identifier(identifier, name, action, prop)
 
-        raise InvalidIdentifierException(identifier)
+                if identifier_type == 'message':
+                    if len(split) == 2:
+                        prop = split[1]
+                        return self.message_identifier(identifier, prop)
+
+            raise InvalidIdentifierException(identifier)
+
+        return self.__expression(
+            expression, variable, self.constant, False,
+            Lexeme.VAR
+        )
 
     def device_identifier(self, identifier: str, name: str, prop: str):
         '''
         Return the value of the device identifier.
-        e.g. var.device.Light.state
+        e.g. {'var': 'device.Light.state'}
         '''
         variable = self.__variable_manager.get_device(name)
 
@@ -110,7 +117,7 @@ class ConditionParser:
     def sensor_identifier(self, identifier: str, name: str, action: str, prop: str):
         '''
         Return the value of the sensor identifier.
-        e.g. var.sensor.Hallway.motion.state
+        e.g. {'var': 'sensor.Hallway.motion.state'}
         '''
         variable = self.__variable_manager.get_sensor(name, action)
 
@@ -129,7 +136,7 @@ class ConditionParser:
     def message_identifier(self, identifier: str, prop: str):
         '''
         Return the value of the message identifier.
-        e.g. var.message.state
+        e.g. {'var': 'message.state'}
         '''
         if self.__message is None:
             raise InvalidIdentifierException(identifier)
@@ -143,11 +150,13 @@ class ConditionParser:
         '''
         Evaluate and return the primary expression in the parameter,
         either an identifier or a constant.
+        e.g.
+            {'var': 'device.Light.state'}
+            'a string'
+            12.34
+            true
         '''
-        if isinstance(value, str) and re.match(self.__IDENTIFIER_REGEX, value):
-            return self.identifier(value)
-
-        return self.constant(value)
+        return self.identifier(value)
 
     def unary_expression(self, expression: Expression):
         '''

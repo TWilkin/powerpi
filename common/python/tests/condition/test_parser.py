@@ -50,48 +50,44 @@ class TestConditionParser:
             subject.constant({'too-complex': True})
 
     @pytest.mark.parametrize('identifier,expected', [
-        ('var.device.socket.state', 'socket'),
-        ('var.device.light.brightness', 'light'),
-        ('var.sensor.office.temperature.value', 'office/temperature'),
-        ('var.sensor.office.temperature.unit', 'temperature/office'),
-        ('var.message.timestamp', 1337),
-        ('var.message.whatever', None),
+        ('device.socket.state', 'socket'),
+        ('device.light.brightness', 'light'),
+        ('sensor.office.temperature.value', 'office/temperature'),
+        ('sensor.office.temperature.unit', 'temperature/office'),
+        ('message.timestamp', 1337),
+        ('message.whatever', None),
     ])
     def test_identifier_success(self, mocker: MockerFixture, identifier: str, expected: str):
         message = {'timestamp': 1337}
 
         subject = self.create_subject(mocker, message)
 
-        result = subject.identifier(identifier)
+        result = subject.identifier({'var': identifier})
 
         assert result == expected
 
     @pytest.mark.parametrize('identifier', [
         'socket',
-        'var.socket',
         'device',
-        'var.device',
-        'var.device.socket',
-        'var.device.socket.whatever',
+        'device.socket',
+        'device.socket.whatever',
         'sensor',
-        'var.sensor',
-        'var.sensor.office',
-        'var.sensor.office.temperature',
-        'var.sensor.office.temperature.whatever',
+        'sensor.office',
+        'sensor.office.temperature',
+        'sensor.office.temperature.whatever',
         'message',
-        'var.message',
-        'var.message.timestamp'
+        'message.timestamp'
     ])
     def test_identifier_invalid(self, mocker: MockerFixture, identifier: str):
         subject = self.create_subject(mocker)
 
         with pytest.raises(InvalidIdentifierException):
-            subject.identifier(identifier)
+            subject.identifier({'var': identifier})
 
     @pytest.mark.parametrize('identifier', [
-        "var.sensor.office.temperature.state",
-        "var.sensor.office.temperature.value",
-        "var.sensor.office.temperature.unit"
+        'sensor.office.temperature.state',
+        'sensor.office.temperature.value',
+        'sensor.office.temperature.unit'
     ])
     def test_sensor_identifier_invalid(self, mocker: MockerFixture, identifier: str):
         subject = self.create_subject(mocker)
@@ -102,7 +98,13 @@ class TestConditionParser:
         self.variable_manager.get_sensor = lambda _, __: NoValueSensor
 
         with pytest.raises(InvalidIdentifierException):
-            subject.identifier(identifier)
+            subject.identifier({'var': identifier})
+
+    def test_identifier_fail(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        with pytest.raises(InvalidArgumentException):
+            subject.identifier({'var': ['message.timestamp', 'message.state']})
 
     @pytest.mark.parametrize('operand,expected', [
         (True, False),
@@ -160,8 +162,8 @@ class TestConditionParser:
         ([1, 1.0, 'a'], False),
         ([True, True, 1], True),
         ([None, None], True),
-        (['var.device.socket.state', 'socket'], True),
-        (['var.sensor.office.temperature.unit', 'temperature/office'], True),
+        ([{'var': 'device.socket.state'}, 'socket'], True),
+        ([{'var': 'sensor.office.temperature.unit'}, 'temperature/office'], True),
         ([{'not': False}, True], True),
         ([{'=': [1, 1.0]}, 1], True)
     ])
