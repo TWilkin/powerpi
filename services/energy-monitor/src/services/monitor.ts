@@ -1,7 +1,7 @@
 import { LoggerService, MqttService } from "@powerpi/common";
 import { Service } from "typedi";
 import Container from "../container";
-import N3rgyData from "../models/n3rgy";
+import N3rgyData, { N3rgyDataPoint } from "../models/n3rgy";
 import ConfigService from "./config";
 import N3rgyService, { EnergyType } from "./n3rgy";
 
@@ -18,12 +18,14 @@ export default class EnergyMonitorService {
     constructor(private n3rgy: N3rgyService, private config: ConfigService) {
         this.mqtt = Container.get(MqttService);
         this.logger = Container.get(LoggerService);
+
         this.lastUpdate = {};
     }
 
     public start() {
-        this.update("electricity");
-        this.update("gas");
+        this.update(EnergyType.Electricity);
+
+        this.update(EnergyType.Gas);
     }
 
     private async update(energyType: EnergyType) {
@@ -33,7 +35,7 @@ export default class EnergyMonitorService {
         this.logger.info("Retrieving", energyType, "usage between", start, "and", end);
 
         const generator = getData(
-            energyType === "electricity" ? this.n3rgy.getElecticity : this.n3rgy.getGas,
+            energyType === EnergyType.Electricity ? this.n3rgy.getElecticity : this.n3rgy.getGas,
             energyType,
             start,
             end,
@@ -51,7 +53,30 @@ export default class EnergyMonitorService {
 
             rows += result.value.values.length;
 
-            const lastDate = this.publishMessage(energyType, result.value);
+            // if we have outliers, remove them
+            const threshold = this.config.maximumThreshold;
+            if (threshold) {
+                const originalLength = result.value.values.length;
+
+                result.value.values = result.value.values.reduce((values, dataPoint) => {
+                    if (dataPoint.value < threshold) {
+                        values.push(dataPoint);
+                    }
+                    return values;
+                }, [] as N3rgyDataPoint[]);
+
+                const removed = originalLength - result.value.values.length;
+                if (removed > 0) {
+                    this.logger.warn(
+                        "Removed",
+                        removed,
+                        "values greater than threshold of",
+                        threshold
+                    );
+                }
+            }
+
+            const lastDate = await this.publishMessage(energyType, result.value);
             if (lastDate) {
                 this.lastUpdate[energyType] = lastDate;
                 this.logger.info("Received", energyType, "usage up to", lastDate);
@@ -98,7 +123,9 @@ export default class EnergyMonitorService {
         return this.config.retryInterval.next();
     }
 
-    private publishMessage(energyType: EnergyType, data: N3rgyData) {
+    private async publishMessage(energyType: EnergyType, data: N3rgyData) {
+        const writeDelay = this.config.messageWriteDelay;
+
         const messages = data.values
             .map((value) => ({
                 value: value.value,
@@ -108,11 +135,15 @@ export default class EnergyMonitorService {
             .sort((a, b) => a.timestamp - b.timestamp);
 
         let lastDate = 0;
-        messages.forEach((message) => {
+
+        for (const message of messages) {
             this.mqtt.publish("event", energyType, "usage", message);
 
             lastDate = message.timestamp;
-        });
+
+            // sleep for a moment so we don't overwhelm the queue
+            await new Promise((resolve) => setTimeout(resolve, writeDelay));
+        }
 
         this.logger.info("Published", messages.length, "message(s) to queue");
 

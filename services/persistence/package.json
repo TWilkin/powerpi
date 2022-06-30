@@ -15,7 +15,7 @@
         "start": "ts-node src/app.ts"
     },
     "dependencies": {
-        "@powerpi/common": "^0.0.7",
+        "@powerpi/common": "^0.0.8",
         "@types/bluebird": "^3.5.32",
         "@types/node": "^16.11.12",
         "@types/validator": "^13.1.0",
