@@ -32,6 +32,14 @@ get_poetry_version() {
     get_version $file $file_regex $version_regex
 }
 
+get_autoconf_version() {
+    local file=$1
+    local file_regex='AC_INIT(\[.*\],\s*\[.*\])'
+    local version_regex="AC_INIT\(\[.*\],\s*\[(.*)]\)"
+
+    get_version $file $file_regex $version_regex
+}
+
 tag_service() {
     local directory="$1"
     local name=$2
@@ -53,6 +61,13 @@ tag_service() {
         get_poetry_version $file
     fi
 
+    # check configure.ac
+    file="$path/configure.ac"
+    if [ -f "$file" ]
+    then
+        get_autoconf_version $file
+    fi
+
     if [ -z "$version" ]
     then
         echo "Could not find version for $name"
@@ -67,3 +82,5 @@ echo "Looking for changed versions"
 tag_service "controllers/energenie" "energenie-controller"
 
 tag_service "services/babel-fish" "babel-fish"
+
+tag_service "esp8266" "powerpi-sensor"
