@@ -4,6 +4,15 @@ void setupDHT22() {
     dht.begin();
 }
 
+void configureDHT22(ArduinoJson::JsonVariant config) {
+    Serial.println("DHT22:");
+
+    clacksConfig.dht22Skip = secondsToInterval(config["skip"] | DHT22_SKIP);
+    Serial.print("\tSkip: ");
+    Serial.print(clacksConfig.dht22Skip);
+    Serial.println(" intervals");
+}
+
 void pollDHT22() {
     // check if we've skipped enough counts
     if(dhtCounter++ >= clacksConfig.dht22Skip) {

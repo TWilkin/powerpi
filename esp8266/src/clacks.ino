@@ -37,13 +37,8 @@ void setupClacksConfig() {
         Serial.println();
         configureGeneral(POLL_DELAY);
 
-        #ifdef DHT22_SENSOR
-            configureDHT22(DHT22_SKIP);
-        #endif
-
-        #ifdef MOTION_SENSOR
-            configurePIR(PIR_INIT_DELAY, PIR_POST_DETECT_SKIP, PIR_POST_MOTION_SKIP);
-        #endif
+        StaticJsonDocument<0> doc;
+        configureSensors(doc["payload"]);
     #endif
 }
 
@@ -55,17 +50,7 @@ void configCallback(char* topic, byte* payload, unsigned int length) {
 
     configureGeneral(doc["payload"]["poll_delay"] | POLL_DELAY);
 
-    #ifdef DHT22_SENSOR
-        configureDHT22(doc["payload"]["dht22"]["skip"] | DHT22_SKIP);
-    #endif
-
-    #ifdef MOTION_SENSOR
-        configurePIR(
-            doc["payload"]["pir"]["init_delay"] | PIR_INIT_DELAY,
-            doc["payload"]["pir"]["post_detect_skip"] | PIR_POST_DETECT_SKIP,
-            doc["payload"]["pir"]["post_motion_skip"] | PIR_POST_MOTION_SKIP
-        );
-    #endif
+    configureSensors(doc["payload"]);
 
     // once the configuration is parsed, set the configuration received
     clacksConfig.received = true;
@@ -88,32 +73,4 @@ void configureGeneral(float pollDelay) {
     Serial.print("Poll Delay: ");
     Serial.print(clacksConfig.pollDelay);
     Serial.println("ms");
-}
-
-void configureDHT22(unsigned short skip) {
-    Serial.println("DHT22:");
-
-    clacksConfig.dht22Skip = secondsToInterval(skip);
-    Serial.print("\tSkip: ");
-    Serial.print(clacksConfig.dht22Skip);
-    Serial.println(" intervals");
-}
-
-void configurePIR(float initDelay, unsigned short postDetectSkip, unsigned short postMotionSkip) {
-    Serial.println("PIR:");
-        
-    clacksConfig.pirInitDelay = initDelay * 1000u;
-    Serial.print("\tInit Delay: ");
-    Serial.print(clacksConfig.pirInitDelay);
-    Serial.println("ms");
-
-    clacksConfig.pirPostDetectSkip = secondsToInterval(postDetectSkip);
-    Serial.print("\tPost Detect Skip: ");
-    Serial.print(clacksConfig.pirPostDetectSkip);
-    Serial.println(" intervals");
-
-    clacksConfig.pirPostMotionSkip = secondsToInterval(postMotionSkip);
-    Serial.print("\tPost Motion Skip: ");
-    Serial.print(clacksConfig.pirPostMotionSkip);
-    Serial.println(" intervals");
 }

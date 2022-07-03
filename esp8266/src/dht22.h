@@ -1,6 +1,7 @@
 #ifndef __INCLUDED_DHT22_H
 #define __INCLUDED_DHT22_H
 
+#include <ArduinoJson.h>
 #include <DHT.h>
 #include <limits.h>
 
@@ -9,6 +10,9 @@
 
 // the data pin for the DHT22 (GPIO4/D2)
 #define DHT22_PIN 4
+
+// the number of seconds between polls (5 minutes)
+#define DHT22_SKIP 5u * 60u
 
 // the message format
 #define DHT22_MESSAGE "\"value\":%.1f,\"unit\":\"%s\""
@@ -21,6 +25,7 @@ DHT dht = DHT(DHT22_PIN, DHT22);
 unsigned short dhtCounter = USHRT_MAX - 1;
 
 void setupDHT22();
+void configureDHT22(ArduinoJson::JsonVariant config);
 void pollDHT22();
 
 #endif

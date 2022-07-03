@@ -5,6 +5,7 @@
 
 #include "config.h"
 #include "mqtt.h"
+#include "sensors.h"
 
 #define CLACKS_MQTT_TOPIC "powerpi/config/%s/change"
 
@@ -14,20 +15,6 @@
 // general defaults
 // the delay between sensor polling (half a second)
 #define POLL_DELAY 0.5f
-
-// defaults for DHT22
-// the number of seconds between polls (5 minutes)
-#define DHT22_SKIP 5u * 60u
-
-// defaults for PIR
-// the number of seconds to allow the PIR to initialise (60s)
-#define PIR_INIT_DELAY 60u
-
-// the number of seconds to skip between a transition (5s)
-#define PIR_POST_DETECT_SKIP 5u
-
-// the number of seconds to skip after detection (20s)
-#define PIR_POST_MOTION_SKIP 20u
 
 struct ClacksConfig_s {
     // whether the configuration was received yet
@@ -59,9 +46,6 @@ ClacksConfig clacksConfig;
 void setupClacksConfig();
 void configCallback(char* topic, byte* payload, unsigned int length);
 unsigned short secondsToInterval(unsigned int seconds);
-
 void configureGeneral(float pollDelay);
-void configureDHT22(unsigned short skip);
-void configurePIR(float initDelay, unsigned short postDetectSkip, unsigned short postMotionSkip);
 
 #endif
