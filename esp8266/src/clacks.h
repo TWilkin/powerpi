@@ -44,6 +44,7 @@ typedef struct ClacksConfig_s ClacksConfig;
 ClacksConfig clacksConfig;
 
 void setupClacksConfig();
+void useDefaultConfig();
 void configCallback(char* topic, byte* payload, unsigned int length);
 unsigned short secondsToInterval(unsigned int seconds);
 void configureGeneral(float pollDelay);

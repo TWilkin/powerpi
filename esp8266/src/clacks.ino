@@ -26,6 +26,7 @@ void setupClacksConfig() {
             // terminate if we can't get the configuration after 60s
             if(counter++ >= CONFIG_WAIT) {
                 Serial.println("No configuration received, giving up...");
+                useDefaultConfig();
                 return;
             }
 
@@ -33,13 +34,19 @@ void setupClacksConfig() {
         }
         Serial.println();
     #else
-        // we have to intiailise with the default values
-        Serial.println();
-        configureGeneral(POLL_DELAY);
-
-        StaticJsonDocument<0> doc;
-        configureSensors(doc["payload"]);
+        useDefaultConfig();
     #endif
+}
+
+void useDefaultConfig() {
+    // we have to intiailise with the default values
+    Serial.println();
+    configureGeneral(POLL_DELAY);
+
+    StaticJsonDocument<0> doc;
+    configureSensors(doc["payload"]);
+
+    Serial.println();
 }
 
 void configCallback(char* topic, byte* payload, unsigned int length) {
