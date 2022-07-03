@@ -2,16 +2,21 @@
 #define __INCLUDED_CLACKS_H
 
 struct ClacksConfig_s {
+    // options for the DHT22 sensor
+    // the number of loop intervals to skip (5 minutes)
+    unsigned short dht22Skip;
+
     // options for the PIR sensor
     // the time to allow the PIR to initialise (60s)
-    int pirInitDelay;
+    unsigned short pirInitDelay;
 
     // the number of loop intervals to skip after detection (20s)
-    int pirPostMotionSkip;
+    unsigned short pirPostMotionSkip;
 
     // the number of loop intervals to skip between a transition (5s)
-    int pirPostDetectSkip;
+    unsigned short pirPostDetectSkip;
 } ClacksConfig_default = {
+    5 * 60 * 2,
     60 * 1000,
     20 * 2,
     5 * 2

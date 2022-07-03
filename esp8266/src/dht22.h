@@ -2,14 +2,13 @@
 #define __INCLUDED_DHT22_H
 
 #include <DHT.h>
+#include <limits.h>
 
+#include "clacks.h"
 #include "mqtt.h"
 
 // the data pin for the DHT22 (GPIO4/D2)
 #define DHT22_PIN 4
-
-// the number of loop intervals to skip (5 minutes)
-#define DHT22_SKIP 5 * 60 * 2
 
 // the message format
 #define DHT22_MESSAGE "\"value\":%.1f,\"unit\":\"%s\""
@@ -18,7 +17,8 @@
 DHT dht = DHT(DHT22_PIN, DHT22);
 
 // the counter for the skipped loops
-unsigned short dhtCounter = DHT22_SKIP;
+// initialised to a large value so the reading will happen at start
+unsigned short dhtCounter = USHRT_MAX - 1;
 
 void setupDHT22();
 void pollDHT22();

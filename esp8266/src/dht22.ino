@@ -6,7 +6,7 @@ void setupDHT22() {
 
 void pollDHT22() {
     // check if we've skipped enough counts
-    if(dhtCounter++ >= DHT22_SKIP) {
+    if(dhtCounter++ >= clacksConfig.dht22Skip) {
         dhtCounter = 0;
 
         float humidity = dht.readHumidity();
