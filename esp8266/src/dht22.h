@@ -14,9 +14,6 @@
 // the number of seconds between polls (5 minutes)
 #define DHT22_SKIP 5u * 60u
 
-// the message format
-#define DHT22_MESSAGE "\"value\":%.1f,\"unit\":\"%s\""
-
 // the sensor instance
 DHT dht = DHT(DHT22_PIN, DHT22);
 
@@ -27,5 +24,6 @@ unsigned short dhtCounter = USHRT_MAX - 1;
 void setupDHT22();
 void configureDHT22(ArduinoJson::JsonVariant config);
 void pollDHT22();
+double round(double value);
 
 #endif

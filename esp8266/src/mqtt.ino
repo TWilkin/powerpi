@@ -30,19 +30,20 @@ void connectMQTT(bool waitForNTP) {
     }
 }
 
-void publish(char* action, char* props) {
+void publish(char* action, ArduinoJson::JsonDocument& message) {
     // retrieve the timestamp
-    unsigned long timestamp = timeClient.getEpochTime();
+    unsigned long long timestamp = timeClient.getEpochTime();
 
     // generate the topic
     char topic[TOPIC_LEN];
     snprintf(topic, TOPIC_LEN, MQTT_TOPIC, LOCATION, action);
 
     // generate the message
-    char message[MESSAGE_LEN];
-    snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, timestamp, props);
+    message["timestamp"] = timestamp * 1000;
+    char messageStr[MESSAGE_LEN];
+    serializeJson(message, messageStr);
 
     // publish the message
     connectMQTT(true);
-    mqttClient.publish(topic, message, true);
+    mqttClient.publish(topic, messageStr, true);
 }

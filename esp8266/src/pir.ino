@@ -71,13 +71,13 @@ void handleMotionEvent(PIRState state) {
     // use the LED to indicate the current state (active LOW)
     digitalWrite(BUILTIN_LED, state == DETECTED ? LOW : HIGH);
 
-    char message[30];
+    StaticJsonDocument<96> message;
 
     if(state == DETECTED) {
-        snprintf(message, 30, PIR_MESSAGE, "detected");
+        message["state"] = "detected";
         Serial.print("d");
     } else {
-        snprintf(message, 30, PIR_MESSAGE, "undetected");
+        message["state"] = "undetected";
         Serial.print("u");
     }
 

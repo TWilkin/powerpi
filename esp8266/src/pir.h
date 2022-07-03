@@ -18,9 +18,6 @@
 // the number of seconds to skip after detection (20s)
 #define PIR_POST_MOTION_SKIP 20u
 
-// the message format
-#define PIR_MESSAGE "\"state\":\"%s\""
-
 // enum for the three possible motion states
 typedef enum PIRState {
     // when motion was previously detected
