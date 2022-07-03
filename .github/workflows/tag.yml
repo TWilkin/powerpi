@@ -1,0 +1,17 @@
+name: Tag Versions
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    types: [ "closed" ]
+
+jobs:
+  tag:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: tag
+      shell: bash
+      run: "${GITHUB_WORKSPACE}/.github/scripts/tag.sh"
+
