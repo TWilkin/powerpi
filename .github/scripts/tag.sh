@@ -92,6 +92,10 @@ tag_service() {
 git fetch origin
 git fetch --prune origin +refs/tags/*:refs/tags/*
 
+# ensure we can push
+git config user.name github-actions
+git config user.email github-actions@github.com
+
 echo "Looking for changed versions"
 
 tag_service "controllers/energenie" "energenie-controller"
