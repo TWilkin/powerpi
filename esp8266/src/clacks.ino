@@ -78,9 +78,9 @@ void configCallback(char* topic, byte* payload, unsigned int length) {
 }
 
 unsigned short secondsToInterval(unsigned int seconds) {
-    float intervalsPerSecond = 1000 / clacksConfig.pollDelay;
+    double intervalsPerSecond = 1000 / clacksConfig.pollDelay;
 
-    unsigned short intervals = ((float)seconds) * intervalsPerSecond;
+    unsigned short intervals = ((double)seconds) * intervalsPerSecond;
 
     if(intervals < 1) {
         intervals = 1;
