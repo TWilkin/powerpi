@@ -31,5 +31,5 @@ void loop() {
     pollSensors();
 
     // delay before checking the state again
-    delay(POLL_DELAY);
+    delay(clacksConfig.pollDelay);
 }
