@@ -2,7 +2,7 @@
 
 void setupPIR() {
     // wait for the PIR to initialise
-    delay(PIR_INIT_DELAY);
+    delay(clacksConfig.pirInitDelay);
 
     pirPreviousState = digitalRead(PIR_PIN) == HIGH ? DETECTED : UNDETECTED;
 }
@@ -30,7 +30,7 @@ void pollPIR() {
         if(state == LOW) {
             // we've stopped detecting motion, so switch to the CHECK state and wait
             pirPreviousState = CHECK;
-            pirCounterMax = PIR_POST_MOTION_SKIP;
+            pirCounterMax = clacksConfig.pirPostMotionSkip;
         }
     } else {
         // we are in CHECK state, should we publish undetected?
@@ -40,7 +40,7 @@ void pollPIR() {
             handleMotionEvent(UNDETECTED);
 
             // after HIGH to LOW we need to allow the sensor to reacclimatise
-            pirCounterMax = PIR_POST_DETECT_SKIP;
+            pirCounterMax = clacksConfig.pirPostDetectSkip;
         } else {
             // it's now HIGH again, so switch back to the detected state
             pirPreviousState = DETECTED;

@@ -1,6 +1,7 @@
 #ifndef __INCLUDED_POWERPI_SENSOR_H
 #define __INCLUDED_POWERPI_SENSOR_H
 
+#include "clacks.h"
 #include "config.h"
 #include "mqtt.h"
 #include "sensors.h"

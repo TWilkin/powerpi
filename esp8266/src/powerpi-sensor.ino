@@ -14,6 +14,9 @@ void setup() {
     connectWiFi();
     setupMQTT();
 
+    // retrieve the configuration from clacks
+    setupClacksConfig();
+
     // initialise the sensors
     setupSensors();
 }

@@ -1,19 +1,11 @@
 #ifndef __INCLUDED_PIR_H
 #define __INCLUDED_PIR_H
 
+#include "clacks.h"
 #include "mqtt.h"
 
 // the data pin for the PIR (GPIO5/D1)
 #define PIR_PIN 5
-
-// the time to allow the PIR to initialise (60s)
-#define PIR_INIT_DELAY 60 * 1000
-
-// the number of loop intervals to skip after detection (20s)
-#define PIR_POST_MOTION_SKIP 20 * 2
-
-// the number of loop intervals to skip between a transition (5s)
-#define PIR_POST_DETECT_SKIP 5 * 2
 
 // the message format
 #define PIR_MESSAGE "\"state\":\"%s\""
