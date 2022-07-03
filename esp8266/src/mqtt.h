@@ -1,6 +1,7 @@
 #ifndef __INCLUDED_MQTT_H
 #define __INCLUDED_MQTT_H
 
+#include <ArduinoJson.h>
 #include <NTPClient.h>
 #include <PubSubClient.h>
 #include <WiFiUdp.h>
@@ -13,9 +14,8 @@
 // the maximum length of the message
 #define MESSAGE_LEN 64
 
-// constants for the MQTT messages
+// the sensor MQTT topic
 #define MQTT_TOPIC "powerpi/event/%s/%s"
-#define MQTT_MESSAGE "{\"timestamp\":%ld000,%s}"
 
 // the WiFi UDF for connecting to NTP
 WiFiUDP espUdp;
@@ -30,7 +30,7 @@ WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
 void setupMQTT();
-void connectMQTT();
-void publish(char* action, char* props);
+void connectMQTT(bool waitForNTP);
+void publish(char* action, ArduinoJson::JsonDocument& message);
 
 #endif

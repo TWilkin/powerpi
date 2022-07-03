@@ -18,12 +18,22 @@ void setupSensors() {
     Serial.println("Ready");
 }
 
+void configureSensors(ArduinoJson::JsonVariant config) {
+    #ifdef MOTION_SENSOR
+        configurePIR(config["pir"]);
+    #endif
+
+    #ifdef DHT22_SENSOR
+        configureDHT22(config["dht22"]);
+    #endif
+}
+
 void pollSensors() {
     #ifdef MOTION_SENSOR
         pollPIR();
     #endif
     
-    #ifdef TEMPERATURE_SENSOR
+    #ifdef DHT22_SENSOR
         pollDHT22();
     #endif
 }

@@ -2,9 +2,28 @@
 
 void setupPIR() {
     // wait for the PIR to initialise
-    delay(PIR_INIT_DELAY);
+    delay(clacksConfig.pirInitDelay);
 
     pirPreviousState = digitalRead(PIR_PIN) == HIGH ? DETECTED : UNDETECTED;
+}
+
+void configurePIR(ArduinoJson::JsonVariant config) {
+    Serial.println("PIR:");
+        
+    clacksConfig.pirInitDelay = (config["init_delay"] | PIR_INIT_DELAY) * 1000u;
+    Serial.print("\tInit Delay: ");
+    Serial.print(clacksConfig.pirInitDelay);
+    Serial.println("ms");
+
+    clacksConfig.pirPostDetectSkip = secondsToInterval(config["post_detect_skip"] | PIR_POST_DETECT_SKIP);
+    Serial.print("\tPost Detect Skip: ");
+    Serial.print(clacksConfig.pirPostDetectSkip);
+    Serial.println(" intervals");
+
+    clacksConfig.pirPostMotionSkip = secondsToInterval(config["post_motion_skip"] | PIR_POST_MOTION_SKIP);
+    Serial.print("\tPost Motion Skip: ");
+    Serial.print(clacksConfig.pirPostMotionSkip);
+    Serial.println(" intervals");
 }
 
 void pollPIR() {
@@ -30,7 +49,7 @@ void pollPIR() {
         if(state == LOW) {
             // we've stopped detecting motion, so switch to the CHECK state and wait
             pirPreviousState = CHECK;
-            pirCounterMax = PIR_POST_MOTION_SKIP;
+            pirCounterMax = clacksConfig.pirPostMotionSkip;
         }
     } else {
         // we are in CHECK state, should we publish undetected?
@@ -40,7 +59,7 @@ void pollPIR() {
             handleMotionEvent(UNDETECTED);
 
             // after HIGH to LOW we need to allow the sensor to reacclimatise
-            pirCounterMax = PIR_POST_DETECT_SKIP;
+            pirCounterMax = clacksConfig.pirPostDetectSkip;
         } else {
             // it's now HIGH again, so switch back to the detected state
             pirPreviousState = DETECTED;
@@ -52,13 +71,13 @@ void handleMotionEvent(PIRState state) {
     // use the LED to indicate the current state (active LOW)
     digitalWrite(BUILTIN_LED, state == DETECTED ? LOW : HIGH);
 
-    char message[30];
+    StaticJsonDocument<96> message;
 
     if(state == DETECTED) {
-        snprintf(message, 30, PIR_MESSAGE, "detected");
+        message["state"] = "detected";
         Serial.print("d");
     } else {
-        snprintf(message, 30, PIR_MESSAGE, "undetected");
+        message["state"] = "undetected";
         Serial.print("u");
     }
 

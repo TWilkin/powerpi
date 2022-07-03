@@ -1,4 +1,4 @@
-AC_INIT([powerpi-sensor], [0.1.0])
+AC_INIT([powerpi-sensor], [0.2.0])
 
 dnl The arguments the user can override
 AC_ARG_VAR([location], [The location of this sensor])
@@ -22,6 +22,15 @@ m4_foreach_w(
         AC_ARG_VAR(var, [])
     ]
 )
+
+dnl Identify whether to use clacks-config
+AC_ARG_ENABLE(
+    [clacks],
+    [AS_HELP_STRING([--disable-clacks], [Disable getting configuration from the message queue])],
+    [enable_clacks=0],
+    [enable_clacks=1]
+)
+AC_SUBST([enable_clacks])
 
 dnl Identify whether to include the DHT22 sensor
 AC_ARG_ENABLE(

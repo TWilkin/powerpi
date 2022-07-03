@@ -24,8 +24,14 @@
 // the serial port configuration
 #define SERIAL_BAUD @serial_baud@
 
+// use clacks-config for configuration
+#if @enable_clacks@
+    #define CLACKS_CONFIG
+#endif
+
 // include the DHT22 (temperature/humidity) functionality
 #if @enable_dht22@
+    #define DHT22_SENSOR
     #define TEMPERATURE_SENSOR
     #define HUMIDITY_SENSOR
 #endif
