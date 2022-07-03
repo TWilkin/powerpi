@@ -10,6 +10,7 @@ SERIAL_PORT?=/dev/ttyUSB0
 
 # versions of libraries
 ADAFRUIT_SENSOR_VERSION=1.1.5
+ARDUINO_JSON_VERSION=v6.19.4
 DHT_SENSOR_VERSION=1.4.4
 NTPCLIENT_VERSION=3.2.1
 PUBSUBCLIENT_VERSION=v2.8
@@ -31,7 +32,11 @@ endef
 
 all: compile flash monitor
 
-common_libraries: $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION) $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION)
+common_libraries: $(LIB_DIR)/ArduinoJson-$(ARDUINO_JSON_VERSION) $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION) $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION)
+
+# Download Arduino JSON library
+$(LIB_DIR)/ArduinoJson-$(ARDUINO_JSON_VERSION):
+	$(call download_lib,ArduinoJson,$(ARDUINO_JSON_VERSION),bblanchon)
 
 # Download NTPClient library
 $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION):

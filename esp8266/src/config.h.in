@@ -26,6 +26,7 @@
 
 // include the DHT22 (temperature/humidity) functionality
 #if @enable_dht22@
+    #define DHT22_SENSOR
     #define TEMPERATURE_SENSOR
     #define HUMIDITY_SENSOR
 #endif

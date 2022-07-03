@@ -23,7 +23,7 @@ void pollSensors() {
         pollPIR();
     #endif
     
-    #ifdef TEMPERATURE_SENSOR
+    #ifdef DHT22_SENSOR
         pollDHT22();
     #endif
 }

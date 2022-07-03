@@ -32,9 +32,34 @@ void setupClacksConfig() {
 }
 
 void configCallback(char* topic, byte* payload, unsigned int length) {
-    for(int i = 0; i < length; i++) {
-        Serial.print((char)payload[i]);
-    }
+    StaticJsonDocument<64> doc;
+    deserializeJson(doc, payload);
+
+    Serial.println();
+
+    #ifdef DHT22_SENSOR
+        Serial.println("DHT22:");
+
+        clacksConfig.dht22Skip = doc["payload"]["dht22"]["skip"] | DHT22_SKIP;
+        Serial.print("\tSkip: ");
+        Serial.println(clacksConfig.dht22Skip);
+    #endif
+
+    #ifdef MOTION_SENSOR
+        Serial.println("PIR:");
+        
+        clacksConfig.pirInitDelay = doc["payload"]["pir"]["init_delay"] | PIR_INIT_DELAY;
+        Serial.print("\tInit Delay: ");
+        Serial.println(clacksConfig.pirInitDelay);
+
+        clacksConfig.pirPostDetectSkip = doc["payload"]["pir"]["post_delay_skip"] | PIR_POST_DETECT_SKIP;
+        Serial.print("\tPost Detect Skip: ");
+        Serial.println(clacksConfig.pirPostDetectSkip);
+
+        clacksConfig.pirPostMotionSkip = doc["payload"]["pir"]["post_motion_skip"] | PIR_POST_MOTION_SKIP;
+        Serial.print("\tPost Motion Skip: ");
+        Serial.println(clacksConfig.pirPostMotionSkip);
+    #endif
 
     // once the configuration is parsed, set the configuration received
     clacksConfig.received = true;
