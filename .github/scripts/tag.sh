@@ -4,18 +4,32 @@
 # git fetch origin
 # git fetch --prune origin +refs/tags/*:refs/tags/*
 
-get_node_version() {
+get_version() {
     local file=$1
+    local file_regex=$2
+    local version_regex=$3
 
-    local version_str=`grep '\"version\":\s*\".*\"' $file`
-
-    local regex="\"version\":\s*\"(.*)\""
-    if [[ $version_str =~ $regex ]]
+    local version_str=`grep $file_regex $file`
+    if [[ $version_str =~ $version_regex ]]
     then
         version="${BASH_REMATCH[1]}"
     fi
+}
 
-    return
+get_node_version() {
+    local file=$1
+    local file_regex='\"version\":\s*\".*\"'
+    local version_regex="\"version\":\s*\"(.*)\""
+    
+    get_version $file $file_regex $version_regex
+}
+
+get_poetry_version() {
+    local file=$1
+    local file_regex='version\s*=\s*\".*\"'
+    local version_regex="version\s*=\s*\"(.*)\""
+    
+    get_version $file $file_regex $version_regex
 }
 
 tag_service() {
@@ -32,6 +46,13 @@ tag_service() {
         get_node_version $file
     fi
 
+    # check pyproject.toml
+    file="$path/pyproject.toml"
+    if [ -f "$file" ]
+    then
+        get_poetry_version $file
+    fi
+
     if [ -z "$version" ]
     then
         echo "Could not find version for $name"
@@ -42,5 +63,7 @@ tag_service() {
 }
 
 echo "Looking for changed versions"
+
 tag_service "controllers/energenie" "energenie-controller"
+
 tag_service "services/babel-fish" "babel-fish"
