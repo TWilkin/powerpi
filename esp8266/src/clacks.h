@@ -41,11 +41,11 @@ struct ClacksConfig_s {
     unsigned short pirPostMotionSkip;
 } ClacksConfig_default = {
     false,
-    POLL_DELAY,
-    DHT22_SKIP,
-    PIR_INIT_DELAY,
-    PIR_POST_DETECT_SKIP,
-    PIR_POST_MOTION_SKIP,
+    POLL_DELAY * 1000,
+    DHT22_SKIP * 2,
+    PIR_INIT_DELAY * 1000,
+    PIR_POST_DETECT_SKIP * 2,
+    PIR_POST_MOTION_SKIP * 2,
 };
 
 typedef struct ClacksConfig_s ClacksConfig;

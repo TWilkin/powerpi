@@ -37,6 +37,8 @@ Next, we need to configure the compiler with the options we wish to include, we 
 -   **wifi_password** - The password for the aforementioned WiFi SSID.
 -   **serial_baud** - _optional_ - The baud rate to use when connecting to the serial monitor on the sensor, default is 115200.
 
+By default a sensor will retrieve configuration from [_clacks-config_](../services/clacks-config/README.md), but this can be disabled with the `--disable-clacks` option if you wish to always use the configuration options provided in the code.
+
 ```bash
 # Configure a motion sensor
 ./configure --enable-pir location=Hallway
@@ -46,14 +48,17 @@ Next, we need to configure the compiler with the options we wish to include, we 
 
 # Configure a combined sensor
 ./configure --enable-dht22 --enable-pir location=Office
+
+# Configure a sensor that doesn't get configuration from clacks-config
+./configure --enable-dht22 --disable-clacks location=Lounge
 ```
 
 Finally we can compile and deploy the code, connect your NodeMCU to your computer with the USB cable and execute the following:
 
 ```bash
-# Download Arduino libraries, 
-# compile the code, 
-# flash the ESP8266 
+# Download Arduino libraries,
+# compile the code,
+# flash the ESP8266
 # and start the serial monitor
 make
 ```

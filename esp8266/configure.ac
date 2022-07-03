@@ -23,6 +23,15 @@ m4_foreach_w(
     ]
 )
 
+dnl Identify whether to use clacks-config
+AC_ARG_ENABLE(
+    [clacks],
+    [AS_HELP_STRING([--disable-clacks], [Disable getting configuration from the message queue])],
+    [enable_clacks=0],
+    [enable_clacks=1]
+)
+AC_SUBST([enable_clacks])
+
 dnl Identify whether to include the DHT22 sensor
 AC_ARG_ENABLE(
     [dht22],

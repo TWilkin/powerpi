@@ -4,31 +4,34 @@ void setupClacksConfig() {
     // initialise the clacks config with the default values
     clacksConfig = ClacksConfig_default;
 
-    // generate the topic
-    char topic[TOPIC_LEN];
-    snprintf(topic, TOPIC_LEN, CLACKS_MQTT_TOPIC, HOSTNAME);
+    // if we are using clacks-config
+    #ifdef CLACKS_CONFIG
+        // generate the topic
+        char topic[TOPIC_LEN];
+        snprintf(topic, TOPIC_LEN, CLACKS_MQTT_TOPIC, HOSTNAME);
 
-    // subscribe to MQTT
-    mqttClient.setCallback(configCallback);
-    connectMQTT();
-    mqttClient.subscribe(topic);
+        // subscribe to MQTT
+        mqttClient.setCallback(configCallback);
+        connectMQTT();
+        mqttClient.subscribe(topic);
 
-    // wait for the message
-    Serial.println("Waiting for configuration");
-    int counter = 0;
-    while(!clacksConfig.received) {
-        Serial.print(".");
+        // wait for the message
+        Serial.println("Waiting for configuration");
+        int counter = 0;
+        while(!clacksConfig.received) {
+            Serial.print(".");
 
-        mqttClient.loop();
+            mqttClient.loop();
 
-        // terminate if we can't get the configuration after 60s
-        if(counter++ > 60 * 2) {
-            ESP.restart();
+            // terminate if we can't get the configuration after 60s
+            if(counter++ > 60 * 2) {
+                ESP.restart();
+            }
+
+            delay(500);
         }
-
-        delay(500);
-    }
-    Serial.println();
+        Serial.println();
+    #endif
 }
 
 void configCallback(char* topic, byte* payload, unsigned int length) {
