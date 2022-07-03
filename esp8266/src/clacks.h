@@ -8,6 +8,9 @@
 
 #define CLACKS_MQTT_TOPIC "powerpi/config/%s/change"
 
+// the number of seconds to wait before giving up waiting for the config (1 minute)
+#define CONFIG_WAIT 60 * 2
+
 // general defaults
 // the delay between sensor polling (half a second)
 #define POLL_DELAY 0.5

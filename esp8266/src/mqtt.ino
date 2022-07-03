@@ -9,7 +9,7 @@ void setupMQTT() {
     Serial.println(MQTT_PORT);
 }
 
-void connectMQTT() {
+void connectMQTT(bool waitForNTP) {
     // wait until it's connected
     while(!mqttClient.connected()) {
         if(!mqttClient.connect(HOSTNAME)) {
@@ -21,10 +21,12 @@ void connectMQTT() {
     }
 
     // check NTP update has run
-    while(timeClient.getEpochTime() < 24 * 60 * 60 * 1000) {
-        Serial.println("Waiting for NTP update");
+    if(waitForNTP) {
+        while(timeClient.getEpochTime() < 24 * 60 * 60 * 1000) {
+            Serial.println("Waiting for NTP update");
 
-        delay(500);
+            delay(500);
+        }
     }
 }
 
@@ -41,6 +43,6 @@ void publish(char* action, char* props) {
     snprintf(message, MESSAGE_LEN, MQTT_MESSAGE, timestamp, props);
 
     // publish the message
-    connectMQTT();
+    connectMQTT(true);
     mqttClient.publish(topic, message, true);
 }

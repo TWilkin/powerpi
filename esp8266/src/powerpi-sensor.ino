@@ -30,6 +30,11 @@ void loop() {
     // poll the sensors
     pollSensors();
 
+    #ifdef CLACKS_CONFIG
+        // check for messages if clacks is enabled
+        mqttClient.loop();
+    #endif
+
     // delay before checking the state again
     delay(clacksConfig.pollDelay);
 }

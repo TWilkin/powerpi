@@ -30,7 +30,7 @@ WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
 void setupMQTT();
-void connectMQTT();
+void connectMQTT(bool waitForNTP);
 void publish(char* action, char* props);
 
 #endif

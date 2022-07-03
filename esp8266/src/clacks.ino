@@ -12,7 +12,7 @@ void setupClacksConfig() {
 
         // subscribe to MQTT
         mqttClient.setCallback(configCallback);
-        connectMQTT();
+        connectMQTT(false);
         mqttClient.subscribe(topic);
 
         // wait for the message
@@ -24,8 +24,9 @@ void setupClacksConfig() {
             mqttClient.loop();
 
             // terminate if we can't get the configuration after 60s
-            if(counter++ > 60 * 2) {
-                ESP.restart();
+            if(counter++ >= CONFIG_WAIT) {
+                Serial.println("No configuration received, giving up...");
+                return;
             }
 
             delay(500);
