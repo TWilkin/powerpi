@@ -41,7 +41,7 @@ tag_service() {
     local name=$2
 
     version=
-    local path="${GITHUB_WORKSPACE}/../../$1"
+    local path="${GITHUB_WORKSPACE}/$1"
 
     # check package.json
     local file="$path/package.json"
