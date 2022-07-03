@@ -95,7 +95,18 @@ git fetch --prune origin +refs/tags/*:refs/tags/*
 echo "Looking for changed versions"
 
 tag_service "controllers/energenie" "energenie-controller"
-
-tag_service "services/babel-fish" "babel-fish"
+tag_service "controllers/harmony" "harmony-controller"
+tag_service "controllers/lifx" "lifx-controller"
+tag_service "controllers/macro" "macro-controller"
+tag_service "controllers/zigbee" "zigbee-controller"
 
 tag_service "esp8266" "powerpi-sensor"
+
+tag_service "services/babel-fish" "babel-fish"
+tag_service "services/clacks-config" "clacks-config"
+tag_service "services/deep-thought" "deep-thought"
+tag_service "services/energy-monitor" "energy-monitor"
+tag_service "services/freedns" "freedns"
+tag_service "services/light-fantastic" "light-fantastic"
+tag_service "services/nginx/ui" "ui"
+tag_service "services/persistence" "persistence"
