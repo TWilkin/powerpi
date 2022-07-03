@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# ensure we have all the existing tags
-# git fetch origin
-# git fetch --prune origin +refs/tags/*:refs/tags/*
-
 get_version() {
     local file=$1
     local file_regex=$2
@@ -74,8 +70,27 @@ tag_service() {
     else
         version="$name/v$version"
         echo "Found version $version"
+
+        # see if the tag exists
+        tag_exists=`git tag | grep $version | wc -l`
+        if [ $tag_exists -eq "0" ]
+        then
+            # create the tag
+            echo "Creating tag for $version"
+            message=`git show -s --format=%s`
+            git tag -a $version -m "$version: $message"
+            git push origin $version
+        else
+            echo "Tag for $version already exists"
+        fi
     fi
+
+    echo
 }
+
+# ensure we have all the existing tags
+git fetch origin
+git fetch --prune origin +refs/tags/*:refs/tags/*
 
 echo "Looking for changed versions"
 
