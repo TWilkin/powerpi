@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/clacks-config",
-    "version": "0.0.3",
+    "version": "0.1.0",
     "description": "PowerPi config retrieval from GitHub pushing to message queue",
     "private": true,
     "license": "GPL-3.0-only",
@@ -17,8 +17,8 @@
     "dependencies": {
         "@octokit/rest": "^18.12.0",
         "@powerpi/common": "^0.0.8",
-        "@types/node": "^16.11.4",
-        "ts-node": "^10.4.0",
+        "@types/node": "^18.0.1",
+        "ts-node": "^10.8.2",
         "typedi": "^0.10.0",
         "typescript": "^4.4.4"
     }
