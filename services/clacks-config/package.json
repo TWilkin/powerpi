@@ -18,8 +18,10 @@
         "@octokit/rest": "^18.12.0",
         "@powerpi/common": "^0.0.8",
         "@types/node": "^18.0.1",
+        "@types/underscore": "^1.11.4",
         "ts-node": "^10.8.2",
         "typedi": "^0.10.0",
-        "typescript": "^4.4.4"
+        "typescript": "^4.4.4",
+        "underscore": "^1.13.4"
     }
 }

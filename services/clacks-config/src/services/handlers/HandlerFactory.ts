@@ -1,5 +1,6 @@
 import { ConfigFileType } from "@powerpi/common";
-import Container, { Service } from "typedi";
+import { Service } from "typedi";
+import Container from "../../container";
 import DeviceHandler from "./DeviceHandler";
 import IHandler from "./IHandler";
 

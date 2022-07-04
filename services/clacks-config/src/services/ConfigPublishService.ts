@@ -15,7 +15,7 @@ export default class ConfigPublishService {
         this.logger = Container.get(LoggerService);
     }
 
-    public publishConfigChange(fileType: ConfigFileType, file: object, checksum: string) {
+    public publishConfigChange(fileType: ConfigFileType | string, file: object, checksum: string) {
         const message = {
             payload: file,
             checksum,
