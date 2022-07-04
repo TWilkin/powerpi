@@ -1,10 +1,16 @@
 import { ConfigFileType } from "@powerpi/common";
-import { Service } from "typedi";
-import Handler from "./IHandler";
+import Container, { Service } from "typedi";
+import DeviceHandler from "./DeviceHandler";
+import IHandler from "./IHandler";
 
 @Service()
 export default class HandlerFactory {
-    build(type: ConfigFileType): Handler | undefined {
+    build<TConfigFile>(type: ConfigFileType): IHandler<TConfigFile> | undefined {
+        switch (type) {
+            case ConfigFileType.Devices:
+                return Container.get(DeviceHandler);
+        }
+
         return undefined;
     }
 }
