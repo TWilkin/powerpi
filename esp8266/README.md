@@ -62,3 +62,9 @@ Finally we can compile and deploy the code, connect your NodeMCU to your compute
 # and start the serial monitor
 make
 ```
+
+### Configuration Files
+
+This sensor uses a configuration file (if the `--disable-clacks` option is not included), which is described on the following [_clacks-config_](../services/clacks-config/README.md) page.
+
+-   [devices.json](../services/clacks-config/README.md#devicesjson)
