@@ -1,6 +1,6 @@
 import { PowerPiService } from "@powerpi/common";
 import Container from "./container";
-import GitHubConfigService from "./services/githubservice";
+import GitHubConfigService from "./services/GitHubConfigService";
 
 function start() {
     const github = Container.get(GitHubConfigService);

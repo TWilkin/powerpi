@@ -65,6 +65,13 @@ The _devices.json_ file contains the list of devices that are added to PowerPi. 
             "location": "Hallway",
             "entity": "electricity",
             "action": "usage"
+        },
+        // example of an ESP8266 sensor which clacks-config will also generate a config event for
+        // this will cause the sensor to poll for changes every 5 minutes instead of the default
+        {
+            "type": "esp8266",
+            "name": "HallwaySensor",
+            "poll_delay": 300
         }
     ]
 }

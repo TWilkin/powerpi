@@ -1,21 +1,22 @@
 import { Octokit } from "@octokit/rest";
-import { ConfigFileType, LoggerService, MqttService } from "@powerpi/common";
+import { ConfigFileType, LoggerService } from "@powerpi/common";
 import path from "path";
 import { Service } from "typedi";
 import Container from "../container";
 import ConfigService from "./config";
+import ConfigPublishService from "./ConfigPublishService";
+import HandlerFactory from "./handlers/HandlerFactory";
 
 @Service()
 export default class GitHubConfigService {
-    private mqtt: MqttService;
+    private publishService: ConfigPublishService;
     private logger: LoggerService;
-
-    private static readonly topicType = "config";
-    private static readonly topicAction = "change";
+    private handlerFactory: HandlerFactory;
 
     constructor(private config: ConfigService) {
-        this.mqtt = Container.get(MqttService);
+        this.publishService = Container.get(ConfigPublishService);
         this.logger = Container.get(LoggerService);
+        this.handlerFactory = Container.get(HandlerFactory);
     }
 
     public async start() {
@@ -42,7 +43,11 @@ export default class GitHubConfigService {
                     continue;
                 }
 
-                this.publishConfigChange(type, file.content, file.checksum);
+                this.publishService.publishConfigChange(type, file.content, file.checksum);
+
+                // pass to a handler for additional processing (if any)
+                const handler = this.handlerFactory.build(type);
+                handler?.handle(file.content);
             }
         }
     }
@@ -94,21 +99,5 @@ export default class GitHubConfigService {
         }
 
         return undefined;
-    }
-
-    private publishConfigChange(fileType: ConfigFileType, file: object, checksum: string) {
-        const message = {
-            payload: file,
-            checksum,
-        };
-
-        this.mqtt.publish(
-            GitHubConfigService.topicType,
-            fileType,
-            GitHubConfigService.topicAction,
-            message
-        );
-
-        this.logger.info("Published updated", fileType, "config");
     }
 }
