@@ -24,7 +24,7 @@ void setupClacksConfig() {
             mqttClient.loop();
 
             // terminate if we can't get the configuration after 60s
-            if(counter++ >= CONFIG_WAIT) {
+            if(++counter >= CONFIG_WAIT) {
                 Serial.println("No configuration received, giving up...");
                 useDefaultConfig();
                 return;

@@ -29,7 +29,7 @@ void configurePIR(ArduinoJson::JsonVariant config) {
 void pollPIR() {
     // check if we're skipping
     if(pirCounterMax > 0) {
-        if(pirCounter++ >= pirCounterMax) {
+        if(++pirCounter >= pirCounterMax) {
             pirCounter = 0;
             pirCounterMax = 0;
         } else {

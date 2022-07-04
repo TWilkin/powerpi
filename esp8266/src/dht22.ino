@@ -15,7 +15,7 @@ void configureDHT22(ArduinoJson::JsonVariant config) {
 
 void pollDHT22() {
     // check if we've skipped enough counts
-    if(dhtCounter++ >= clacksConfig.dht22Skip) {
+    if(++dhtCounter >= clacksConfig.dht22Skip) {
         dhtCounter = 0;
 
         float humidity = dht.readHumidity();
