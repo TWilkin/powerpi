@@ -4,11 +4,13 @@ import path from "path";
 import { Service } from "typedi";
 import Container from "../container";
 import ConfigService from "./config";
+import HandlerFactory from "./handlers/HandlerFactory";
 
 @Service()
 export default class GitHubConfigService {
     private mqtt: MqttService;
     private logger: LoggerService;
+    private handlerFactory: HandlerFactory;
 
     private static readonly topicType = "config";
     private static readonly topicAction = "change";
@@ -16,6 +18,7 @@ export default class GitHubConfigService {
     constructor(private config: ConfigService) {
         this.mqtt = Container.get(MqttService);
         this.logger = Container.get(LoggerService);
+        this.handlerFactory = Container.get(HandlerFactory);
     }
 
     public async start() {
@@ -43,6 +46,10 @@ export default class GitHubConfigService {
                 }
 
                 this.publishConfigChange(type, file.content, file.checksum);
+
+                // pass to a handler for additional processing (if any)
+                const handler = this.handlerFactory.build(type);
+                handler?.handle(file.content);
             }
         }
     }
@@ -102,12 +109,12 @@ export default class GitHubConfigService {
             checksum,
         };
 
-        this.mqtt.publish(
+        /*this.mqtt.publish(
             GitHubConfigService.topicType,
             fileType,
             GitHubConfigService.topicAction,
             message
-        );
+        );*/
 
         this.logger.info("Published updated", fileType, "config");
     }
