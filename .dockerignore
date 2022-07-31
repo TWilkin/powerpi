@@ -3,6 +3,7 @@
 **/__pycache__/
 **/esp8266/
 **/build/
+**/db/
 **/dist/
 **/node_modules/
 **/platforms/
