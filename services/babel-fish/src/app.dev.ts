@@ -11,4 +11,4 @@ app.configure({
   ],
 });
 
-export * from './server.express';
+export * from './index';
