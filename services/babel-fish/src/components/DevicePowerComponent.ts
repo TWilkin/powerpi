@@ -7,6 +7,7 @@ export default class DevicePowerComponent extends BaseComponent {
     START() {
         const deviceService = Container.get(DeviceService);
         const devices = deviceService.devices?.map(device => ({
+            id: device.name,
             value: deviceService.cleanString(device.displayName) ?? deviceService.cleanString(device.name)!
         }));
 
