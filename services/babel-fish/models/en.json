@@ -1,18 +1,31 @@
 {
-  "invocation": "my test app",
-  "version": "4.0",
+  "invocation": "power pie",
+  "version": "1.0.0",
   "intents": {
-    "YesIntent": {
+    "DevicePowerIntent": {
       "phrases": [
-        "yes",
-        "yes please",
-        "sure"
-      ]
-    },
-    "NoIntent": {
-      "phrases": [
-        "no",
-        "no thanks"
+        "turn light {status}"
+      ],
+      "entities": {
+        "status": {
+          "type": "DeviceStatusInputType"
+        }
+      }
+    }
+  },
+  "entityTypes": {
+    "DeviceStatusInputType": {
+      "values": [
+        {
+          "id": "on",
+          "value": "on",
+          "synonyms": ["activate", "enable", "start"]
+        },
+        {
+            "id": "off",
+            "value": "off",
+            "synonyms": ["deactivate", "terminate", "disable", "stop"]
+        }
       ]
     }
   }
