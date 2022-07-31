@@ -13,8 +13,10 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
+    "build:alexa": "jovo build:platform alexa",
     "test": "jest",
     "tsc": "tsc",
+    "clean": "rm -rf dist build",
     "start:dev": "tsc-watch --onSuccess \"node ./dist/src/app.dev.js --jovo-webhook\" --noClear",
     "bundle": "esbuild --bundle --outfile=bundle/index.js --sourcemap --minify --keep-names --platform=node --target=node14 --format=cjs  --external:aws-sdk --external:@oclif/* --external:@jovotech/cli*",
     "prebundle": "rimraf bundle",
