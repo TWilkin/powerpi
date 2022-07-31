@@ -1,20 +1,45 @@
 {
   "invocation": "power pie",
-  "version": "1.0.0",
+  "version": "4.0",
   "intents": {
     "DevicePowerIntent": {
       "phrases": [
-        "turn light {status}"
+        "turn {deviceName} {status}",
+        "turn {deviceName} {deviceName} {status}",
+        "turn {deviceName} {deviceName} {deviceName} {status}",
+        "turn {deviceName} {deviceName} {deviceName} {deviceName} {status}",
+        "set {deviceName} to {status}",
+        "set {deviceName} {deviceName} to {status}",
+        "set {deviceName} {deviceName} {deviceName} to {status}",
+        "set {deviceName} {deviceName} {deviceName} {deviceName} to {status}",
+        "switch {deviceName} {status}",
+        "switch {deviceName} {deviceName} {status}",
+        "switch {deviceName} {deviceName} {deviceName} {status}",
+        "switch {deviceName} {deviceName} {deviceName} {deviceName} {status}",
+        "trigger {deviceName} {status}",
+        "trigger {deviceName} {deviceName} {status}",
+        "trigger {deviceName} {deviceName} {deviceName} {status}",
+        "trigger {deviceName} {deviceName} {deviceName} {deviceName} {status}",
+        "{status} {deviceName}",
+        "{status} {deviceName} {deviceName} ",
+        "{status} {deviceName} {deviceName} {deviceName}",
+        "{status} {deviceName} {deviceName} {deviceName} {deviceName}"
       ],
       "entities": {
+        "deviceName": {
+          "type": "DeviceType"
+        },
         "status": {
-          "type": "DeviceStatusInputType"
+          "type": "DeviceStatusType"
         }
       }
     }
   },
   "entityTypes": {
-    "DeviceStatusInputType": {
+    "DeviceType": {
+      "values": []
+    },
+    "DeviceStatusType": {
       "values": [
         {
           "id": "on",

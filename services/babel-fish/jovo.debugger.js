@@ -8,7 +8,23 @@ const debuggerConfig = new DebuggerConfig({
       input: {
         type: 'LAUNCH',
       },
-    }
+    },
+    {
+      label: 'lights on',
+      input: {
+        intent: 'DevicePowerIntent',
+        entities: {
+          deviceName: {
+            id: "lights",
+            value: "lights"
+          },
+          status: {
+            id: "on",
+            value: "on"
+          }
+        }
+      },
+    },
   ],
 });
 
