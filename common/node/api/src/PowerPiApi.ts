@@ -14,7 +14,7 @@ type ErrorHandler = (error: { response: { status: number } }) => void;
 
 export default class PowerPiApi {
     private readonly instance: AxiosInstance;
-    private socket: Socket | undefined;
+    private socket: typeof Socket | undefined;
     private listeners: {
         device: DeviceStatusCallback[];
         sensor: SensorStatusCallback[];
