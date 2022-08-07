@@ -4,7 +4,7 @@ import DevicePowerComponent from './DevicePowerComponent';
 @Global()
 @Component()
 export default class GlobalComponent extends BaseComponent {
-  LAUNCH() {
-    return this.$redirect(DevicePowerComponent);
-  }
+    LAUNCH() {
+        return this.$redirect(DevicePowerComponent);
+    }
 }
