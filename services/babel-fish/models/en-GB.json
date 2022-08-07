@@ -37,7 +37,13 @@
   },
   "entityTypes": {
     "DeviceType": {
-      "values": []
+      "values": [
+        {
+          "id": "light",
+          "value": "light",
+          "synonyms": ["lights"]
+        }
+      ]
     },
     "DeviceStatusType": {
       "values": [
@@ -53,5 +59,25 @@
         }
       ]
     }
-  }
+  },
+  "alexa": {
+    "interactionModel": {
+        "languageModel": {
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                }
+            ]
+        }
+    }
+}
 }

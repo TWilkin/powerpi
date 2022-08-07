@@ -1,0 +1,34 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-GB": {
+          "summary": "PowerPi Alexa Integration",
+          "examplePhrases": [
+            "Alexa start PowerPi"
+          ],
+          "keywords": [
+            "powerpi"
+          ],
+          "name": "PowerPI babel-fish",
+          "description": "PowerPi Alexa Integration",
+          "smallIconUri": "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15/svgs/solid/plug.svg",
+          "largeconUri": "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15/svgs/solid/plug.svg"
+        }
+      }
+    },
+    "privacyAndCompliance": {
+      "locales": {
+        "en-GB": {}
+      }
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "sslCertificateType": "Wildcard",
+          "uri": "https://webhook.jovo.cloud/96a79c02-45e9-4d98-a843-7fcd69eb2ec1"
+        }
+      }
+    }
+  }
+}
