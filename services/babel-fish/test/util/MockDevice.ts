@@ -15,7 +15,5 @@ export default function mockDevice(devices: IDevice[]) {
         })
     );
 
-    console.log(tempDir);
-
     process.env["DEVICES_FILE"] = tempDir;
 }

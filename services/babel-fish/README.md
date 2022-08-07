@@ -62,8 +62,9 @@ yarn build:babel-fish:alexa
 
 This service expects the following environment variables to be set before it will start successfully. When using docker these are already configured in the _docker-compose_ file, however when running locally for testing we need to define these:
 
+-   **API_ADDRESS** - The URI to the _deep-thought_ instance to use, (default _http://deep-thought:3000/api_)
 -   **JOVO_PORT** - The port the service runs on (default _3000_).
--   **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
+-   **MQTT_ADDRESS** - The URI to the MQTT instance to use, (default _mqtt://POWERPI_URL:1883_)
 
 ## Testing
 

@@ -1,6 +1,7 @@
 import { InputType, TestSuite } from "@jovotech/framework";
 import { AlexaPlatform, AlexaUser } from "@jovotech/platform-alexa";
 import app from "../../src/app";
+import ApiService from "../../src/services/ApiService";
 import DeviceService from "../../src/services/DeviceService";
 import mockDevice from "../util/MockDevice";
 
@@ -69,6 +70,8 @@ describe("Alexa", () => {
             type: "lights",
             displayName: "lights",
         });
+
+        jest.spyOn(ApiService.prototype, "makeRequest").mockResolvedValue(false);
 
         await testSuite.run({ type: InputType.Launch });
 

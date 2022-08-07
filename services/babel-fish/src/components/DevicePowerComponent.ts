@@ -1,6 +1,7 @@
 import { BaseComponent, Component, Intents } from "@jovotech/framework";
-import { DeviceState, PowerPiApi } from "@powerpi/api";
+import { DeviceState } from "@powerpi/api";
 import Container from "../container";
+import ApiService from "../services/ApiService";
 import DeviceService from "../services/DeviceService";
 import ErrorComponent from "./ErrorComponent";
 
@@ -40,7 +41,9 @@ export default class DevicePowerComponent extends BaseComponent {
         const status = this.$entities.status?.id;
 
         if (device && status) {
-            const success = await makeRequest(this.$alexa?.$user.accessToken, (api) =>
+            const apiService = Container.get(ApiService);
+
+            const success = await apiService.makeRequest(this.$alexa?.$user.accessToken, (api) =>
                 api.postMessage(device.name, status as DeviceState)
             );
 
@@ -64,22 +67,4 @@ export default class DevicePowerComponent extends BaseComponent {
     UNHANDLED() {
         return this.START();
     }
-}
-
-async function makeRequest(
-    token: string | undefined,
-    action: (api: PowerPiApi) => Promise<unknown>
-) {
-    const api = new PowerPiApi("http://deep-thought:3000/api");
-
-    if (token) {
-        api.setCredentials(token);
-    }
-
-    let success = true;
-    api.setErrorHandler(() => (success = false));
-
-    await action(api);
-
-    return success;
 }
