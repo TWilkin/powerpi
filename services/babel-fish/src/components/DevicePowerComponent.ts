@@ -1,16 +1,10 @@
 import { BaseComponent, Component, Intents } from "@jovotech/framework";
 import Container from "../container";
 import DeviceService from "../services/DeviceService";
-import LoginComponent from "./LoginComponent";
 
 @Component()
 export default class DevicePowerComponent extends BaseComponent {
     START() {
-        // check for login
-        if(!this.$alexa?.$user.accessToken) {
-            return this.$redirect(LoginComponent);
-        }
-
         const deviceService = Container.get(DeviceService);
         const devices = deviceService.devices?.map(device => ({
             id: device.name,
