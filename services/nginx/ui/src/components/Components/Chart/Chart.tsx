@@ -7,18 +7,19 @@ import {
     LineElement,
     PointElement,
     TimeSeriesScale,
-    Tooltip,
+    Tooltip
 } from "chart.js";
 import "chartjs-adapter-luxon";
+import { useMemo } from "react";
 import { Line } from "react-chartjs-2";
+import { chain as _ } from "underscore";
+import useColourMode from "../../../hooks/colour";
 import { useGetHistoryRange } from "../../../hooks/history";
 import useOrientation from "../../../hooks/orientation";
+import scss from "../../../styles/exports.module.scss";
+import { getFormattedUnit, getFormattedValue } from "../FormattedValue";
 import Loading from "../Loading";
 import styles from "./Chart.module.scss";
-import scss from "../../../styles/exports.module.scss";
-import useColourMode from "../../../hooks/colour";
-import { useMemo } from "react";
-import { getFormattedUnit, getFormattedValue } from "../FormattedValue";
 
 ChartJS.register(
     CategoryScale,
@@ -89,7 +90,7 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
             }
         }
 
-        return datasets;
+        return _(datasets).sortBy(dataset => dataset.entity).sortBy(dataset => dataset.action).value();
     }, []);
 
     // set the chart colours in light/dark mode
