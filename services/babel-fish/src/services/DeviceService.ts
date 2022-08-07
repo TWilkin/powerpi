@@ -1,5 +1,5 @@
 import { Service } from "typedi";
-import ConfigService from "./config";
+import ConfigService from "./ConfigService";
 
 @Service()
 export default class DeviceService {
@@ -19,8 +19,8 @@ export default class DeviceService {
         const deviceName = this.cleanString(name);
 
         return this.devices.find(device => 
-            this.cleanString(device.displayName) === name
-                || this.cleanString(device.name) === name
+            this.cleanString(device.displayName) === deviceName
+                || this.cleanString(device.name) === deviceName
         );
     }
 

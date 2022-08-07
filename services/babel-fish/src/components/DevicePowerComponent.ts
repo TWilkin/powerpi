@@ -1,6 +1,6 @@
 import { BaseComponent, Component, Intents } from "@jovotech/framework";
 import Container from "../container";
-import DeviceService from "../services/device";
+import DeviceService from "../services/DeviceService";
 
 @Component()
 export default class DevicePowerComponent extends BaseComponent {

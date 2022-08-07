@@ -1,8 +1,8 @@
 import Container from "./container";
-import ConfigService from "./services/config";
 import { LoggerService, PowerPiService } from "@powerpi/common";
 import app from "./app";
 import { ExpressJs, Request, Response, Webhook } from '@jovotech/server-express';
+import ConfigService from "./services/ConfigService";
 
 async function start() {
     const config = Container.get(ConfigService);
@@ -19,7 +19,7 @@ async function start() {
         response.json(result);
     });
 
-    Webhook.post('/webhook', async (request: Request, response: Response) => {
+    Webhook.post('/webhook_alexa', async (request: Request, response: Response) => {
         await app.handle(new ExpressJs(request, response));
     });
 }
