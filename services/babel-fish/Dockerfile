@@ -6,7 +6,7 @@ WORKDIR /home/node/app
 RUN mkdir -p /home/node/app/common/node/api
 COPY package.json yarn.lock tsconfig.json ./
 COPY common/node/api/package.json ./common/node/api/
-RUN yarn workspace @powerpi/api install
+RUN yarn workspace @powerpi/api install --frozen-lockfile
 COPY common/node/api ./common/node/api/
 RUN yarn workspace @powerpi/api build
 
@@ -18,7 +18,7 @@ WORKDIR /home/node/app
 RUN mkdir -p /home/node/app/common/node/common
 COPY package.json yarn.lock tsconfig.json ./
 COPY common/node/common/package.json ./common/node/common/
-RUN yarn workspace @powerpi/common install
+RUN yarn workspace @powerpi/common install --frozen-lockfile
 COPY common/node/common ./common/node/common/
 RUN yarn workspace @powerpi/common build
 
@@ -34,7 +34,7 @@ COPY --from=build-common-image /home/node/app/common/node/common/dist/ ./common/
 RUN mkdir -p /home/node/app/services/babel-fish
 COPY package.json yarn.lock tsconfig.json ./
 COPY services/babel-fish/package.json ./services/babel-fish/
-RUN yarn workspace @powerpi/babel-fish install
+RUN yarn workspace @powerpi/babel-fish install --frozen-lockfile
 COPY services/babel-fish ./services/babel-fish/
 RUN yarn workspace @powerpi/babel-fish build
 
@@ -60,7 +60,7 @@ COPY --from=build-common-image --chown=node:node /home/node/app/common/node/comm
 
 # install the dependencies
 COPY --from=build-babel-fish-image --chown=node:node /home/node/app/services/babel-fish/package.json ./services/babel-fish/
-RUN yarn workspace @powerpi/babel-fish install --production
+RUN yarn workspace @powerpi/babel-fish install --production --frozen-lockfile
 
 # copy the built application
 COPY --from=build-babel-fish-image --chown=node:node /home/node/app/services/babel-fish/dist/ ./services/babel-fish/dist/

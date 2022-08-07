@@ -1979,11 +1979,6 @@
     "@types/mime" "^1"
     "@types/node" "*"
 
-"@types/socket.io-client@^1.4.36":
-  version "1.4.36"
-  resolved "https://registry.npmjs.org/@types/socket.io-client/-/socket.io-client-1.4.36.tgz"
-  integrity sha512-ZJWjtFBeBy1kRSYpVbeGYTElf6BqPQUkXDlHHD4k/42byCN5Rh027f4yARHCink9sKAkbtGZXEAmR0ZCnc2/Ag==
-
 "@types/sockjs@^0.3.33":
   version "0.3.33"
   resolved "https://registry.npmjs.org/@types/sockjs/-/sockjs-0.3.33.tgz"

@@ -42,7 +42,6 @@
     "@jovotech/filebuilder": "^0.0.1",
     "@types/express": "^4.17.11",
     "@types/jest": "^27.0.2",
-    "@types/socket.io-client": "^1.4.36",
     "bestzip": "^2.1.7",
     "esbuild": "^0.14.2",
     "jest": "^27.3.1",
