@@ -1,33 +1,38 @@
-FROM amd64/node:16.13.1-alpine3.12 AS build-image
-LABEL description="Compile PowerPi UI"
+FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-api-image
+LABEL description="Node.js builder for API library"
 
-# overcome network error when downloading libraries
-RUN yarn config set network-timeout 600000 -g
-
-# install curl and download the letsencrypt configuration files
-WORKDIR /usr/src/app
-RUN apk add curl
-RUN curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > options-ssl-nginx.conf
-RUN curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > ssl-dhparams.pem
-
-# install the libraries
+# install the API library
 WORKDIR /home/node/app
-RUN mkdir -p ./common/node/api ./services/nginx/ui
+RUN mkdir -p /home/node/app/common/node/api
 COPY package.json yarn.lock tsconfig.json ./
 COPY common/node/api/package.json ./common/node/api/
 RUN yarn workspace @powerpi/api install --frozen-lockfile
 COPY common/node/api ./common/node/api/
 RUN yarn workspace @powerpi/api build
 
-# install the dependencies
-COPY services/nginx/ui/package.json ./services/nginx/ui
-RUN yarn workspace @powerpi/ui install --frozen-lockfile
+FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-ui-image
+LABEL description="Node.js builder for UI"
 
-# transpile the application
+# install the UI
+WORKDIR /home/node/app
+COPY --from=build-api-image /home/node/app/common/node/api/package.json ./common/node/api/
+COPY --from=build-api-image /home/node/app/common/node/api/dist/ ./common/node/api/dist/
+RUN mkdir -p /home/node/app/services/nginx/ui
+COPY package.json yarn.lock tsconfig.json ./
+COPY services/nginx/ui/package.json ./services/nginx/ui/
+RUN yarn workspace @powerpi/ui install --frozen-lockfile
 COPY services/nginx/ui ./services/nginx/ui/
 RUN yarn workspace @powerpi/ui build
 
-FROM nginx:1.18.0-alpine AS run-image
+FROM --platform=$BUILDPLATFORM curlimages/curl:7.84.0 AS curl-image
+LABEL description="Download Let's Encrypt configuration"
+
+# download the Let's Encrypt configuration files
+WORKDIR /usr/src/app
+RUN curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > options-ssl-nginx.conf
+RUN curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > ssl-dhparams.pem
+
+FROM nginx:1.23.1-alpine AS run-image
 LABEL description="PowerPi NGINX"
 
 # use non-root user
@@ -42,13 +47,13 @@ USER nginx
 
 EXPOSE 8080 8443
 
-# copy the letsencrypt configuration files
+# copy the Let's Encrypt configuration files
 WORKDIR /etc/nginx/
-COPY --from=build-image --chown=nginx:nginx /usr/src/app/options-ssl-nginx.conf ./
-COPY --from=build-image --chown=nginx:nginx /usr/src/app/ssl-dhparams.pem ./
+COPY --from=curl-image --chown=nginx:nginx /usr/src/app/options-ssl-nginx.conf ./
+COPY --from=curl-image --chown=nginx:nginx /usr/src/app/ssl-dhparams.pem ./
 
 # copy the built UI application into the NGINX container
 WORKDIR /var/www/powerpi
 COPY --chown=nginx:nginx LICENSE ./
-COPY --from=build-image --chown=nginx:nginx /home/node/app/services/nginx/ui/public/ ./
-COPY --from=build-image --chown=nginx:nginx /home/node/app/services/nginx/ui/dist/ ./
+COPY --from=build-ui-image --chown=nginx:nginx /home/node/app/services/nginx/ui/public/ ./
+COPY --from=build-ui-image --chown=nginx:nginx /home/node/app/services/nginx/ui/dist/ ./
