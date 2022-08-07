@@ -1,83 +1,83 @@
 {
-  "invocation": "power pie",
-  "version": "4.0",
-  "intents": {
-    "DevicePowerIntent": {
-      "phrases": [
-        "turn {deviceName} {status}",
-        "turn {deviceName} {deviceName} {status}",
-        "turn {deviceName} {deviceName} {deviceName} {status}",
-        "turn {deviceName} {deviceName} {deviceName} {deviceName} {status}",
-        "set {deviceName} to {status}",
-        "set {deviceName} {deviceName} to {status}",
-        "set {deviceName} {deviceName} {deviceName} to {status}",
-        "set {deviceName} {deviceName} {deviceName} {deviceName} to {status}",
-        "switch {deviceName} {status}",
-        "switch {deviceName} {deviceName} {status}",
-        "switch {deviceName} {deviceName} {deviceName} {status}",
-        "switch {deviceName} {deviceName} {deviceName} {deviceName} {status}",
-        "trigger {deviceName} {status}",
-        "trigger {deviceName} {deviceName} {status}",
-        "trigger {deviceName} {deviceName} {deviceName} {status}",
-        "trigger {deviceName} {deviceName} {deviceName} {deviceName} {status}",
-        "{status} {deviceName}",
-        "{status} {deviceName} {deviceName} ",
-        "{status} {deviceName} {deviceName} {deviceName}",
-        "{status} {deviceName} {deviceName} {deviceName} {deviceName}"
-      ],
-      "entities": {
-        "deviceName": {
-          "type": "DeviceType"
-        },
-        "status": {
-          "type": "DeviceStatusType"
+    "invocation": "power pie",
+    "version": "4.0",
+    "intents": {
+        "DevicePowerIntent": {
+            "phrases": [
+                "turn {deviceName} {status}",
+                "turn {deviceName} {deviceName} {status}",
+                "turn {deviceName} {deviceName} {deviceName} {status}",
+                "turn {deviceName} {deviceName} {deviceName} {deviceName} {status}",
+                "set {deviceName} to {status}",
+                "set {deviceName} {deviceName} to {status}",
+                "set {deviceName} {deviceName} {deviceName} to {status}",
+                "set {deviceName} {deviceName} {deviceName} {deviceName} to {status}",
+                "switch {deviceName} {status}",
+                "switch {deviceName} {deviceName} {status}",
+                "switch {deviceName} {deviceName} {deviceName} {status}",
+                "switch {deviceName} {deviceName} {deviceName} {deviceName} {status}",
+                "trigger {deviceName} {status}",
+                "trigger {deviceName} {deviceName} {status}",
+                "trigger {deviceName} {deviceName} {deviceName} {status}",
+                "trigger {deviceName} {deviceName} {deviceName} {deviceName} {status}",
+                "{status} {deviceName}",
+                "{status} {deviceName} {deviceName} ",
+                "{status} {deviceName} {deviceName} {deviceName}",
+                "{status} {deviceName} {deviceName} {deviceName} {deviceName}"
+            ],
+            "entities": {
+                "deviceName": {
+                    "type": "DeviceType"
+                },
+                "status": {
+                    "type": "DeviceStatusType"
+                }
+            }
         }
-      }
-    }
-  },
-  "entityTypes": {
-    "DeviceType": {
-      "values": [
-        {
-          "id": "light",
-          "value": "light",
-          "synonyms": ["lights"]
-        }
-      ]
     },
-    "DeviceStatusType": {
-      "values": [
-        {
-          "id": "on",
-          "value": "on",
-          "synonyms": ["activate", "enable", "start"]
+    "entityTypes": {
+        "DeviceType": {
+            "values": [
+                {
+                    "id": "light",
+                    "value": "light",
+                    "synonyms": ["lights"]
+                }
+            ]
         },
-        {
-            "id": "off",
-            "value": "off",
-            "synonyms": ["deactivate", "terminate", "disable", "stop"]
-        }
-      ]
-    }
-  },
-  "alexa": {
-    "interactionModel": {
-        "languageModel": {
-            "intents": [
+        "DeviceStatusType": {
+            "values": [
                 {
-                    "name": "AMAZON.CancelIntent",
-                    "samples": []
+                    "id": "on",
+                    "value": "on",
+                    "synonyms": ["activate", "enable", "start"]
                 },
                 {
-                    "name": "AMAZON.HelpIntent",
-                    "samples": []
-                },
-                {
-                    "name": "AMAZON.StopIntent",
-                    "samples": []
+                    "id": "off",
+                    "value": "off",
+                    "synonyms": ["deactivate", "terminate", "disable", "stop"]
                 }
             ]
         }
+    },
+    "alexa": {
+        "interactionModel": {
+            "languageModel": {
+                "intents": [
+                    {
+                        "name": "AMAZON.CancelIntent",
+                        "samples": []
+                    },
+                    {
+                        "name": "AMAZON.HelpIntent",
+                        "samples": []
+                    },
+                    {
+                        "name": "AMAZON.StopIntent",
+                        "samples": []
+                    }
+                ]
+            }
+        }
     }
-  }
 }
