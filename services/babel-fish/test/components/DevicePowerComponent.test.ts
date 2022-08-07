@@ -95,34 +95,36 @@ describe("Alexa", () => {
         );
     });
 
-    test("Turns device on", async () => {
-        jest.spyOn(DeviceService.prototype, "find").mockReturnValue({
-            name: "hallway_light",
-            type: "light",
-            displayName: "Hallway Light",
-        });
+    ["on", "off"].forEach((status) => {
+        test(`Turns device ${status}`, async () => {
+            jest.spyOn(DeviceService.prototype, "find").mockReturnValue({
+                name: "hallway_light",
+                type: "light",
+                displayName: "Hallway Light",
+            });
 
-        jest.spyOn(ApiService.prototype, "makeRequest").mockResolvedValue(true);
+            jest.spyOn(ApiService.prototype, "makeRequest").mockResolvedValue(true);
 
-        await testSuite.run({ type: InputType.Launch });
+            await testSuite.run({ type: InputType.Launch });
 
-        const { response } = await testSuite.run({
-            intent: "DevicePowerIntent",
-            entities: {
-                deviceName: {
-                    id: "hallway_light",
-                    value: "Hallway Light",
+            const { response } = await testSuite.run({
+                intent: "DevicePowerIntent",
+                entities: {
+                    deviceName: {
+                        id: "hallway_light",
+                        value: "Hallway Light",
+                    },
+                    status: {
+                        id: status,
+                        value: status,
+                    },
                 },
-                status: {
-                    id: "on",
-                    value: "on",
-                },
-            },
-        });
+            });
 
-        expect(response.response.outputSpeech?.ssml).toBeDefined();
-        expect(response.response.outputSpeech?.ssml).toMatch(
-            "<speak>Turning Hallway Light on</speak>"
-        );
+            expect(response.response.outputSpeech?.ssml).toBeDefined();
+            expect(response.response.outputSpeech?.ssml).toMatch(
+                `<speak>Turning Hallway Light ${status}</speak>`
+            );
+        });
     });
 });
