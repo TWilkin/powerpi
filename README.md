@@ -49,6 +49,12 @@ The images can be build with Docker's [_buildx_](https://docs.docker.com/buildx/
 # From the root of your checkout of PowerPi
 # Build an image with buildx, the image version tags can be found in docker/docker-compose.yaml
 docker buildx build --platform linux/arm/v7 --push -t MY_DOCKER_REGISTRY/powerpi/clacks-config:0.0.2 -f clacks-config/Dockerfile .
+
+# Or for 64-bit ARM
+docker buildx build --platform linux/arm64 --push -t MY_DOCKER_REGISTRY/powerpi/clacks-config:0.0.2 -f clacks-config/Dockerfile .
+
+# Or x86-64
+docker buildx build --platform linux/amd64 --push -t MY_DOCKER_REGISTRY/powerpi/clacks-config:0.0.2 -f clacks-config/Dockerfile .
 ```
 
 ## Deployment

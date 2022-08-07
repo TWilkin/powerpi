@@ -1,4 +1,4 @@
-FROM node:16.16.0-alpine3.16 as build-api-image
+FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-api-image
 LABEL description="Node.js builder for API library"
 
 # install the API library
@@ -10,7 +10,7 @@ RUN yarn workspace @powerpi/api install --frozen-lockfile
 COPY common/node/api ./common/node/api/
 RUN yarn workspace @powerpi/api build
 
-FROM node:16.16.0-alpine3.16 as build-common-image
+FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-common-image
 LABEL description="Node.js builder for common library"
 
 # install the common library
@@ -22,7 +22,7 @@ RUN yarn workspace @powerpi/common install --frozen-lockfile
 COPY common/node/common ./common/node/common/
 RUN yarn workspace @powerpi/common build
 
-FROM node:16.16.0-alpine3.16 as build-babel-fish-image
+FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-babel-fish-image
 LABEL description="Node.js builder for babel-fish service"
 
 # install the babel-fish service
