@@ -1941,7 +1941,7 @@
   resolved "https://registry.npmjs.org/@types/tv4/-/tv4-1.2.31.tgz"
   integrity sha512-P97XU07fcpauSw3/fE2Q7eF6bHl4oHhwkikjnM7zlQLENrdC2rZuHSdNlMBhnW82NyBEsVJHII1Jk3d/MtQsQQ==
 
-"@types/underscore@^1.11.4":
+"@types/underscore@1.11.4", "@types/underscore@^1.11.4":
   version "1.11.4"
   resolved "https://registry.npmjs.org/@types/underscore/-/underscore-1.11.4.tgz"
   integrity sha512-uO4CD2ELOjw8tasUrAhvnn2W4A0ZECOvMjCivJr4gA9pGgjv+qxKWY9GLTMVEK8ej85BxQOocUyE7hImmSQYcg==
@@ -8279,7 +8279,7 @@ unbox-primitive@^1.0.2:
     has-symbols "^1.0.3"
     which-boxed-primitive "^1.0.2"
 
-underscore@^1.13.1, underscore@^1.13.4:
+underscore@1.13.4, underscore@^1.13.1, underscore@^1.13.4:
   version "1.13.4"
   resolved "https://registry.npmjs.org/underscore/-/underscore-1.13.4.tgz"
   integrity sha512-BQFnUDuAQ4Yf/cYY5LNrK9NCJFKriaRbD9uR1fTeXnBeoa97W0i41qkZfGO9pSo8I5KzjAcSY2XYtdf0oKd7KQ==
