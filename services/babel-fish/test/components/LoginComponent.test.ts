@@ -1,12 +1,16 @@
 import { InputType, TestSuite } from "@jovotech/framework";
 import { AlexaPlatform, AlexaUser } from "@jovotech/platform-alexa";
 import app from "../../src/app";
+import DeviceService from "../../src/services/DeviceService";
+import mockDevice from "../util/MockDevice";
 
 describe("Alexa", () => {
     const testSuite = new TestSuite({
         app: app,
         platform: AlexaPlatform,
     });
+
+    mockDevice([]);
 
     test("Not logged in", async () => {
         const { response } = await testSuite.run({
@@ -21,6 +25,12 @@ describe("Alexa", () => {
 
     test("Logged in", async () => {
         jest.spyOn(AlexaUser.prototype, "accessToken", "get").mockReturnValue("token");
+
+        jest.spyOn(DeviceService.prototype, "find").mockReturnValue({
+            name: "lights",
+            type: "lights",
+            displayName: "lights",
+        });
 
         const { response } = await testSuite.run({
             type: InputType.Launch,

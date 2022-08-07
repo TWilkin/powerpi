@@ -2,6 +2,7 @@ import { InputType, TestSuite } from "@jovotech/framework";
 import { AlexaPlatform, AlexaUser } from "@jovotech/platform-alexa";
 import app from "../../src/app";
 import DeviceService from "../../src/services/DeviceService";
+import mockDevice from "../util/MockDevice";
 
 describe("Alexa", () => {
     const testSuite = new TestSuite({
@@ -12,6 +13,8 @@ describe("Alexa", () => {
     jest.spyOn(AlexaUser.prototype, "accessToken", "get").mockReturnValue("token");
 
     test("Start", async () => {
+        mockDevice([]);
+
         const { response } = await testSuite.run({
             type: InputType.Launch,
         });
@@ -36,7 +39,7 @@ describe("Alexa", () => {
     });
 
     test("Named device not found", async () => {
-        jest.spyOn(DeviceService.prototype, "find").mockReturnValue(undefined);
+        mockDevice([]);
 
         await testSuite.run({ type: InputType.Launch });
 
