@@ -67,7 +67,7 @@ describe("Alexa", () => {
     test("API error", async () => {
         jest.spyOn(DeviceService.prototype, "find").mockReturnValue({
             name: "lights",
-            type: "lights",
+            type: "light",
             displayName: "lights",
         });
 
@@ -92,6 +92,37 @@ describe("Alexa", () => {
         expect(response.response.outputSpeech?.ssml).toBeDefined();
         expect(response.response.outputSpeech?.ssml).toMatch(
             "<speak>I'm sorry, I was unable to make the request to Power Pi.</speak>"
+        );
+    });
+
+    test("Turns device on", async () => {
+        jest.spyOn(DeviceService.prototype, "find").mockReturnValue({
+            name: "hallway_light",
+            type: "light",
+            displayName: "Hallway Light",
+        });
+
+        jest.spyOn(ApiService.prototype, "makeRequest").mockResolvedValue(true);
+
+        await testSuite.run({ type: InputType.Launch });
+
+        const { response } = await testSuite.run({
+            intent: "DevicePowerIntent",
+            entities: {
+                deviceName: {
+                    id: "hallway_light",
+                    value: "Hallway Light",
+                },
+                status: {
+                    id: "on",
+                    value: "on",
+                },
+            },
+        });
+
+        expect(response.response.outputSpeech?.ssml).toBeDefined();
+        expect(response.response.outputSpeech?.ssml).toMatch(
+            "<speak>Turning Hallway Light on</speak>"
         );
     });
 });
