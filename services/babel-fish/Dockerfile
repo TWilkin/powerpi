@@ -1,4 +1,4 @@
-FROM node:16.13.1-alpine3.12 as build-api-image
+FROM node:16.16.0-alpine3.16 as build-api-image
 LABEL description="Node.js builder for API library"
 
 # install the API library
@@ -10,7 +10,7 @@ RUN yarn workspace @powerpi/api install --frozen-lockfile
 COPY common/node/api ./common/node/api/
 RUN yarn workspace @powerpi/api build
 
-FROM node:16.13.1-alpine3.12 as build-common-image
+FROM node:16.16.0-alpine3.16 as build-common-image
 LABEL description="Node.js builder for common library"
 
 # install the common library
@@ -22,7 +22,7 @@ RUN yarn workspace @powerpi/common install --frozen-lockfile
 COPY common/node/common ./common/node/common/
 RUN yarn workspace @powerpi/common build
 
-FROM node:16.13.1-alpine3.12 as build-babel-fish-image
+FROM node:16.16.0-alpine3.16 as build-babel-fish-image
 LABEL description="Node.js builder for babel-fish service"
 
 # install the babel-fish service
@@ -38,7 +38,7 @@ RUN yarn workspace @powerpi/babel-fish install --frozen-lockfile
 COPY services/babel-fish ./services/babel-fish/
 RUN yarn workspace @powerpi/babel-fish build
 
-FROM node:16.13.1-alpine3.12 as run-image
+FROM node:16.16.0-alpine3.16 as run-image
 LABEL description="PowerPi babel-fish Alexa webhook service"
 
 # expose the port used by the application
