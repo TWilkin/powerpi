@@ -27,12 +27,14 @@
     },
     "scripts": {
         "build:api": "yarn workspace @powerpi/api build",
+        "build:babel-fish": "yarn workspace @powerpi/babel-fish build",
+        "build:babel-fish:alexa": "yarn workspace @powerpi/babel-fish build:alexa",
         "build:common": "yarn workspace @powerpi/common build",
         "build:ui": "yarn workspace @powerpi/ui build",
         "clean": "find . -name \"node_modules\" -type d -prune -exec rm -rf '{}' +",
         "lint": "eslint . --ext .ts --ext .tsx",
         "prettier": "prettier --write .",
-        "start:babel-fish": "yarn workspace @powerpi/babel-fish start",
+        "start:babel-fish": "yarn workspace @powerpi/babel-fish start:debug",
         "start:clacks-config": "yarn workspace @powerpi/clacks-config start",
         "start:deep-thought": "yarn workspace @powerpi/deep-thought start",
         "start:energy-monitor": "yarn workspace @powerpi/energy-monitor start",
@@ -40,6 +42,7 @@
         "start:light-fantastic": "yarn workspace @powerpi/light-fantastic start",
         "start:persistence": "yarn workspace @powerpi/persistence start",
         "start:ui": "yarn workspace @powerpi/ui start",
+        "test:babel-fish": "yarn workspace @powerpi/babel-fish test",
         "test:ui": "yarn workspace @powerpi/ui test"
     },
     "devDependencies": {

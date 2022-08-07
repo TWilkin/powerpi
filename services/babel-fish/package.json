@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/babel-fish",
-    "version": "0.0.5",
+    "version": "1.0.0",
     "description": "PowerPi home automation voice service",
     "private": true,
     "license": "GPL-3.0-only",
@@ -10,23 +10,41 @@
         "url": "https://github.com/TWilkin/powerpi.git",
         "directory": "services/babel-fish"
     },
-    "main": "./src/index.ts",
+    "main": "./dist/src/index.js",
+    "types": "./dist/src/index.d.ts",
     "scripts": {
-        "start": "ts-node src/index.ts",
-        "install-platform": "npm install jovo-cli",
-        "build-platform": "./node_modules/jovo-cli/bin/run build"
+        "build:alexa": "jovo build:platform alexa",
+        "build": "tsc",
+        "test": "jest",
+        "clean": "rm -rf dist build",
+        "start:debug": "tsc-watch --onSuccess \"node ./dist/src/app.dev.js --jovo-webhook\" --noClear",
+        "start:dev": "ts-node src/index.ts",
+        "start:prd": "node dist/src/index.js"
     },
     "dependencies": {
+        "@jovotech/db-filedb": "^4.0.0",
+        "@jovotech/framework": "^4.0.0",
+        "@jovotech/platform-alexa": "^4.2.22",
+        "@jovotech/platform-core": "^4.2.22",
+        "@jovotech/plugin-debugger": "^4.0.0",
+        "@jovotech/server-express": "^4.0.0",
         "@powerpi/api": "^0.0.10",
         "@powerpi/common": "^0.0.8",
-        "@types/express": "^4.17.12",
-        "@types/node": "^16.11.12",
-        "@types/socket.io-client": "^3.0.0",
-        "alexa-verifier-middleware": "^1.0.3",
-        "jovo-framework": "^3.6.0",
-        "jovo-platform-alexa": "^3.6.0",
-        "ts-node": "^10.0.0",
-        "typedi": "^0.10.0",
-        "typescript": "^4.3.2"
+        "source-map-support": "^0.5.19"
+    },
+    "devDependencies": {
+        "@jovotech/cli-command-build": "^4.1.6",
+        "@jovotech/cli-command-deploy": "^4.1.6",
+        "@jovotech/cli-command-get": "^4.1.6",
+        "@jovotech/cli-command-new": "^4.1.6",
+        "@jovotech/cli-command-run": "^4.1.7",
+        "@jovotech/cli-core": "^4.0.0",
+        "@jovotech/filebuilder": "^0.0.1",
+        "@types/express": "^4.17.11",
+        "@types/jest": "^27.0.2",
+        "jest": "^27.3.1",
+        "ts-jest": "^27.0.7",
+        "tsc-watch": "^4.2.9",
+        "ts-node": "^10.9.1"
     }
 }

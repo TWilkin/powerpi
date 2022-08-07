@@ -1,0 +1,100 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "power pie",
+      "types": [
+        {
+          "name": "DeviceType",
+          "values": [
+            {
+              "id": "light",
+              "name": {
+                "value": "light",
+                "synonyms": [
+                  "lights"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DeviceStatusType",
+          "values": [
+            {
+              "id": "on",
+              "name": {
+                "value": "on",
+                "synonyms": [
+                  "activate",
+                  "enable",
+                  "start"
+                ]
+              }
+            },
+            {
+              "id": "off",
+              "name": {
+                "value": "off",
+                "synonyms": [
+                  "deactivate",
+                  "terminate",
+                  "disable",
+                  "stop"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "intents": [
+        {
+          "name": "DevicePowerIntent",
+          "samples": [
+            "turn {deviceName} {status}",
+            "turn {deviceName} {deviceName} {status}",
+            "turn {deviceName} {deviceName} {deviceName} {status}",
+            "turn {deviceName} {deviceName} {deviceName} {deviceName} {status}",
+            "set {deviceName} to {status}",
+            "set {deviceName} {deviceName} to {status}",
+            "set {deviceName} {deviceName} {deviceName} to {status}",
+            "set {deviceName} {deviceName} {deviceName} {deviceName} to {status}",
+            "switch {deviceName} {status}",
+            "switch {deviceName} {deviceName} {status}",
+            "switch {deviceName} {deviceName} {deviceName} {status}",
+            "switch {deviceName} {deviceName} {deviceName} {deviceName} {status}",
+            "trigger {deviceName} {status}",
+            "trigger {deviceName} {deviceName} {status}",
+            "trigger {deviceName} {deviceName} {deviceName} {status}",
+            "trigger {deviceName} {deviceName} {deviceName} {deviceName} {status}",
+            "{status} {deviceName}",
+            "{status} {deviceName} {deviceName} ",
+            "{status} {deviceName} {deviceName} {deviceName}",
+            "{status} {deviceName} {deviceName} {deviceName} {deviceName}"
+          ],
+          "slots": [
+            {
+              "name": "deviceName",
+              "type": "DeviceType"
+            },
+            {
+              "name": "status",
+              "type": "DeviceStatusType"
+            }
+          ]
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        }
+      ]
+    }
+  }
+}

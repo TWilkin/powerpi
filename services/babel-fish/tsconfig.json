@@ -1,3 +1,15 @@
 {
-    "extends": "../../tsconfig.json"
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "allowJs": true,
+        "noImplicitAny": true,
+        "removeComments": false,
+        "noImplicitReturns": true,
+        "preserveConstEnums": true,
+        "outDir": "dist",
+        "sourceMap": true,
+        "skipLibCheck": true
+    },
+    "include": ["src"],
+    "exclude": ["dist", "node_modules"]
 }

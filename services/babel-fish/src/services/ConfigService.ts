@@ -25,6 +25,10 @@ export default class ConfigService extends CommonConfigService {
 
         return 3000;
     }
+
+    get apiAddress() {
+        return process.env["API_ADDRESS"] ?? "http://deep-thought:3000/api";
+    }
 }
 
 Container.override(CommonConfigService, ConfigService);
