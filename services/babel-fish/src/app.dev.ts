@@ -1,14 +1,14 @@
-import app from './app';
-import { FileDb } from '@jovotech/db-filedb';
-import { JovoDebugger } from '@jovotech/plugin-debugger';
+import { FileDb } from "@jovotech/db-filedb";
+import { JovoDebugger } from "@jovotech/plugin-debugger";
+import app from "./app";
 
 app.configure({
-  plugins: [
-    new FileDb({
-      pathToFile: '../db/db.json',
-    }),
-    new JovoDebugger(),
-  ],
+    plugins: [
+        new FileDb({
+            pathToFile: "../db/db.json",
+        }),
+        new JovoDebugger(),
+    ],
 });
 
-export * from './index';
+export * from "./index";

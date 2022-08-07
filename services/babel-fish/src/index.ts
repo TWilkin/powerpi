@@ -1,7 +1,7 @@
-import Container from "./container";
+import { ExpressJs, Request, Response, Webhook } from "@jovotech/server-express";
 import { LoggerService, PowerPiService } from "@powerpi/common";
 import app from "./app";
-import { ExpressJs, Request, Response, Webhook } from '@jovotech/server-express';
+import Container from "./container";
 import ConfigService from "./services/ConfigService";
 
 async function start() {
@@ -14,12 +14,12 @@ async function start() {
         logger.info("Local server listening on port", config.port);
     });
 
-    Webhook.get('/webhook', async (request: Request, response: Response) => {
+    Webhook.get("/webhook", async (request: Request, response: Response) => {
         const result = await app.handle(new ExpressJs(request, response));
         response.json(result);
     });
 
-    Webhook.post('/webhook_alexa', async (request: Request, response: Response) => {
+    Webhook.post("/webhook_alexa", async (request: Request, response: Response) => {
         await app.handle(new ExpressJs(request, response));
     });
 }
