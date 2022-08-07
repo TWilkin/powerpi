@@ -60,7 +60,7 @@ services:
             - OAUTH_SECRET_FILE=/var/run/secrets/powerpi_oauth
 
     babel-fish:
-        image: ${REGISTRY}/powerpi/babel-fish:0.0.5
+        image: ${REGISTRY}/powerpi/babel-fish:1.0.1
         networks:
             - powerpi
         deploy:
