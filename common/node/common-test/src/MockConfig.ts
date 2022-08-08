@@ -3,7 +3,7 @@ import { writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 
-function mockFile(fileName: string, envVar: string, content: object) {
+function mockConfigFile(fileName: string, envVar: string, content: object) {
     process.env["USE_CONFIG_FILE"] = "true";
 
     const tempFile = join(tmpdir(), fileName);
@@ -13,11 +13,11 @@ function mockFile(fileName: string, envVar: string, content: object) {
     process.env[envVar] = tempFile;
 }
 
-export function mockDevice(devices: IDeviceConfig[] = [], sensors: ISensor[] = []) {
+export function mockDeviceFile(devices: IDeviceConfig[] = [], sensors: ISensor[] = []) {
     const content = {
         devices,
         sensors,
     };
 
-    mockFile("devices.json", "DEVICES_FILE", content);
+    mockConfigFile("devices.json", "DEVICES_FILE", content);
 }
