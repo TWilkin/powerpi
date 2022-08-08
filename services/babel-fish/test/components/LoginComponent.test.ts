@@ -1,8 +1,8 @@
 import { InputType, TestSuite } from "@jovotech/framework";
 import { AlexaPlatform, AlexaUser } from "@jovotech/platform-alexa";
+import { mockDevice } from "@powerpi/common-test";
 import app from "../../src/app";
 import DeviceService from "../../src/services/DeviceService";
-import mockDevice from "../util/MockDevice";
 
 describe("Alexa", () => {
     const testSuite = new TestSuite({
@@ -10,7 +10,7 @@ describe("Alexa", () => {
         platform: AlexaPlatform,
     });
 
-    mockDevice([]);
+    mockDevice();
 
     test("Not logged in", async () => {
         const { response } = await testSuite.run({

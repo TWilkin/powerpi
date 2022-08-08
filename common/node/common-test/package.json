@@ -19,7 +19,10 @@
         "dist/src"
     ],
     "devDependencies": {
+        "@types/jest": "^27.0.2",
         "@types/node": "^18.6.4",
+        "jest": "^27.3.1",
+        "ts-jest": "^27.0.7",
         "typescript": "^4.7.4"
     },
     "dependencies": {
