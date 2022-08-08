@@ -1,9 +1,8 @@
 import { InputType, TestSuite } from "@jovotech/framework";
 import { AlexaPlatform, AlexaUser } from "@jovotech/platform-alexa";
+import { mockDeviceFile } from "@powerpi/common-test";
 import app from "../../src/app";
 import ApiService from "../../src/services/ApiService";
-import DeviceService from "../../src/services/DeviceService";
-import mockDevice from "../util/MockDevice";
 
 describe("Alexa", () => {
     const testSuite = new TestSuite({
@@ -14,7 +13,7 @@ describe("Alexa", () => {
     jest.spyOn(AlexaUser.prototype, "accessToken", "get").mockReturnValue("token");
 
     test("Start", async () => {
-        mockDevice([]);
+        mockDeviceFile();
 
         const { response } = await testSuite.run({
             type: InputType.Launch,
@@ -40,7 +39,7 @@ describe("Alexa", () => {
     });
 
     test("Named device not found", async () => {
-        mockDevice([]);
+        mockDeviceFile();
 
         await testSuite.run({ type: InputType.Launch });
 
@@ -65,11 +64,13 @@ describe("Alexa", () => {
     });
 
     test("API error", async () => {
-        jest.spyOn(DeviceService.prototype, "find").mockReturnValue({
-            name: "lights",
-            type: "light",
-            displayName: "lights",
-        });
+        mockDeviceFile([
+            {
+                name: "lights",
+                type: "light",
+                display_name: "lights",
+            },
+        ]);
 
         jest.spyOn(ApiService.prototype, "makeRequest").mockResolvedValue(false);
 
@@ -97,11 +98,13 @@ describe("Alexa", () => {
 
     ["on", "off"].forEach((status) => {
         test(`Turns device ${status}`, async () => {
-            jest.spyOn(DeviceService.prototype, "find").mockReturnValue({
-                name: "hallway_light",
-                type: "light",
-                displayName: "Hallway Light",
-            });
+            mockDeviceFile([
+                {
+                    name: "hallway_light",
+                    type: "light",
+                    display_name: "Hallway Light",
+                },
+            ]);
 
             jest.spyOn(ApiService.prototype, "makeRequest").mockResolvedValue(true);
 
