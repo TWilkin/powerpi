@@ -15,7 +15,7 @@
         "start": "ts-node src/index.ts"
     },
     "dependencies": {
-        "@powerpi/common": "^0.0.8",
+        "@powerpi/common": "^0.0.9",
         "@types/dateformat": "^5.0.0",
         "@types/node": "^18.0.0",
         "axios": "^0.27.2",

@@ -3,7 +3,6 @@ import { AlexaPlatform, AlexaUser } from "@jovotech/platform-alexa";
 import { mockDevice } from "@powerpi/common-test";
 import app from "../../src/app";
 import ApiService from "../../src/services/ApiService";
-import DeviceService from "../../src/services/DeviceService";
 
 describe("Alexa", () => {
     const testSuite = new TestSuite({
@@ -65,11 +64,13 @@ describe("Alexa", () => {
     });
 
     test("API error", async () => {
-        jest.spyOn(DeviceService.prototype, "find").mockReturnValue({
-            name: "lights",
-            type: "light",
-            displayName: "lights",
-        });
+        mockDevice([
+            {
+                name: "lights",
+                type: "light",
+                display_name: "lights",
+            },
+        ]);
 
         jest.spyOn(ApiService.prototype, "makeRequest").mockResolvedValue(false);
 
@@ -97,11 +98,13 @@ describe("Alexa", () => {
 
     ["on", "off"].forEach((status) => {
         test(`Turns device ${status}`, async () => {
-            jest.spyOn(DeviceService.prototype, "find").mockReturnValue({
-                name: "hallway_light",
-                type: "light",
-                displayName: "Hallway Light",
-            });
+            mockDevice([
+                {
+                    name: "hallway_light",
+                    type: "light",
+                    display_name: "Hallway Light",
+                },
+            ]);
 
             jest.spyOn(ApiService.prototype, "makeRequest").mockResolvedValue(true);
 

@@ -1,4 +1,4 @@
-import { IDevice, ISensor } from "@powerpi/common";
+import { IDeviceConfig, ISensor } from "@powerpi/common";
 import { writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
@@ -13,7 +13,7 @@ function mockFile(fileName: string, envVar: string, content: object) {
     process.env[envVar] = tempFile;
 }
 
-export function mockDevice(devices: IDevice[] = [], sensors: ISensor[] = []) {
+export function mockDevice(devices: IDeviceConfig[] = [], sensors: ISensor[] = []) {
     const content = {
         devices,
         sensors,
