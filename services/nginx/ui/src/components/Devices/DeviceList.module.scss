@@ -2,13 +2,12 @@
 @import "../../styles/vars.scss";
 
 .list {
+    max-width: 600px;
     margin-left: calc(1rem + 8px);
     flex-direction: column;
     justify-content: center;
 
     .device {
-        max-width: 600px;
-
         .state {
             display: flex;
         }
