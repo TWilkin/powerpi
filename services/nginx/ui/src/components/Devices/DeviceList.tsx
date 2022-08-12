@@ -27,7 +27,11 @@ const DeviceList = () => {
 
             <div className={styles.list}>
                 <Loading loading={isDevicesLoading}>
-                    <SearchBox placeholder="Search for devices" onChange={onSearchChange} />
+                    <SearchBox
+                        placeholder="Search for devices"
+                        value={filters.search}
+                        onChange={onSearchChange}
+                    />
 
                     <List>
                         <table>

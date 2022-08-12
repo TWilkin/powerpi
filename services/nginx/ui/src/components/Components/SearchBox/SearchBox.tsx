@@ -3,10 +3,11 @@ import styles from "./SearchBox.module.scss";
 
 interface SearchBoxProps {
     placeholder: string;
+    value?: string;
     onChange: (search: string) => void;
 }
 
-const SearchBox = ({ placeholder, onChange }: SearchBoxProps) => {
+const SearchBox = ({ placeholder, value, onChange }: SearchBoxProps) => {
     const onSearch = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => onChange(event.currentTarget.value),
         [onChange]
@@ -14,7 +15,7 @@ const SearchBox = ({ placeholder, onChange }: SearchBoxProps) => {
 
     return (
         <div className={styles.box}>
-            <input type="search" placeholder={placeholder} onChange={onSearch} />
+            <input type="search" placeholder={placeholder} onChange={onSearch} value={value} />
         </div>
     );
 };

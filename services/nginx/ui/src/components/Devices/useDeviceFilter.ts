@@ -1,5 +1,5 @@
 import { Device } from "@powerpi/api";
-import { ChangeEvent, useCallback, useLayoutEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { chain as _ } from "underscore";
 
 export interface Filters {
@@ -20,16 +20,21 @@ export default function useDeviceFilter(devices?: Device[]) {
         [devices]
     );
 
-    const defaults = useMemo(
-        () => ({
-            types,
-        }),
-        [types]
-    );
+    const defaults = useMemo(() => {
+        // load from local storage
+        const saved = localStorage.getItem("deviceFilter");
+        const json = saved ? JSON.parse(saved) : undefined;
+
+        // if we have saved data return that, otherwise the natural default
+        return json || { types };
+    }, [types]);
 
     const [filters, setFilters] = useState<Filters>(defaults);
 
     useLayoutEffect(() => setFilters(defaults), [defaults]);
+
+    // store the user's filter in local storage
+    useEffect(() => localStorage.setItem("deviceFilter", JSON.stringify(filters)), [filters]);
 
     const onTypeChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
