@@ -1,14 +1,7 @@
 import { Device } from "@powerpi/api";
-import {
-    ChangeEvent,
-    MouseEvent,
-    useCallback,
-    useEffect,
-    useLayoutEffect,
-    useMemo,
-    useState,
-} from "react";
+import { ChangeEvent, useCallback, useMemo } from "react";
 import { chain as _ } from "underscore";
+import useFilter from "../../hooks/useFilter";
 
 export interface Filters {
     types: string[];
@@ -30,29 +23,25 @@ export default function useDeviceFilter(devices?: Device[]) {
 
     const naturalDefaults = useMemo(() => ({ types }), [types]);
 
-    const defaults = useMemo(() => {
-        // load from local storage
-        const saved = localStorage.getItem("deviceFilter");
-        const json = saved ? JSON.parse(saved) : undefined;
+    const filter = useCallback((filters: Filters, device: Device) => {
+        // the search text disables the other filters
+        if (filters.search) {
+            const search = filters.search.toLocaleLowerCase();
 
-        // if we have saved data return that, otherwise the natural default
-        return json || naturalDefaults;
-    }, [naturalDefaults]);
+            return (
+                device.display_name?.toLocaleLowerCase().includes(search) ||
+                device.name.toLocaleLowerCase().includes(search)
+            );
+        }
 
-    const [filters, setFilters] = useState<Filters>(defaults);
+        return device.visible && filters.types.includes(device.type);
+    }, []);
 
-    useLayoutEffect(() => setFilters(defaults), [defaults]);
-
-    // store the user's filter in local storage
-    useEffect(() => localStorage.setItem("deviceFilter", JSON.stringify(filters)), [filters]);
-
-    // reset the filters back to the natural default
-    const onClear = useCallback(
-        (event: MouseEvent<HTMLElement>) => {
-            event.preventDefault();
-            setFilters(naturalDefaults);
-        },
-        [naturalDefaults]
+    const { filters, setFilters, filtered, onClear } = useFilter(
+        "device",
+        devices,
+        naturalDefaults,
+        filter
     );
 
     const onTypeChange = useCallback(
@@ -67,32 +56,13 @@ export default function useDeviceFilter(devices?: Device[]) {
 
             setFilters((currentFilter) => ({ ...currentFilter, types: filterTypes }));
         },
-        [filters.types]
+        [filters.types, setFilters]
     );
 
     const onSearchChange = useCallback(
         (search: string) => setFilters((currentFilter) => ({ ...currentFilter, search })),
-        []
+        [setFilters]
     );
-
-    const filter = useCallback(
-        (device: Device) => {
-            // the search text disables the other filters
-            if (filters.search) {
-                const search = filters.search.toLocaleLowerCase();
-
-                return (
-                    device.display_name?.toLocaleLowerCase().includes(search) ||
-                    device.name.toLocaleLowerCase().includes(search)
-                );
-            }
-
-            return device.visible && filters.types.includes(device.type);
-        },
-        [filters.search, filters.types]
-    );
-
-    const filtered = useMemo(() => devices?.filter(filter), [devices, filter]);
 
     return {
         filters,
