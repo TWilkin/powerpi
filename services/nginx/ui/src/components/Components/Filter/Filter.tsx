@@ -19,14 +19,22 @@ const Filter = ({ onClear, children }: FilterProps) => {
                 { [styles["slide-out"]]: showFilter === false }
             )}
         >
-            <button className={styles.button} onClick={() => setShowFilter(!showFilter)}>
+            <button
+                className={styles.button}
+                title="Click to show filters for this page"
+                onClick={() => setShowFilter(!showFilter)}
+            >
                 <FontAwesomeIcon icon={faSliders} />
             </button>
 
             <div>
                 {children}
 
-                {onClear && <button onClick={onClear}>Clear</button>}
+                {onClear && (
+                    <button className={styles.clear} onClick={onClear}>
+                        Clear
+                    </button>
+                )}
             </div>
         </div>
     );

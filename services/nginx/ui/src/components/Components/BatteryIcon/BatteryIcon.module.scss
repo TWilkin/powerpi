@@ -8,10 +8,10 @@
     }
 
     &.low {
-        color: $critical;
+        @include colour("color", "critical");
     }
 
     &.warning {
-        color: $warning;
+        @include colour("color", "warning");
     }
 }

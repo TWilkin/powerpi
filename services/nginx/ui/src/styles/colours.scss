@@ -1,8 +1,5 @@
 @use "sass:map";
 
-$critical: red;
-$warning: #ffc;
-
 // light mode colours
 $light-colours: (
     "background": white,
@@ -13,6 +10,9 @@ $light-colours: (
     "highlight": lightskyblue,
     "filter-background": black,
     "filter-text": white,
+    "critical": red,
+    "warning": #ffc,
+    "info": blue,
     "chart-line": #ccc,
     "chart": (
         #003f5c,
@@ -33,6 +33,9 @@ $dark-colours: (
     "highlight": #382754,
     "filter-background": black,
     "filter-text": white,
+    "critical": lighten(red, 10%),
+    "warning": #ffc,
+    "info": cyan,
     "chart-line": #444,
     "chart": (
         lighten(#003f5c, 20%),
