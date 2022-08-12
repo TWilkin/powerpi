@@ -1,9 +1,6 @@
-export interface IDevice {
-    name: string;
-    type: string;
-    display_name?: string;
-    visible?: boolean;
+import { IDeviceConfig } from "./config";
 
+export interface IDevice extends IDeviceConfig {
     displayName: string;
 }
 

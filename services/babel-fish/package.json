@@ -27,7 +27,7 @@
         "@jovotech/platform-core": "^4.2.22",
         "@jovotech/server-express": "^4.0.0",
         "@powerpi/api": "^0.0.10",
-        "@powerpi/common": "^0.0.8",
+        "@powerpi/common": "^0.0.9",
         "source-map-support": "^0.5.19"
     },
     "devDependencies": {
@@ -35,10 +35,8 @@
         "@jovotech/db-filedb": "^4.0.0",
         "@jovotech/filebuilder": "^0.0.1",
         "@jovotech/plugin-debugger": "^4.0.0",
+        "@powerpi/common-test": "^0.0.1",
         "@types/express": "^4.17.11",
-        "@types/jest": "^27.0.2",
-        "jest": "^27.3.1",
-        "ts-jest": "^27.0.7",
         "tsc-watch": "^4.2.9",
         "ts-node": "^10.9.1"
     }

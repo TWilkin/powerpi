@@ -11,6 +11,7 @@
         "packages": [
             "common/node/api",
             "common/node/common",
+            "common/node/common-test",
             "services/babel-fish",
             "services/clacks-config",
             "services/deep-thought",
@@ -30,6 +31,8 @@
         "build:babel-fish": "yarn workspace @powerpi/babel-fish build",
         "build:babel-fish:alexa": "yarn workspace @powerpi/babel-fish build:alexa",
         "build:common": "yarn workspace @powerpi/common build",
+        "build:common-test": "yarn workspace @powerpi/common-test build",
+        "build:lib": "yarn build:api; yarn build:common; yarn build:common-test",
         "build:ui": "yarn workspace @powerpi/ui build",
         "clean": "find . -name \"node_modules\" -type d -prune -exec rm -rf '{}' +",
         "lint": "eslint . --ext .ts --ext .tsx",

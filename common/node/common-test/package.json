@@ -1,0 +1,32 @@
+{
+    "name": "@powerpi/common-test",
+    "version": "0.0.1",
+    "description": "PowerPi Common Typescript Testing library",
+    "private": true,
+    "license": "GPL-3.0-only",
+    "author": "TWilkin",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TWilkin/powerpi.git",
+        "directory": "common/node/common-test"
+    },
+    "main": "dist/src/index.js",
+    "types": "dist/src/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "clean": "rm -rf dist"
+    },
+    "files": [
+        "dist/src"
+    ],
+    "devDependencies": {
+        "@types/jest": "^27.0.2",
+        "@types/node": "^18.6.4",
+        "jest": "^27.3.1",
+        "ts-jest": "^27.0.7",
+        "typescript": "^4.7.4"
+    },
+    "dependencies": {
+        "@powerpi/common": "^0.0.9"
+    }
+}
