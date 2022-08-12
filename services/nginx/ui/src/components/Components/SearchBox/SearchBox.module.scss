@@ -1,0 +1,38 @@
+@import "../../../styles/colours.scss";
+
+.box {
+    $border: 1px;
+    $margin: 5px;
+    $height: 1.4rem;
+
+    position: relative;
+    width: calc(100% - 2 * #{$border} - 2 * #{$margin});
+    height: $height;
+    margin: $margin;
+    border: $border solid;
+    @include colour("border-color", "border");
+    border-radius: 6px;
+
+    &::before {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        display: inline-block;
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        content: "\f002"; // magnifying glass
+        line-height: calc(#{$height} - 0.2rem);
+    }
+
+    input {
+        width: calc(100% - 2 * #{$border} - 2 * #{$margin} - 24px);
+        height: $height;
+        padding: 0;
+        margin: 0;
+        margin-left: 24px;
+        border: 0;
+        outline: 0;
+        @include colour("background-color", "background");
+        @include colour("color", "text");
+    }
+}

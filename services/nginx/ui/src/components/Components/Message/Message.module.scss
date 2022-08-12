@@ -1,13 +1,15 @@
+@import "../../../styles/colours.scss";
+
 .message {
     margin: 1rem;
 
     svg {
-        color: blue;
+        @include colour("color", "info");
     }
 
     &.error {
         svg {
-            color: red;
+            @include colour("color", "critical");
         }
     }
 }

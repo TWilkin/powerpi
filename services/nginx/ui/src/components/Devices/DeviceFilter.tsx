@@ -1,67 +1,43 @@
-import { Device } from "@powerpi/api";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent } from "react";
 import DeviceIcon from "../Components/DeviceIcon";
+import FilterGroup from "../Components/FilterGroup";
 import Loading from "../Components/Loading";
 import styles from "./DeviceFilter.module.scss";
+import { Filters } from "./useDeviceFilter";
 
 interface DeviceFilterProps {
-    devices?: Device[];
-    updateFilters: (filters: Filters) => void;
-}
-
-export interface Filters {
+    filters: Filters;
     types: string[];
+    onTypeChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    onVisibleChange: () => void;
 }
 
-const DeviceFilter = ({ devices, updateFilters }: DeviceFilterProps) => {
-    const [types, setTypes] = useState<string[] | undefined>(undefined);
-    const [filters, setFilters] = useState<Filters>({ types: [] });
-
-    useEffect(
-        () =>
-            setTypes([
-                ...new Set(
-                    devices
-                        ?.map((device) => device.type)
-                        .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
-                ),
-            ]),
-        [devices]
-    );
-
-    useEffect(() => setFilters({ types: types ?? [] }), [types]);
-
-    useEffect(() => updateFilters(filters), [filters, updateFilters]);
-
-    const handleTypeFilterChange = (event: ChangeEvent<HTMLInputElement>) => {
-        let filterTypes = [...filters.types];
-
-        if (event.target.checked) {
-            filterTypes.push(event.target.value);
-        } else {
-            filterTypes = filterTypes.filter((type) => type !== event.target.value);
-        }
-
-        setFilters({ types: filterTypes });
-    };
-
+const DeviceFilter = ({ filters, types, onTypeChange, onVisibleChange }: DeviceFilterProps) => {
     return (
         <div className={styles.filters}>
-            <Loading loading={!types}>
-                {types?.map((type) => (
-                    <label key={type}>
-                        <input
-                            type="checkbox"
-                            name="device-type"
-                            value={type}
-                            checked={filters.types.includes(type)}
-                            onChange={handleTypeFilterChange}
-                        />
-                        <DeviceIcon type={type} />
-                        <div>{type}</div>
-                    </label>
-                ))}
-            </Loading>
+            <FilterGroup>
+                <Loading loading={!types}>
+                    {types?.map((type) => (
+                        <label key={type}>
+                            <input
+                                type="checkbox"
+                                value={type}
+                                checked={filters.types.includes(type)}
+                                onChange={onTypeChange}
+                            />
+                            <DeviceIcon type={type} />
+                            <div>{type}</div>
+                        </label>
+                    ))}
+                </Loading>
+            </FilterGroup>
+
+            <FilterGroup>
+                <label>
+                    <input type="checkbox" checked={filters.visible} onChange={onVisibleChange} />
+                    only show visible devices
+                </label>
+            </FilterGroup>
         </div>
     );
 };

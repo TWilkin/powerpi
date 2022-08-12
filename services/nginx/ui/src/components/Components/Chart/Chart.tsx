@@ -7,18 +7,19 @@ import {
     LineElement,
     PointElement,
     TimeSeriesScale,
-    Tooltip,
+    Tooltip
 } from "chart.js";
 import "chartjs-adapter-luxon";
+import { useMemo } from "react";
 import { Line } from "react-chartjs-2";
+import { chain as _ } from "underscore";
+import useColourMode from "../../../hooks/colour";
 import { useGetHistoryRange } from "../../../hooks/history";
 import useOrientation from "../../../hooks/orientation";
+import scss from "../../../styles/exports.module.scss";
+import { getFormattedUnit, getFormattedValue } from "../FormattedValue";
 import Loading from "../Loading";
 import styles from "./Chart.module.scss";
-import scss from "../../../styles/exports.module.scss";
-import useColourMode from "../../../hooks/colour";
-import { useMemo } from "react";
-import { getFormattedUnit, getFormattedValue } from "../FormattedValue";
 
 ChartJS.register(
     CategoryScale,
@@ -89,7 +90,7 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
             }
         }
 
-        return datasets;
+        return _(datasets).sortBy(dataset => dataset.entity).sortBy(dataset => dataset.action).value();
     }, []);
 
     // set the chart colours in light/dark mode
@@ -117,6 +118,7 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
     const scales: {
         [key: string]: {
             [key: string]: unknown;
+            min?: number;
             max?: number;
         };
     } = {
@@ -190,7 +192,6 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                         color: lineColour,
                         borderColor: lineColour,
                     },
-                    beginAtZero: true,
                     ticks: {
                         includeBounds: false,
                         color: textColour,
@@ -198,14 +199,18 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
                 };
             }
 
-            // ensure the max still applies with this dataset
-            let max =
-                dataset.data.reduce((max, point) => (point.value > max ? point.value : max), 0) *
-                1.2;
-            if (max > 10) {
-                max = Math.ceil(max);
-            }
-            scales[key].max = Math.max(max, scales[key].max ?? 0);
+            // ensure the min/max still applies with this dataset
+            const points = dataset.data.map(point => point.value);
+            let min = Math.min(...points, Number.MAX_VALUE);
+            let max = Math.max(...points, Number.MIN_VALUE);
+
+            // add a bit of padding to the range
+            const padding = (max - min) / 5;
+            min -= padding / 5;
+            max += padding / 5;
+
+            scales[key].min = Math.min(min, scales[key].min ?? max)
+            scales[key].max = Math.max(max, scales[key].max ?? min);
 
             return scales;
         }, scales),

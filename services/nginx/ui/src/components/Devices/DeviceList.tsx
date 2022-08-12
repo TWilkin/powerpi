@@ -1,6 +1,6 @@
-import { faHistory } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash, faHistory } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { useGetDevices } from "../../hooks/devices";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
@@ -10,26 +10,44 @@ import Filter from "../Components/Filter";
 import List from "../Components/List";
 import Loading from "../Components/Loading";
 import Message from "../Components/Message";
-import DeviceFilter, { Filters } from "./DeviceFilter";
+import SearchBox from "../Components/SearchBox";
+import DeviceFilter from "./DeviceFilter";
 import styles from "./DeviceList.module.scss";
+import useDeviceFilter from "./useDeviceFilter";
 
 const DeviceList = () => {
-    const [filters, setFilters] = useState<Filters>({ types: [] });
-
     const { isDevicesLoading, isDevicesError, devices } = useGetDevices();
 
-    const filtered = devices?.filter(
-        (device) => device.visible && filters.types.includes(device.type)
-    );
+    const {
+        filters,
+        filtered,
+        types,
+        onClear,
+        filteredCount,
+        onTypeChange,
+        onVisibleChange,
+        onSearchChange,
+    } = useDeviceFilter(devices);
 
     return (
         <>
-            <Filter>
-                <DeviceFilter devices={devices} updateFilters={setFilters} />
+            <Filter onClear={onClear}>
+                <DeviceFilter
+                    filters={filters}
+                    types={types}
+                    onTypeChange={onTypeChange}
+                    onVisibleChange={onVisibleChange}
+                />
             </Filter>
 
             <div className={styles.list}>
                 <Loading loading={isDevicesLoading}>
+                    <SearchBox
+                        placeholder="Search for devices"
+                        value={filters.search}
+                        onChange={onSearchChange}
+                    />
+
                     <List>
                         <table>
                             <tbody>
@@ -37,9 +55,22 @@ const DeviceList = () => {
                                     filtered.map((device) => (
                                         <tr
                                             key={device.name}
-                                            className={styles.device}
+                                            className={classNames(styles.device, {
+                                                [styles.hidden]: !device.visible,
+                                            })}
                                             title={`Device ${device.name} is currently ${device.state}.`}
                                         >
+                                            {(!filters.visible || filters.search) && (
+                                                <td>
+                                                    <FontAwesomeIcon
+                                                        title={`This device is ${
+                                                            device.visible ? "visible" : "hidden"
+                                                        }`}
+                                                        icon={device.visible ? faEye : faEyeSlash}
+                                                    />
+                                                </td>
+                                            )}
+
                                             <td>
                                                 <DeviceIcon type={device.type} />
                                             </td>
@@ -72,6 +103,12 @@ const DeviceList = () => {
                                                 <Message
                                                     error
                                                     message="An error occurred loading the devices."
+                                                />
+                                            ) : filteredCount !== 0 ? (
+                                                <Message
+                                                    message={`Filtered ${filteredCount} device${
+                                                        filteredCount > 1 ? "s" : ""
+                                                    }.`}
                                                 />
                                             ) : (
                                                 <Message message="No devices." />

@@ -2,23 +2,31 @@
 // Please do not change this file!
 interface CssExports {
   'darkBackground': string;
+  'darkBorder': string;
   'darkChart': string;
   'darkChartLine': string;
+  'darkCritical': string;
   'darkFilterBackground': string;
   'darkFilterText': string;
   'darkHighlight': string;
+  'darkInfo': string;
   'darkMenu': string;
   'darkMenuBorder': string;
   'darkText': string;
+  'darkWarning': string;
   'lightBackground': string;
+  'lightBorder': string;
   'lightChart': string;
   'lightChartLine': string;
+  'lightCritical': string;
   'lightFilterBackground': string;
   'lightFilterText': string;
   'lightHighlight': string;
+  'lightInfo': string;
   'lightMenu': string;
   'lightMenuBorder': string;
   'lightText': string;
+  'lightWarning': string;
 }
 export const cssExports: CssExports;
 export default cssExports;
