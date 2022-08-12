@@ -1,5 +1,13 @@
 import { Device } from "@powerpi/api";
-import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import {
+    ChangeEvent,
+    MouseEvent,
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useState,
+} from "react";
 import { chain as _ } from "underscore";
 
 export interface Filters {
@@ -20,14 +28,16 @@ export default function useDeviceFilter(devices?: Device[]) {
         [devices]
     );
 
+    const naturalDefaults = useMemo(() => ({ types }), [types]);
+
     const defaults = useMemo(() => {
         // load from local storage
         const saved = localStorage.getItem("deviceFilter");
         const json = saved ? JSON.parse(saved) : undefined;
 
         // if we have saved data return that, otherwise the natural default
-        return json || { types };
-    }, [types]);
+        return json || naturalDefaults;
+    }, [naturalDefaults]);
 
     const [filters, setFilters] = useState<Filters>(defaults);
 
@@ -35,6 +45,15 @@ export default function useDeviceFilter(devices?: Device[]) {
 
     // store the user's filter in local storage
     useEffect(() => localStorage.setItem("deviceFilter", JSON.stringify(filters)), [filters]);
+
+    // reset the filters back to the natural default
+    const onClear = useCallback(
+        (event: MouseEvent<HTMLElement>) => {
+            event.preventDefault();
+            setFilters(naturalDefaults);
+        },
+        [naturalDefaults]
+    );
 
     const onTypeChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
@@ -79,6 +98,7 @@ export default function useDeviceFilter(devices?: Device[]) {
         filters,
         filtered,
         types,
+        onClear,
         onTypeChange,
         onSearchChange,
     };

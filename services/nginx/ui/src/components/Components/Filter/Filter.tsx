@@ -1,14 +1,14 @@
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faSliders } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
-import { useState } from "react";
+import { MouseEvent, PropsWithChildren, useState } from "react";
 import styles from "./Filter.module.scss";
 
-interface FilterProps {
-    children: JSX.Element | JSX.Element[];
-}
+type FilterProps = PropsWithChildren<{
+    onClear?: (event: MouseEvent<HTMLButtonElement>) => void;
+}>;
 
-const Filter = ({ children }: FilterProps) => {
+const Filter = ({ onClear, children }: FilterProps) => {
     const [showFilter, setShowFilter] = useState<boolean | undefined>(undefined);
 
     return (
@@ -20,9 +20,14 @@ const Filter = ({ children }: FilterProps) => {
             )}
         >
             <button className={styles.button} onClick={() => setShowFilter(!showFilter)}>
-                <FontAwesomeIcon icon={faFilter} />
+                <FontAwesomeIcon icon={faSliders} />
             </button>
-            {children}
+
+            <div>
+                {children}
+
+                {onClear && <button onClick={onClear}>Clear</button>}
+            </div>
         </div>
     );
 };

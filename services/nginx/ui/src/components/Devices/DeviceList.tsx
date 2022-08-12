@@ -17,11 +17,12 @@ import useDeviceFilter from "./useDeviceFilter";
 const DeviceList = () => {
     const { isDevicesLoading, isDevicesError, devices } = useGetDevices();
 
-    const { filters, filtered, types, onTypeChange, onSearchChange } = useDeviceFilter(devices);
+    const { filters, filtered, types, onClear, onTypeChange, onSearchChange } =
+        useDeviceFilter(devices);
 
     return (
         <>
-            <Filter>
+            <Filter onClear={onClear}>
                 <DeviceFilter filters={filters} types={types} onTypeChange={onTypeChange} />
             </Filter>
 
