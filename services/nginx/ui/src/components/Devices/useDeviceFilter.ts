@@ -56,7 +56,7 @@ export default function useDeviceFilter(devices?: Device[]) {
         return result;
     }, []);
 
-    const { filters, setFilters, filtered, onClear } = useFilter(
+    const { filters, setFilters, filtered, onClear, totalCount, filteredCount } = useFilter(
         "device",
         devices,
         naturalDefaults,
@@ -94,6 +94,8 @@ export default function useDeviceFilter(devices?: Device[]) {
         filtered,
         types,
         onClear,
+        totalCount,
+        filteredCount,
         onTypeChange,
         onVisibleChange,
         onSearchChange,

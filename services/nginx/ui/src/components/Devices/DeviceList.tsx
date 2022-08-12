@@ -18,8 +18,16 @@ import useDeviceFilter from "./useDeviceFilter";
 const DeviceList = () => {
     const { isDevicesLoading, isDevicesError, devices } = useGetDevices();
 
-    const { filters, filtered, types, onClear, onTypeChange, onVisibleChange, onSearchChange } =
-        useDeviceFilter(devices);
+    const {
+        filters,
+        filtered,
+        types,
+        onClear,
+        filteredCount,
+        onTypeChange,
+        onVisibleChange,
+        onSearchChange,
+    } = useDeviceFilter(devices);
 
     return (
         <>
@@ -95,6 +103,12 @@ const DeviceList = () => {
                                                 <Message
                                                     error
                                                     message="An error occurred loading the devices."
+                                                />
+                                            ) : filteredCount !== 0 ? (
+                                                <Message
+                                                    message={`Filtered ${filteredCount} device${
+                                                        filteredCount > 1 ? "s" : ""
+                                                    }.`}
                                                 />
                                             ) : (
                                                 <Message message="No devices." />
