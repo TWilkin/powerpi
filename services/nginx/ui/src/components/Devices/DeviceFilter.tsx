@@ -8,9 +8,10 @@ interface DeviceFilterProps {
     filters: Filters;
     types: string[];
     onTypeChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    onVisibleChange: () => void;
 }
 
-const DeviceFilter = ({ filters, types, onTypeChange }: DeviceFilterProps) => {
+const DeviceFilter = ({ filters, types, onTypeChange, onVisibleChange }: DeviceFilterProps) => {
     return (
         <div className={styles.filters}>
             <Loading loading={!types}>
@@ -18,7 +19,6 @@ const DeviceFilter = ({ filters, types, onTypeChange }: DeviceFilterProps) => {
                     <label key={type}>
                         <input
                             type="checkbox"
-                            name="device-type"
                             value={type}
                             checked={filters.types.includes(type)}
                             onChange={onTypeChange}
@@ -28,6 +28,11 @@ const DeviceFilter = ({ filters, types, onTypeChange }: DeviceFilterProps) => {
                     </label>
                 ))}
             </Loading>
+
+            <label>
+                <input type="checkbox" checked={filters.visible} onChange={onVisibleChange} />
+                only show visible devices
+            </label>
         </div>
     );
 };

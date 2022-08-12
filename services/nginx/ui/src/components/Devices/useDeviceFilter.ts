@@ -4,7 +4,13 @@ import { chain as _ } from "underscore";
 import useFilter from "../../hooks/useFilter";
 
 export interface Filters {
+    // the device types to include
     types: string[];
+
+    // show only visible devices
+    visible: boolean;
+
+    // the search string from the box
     search?: string;
 }
 
@@ -21,8 +27,9 @@ export default function useDeviceFilter(devices?: Device[]) {
         [devices]
     );
 
-    const naturalDefaults = useMemo(() => ({ types }), [types]);
+    const naturalDefaults = useMemo(() => ({ types, visible: true }), [types]);
 
+    // apply the filtering criteria
     const filter = useCallback((filters: Filters, device: Device) => {
         // the search text disables the other filters
         if (filters.search) {
@@ -34,7 +41,19 @@ export default function useDeviceFilter(devices?: Device[]) {
             );
         }
 
-        return device.visible && filters.types.includes(device.type);
+        let result = true;
+
+        // apply the visible filter
+        if (filters.visible) {
+            result &&= device.visible;
+        } else {
+            result &&= !device.visible;
+        }
+
+        // apply the type filters
+        result &&= filters.types.includes(device.type);
+
+        return result;
     }, []);
 
     const { filters, setFilters, filtered, onClear } = useFilter(
@@ -59,6 +78,12 @@ export default function useDeviceFilter(devices?: Device[]) {
         [filters.types, setFilters]
     );
 
+    const onVisibleChange = useCallback(
+        () =>
+            setFilters((currentFilter) => ({ ...currentFilter, visible: !currentFilter.visible })),
+        [setFilters]
+    );
+
     const onSearchChange = useCallback(
         (search: string) => setFilters((currentFilter) => ({ ...currentFilter, search })),
         [setFilters]
@@ -70,6 +95,7 @@ export default function useDeviceFilter(devices?: Device[]) {
         types,
         onClear,
         onTypeChange,
+        onVisibleChange,
         onSearchChange,
     };
 }

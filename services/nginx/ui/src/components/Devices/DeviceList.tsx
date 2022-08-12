@@ -17,13 +17,18 @@ import useDeviceFilter from "./useDeviceFilter";
 const DeviceList = () => {
     const { isDevicesLoading, isDevicesError, devices } = useGetDevices();
 
-    const { filters, filtered, types, onClear, onTypeChange, onSearchChange } =
+    const { filters, filtered, types, onClear, onTypeChange, onVisibleChange, onSearchChange } =
         useDeviceFilter(devices);
 
     return (
         <>
             <Filter onClear={onClear}>
-                <DeviceFilter filters={filters} types={types} onTypeChange={onTypeChange} />
+                <DeviceFilter
+                    filters={filters}
+                    types={types}
+                    onTypeChange={onTypeChange}
+                    onVisibleChange={onVisibleChange}
+                />
             </Filter>
 
             <div className={styles.list}>
