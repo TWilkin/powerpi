@@ -1,0 +1,7 @@
+@import "../../../styles/colours.scss";
+
+.rule {
+    border: 0;
+    border-top: 1px solid;
+    @include colour("border-top-color", "filter-text");
+}

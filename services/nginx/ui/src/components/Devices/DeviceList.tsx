@@ -10,7 +10,7 @@ import Filter from "../Components/Filter";
 import List from "../Components/List";
 import Loading from "../Components/Loading";
 import Message from "../Components/Message";
-import SearchBox from "../Components/SearchBox/SearchBox";
+import SearchBox from "../Components/SearchBox";
 import DeviceFilter from "./DeviceFilter";
 import styles from "./DeviceList.module.scss";
 import useDeviceFilter from "./useDeviceFilter";
