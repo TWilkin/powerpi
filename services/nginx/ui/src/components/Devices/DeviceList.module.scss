@@ -18,5 +18,9 @@
                 @include colour("color", "text");
             }
         }
+
+        &.hidden {
+            opacity: 70%;
+        }
     }
 }

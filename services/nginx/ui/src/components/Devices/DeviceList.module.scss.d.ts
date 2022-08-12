@@ -2,6 +2,7 @@
 // Please do not change this file!
 interface CssExports {
   'device': string;
+  'hidden': string;
   'history': string;
   'list': string;
   'state': string;

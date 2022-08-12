@@ -1,5 +1,6 @@
-import { faHistory } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash, faHistory } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import { Link } from "react-router-dom";
 import { useGetDevices } from "../../hooks/devices";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
@@ -46,9 +47,22 @@ const DeviceList = () => {
                                     filtered.map((device) => (
                                         <tr
                                             key={device.name}
-                                            className={styles.device}
+                                            className={classNames(styles.device, {
+                                                [styles.hidden]: !device.visible,
+                                            })}
                                             title={`Device ${device.name} is currently ${device.state}.`}
                                         >
+                                            {(!filters.visible || filters.search) && (
+                                                <td>
+                                                    <FontAwesomeIcon
+                                                        title={`This device is ${
+                                                            device.visible ? "visible" : "hidden"
+                                                        }`}
+                                                        icon={device.visible ? faEye : faEyeSlash}
+                                                    />
+                                                </td>
+                                            )}
+
                                             <td>
                                                 <DeviceIcon type={device.type} />
                                             </td>
