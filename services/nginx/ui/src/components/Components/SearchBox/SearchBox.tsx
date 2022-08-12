@@ -8,10 +8,14 @@ interface SearchBoxProps {
 
 const SearchBox = ({ placeholder, onChange }: SearchBoxProps) => {
     const onSearch = useCallback(
-        (event: ChangeEvent<HTMLInputElement>) => onChange(event.currentTarget.value), 
+        (event: ChangeEvent<HTMLInputElement>) => onChange(event.currentTarget.value),
         [onChange]
     );
 
-    return <div className={styles.box}><input type="text" placeholder={placeholder} onChange={onSearch} /></div>;
+    return (
+        <div className={styles.box}>
+            <input type="search" placeholder={placeholder} onChange={onSearch} />
+        </div>
+    );
 };
 export default SearchBox;

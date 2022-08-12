@@ -1,6 +1,7 @@
 import { faHistory } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import { useGetDevices } from "../../hooks/devices";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import DeviceIcon from "../Components/DeviceIcon";
 import DevicePowerButton from "../Components/DevicePowerButton";
@@ -14,15 +15,9 @@ import styles from "./DeviceList.module.scss";
 import useDeviceFilter from "./useDeviceFilter";
 
 const DeviceList = () => {
-    const {
-        filters,
-        isDevicesLoading,
-        isDevicesError,
-        devices,
-        types,
-        onTypeChange,
-        onSearchChange,
-    } = useDeviceFilter();
+    const { isDevicesLoading, isDevicesError, devices } = useGetDevices();
+
+    const { filters, filtered, types, onTypeChange, onSearchChange } = useDeviceFilter(devices);
 
     return (
         <>
@@ -37,8 +32,8 @@ const DeviceList = () => {
                     <List>
                         <table>
                             <tbody>
-                                {devices && devices.length > 0 ? (
-                                    devices.map((device) => (
+                                {filtered && filtered.length > 0 ? (
+                                    filtered.map((device) => (
                                         <tr
                                             key={device.name}
                                             className={styles.device}

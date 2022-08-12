@@ -1,16 +1,13 @@
 import { Device } from "@powerpi/api";
 import { ChangeEvent, useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { chain as _ } from "underscore";
-import { useGetDevices } from "../../hooks/devices";
 
 export interface Filters {
     types: string[];
     search?: string;
 }
 
-export default function useDeviceFilter() {
-    const { isDevicesLoading, isDevicesError, devices } = useGetDevices();
-
+export default function useDeviceFilter(devices?: Device[]) {
     const types = useMemo(
         () => [
             ...new Set(
@@ -75,9 +72,7 @@ export default function useDeviceFilter() {
 
     return {
         filters,
-        isDevicesLoading,
-        isDevicesError,
-        devices: filtered,
+        filtered,
         types,
         onTypeChange,
         onSearchChange,
