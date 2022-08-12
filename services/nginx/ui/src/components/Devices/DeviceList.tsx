@@ -1,6 +1,5 @@
 import { faHistory } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback } from "react";
 import { Link } from "react-router-dom";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import DeviceIcon from "../Components/DeviceIcon";
@@ -15,10 +14,15 @@ import styles from "./DeviceList.module.scss";
 import useDeviceFilter from "./useDeviceFilter";
 
 const DeviceList = () => {
-    const { filters, isDevicesLoading, isDevicesError, devices, types, onTypeChange } =
-        useDeviceFilter();
-
-    const onSearch = useCallback((search: string) => alert(search), []);
+    const {
+        filters,
+        isDevicesLoading,
+        isDevicesError,
+        devices,
+        types,
+        onTypeChange,
+        onSearchChange,
+    } = useDeviceFilter();
 
     return (
         <>
@@ -28,7 +32,7 @@ const DeviceList = () => {
 
             <div className={styles.list}>
                 <Loading loading={isDevicesLoading}>
-                    <SearchBox placeholder="Search for devices" onChange={onSearch} />
+                    <SearchBox placeholder="Search for devices" onChange={onSearchChange} />
 
                     <List>
                         <table>
