@@ -8,6 +8,7 @@ export interface IDeviceConfig {
     type: string;
     display_name?: string;
     visible?: boolean;
+    location?: string;
 }
 
 export interface IDeviceConfigFile {

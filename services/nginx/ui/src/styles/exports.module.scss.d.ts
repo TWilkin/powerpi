@@ -3,6 +3,7 @@
 interface CssExports {
   'darkBackground': string;
   'darkBorder': string;
+  'darkButton': string;
   'darkChart': string;
   'darkChartLine': string;
   'darkCritical': string;
@@ -16,6 +17,7 @@ interface CssExports {
   'darkWarning': string;
   'lightBackground': string;
   'lightBorder': string;
+  'lightButton': string;
   'lightChart': string;
   'lightChartLine': string;
   'lightCritical': string;

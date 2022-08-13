@@ -1,7 +1,8 @@
-import { faSliders } from "@fortawesome/free-solid-svg-icons";
+import { faFilterCircleXmark, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 import { MouseEvent, PropsWithChildren, useState } from "react";
+import Button from "../Button";
 import styles from "./Filter.module.scss";
 
 type FilterProps = PropsWithChildren<{
@@ -30,11 +31,7 @@ const Filter = ({ onClear, children }: FilterProps) => {
             <div>
                 {children}
 
-                {onClear && (
-                    <button className={styles.clear} onClick={onClear}>
-                        Clear
-                    </button>
-                )}
+                {onClear && <Button text="Clear" icon={faFilterCircleXmark} onClick={onClear} />}
             </div>
         </div>
     );

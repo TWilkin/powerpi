@@ -22,9 +22,11 @@ const DeviceList = () => {
         filters,
         filtered,
         types,
+        locations,
         onClear,
         filteredCount,
         onTypeChange,
+        onLocationChange,
         onVisibleChange,
         onSearchChange,
     } = useDeviceFilter(devices);
@@ -35,20 +37,22 @@ const DeviceList = () => {
                 <DeviceFilter
                     filters={filters}
                     types={types}
+                    locations={locations}
                     onTypeChange={onTypeChange}
+                    onLocationChange={onLocationChange}
                     onVisibleChange={onVisibleChange}
                 />
             </Filter>
 
             <div className={styles.list}>
                 <Loading loading={isDevicesLoading}>
-                    <SearchBox
-                        placeholder="Search for devices"
-                        value={filters.search}
-                        onChange={onSearchChange}
-                    />
-
                     <List>
+                        <SearchBox
+                            placeholder="Search for devices"
+                            value={filters.search}
+                            onChange={onSearchChange}
+                        />
+
                         <table>
                             <tbody>
                                 {filtered && filtered.length > 0 ? (
