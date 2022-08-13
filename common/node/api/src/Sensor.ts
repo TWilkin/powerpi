@@ -1,9 +1,6 @@
-export default interface Sensor {
-    name: string;
-    display_name: string;
-    visible: boolean;
-    type: string;
-    location: string;
+import BaseDevice from "./BaseDevice";
+
+export default interface Sensor extends BaseDevice {
     entity?: string;
     action?: string;
     state?: string;
