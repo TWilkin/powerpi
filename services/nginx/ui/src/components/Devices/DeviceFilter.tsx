@@ -8,11 +8,20 @@ import { Filters } from "./useDeviceFilter";
 interface DeviceFilterProps {
     filters: Filters;
     types: string[];
+    locations: string[];
     onTypeChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    onLocationChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onVisibleChange: () => void;
 }
 
-const DeviceFilter = ({ filters, types, onTypeChange, onVisibleChange }: DeviceFilterProps) => {
+const DeviceFilter = ({
+    filters,
+    types,
+    locations,
+    onTypeChange,
+    onLocationChange,
+    onVisibleChange,
+}: DeviceFilterProps) => {
     return (
         <div className={styles.filters}>
             <FilterGroup>
@@ -27,6 +36,22 @@ const DeviceFilter = ({ filters, types, onTypeChange, onVisibleChange }: DeviceF
                             />
                             <DeviceIcon type={type} />
                             <div>{type}</div>
+                        </label>
+                    ))}
+                </Loading>
+            </FilterGroup>
+
+            <FilterGroup>
+                <Loading loading={!locations}>
+                    {locations?.map((location) => (
+                        <label key={location}>
+                            <input
+                                type="checkbox"
+                                value={location}
+                                checked={filters.locations.includes(location)}
+                                onChange={onLocationChange}
+                            />
+                            {location}
                         </label>
                     ))}
                 </Loading>

@@ -7,6 +7,9 @@ export interface Filters {
     // the device types to include
     types: string[];
 
+    // the device locations to include
+    locations: string[];
+
     // show only visible devices
     visible: boolean;
 
@@ -27,7 +30,23 @@ export default function useDeviceFilter(devices?: Device[]) {
         [devices]
     );
 
-    const naturalDefaults = useMemo(() => ({ types, visible: true }), [types]);
+    const locations = useMemo(
+        () => [
+            ...new Set(
+                _(devices)
+                    .filter((device) => device.location)
+                    .sortBy((device) => device.location)
+                    .map((device) => device.location ?? "unspecified")
+                    .value()
+            ),
+        ],
+        [devices]
+    );
+
+    const naturalDefaults = useMemo(
+        () => ({ types, locations, visible: true }),
+        [locations, types]
+    );
 
     // apply the filtering criteria
     const filter = useCallback((filters: Filters, device: Device) => {
@@ -52,6 +71,14 @@ export default function useDeviceFilter(devices?: Device[]) {
 
         // apply the type filters
         result &&= filters.types.includes(device.type);
+
+        // apply the location filters
+        if (filters.locations.length === 0) {
+            // only show unspecified location
+            result &&= !device.location;
+        } else {
+            result &&= device.location !== undefined && filters.locations.includes(device.location);
+        }
 
         return result;
     }, []);
@@ -78,6 +105,23 @@ export default function useDeviceFilter(devices?: Device[]) {
         [filters.types, setFilters]
     );
 
+    const onLocationChange = useCallback(
+        (event: ChangeEvent<HTMLInputElement>) => {
+            let filterLocations = [...filters.locations];
+
+            if (event.target.checked) {
+                filterLocations.push(event.target.value);
+            } else {
+                filterLocations = filterLocations.filter(
+                    (location) => location !== event.target.value
+                );
+            }
+
+            setFilters((currentFilter) => ({ ...currentFilter, locations: filterLocations }));
+        },
+        [filters.locations, setFilters]
+    );
+
     const onVisibleChange = useCallback(
         () =>
             setFilters((currentFilter) => ({ ...currentFilter, visible: !currentFilter.visible })),
@@ -93,10 +137,12 @@ export default function useDeviceFilter(devices?: Device[]) {
         filters,
         filtered,
         types,
+        locations,
         onClear,
         totalCount,
         filteredCount,
         onTypeChange,
+        onLocationChange,
         onVisibleChange,
         onSearchChange,
     };
