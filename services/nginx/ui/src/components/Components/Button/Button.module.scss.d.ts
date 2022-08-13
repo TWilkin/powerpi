@@ -2,11 +2,6 @@
 // Please do not change this file!
 interface CssExports {
   'button': string;
-  'filter': string;
-  'filter-slide-in': string;
-  'filter-slide-out': string;
-  'slide-in': string;
-  'slide-out': string;
 }
 export const cssExports: CssExports;
 export default cssExports;

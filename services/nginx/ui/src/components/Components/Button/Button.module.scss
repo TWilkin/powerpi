@@ -1,0 +1,15 @@
+@import "../../../styles/colours.scss";
+
+.button {
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    @include colour("background-color", "button");
+    @include colour("color", "text");
+    border: 1px solid;
+    @include colour("border-color", "border");
+    border-radius: 4px;
+
+    svg {
+        margin-right: 0.4rem;
+    }
+}
