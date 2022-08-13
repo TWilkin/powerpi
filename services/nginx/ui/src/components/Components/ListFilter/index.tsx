@@ -1,1 +1,1 @@
-export { default } from "./ListFilter";
+export { default, IListFilter } from "./ListFilter";

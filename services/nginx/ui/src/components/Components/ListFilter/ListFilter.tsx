@@ -3,14 +3,19 @@ import FilterGroup from "../FilterGroup";
 import Loading from "../Loading";
 import styles from "./ListFilter.module.scss";
 
-interface ListFilterProps<TListType> {
+export interface IListFilter {
+    key: string;
+    value: string;
+}
+
+interface ListFilterProps<TListType extends IListFilter> {
     values?: TListType[];
-    filters: TListType[];
+    filters: string[];
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
     element: (value: TListType) => ReactNode;
 }
 
-export default function ListFilter<TListType extends string>({
+export default function ListFilter<TListType extends IListFilter>({
     values,
     filters,
     onChange,
@@ -20,11 +25,11 @@ export default function ListFilter<TListType extends string>({
         <FilterGroup>
             <Loading loading={!values}>
                 {values?.map((value) => (
-                    <label key={value} className={styles.filter}>
+                    <label key={value.key} className={styles.filter}>
                         <input
                             type="checkbox"
-                            value={value}
-                            checked={filters.includes(value)}
+                            value={value.key}
+                            checked={filters.includes(value.key)}
                             onChange={onChange}
                         />
                         {element(value)}

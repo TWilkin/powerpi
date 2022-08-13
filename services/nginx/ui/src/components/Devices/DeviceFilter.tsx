@@ -1,13 +1,13 @@
 import { ChangeEvent } from "react";
 import DeviceIcon from "../Components/DeviceIcon";
 import FilterGroup from "../Components/FilterGroup";
-import ListFilter from "../Components/ListFilter";
+import ListFilter, { IListFilter } from "../Components/ListFilter";
 import { Filters } from "./useDeviceFilter";
 
 interface DeviceFilterProps {
     filters: Filters;
-    types: string[];
-    locations: string[];
+    types: IListFilter[];
+    locations: IListFilter[];
     onTypeChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onLocationChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onVisibleChange: () => void;
@@ -29,8 +29,8 @@ const DeviceFilter = ({
                 onChange={onTypeChange}
                 element={(type) => (
                     <>
-                        <DeviceIcon type={type} />
-                        <div>{type}</div>
+                        <DeviceIcon type={type.key} />
+                        <div>{type.value}</div>
                     </>
                 )}
             />
@@ -39,7 +39,7 @@ const DeviceFilter = ({
                 values={locations}
                 filters={filters.locations}
                 onChange={onLocationChange}
-                element={(location) => <>{location}</>}
+                element={(location) => <>{location.value}</>}
             />
 
             <FilterGroup>

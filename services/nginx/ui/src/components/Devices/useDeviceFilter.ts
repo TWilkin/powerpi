@@ -1,6 +1,7 @@
 import { Device } from "@powerpi/api";
 import { ChangeEvent, useCallback, useMemo } from "react";
 import { chain as _ } from "underscore";
+import { useGetFloorplan } from "../../hooks/floorplan";
 import useFilter from "../../hooks/useFilter";
 
 export interface Filters {
@@ -19,27 +20,53 @@ export interface Filters {
 
 export default function useDeviceFilter(devices?: Device[]) {
     const types = useMemo(
-        () => [
-            ...new Set(
-                _(devices)
-                    .sortBy((device) => device.type)
-                    .map((device) => device.type)
-                    .value()
-            ),
-        ],
+        () =>
+            _(devices)
+                .uniq((device) => device.type)
+                .sortBy((device) => device.type)
+                .map((device) => ({ key: device.type, value: device.type }))
+                .value(),
         [devices]
     );
+
+    // use the floorplan to get the room display names
+    const { floorplan } = useGetFloorplan();
 
     // handle undefined in device location
     const getDeviceLocation = useCallback((device: Device) => device.location ?? "unspecified", []);
 
     const locations = useMemo(
-        () => [...new Set(_(devices).sortBy(getDeviceLocation).map(getDeviceLocation).value())],
-        [devices, getDeviceLocation]
+        () =>
+            _(devices)
+                .uniq((device) => device.location)
+                .sortBy(getDeviceLocation)
+                .map((device) => {
+                    const location = getDeviceLocation(device);
+
+                    // try and find the room to get the display name
+                    for (const floor of floorplan?.floors ?? []) {
+                        for (const room of floor.rooms) {
+                            if (room.name === location) {
+                                return {
+                                    key: location,
+                                    value: room.display_name ?? location,
+                                };
+                            }
+                        }
+                    }
+
+                    return { key: location, value: location };
+                })
+                .value(),
+        [devices, floorplan?.floors, getDeviceLocation]
     );
 
     const naturalDefaults = useMemo(
-        () => ({ types, locations, visible: true }),
+        () => ({
+            types: types.map((type) => type.key),
+            locations: locations.map((location) => location.key),
+            visible: true,
+        }),
         [locations, types]
     );
 
