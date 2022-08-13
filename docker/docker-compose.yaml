@@ -207,7 +207,7 @@ services:
             - /srv/docker-volumes/powerpi/postgres/data:/var/lib/postgresql/data/pgdata
 
     persistence:
-        image: ${REGISTRY}/powerpi/persistence:0.1.1
+        image: ${REGISTRY}/powerpi/persistence:0.1.2
         networks:
             - powerpi
         deploy:
