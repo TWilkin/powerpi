@@ -3,9 +3,18 @@ import { Pool, PoolClient } from "pg";
 import Message from "../models/message";
 import ConfigService from "./config";
 
+enum DatabaseOperator {
+    Equal = "=",
+    GreaterThan = ">",
+    GreaterThanEqual = ">=",
+    LessThanEqual = "<=",
+    LessThan = "<",
+}
+
 interface DatabaseQueryValueParam {
     name: string;
     value?: string;
+    operator?: DatabaseOperator;
 }
 
 interface DatabaseQueryBetweenParam {
@@ -25,29 +34,27 @@ export default class DatabaseService {
     }
 
     public async getHistory(
-        page: number,
         limit: number,
+        lastDate?: Date,
         type?: string,
         entity?: string,
         action?: string
     ) {
-        const params = optionalParameterList(type, entity, action);
+        const params = optionalParameterList(lastDate, type, entity, action);
 
         const dbQueryParams = [
+            { name: "timestamp", value: lastDate, operator: DatabaseOperator.LessThanEqual },
             { name: "type", value: type },
             { name: "entity", value: entity },
             { name: "action", value: action },
         ];
-
-        const skip = limit * page;
 
         return await this.query<Message>(
             this.generateQuery(
                 "SELECT * FROM mqtt",
                 "ORDER BY timestamp DESC",
                 dbQueryParams,
-                limit,
-                skip
+                limit
             ),
             params
         );
@@ -161,7 +168,11 @@ export default class DatabaseService {
         whereClause = whereClause.length > 0 ? `WHERE ${whereClause}` : "";
 
         const limitClause =
-            limit !== undefined && skip !== undefined ? `LIMIT ${limit} OFFSET ${skip}` : "";
+            limit !== undefined && skip !== undefined
+                ? `LIMIT ${limit} OFFSET ${skip}`
+                : limit !== undefined
+                ? `LIMIT ${limit}`
+                : "";
 
         const sql = `${start} ${whereClause} ${end} ${limitClause}`.trim();
 
@@ -197,15 +208,21 @@ function* optionalArgumentGenerator(params: DatabaseQueryParam[]) {
         if ("value" in current) {
             // DatabaseQueryValueParam
             if (current.value) {
-                paramSql = `${current.name} = $${index}::text`;
+                const valueType = getParameterType(current.value);
+                const operator = current.operator ?? DatabaseOperator.Equal;
+
+                paramSql = `${current.name} ${operator} $${index}::${valueType}`;
                 index++;
             }
         } else if ("start" in current) {
             // DatabaseQueryBetweenParam
             if (current.start && current.end) {
+                const startType = getParameterType(current.start);
+                const endType = getParameterType(current.end);
+
                 paramSql = `${
                     current.name
-                } BETWEEN $${index++}::timestamptz AND $${index++}::timestamptz`;
+                } BETWEEN $${index++}::${startType} AND $${index++}::${endType}`;
             }
         }
 
@@ -217,4 +234,12 @@ function* optionalArgumentGenerator(params: DatabaseQueryParam[]) {
 
 function optionalParameterList(...params: (string | Date | undefined)[]) {
     return params.filter((param) => param) as (string | Date)[];
+}
+
+function getParameterType(param: string | Date) {
+    if (param instanceof Date) {
+        return "timestamptz";
+    }
+
+    return "text";
 }

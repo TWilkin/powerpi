@@ -68,19 +68,24 @@ export default class HistoryController {
     @Authorize()
     async getHistory(
         @Res() response: Response,
-        @QueryParams("page") page = 0,
         @QueryParams("records") records = 30,
+        @QueryParams("lastDate") lastDate?: Date,
         @QueryParams("type") type?: string,
         @QueryParams("entity") entity?: string,
         @QueryParams("action") action?: string
     ) {
         return await this.query(response, async () => {
-            const data = await this.databaseService.getHistory(page, records, type, entity, action);
+            const data = await this.databaseService.getHistory(
+                records,
+                lastDate,
+                type,
+                entity,
+                action
+            );
 
             const count = await this.databaseService.getHistoryCount(type, entity, action);
 
             return {
-                page,
                 records: count?.rows[0]?.count,
                 data: data?.rows.map((row) => {
                     if (typeof row.message === "string") {
