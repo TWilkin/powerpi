@@ -22,7 +22,7 @@ const HistoryList = () => {
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    const records = 5;
+    const records = 30;
 
     const { isHistoryLoading, isHistoryError, history } = useGetHistory(
         records,
@@ -46,7 +46,11 @@ const HistoryList = () => {
     const [historyCache, setHistoryCache] = useState<History[]>([]);
     useEffect(() => {
         if (!isHistoryLoading && history?.data && history.data.length > 0) {
-            setHistoryCache((cache) => [...cache, ...(history.data ?? [])]);
+            setHistoryCache((cache) =>
+                _([...cache, ...(history.data ?? [])])
+                    .uniq((record) => JSON.stringify(record))
+                    .value()
+            );
         }
     }, [history?.data, isHistoryLoading]);
 
