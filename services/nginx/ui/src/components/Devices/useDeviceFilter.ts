@@ -30,17 +30,12 @@ export default function useDeviceFilter(devices?: Device[]) {
         [devices]
     );
 
+    // handle undefined in device location
+    const getDeviceLocation = useCallback((device: Device) => device.location ?? "unspecified", []);
+
     const locations = useMemo(
-        () => [
-            ...new Set(
-                _(devices)
-                    .filter((device) => device.location)
-                    .sortBy((device) => device.location)
-                    .map((device) => device.location ?? "unspecified")
-                    .value()
-            ),
-        ],
-        [devices]
+        () => [...new Set(_(devices).sortBy(getDeviceLocation).map(getDeviceLocation).value())],
+        [devices, getDeviceLocation]
     );
 
     const naturalDefaults = useMemo(
@@ -49,39 +44,37 @@ export default function useDeviceFilter(devices?: Device[]) {
     );
 
     // apply the filtering criteria
-    const filter = useCallback((filters: Filters, device: Device) => {
-        // the search text disables the other filters
-        if (filters.search) {
-            const search = filters.search.toLocaleLowerCase();
+    const filter = useCallback(
+        (filters: Filters, device: Device) => {
+            // the search text disables the other filters
+            if (filters.search) {
+                const search = filters.search.toLocaleLowerCase();
 
-            return (
-                device.display_name?.toLocaleLowerCase().includes(search) ||
-                device.name.toLocaleLowerCase().includes(search)
-            );
-        }
+                return (
+                    device.display_name?.toLocaleLowerCase().includes(search) ||
+                    device.name.toLocaleLowerCase().includes(search)
+                );
+            }
 
-        let result = true;
+            let result = true;
 
-        // apply the visible filter
-        if (filters.visible) {
-            result &&= device.visible;
-        } else {
-            result &&= !device.visible;
-        }
+            // apply the visible filter
+            if (filters.visible) {
+                result &&= device.visible;
+            } else {
+                result &&= !device.visible;
+            }
 
-        // apply the type filters
-        result &&= filters.types.includes(device.type);
+            // apply the type filters
+            result &&= filters.types.includes(device.type);
 
-        // apply the location filters
-        if (filters.locations.length === 0) {
-            // only show unspecified location
-            result &&= !device.location;
-        } else {
-            result &&= device.location !== undefined && filters.locations.includes(device.location);
-        }
+            // apply the location filters
+            result &&= filters.locations.includes(getDeviceLocation(device));
 
-        return result;
-    }, []);
+            return result;
+        },
+        [getDeviceLocation]
+    );
 
     const { filters, setFilters, filtered, onClear, totalCount, filteredCount } = useFilter(
         "device",
