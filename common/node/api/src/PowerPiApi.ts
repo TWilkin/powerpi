@@ -46,9 +46,16 @@ export default class PowerPiApi {
         type?: string,
         entity?: string,
         action?: string,
-        page?: number,
+        lastDate?: Date,
         records?: number
-    ) => this.get<PaginationResponse<History>>("history", { type, entity, action, page, records });
+    ) =>
+        this.get<PaginationResponse<History>>("history", {
+            type,
+            entity,
+            action,
+            lastDate,
+            records,
+        });
 
     public getHistoryRange = (
         start?: Date,
