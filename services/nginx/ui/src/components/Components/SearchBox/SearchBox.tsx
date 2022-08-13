@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback } from "react";
+import { ChangeEvent, MouseEvent, useCallback, useRef } from "react";
 import styles from "./SearchBox.module.scss";
 
 interface SearchBoxProps {
@@ -8,14 +8,30 @@ interface SearchBoxProps {
 }
 
 const SearchBox = ({ placeholder, value, onChange }: SearchBoxProps) => {
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const onClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
+        if (document.activeElement !== inputRef.current) {
+            event.preventDefault();
+
+            inputRef.current?.focus();
+        }
+    }, []);
+
     const onSearch = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => onChange(event.currentTarget.value),
         [onChange]
     );
 
     return (
-        <div className={styles.box}>
-            <input type="search" placeholder={placeholder} onChange={onSearch} value={value} />
+        <div className={styles.box} onClick={onClick}>
+            <input
+                type="search"
+                placeholder={placeholder}
+                onChange={onSearch}
+                value={value}
+                ref={inputRef}
+            />
         </div>
     );
 };

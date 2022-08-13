@@ -13,6 +13,10 @@
     @include colour("border-color", "border");
     border-radius: 6px;
 
+    &:hover {
+        cursor: text;
+    }
+
     &::before {
         position: absolute;
         top: 2px;
