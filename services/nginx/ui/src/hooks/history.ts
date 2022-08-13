@@ -37,16 +37,16 @@ function extractResult<TRecord>(result: UseQueryResult<TRecord[], unknown>, prop
 }
 
 export function useGetHistory(
-    page: number,
     records: number,
+    lastDate?: Date,
     type?: string,
     entity?: string,
     action?: string
 ) {
     const api = useAPI();
     const { isLoading, isError, data } = useQuery(
-        ["history", type, entity, action, page, records],
-        () => api.getHistory(type, entity, action, page, records),
+        ["history", type, entity, action, lastDate, records],
+        () => api.getHistory(type, entity, action, lastDate, records),
         {
             keepPreviousData: true,
         }

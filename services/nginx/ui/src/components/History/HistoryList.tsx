@@ -1,34 +1,59 @@
-import { useState } from "react";
+import { History } from "@powerpi/api";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import InfiniteScroll from "react-infinite-scroller";
+import { chain as _ } from "underscore";
 import { useGetHistory } from "../../hooks/history";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import Filter from "../Components/Filter";
 import List from "../Components/List";
-import Loading from "../Components/Loading";
 import Message from "../Components/Message";
 import { MessageTypeFilters } from "../Components/MessageTypeFilter";
-import PaginationControls from "../Components/PaginationControls";
 import HistoryFilter from "./HistoryFilter";
 import styles from "./HistoryList.module.scss";
 
 const HistoryList = () => {
-    const [page, setPage] = useState(0);
+    const [lastDate, setLastDate] = useState<Date | undefined>();
+
     const [filters, setFilters] = useState<MessageTypeFilters>({
         type: undefined,
         entity: undefined,
         action: undefined,
     });
 
-    const records = 30;
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    const records = 5;
 
     const { isHistoryLoading, isHistoryError, history } = useGetHistory(
-        page,
         records,
+        lastDate,
         filters.type !== "" ? filters.type : undefined,
         filters.entity !== "" ? filters.entity : undefined,
         filters.action !== "" ? filters.action : undefined
     );
 
-    const lastPage = history?.records ? Math.ceil(history.records / records) - 1 : 1;
+    const loadMore = useCallback(() => {
+        // only load more if it's not already loading
+        if (!isHistoryLoading) {
+            // find the current last element
+            const currentLastDate = _(history?.data).last().value()?.timestamp;
+
+            setLastDate(currentLastDate);
+        }
+    }, [history?.data, isHistoryLoading]);
+
+    // cache the history so we don't lose the data when loading the next page
+    const [historyCache, setHistoryCache] = useState<History[]>([]);
+    useEffect(() => {
+        if (!isHistoryLoading && history?.data && history.data.length > 0) {
+            setHistoryCache((cache) => [...cache, ...(history.data ?? [])]);
+        }
+    }, [history?.data, isHistoryLoading]);
+
+    const hasMore = useMemo(
+        () => historyCache.length < (history?.records ?? 0),
+        [history?.records, historyCache.length]
+    );
 
     return (
         <>
@@ -37,9 +62,12 @@ const HistoryList = () => {
             </Filter>
 
             <div className={styles.list}>
-                <Loading loading={isHistoryLoading}>
-                    <List>
-                        <PaginationControls page={page} lastPage={lastPage} setPage={setPage} />
+                <List ref={scrollRef}>
+                    <InfiniteScroll
+                        hasMore={hasMore}
+                        loadMore={loadMore}
+                        getScrollParent={() => scrollRef.current}
+                    >
                         <table>
                             <thead>
                                 <tr>
@@ -52,8 +80,8 @@ const HistoryList = () => {
                             </thead>
 
                             <tbody>
-                                {history?.data && history.data.length > 0 ? (
-                                    history?.data.map((row, i) => (
+                                {historyCache.length > 0 ? (
+                                    historyCache.map((row, i) => (
                                         <tr key={i}>
                                             <td>{row.type}</td>
                                             <td>{row.entity}</td>
@@ -80,9 +108,8 @@ const HistoryList = () => {
                                 )}
                             </tbody>
                         </table>
-                        <PaginationControls page={page} lastPage={lastPage} setPage={setPage} />
-                    </List>
-                </Loading>
+                    </InfiniteScroll>
+                </List>
             </div>
         </>
     );
