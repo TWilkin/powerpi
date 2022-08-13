@@ -10,13 +10,13 @@
         "url": "https://github.com/TWilkin/powerpi.git",
         "directory": "services/persistence"
     },
-    "main": "./dist/src/app.js",
-    "types": "./dist/src/app.d.ts",
+    "main": "./dist/src/index.js",
+    "types": "./dist/src/index.d.ts",
     "scripts": {
         "build": "tsc",
         "clean": "rm -rf dist build",
-        "start:dev": "ts-node src/app.ts",
-        "start:prd": "node dist/src/app.js"
+        "start:dev": "ts-node src/index.ts",
+        "start:prd": "node dist/src/index.js"
     },
     "dependencies": {
         "@powerpi/common": "^0.0.9",

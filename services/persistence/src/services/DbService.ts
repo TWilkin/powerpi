@@ -1,9 +1,9 @@
 import { LoggerService } from "@powerpi/common";
 import { Sequelize } from "sequelize-typescript";
 import { Service } from "typedi";
-import Container from "../container";
+import Container from "../Container";
 import MqttModel from "../models/mqtt.model";
-import ConfigService from "./config";
+import ConfigService from "./ConfigService";
 
 @Service()
 export default class DbService {

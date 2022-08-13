@@ -1,6 +1,6 @@
 import { LoggerService, Message, MqttConsumer, MqttService } from "@powerpi/common";
 import { Service } from "typedi";
-import Container from "../container";
+import Container from "../Container";
 import MqttModel from "../models/mqtt.model";
 
 @Service()
