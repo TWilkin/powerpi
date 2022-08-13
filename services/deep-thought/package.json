@@ -10,9 +10,13 @@
         "url": "https://github.com/TWilkin/powerpi.git",
         "directory": "services/deep-thought"
     },
-    "main": "src/app.ts",
+    "main": "./dist/src/app.js",
+    "types": "./dist/src/app.d.ts",
     "scripts": {
-        "start": "ts-node src/app.ts"
+        "build": "tsc",
+        "clean": "rm -rf dist",
+        "start:dev": "ts-node src/app.ts",
+        "start:prd": "node dist/src/app.js"
     },
     "dependencies": {
         "@powerpi/api": "^0.0.10",
@@ -29,17 +33,6 @@
         "@tsed/platform-express": "^6.115.0",
         "@tsed/schema": "^6.115.0",
         "@tsed/socketio": "^6.115.0",
-        "@types/cookie-parser": "^1.4.2",
-        "@types/cors": "^2.8.10",
-        "@types/express": "^4.17.12",
-        "@types/express-session": "^1.17.3",
-        "@types/jsonwebtoken": "^8.5.1",
-        "@types/multer": "^1.4.7",
-        "@types/node": "^18.0.0",
-        "@types/passport-google-oauth20": "^2.0.8",
-        "@types/passport-http": "^0.3.8",
-        "@types/passport-jwt": "^3.0.5",
-        "@types/pg": "^8.6.5",
         "body-parser": "^1.19.0",
         "cookie-parser": "^1.4.5",
         "cors": "^2.8.5",
@@ -55,8 +48,21 @@
         "passport-strategy": "^1.0.0",
         "pg": "^8.6.0",
         "socket.io": "^4.1.2",
+        "typedi": "^0.10.0"
+    },
+    "devDependencies": {
+        "@types/cookie-parser": "^1.4.2",
+        "@types/cors": "^2.8.10",
+        "@types/express": "^4.17.12",
+        "@types/express-session": "^1.17.3",
+        "@types/jsonwebtoken": "^8.5.1",
+        "@types/multer": "^1.4.7",
+        "@types/node": "^18.0.0",
+        "@types/passport-google-oauth20": "^2.0.8",
+        "@types/passport-http": "^0.3.8",
+        "@types/passport-jwt": "^3.0.5",
+        "@types/pg": "^8.6.5",
         "ts-node": "^10.8.1",
-        "typedi": "^0.10.0",
         "typescript": "^4.7.4"
     }
 }
