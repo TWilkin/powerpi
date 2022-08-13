@@ -39,6 +39,7 @@ export default class DeviceStateService extends DeviceStateListener {
             display_name: device.displayName,
             type: device.type,
             visible: device.visible ?? true,
+            location: device.location,
             state: DeviceState.Unknown,
             since: -1,
         }));

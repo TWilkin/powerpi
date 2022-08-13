@@ -3,5 +3,5 @@ export default interface BaseDevice {
     display_name: string;
     visible: boolean;
     type: string;
-    location: string;
+    location?: string;
 }
