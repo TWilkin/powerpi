@@ -1,8 +1,7 @@
 import { ChangeEvent } from "react";
 import DeviceIcon from "../Components/DeviceIcon";
 import FilterGroup from "../Components/FilterGroup";
-import Loading from "../Components/Loading";
-import styles from "./DeviceFilter.module.scss";
+import ListFilter from "../Components/ListFilter";
 import { Filters } from "./useDeviceFilter";
 
 interface DeviceFilterProps {
@@ -23,39 +22,25 @@ const DeviceFilter = ({
     onVisibleChange,
 }: DeviceFilterProps) => {
     return (
-        <div className={styles.filters}>
-            <FilterGroup>
-                <Loading loading={!types}>
-                    {types?.map((type) => (
-                        <label key={type}>
-                            <input
-                                type="checkbox"
-                                value={type}
-                                checked={filters.types.includes(type)}
-                                onChange={onTypeChange}
-                            />
-                            <DeviceIcon type={type} />
-                            <div>{type}</div>
-                        </label>
-                    ))}
-                </Loading>
-            </FilterGroup>
+        <div>
+            <ListFilter
+                values={types}
+                filters={filters.types}
+                onChange={onTypeChange}
+                element={(type) => (
+                    <>
+                        <DeviceIcon type={type} />
+                        <div>{type}</div>
+                    </>
+                )}
+            />
 
-            <FilterGroup>
-                <Loading loading={!locations}>
-                    {locations?.map((location) => (
-                        <label key={location}>
-                            <input
-                                type="checkbox"
-                                value={location}
-                                checked={filters.locations.includes(location)}
-                                onChange={onLocationChange}
-                            />
-                            {location}
-                        </label>
-                    ))}
-                </Loading>
-            </FilterGroup>
+            <ListFilter
+                values={locations}
+                filters={filters.locations}
+                onChange={onLocationChange}
+                element={(location) => <>{location}</>}
+            />
 
             <FilterGroup>
                 <label>
