@@ -39,7 +39,6 @@ export default function useDeviceFilter(devices?: Device[]) {
         () =>
             _(devices)
                 .uniq((device) => device.location)
-                .sortBy(getDeviceLocation)
                 .map((device) => {
                     const location = getDeviceLocation(device);
 
@@ -57,6 +56,7 @@ export default function useDeviceFilter(devices?: Device[]) {
 
                     return { key: location, value: location };
                 })
+                .sortBy((filter) => filter.value)
                 .value(),
         [devices, floorplan?.floors, getDeviceLocation]
     );
