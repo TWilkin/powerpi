@@ -2,10 +2,17 @@
 @import "../../styles/vars.scss";
 
 .list {
+    width: 600px;
     max-width: 600px;
-    margin-left: calc(1rem + 8px);
-    flex-direction: column;
-    justify-content: center;
+
+    table {
+        width: 100%;
+    }
+
+    @media (orientation: portrait) {
+        width: 100%;
+        max-width: 100%;
+    }
 
     .device {
         .state {
