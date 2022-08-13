@@ -12,10 +12,16 @@ export default function useFilter<TFilterType, TValueType>(
     const defaults = useMemo(() => {
         // load from local storage
         const saved = localStorage.getItem(storageKey);
-        const json = saved ? JSON.parse(saved) : undefined;
+        let json = saved ? JSON.parse(saved) : undefined;
 
-        // if we have saved data return that, otherwise the natural default
-        return json || naturalDefaults;
+        // ensure the JSON contains any new keys in the natural defaults
+        if (json && Object.keys(json).length > 0) {
+            json = { ...naturalDefaults, ...json };
+            return json;
+        }
+
+        // there was no saved keys so return the natural defaults
+        return naturalDefaults;
     }, [naturalDefaults, storageKey]);
 
     // the actual filter
