@@ -31,7 +31,7 @@ services:
             - FILE_PATH=docker/config
 
     deep-thought:
-        image: ${REGISTRY}/powerpi/deep-thought:0.5.13
+        image: ${REGISTRY}/powerpi/deep-thought:0.5.14
         networks:
             - powerpi
         deploy:
