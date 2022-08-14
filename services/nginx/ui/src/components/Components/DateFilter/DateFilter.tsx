@@ -12,9 +12,9 @@ const DateFilter = ({ name, selected, onChange }: DateFilterProps) => {
     const filterName = `${name}-date-filter`;
 
     // selected to nearest half-hour
-    if (selected && selected instanceof Date) {
-        selected.setMinutes(Math.ceil(selected.getMinutes() / 30) * 30);
-    }
+    selected?.setMinutes(Math.ceil(selected.getMinutes() / 30) * 30);
+
+    console.log(selected?.toISOString());
 
     return (
         <div className={styles.filter}>
@@ -29,6 +29,7 @@ const DateFilter = ({ name, selected, onChange }: DateFilterProps) => {
                 dateFormat="d MMMM yyyy HH:mm"
                 timeFormat="HH:mm"
                 maxDate={new Date()}
+                isClearable
             />
         </div>
     );

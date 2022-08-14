@@ -18,7 +18,7 @@ const InfiniteScrollList = ({ hasMore, loadMore, children }: InfiniteScrollListP
                 hasMore={hasMore}
                 loadMore={loadMore}
                 getScrollParent={() => scrollRef.current}
-                loader={<Loading className={styles.loading} loading />}
+                loader={<Loading key="loading" className={styles.loading} loading />}
             >
                 <>{children}</>
             </InfiniteScroll>

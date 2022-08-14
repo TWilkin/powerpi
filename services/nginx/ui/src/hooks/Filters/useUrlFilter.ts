@@ -63,7 +63,7 @@ export function useUrlFilter<TFilterType>(
             // only store it when we've retrieved from the URL
             localStorage.setItem(storageKey, JSON.stringify(filters));
         }
-    }, [defaults, filters, parseQuery, query, storageKey]);
+    }, [filters, storageKey]);
 
     // reset the filters back to the natural default
     const onClear = useCallback(

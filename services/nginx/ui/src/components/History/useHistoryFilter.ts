@@ -67,8 +67,8 @@ function parseQuery(query: URLSearchParams, defaults: Filters): Filters {
         action: query.get("action") ?? defaults.action,
         entity: query.get("entity") ?? defaults.entity,
         type: query.get("type") ?? defaults.type,
-        start: start ? new Date(start) : defaults.start,
-        end: end ? new Date(end) : defaults.end,
+        start: start && start !== "" ? new Date(start) : undefined,
+        end: end && end !== "" ? new Date(end) : undefined,
     };
 }
 
