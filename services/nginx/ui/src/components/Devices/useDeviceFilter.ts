@@ -193,9 +193,7 @@ function toQuery(filters: Filters) {
 
     params.push(["visible", filters.visible ? "1" : "0"]);
 
-    if (filters.search) {
-        params.push(["search", filters.search]);
-    }
+    params.push(["search", filters.search ?? ""]);
 
     return params;
 }
