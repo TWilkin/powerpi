@@ -68,13 +68,13 @@ export default class DatabaseService {
         entity?: string,
         action?: string
     ) {
-        const params = optionalParameterList(type, entity, action, start, end);
+        const params = optionalParameterList(start, end, type, entity, action);
 
         const dbQueryParams = [
+            { name: "timestamp", start, end },
             { name: "type", value: type },
             { name: "entity", value: entity },
             { name: "action", value: action },
-            { name: "timestamp", start, end },
         ];
 
         return await this.query<Message>(
@@ -83,10 +83,17 @@ export default class DatabaseService {
         );
     }
 
-    public async getHistoryCount(type?: string, entity?: string, action?: string) {
-        const params = optionalParameterList(type, entity, action);
+    public async getHistoryCount(
+        start?: Date,
+        end?: Date,
+        type?: string,
+        entity?: string,
+        action?: string
+    ) {
+        const params = optionalParameterList(start, end, type, entity, action);
 
         const dbQueryParams = [
+            { name: "timestamp", start, end },
             { name: "type", value: type },
             { name: "entity", value: entity },
             { name: "action", value: action },

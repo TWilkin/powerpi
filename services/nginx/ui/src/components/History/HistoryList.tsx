@@ -11,14 +11,21 @@ import styles from "./HistoryList.module.scss";
 import useHistoryFilter from "./useHistoryFilter";
 
 const HistoryList = () => {
-    const [lastDate, setLastDate] = useState<Date | undefined>();
+    const {
+        filters,
+        onClear,
+        onStartDateFilterChange,
+        onEndDateFilterChange,
+        onMessageTypeFilterChange,
+    } = useHistoryFilter();
 
-    const { filters, onClear, onMessageTypeFilterChange } = useHistoryFilter();
+    const [lastDate, setLastDate] = useState<Date | undefined>(filters.end);
 
     const records = 30;
 
     const { isHistoryLoading, isHistoryError, history } = useGetHistory(
         records,
+        filters.start,
         lastDate,
         filters.type !== "" ? filters.type : undefined,
         filters.entity !== "" ? filters.entity : undefined,
@@ -55,7 +62,7 @@ const HistoryList = () => {
     // when the filters change clear the cache and last dates
     useEffect(() => {
         setHistoryCache([]);
-        setLastDate(undefined);
+        setLastDate(filters.end);
     }, [filters]);
 
     return (
@@ -63,6 +70,8 @@ const HistoryList = () => {
             <Filter onClear={onClear}>
                 <HistoryFilter
                     filters={filters}
+                    onStartDateFilterChange={onStartDateFilterChange}
+                    onEndDateFilterChange={onEndDateFilterChange}
                     onMessageTypeFilterChange={onMessageTypeFilterChange}
                 />
             </Filter>

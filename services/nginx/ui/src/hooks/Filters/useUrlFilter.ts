@@ -5,7 +5,8 @@ export function useUrlFilter<TFilterType>(
     filterType: string,
     naturalDefaults: TFilterType,
     parseQuery: (query: URLSearchParams, defaults: TFilterType) => TFilterType,
-    toQuery: (filters: TFilterType) => ParamKeyValuePair[]
+    toQuery: (filters: TFilterType) => ParamKeyValuePair[],
+    jsonConverter?: (obj: { [key in keyof TFilterType]: string }) => TFilterType
 ) {
     // the storage key is the string we use in local storage to remember the filters
     const storageKey = useMemo(() => `${filterType}Filter`, [filterType]);
@@ -18,15 +19,21 @@ export function useUrlFilter<TFilterType>(
         const saved = localStorage.getItem(storageKey);
         let json = saved ? JSON.parse(saved) : undefined;
 
-        // ensure the JSON contains any new keys in the natural defaults
         if (json && Object.keys(json).length > 0) {
+            // make sure any conversions happen
+            if (jsonConverter) {
+                json = jsonConverter(json);
+            }
+
+            // ensure the JSON contains any new keys in the natural defaults
             json = { ...naturalDefaults, ...json };
+
             return json;
         }
 
         // there was no saved keys so return the natural defaults
         return naturalDefaults;
-    }, [naturalDefaults, storageKey]);
+    }, [jsonConverter, naturalDefaults, storageKey]);
 
     // get the filters from the URL
     const filters = useMemo(() => parseQuery(query, defaults), [defaults, parseQuery, query]);

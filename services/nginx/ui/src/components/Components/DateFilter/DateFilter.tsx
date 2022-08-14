@@ -1,4 +1,5 @@
 import DatePicker from "react-datepicker";
+import styles from "./DateFilter.module.scss";
 import "./DateFilter.scss";
 
 interface DateFilterProps {
@@ -11,11 +12,14 @@ const DateFilter = ({ name, selected, onChange }: DateFilterProps) => {
     const filterName = `${name}-date-filter`;
 
     // selected to nearest half-hour
-    selected?.setMinutes(Math.ceil(selected.getMinutes() / 30) * 30);
+    if (selected && selected instanceof Date) {
+        selected.setMinutes(Math.ceil(selected.getMinutes() / 30) * 30);
+    }
 
     return (
-        <div>
+        <div className={styles.filter}>
             <label htmlFor={filterName}>{name}: </label>
+
             <DatePicker
                 name={filterName}
                 selected={selected}

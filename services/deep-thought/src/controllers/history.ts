@@ -85,7 +85,16 @@ export default class HistoryController {
                 action
             );
 
-            const count = await this.databaseService.getHistoryCount(type, entity, action);
+            // if we only have an end, it's paging so don't change the count
+            const count = !start
+                ? await this.databaseService.getHistoryCount(
+                      undefined,
+                      undefined,
+                      type,
+                      entity,
+                      action
+                  )
+                : await this.databaseService.getHistoryCount(start, end, type, entity, action);
 
             return {
                 records: count?.rows[0]?.count,
