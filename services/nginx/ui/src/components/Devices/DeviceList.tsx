@@ -1,12 +1,12 @@
-import { faEye, faEyeSlash, faHistory } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { Link } from "react-router-dom";
 import { useGetDevices } from "../../hooks/devices";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import DeviceIcon from "../Components/DeviceIcon";
 import DevicePowerButton from "../Components/DevicePowerButton";
 import Filter from "../Components/Filter";
+import HistoryLink from "../Components/HistoryLink";
 import List from "../Components/List";
 import Loading from "../Components/Loading";
 import Message from "../Components/Message";
@@ -92,11 +92,7 @@ const DeviceList = () => {
                                             </td>
 
                                             <td className={styles.history}>
-                                                <Link
-                                                    to={`/history?type=device&entity=${device.name}`}
-                                                >
-                                                    <FontAwesomeIcon icon={faHistory} />
-                                                </Link>
+                                                <HistoryLink entity={device.name} type="device" />
                                             </td>
                                         </tr>
                                     ))
