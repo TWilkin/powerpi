@@ -52,7 +52,7 @@ export function useGetHistory(
     const api = useAPI();
     const { isLoading, isError, data } = useQuery(
         ["history", type, entity, action, lastDate, records],
-        () => api.getHistory(type, entity, action, lastDate, records),
+        () => api.getHistory(type, entity, action, undefined, lastDate, records),
         {
             keepPreviousData: true,
         }

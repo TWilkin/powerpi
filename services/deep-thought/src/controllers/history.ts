@@ -69,7 +69,8 @@ export default class HistoryController {
     async getHistory(
         @Res() response: Response,
         @QueryParams("records") records = 30,
-        @QueryParams("lastDate") lastDate?: Date,
+        @QueryParams("start") start: Date,
+        @QueryParams("end") end?: Date,
         @QueryParams("type") type?: string,
         @QueryParams("entity") entity?: string,
         @QueryParams("action") action?: string
@@ -77,7 +78,8 @@ export default class HistoryController {
         return await this.query(response, async () => {
             const data = await this.databaseService.getHistory(
                 records,
-                lastDate,
+                start,
+                end,
                 type,
                 entity,
                 action

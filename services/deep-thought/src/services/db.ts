@@ -35,15 +35,16 @@ export default class DatabaseService {
 
     public async getHistory(
         limit: number,
-        lastDate?: Date,
+        start?: Date,
+        end?: Date,
         type?: string,
         entity?: string,
         action?: string
     ) {
-        const params = optionalParameterList(lastDate, type, entity, action);
+        const params = optionalParameterList(start, end, type, entity, action);
 
         const dbQueryParams = [
-            { name: "timestamp", value: lastDate, operator: DatabaseOperator.LessThanEqual },
+            { name: "timestamp", start, end },
             { name: "type", value: type },
             { name: "entity", value: entity },
             { name: "action", value: action },
@@ -52,7 +53,7 @@ export default class DatabaseService {
         return await this.query<Message>(
             this.generateQuery(
                 "SELECT * FROM mqtt",
-                "ORDER BY timestamp DESC",
+                "ORDER BY timestamp DESC, type, entity, action",
                 dbQueryParams,
                 limit
             ),
@@ -205,24 +206,39 @@ function* optionalArgumentGenerator(params: DatabaseQueryParam[]) {
 
         let paramSql: string | undefined;
 
+        const normal = (value: Date | string | undefined, operator = DatabaseOperator.Equal) => {
+            if (value) {
+                const valueType = getParameterType(value);
+
+                return `${current.name} ${operator} $${index++}::${valueType}`;
+            }
+
+            return undefined;
+        };
+
         if ("value" in current) {
             // DatabaseQueryValueParam
-            if (current.value) {
-                const valueType = getParameterType(current.value);
-                const operator = current.operator ?? DatabaseOperator.Equal;
-
-                paramSql = `${current.name} ${operator} $${index}::${valueType}`;
-                index++;
-            }
+            paramSql = normal(current.value);
         } else if ("start" in current) {
             // DatabaseQueryBetweenParam
-            if (current.start && current.end) {
+            if (current.start) {
                 const startType = getParameterType(current.start);
-                const endType = getParameterType(current.end);
 
-                paramSql = `${
-                    current.name
-                } BETWEEN $${index++}::${startType} AND $${index++}::${endType}`;
+                if (current.end) {
+                    const endType = getParameterType(current.end);
+
+                    paramSql = `${
+                        current.name
+                    } BETWEEN $${index++}::${startType} AND $${index++}::${endType}`;
+                } else {
+                    // we only have start
+                    paramSql = normal(current.start, DatabaseOperator.GreaterThanEqual);
+                }
+            }
+
+            // we only have end
+            if (!paramSql) {
+                paramSql = normal(current.end, DatabaseOperator.LessThanEqual);
             }
         }
 
