@@ -68,19 +68,35 @@ export default class HistoryController {
     @Authorize()
     async getHistory(
         @Res() response: Response,
-        @QueryParams("page") page = 0,
         @QueryParams("records") records = 30,
+        @QueryParams("start") start: Date,
+        @QueryParams("end") end?: Date,
         @QueryParams("type") type?: string,
         @QueryParams("entity") entity?: string,
         @QueryParams("action") action?: string
     ) {
         return await this.query(response, async () => {
-            const data = await this.databaseService.getHistory(page, records, type, entity, action);
+            const data = await this.databaseService.getHistory(
+                records,
+                start,
+                end,
+                type,
+                entity,
+                action
+            );
 
-            const count = await this.databaseService.getHistoryCount(type, entity, action);
+            // if we only have an end, it's paging so don't change the count
+            const count = !start
+                ? await this.databaseService.getHistoryCount(
+                      undefined,
+                      undefined,
+                      type,
+                      entity,
+                      action
+                  )
+                : await this.databaseService.getHistoryCount(start, end, type, entity, action);
 
             return {
-                page,
                 records: count?.rows[0]?.count,
                 data: data?.rows.map((row) => {
                     if (typeof row.message === "string") {

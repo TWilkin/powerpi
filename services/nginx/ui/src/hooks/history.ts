@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQuery, UseQueryResult } from "react-query";
 import useAPI from "./api";
 
@@ -19,10 +20,15 @@ function useGetHistoryFilter<TFilter>(
     method: (type?: string) => Promise<TFilter[]>,
     type?: string
 ) {
-    const key = ["history", name];
-    if (type) {
-        key.push(type);
-    }
+    const key = useMemo(() => {
+        const key = ["history", name];
+
+        if (type) {
+            key.push(type);
+        }
+
+        return key;
+    }, [name, type]);
 
     return useQuery(key, () => method(type));
 }
@@ -37,16 +43,17 @@ function extractResult<TRecord>(result: UseQueryResult<TRecord[], unknown>, prop
 }
 
 export function useGetHistory(
-    page: number,
     records: number,
+    start?: Date,
+    end?: Date,
     type?: string,
     entity?: string,
     action?: string
 ) {
     const api = useAPI();
     const { isLoading, isError, data } = useQuery(
-        ["history", type, entity, action, page, records],
-        () => api.getHistory(type, entity, action, page, records),
+        ["history", type, entity, action, start, end, records],
+        () => api.getHistory(type, entity, action, start, end, records),
         {
             keepPreviousData: true,
         }

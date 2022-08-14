@@ -14,6 +14,7 @@ interface CssExports {
   'darkMenu': string;
   'darkMenuBorder': string;
   'darkText': string;
+  'darkThead': string;
   'darkWarning': string;
   'lightBackground': string;
   'lightBorder': string;
@@ -28,6 +29,7 @@ interface CssExports {
   'lightMenu': string;
   'lightMenuBorder': string;
   'lightText': string;
+  'lightThead': string;
   'lightWarning': string;
 }
 export const cssExports: CssExports;

@@ -1,11 +1,9 @@
 @import "../../../styles/vars.scss";
 
 .list {
+    position: relative;
+    left: calc(#{$logo-width} + 2px);
     max-width: calc(100vw - #{$logo-width});
-    margin-left: calc(#{$logo-width} + 2px);
+    margin: 0;
     overflow: auto;
-
-    @media (orientation: portrait) {
-        max-width: 100%;
-    }
 }

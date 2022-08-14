@@ -1,14 +1,13 @@
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { ReactNode } from "react";
+import { PropsWithChildren } from "react";
 import styles from "./Loading.module.scss";
 
-interface LoadingProps {
+type LoadingProps = PropsWithChildren<{
     loading: boolean;
     className?: string;
-    children: ReactNode | undefined;
-}
+}>;
 
 const Loading = ({ loading, className, children }: LoadingProps) =>
     loading ? (

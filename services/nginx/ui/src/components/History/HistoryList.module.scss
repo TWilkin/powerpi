@@ -1,7 +1,8 @@
 @import "../../styles/vars.scss";
 
 .list {
-    margin-left: calc(1rem + 8px);
+    width: fit-content;
+    margin-top: 4px;
 
     table {
         th,

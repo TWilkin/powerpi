@@ -7,9 +7,10 @@ import styles from "./Filter.module.scss";
 
 type FilterProps = PropsWithChildren<{
     onClear?: (event: MouseEvent<HTMLButtonElement>) => void;
+    className?: string;
 }>;
 
-const Filter = ({ onClear, children }: FilterProps) => {
+const Filter = ({ onClear, className, children }: FilterProps) => {
     const [showFilter, setShowFilter] = useState<boolean | undefined>(undefined);
 
     return (
@@ -17,7 +18,8 @@ const Filter = ({ onClear, children }: FilterProps) => {
             className={classnames(
                 styles.filter,
                 { [styles["slide-in"]]: showFilter },
-                { [styles["slide-out"]]: showFilter === false }
+                { [styles["slide-out"]]: showFilter === false },
+                className
             )}
         >
             <button

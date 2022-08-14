@@ -16,7 +16,7 @@ interface MesageTypeFilterProps {
     name: string;
     type: MessageFilterType;
     options?: string[];
-    defaultSelected?: string;
+    selected?: string;
     onSelect: (type: MessageFilterType, value: string) => void;
     loading: boolean;
     error: boolean;
@@ -26,7 +26,7 @@ const MessageTypeFilter = ({
     name,
     type,
     options,
-    defaultSelected,
+    selected,
     onSelect,
     loading,
     error,
@@ -37,7 +37,7 @@ const MessageTypeFilter = ({
     };
 
     return (
-        <div>
+        <div className={styles.filter}>
             <label htmlFor={`${type}-filter`}>{name}: </label>
 
             <Loading className={styles.loading} loading={loading}>
@@ -47,9 +47,10 @@ const MessageTypeFilter = ({
                     <select
                         name={`${type}-filter`}
                         onChange={handleFilterChange}
-                        defaultValue={defaultSelected}
+                        value={selected ?? ""}
                     >
                         <option value="">-</option>
+
                         {options?.map((option) => (
                             <option key={option} value={option}>
                                 {option}

@@ -1,10 +1,10 @@
 import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Device, DeviceState } from "@powerpi/api";
 import classNames from "classnames";
 import { MouseEvent, useState } from "react";
 import { useLongPress } from "use-long-press";
 import { useSetDeviceState } from "../../../hooks/devices";
+import Button from "../Button";
 import styles from "./DevicePowerButton.module.scss";
 
 interface DevicePowerButtonProps {
@@ -72,18 +72,17 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
     // show an on/off button
     return (
         <div className={styles.buttons}>
-            <button
+            <Button
                 className={styles.on}
                 onClick={(event) => handleButtonClick(event, DeviceState.On)}
-            >
-                <FontAwesomeIcon icon={faPowerOff} />
-            </button>
-            <button
+                icon={faPowerOff}
+            />
+
+            <Button
                 className={styles.off}
                 onClick={(event) => handleButtonClick(event, DeviceState.Off)}
-            >
-                <FontAwesomeIcon icon={faPowerOff} />
-            </button>
+                icon={faPowerOff}
+            />
         </div>
     );
 };

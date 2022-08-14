@@ -1,3 +1,15 @@
-.loading {
-    display: inline;
+@import "../../../styles/vars.scss";
+
+.filter {
+    display: flex;
+    justify-content: space-between;
+
+    .loading {
+        display: inline;
+    }
+
+    select {
+        min-width: $filter-min-width;
+        width: calc(100% - 4rem);
+    }
 }
