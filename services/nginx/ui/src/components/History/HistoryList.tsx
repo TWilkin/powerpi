@@ -55,6 +55,12 @@ const HistoryList = () => {
         [history?.records, historyCache.length]
     );
 
+    // when the filters change clear the cache and last dates
+    useEffect(() => {
+        setHistoryCache([]);
+        setLastDate(undefined);
+    }, [filters]);
+
     return (
         <>
             <Filter onClear={onClear}>
