@@ -4,8 +4,8 @@ import { useUrlFilter } from "../../hooks/Filters";
 import { MessageFilterType, MessageTypeFilters } from "../Components/MessageTypeFilter";
 
 export interface Filters extends MessageTypeFilters {
-    start?: Date;
-    end?: Date;
+    start?: Date | null;
+    end?: Date | null;
 }
 
 export default function useHistoryFilter() {
@@ -14,8 +14,8 @@ export default function useHistoryFilter() {
             action: undefined,
             entity: undefined,
             type: undefined,
-            start: undefined,
-            end: undefined,
+            start: null,
+            end: null,
         }),
         []
     );

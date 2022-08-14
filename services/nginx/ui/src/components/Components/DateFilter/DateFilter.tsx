@@ -4,7 +4,7 @@ import "./DateFilter.scss";
 
 interface DateFilterProps {
     name: string;
-    selected: Date | undefined;
+    selected: Date | null | undefined;
     onChange: (date: Date) => void;
 }
 

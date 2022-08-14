@@ -19,13 +19,13 @@ const HistoryList = () => {
         onMessageTypeFilterChange,
     } = useHistoryFilter();
 
-    const [lastDate, setLastDate] = useState<Date | undefined>(filters.end);
+    const [lastDate, setLastDate] = useState<Date | undefined>(filters.end ?? undefined);
 
     const records = 30;
 
     const { isHistoryLoading, isHistoryError, history } = useGetHistory(
         records,
-        filters.start,
+        filters.start ?? undefined,
         lastDate,
         filters.type !== "" ? filters.type : undefined,
         filters.entity !== "" ? filters.entity : undefined,
@@ -62,7 +62,7 @@ const HistoryList = () => {
     // when the filters change clear the cache and last dates
     useEffect(() => {
         setHistoryCache([]);
-        setLastDate(filters.end);
+        setLastDate(filters.end ?? undefined);
     }, [filters]);
 
     return (
