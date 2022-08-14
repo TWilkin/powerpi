@@ -1,3 +1,5 @@
+@import "../../../styles/vars.scss";
+
 .filter {
     display: flex;
     justify-content: space-between;
@@ -7,6 +9,7 @@
     }
 
     select {
+        min-width: $filter-min-width;
         width: calc(100% - 4rem);
     }
 }

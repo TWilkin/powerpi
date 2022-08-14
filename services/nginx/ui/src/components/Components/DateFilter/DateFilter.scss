@@ -1,5 +1,28 @@
+@import "../../../styles/vars.scss";
+
+$input-z-index: 1;
+
 .react-datepicker-wrapper {
-    width: calc(100% - 4rem);
+    width: $filter-min-width;
+
+    .react-datepicker__close-icon {
+        &::after {
+            background-color: transparent;
+            color: blue;
+            font-size: 1.1rem;
+        }
+    }
+
+    input {
+        outline: none;
+        z-index: $input-z-index;
+    }
+}
+
+.react-datepicker__tab-loop {
+    position: fixed;
+    top: 0;
+    z-index: $input-z-index + 1;
 }
 
 .react-datepicker {
