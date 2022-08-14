@@ -1,7 +1,7 @@
 @import "../../../styles/vars.scss";
 
 .list {
-    max-height: 100vh;
+    //max-height: 100vh; breaks infinite scroll but allows heading to be sticky...
     position: relative;
     left: calc(#{$logo-width} + 2px);
     max-width: calc(100vw - #{$logo-width});

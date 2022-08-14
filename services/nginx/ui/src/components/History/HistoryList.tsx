@@ -1,11 +1,10 @@
 import { History } from "@powerpi/api";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import InfiniteScroll from "react-infinite-scroller";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { chain as _ } from "underscore";
 import { useGetHistory } from "../../hooks/history";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import Filter from "../Components/Filter";
-import List from "../Components/List";
+import InfiniteScrollList from "../Components/InfiniteScrollList";
 import Message from "../Components/Message";
 import HistoryFilter from "./HistoryFilter";
 import styles from "./HistoryList.module.scss";
@@ -15,8 +14,6 @@ const HistoryList = () => {
     const [lastDate, setLastDate] = useState<Date | undefined>();
 
     const { filters, onClear, onMessageTypeFilterChange } = useHistoryFilter();
-
-    const scrollRef = useRef<HTMLDivElement>(null);
 
     const records = 30;
 
@@ -71,54 +68,48 @@ const HistoryList = () => {
             </Filter>
 
             <div className={styles.list}>
-                <List ref={scrollRef}>
-                    <InfiniteScroll
-                        hasMore={hasMore}
-                        loadMore={loadMore}
-                        getScrollParent={() => scrollRef.current}
-                    >
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Entity</th>
-                                    <th>Action</th>
-                                    <th>Timestamp</th>
-                                    <th>Message</th>
-                                </tr>
-                            </thead>
+                <InfiniteScrollList hasMore={hasMore} loadMore={loadMore}>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Entity</th>
+                                <th>Action</th>
+                                <th>Timestamp</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
 
-                            <tbody>
-                                {historyCache.length > 0 ? (
-                                    historyCache.map((row, i) => (
-                                        <tr key={i}>
-                                            <td>{row.type}</td>
-                                            <td>{row.entity}</td>
-                                            <td>{row.action}</td>
-                                            <td>
-                                                <AbbreviatingTime date={row.timestamp} />
-                                            </td>
-                                            <td>{JSON.stringify(row.message)}</td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={5}>
-                                            {isHistoryError ? (
-                                                <Message
-                                                    error
-                                                    message="An error occurred loading the history."
-                                                />
-                                            ) : (
-                                                <Message message="No history." />
-                                            )}
+                        <tbody>
+                            {historyCache.length > 0 ? (
+                                historyCache.map((row, i) => (
+                                    <tr key={i}>
+                                        <td>{row.type}</td>
+                                        <td>{row.entity}</td>
+                                        <td>{row.action}</td>
+                                        <td>
+                                            <AbbreviatingTime date={row.timestamp} />
                                         </td>
+                                        <td>{JSON.stringify(row.message)}</td>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </InfiniteScroll>
-                </List>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={5}>
+                                        {isHistoryError ? (
+                                            <Message
+                                                error
+                                                message="An error occurred loading the history."
+                                            />
+                                        ) : (
+                                            <Message message="No history." />
+                                        )}
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </InfiniteScrollList>
             </div>
         </>
     );
