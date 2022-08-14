@@ -56,6 +56,17 @@ body {
 table {
     border-spacing: 0;
 
+    thead {
+        tr {
+            th {
+                @include colour("background-color", "thead");
+                border-bottom: 1px solid;
+                border-right: 1px solid;
+                @include colour("border-color", "border");
+            }
+        }
+    }
+
     tbody {
         tr {
             &:nth-child(even) {
