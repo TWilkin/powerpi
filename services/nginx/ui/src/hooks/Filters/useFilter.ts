@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import useGenericFilter from "./useGenericFilter";
 
-export default function useFilter<TFilterType, TValueType>(
+export function useFilter<TFilterType, TValueType>(
     filterType: string,
     values: TValueType[] | undefined,
     naturalDefaults: TFilterType,

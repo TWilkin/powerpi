@@ -1,8 +1,8 @@
 import { Device } from "@powerpi/api";
 import { ChangeEvent, useCallback, useMemo } from "react";
 import { chain as _ } from "underscore";
+import { useFilter } from "../../hooks/Filters";
 import { useGetFloorplan } from "../../hooks/floorplan";
-import useFilter from "../../hooks/useFilter";
 
 export interface Filters {
     // the device types to include
