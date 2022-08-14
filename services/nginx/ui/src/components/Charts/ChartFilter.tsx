@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ParamKeyValuePair, useSearchParams } from "react-router-dom";
 import { useGetHistoryFilters } from "../../hooks/history";
 import DateFilter from "../Components/DateFilter";
@@ -64,7 +63,7 @@ const ChartFilter = ({ updateFilter }: ChartFilterProps) => {
                 name="Entity"
                 type="entity"
                 options={entities.data}
-                defaultSelected={filters.entity}
+                selected={filters.entity}
                 onSelect={selectFilter}
                 loading={entities.isLoading}
                 error={entities.isError}
@@ -73,7 +72,7 @@ const ChartFilter = ({ updateFilter }: ChartFilterProps) => {
                 name="Action"
                 type="action"
                 options={actions.data}
-                defaultSelected={filters.action}
+                selected={filters.action}
                 onSelect={selectFilter}
                 loading={actions.isLoading}
                 error={actions.isError}

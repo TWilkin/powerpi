@@ -19,25 +19,27 @@ const HistoryFilter = ({ filters, onMessageTypeFilterChange }: HistoryFilterProp
                 name="Type"
                 type="type"
                 options={types.data}
-                defaultSelected={filters.type}
+                selected={filters.type}
                 onSelect={onMessageTypeFilterChange}
                 loading={types.isLoading}
                 error={types.isError}
             />
+
             <MessageTypeFilter
                 name="Entity"
                 type="entity"
                 options={entities.data}
-                defaultSelected={filters.entity}
+                selected={filters.entity}
                 onSelect={onMessageTypeFilterChange}
                 loading={entities.isLoading}
                 error={entities.isError}
             />
+
             <MessageTypeFilter
                 name="Action"
                 type="action"
                 options={actions.data}
-                defaultSelected={filters.action}
+                selected={filters.action}
                 onSelect={onMessageTypeFilterChange}
                 loading={actions.isLoading}
                 error={actions.isError}

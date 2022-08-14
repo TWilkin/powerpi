@@ -37,20 +37,10 @@ function parseQuery(query: URLSearchParams, defaults: MessageTypeFilters): Messa
     };
 }
 
-function toQuery(filters: MessageTypeFilters) {
-    const params: ParamKeyValuePair[] = [];
-
-    if (filters.action) {
-        params.push(["action", filters.action]);
-    }
-
-    if (filters.entity) {
-        params.push(["entity", filters.entity]);
-    }
-
-    if (filters.type) {
-        params.push(["type", filters.type]);
-    }
-
-    return params;
+function toQuery(filters: MessageTypeFilters): ParamKeyValuePair[] {
+    return [
+        ["action", filters.action ?? ""],
+        ["entity", filters.entity ?? ""],
+        ["type", filters.type ?? ""],
+    ];
 }
