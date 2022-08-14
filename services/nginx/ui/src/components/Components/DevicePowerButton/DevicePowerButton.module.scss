@@ -126,6 +126,7 @@
                     0% {
                         transform: translateX(14px) rotate(0deg);
                     }
+
                     100% {
                         transform: translateX(14px) rotate(360deg);
                     }
@@ -136,11 +137,20 @@
 }
 
 .buttons {
+    @mixin power_button($colour) {
+        color: $colour;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: $colour;
+            color: white;
+        }
+    }
+
     .on {
-        color: green;
+        @include power_button(green);
     }
 
     .off {
-        color: red;
+        @include power_button(red);
     }
 }
