@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQuery, UseQueryResult } from "react-query";
 import useAPI from "./api";
 
@@ -19,10 +20,15 @@ function useGetHistoryFilter<TFilter>(
     method: (type?: string) => Promise<TFilter[]>,
     type?: string
 ) {
-    const key = ["history", name];
-    if (type) {
-        key.push(type);
-    }
+    const key = useMemo(() => {
+        const key = ["history", name];
+
+        if (type) {
+            key.push(type);
+        }
+
+        return key;
+    }, [name, type]);
 
     return useQuery(key, () => method(type));
 }

@@ -1,3 +1,12 @@
-.loading {
-    display: inline;
+.filter {
+    display: flex;
+    justify-content: space-between;
+
+    .loading {
+        display: inline;
+    }
+
+    select {
+        width: calc(100% - 4rem);
+    }
 }

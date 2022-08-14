@@ -37,7 +37,7 @@ const MessageTypeFilter = ({
     };
 
     return (
-        <div>
+        <div className={styles.filter}>
             <label htmlFor={`${type}-filter`}>{name}: </label>
 
             <Loading className={styles.loading} loading={loading}>

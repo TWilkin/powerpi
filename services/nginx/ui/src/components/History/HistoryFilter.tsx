@@ -1,46 +1,26 @@
-import { useCallback } from "react";
-import { useEffect, useState } from "react";
-import { ParamKeyValuePair, useSearchParams } from "react-router-dom";
 import { useGetHistoryFilters } from "../../hooks/history";
+import FilterGroup from "../Components/FilterGroup";
 import MessageTypeFilter, {
-    MessageTypeFilters,
     MessageFilterType,
+    MessageTypeFilters,
 } from "../Components/MessageTypeFilter";
-import styles from "./HistoryFilter.module.scss";
 
 interface HistoryFilterProps {
-    updateFilter: (filters: MessageTypeFilters) => void;
+    filters: MessageTypeFilters;
+    onMessageTypeFilterChange: (type: MessageFilterType, value: string) => void;
 }
 
-const HistoryFilter = ({ updateFilter }: HistoryFilterProps) => {
+const HistoryFilter = ({ filters, onMessageTypeFilterChange }: HistoryFilterProps) => {
     const { actions, entities, types } = useGetHistoryFilters();
 
-    const [query, setQuery] = useSearchParams();
-
-    const [filters, setFilters] = useState<MessageTypeFilters>(parseQuery(query));
-
-    useEffect(() => setFilters(parseQuery(query)), [query]);
-
-    useEffect(() => updateFilter(filters), [filters, updateFilter]);
-
-    const selectFilter = useCallback(
-        (type: MessageFilterType, value: string) => {
-            const newFilter = { ...filters };
-            newFilter[type] = value;
-            setFilters(newFilter);
-            setQuery(toQuery(newFilter));
-        },
-        [filters, setQuery]
-    );
-
     return (
-        <div className={styles.filters}>
+        <FilterGroup>
             <MessageTypeFilter
                 name="Type"
                 type="type"
                 options={types.data}
                 defaultSelected={filters.type}
-                onSelect={selectFilter}
+                onSelect={onMessageTypeFilterChange}
                 loading={types.isLoading}
                 error={types.isError}
             />
@@ -49,7 +29,7 @@ const HistoryFilter = ({ updateFilter }: HistoryFilterProps) => {
                 type="entity"
                 options={entities.data}
                 defaultSelected={filters.entity}
-                onSelect={selectFilter}
+                onSelect={onMessageTypeFilterChange}
                 loading={entities.isLoading}
                 error={entities.isError}
             />
@@ -58,37 +38,11 @@ const HistoryFilter = ({ updateFilter }: HistoryFilterProps) => {
                 type="action"
                 options={actions.data}
                 defaultSelected={filters.action}
-                onSelect={selectFilter}
+                onSelect={onMessageTypeFilterChange}
                 loading={actions.isLoading}
                 error={actions.isError}
             />
-        </div>
+        </FilterGroup>
     );
 };
 export default HistoryFilter;
-
-function parseQuery(query: URLSearchParams): MessageTypeFilters {
-    return {
-        type: query.get("type") ?? undefined,
-        entity: query.get("entity") ?? undefined,
-        action: query.get("action") ?? undefined,
-    };
-}
-
-function toQuery(filters: MessageTypeFilters) {
-    const params: ParamKeyValuePair[] = [];
-
-    if (filters.action) {
-        params.push(["action", filters.action]);
-    }
-
-    if (filters.entity) {
-        params.push(["entity", filters.entity]);
-    }
-
-    if (filters.type) {
-        params.push(["type", filters.type]);
-    }
-
-    return params;
-}

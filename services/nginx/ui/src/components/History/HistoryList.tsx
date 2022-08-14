@@ -7,18 +7,14 @@ import AbbreviatingTime from "../Components/AbbreviatingTime";
 import Filter from "../Components/Filter";
 import List from "../Components/List";
 import Message from "../Components/Message";
-import { MessageTypeFilters } from "../Components/MessageTypeFilter";
 import HistoryFilter from "./HistoryFilter";
 import styles from "./HistoryList.module.scss";
+import useHistoryFilter from "./useHistoryFilter";
 
 const HistoryList = () => {
     const [lastDate, setLastDate] = useState<Date | undefined>();
 
-    const [filters, setFilters] = useState<MessageTypeFilters>({
-        type: undefined,
-        entity: undefined,
-        action: undefined,
-    });
+    const { filters, onClear, onMessageTypeFilterChange } = useHistoryFilter();
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -61,8 +57,11 @@ const HistoryList = () => {
 
     return (
         <>
-            <Filter>
-                <HistoryFilter updateFilter={setFilters} />
+            <Filter onClear={onClear}>
+                <HistoryFilter
+                    filters={filters}
+                    onMessageTypeFilterChange={onMessageTypeFilterChange}
+                />
             </Filter>
 
             <div className={styles.list}>
