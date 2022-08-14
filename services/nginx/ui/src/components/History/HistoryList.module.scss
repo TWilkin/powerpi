@@ -1,8 +1,12 @@
 @import "../../styles/vars.scss";
 
-.list {
-    $row-z-index: 1;
+$row-z-index: 1;
 
+.filter {
+    z-index: $row-z-index + 2;
+}
+
+.list {
     width: 100vw;
     margin-top: 4px;
 

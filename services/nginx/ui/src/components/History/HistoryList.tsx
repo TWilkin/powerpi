@@ -60,7 +60,7 @@ const HistoryList = () => {
 
     return (
         <>
-            <Filter onClear={onClear}>
+            <Filter onClear={onClear} className={styles.filter}>
                 <HistoryFilter
                     filters={filters}
                     onMessageTypeFilterChange={onMessageTypeFilterChange}
