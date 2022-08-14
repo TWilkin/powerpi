@@ -1,5 +1,6 @@
 import { Device } from "@powerpi/api";
 import { ChangeEvent, useCallback, useMemo } from "react";
+import { ParamKeyValuePair } from "react-router-dom";
 import { chain as _ } from "underscore";
 import { useFilter } from "../../hooks/Filters";
 import { useGetFloorplan } from "../../hooks/floorplan";
@@ -107,7 +108,9 @@ export default function useDeviceFilter(devices?: Device[]) {
         "device",
         devices,
         naturalDefaults,
-        filter
+        filter,
+        parseQuery,
+        toQuery
     );
 
     const onTypeChange = useCallback(
@@ -166,4 +169,33 @@ export default function useDeviceFilter(devices?: Device[]) {
         onVisibleChange,
         onSearchChange,
     };
+}
+
+function parseQuery(query: URLSearchParams, defaults: Filters): Filters {
+    return {
+        types: query.getAll("types") ?? defaults.types,
+        locations: query.getAll("locations") ?? defaults.locations,
+        visible: query.get("visible") === "1" ?? defaults.visible,
+        search: query.get("search") ?? defaults.search,
+    };
+}
+
+function toQuery(filters: Filters) {
+    const params: ParamKeyValuePair[] = [];
+
+    for (const type of filters.types) {
+        params.push(["types", type]);
+    }
+
+    for (const location of filters.locations) {
+        params.push(["locations", location]);
+    }
+
+    params.push(["visible", filters.visible ? "1" : "0"]);
+
+    if (filters.search) {
+        params.push(["search", filters.search]);
+    }
+
+    return params;
 }

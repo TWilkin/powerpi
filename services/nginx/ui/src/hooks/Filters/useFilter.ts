@@ -1,13 +1,21 @@
 import { useMemo } from "react";
-import useGenericFilter from "./useGenericFilter";
+import { ParamKeyValuePair } from "react-router-dom";
+import { useUrlFilter } from "./useUrlFilter";
 
 export function useFilter<TFilterType, TValueType>(
     filterType: string,
     values: TValueType[] | undefined,
     naturalDefaults: TFilterType,
-    filter: (filters: TFilterType, value: TValueType) => boolean
+    filter: (filters: TFilterType, value: TValueType) => boolean,
+    parseQuery: (query: URLSearchParams, defaults: TFilterType) => TFilterType,
+    toQuery: (filters: TFilterType) => ParamKeyValuePair[]
 ) {
-    const { filters, ...otherFilterValues } = useGenericFilter(filterType, naturalDefaults);
+    const { filters, ...otherFilterValues } = useUrlFilter(
+        filterType,
+        naturalDefaults,
+        parseQuery,
+        toQuery
+    );
 
     // apply the filtering
     const filtered = useMemo(
