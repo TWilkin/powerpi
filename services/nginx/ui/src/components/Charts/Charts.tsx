@@ -28,8 +28,8 @@ const Charts = () => {
             <div className={styles.charts}>
                 {filters.entity || filters.action ? (
                     <Chart
-                        start={filters.start}
-                        end={filters.end}
+                        start={filters.start ?? undefined}
+                        end={filters.end ?? undefined}
                         entity={filters.entity}
                         action={filters.action}
                     />

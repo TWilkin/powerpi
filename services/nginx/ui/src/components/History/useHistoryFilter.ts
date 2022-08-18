@@ -1,12 +1,16 @@
 import { useCallback, useMemo } from "react";
 import { ParamKeyValuePair } from "react-router-dom";
-import { useUrlFilter } from "../../hooks/Filters";
+import {
+    DateFilter,
+    jsonDateConverter,
+    parseDateQuery,
+    toDateQuery,
+    useDateFilter,
+    useUrlFilter,
+} from "../../hooks/Filters";
 import { MessageFilterType, MessageTypeFilters } from "../Components/MessageTypeFilter";
 
-export interface Filters extends MessageTypeFilters {
-    start?: Date | null;
-    end?: Date | null;
-}
+export interface Filters extends MessageTypeFilters, DateFilter {}
 
 export default function useHistoryFilter() {
     const naturalDefaults = useMemo(
@@ -25,23 +29,7 @@ export default function useHistoryFilter() {
         naturalDefaults,
         parseQuery,
         toQuery,
-        jsonConverter
-    );
-
-    const onDateFilterChange = useCallback(
-        (type: "start" | "end", value: Date | null | undefined) =>
-            setFilters((currentFilter) => ({ ...currentFilter, [type]: value ?? undefined })),
-        [setFilters]
-    );
-
-    const onStartDateFilterChange = useCallback(
-        (value: Date | null | undefined) => onDateFilterChange("start", value),
-        [onDateFilterChange]
-    );
-
-    const onEndDateFilterChange = useCallback(
-        (value: Date | null | undefined) => onDateFilterChange("end", value),
-        [onDateFilterChange]
+        jsonDateConverter<Filters>
     );
 
     const onMessageTypeFilterChange = useCallback(
@@ -49,6 +37,8 @@ export default function useHistoryFilter() {
             setFilters((currentFilter) => ({ ...currentFilter, [type]: value })),
         [setFilters]
     );
+
+    const { onStartDateFilterChange, onEndDateFilterChange } = useDateFilter(setFilters);
 
     return {
         filters,
@@ -60,15 +50,11 @@ export default function useHistoryFilter() {
 }
 
 function parseQuery(query: URLSearchParams, defaults: Filters): Filters {
-    const start = query.get("start");
-    const end = query.get("end");
-
     return {
         action: query.get("action") ?? defaults.action,
         entity: query.get("entity") ?? defaults.entity,
         type: query.get("type") ?? defaults.type,
-        start: start && start !== "" ? new Date(start) : undefined,
-        end: end && end !== "" ? new Date(end) : undefined,
+        ...parseDateQuery(query, defaults),
     };
 }
 
@@ -77,15 +63,6 @@ function toQuery(filters: Filters): ParamKeyValuePair[] {
         ["action", filters.action ?? ""],
         ["entity", filters.entity ?? ""],
         ["type", filters.type ?? ""],
-        ["start", filters.start?.toISOString() ?? ""],
-        ["end", filters.end?.toISOString() ?? ""],
+        ...toDateQuery(filters),
     ];
-}
-
-function jsonConverter(obj: { [key in keyof Filters]: string }) {
-    return {
-        ...obj,
-        start: obj.start && obj.start !== "" ? new Date(obj.start) : undefined,
-        end: obj.end && obj.end !== "" ? new Date(obj.end) : undefined,
-    };
 }
