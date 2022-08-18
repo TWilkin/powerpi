@@ -30,7 +30,7 @@ const Filter = ({ onClear, className, children }: FilterProps) => {
                 <FontAwesomeIcon icon={faSliders} />
             </button>
 
-            <div>
+            <div className={styles.content}>
                 {children}
 
                 {onClear && <Button text="Clear" icon={faFilterCircleXmark} onClick={onClear} />}
