@@ -10,22 +10,31 @@ import {
 } from "../../hooks/Filters";
 import { MessageFilterType, MessageTypeFilters } from "../Components/MessageTypeFilter";
 
-export interface Filters extends MessageTypeFilters, DateFilter {}
+export interface Filters extends Omit<MessageTypeFilters, "type">, DateFilter {}
 
-export default function useHistoryFilter() {
+export default function useChartFilter() {
+    // calculate the defaults for the date filters
+    const [now, lastHour] = useMemo(() => {
+        const now = new Date();
+
+        const lastHour = new Date();
+        lastHour.setHours(now.getHours() - 1);
+
+        return [now, lastHour];
+    }, []);
+
     const naturalDefaults = useMemo(
         () => ({
             action: undefined,
             entity: undefined,
-            type: undefined,
-            start: null,
-            end: null,
+            start: lastHour,
+            end: now,
         }),
-        []
+        [lastHour, now]
     );
 
     const { filters, setFilters, onClear } = useUrlFilter(
-        "history",
+        "chart",
         naturalDefaults,
         parseQuery,
         toQuery,
@@ -33,8 +42,11 @@ export default function useHistoryFilter() {
     );
 
     const onMessageTypeFilterChange = useCallback(
-        (type: MessageFilterType, value: string) =>
-            setFilters((currentFilter) => ({ ...currentFilter, [type]: value })),
+        (type: MessageFilterType, value: string) => {
+            if (type !== "type") {
+                setFilters((currentFilter) => ({ ...currentFilter, [type]: value }));
+            }
+        },
         [setFilters]
     );
 
@@ -53,8 +65,7 @@ function parseQuery(query: URLSearchParams, defaults: Filters): Filters {
     return {
         action: query.get("action") ?? defaults.action,
         entity: query.get("entity") ?? defaults.entity,
-        type: query.get("type") ?? defaults.type,
-        ...parseDateQuery(query, defaults, false),
+        ...parseDateQuery(query, defaults),
     };
 }
 
@@ -62,7 +73,6 @@ function toQuery(filters: Filters): ParamKeyValuePair[] {
     return [
         ["action", filters.action ?? ""],
         ["entity", filters.entity ?? ""],
-        ["type", filters.type ?? ""],
         ...toDateQuery(filters),
     ];
 }

@@ -2,6 +2,8 @@
 @import "../../../styles/vars.scss";
 
 .filter {
+    $button-padding: 5px;
+
     height: 100%;
     padding: 2px 30px 2px 2px;
     position: fixed;
@@ -14,6 +16,7 @@
 
     .button {
         height: 100%;
+        padding: 0 $button-padding 0 0;
         display: inline-flex;
         position: fixed;
         right: 0;
@@ -43,8 +46,16 @@
         0% {
             transform: translateX(0%);
         }
+
         100% {
             transform: translateX(calc(25px - 100%));
         }
+    }
+
+    .content {
+        height: calc(100vh - #{$menu-height});
+        width: 100%;
+        padding-right: $button-padding;
+        overflow: auto;
     }
 }

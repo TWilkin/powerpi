@@ -14,8 +14,6 @@ const DateFilter = ({ name, selected, onChange }: DateFilterProps) => {
     // selected to nearest half-hour
     selected?.setMinutes(Math.ceil(selected.getMinutes() / 30) * 30);
 
-    console.log(selected?.toISOString());
-
     return (
         <div className={styles.filter}>
             <label htmlFor={filterName}>{name}: </label>
