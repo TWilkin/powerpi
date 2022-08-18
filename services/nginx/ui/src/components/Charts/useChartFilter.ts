@@ -3,7 +3,7 @@ import { ParamKeyValuePair } from "react-router-dom";
 import { useUrlFilter } from "../../hooks/Filters";
 import { MessageFilterType, MessageTypeFilters } from "../Components/MessageTypeFilter";
 
-export interface Filters extends MessageTypeFilters {
+export interface Filters extends Omit<MessageTypeFilters, "type"> {
     start?: Date;
     end?: Date;
 }
@@ -23,7 +23,6 @@ export default function useChartFilter() {
         () => ({
             action: undefined,
             entity: undefined,
-            type: undefined,
             start: lastHour,
             end: now,
         }),
@@ -76,7 +75,6 @@ function parseQuery(query: URLSearchParams, defaults: Filters): Filters {
     return {
         action: query.get("action") ?? defaults.action,
         entity: query.get("entity") ?? defaults.entity,
-        type: query.get("type") ?? defaults.type,
         start: start && start !== "" ? new Date(start) : undefined,
         end: end && end !== "" ? new Date(end) : undefined,
     };
@@ -86,7 +84,6 @@ function toQuery(filters: Filters): ParamKeyValuePair[] {
     return [
         ["action", filters.action ?? ""],
         ["entity", filters.entity ?? ""],
-        ["type", filters.type ?? ""],
         ["start", filters.start?.toISOString() ?? ""],
         ["end", filters.end?.toISOString() ?? ""],
     ];
