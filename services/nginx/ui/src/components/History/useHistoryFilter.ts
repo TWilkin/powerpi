@@ -54,7 +54,7 @@ function parseQuery(query: URLSearchParams, defaults: Filters): Filters {
         action: query.get("action") ?? defaults.action,
         entity: query.get("entity") ?? defaults.entity,
         type: query.get("type") ?? defaults.type,
-        ...parseDateQuery(query, defaults),
+        ...parseDateQuery(query, defaults, false),
     };
 }
 

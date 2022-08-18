@@ -31,13 +31,17 @@ export function useDateFilter<TFilter extends DateFilter>(
     };
 }
 
-export function parseDateQuery(query: URLSearchParams, defaults: DateFilter): DateFilter {
+export function parseDateQuery(
+    query: URLSearchParams,
+    defaults: DateFilter,
+    useDefaults = true
+): DateFilter {
     const start = query.get("start");
     const end = query.get("end");
 
     return {
-        start: start && start !== "" ? new Date(start) : defaults.start,
-        end: end && end !== "" ? new Date(end) : defaults.end,
+        start: start && start !== "" ? new Date(start) : useDefaults ? defaults.start : undefined,
+        end: end && end !== "" ? new Date(end) : useDefaults ? defaults.end : undefined,
     };
 }
 
