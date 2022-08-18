@@ -1,23 +1,28 @@
-import { useState } from "react";
 import Chart from "../Components/Chart";
 import Filter from "../Components/Filter";
 import Message from "../Components/Message";
-import ChartFilter, { ChartFilters } from "./ChartFilter";
+import ChartFilter from "./ChartFilter";
 import styles from "./Charts.module.scss";
+import useChartFilter from "./useChartFilter";
 
 const Charts = () => {
-    const [filters, setFilters] = useState<ChartFilters>({
-        start: undefined,
-        end: undefined,
-        type: undefined,
-        entity: undefined,
-        action: undefined,
-    });
+    const {
+        filters,
+        onClear,
+        onStartDateFilterChange,
+        onEndDateFilterChange,
+        onMessageTypeFilterChange,
+    } = useChartFilter();
 
     return (
         <>
-            <Filter>
-                <ChartFilter updateFilter={setFilters} />
+            <Filter onClear={onClear}>
+                <ChartFilter
+                    filters={filters}
+                    onStartDateFilterChange={onStartDateFilterChange}
+                    onEndDateFilterChange={onEndDateFilterChange}
+                    onMessageTypeFilterChange={onMessageTypeFilterChange}
+                />
             </Filter>
 
             <div className={styles.charts}>
