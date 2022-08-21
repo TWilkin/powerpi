@@ -1,5 +1,5 @@
-FROM certbot/certbot:arm32v6-v1.22.0
-LABEL description="Certbot automatic SSL certificate renewal"
+FROM certbot/certbot:arm64v8-v1.29.0
+LABEL description="PowerPi Certbot automatic SSL certificate renewal"
 
 # use non-root user
 RUN addgroup -g 101 certbot \

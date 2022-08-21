@@ -176,7 +176,7 @@ services:
               target: /etc/nginx/conf.d/default.conf
 
     certbot:
-        image: ${REGISTRY}/powerpi/certbot:0.0.4
+        image: twilkin/powerpi-certbot:0.0.5
         networks:
             - powerpi
         deploy:
