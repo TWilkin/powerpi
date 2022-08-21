@@ -221,7 +221,7 @@ services:
             - DB_SECRET_FILE=/var/run/secrets/powerpi_db
 
     energy-monitor:
-        image: ${REGISTRY}/powerpi/energy-monitor:0.0.4
+        image: twilkin/powerpi-energy-monitor:0.0.5
         networks:
             - powerpi
         deploy:
