@@ -16,7 +16,7 @@ services:
               target: /mosquitto/config/mosquitto.conf
 
     clacks-config:
-        image: ${REGISTRY}/powerpi/clacks-config:0.1.1
+        image: twilkin/powerpi-clacks-config:0.1.1
         networks:
             - powerpi
         deploy:
@@ -31,7 +31,7 @@ services:
             - FILE_PATH=docker/config
 
     deep-thought:
-        image: ${REGISTRY}/powerpi/deep-thought:0.5.15
+        image: twilkin/powerpi-deep-thought:0.5.15
         networks:
             - powerpi
         deploy:
@@ -60,7 +60,7 @@ services:
             - OAUTH_SECRET_FILE=/var/run/secrets/powerpi_oauth
 
     babel-fish:
-        image: ${REGISTRY}/powerpi/babel-fish:1.0.1
+        image: twilkin/powerpi-babel-fish:1.0.1
         networks:
             - powerpi
         deploy:
@@ -156,7 +156,7 @@ services:
             - FREEDNS_PASSWORD=/var/run/secrets/powerpi_freedns
 
     nginx:
-        image: ${REGISTRY}/powerpi/nginx:1.3.3
+        image: twilkin/powerpi-nginx:1.3.3
         networks:
             - powerpi
         ports:
@@ -207,7 +207,7 @@ services:
             - /srv/docker-volumes/powerpi/postgres/data:/var/lib/postgresql/data/pgdata
 
     persistence:
-        image: ${REGISTRY}/powerpi/persistence:0.1.2
+        image: twilkin/powerpi-persistence:0.1.2
         networks:
             - powerpi
         deploy:
