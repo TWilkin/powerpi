@@ -50,6 +50,15 @@ AC_ARG_ENABLE(
 )
 AC_SUBST([enable_pir])
 
+dnl Identify whether to include the button
+AC_ARG_ENABLE(
+    [button],
+    [AS_HELP_STRING([--enable-button], [Enable button press support])],
+    [enable_button=1],
+    [enable_button=0]
+)
+AC_SUBST([enable_button])
+
 dnl Find the arduino IDE
 AC_CHECK_PROG([ARDUINO], [arduino], $(whereis arduino -b | cut -d':' -f 2), [no])
 if test "$ARDUINO" == "no"
