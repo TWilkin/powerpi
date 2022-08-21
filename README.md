@@ -43,23 +43,25 @@ The project also includes sensor NodeMCU code in the [_esp8266_](esp8266/README.
 
 ## Building
 
+The latest image for each service can be found on [Docker Hub](https://hub.docker.com/u/twilkin), if you've made local changes (or want to try out a service locally) you can build it from scratch with the following instructions.
+
 The images can be build with Docker's [_buildx_](https://docs.docker.com/buildx/working-with-buildx/) tool which supports cross-compilation of images, allowing us to build ARM images for deployment on a Raspberry Pi on an x86_64 architecture. Although, if you're not using Energenie, and therefore don't need the Pi module you can build and run the stack on other architectures supported by the base images.
 
 ```bash
 # From the root of your checkout of PowerPi
 # Build an image with buildx, the image version tags can be found in docker/docker-compose.yaml
-docker buildx build --platform linux/arm/v7 --push -t MY_DOCKER_REGISTRY/powerpi/clacks-config:0.0.2 -f clacks-config/Dockerfile .
+docker buildx build --platform linux/arm/v7 --push -t MY_DOCKER_REGISTRY/powerpi-clacks-config:0.1.1 -f services/clacks-config/Dockerfile .
 
 # Or for 64-bit ARM
-docker buildx build --platform linux/arm64 --push -t MY_DOCKER_REGISTRY/powerpi/clacks-config:0.0.2 -f clacks-config/Dockerfile .
+docker buildx build --platform linux/arm64 --push -t MY_DOCKER_REGISTRY/powerpi-clacks-config:0.1.1 -f services/clacks-config/Dockerfile .
 
 # Or x86-64
-docker buildx build --platform linux/amd64 --push -t MY_DOCKER_REGISTRY/powerpi/clacks-config:0.0.2 -f clacks-config/Dockerfile .
+docker buildx build --platform linux/amd64 --push -t MY_DOCKER_REGISTRY/powerpi-clacks-config:0.1.1 -f services/clacks-config/Dockerfile .
 ```
 
 ## Deployment
 
-Deploying the services is simply a matter of building images with docker, and deploying the stack using docker-compose.
+Deploying the services is simply a matter of deploying the stack using docker-compose, which will pull the latest images from [Docker Hub](https://hub.docker.com/u/twilkin).
 
 The deployment expects the network to already be created and deployed, this is to allow the docker-in-docker container for [_device-mapper_](services/device-mapper/README.md) to join any created pods to the network.
 

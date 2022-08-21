@@ -33,8 +33,8 @@ RUN yarn workspace @powerpi/common-test install --frozen-lockfile
 COPY common/node/common-test ./common/node/common-test/
 RUN yarn workspace @powerpi/common-test build
 
-# build the babel-fish service
-FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-babel-fish-image
+# build the service
+FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-service-image
 LABEL description="Node.js builder for babel-fish service"
 WORKDIR /home/node/app
 COPY --from=build-api-image /home/node/app/common/node/api/package.json ./common/node/api/
@@ -72,11 +72,11 @@ COPY --from=build-common-image --chown=node:node /home/node/app/common/node/comm
 COPY --from=build-common-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 
 # install the dependencies
-COPY --from=build-babel-fish-image --chown=node:node /home/node/app/services/babel-fish/package.json ./services/babel-fish/
+COPY --from=build-service-image --chown=node:node /home/node/app/services/babel-fish/package.json ./services/babel-fish/
 RUN yarn workspace @powerpi/babel-fish install --production --frozen-lockfile
 
 # copy the built application
-COPY --from=build-babel-fish-image --chown=node:node /home/node/app/services/babel-fish/dist/ ./services/babel-fish/dist/
+COPY --from=build-service-image --chown=node:node /home/node/app/services/babel-fish/dist/ ./services/babel-fish/dist/
 
 # start the application once the container is ready
 CMD yarn workspace @powerpi/babel-fish start:prd

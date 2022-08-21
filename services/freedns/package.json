@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/freedns",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "description": "FreeDNS automatic updater service",
     "private": true,
     "license": "GPL-3.0-only",
@@ -10,17 +10,23 @@
         "url": "https://github.com/TWilkin/powerpi.git",
         "directory": "services/freedns"
     },
-    "main": "src/app.ts",
+    "main": "./dist/app.js",
+    "types": "./dist/app.d.ts",
     "scripts": {
-        "start": "ts-node src/app.ts"
+        "build": "tsc",
+        "clean": "rm -rf dist",
+        "start:dev": "ts-node src/app.ts",
+        "start:prd": "node dist/app.js"
     },
     "dependencies": {
-        "@types/node": "^13.13.4",
-        "@types/xml2js": "^0.4.5",
         "axios": "^0.21.2",
         "loggy": "^1.0.8",
-        "ts-node": "^8.10.1",
-        "typescript": "^3.8.3",
         "xml2js": "^0.4.22"
+    },
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "@types/xml2js": "^0.4.5",
+        "ts-node": "^10.8.1",
+        "typescript": "^4.7.4"
     }
 }
