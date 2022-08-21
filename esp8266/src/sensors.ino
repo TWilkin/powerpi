@@ -15,6 +15,11 @@ void setupSensors() {
         Serial.println("Humidity Sensor");
     #endif
 
+    #ifdef BUTTON_SENSOR
+        Serial.println("Button Sensor");
+        setupButton();
+    #endif
+
     Serial.println("Ready");
 }
 

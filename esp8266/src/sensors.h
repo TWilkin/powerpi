@@ -4,6 +4,7 @@
 #include <ArduinoJson.h>
 
 #include "config.h"
+#include "button.h"
 #include "dht22.h"
 #include "pir.h"
 
