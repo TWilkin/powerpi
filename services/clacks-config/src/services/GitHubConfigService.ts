@@ -49,7 +49,6 @@ export default class GitHubConfigService {
                 // validate the file is okay
                 const valid = await this.validator.validate(type, file.content);
                 if (!valid) {
-                    this.logger.warn("File", type, "failed validation");
                     continue;
                 }
 
