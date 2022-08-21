@@ -22,9 +22,11 @@
                         "enum": ["USER"]
                     }
                 },
-                "required": ["email", "role"]
+                "required": ["email", "role"],
+                "additionalProperties": false
             }
         }
     },
-    "required": ["users"]
+    "required": ["users"],
+    "additionalProperties": false
 }
