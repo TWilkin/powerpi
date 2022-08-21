@@ -31,6 +31,6 @@ PubSubClient mqttClient(espClient);
 
 void setupMQTT();
 void connectMQTT(bool waitForNTP);
-void publish(char* action, ArduinoJson::JsonDocument& message);
+void publish(const char action[], ArduinoJson::JsonDocument& message);
 
 #endif
