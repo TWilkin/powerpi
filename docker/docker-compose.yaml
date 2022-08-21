@@ -144,7 +144,7 @@ services:
             - mosquitto
 
     freedns:
-        image: ${REGISTRY}/powerpi/freedns:0.0.9
+        image: twilkin/powerpi-freedns:0.0.10
         networks:
             - powerpi
         deploy:
