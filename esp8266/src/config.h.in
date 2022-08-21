@@ -41,4 +41,9 @@
     #define MOTION_SENSOR
 #endif
 
+// include the button functionality
+#if @enable_button@
+    #define BUTTON_SENSOR
+#endif
+
 #endif

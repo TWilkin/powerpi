@@ -30,7 +30,7 @@ void connectMQTT(bool waitForNTP) {
     }
 }
 
-void publish(char* action, ArduinoJson::JsonDocument& message) {
+void publish(const char action[], ArduinoJson::JsonDocument& message) {
     // retrieve the timestamp
     unsigned long long timestamp = timeClient.getEpochTime();
 

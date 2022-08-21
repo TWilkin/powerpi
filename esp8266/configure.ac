@@ -1,4 +1,4 @@
-AC_INIT([powerpi-sensor], [0.2.1])
+AC_INIT([powerpi-sensor], [0.2.2])
 
 dnl The arguments the user can override
 AC_ARG_VAR([location], [The location of this sensor])
@@ -49,6 +49,15 @@ AC_ARG_ENABLE(
     [enable_pir=0]
 )
 AC_SUBST([enable_pir])
+
+dnl Identify whether to include the button
+AC_ARG_ENABLE(
+    [button],
+    [AS_HELP_STRING([--enable-button], [Enable button press support])],
+    [enable_button=1],
+    [enable_button=0]
+)
+AC_SUBST([enable_button])
 
 dnl Find the arduino IDE
 AC_CHECK_PROG([ARDUINO], [arduino], $(whereis arduino -b | cut -d':' -f 2), [no])

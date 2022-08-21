@@ -46,8 +46,11 @@ By default a sensor will retrieve configuration from [_clacks-config_](../servic
 # Configure a temperature/humidity sensor
 ./configure --enable-dht22 location=Bedroom
 
+# Configure a temperature/humidity sensor with button press support
+./configure --enable-dht22 --enable-button location=Bedroom
+
 # Configure a combined sensor
-./configure --enable-dht22 --enable-pir location=Office
+./configure --enable-dht22 --enable-pir --enable-button location=Office
 
 # Configure a sensor that doesn't get configuration from clacks-config
 ./configure --enable-dht22 --disable-clacks location=Lounge
