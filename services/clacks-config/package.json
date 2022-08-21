@@ -21,15 +21,12 @@
     "dependencies": {
         "@octokit/rest": "^18.12.0",
         "@powerpi/common": "^0.0.10",
-        "@types/underscore": "^1.11.4",
         "typedi": "^0.10.0",
         "underscore": "^1.13.4"
     },
     "devDependencies": {
         "@types/node": "^18.0.0",
-        "@typescript-eslint/eslint-plugin": "^5.30.0",
-        "@typescript-eslint/parser": "^5.30.0",
-        "eslint": "^8.18.0",
+        "@types/underscore": "^1.11.4",
         "ts-node": "^10.8.2",
         "typescript": "^4.7.4"
     }
