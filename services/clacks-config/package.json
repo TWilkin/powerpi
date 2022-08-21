@@ -21,6 +21,7 @@
     "dependencies": {
         "@octokit/rest": "^18.12.0",
         "@powerpi/common": "^0.0.10",
+        "ajv": "^8.11.0",
         "typedi": "^0.10.0",
         "underscore": "^1.13.4"
     },
