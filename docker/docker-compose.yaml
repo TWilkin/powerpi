@@ -135,7 +135,7 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
 
     light-fantastic:
-        image: ${REGISTRY}/powerpi/light-fantastic:0.2.2
+        image: twilkin/powerpi-light-fantastic:0.2.3
         networks:
             - powerpi
         deploy:

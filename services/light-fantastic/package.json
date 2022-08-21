@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/light-fantastic",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "LIFX brightness and temperature control service",
     "private": true,
     "license": "GPL-3.0-only",
@@ -10,17 +10,23 @@
         "url": "https://github.com/TWilkin/powerpi.git",
         "directory": "services/light-fantastic"
     },
-    "main": "./src/index.ts",
+    "main": "./dist/src/index.js",
+    "types": "./dist/src/index.d.ts",
     "scripts": {
-        "start": "ts-node src/index.ts"
+        "build": "tsc",
+        "clean": "rm -rf dist",
+        "start:dev": "ts-node src/index.ts",
+        "start:prd": "node dist/src/index.js"
     },
     "dependencies": {
         "@powerpi/common": "^0.0.10",
-        "@types/luxon": "^2.0.5",
-        "@types/node": "^16.11.2",
         "luxon": "^2.0.2",
-        "ts-node": "^10.0.0",
-        "typedi": "^0.10.0",
-        "typescript": "^4.3.5"
+        "typedi": "^0.10.0"
+    },
+    "devDependencies": {
+        "@types/luxon": "^2.0.5",
+        "@types/node": "^18.0.0",
+        "ts-node": "^10.8.1",
+        "typescript": "^4.7.4"
     }
 }
