@@ -12,6 +12,7 @@ SERIAL_PORT?=/dev/ttyUSB0
 ADAFRUIT_SENSOR_VERSION=1.1.5
 ARDUINO_JSON_VERSION=v6.19.4
 DHT_SENSOR_VERSION=1.4.4
+EASY_BUTTON_VERSION=v2.0.1
 NTPCLIENT_VERSION=3.2.1
 PUBSUBCLIENT_VERSION=v2.8
 
@@ -32,11 +33,15 @@ endef
 
 all: compile flash monitor
 
-common_libraries: $(LIB_DIR)/ArduinoJson-$(ARDUINO_JSON_VERSION) $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION) $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION)
+common_libraries: $(LIB_DIR)/ArduinoJson-$(ARDUINO_JSON_VERSION) $(LIB_DIR)/EasyButton-$(EASY_BUTTON_VERSION) $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION) $(LIB_DIR)/pubsubclient-$(PUBSUBCLIENT_VERSION)
 
 # Download Arduino JSON library
 $(LIB_DIR)/ArduinoJson-$(ARDUINO_JSON_VERSION):
 	$(call download_lib,ArduinoJson,$(ARDUINO_JSON_VERSION),bblanchon)
+
+# Download EasyButton library
+$(LIB_DIR)/EasyButton-$(EASY_BUTTON_VERSION):
+	$(call download_lib,EasyButton,$(EASY_BUTTON_VERSION),evert-arias)
 
 # Download NTPClient library
 $(LIB_DIR)/NTPClient-$(NTPCLIENT_VERSION):
