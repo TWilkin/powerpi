@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/clacks-config",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "PowerPi config retrieval from GitHub pushing to message queue",
     "private": true,
     "license": "GPL-3.0-only",
@@ -10,18 +10,27 @@
         "url": "https://github.com/TWilkin/powerpi.git",
         "directory": "services/clacks-config"
     },
-    "main": "./src/index.ts",
+    "main": "./dist/src/index.js",
+    "types": "./dist/src/index.d.ts",
     "scripts": {
-        "start": "ts-node src/index.ts"
+        "build": "tsc",
+        "clean": "rm -rf dist",
+        "start:dev": "ts-node src/index.ts",
+        "start:prd": "node dist/src/index.js"
     },
     "dependencies": {
         "@octokit/rest": "^18.12.0",
         "@powerpi/common": "^0.0.10",
-        "@types/node": "^18.0.1",
         "@types/underscore": "^1.11.4",
-        "ts-node": "^10.8.2",
         "typedi": "^0.10.0",
-        "typescript": "^4.4.4",
         "underscore": "^1.13.4"
+    },
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "@typescript-eslint/eslint-plugin": "^5.30.0",
+        "@typescript-eslint/parser": "^5.30.0",
+        "eslint": "^8.18.0",
+        "ts-node": "^10.8.2",
+        "typescript": "^4.7.4"
     }
 }

@@ -16,7 +16,7 @@ services:
               target: /mosquitto/config/mosquitto.conf
 
     clacks-config:
-        image: ${REGISTRY}/powerpi/clacks-config:0.1.0
+        image: ${REGISTRY}/powerpi/clacks-config:0.1.1
         networks:
             - powerpi
         deploy:
