@@ -6,17 +6,20 @@ import Container from "../container";
 import ConfigService from "./config";
 import ConfigPublishService from "./ConfigPublishService";
 import HandlerFactory from "./handlers/HandlerFactory";
+import ValidatorService from "./ValidatorService";
 
 @Service()
 export default class GitHubConfigService {
     private publishService: ConfigPublishService;
     private logger: LoggerService;
     private handlerFactory: HandlerFactory;
+    private validator: ValidatorService;
 
     constructor(private config: ConfigService) {
         this.publishService = Container.get(ConfigPublishService);
         this.logger = Container.get(LoggerService);
         this.handlerFactory = Container.get(HandlerFactory);
+        this.validator = Container.get(ValidatorService);
     }
 
     public async start() {
@@ -40,6 +43,13 @@ export default class GitHubConfigService {
                 // check if this file has changed
                 if (typeConfig?.checksum === file.checksum) {
                     this.logger.info("File", type, "is unchanged");
+                    continue;
+                }
+
+                // validate the file is okay
+                const valid = await this.validator.validate(type, file.content);
+                if (!valid) {
+                    this.logger.warn("File", type, "failed validation");
                     continue;
                 }
 
