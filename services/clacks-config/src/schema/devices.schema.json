@@ -21,6 +21,9 @@
                     },
                     {
                         "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/lifx/LIFXLight.schema.json"
+                    },
+                    {
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Delay.schema.json"
                     }
                 ]
             }
