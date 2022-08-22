@@ -23,7 +23,16 @@
                         "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/lifx/LIFXLight.schema.json"
                     },
                     {
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Composite.schema.json"
+                    },
+                    {
                         "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Delay.schema.json"
+                    },
+                    {
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Log.schema.json"
+                    },
+                    {
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Mutex.schema.json"
                     }
                 ]
             }
