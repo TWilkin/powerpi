@@ -29,12 +29,11 @@
                                     "properties": {
                                         "device": {
                                             "description": "The device to perform the action on",
-                                            "type": "string"
+                                            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
                                         },
                                         "state": {
                                             "description": "Whether to turn the device on or off",
-                                            "type": "string",
-                                            "enum": ["on", "off"]
+                                            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/DeviceState.schema.json"
                                         },
                                         "patch": {
                                             "description": "The JSON patch operation(s) to apply to the device",

@@ -19,7 +19,7 @@
             "minItems": 1,
             "maxItems": 4,
             "items": {
-                "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/DeviceName.schema.json"
+                "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
             }
         }
     },

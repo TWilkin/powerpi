@@ -1,0 +1,8 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/DeviceState.schema.json",
+    "title": "DeviceState",
+    "description": "The possible device states in PowerPi",
+    "type": "string",
+    "enum": ["on", "off"]
+}

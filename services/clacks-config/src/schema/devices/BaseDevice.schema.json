@@ -7,7 +7,7 @@
     "properties": {
         "name": {
             "description": "The name of this device",
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/DeviceName.schema.json"
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
         },
         "display_name": {
             "description": "The display name of this device",

@@ -17,7 +17,7 @@
                 "properties": {
                     "device": {
                         "description": "The device to control",
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/DeviceName.schema.json"
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
                     },
                     "days": {
                         "description": "The days this schedule applies to",
@@ -38,7 +38,8 @@
                     },
                     "interval": {
                         "description": "The frequency at which the change is made (in seconds)",
-                        "type": "integer"
+                        "type": "integer",
+                        "minimum": 0
                     },
                     "hue": {
                         "description": "The start and end hue values this schedule applies",
@@ -46,7 +47,7 @@
                         "minItems": 2,
                         "maxItems": 2,
                         "items": {
-                            "type": "number",
+                            "type": "integer",
                             "minimum": 0,
                             "maximum": 360
                         }
@@ -57,7 +58,7 @@
                         "minItems": 2,
                         "maxItems": 2,
                         "items": {
-                            "type": "number",
+                            "type": "integer",
                             "minimum": 0,
                             "maximum": 65535
                         }
@@ -68,7 +69,7 @@
                         "minItems": 2,
                         "maxItems": 2,
                         "items": {
-                            "type": "number",
+                            "type": "integer",
                             "minimum": 0,
                             "maximum": 65535
                         }
@@ -79,7 +80,7 @@
                         "minItems": 2,
                         "maxItems": 2,
                         "items": {
-                            "type": "number",
+                            "type": "integer",
                             "minimum": 1500,
                             "maximum": 6500
                         }

@@ -18,7 +18,7 @@
                         "properties": {
                             "name": {
                                 "description": "The name of this floor",
-                                "type": "string"
+                                "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
                             },
                             "display_name": {
                                 "description": "The display name of this floor",
@@ -33,7 +33,7 @@
                                     "properties": {
                                         "name": {
                                             "description": "The name of this room",
-                                            "type": "string"
+                                            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
                                         },
                                         "display_name": {
                                             "description": "The display name of this room",
