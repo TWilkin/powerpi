@@ -53,9 +53,12 @@
             "description": "The list of sensors controlled by PowerPi",
             "type": "array",
             "items": {
-                "allOf": [
+                "oneOf": [
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/AqaraDoor.schema.json"
+                    },
+                    {
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/OsramSwitchMini.schema.json"
                     }
                 ]
             }

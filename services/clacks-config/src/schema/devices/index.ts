@@ -4,12 +4,14 @@ import loadHarmonySchema from "./harmony";
 import loadLIFXSchema from "./lifx";
 import loadMacroSchema from "./macro";
 import * as PollableDevice from "./PollableDevice.schema.json";
+import * as Sensor from "./Sensor.schema.json";
 import loadZigBeeSchema from "./zigbee";
 
 export default function loadDevicesSchema() {
     return {
         // the base device/sensor
         BaseDevice,
+        Sensor,
 
         // mixins with configurable properties
         PollableDevice,
