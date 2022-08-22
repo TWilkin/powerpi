@@ -12,7 +12,19 @@
         "display_name": {
             "description": "The display name of this device",
             "type": "string"
+        },
+        "type": {
+            "description": "The type of the device or sensor",
+            "type": "string"
+        },
+        "visible": {
+            "description": "Whether this device should appear in the UI or not",
+            "type": "boolean"
+        },
+        "location": {
+            "description": "The physical room location of this device",
+            "type": "string"
         }
     },
-    "required": ["name"]
+    "required": ["name", "type"]
 }

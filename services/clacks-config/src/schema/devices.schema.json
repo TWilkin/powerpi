@@ -9,9 +9,9 @@
             "description": "The list of devices controlled by PowerPi",
             "type": "array",
             "items": {
-                "allOf": [
+                "oneOf": [
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/harmony/HarmonyHub.schema.json"
                     }
                 ]
             }
