@@ -3,6 +3,7 @@ import * as EnergenieCommon from "./energenie/EnergenieCommon.schema.json";
 import * as EnergenieSocket from "./energenie/EnergenieSocket.schema.json";
 import * as EnergenieSocketGroup from "./energenie/EnergenieSocketGroup.schema.json";
 import * as HarmonyHub from "./harmony/HarmonyHub.schema.json";
+import * as LIFXLight from "./lifx/LIFXLight.schema.json";
 import * as PollableDevice from "./PollableDevice.schema.json";
 
 export default function loadDevicesSchema() {
@@ -17,5 +18,8 @@ export default function loadDevicesSchema() {
 
         // the Harmony controller devices
         HarmonyHub,
+
+        // the LIFX controller devices
+        LIFXLight,
     };
 }
