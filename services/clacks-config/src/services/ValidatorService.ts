@@ -18,9 +18,10 @@ export default class ValidatorService {
     }
 
     public async initialise() {
-        const { common, config } = loadSchema();
+        const { common, devices, config } = loadSchema();
 
         this.addSchema(common);
+        this.addSchema(devices);
         this.addSchema(config);
     }
 

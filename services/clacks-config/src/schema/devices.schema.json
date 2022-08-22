@@ -1,0 +1,33 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices.schema.json",
+    "title": "Devices",
+    "description": "The configuration for the devices and sensors controlled by PowerPi",
+    "type": "object",
+    "properties": {
+        "devices": {
+            "description": "The list of devices controlled by PowerPi",
+            "type": "array",
+            "items": {
+                "allOf": [
+                    {
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+                    }
+                ]
+            }
+        },
+        "sensors": {
+            "description": "The list of sensors controlled by PowerPi",
+            "type": "array",
+            "items": {
+                "allOf": [
+                    {
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+                    }
+                ]
+            }
+        }
+    },
+    "required": ["devices", "sensors"],
+    "additionalProperties": false
+}
