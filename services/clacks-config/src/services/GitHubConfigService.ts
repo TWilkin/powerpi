@@ -6,7 +6,7 @@ import Container from "../container";
 import ConfigService from "./config";
 import ConfigPublishService from "./ConfigPublishService";
 import HandlerFactory from "./handlers/HandlerFactory";
-import ValidatorService from "./ValidatorService";
+import ValidatorService, { ValidationException } from "./ValidatorService";
 
 @Service()
 export default class GitHubConfigService {
@@ -47,8 +47,18 @@ export default class GitHubConfigService {
                 }
 
                 // validate the file is okay
-                const valid = await this.validator.validate(type, file.content);
-                if (!valid) {
+                try {
+                    const valid = await this.validator.validate(type, file.content);
+                    if (!valid) {
+                        throw new ValidationException(type, undefined);
+                    }
+                } catch (ex) {
+                    this.logger.error(ex);
+
+                    if (ex instanceof ValidationException) {
+                        this.publishService.publishConfigError(type, ex.message, ex.errors);
+                    }
+
                     continue;
                 }
 

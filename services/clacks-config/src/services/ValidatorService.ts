@@ -1,6 +1,6 @@
 import { ConfigFileType, LoggerService } from "@powerpi/common";
 import addFormats from "ajv-formats";
-import Ajv from "ajv/dist/2020";
+import Ajv, { ErrorObject } from "ajv/dist/2020";
 import { Service } from "typedi";
 import Container from "../container";
 import loadSchema from "../schema";
@@ -34,8 +34,7 @@ export default class ValidatorService {
             }
 
             // failed validation
-            this.logger.error("File", fileType, "failed validation");
-            this.logger.error(validator.errors);
+            throw new ValidationException(fileType, validator.errors);
         } else {
             this.logger.error("Could not find schema for", fileType);
         }
@@ -51,5 +50,18 @@ export default class ValidatorService {
 
             this.ajv.addSchema(currentSchema, type);
         }
+    }
+}
+
+export class ValidationException extends Error {
+    constructor(
+        private fileType: ConfigFileType,
+        public errors: ErrorObject<string, Record<string, unknown>, unknown>[] | undefined | null
+    ) {
+        super();
+    }
+
+    get message() {
+        return `File ${this.fileType} failed validation`;
     }
 }
