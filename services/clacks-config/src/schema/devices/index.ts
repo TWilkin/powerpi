@@ -5,6 +5,7 @@ import loadHarmonySchema from "./harmony";
 import loadLIFXSchema from "./lifx";
 import loadMacroSchema from "./macro";
 import * as PollableDevice from "./PollableDevice.schema.json";
+import * as PowerPiSensor from "./PowerPiSensor.schema.json";
 import * as Sensor from "./Sensor.schema.json";
 import loadZigBeeSchema from "./zigbee";
 
@@ -31,6 +32,9 @@ export default function loadDevicesSchema() {
 
         // the zigbee controller devices
         ...loadZigBeeSchema(),
+
+        // PowerPi sensors
+        PowerPiSensor,
 
         // other sensors outside of Powerpi
         GenericSensor,
