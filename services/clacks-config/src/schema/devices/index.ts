@@ -1,5 +1,6 @@
 import * as BaseDevice from "./BaseDevice.schema.json";
 import loadEnergenieSchema from "./energenie";
+import * as GenericSensor from "./GenericSensor.schema.json";
 import loadHarmonySchema from "./harmony";
 import loadLIFXSchema from "./lifx";
 import loadMacroSchema from "./macro";
@@ -30,5 +31,8 @@ export default function loadDevicesSchema() {
 
         // the zigbee controller devices
         ...loadZigBeeSchema(),
+
+        // other sensors outside of Powerpi
+        GenericSensor,
     };
 }

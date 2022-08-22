@@ -4,5 +4,5 @@
     "title": "Identifier",
     "description": "The name of a device/sensor/floor/room etc. in PowerPi",
     "type": "string",
-    "pattern": "^[A-Z][A-Za-z0-9]*$"
+    "pattern": "^[A-Za-z][A-Za-z0-9]*$"
 }
