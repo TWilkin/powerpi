@@ -1,0 +1,22 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/ZigBeePairing.schema.json",
+    "title": "ZigBeePairing",
+    "description": "The ZigBeePairing device",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "zigbee_pairing"
+        },
+        "timeout": {
+            "description": "The timeout period in seconds that the device will be in pairing mode",
+            "type": "number",
+            "minimum": 1
+        }
+    }
+}

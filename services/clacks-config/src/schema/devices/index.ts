@@ -4,6 +4,7 @@ import loadHarmonySchema from "./harmony";
 import loadLIFXSchema from "./lifx";
 import loadMacroSchema from "./macro";
 import * as PollableDevice from "./PollableDevice.schema.json";
+import loadZigBeeSchema from "./zigbee";
 
 export default function loadDevicesSchema() {
     return {
@@ -24,5 +25,8 @@ export default function loadDevicesSchema() {
 
         // the macro controller devices
         ...loadMacroSchema(),
+
+        // the zigbee controller devices
+        ...loadZigBeeSchema(),
     };
 }
