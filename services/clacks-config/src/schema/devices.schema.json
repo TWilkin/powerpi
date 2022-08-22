@@ -11,6 +11,12 @@
             "items": {
                 "oneOf": [
                     {
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/energenie/EnergenieSocket.schema.json"
+                    },
+                    {
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/energenie/EnergenieSocketGroup.schema.json"
+                    },
+                    {
                         "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/harmony/HarmonyHub.schema.json"
                     }
                 ]

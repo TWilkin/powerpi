@@ -14,7 +14,7 @@
     ],
     "properties": {
         "type": {
-            "pattern": "harmony_hub"
+            "const": "harmony_hub"
         },
         "hostname": {
             "description": "The hostname where the Harmony Hub can be found",
