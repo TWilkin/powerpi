@@ -1,0 +1,8 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/DeviceName.schema.json",
+    "title": "DeviceName",
+    "description": "The name of a device in PowerPi",
+    "type": "string",
+    "pattern": "^[A-Z][A-Za-z0-9]*$"
+}

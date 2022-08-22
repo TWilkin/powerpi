@@ -18,14 +18,10 @@ export default class ValidatorService {
     }
 
     public async initialise() {
-        const allSchema = loadSchema();
+        const { common, config } = loadSchema();
 
-        for (const fileType in allSchema) {
-            const key = fileType as keyof typeof allSchema;
-            const schema = allSchema[key];
-
-            this.ajv.addSchema(schema, key);
-        }
+        this.addSchema(common);
+        this.addSchema(config);
     }
 
     public async validate(fileType: ConfigFileType, file: object) {
@@ -44,5 +40,15 @@ export default class ValidatorService {
         }
 
         return false;
+    }
+
+    private addSchema<TSchema>(schema: TSchema) {
+        for (const type in schema) {
+            const key = type as keyof typeof schema;
+
+            const currentSchema = schema[key];
+
+            this.ajv.addSchema(currentSchema, type);
+        }
     }
 }

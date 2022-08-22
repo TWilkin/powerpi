@@ -17,7 +17,7 @@
                 "properties": {
                     "device": {
                         "description": "The device to control",
-                        "type": "string"
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/DeviceName.schema.json"
                     },
                     "days": {
                         "description": "The days this schedule applies to",
