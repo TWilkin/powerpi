@@ -7,6 +7,9 @@
     "allOf": [
         {
             "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+        },
+        {
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/PollableDevice.schema.json"
         }
     ],
     "properties": {

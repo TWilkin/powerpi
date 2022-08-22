@@ -36,6 +36,9 @@
                     },
                     {
                         "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Mutex.schema.json"
+                    },
+                    {
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Variable.schema.json"
                     }
                 ]
             }
