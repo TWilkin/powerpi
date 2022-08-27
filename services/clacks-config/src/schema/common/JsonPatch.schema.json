@@ -1,0 +1,95 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/JsonPatch.schema.json",
+    "title": "JSON Patch",
+    "description": "A JSON patch operation",
+    "type": "array",
+    "minItems": 1,
+    "items": {
+        "$ref": "#/$defs/operation"
+    },
+
+    "$defs": {
+        "operation": {
+            "description": "A JSON patch operation",
+            "type": "object",
+            "oneOf": [
+                { "$ref": "#/$defs/add" },
+                { "$ref": "#/$defs/copy" },
+                { "$ref": "#/$defs/move" },
+                { "$ref": "#/$defs/remove" },
+                { "$ref": "#/$defs/replace" }
+            ],
+            "required": ["op", "path"]
+        },
+        "pointer": {
+            "description": "The JSON pointer in a path value",
+            "type": "string",
+            "pattern": "^(/[^/~]*(~[01][^/~]*)*)*$"
+        },
+        "value": {
+            "description": "The value of an operation",
+            "oneOf": [
+                { "type": ["boolean"] },
+                { "type": ["number"] },
+                { "type": ["integer"] },
+                { "type": ["string"] },
+                { "type": "null" }
+            ]
+        },
+        "add": {
+            "description": "Add operation",
+            "type": "object",
+            "properties": {
+                "op": { "const": "add" },
+                "path": { "$ref": "#/$defs/pointer" },
+                "value": { "$ref": "#/$defs/value" }
+            },
+            "additionalProperties": false,
+            "required": ["value"]
+        },
+        "copy": {
+            "description": "Copy operation",
+            "type": "object",
+            "properties": {
+                "op": { "const": "copy" },
+                "path": { "$ref": "#/$defs/pointer" },
+                "from": { "$ref": "#/$defs/pointer" }
+            },
+            "additionalProperties": false,
+            "required": ["from"]
+        },
+        "move": {
+            "description": "Move operation",
+            "type": "object",
+            "properties": {
+                "op": { "const": "move" },
+                "path": { "$ref": "#/$defs/pointer" },
+                "from": { "$ref": "#/$defs/pointer" }
+            },
+            "additionalProperties": false,
+            "required": ["from"]
+        },
+        "remove": {
+            "description": "Remove operation",
+            "type": "object",
+            "properties": {
+                "op": { "const": "remove" },
+                "path": { "$ref": "#/$defs/pointer" }
+            },
+            "additionalProperties": false,
+            "required": ["path"]
+        },
+        "replace": {
+            "description": "Replace operation",
+            "type": "object",
+            "properties": {
+                "op": { "const": "replace" },
+                "path": { "$ref": "#/$defs/pointer" },
+                "value": { "$ref": "#/$defs/value" }
+            },
+            "additionalProperties": false,
+            "required": ["value"]
+        }
+    }
+}

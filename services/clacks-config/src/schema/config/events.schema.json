@@ -37,11 +37,7 @@
                                         },
                                         "patch": {
                                             "description": "The JSON patch operation(s) to apply to the device",
-                                            "type": "array",
-                                            "minItems": 1,
-                                            "items": {
-                                                "type": "object"
-                                            }
+                                            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/JsonPatch.schema.json"
                                         }
                                     },
                                     "required": ["device"],
