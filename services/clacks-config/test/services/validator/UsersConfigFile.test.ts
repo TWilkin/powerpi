@@ -14,9 +14,9 @@ describe("Users", () => {
 
     beforeEach(() => (subject = setupValidator()));
 
-    test("Default File", () => testValid({ users: [] }));
+    test("Default file", () => testValid({ users: [] }));
 
-    test("Valid File", () =>
+    test("Valid file", () =>
         testValid({
             users: [
                 { email: "user@gmail.com", role: "USER" },
@@ -24,10 +24,17 @@ describe("Users", () => {
             ],
         }));
 
-    test("No email", () => testInvalid({ users: [{ role: "USER" }] }));
+    test("Other properties", () => testInvalid({ users: [], something: "else" }));
 
-    test("No role", () => testInvalid({ users: [{ email: "user@gmail.com" }] }));
+    describe("User", () => {
+        test("No email", () => testInvalid({ users: [{ role: "USER" }] }));
 
-    test("Bad role", () =>
-        testInvalid({ users: [{ email: "user@gmail.com", role: "SUPERHERO" }] }));
+        test("No role", () => testInvalid({ users: [{ email: "user@gmail.com" }] }));
+
+        test("Bad role", () =>
+            testInvalid({ users: [{ email: "user@gmail.com", role: "SUPERHERO" }] }));
+
+        test("Other properties", () =>
+            testInvalid({ users: [{ email: "user@gmail.com", role: "USER", something: "else" }] }));
+    });
 });
