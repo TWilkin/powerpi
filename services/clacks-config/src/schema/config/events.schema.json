@@ -50,7 +50,7 @@
                                 },
                                 "condition": {
                                     "description": "The condition to test if this action should be taken",
-                                    "type": "object"
+                                    "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Condition.schema.json"
                                 }
                             },
                             "required": ["action", "condition"],
