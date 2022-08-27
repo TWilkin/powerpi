@@ -32,11 +32,7 @@ export default class ConfigPublishService {
         this.logger.info("Published updated", fileType, "config");
     }
 
-    public publishConfigError(
-        fileType: ConfigFileType,
-        text: string,
-        errors: object | undefined | null
-    ) {
+    public publishConfigError(fileType: ConfigFileType, text: string, errors: string | undefined) {
         const message = {
             message: text,
             errors,
