@@ -97,9 +97,9 @@
                     }
                 }
             },
-            "required": ["floors"],
             "additionalProperties": false
         }
     },
+    "required": ["floorplan"],
     "additionalProperties": false
 }
