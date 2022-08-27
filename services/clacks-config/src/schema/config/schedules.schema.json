@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/schedules.schema.json",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/config/schedules.schema.json",
     "title": "Schedules",
     "description": "The configuration for the schedules used by light-fantastic",
     "type": "object",

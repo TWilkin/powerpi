@@ -3,8 +3,8 @@ import { ConfigFileType, LoggerService } from "@powerpi/common";
 import path from "path";
 import { Service } from "typedi";
 import Container from "../container";
-import ConfigService from "./config";
 import ConfigPublishService from "./ConfigPublishService";
+import ConfigService from "./ConfigService";
 import HandlerFactory from "./handlers/HandlerFactory";
 import ValidatorService, { ValidationException } from "./ValidatorService";
 

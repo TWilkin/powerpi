@@ -1,10 +1,6 @@
 import loadCommonSchema from "./common";
+import loadConfigSchema from "./config";
 import loadDevicesSchema from "./devices";
-import * as devices from "./devices.schema.json";
-import * as events from "./events.schema.json";
-import * as floorplan from "./floorplan.schema.json";
-import * as schedules from "./schedules.schema.json";
-import * as users from "./users.schema.json";
 
 export default function loadSchema() {
     return {
@@ -15,12 +11,6 @@ export default function loadSchema() {
         devices: loadDevicesSchema(),
 
         // the config schema
-        config: {
-            devices,
-            events,
-            floorplan,
-            schedules,
-            users,
-        },
+        config: loadConfigSchema(),
     };
 }

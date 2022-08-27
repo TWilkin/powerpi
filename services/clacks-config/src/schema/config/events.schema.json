@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/events.schema.json",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/config/events.schema.json",
     "title": "Users",
     "description": "The configuration for the event triggers",
     "type": "object",

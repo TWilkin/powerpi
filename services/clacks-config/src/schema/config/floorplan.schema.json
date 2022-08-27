@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/floorplan.schema.json",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/config/floorplan.schema.json",
     "title": "Floorplan",
     "description": "The configuration for the floorplan to show in the UI",
     "type": "object",
