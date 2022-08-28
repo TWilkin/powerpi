@@ -18,11 +18,13 @@
         },
         "retries": {
             "description": "The number of times to send the on/off command",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1
         },
         "delay": {
             "description": "The time to wait before sending the next command",
-            "type": "number"
+            "type": "number",
+            "minimum": 1
         }
     }
 }

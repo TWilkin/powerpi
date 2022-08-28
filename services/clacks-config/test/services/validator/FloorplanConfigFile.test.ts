@@ -4,7 +4,7 @@ import {
     setupValidator,
     testInvalid as _testInvalid,
     testValid as _testValid,
-} from "../ValidatorService.test";
+} from "./setupValidator";
 
 describe("Floorplan", () => {
     let subject: ValidatorService | undefined;
