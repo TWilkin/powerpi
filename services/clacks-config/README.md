@@ -2,7 +2,7 @@
 
 PowerPi service which downloads the configuration files from GitHub on an interval, publishing the changed configuration files to the MQTT message queue notifying the other services that configuration has been modified.
 
-The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) which needs to be compiled before use.
+The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) and a common testing library [_@powerpi/common-test_](../../common/node/common-test/README.md), all of which need to be compiled before use.
 
 ## Building
 
@@ -24,11 +24,13 @@ This service expects the following environment variables to be set before it wil
 
 ### Configuration Files
 
-This service will download the following files and publish them to the message queue if available and only when they change.
+This service will download the following files, validate them against the appropriate JSON schema and publish them to the message queue if available, valid and only when they change.
+
+If a file fails validation, an error message explaining the validation problem will be written to the log and published to the message queue under `/config/error` and the new config file will not be published.
 
 #### devices.json
 
-The _devices.json_ file contains the list of devices that are added to PowerPi. The controllers use this configuration to define the devices and sensors that each of them support. The file takes the following format:
+The _devices.json_ file contains the list of devices that are added to PowerPi. The controllers use this configuration to define the devices and sensors that each of them support. The file takes the following format using the [devices JSON schema](./src/schema/config/devices.schema.json):
 
 ```json
 {
@@ -79,7 +81,7 @@ The _devices.json_ file contains the list of devices that are added to PowerPi. 
 
 #### events.json
 
-The _events.json_ file contains the mapping of events (from sensors) to actions (affecting devices). The controllers use this configuration to define automated actions triggered by sensor generated events. It supports complex conditional expressions represented in JSON, including boolean logic, relational operators and retrieving the state of other devices and sensors. The file takes the following format:
+The _events.json_ file contains the mapping of events (from sensors) to actions (affecting devices). The controllers use this configuration to define automated actions triggered by sensor generated events. It supports complex conditional expressions represented in JSON, including boolean logic, relational operators and retrieving the state of other devices and sensors. The file takes the following format using the [events JSON schema](./src/schema/config/events.schema.json):
 
 ```json
 {
@@ -111,7 +113,7 @@ The _events.json_ file contains the mapping of events (from sensors) to actions 
 
 #### floorplan.json
 
-The _floorplan.json_ file contains a floorplan description of the home, which is used to generate a map in the UI showing where sensors are located, allowing selection of a room to see the sensor status for that room. The file takes the following format:
+The _floorplan.json_ file contains a floorplan description of the home, which is used to generate a map in the UI showing where sensors are located, allowing selection of a room to see the sensor status for that room. The file takes the following format using the [floorplan JSON schema](./src/schema/config/floorplan.schema.json):
 
 ```json
 {
@@ -150,7 +152,7 @@ The _floorplan.json_ file contains a floorplan description of the home, which is
 
 #### schedules.json
 
-The _schedules.json_ file contains the scheduled events that _light-fantastic_ uses to adjust light brightness, temperature and colour throughout the day. The file takes the following format:
+The _schedules.json_ file contains the scheduled events that _light-fantastic_ uses to adjust light brightness, temperature and colour throughout the day. The file takes the following format using the [schedules JSON schema](./src/schema/config/schedules.schema.json):
 
 ```json
 {
@@ -161,7 +163,7 @@ The _schedules.json_ file contains the scheduled events that _light-fantastic_ u
             "device": "MyDevices",
             "days": ["Saturday", "Sunday"],
             "between": ["08:00:00", "09:00:00"],
-            "interval": "60", // seconds
+            "interval": 60, // seconds
             "brightness": [0, 1000],
             "power": true
         }
@@ -171,7 +173,7 @@ The _schedules.json_ file contains the scheduled events that _light-fantastic_ u
 
 #### users.json
 
-The _users.json_ file contains the users who are authorised to use the _deep-thought_ API, and therefore the UI and _babel-fish_ services. The file takes the following format:
+The _users.json_ file contains the users who are authorised to use the _deep-thought_ API, and therefore the UI and _babel-fish_ services. The file takes the following format using the [users JSON schema](./src/schema/config/users.schema.json):
 
 ```json
 {
@@ -188,7 +190,20 @@ The _users.json_ file contains the users who are authorised to use the _deep-tho
 
 ## Testing
 
-There are currently no automated tests for this service.
+This service can be tested by executing the following commands.
+
+```bash
+# From the root of your PowerPi checkout
+# Download the dependencies
+yarn
+
+# Build the common and common testing library
+yarn build:common
+yarn build:common-test
+
+# Run the service locally
+yarn test:clacks-config
+```
 
 ## Local Execution
 
@@ -199,8 +214,9 @@ The service can be started locally with the following commands.
 # Download the dependencies
 yarn
 
-# Build the common library
+# Build the common and common testing library
 yarn build:common
+yarn build:common-test
 
 # Run the service locally
 yarn start:clacks-config
