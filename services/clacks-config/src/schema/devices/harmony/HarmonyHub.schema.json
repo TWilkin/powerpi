@@ -28,7 +28,8 @@
         },
         "port": {
             "description": "The port number where the Harmony Hub can be found",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 255
         }
     },
     "oneOf": [{ "required": ["hostname"] }, { "required": ["ip"] }]
