@@ -1,4 +1,4 @@
-AC_INIT([powerpi-sensor], [0.2.2])
+AC_INIT([powerpi-sensor], [0.2.3])
 
 dnl The arguments the user can override
 AC_ARG_VAR([location], [The location of this sensor])

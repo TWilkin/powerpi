@@ -24,6 +24,6 @@ unsigned short dhtCounter = USHRT_MAX - 1;
 void setupDHT22();
 void configureDHT22(ArduinoJson::JsonVariant config);
 void pollDHT22();
-double round(double value);
+double round2dp(double value);
 
 #endif

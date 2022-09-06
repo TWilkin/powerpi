@@ -29,12 +29,12 @@ void pollDHT22() {
         StaticJsonDocument<96> message;
 
         // generate and publish the temperature message
-        message["value"] = round(temperature);
+        message["value"] = round2dp(temperature);
         message["unit"] = "°C";
         publish("temperature", message);
 
         // generate and publish the humidity message
-        message["value"] = round(humidity);
+        message["value"] = round2dp(humidity);
         message["unit"] = "%";
         publish("humidity", message);
 
@@ -42,6 +42,6 @@ void pollDHT22() {
     }
 }
 
-double round(double value) {
+double round2dp(double value) {
    return (int)(value * 100 + 0.5) / 100.0;
 }
