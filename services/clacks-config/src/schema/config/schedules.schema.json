@@ -1,0 +1,100 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/config/schedules.schema.json",
+    "title": "Schedules",
+    "description": "The configuration for the schedules used by light-fantastic",
+    "type": "object",
+    "properties": {
+        "timezone": {
+            "description": "The timezone the schedule times are using",
+            "type": "string"
+        },
+        "schedules": {
+            "description": "The schedules for light-fantastic to follow",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "device": {
+                        "description": "The device to control",
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
+                    },
+                    "days": {
+                        "description": "The days this schedule applies to",
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/WeekDay.schema.json"
+                        }
+                    },
+                    "between": {
+                        "description": "The start and end time this schedule applies to",
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Time.schema.json"
+                        }
+                    },
+                    "interval": {
+                        "description": "The frequency at which the change is made (in seconds)",
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "hue": {
+                        "description": "The start and end hue values this schedule applies",
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 360
+                        }
+                    },
+                    "saturation": {
+                        "description": "The start and end saturation values this schedule applies",
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 65535
+                        }
+                    },
+                    "brightness": {
+                        "description": "The start and end brightness values this schedule applies",
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 65535
+                        }
+                    },
+                    "temperature": {
+                        "description": "The start and end temperature values this schedule applies",
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": {
+                            "type": "integer",
+                            "minimum": 1500,
+                            "maximum": 6500
+                        }
+                    },
+                    "power": {
+                        "description": "Whether to turn the device on when the schedule starts",
+                        "type": "boolean"
+                    }
+                },
+                "required": ["device", "between", "interval"],
+                "additionalProperties": false
+            }
+        }
+    },
+    "required": ["timezone", "schedules"],
+    "additionalProperties": false
+}

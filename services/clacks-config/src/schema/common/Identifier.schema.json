@@ -1,0 +1,8 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json",
+    "title": "Identifier",
+    "description": "The name of a device/sensor/floor/room etc. in PowerPi",
+    "type": "string",
+    "pattern": "^[A-Za-z][A-Za-z0-9]*$"
+}

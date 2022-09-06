@@ -1,0 +1,105 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/config/floorplan.schema.json",
+    "title": "Floorplan",
+    "description": "The configuration for the floorplan to show in the UI",
+    "type": "object",
+    "properties": {
+        "floorplan": {
+            "description": "The floorplan",
+            "type": "object",
+            "properties": {
+                "floors": {
+                    "description": "The floors (ground, upstairs, loft etc.) of the floorplan",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "description": "The name of this floor",
+                                "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
+                            },
+                            "display_name": {
+                                "description": "The display name of this floor",
+                                "type": "string"
+                            },
+                            "rooms": {
+                                "description": "The rooms on this floor",
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "description": "The name of this room",
+                                            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
+                                        },
+                                        "display_name": {
+                                            "description": "The display name of this room",
+                                            "type": "string"
+                                        },
+                                        "x": {
+                                            "description": "The x offset from the origin of this room",
+                                            "type": "integer"
+                                        },
+                                        "y": {
+                                            "description": "The y offset from the origin of this room",
+                                            "type": "integer"
+                                        },
+                                        "width": {
+                                            "description": "The relative width of this room",
+                                            "type": "integer"
+                                        },
+                                        "height": {
+                                            "description": "The relative height of this room",
+                                            "type": "integer"
+                                        },
+                                        "points": {
+                                            "description": "The point co-ordinates that make up the polygon of this room",
+                                            "type": "array",
+                                            "minItems": 3,
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "x": {
+                                                        "description": "The x offset from the origin of this point",
+                                                        "type": "integer"
+                                                    },
+                                                    "y": {
+                                                        "description": "The y offset from the origin of this point",
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": ["x", "y"],
+                                                "additionalProperties": false
+                                            }
+                                        }
+                                    },
+                                    "required": ["name"],
+                                    "additionalProperties": false,
+                                    "oneOf": [
+                                        { "required": ["points"] },
+                                        {
+                                            "anyOf": [
+                                                { "required": ["x"] },
+                                                { "required": ["y"] },
+                                                { "required": ["width"] },
+                                                { "required": ["height"] }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "required": ["name", "rooms"],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "required": ["floorplan"],
+    "additionalProperties": false
+}

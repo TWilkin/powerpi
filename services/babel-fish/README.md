@@ -76,7 +76,7 @@ yarn
 # Build the common libraries
 yarn build:lib
 
-# Run the UI locally
+# Run the service locally
 yarn test:babel-fish
 ```
 

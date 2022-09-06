@@ -3,20 +3,23 @@ import { ConfigFileType, LoggerService } from "@powerpi/common";
 import path from "path";
 import { Service } from "typedi";
 import Container from "../container";
-import ConfigService from "./config";
 import ConfigPublishService from "./ConfigPublishService";
+import ConfigService from "./ConfigService";
 import HandlerFactory from "./handlers/HandlerFactory";
+import ValidatorService, { ValidationException } from "./ValidatorService";
 
 @Service()
 export default class GitHubConfigService {
     private publishService: ConfigPublishService;
     private logger: LoggerService;
     private handlerFactory: HandlerFactory;
+    private validator: ValidatorService;
 
     constructor(private config: ConfigService) {
         this.publishService = Container.get(ConfigPublishService);
         this.logger = Container.get(LoggerService);
         this.handlerFactory = Container.get(HandlerFactory);
+        this.validator = Container.get(ValidatorService);
     }
 
     public async start() {
@@ -40,6 +43,22 @@ export default class GitHubConfigService {
                 // check if this file has changed
                 if (typeConfig?.checksum === file.checksum) {
                     this.logger.info("File", type, "is unchanged");
+                    continue;
+                }
+
+                // validate the file is okay
+                try {
+                    const valid = await this.validator.validate(type, file.content);
+                    if (!valid) {
+                        throw new ValidationException(type, undefined);
+                    }
+                } catch (ex) {
+                    this.logger.error(ex);
+
+                    if (ex instanceof ValidationException) {
+                        this.publishService.publishConfigError(type, ex.message, ex.errors);
+                    }
+
                     continue;
                 }
 

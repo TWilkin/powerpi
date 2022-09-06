@@ -9,6 +9,7 @@ export default class ConfigPublishService {
 
     private static readonly topicType = "config";
     private static readonly topicAction = "change";
+    private static readonly topicErrorAction = "error";
 
     constructor() {
         this.mqtt = Container.get(MqttService);
@@ -29,5 +30,19 @@ export default class ConfigPublishService {
         );
 
         this.logger.info("Published updated", fileType, "config");
+    }
+
+    public publishConfigError(fileType: ConfigFileType, text: string, errors: string | undefined) {
+        const message = {
+            message: text,
+            errors,
+        };
+
+        this.mqtt.publish(
+            ConfigPublishService.topicType,
+            fileType,
+            ConfigPublishService.topicErrorAction,
+            message
+        );
     }
 }

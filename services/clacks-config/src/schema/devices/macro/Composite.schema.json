@@ -1,0 +1,29 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Composite.schema.json",
+    "title": "Composite",
+    "description": "The Composite device",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+        },
+        {
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/PollableDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "composite"
+        },
+        "devices": {
+            "description": "The list of devices that will be turned on or off in sequence",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
+            }
+        }
+    },
+    "required": ["devices"]
+}

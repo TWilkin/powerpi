@@ -1,0 +1,36 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/harmony/HarmonyHub.schema.json",
+    "title": "HarmonyHub",
+    "description": "The HarmonyHub device",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+        },
+        {
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/PollableDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "harmony_hub"
+        },
+        "hostname": {
+            "description": "The hostname where the Harmony Hub can be found",
+            "type": "string",
+            "format": "hostname"
+        },
+        "ip": {
+            "description": "The IP address where the Haromny Hub can be found",
+            "type": "string",
+            "format": "ipv4"
+        },
+        "port": {
+            "description": "The port number where the Harmony Hub can be found",
+            "type": "integer",
+            "minimum": 255
+        }
+    },
+    "oneOf": [{ "required": ["hostname"] }, { "required": ["ip"] }]
+}

@@ -1,0 +1,30 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/energenie/EnergenieCommon.schema.json",
+    "title": "EnergenieCommon",
+    "description": "The common properties to all Energenie devices",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "home_id": {
+            "description": "The home id for this Energenie device",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 15
+        },
+        "retries": {
+            "description": "The number of times to send the on/off command",
+            "type": "integer",
+            "minimum": 1
+        },
+        "delay": {
+            "description": "The time to wait before sending the next command",
+            "type": "number",
+            "minimum": 1
+        }
+    }
+}
