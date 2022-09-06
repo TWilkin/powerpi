@@ -36,7 +36,7 @@ export default function loadDevicesSchema() {
         // PowerPi sensors
         PowerPiSensor,
 
-        // other sensors outside of Powerpi
+        // other sensors outside of PowerPi
         GenericSensor,
     };
 }
