@@ -50,9 +50,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
         is_powered: Union[int, None] = None
         colour: Union[LIFXColour, None] = None
 
-        is_powered = await self.__light.get_power()
-        print(is_powered)
-        colour = await self.__light.get_colour()
+        (is_powered, colour) = await self.__light.get_state()
 
         changed = False
         new_state = self.state

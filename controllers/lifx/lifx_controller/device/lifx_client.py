@@ -62,20 +62,27 @@ class LIFXClient:
 
             await self.__set_features()
 
-    async def get_power(self):
+    async def get_state(self):
         await self.connect()
 
-        (_, power_level) = await self.__use_callback(self.__light.get_power)
+        (_, response) = await self.__use_callback(self.__light.get_color)
 
-        return power_level.power_level > 0
+        powered = response.power_level > 0
+        colour = LIFXColour(response.color)
+
+        return (powered, colour)
+
+    async def get_power(self):
+        (powered, _) = await self.get_state()
+        return powered
 
     def set_power(self, turn_on: bool, duration: int):
         self.connect()
         self.__light.set_power(turn_on, duration)
 
-    def get_colour(self):
-        self.connect()
-        return LIFXColour(self.__light.get_color())
+    async def get_colour(self):
+        (_, colour) = await self.get_state()
+        return colour
 
     def set_colour(self, colour: LIFXColour, duration: int):
         self.connect()
