@@ -1,4 +1,3 @@
-import re
 from asyncio import get_running_loop
 from socket import AF_INET, SOCK_STREAM, gethostbyname, socket
 from typing import Callable, Tuple, Union
@@ -30,10 +29,6 @@ class LIFXClient:
 
     @address.setter
     def address(self, new_address: str):
-        if re.search('[a-zA-Z]', new_address):
-            # if it's not an IP address, get the IP address
-            new_address = gethostbyname(new_address)
-
         self.__address = new_address
 
     @property
@@ -146,6 +141,7 @@ class LIFXClient:
 
         # a callback that will set the results in the future
         def callback(*args):
+            print(args[0].__dict__)
             loop.call_soon_threadsafe(future.set_result, args)
 
         # call the method using the callback
