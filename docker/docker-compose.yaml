@@ -106,7 +106,7 @@ services:
             - mosquitto
 
     lifx-controller:
-        image: twilkin/powerpi-lifx-controller:0.1.6
+        image: twilkin/powerpi-lifx-controller:0.1.7
         networks:
             - powerpi
         deploy:
