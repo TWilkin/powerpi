@@ -65,18 +65,21 @@ class LIFXClient:
                 )
             )
 
+        if self.__supports_colour is None or self.__supports_temperature is None:
             await self.__set_features()
 
-    async def get_state(self):
+    async def get_state(self) -> Tuple[Union[bool, None], Union[LIFXColour, None]]:
         await self.connect()
 
-        response: LightState = None
-        (_, response) = await self.__use_callback(self.__light.get_color)
+        response: Union[LightState, None] = await self.__use_callback(self.__light.get_color)
 
-        powered = response.power_level > 0
-        colour = LIFXColour(response.color)
+        if response is not None:
+            powered = response.power_level > 0
+            colour = LIFXColour(response.color)
 
-        return (powered, colour)
+            return (powered, colour)
+
+        return (None, None)
 
     async def get_power(self):
         (powered, _) = await self.get_state()
@@ -110,18 +113,18 @@ class LIFXClient:
         await self.__use_callback(self.__light.set_color, value=colour.list, duration=duration)
 
     async def __set_features(self):
-        version: StateVersion = None
-        (_, version) = await self.__use_callback(self.__light.get_version)
+        version: Union[StateVersion, None] = await self.__use_callback(self.__light.get_version)
 
-        features = features_map[version.product]
+        if version is not None:
+            features = features_map[version.product]
 
-        self.__supports_colour = features.get('color', False)
+            self.__supports_colour = features.get('color', False)
 
-        min_kelvin = features.get('min_kelvin', None)
-        max_kelvin = features.get('max_kelvin', None)
+            min_kelvin = features.get('min_kelvin', None)
+            max_kelvin = features.get('max_kelvin', None)
 
-        self.__kelvin_range = (min_kelvin, max_kelvin)
-        self.__supports_temperature = min_kelvin is not None and max_kelvin is not None and min_kelvin != max_kelvin
+            self.__kelvin_range = (min_kelvin, max_kelvin)
+            self.__supports_temperature = min_kelvin is not None and max_kelvin is not None and min_kelvin != max_kelvin
 
     @classmethod
     def __find_free_port(cls):
@@ -140,8 +143,8 @@ class LIFXClient:
         future = loop.create_future()
 
         # a callback that will set the results in the future
-        def callback(*args):
-            loop.call_soon_threadsafe(future.set_result, args)
+        def callback(_: Light, response):
+            loop.call_soon_threadsafe(future.set_result, response)
 
         # call the method using the callback
         method(callb=callback, **kwargs)
