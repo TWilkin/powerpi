@@ -120,10 +120,13 @@ class LIFXClient:
 
         features = features_map[version.product]
 
-        self.__supports_colour = features['color']
+        self.__supports_colour = getattr(features, 'color', False)
 
-        self.__kelvin_range = (features['min_kelvin'], features['max_kelvin'])
-        self.__supports_temperature = features['min_kelvin'] != features['max_kelvin']
+        min_kelvin = getattr(features, 'min_kelvin', None)
+        max_kelvin = getattr(features, 'max_kelvin', None)
+
+        self.__kelvin_range = (min_kelvin, max_kelvin)
+        self.__supports_temperature = min_kelvin is not None and max_kelvin is not None and min_kelvin != max_kelvin
 
     @classmethod
     def __find_free_port(cls):
