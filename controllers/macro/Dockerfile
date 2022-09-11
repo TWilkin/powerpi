@@ -1,6 +1,6 @@
 # create a base image for building
 FROM python:3.9.5-alpine3.12 AS build-base-image
-RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.1.13
+RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.2.0
 RUN poetry config virtualenvs.in-project true
 ENV CFLAGS=-fcommon
 
@@ -9,7 +9,9 @@ FROM build-base-image AS build-common-image
 WORKDIR /opt/powerpi/common/python
 COPY common/pytest/poetry.lock common/pytest/pyproject.toml ./../pytest/
 COPY common/python/poetry.lock common/python/pyproject.toml ./
-RUN poetry install --no-dev --no-interaction --no-ansi
+RUN poetry source add --default piwheels https://www.piwheels.org/simple/ \
+    && poetry lock --no-update \
+    && poetry install --only main --no-root --no-interaction --no-ansi
 COPY common/python/powerpi_common ./powerpi_common
 RUN poetry build \
     && .venv/bin/pip install ./dist/*.whl
@@ -20,7 +22,9 @@ WORKDIR /opt/powerpi/controllers/macro
 COPY --from=build-common-image /opt/powerpi/common ./../../common
 COPY controllers/macro/poetry.lock controllers/macro/pyproject.toml ./
 RUN ln -s ../../common/python/.venv .venv \
-    && poetry install --no-dev --no-interaction --no-ansi
+    && poetry source add --default piwheels https://www.piwheels.org/simple/ \
+    && poetry lock --no-update \
+    && poetry install --only main --no-root --no-interaction --no-ansi
 
 # use multi-stage build to remove compile dependencies
 FROM python:3.9.5-alpine3.12 AS run-image
