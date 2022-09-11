@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "energenie_controller"
-version = "0.1.8"
+version = "0.1.9"
 description = "PowerPi Engergenie Controller"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
@@ -8,23 +8,23 @@ repository = "https://github.com/TWilkin/powerpi.git"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 energenie = "~=1.0.1"
-powerpi-common = {path = "../../common/python", develop = true}
 pyenergenie = {git = "https://github.com/whaleygeek/pyenergenie.git", rev = "eec562c140dd34027b3184d81f549c9d4a65f5db"}
 
-[tool.poetry.dev-dependencies]
-autopep8 = "~=1.6.0"
-powerpi-common-test = {path = "../../common/pytest", develop = true}
-pylint = "~=2.12.2"
+[tool.poetry.group.powerpi.dependencies]
+powerpi-common = {path = "../../common/python", develop = true}
 
-[[tool.poetry.source]]
-name = "piwheels"
-url = "https://www.piwheels.org/simple/"
+[tool.poetry.group.dev.dependencies]
+autopep8 = "~=1.7.0"
+pylint = "~=2.15.2"
+
+[tool.poetry.group.test.dependencies]
+powerpi-common-test = {path = "../../common/pytest", develop = true}
 
 [tool.pytest.ini_options]
 addopts = "-v --cov=energenie_controller"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.1.0"]
 build-backend = "poetry.core.masonry.api"

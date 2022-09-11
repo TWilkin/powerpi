@@ -21,15 +21,9 @@ pylint = "~=2.15.2"
 [tool.poetry.group.test.dependencies]
 powerpi-common-test = {path = "../pytest", develop = true}
 
-[[tool.poetry.source]]
-name = "piwheels"
-url = "https://www.piwheels.org/simple/"
-default = false
-secondary = true
-
 [tool.pytest.ini_options]
 addopts = "-v --cov=powerpi_common"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.1.0"]
 build-backend = "poetry.core.masonry.api"
