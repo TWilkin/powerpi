@@ -4,6 +4,7 @@ from socket import AF_INET, SOCK_STREAM, gethostbyname, socket
 from typing import Union
 
 from aiolifx.aiolifx import Light
+from aiolifx.products import features_map
 from lifx_controller.device.lifx_colour import LIFXColour
 
 
@@ -41,7 +42,7 @@ class LIFXClient:
     def supports_temperature(self):
         return self.__supports_temperature
 
-    def connect(self):
+    async def connect(self):
         if self.__light is None:
             loop = get_running_loop()
 
@@ -59,21 +60,17 @@ class LIFXClient:
                 )
             )
 
-        # if self.__supports_colour is None:
-        #    self.__supports_colour = self.__light.supports_color()
-
-        # if self.__supports_temperature is None:
-        #    self.__supports_temperature = self.__light.supports_temperature()
+            await self.__set_features()
 
     async def get_power(self):
-        self.connect()
+        await self.connect()
 
         (future, callback) = self.__use_callback()
 
         self.__light.get_power(callback)
 
-        await future
-        return self.__light.power_level > 0
+        (_, power_level) = await future
+        return power_level.power_level > 0
 
     def set_power(self, turn_on: bool, duration: int):
         self.connect()
@@ -86,6 +83,18 @@ class LIFXClient:
     def set_colour(self, colour: LIFXColour, duration: int):
         self.connect()
         self.__light.set_color(colour.list, duration)
+
+    async def __set_features(self):
+        (future, callback) = self.__use_callback()
+
+        self.__light.get_version(callback)
+
+        (_, version) = await future
+
+        features = features_map[version.product]
+
+        self.__supports_colour = features['color']
+        self.__supports_temperature = features['min_kelvin'] != features['max_kelvin']
 
     @classmethod
     def __find_free_port(cls):
