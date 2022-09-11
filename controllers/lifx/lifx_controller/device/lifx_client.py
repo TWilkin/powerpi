@@ -1,7 +1,7 @@
 import re
 from asyncio import get_running_loop
 from socket import AF_INET, SOCK_STREAM, gethostbyname, socket
-from typing import Union
+from typing import Callable, Union
 
 from aiolifx.aiolifx import Light
 from aiolifx.products import features_map
@@ -65,11 +65,8 @@ class LIFXClient:
     async def get_power(self):
         await self.connect()
 
-        (future, callback) = self.__use_callback()
+        (_, power_level) = await self.__use_callback(self.__light.get_power)
 
-        self.__light.get_power(callback)
-
-        (_, power_level) = await future
         return power_level.power_level > 0
 
     def set_power(self, turn_on: bool, duration: int):
@@ -85,11 +82,7 @@ class LIFXClient:
         self.__light.set_color(colour.list, duration)
 
     async def __set_features(self):
-        (future, callback) = self.__use_callback()
-
-        self.__light.get_version(callback)
-
-        (_, version) = await future
+        (_, version) = await self.__use_callback(self.__light.get_version)
 
         features = features_map[version.product]
 
@@ -105,12 +98,18 @@ class LIFXClient:
         return port
 
     @classmethod
-    def __use_callback(cls):
+    async def __use_callback(cls, method: Callable, *args):
         loop = get_running_loop()
 
+        # create a future we can await to capture the callback results
         future = loop.create_future()
 
+        # a callback that will set the results in the future
         def callback(*args):
             loop.call_soon_threadsafe(future.set_result, args)
 
-        return (future, callback)
+        # call the method passing the args
+        method(callback, *args)
+
+        # return the result by awaiting the future
+        return await future
