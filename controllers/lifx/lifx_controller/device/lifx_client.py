@@ -76,17 +76,19 @@ class LIFXClient:
         (powered, _) = await self.get_state()
         return powered
 
-    def set_power(self, turn_on: bool, duration: int):
-        self.connect()
-        self.__light.set_power(turn_on, duration)
+    async def set_power(self, turn_on: bool, duration: int):
+        await self.connect()
+
+        await self.__use_callback(self.__light.set_power, value=turn_on, duration=duration)
 
     async def get_colour(self):
         (_, colour) = await self.get_state()
         return colour
 
-    def set_colour(self, colour: LIFXColour, duration: int):
-        self.connect()
-        self.__light.set_color(colour.list, duration)
+    async def set_colour(self, colour: LIFXColour, duration: int):
+        await self.connect()
+
+        await self.__use_callback(self.__light.set_color, value=colour.list, duration=duration)
 
     async def __set_features(self):
         (_, version) = await self.__use_callback(self.__light.get_version)
@@ -105,7 +107,7 @@ class LIFXClient:
         return port
 
     @classmethod
-    async def __use_callback(cls, method: Callable, *args):
+    async def __use_callback(cls, method: Callable, **kwargs):
         loop = get_running_loop()
 
         # create a future we can await to capture the callback results
@@ -116,7 +118,7 @@ class LIFXClient:
             loop.call_soon_threadsafe(future.set_result, args)
 
         # call the method passing the args
-        method(callback, *args)
+        method(callb=callback, **kwargs)
 
         # return the result by awaiting the future
         return await future
