@@ -1,18 +1,28 @@
 import re
 from asyncio import get_running_loop
 from socket import AF_INET, SOCK_STREAM, gethostbyname, socket
-from typing import Callable, Union
+from typing import Callable, Tuple, Union
 
 from aiolifx.aiolifx import Light
+from aiolifx.msgtypes import LightState, StateVersion
 from aiolifx.products import features_map
 from lifx_controller.device.lifx_colour import LIFXColour
+from powerpi_common.logger import Logger
 
 
 class LIFXClient:
-    def __init__(self):
+    def __init__(
+        self,
+        logger: Logger
+    ):
+        self.__logger = logger
+
         self.__light = None
+
         self.__supports_colour: Union[bool, None] = None
         self.__supports_temperature: Union[bool, None] = None
+
+        self.__kelvin_range: Union(Tuple(int, int), None) = None
 
     @property
     def address(self):
@@ -65,6 +75,7 @@ class LIFXClient:
     async def get_state(self):
         await self.connect()
 
+        response: LightState = None
         (_, response) = await self.__use_callback(self.__light.get_color)
 
         powered = response.power_level > 0
@@ -88,22 +99,39 @@ class LIFXClient:
     async def set_colour(self, colour: LIFXColour, duration: int):
         await self.connect()
 
+        # ensure the values are in the allowable range
+        if colour.temperature < self.__kelvin_range[0] or colour.temperature > self.__kelvin_range[1]:
+            original = colour.temperature
+
+            colour.temperature = max(
+                self.__kelvin_range[0],
+                min(self.__kelvin_range[1], colour.temperature)
+            )
+
+            self.__logger.warning(
+                f'Unsupported temperature {original} rounded to {colour.temperature}'
+            )
+
         await self.__use_callback(self.__light.set_color, value=colour.list, duration=duration)
 
     async def __set_features(self):
+        version: StateVersion = None
         (_, version) = await self.__use_callback(self.__light.get_version)
 
         features = features_map[version.product]
 
         self.__supports_colour = features['color']
+
+        self.__kelvin_range = (features['min_kelvin'], features['max_kelvin'])
         self.__supports_temperature = features['min_kelvin'] != features['max_kelvin']
 
     @classmethod
     def __find_free_port(cls):
-        connection = socket(AF_INET, SOCK_STREAM)
-        connection.bind(('', 0))
-        _, port = connection.getsockname()
-        connection.close()
+        with socket(AF_INET, SOCK_STREAM) as connection:
+            connection.bind(('', 0))
+
+            _, port = connection.getsockname()
+
         return port
 
     @classmethod
@@ -117,8 +145,8 @@ class LIFXClient:
         def callback(*args):
             loop.call_soon_threadsafe(future.set_result, args)
 
-        # call the method passing the args
+        # call the method using the callback
         method(callb=callback, **kwargs)
 
-        # return the result by awaiting the future
+        # return the from the awaited future
         return await future
