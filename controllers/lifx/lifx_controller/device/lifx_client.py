@@ -95,7 +95,7 @@ class LIFXClient:
         await self.connect()
 
         # ensure the values are in the allowable range
-        if colour.temperature < self.__kelvin_range[0] or colour.temperature > self.__kelvin_range[1]:
+        if self.supports_temperature and (colour.temperature < self.__kelvin_range[0] or colour.temperature > self.__kelvin_range[1]):
             original = colour.temperature
 
             colour.temperature = max(
@@ -115,10 +115,10 @@ class LIFXClient:
 
         features = features_map[version.product]
 
-        self.__supports_colour = getattr(features, 'color', False)
+        self.__supports_colour = features.get('color', False)
 
-        min_kelvin = getattr(features, 'min_kelvin', None)
-        max_kelvin = getattr(features, 'max_kelvin', None)
+        min_kelvin = features.get('min_kelvin', None)
+        max_kelvin = features.get('max_kelvin', None)
 
         self.__kelvin_range = (min_kelvin, max_kelvin)
         self.__supports_temperature = min_kelvin is not None and max_kelvin is not None and min_kelvin != max_kelvin
@@ -141,7 +141,6 @@ class LIFXClient:
 
         # a callback that will set the results in the future
         def callback(*args):
-            print(args[0].__dict__)
             loop.call_soon_threadsafe(future.set_result, args)
 
         # call the method using the callback
