@@ -97,7 +97,7 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
 
     harmony-controller:
-        image: twilkin/powerpi-harmony-controller:0.1.6
+        image: twilkin/powerpi-harmony-controller:0.1.7
         networks:
             - powerpi
         deploy:
