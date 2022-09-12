@@ -1,4 +1,3 @@
-from threading import Lock
 from typing import Dict, NamedTuple
 
 from cache import AsyncTTL
@@ -22,7 +21,7 @@ class Activity(NamedTuple):
 class HarmonyHubDevice(Device, PollableMixin):
     __POWER_OFF_ID = -1
 
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         config: Config,
@@ -45,9 +44,6 @@ class HarmonyHubDevice(Device, PollableMixin):
         self.__client = harmony_client
         self.__client.address = hostname if hostname is not None else ip
         self.__client.port = port
-
-        self.__cache_lock = Lock()
-        self.__activity_lock = Lock()
 
     @property
     def activities(self):
@@ -77,8 +73,7 @@ class HarmonyHubDevice(Device, PollableMixin):
     async def _turn_off(self):
         # pylint: disable=broad-except
         try:
-            with self.__activity_lock:
-                await self.__client.power_off()
+            await self.__client.power_off()
 
             # update the state to off for all activities
             await self.__update_activity_state(self.__POWER_OFF_ID)
@@ -90,20 +85,19 @@ class HarmonyHubDevice(Device, PollableMixin):
         activities = await self.__activities()
 
         if name in activities:
-            with self.__activity_lock:
-                # pylint: disable=broad-except
-                try:
-                    await self.__client.start_activity(activities[name].id)
+            # pylint: disable=broad-except
+            try:
+                await self.__client.start_activity(activities[name].id)
 
-                    # only one activity can be started, so update the state
-                    await self.__update_activity_state(activities[name].id, False)
+                # only one activity can be started, so update the state
+                await self.__update_activity_state(activities[name].id, False)
 
-                    new_state = DeviceStatus.ON
-                    if self.state != new_state:
-                        self.state = new_state
-                except Exception as ex:
-                    self.__update_to_unknown()
-                    raise ex
+                new_state = DeviceStatus.ON
+                if self.state != new_state:
+                    self.state = new_state
+            except Exception as ex:
+                self.__update_to_unknown()
+                raise ex
         else:
             self._logger.error(
                 f'Activity "{name}" for {self} not found'
@@ -115,8 +109,7 @@ class HarmonyHubDevice(Device, PollableMixin):
             f'Loading config for {self}'
         )
 
-        with self.__cache_lock:
-            return await self.__client.get_config()
+        return await self.__client.get_config()
 
     @AsyncTTL(maxsize=1, time_to_live=10 * 60, skip_args=1)
     async def __activities(self) -> Dict[str, Activity]:
