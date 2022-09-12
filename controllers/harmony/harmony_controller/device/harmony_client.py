@@ -1,5 +1,5 @@
 import asyncio
-from typing import Callable, Union
+from typing import Awaitable, Union
 
 import aioharmony
 import asyncio_atexit
@@ -27,7 +27,9 @@ class HarmonyClient:
         self.__address = new_address
 
     async def get_config(self):
-        await self.connect()
+        await self.connect(get_config=False)
+
+        await self.__client._harmony_client.refresh_info_from_hub()
 
         return self.__client.config
 
@@ -50,10 +52,11 @@ class HarmonyClient:
 
         await self.__reconnect_and_run(func)
 
-    async def connect(self, reconnect=False):
-        asyncio_atexit.register(self.disconnect)
-
+    async def connect(self, reconnect=False, get_config=True):
         if reconnect or not self.is_connected:
+            asyncio_atexit.unregister(self.disconnect)
+            asyncio_atexit.register(self.disconnect)
+
             self.__logger.info(f'Connecting to hub at "{self}"')
 
             self.__client = HarmonyAPI(self.__address)
@@ -67,6 +70,9 @@ class HarmonyClient:
                     f'Failed to connect to hub at "{self}"'
                 )
 
+            if get_config:
+                await self.__client._harmony_client.refresh_info_from_hub()
+
     async def disconnect(self):
         if self.is_connected:
             self.__logger.info(f'Disconnecting from hub at "{self}"')
@@ -75,7 +81,7 @@ class HarmonyClient:
 
             self.__client = None
 
-    async def __reconnect_and_run(self, func: Callable, retries=2):
+    async def __reconnect_and_run(self, func: Awaitable, retries=2):
         first = True
 
         for retry in range(0, retries):

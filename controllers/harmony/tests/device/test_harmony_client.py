@@ -14,6 +14,7 @@ class TestHarmonyClient(object):
 
         mock_api.assert_called_once_with(subject.address)
         mock_api.return_value.connect.assert_called_once()
+        mock_api.return_value._harmony_client.refresh_info_from_hub.assert_called_once()
 
     @pytest.mark.skip(reason='the property mock isn\'t working')
     async def test_get_current_activity(self, subject: HarmonyClient, mock_api: MagicMock):
@@ -24,6 +25,7 @@ class TestHarmonyClient(object):
         result = await subject.get_current_activity()
 
         mock_api.assert_called_once_with(subject.address)
+        mock_api.return_value._harmony_client.refresh_info_from_hub.assert_called_once()
 
         assert result == -1
 
@@ -73,5 +75,9 @@ class TestHarmonyClient(object):
         mock_connect = AsyncMock()
         mock_connect.return_value = True
         mock_api.return_value.connect = mock_connect
+
+        mock_client = MagicMock()
+        mock_client.refresh_info_from_hub = AsyncMock()
+        mock_api.return_value._harmony_client = mock_client
 
         return mock_api
