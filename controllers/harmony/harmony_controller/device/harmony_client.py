@@ -37,12 +37,9 @@ class HarmonyClient:
         self.__port = new_port
 
     async def get_config(self):
-        async def func():
-            await self.__client.sync()
+        await self.connect()
 
-            return self.__client.json_config
-
-        return await self.__reconnect_and_run(func)
+        return self.__client.config
 
     async def get_current_activity(self):
         await self.connect()

@@ -2,12 +2,12 @@ from threading import Lock
 from typing import Dict, NamedTuple
 
 from cache import AsyncTTL
-
 from powerpi_common.config import Config
-from powerpi_common.logger import Logger
 from powerpi_common.device import Device, DeviceManager, DeviceStatus
 from powerpi_common.device.mixin import PollableMixin
+from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+
 from .harmony_client import HarmonyClient
 
 
