@@ -14,8 +14,6 @@ class HarmonyClient:
 
         self.__client: Union[HarmonyAPI, None] = None
 
-        asyncio_atexit.register(self.disconnect)
-
     @property
     def is_connected(self):
         return self.__client is not None
@@ -61,6 +59,8 @@ class HarmonyClient:
         await self.__reconnect_and_run(func)
 
     async def connect(self, reconnect=False):
+        asyncio_atexit.register(self.disconnect)
+
         if reconnect or not self.is_connected:
             self.__logger.info(f'Connecting to hub at "{self}"')
 
