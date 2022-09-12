@@ -61,7 +61,6 @@ class TestHarmonyClient(object):
 
         client = HarmonyClient(self.logger)
         client.address = 'my.harmony.address'
-        client.port = 1337
 
         return client
 

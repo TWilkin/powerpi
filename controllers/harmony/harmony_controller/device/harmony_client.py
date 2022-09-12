@@ -26,14 +26,6 @@ class HarmonyClient:
     def address(self, new_address: setattr):
         self.__address = new_address
 
-    @ property
-    def port(self):
-        return self.__port
-
-    @ port.setter
-    def port(self, new_port: int):
-        self.__port = new_port
-
     async def get_config(self):
         await self.connect()
 
@@ -106,4 +98,4 @@ class HarmonyClient:
                 await asyncio.sleep(2)
 
     def __str__(self):
-        return f'harmony://{self.__address}:{self.__port}'
+        return f'harmony://{self.__address}'
