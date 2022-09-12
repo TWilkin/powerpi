@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "harmony_controller"
-version = "0.1.7"
+version = "0.2.0"
 description = "PowerPi Logitech Harmony Controller"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
