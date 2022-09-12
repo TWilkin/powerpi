@@ -9,9 +9,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
+aioharmony = "~=0.2.9"
 async-cache = "~=1.1.1"
 lazy = "~=1.4"
-pyharmony = "~=1.0.21"
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}
