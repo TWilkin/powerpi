@@ -31,7 +31,6 @@ class HarmonyHubDevice(Device, PollableMixin):
         harmony_client: HarmonyClient,
         ip: str = None,
         hostname: str = None,
-        port: int = 5222,
         **kwargs
     ):
         Device.__init__(
@@ -43,7 +42,6 @@ class HarmonyHubDevice(Device, PollableMixin):
 
         self.__client = harmony_client
         self.__client.address = hostname if hostname is not None else ip
-        self.__client.port = port
 
     @property
     def activities(self):
