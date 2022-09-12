@@ -111,7 +111,6 @@ class HarmonyHubDevice(Device, PollableMixin):
 
         return await self.__client.get_config()
 
-    @AsyncTTL(maxsize=1, time_to_live=10 * 60, skip_args=1)
     async def __activities(self) -> Dict[str, Activity]:
         devices = self.activities
         activities = {}
