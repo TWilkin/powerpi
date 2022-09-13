@@ -1,26 +1,40 @@
+from asyncio import Future
 from typing import Tuple, Union
 from unittest.mock import PropertyMock
 
 import pytest
-
-from lifxlan import WorkflowException
-from pytest_mock import MockerFixture
-
 from lifx_controller.device.lifx_colour import LIFXColour
 from lifx_controller.device.lifx_light import LIFXLightDevice
 from powerpi_common_test.device import AdditionalStateDeviceTestBase
 from powerpi_common_test.device.mixin import PollableMixinTestBase
 from powerpi_common_test.mqtt import mock_producer
+from pytest_mock import MockerFixture
 
 
 class TestLIFXLightDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
     def get_subject(self, mocker: MockerFixture):
         self.lifx_client = mocker.Mock()
 
+        future = Future()
+        future.set_result((False, LIFXColour((0, 0, 0, 0))))
         mocker.patch.object(
             self.lifx_client,
-            'get_colour',
-            return_value=LIFXColour((0, 0, 0, 0))
+            'get_state',
+            return_value=future
+        )
+
+        future = Future()
+        future.set_result(True)
+        mocker.patch.object(
+            self.lifx_client,
+            'set_power',
+            return_value=future
+        )
+
+        mocker.patch.object(
+            self.lifx_client,
+            'set_colour',
+            return_value=future
         )
 
         return LIFXLightDevice(
@@ -28,37 +42,6 @@ class TestLIFXLightDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
             '00:00:00:00:00', 'mylight.home',
             name='light', poll_frequency=120
         )
-
-    @pytest.mark.parametrize('status', ['on', 'off'])
-    async def test_turn_x_error(self, mocker: MockerFixture, status: str):
-        subject = self.create_subject(mocker)
-
-        def set_power(_: bool, __: int):
-            raise WorkflowException('error')
-
-        self.lifx_client.set_power = set_power
-
-        func = subject.turn_on if status == 'on' else subject.turn_off
-
-        assert subject.state == 'unknown'
-        await func()
-        assert subject.state == 'unknown'
-
-    async def test_change_colour_error(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
-        def set_colour(_: LIFXColour, __: int):
-            raise WorkflowException('error')
-
-        self.lifx_client.set_colour = set_colour
-
-        new_additional_state = {'brightness': 1}
-
-        assert subject.state == 'unknown'
-        assert subject.additional_state == {}
-        await subject.change_power_and_additional_state('on', new_additional_state)
-        assert subject.state == 'unknown'
-        assert subject.additional_state == {}
 
     @pytest.mark.parametrize('supports_colour', [None, True, False])
     @pytest.mark.parametrize('supports_temperature', [None, True, False])
@@ -92,16 +75,15 @@ class TestLIFXLightDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
 
         self.__mock_supports(supports_colour, supports_temperature)
 
+        future = Future()
+        future.set_result((
+            powered,
+            None if colour is None else LIFXColour(colour)
+        ))
         mocker.patch.object(
             self.lifx_client,
-            'get_colour',
-            return_value=None if colour is None else LIFXColour(colour)
-        )
-
-        mocker.patch.object(
-            self.lifx_client,
-            'get_power',
-            return_value=powered
+            'get_state',
+            return_value=future
         )
 
         assert subject.state == 'unknown'
@@ -151,16 +133,12 @@ class TestLIFXLightDevice(AdditionalStateDeviceTestBase, PollableMixinTestBase):
 
         self.__mock_supports(supports_colour, supports_temperature)
 
+        future = Future()
+        future.set_result((False, LIFXColour((1, 2, 3, 4))))
         mocker.patch.object(
             self.lifx_client,
-            'get_colour',
-            return_value=LIFXColour((1, 2, 3, 4))
-        )
-
-        mocker.patch.object(
-            self.lifx_client,
-            'get_power',
-            return_value=False
+            'get_state',
+            return_value=future
         )
 
         assert subject.state == 'unknown'

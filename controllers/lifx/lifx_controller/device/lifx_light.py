@@ -1,13 +1,11 @@
 from typing import TypedDict, Union
 
-from lifxlan import WorkflowException
-
 from lifx_controller.device.lifx_client import LIFXClient
 from lifx_controller.device.lifx_colour import LIFXColour
 from powerpi_common.config import Config
-from powerpi_common.logger import Logger
 from powerpi_common.device import AdditionalStateDevice, DeviceStatus
 from powerpi_common.device.mixin import PollableMixin
+from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
 
@@ -52,12 +50,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
         is_powered: Union[int, None] = None
         colour: Union[LIFXColour, None] = None
 
-        try:
-            is_powered = self.__light.get_power()
-            colour = self.__light.get_colour()
-        except WorkflowException:
-            # this means the light is probably off
-            pass
+        (is_powered, colour) = await self.__light.get_state()
 
         changed = False
         new_state = self.state
@@ -85,7 +78,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
 
             new_additional_state = lifx_colour.to_json()
 
-            self.__light.set_colour(lifx_colour, self.__duration)
+            await self.__light.set_colour(lifx_colour, self.__duration)
 
         return new_additional_state
 
@@ -100,7 +93,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin):
         return keys
 
     async def _turn_on(self):
-        self.__light.set_power(True, self.__duration)
+        await self.__light.set_power(True, self.__duration)
 
     async def _turn_off(self):
-        self.__light.set_power(False, self.__duration)
+        await self.__light.set_power(False, self.__duration)

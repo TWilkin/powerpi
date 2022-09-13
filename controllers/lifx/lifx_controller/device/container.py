@@ -11,8 +11,11 @@ class DeviceContainer(containers.DeclarativeContainer):
         __self__
     )
 
+    logger = providers.Dependency()
+
     lifx_client = providers.Factory(
-        LIFXClient
+        LIFXClient,
+        logger=logger
     )
 
 

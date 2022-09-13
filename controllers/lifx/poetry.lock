@@ -1,4 +1,16 @@
 [[package]]
+name = "aiolifx"
+version = "0.8.4"
+description = "API for local communication with LIFX devices over a LAN with asyncio."
+category = "main"
+optional = false
+python-versions = ">=3.4"
+
+[package.dependencies]
+bitstring = "*"
+ifaddr = "*"
+
+[[package]]
 name = "APScheduler"
 version = "3.9.1"
 description = "In-process task scheduler with Cron-like capabilities"
@@ -192,18 +204,6 @@ description = "A fast and thorough lazy object proxy."
 category = "dev"
 optional = false
 python-versions = ">=3.6"
-
-[[package]]
-name = "lifxlan"
-version = "1.2.7"
-description = "API for local communication with LIFX devices over a LAN."
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-bitstring = "*"
-ifaddr = "*"
 
 [[package]]
 name = "mccabe"
@@ -507,9 +507,13 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "11fd59a52e772f1e8e95fe5f177b924290298200591d3d372929f564d4c44819"
+content-hash = "2ba10b51823893e6d461153d83f7b199b27505a5d1fad7dc6cfa4ee1c08ce868"
 
 [metadata.files]
+aiolifx = [
+    {file = "aiolifx-0.8.4-py3-none-any.whl", hash = "sha256:9bfd5e2da62232463a0f15b3acae80c8c3a255d6ac2c2fd366bb8a50f535bd3f"},
+    {file = "aiolifx-0.8.4.tar.gz", hash = "sha256:af96c1a2602847094823ca53ff6a3ed2f6bfa01af7b3c6fcbf68eaf67e960f02"},
+]
 APScheduler = [
     {file = "APScheduler-3.9.1-py2.py3-none-any.whl", hash = "sha256:ddc25a0ddd899de44d7f451f4375fb971887e65af51e41e5dcf681f59b8b2c9a"},
     {file = "APScheduler-3.9.1.tar.gz", hash = "sha256:65e6574b6395498d371d045f2a8a7e4f7d50c6ad21ef7313d15b1c7cf20df1e3"},
@@ -691,9 +695,6 @@ lazy-object-proxy = [
     {file = "lazy_object_proxy-1.7.1-cp39-cp39-win32.whl", hash = "sha256:2130db8ed69a48a3440103d4a520b89d8a9405f1b06e2cc81640509e8bf6548f"},
     {file = "lazy_object_proxy-1.7.1-cp39-cp39-win_amd64.whl", hash = "sha256:677ea950bef409b47e51e733283544ac3d660b709cfce7b187f5ace137960d61"},
     {file = "lazy_object_proxy-1.7.1-pp37.pp38-none-any.whl", hash = "sha256:d66906d5785da8e0be7360912e99c9188b70f52c422f9fc18223347235691a84"},
-]
-lifxlan = [
-    {file = "lifxlan-1.2.7.tar.gz", hash = "sha256:603f144b38ccef637b1f5297b47b5c2b82b23ac5c2e4ccad976f15719da36ba8"},
 ]
 mccabe = [
     {file = "mccabe-0.7.0-py2.py3-none-any.whl", hash = "sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e"},
