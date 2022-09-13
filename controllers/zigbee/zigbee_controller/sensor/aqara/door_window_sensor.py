@@ -1,15 +1,16 @@
 from typing import Any, Dict, List
 
-from zigpy.zcl.clusters.general import Basic, OnOff as OnOffCluster
-from zigpy.zcl.foundation import Attribute, TypeValue
-
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from powerpi_common.sensor.mixin.battery import BatteryMixin
 from zigbee_controller.device import ZigbeeController
-from zigbee_controller.zigbee import ClusterAttributeListener, ClusterGeneralCommandListener, \
-    OnOff, OpenClose, ZigbeeMixin
+from zigbee_controller.zigbee import (ClusterAttributeListener,
+                                      ClusterGeneralCommandListener, OnOff,
+                                      OpenClose, ZigbeeMixin)
+from zigpy.zcl.clusters.general import Basic
+from zigpy.zcl.clusters.general import OnOff as OnOffCluster
+from zigpy.zcl.foundation import Attribute, TypeValue
 
 
 class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
@@ -100,7 +101,7 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
         device = self._zigbee_device
 
         def parse(args: List[List[Attribute]]):
-            attribute_id = OnOffCluster.attridx['on_off']
+            attribute_id = OnOffCluster.attributes_by_name['on_off'].id
 
             for reports in args:
                 try:
