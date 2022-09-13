@@ -2,13 +2,11 @@ from asyncio import Future
 from typing import Tuple
 
 import pytest
-
-from pytest_mock import MockerFixture
-
 from harmony_controller.device.harmony_activity import HarmonyActivityDevice
 from harmony_controller.device.harmony_hub import HarmonyHubDevice
 from powerpi_common_test.device import DeviceTestBase
 from powerpi_common_test.device.mixin import PollableMixinTestBase
+from pytest_mock import MockerFixture
 
 
 class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
@@ -80,8 +78,6 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         # will hit client once
         await subject.start_activity('')
         await subject.start_activity('')
-
-        self.harmony_client.get_config.assert_called_once()
 
     def test_activities(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)

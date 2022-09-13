@@ -16,7 +16,7 @@ services:
               target: /mosquitto/config/mosquitto.conf
 
     clacks-config:
-        image: twilkin/powerpi-clacks-config:0.2.0
+        image: twilkin/powerpi-clacks-config:0.2.1
         networks:
             - powerpi
         deploy:
@@ -97,7 +97,7 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
 
     harmony-controller:
-        image: twilkin/powerpi-harmony-controller:0.1.7
+        image: twilkin/powerpi-harmony-controller:0.2.0
         networks:
             - powerpi
         deploy:

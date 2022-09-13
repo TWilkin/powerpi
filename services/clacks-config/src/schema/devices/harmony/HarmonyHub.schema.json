@@ -25,11 +25,6 @@
             "description": "The IP address where the Haromny Hub can be found",
             "type": "string",
             "format": "ipv4"
-        },
-        "port": {
-            "description": "The port number where the Harmony Hub can be found",
-            "type": "integer",
-            "minimum": 255
         }
     },
     "oneOf": [{ "required": ["hostname"] }, { "required": ["ip"] }]

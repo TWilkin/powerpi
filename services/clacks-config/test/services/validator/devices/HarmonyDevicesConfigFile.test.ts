@@ -3,7 +3,7 @@ import commonDeviceTests from "./commonDeviceTests";
 describe("Harmony Devices", () => {
     describe("Harmony Hub", () => {
         const { testValid, testInvalid } = commonDeviceTests({
-            devices: [{ type: "harmony_hub", name: "Hub", ip: "127.0.0.1", port: 5222 }],
+            devices: [{ type: "harmony_hub", name: "Hub", ip: "127.0.0.1" }],
         });
 
         test("Good hostname", () =>
@@ -15,13 +15,6 @@ describe("Harmony Devices", () => {
             testInvalid({
                 devices: [{ type: "harmony_hub", name: "Hub" }],
             }));
-
-        [-1, 254, "5222"].forEach((port) =>
-            test(`Bad port ${port}`, () =>
-                testInvalid({
-                    devices: [{ type: "harmony_hub", name: "Hub", ip: "127.0.0.1", port }],
-                }))
-        );
     });
 
     describe("Harmony Activity", () => {

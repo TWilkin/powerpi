@@ -1,23 +1,18 @@
 import asyncio
-import atexit
+from typing import Awaitable, Union
 
-from typing import Union
-
-import pyharmony
-
-from pyharmony.client import HarmonyClient as HarmonyClientLib, create_and_connect_client
-
+import aioharmony
+import asyncio_atexit
+from aioharmony.harmonyapi import HarmonyAPI
 from powerpi_common.logger import Logger
 
 
 class HarmonyClient:
     def __init__(self, logger: Logger):
         self.__logger = logger
-        self.__logger.add_logger(pyharmony.client.__name__)
+        self.__logger.add_logger(aioharmony.harmonyapi.__name__)
 
-        self.__client: Union[HarmonyClientLib, None] = None
-
-        atexit.register(self.disconnect)
+        self.__client: Union[HarmonyAPI, None] = None
 
     @property
     def is_connected(self):
@@ -31,66 +26,70 @@ class HarmonyClient:
     def address(self, new_address: setattr):
         self.__address = new_address
 
-    @ property
-    def port(self):
-        return self.__port
-
-    @ port.setter
-    def port(self, new_port: int):
-        self.__port = new_port
-
     async def get_config(self):
-        def func():
-            return self.__client.get_config()
+        await self.connect(get_config=False)
 
-        return await self.__reconnect_and_run(func)
+        await self.__client._harmony_client.refresh_info_from_hub()
+
+        return self.__client.config
 
     async def get_current_activity(self):
-        def func():
-            return self.__client.get_current_activity()
+        await self.connect()
 
-        return await self.__reconnect_and_run(func)
+        current_activity_id, _ = self.__client.current_activity
+
+        return current_activity_id
 
     async def start_activity(self, activity_name: str):
-        def func():
-            self.__client.start_activity(activity_name)
+        async def func():
+            await self.__client.start_activity(activity_name)
 
         await self.__reconnect_and_run(func)
 
     async def power_off(self):
-        def func():
-            self.__client.power_off()
+        async def func():
+            await self.__client.power_off()
 
         await self.__reconnect_and_run(func)
 
-    def connect(self, reconnect=False):
+    async def connect(self, reconnect=False, get_config=True):
         if reconnect or not self.is_connected:
-            self.__logger.info(f'Connecting to hub at "{self}"')
-            self.__client = create_and_connect_client(
-                self.__address, self.__port
-            )
+            asyncio_atexit.unregister(self.disconnect)
+            asyncio_atexit.register(self.disconnect)
 
-            if self.__client is False:
+            self.__logger.info(f'Connecting to hub at "{self}"')
+
+            self.__client = HarmonyAPI(self.__address)
+
+            connected = await self.__client.connect()
+
+            if connected is False:
                 self.__client = None
+
                 raise ConnectionError(
                     f'Failed to connect to hub at "{self}"'
                 )
 
-    def disconnect(self):
+            if get_config:
+                await self.__client._harmony_client.refresh_info_from_hub()
+
+    async def disconnect(self):
         if self.is_connected:
             self.__logger.info(f'Disconnecting from hub at "{self}"')
-            self.__client.disconnect()
+
+            await self.__client.close()
+
             self.__client = None
 
-    async def __reconnect_and_run(self, func, retries=2):
+    async def __reconnect_and_run(self, func: Awaitable, retries=2):
         first = True
 
         for retry in range(0, retries):
             # pylint: disable=broad-except
             try:
-                self.connect(not first)
+                await self.connect(not first)
 
-                return func()
+                return await func()
             except Exception as ex:
                 first = False
 
@@ -105,4 +104,4 @@ class HarmonyClient:
                 await asyncio.sleep(2)
 
     def __str__(self):
-        return f'harmony://{self.__address}:{self.__port}'
+        return f'harmony://{self.__address}'
