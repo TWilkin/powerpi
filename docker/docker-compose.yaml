@@ -128,7 +128,7 @@ services:
         environment:
             - ENV=ZIGBEE_DEVICE=/dev/ttyACM0:DATABASE_PATH=/var/data/zigbee.db
             - CONTROLLER_NAME=zigbee-controller
-            - IMAGE=twilkin/powerpi-zigbee-controller:0.1.8
+            - IMAGE=twilkin/powerpi-zigbee-controller:0.1.9
             - DEVICE=/dev/ttyACM0
             - VOLUME=/srv/docker-volumes/powerpi/zigbee-controller
         volumes:
