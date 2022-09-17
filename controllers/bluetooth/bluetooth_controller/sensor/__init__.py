@@ -12,6 +12,7 @@ def add_sensors(container):
             BluetoothPresenceSensor,
             config=container.common.config,
             logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client
+            mqtt_client=container.common.mqtt_client,
+            controller=container.device.bluetooth_controller
         )
     )
