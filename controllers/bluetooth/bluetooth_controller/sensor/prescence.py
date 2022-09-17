@@ -25,16 +25,17 @@ class BluetoothPresenceSensor(Sensor, PollableMixin, BluetoothMixin):
         mqtt_client: MQTTClient,
         **kwargs
     ):
-        Sensor.__init__(self, mqtt_client, **kwargs)
+        Sensor.__init__(
+            self, config, logger, mqtt_client, action='presence', **kwargs
+        )
         PollableMixin.__init__(self, config, **kwargs)
         BluetoothMixin.__init__(self, **kwargs)
 
         self._logger = logger
-        self._state: PresenceStatus = PresenceStatus.UNKNOWN
 
     @property
-    def state(self):
-        return self._state
+    def presence(self):
+        return self.state.get('state', PresenceStatus.UNKNOWN)
 
     async def poll(self):
         device = await self._get_bluetooth_device()
@@ -43,13 +44,13 @@ class BluetoothPresenceSensor(Sensor, PollableMixin, BluetoothMixin):
         new_state = PresenceStatus.DETECTED if present else PresenceStatus.UNDETECTED
 
         # we only want to send the message if the state has changed
-        if new_state == self._state:
+        if new_state == self.presence:
             return
 
-        self._state = new_state
-
         message = {
-            'state': self._state
+            'state': new_state
         }
+
+        self.state = message
 
         self._broadcast('presence', message)
