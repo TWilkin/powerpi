@@ -1,6 +1,7 @@
 from bluetooth_controller.bluetooth import BluetoothMixin
 from powerpi_common.config import Config
 from powerpi_common.device.mixin.pollable import PollableMixin
+from powerpi_common.device.types import PresenceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt.client import MQTTClient
 from powerpi_common.sensor import Sensor
@@ -29,7 +30,7 @@ class BluetoothPresenceSensor(Sensor, PollableMixin, BluetoothMixin):
         BluetoothMixin.__init__(self, **kwargs)
 
         self._logger = logger
-        self._state = None
+        self._state: PresenceStatus = PresenceStatus.UNKNOWN
 
     @property
     def state(self):
@@ -39,7 +40,7 @@ class BluetoothPresenceSensor(Sensor, PollableMixin, BluetoothMixin):
         device = await self._get_bluetooth_device()
 
         present = device is not None
-        new_state = 'detected' if present else 'undetected'
+        new_state = PresenceStatus.DETECTED if present else PresenceStatus.UNDETECTED
 
         # we only want to send the message if the state has changed
         if new_state == self._state:
