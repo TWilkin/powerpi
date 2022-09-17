@@ -1,4 +1,3 @@
-from bleak import BleakScanner
 from bluetooth_controller.bluetooth import BluetoothMixin
 from powerpi_common.config import Config
 from powerpi_common.device.mixin.pollable import PollableMixin
@@ -37,7 +36,7 @@ class BluetoothPresenceSensor(Sensor, PollableMixin, BluetoothMixin):
         return self._state
 
     async def poll(self):
-        device = await BleakScanner.find_device_by_address(self._mac)
+        device = await self._get_bluetooth_device()
 
         present = device is not None
         new_state = 'detected' if present else 'undetected'
