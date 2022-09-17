@@ -1,7 +1,7 @@
 import sys
 
 from bluetooth_controller.container import ApplicationContainer
-from bluetooth_controller.device.container import add_devices
+from bluetooth_controller.device import add_devices
 from bluetooth_controller.sensor import add_sensors
 
 if __name__ == '__main__':

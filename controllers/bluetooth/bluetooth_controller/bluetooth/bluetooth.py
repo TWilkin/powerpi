@@ -9,8 +9,8 @@ class BluetoothMixin:
         mac: str,
         **_
     ):
-        self.__mac = mac
+        self._mac = mac
 
     async def _connect_and_execute(self, func: Awaitable):
-        async with BleakClient(self.__mac) as client:
+        async with BleakClient(self._mac) as client:
             return await func(client)

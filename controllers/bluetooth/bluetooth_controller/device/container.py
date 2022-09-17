@@ -8,10 +8,6 @@ class DeviceContainer(containers.DeclarativeContainer):
         __self__
     )
 
-    config = providers.Dependency()
-
-    logger = providers.Dependency()
-
 
 def add_devices(container):
     pass

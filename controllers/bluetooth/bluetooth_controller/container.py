@@ -20,7 +20,5 @@ class ApplicationContainer(containers.DeclarativeContainer):
     )
 
     device = providers.Container(
-        DeviceContainer,
-        config=common.config,
-        logger=common.logger
+        DeviceContainer
     )

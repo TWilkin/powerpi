@@ -10,8 +10,8 @@ def add_sensors(container):
         'bluetooth_presence_sensor',
         providers.Factory(
             BluetoothPresenceSensor,
-            config=device_container.config,
-            logger=device_container.logger,
+            config=container.common.config,
+            logger=container.common.logger,
             mqtt_client=container.common.mqtt_client
         )
     )
