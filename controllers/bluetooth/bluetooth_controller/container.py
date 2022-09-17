@@ -2,6 +2,7 @@ from dependency_injector import containers, providers
 from powerpi_common.container import Container as CommonContainer
 
 from bluetooth_controller.__version__ import __app_name__, __version__
+from bluetooth_controller.device.container import DeviceContainer
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -16,4 +17,10 @@ class ApplicationContainer(containers.DeclarativeContainer):
         CommonContainer,
         app_name=__app_name__,
         version=__version__
+    )
+
+    device = providers.Container(
+        DeviceContainer,
+        config=common.config,
+        logger=common.logger
     )
