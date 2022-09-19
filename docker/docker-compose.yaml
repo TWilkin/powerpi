@@ -78,7 +78,7 @@ services:
             - mosquitto
 
     device-mapper-bluetooth:
-        image: twilkin/powerpi-device-mapper:0.0.6
+        image: twilkin/powerpi-device-mapper:0.0.7
         networks:
             - powerpi
         deploy:
@@ -91,7 +91,7 @@ services:
         environment:
             - CONTROLLER_NAME=bluetooth-controller
             - IMAGE=twilkin/powerpi-bluetooth-controller:0.0.1
-            - DEVICE=/var/run/dbus
+            - VOLUME=/var/run/dbus:/var/run/dbus
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
 
