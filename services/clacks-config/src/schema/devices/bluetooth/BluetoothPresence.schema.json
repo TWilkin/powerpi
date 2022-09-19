@@ -12,7 +12,7 @@
             "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/PollableDevice.schema.json"
         },
         {
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BluetoothDevice.schema.json"
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/bluetooth/BluetoothDevice.schema.json"
         }
     ],
     "properties": {

@@ -61,6 +61,9 @@
                         "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/PowerPiSensor.schema.json"
                     },
                     {
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/bluetooth/BluetoothPresence.schema.json"
+                    },
+                    {
                         "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/AqaraDoor.schema.json"
                     },
                     {
