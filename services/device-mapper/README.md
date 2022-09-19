@@ -2,7 +2,11 @@
 
 PowerPi service for starting a controller when it requires privileged access to a physical device connected to a [Docker Swarm](https://docs.docker.com/engine/swarm/) node. Utilises docker-in-docker to start the controller container attached to the PowerPi docker network with the appropriate access.
 
-Used by _energenie_controller_ to access the ENER314/ENER314-RT Raspberry Pi module and _zigbee_controller_ to access the ZigBee serial device.
+Used by the following controllers to access hardware hosted by the _docker_ node:
+
+-   [_bluetooth_controller_](../../controllers/bluetooth/README.md) to access the Bluetooth transceiver.
+-   [_energenie_controller_](../../controllers/energenie/README.md) to access the ENER314/ENER314-RT Raspberry Pi module.
+-   [_zigbee_controller_](../../controllers/zigbee/README.md) to access the ZigBee serial device.
 
 ## Building
 

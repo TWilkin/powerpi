@@ -7,6 +7,7 @@ This project was devised to utilise open, reverse engineered or free home automa
 ### Supported IoT Hardware
 
 -   [Amazon Alexa](https://developer.amazon.com/en-GB/alexa/devices)
+-   [Bluetooth](https://en.wikipedia.org/wiki/Bluetooth)
 -   [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories)
 -   [LIFX](https://www.lifx.com/)
 -   [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html)
@@ -26,13 +27,14 @@ The project is split into the following services, each of which have their own _
 -   [**certbot**](services/certbot/README.md) - Use Let's Encrypt to provide SSL certificates for NGINX.
 -   [**clacks-config**](services/clacks-config/README.md) - Retrieve configuration files from GitHub.
 -   **controllers**:
+    -   [**bluetooth**](controllers/bluetooth/README.md) - Allows control of [Bluetooth](https://en.wikipedia.org/wiki/Bluetooth) devices, including user presence detection.
     -   [**energenie**](controllers/energenie/README.md) - Allows control of [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories) devices using the ENER314 or ENER314-RT Pi module.
     -   [**harmony**](controllers/harmony/README.md) - Allows control of [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html) Smart Hub devices.
     -   [**lifx**](controllers/lifx/README.md) - Allows control of [LIFX](https://www.lifx.com/) light devices.
     -   [**macro**](controllers/macro/README.md) - Allows control of other devices with macros, delays, mutexes etc.
     -   [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
 -   [**deep-thought**](services/deep-thought/README.md) - API
--   [**device-mapper**](services/device-mapper/README.md) - Workaround for accessing system devices using privileged mode in Docker Swarm mode using Docker-in-docker.
+-   [**device-mapper**](services/device-mapper/README.md) - Workaround for accessing system devices using privileged mode in Docker Swarm mode using Docker-in-docker. Required for _bluetooth_controller_, _energenie_controller_ and _zigbee_controller_.
 -   [**energy-monitor**](services/energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
 -   [**freedns**](services/freedns/README.md) - Overcome changing public IP addresses of consumer ISPs by pointing a free hostname at the current public IP via [FreeDNS](https://freedns.afraid.org/)
 -   [**light-fantastic**](services/light-fantastic/README.md) - Schedule based control of light devices (LIFX), e.g. brightness, colour, temperature etc.
