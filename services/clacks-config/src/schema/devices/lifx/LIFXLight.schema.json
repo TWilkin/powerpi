@@ -18,8 +18,7 @@
         },
         "mac": {
             "description": "The MAC address where the LIFX Light can be found",
-            "type": "string",
-            "pattern": "^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$"
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/MAC.schema.json"
         },
         "hostname": {
             "description": "The hostname where the LIFX Light can be found",
