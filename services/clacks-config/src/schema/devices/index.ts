@@ -1,4 +1,5 @@
 import * as BaseDevice from "./BaseDevice.schema.json";
+import loadBluetoothSchema from "./bluetooth";
 import loadEnergenieSchema from "./energenie";
 import * as GenericSensor from "./GenericSensor.schema.json";
 import loadHarmonySchema from "./harmony";
@@ -17,6 +18,9 @@ export default function loadDevicesSchema() {
 
         // mixins with configurable properties
         PollableDevice,
+
+        // the Bluetooth controller devices
+        ...loadBluetoothSchema(),
 
         // the Energenie controller devices
         ...loadEnergenieSchema(),

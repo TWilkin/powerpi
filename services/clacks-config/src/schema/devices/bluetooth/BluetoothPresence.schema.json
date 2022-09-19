@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/bluetooth/BluetoothPresence.schema.json",
+    "title": "BluetoothPresence",
+    "description": "The BluetoothPresence device",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+        },
+        {
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/PollableDevice.schema.json"
+        },
+        {
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BluetoothDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "bluetooth_presence"
+        }
+    }
+}

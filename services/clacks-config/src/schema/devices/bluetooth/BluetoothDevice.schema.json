@@ -1,0 +1,14 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/bluetooth/BluetoothDevice.schema.json",
+    "title": "BluetoothDevice",
+    "description": "The common Bluetooth device properties",
+    "type": "object",
+    "properties": {
+        "mac": {
+            "description": "The MAC address where the Bluetooth device can be found",
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/MAC.schema.json"
+        }
+    },
+    "required": ["mac"]
+}
