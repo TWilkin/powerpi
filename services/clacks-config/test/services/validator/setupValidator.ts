@@ -17,9 +17,16 @@ export async function testValid(
     fileType: ConfigFileType,
     file: object
 ) {
-    const result = await subject?.validate(fileType, file);
+    try {
+        const result = await subject?.validate(fileType, file);
 
-    expect(result).toBeTruthy();
+        expect(result).toBeTruthy();
+    } catch (e) {
+        console.error(e);
+
+        // force a fail
+        expect(false).toBeTruthy();
+    }
 }
 
 export async function testInvalid(
@@ -27,7 +34,7 @@ export async function testInvalid(
     fileType: ConfigFileType,
     file: object
 ) {
-    const action = () => subject?.validate(fileType, file);
+    const action = async () => await subject?.validate(fileType, file);
 
     await expect(action).rejects.toThrow(ValidationException);
 }
