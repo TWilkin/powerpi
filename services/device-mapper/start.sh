@@ -25,7 +25,18 @@ args=()
 # optional volume
 if [ -v VOLUME ]
 then
-    args+=("--mount type=bind,src=$VOLUME,dst=/var/data")
+    params=(${VOLUME//:/ })
+
+    src="${params[0]}"
+    dst="${params[1]:=/var/data}"
+
+    args+=("--mount type=bind,src=$src,dst=$dst")
+fi
+
+# optional device
+if [ -v DEVICE ]
+then
+    args+=("--device $DEVICE")
 fi
 
 # optional env array
@@ -40,7 +51,6 @@ echo "Starting $CONTROLLER_NAME"
 docker run \
     --privileged \
     --name $NAME \
-    --device $DEVICE \
     --network powerpi \
     ${args[@]} \
     $IMAGE \
