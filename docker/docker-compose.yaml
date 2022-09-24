@@ -78,7 +78,7 @@ services:
             - mosquitto
 
     device-mapper-energenie:
-        image: twilkin/powerpi-device-mapper:0.0.6
+        image: twilkin/powerpi-device-mapper:0.0.7
         networks:
             - powerpi
         deploy:
@@ -115,7 +115,7 @@ services:
             - mosquitto
 
     device-mapper-zigbee:
-        image: twilkin/powerpi-device-mapper:0.0.6
+        image: twilkin/powerpi-device-mapper:0.0.7
         networks:
             - powerpi
         deploy:
