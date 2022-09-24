@@ -20,9 +20,9 @@ void configurePIR(ArduinoJson::JsonVariant config) {
     Serial.print(clacksConfig.pirPostDetectSkip);
     Serial.println(" intervals");
 
-    clacksConfig.pirPostMotionSkip = secondsToInterval(config["post_motion_skip"] | PIR_POST_MOTION_SKIP);
-    Serial.print("\tPost Motion Skip: ");
-    Serial.print(clacksConfig.pirPostMotionSkip);
+    clacksConfig.pirPostMotionCheck = secondsToInterval(config["post_motion_check"] | PIR_POST_MOTION_CHECK);
+    Serial.print("\tPost Motion Check: ");
+    Serial.print(clacksConfig.pirPostMotionCheck);
     Serial.println(" intervals");
 }
 
@@ -47,19 +47,24 @@ void pollPIR() {
         }
     } else if(pirPreviousState == DETECTED) {
         if(state == LOW) {
-            // we've stopped detecting motion, so switch to the CHECK state and wait
+            // we've stopped detecting motion, so switch to the CHECK state
             pirPreviousState = CHECK;
-            pirCounterMax = clacksConfig.pirPostMotionSkip;
+            pirCheckCounter = 0;
+
+            // after HIGH to LOW we need to allow the sensor to reacclimatise
+            pirCounterMax = clacksConfig.pirPostDetectSkip;
         }
     } else {
         // we are in CHECK state, should we publish undetected?
         if(state == LOW) {
-            // it's still low so publish
-            pirPreviousState = UNDETECTED;
-            handleMotionEvent(UNDETECTED);
+            // it's still low so increment the counter
+            pirCheckCounter++;
 
-            // after HIGH to LOW we need to allow the sensor to reacclimatise
-            pirCounterMax = clacksConfig.pirPostDetectSkip;
+            if(pirCheckCounter == clacksConfig.pirPostMotionCheck) {
+                // once the counter hits the limit, publish that motion was no longer detected
+                pirPreviousState = UNDETECTED;
+                handleMotionEvent(UNDETECTED);
+            }
         } else {
             // it's now HIGH again, so switch back to the detected state
             pirPreviousState = DETECTED;

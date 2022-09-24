@@ -15,8 +15,8 @@
 // the number of seconds to skip between a transition (5s)
 #define PIR_POST_DETECT_SKIP 5u
 
-// the number of seconds to skip after detection (20s)
-#define PIR_POST_MOTION_SKIP 20u
+// the number of checks (1/s) to perform after motion is no longer detected (20x)
+#define PIR_POST_MOTION_CHECK 20u
 
 // enum for the three possible motion states
 typedef enum PIRState {
@@ -36,6 +36,9 @@ PIRState pirPreviousState;
 // the counter for the skipped loops
 unsigned short pirCounter = 0;
 unsigned short pirCounterMax = 0;
+
+// the counter for how many times we've checked there is still no motion
+unsigned short pirCheckCounter = 0;
 
 void setupPIR();
 void configurePIR(ArduinoJson::JsonVariant config);
