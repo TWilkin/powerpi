@@ -44,8 +44,8 @@
                     "type": "integer",
                     "minimum": 1
                 },
-                "post_motion_skip": {
-                    "description": "The number of seconds to skip readings after motion was detected",
+                "post_motion_check": {
+                    "description": "The number of seconds to check motion is no longer detected to confirm",
                     "type": "integer",
                     "minimum": 1
                 }
