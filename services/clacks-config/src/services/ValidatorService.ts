@@ -1,6 +1,6 @@
 import { ConfigFileType, LoggerService } from "@powerpi/common";
 import addFormats from "ajv-formats";
-import Ajv from "ajv/dist/2020";
+import Ajv, { AnySchema } from "ajv/dist/2020";
 import { Service } from "typedi";
 import loadSchema from "../schema";
 
@@ -41,7 +41,7 @@ export default class ValidatorService {
         return false;
     }
 
-    private addSchema<TSchema>(schema: TSchema) {
+    private addSchema(schema: { [key: string]: AnySchema }) {
         for (const type in schema) {
             const key = type as keyof typeof schema;
 

@@ -73,6 +73,8 @@ export default class GitHubConfigService {
     }
 
     private async validate(type: ConfigFileType, content: object) {
+        this.logger.info("Validating file", type);
+
         let valid = false;
 
         try {
