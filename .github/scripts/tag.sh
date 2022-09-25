@@ -5,7 +5,7 @@ get_version() {
     local file_regex=$2
     local version_regex=$3
 
-    local version_str=`grep $file_regex $file`
+    local version_str=`grep $file_regex $file | head -n 1`
     if [[ $version_str =~ $version_regex ]]
     then
         version="${BASH_REMATCH[1]}"
@@ -36,12 +36,21 @@ get_autoconf_version() {
     get_version $file $file_regex $version_regex
 }
 
+get_docker_compose_version() {
+    local file=$1
+    local service=$2
+    local file_regex="image:\s*twilkin/powerpi-$service:.*"
+    local version_regex="image:\s*twilkin/powerpi-$service:(.*)"
+
+    get_version $file $file_regex $version_regex
+}
+
 tag_service() {
     local directory="$1"
     local name=$2
 
     version=
-    local path="${GITHUB_WORKSPACE}/$1"
+    local path="${GITHUB_WORKSPACE}/$directory"
 
     # check package.json
     local file="$path/package.json"
@@ -62,6 +71,13 @@ tag_service() {
     if [ -f "$file" ]
     then
         get_autoconf_version $file
+    fi
+
+    # check docker-compose.yaml
+    file="$path/docker-compose.yaml"
+    if [ -f "$file" ]
+    then
+        get_docker_compose_version $file $name
     fi
 
     if [ -z "$version" ]
@@ -109,6 +125,7 @@ tag_service "esp8266" "powerpi-sensor"
 tag_service "services/babel-fish" "babel-fish"
 tag_service "services/clacks-config" "clacks-config"
 tag_service "services/deep-thought" "deep-thought"
+tag_service "docker" "device-mapper"
 tag_service "services/energy-monitor" "energy-monitor"
 tag_service "services/freedns" "freedns"
 tag_service "services/light-fantastic" "light-fantastic"
