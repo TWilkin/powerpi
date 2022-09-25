@@ -1,5 +1,8 @@
-import { useMemo } from "react";
-import { useQuery, UseQueryResult } from "react-query";
+import { History } from "@powerpi/api";
+import PaginationResponse from "@powerpi/api/dist/src/Pagination";
+import { useCallback, useMemo } from "react";
+import { useInfiniteQuery, useQuery, UseQueryResult } from "react-query";
+import { chain as _ } from "underscore";
 import useAPI from "./api";
 
 export function useGetHistoryFilters(type?: string) {
@@ -51,18 +54,51 @@ export function useGetHistory(
     action?: string
 ) {
     const api = useAPI();
-    const { isLoading, isError, data } = useQuery(
-        ["history", type, entity, action, start, end, records],
-        () => api.getHistory(type, entity, action, start, end, records),
-        {
-            keepPreviousData: true,
-        }
+
+    const nextPage = useCallback(
+        ({ pageParam = end }) => {
+            if (pageParam !== false) {
+                // only make the request if we have data
+                return api.getHistory(type, entity, action, start, pageParam, records);
+            }
+
+            return undefined;
+        },
+        [action, api, end, entity, records, start, type]
     );
+
+    const getNextPageParam = useCallback(
+        (
+            lastPage: PaginationResponse<History> | undefined,
+            allPages: (PaginationResponse<History> | undefined)[]
+        ) => {
+            const previousTimestamp = _(allPages.at(-2)?.data).last().value()?.timestamp;
+            const lastTimestamp = _(lastPage?.data).last().value()?.timestamp;
+            console.log(`pages: ${previousTimestamp} ${lastTimestamp}`);
+
+            if (!lastTimestamp || !previousTimestamp || lastTimestamp < previousTimestamp) {
+                // we still have some pages so return the date to query to
+                return lastTimestamp;
+            }
+
+            return false;
+        },
+        []
+    );
+
+    const { isLoading, isError, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, data } =
+        useInfiniteQuery(["history", type, entity, action, start, end], nextPage, {
+            getNextPageParam,
+        });
 
     return {
         isHistoryLoading: isLoading,
         isHistoryError: isError,
         history: data,
+        historyFetchNextPage: fetchNextPage,
+        hasHistoryNextPage: hasNextPage,
+        isHistoryFetching: isFetching,
+        isHistoryFetchingNextPage: isFetchingNextPage,
     };
 }
 

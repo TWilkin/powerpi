@@ -1,5 +1,6 @@
 import { History } from "@powerpi/api";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
+import { useQueryClient } from "react-query";
 import { chain as _ } from "underscore";
 import { useGetHistory } from "../../hooks/history";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
@@ -19,51 +20,32 @@ const HistoryList = () => {
         onMessageTypeFilterChange,
     } = useHistoryFilter();
 
-    const [lastDate, setLastDate] = useState<Date | undefined>(filters.end ?? undefined);
-
     const records = 30;
 
-    const { isHistoryLoading, isHistoryError, history } = useGetHistory(
+    const { isHistoryError, history, historyFetchNextPage, hasHistoryNextPage } = useGetHistory(
         records,
         filters.start ?? undefined,
-        lastDate,
+        filters.end ?? undefined,
         filters.type !== "" ? filters.type : undefined,
         filters.entity !== "" ? filters.entity : undefined,
         filters.action !== "" ? filters.action : undefined
     );
 
-    const loadMore = useCallback(() => {
-        // only load more if it's not already loading
-        if (!isHistoryLoading) {
-            // find the current last element
-            const currentLastDate = _(history?.data).last().value()?.timestamp;
-
-            setLastDate(currentLastDate);
-        }
-    }, [history?.data, isHistoryLoading]);
-
-    // cache the history so we don't lose the data when loading the next page
-    const [historyCache, setHistoryCache] = useState<History[]>([]);
-    useEffect(() => {
-        if (!isHistoryLoading && history?.data && history.data.length > 0) {
-            setHistoryCache((cache) =>
-                _([...cache, ...(history.data ?? [])])
-                    .uniq((record) => JSON.stringify(record))
-                    .value()
-            );
-        }
-    }, [history?.data, isHistoryLoading]);
-
-    const hasMore = useMemo(
-        () => historyCache.length < (history?.records ?? 0),
-        [history?.records, historyCache.length]
+    const historyCache = useMemo(
+        () =>
+            _(history?.pages?.reduce((acc, page) => acc.concat(page?.data ?? []), [] as History[]))
+                .uniq((record) => JSON.stringify(record))
+                .value(),
+        [history?.pages]
     );
 
     // when the filters change clear the cache and last dates
+    const queryClient = useQueryClient();
     useEffect(() => {
-        setHistoryCache([]);
-        setLastDate(filters.end ?? undefined);
-    }, [filters]);
+        const clear = async () => await queryClient.invalidateQueries("history");
+
+        clear();
+    }, [filters, queryClient]);
 
     return (
         <>
@@ -77,7 +59,10 @@ const HistoryList = () => {
             </Filter>
 
             <div className={styles.list}>
-                <InfiniteScrollList hasMore={hasMore} loadMore={loadMore}>
+                <InfiniteScrollList
+                    hasMore={hasHistoryNextPage ?? false}
+                    loadMore={historyFetchNextPage}
+                >
                     <table>
                         <thead>
                             <tr>
