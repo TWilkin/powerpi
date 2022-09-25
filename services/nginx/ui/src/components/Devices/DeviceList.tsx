@@ -64,7 +64,7 @@ const DeviceList = () => {
                                             })}
                                             title={`Device ${device.name} is currently ${device.state}.`}
                                         >
-                                            {(!filters.visible || filters.search) && (
+                                            {(!filters.visible || filters.search !== undefined) && (
                                                 <td>
                                                     <FontAwesomeIcon
                                                         title={`This device is ${
