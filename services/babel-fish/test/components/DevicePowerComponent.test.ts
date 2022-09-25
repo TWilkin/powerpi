@@ -96,7 +96,10 @@ describe("Alexa", () => {
         );
     });
 
-    ["on", "off"].forEach((status) => {
+    [
+        ["on", "Starting Hallway Light"],
+        ["off", "Stopping Hallway Light"],
+    ].forEach(([status, message]) => {
         test(`Turns device ${status}`, async () => {
             mockDeviceFile([
                 {
@@ -125,9 +128,7 @@ describe("Alexa", () => {
             });
 
             expect(response.response.outputSpeech?.ssml).toBeDefined();
-            expect(response.response.outputSpeech?.ssml).toMatch(
-                `<speak>Turning Hallway Light ${status}</speak>`
-            );
+            expect(response.response.outputSpeech?.ssml).toMatch(`<speak>${message}</speak>`);
         });
     });
 });
