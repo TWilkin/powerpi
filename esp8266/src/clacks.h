@@ -34,8 +34,8 @@ struct ClacksConfig_s {
     // the number of intervals to skip between a transition
     unsigned short pirPostDetectSkip;
 
-    // the number of intervals to skip after detection
-    unsigned short pirPostMotionSkip;
+    // the number of checks after we stop seeing motion
+    unsigned short pirPostMotionCheck;
 } ClacksConfig_default = { false, 0, 0, 0, 0, 0 };
 
 typedef struct ClacksConfig_s ClacksConfig;

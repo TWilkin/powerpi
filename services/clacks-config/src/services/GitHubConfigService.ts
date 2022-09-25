@@ -14,12 +14,15 @@ export default class GitHubConfigService {
     private logger: LoggerService;
     private handlerFactory: HandlerFactory;
     private validator: ValidatorService;
+    private validated: { [key: string]: boolean };
 
     constructor(private config: ConfigService) {
         this.publishService = Container.get(ConfigPublishService);
         this.logger = Container.get(LoggerService);
         this.handlerFactory = Container.get(HandlerFactory);
         this.validator = Container.get(ValidatorService);
+
+        this.validated = {};
     }
 
     public async start() {
@@ -43,22 +46,20 @@ export default class GitHubConfigService {
                 // check if this file has changed
                 if (typeConfig?.checksum === file.checksum) {
                     this.logger.info("File", type, "is unchanged");
+
+                    // should we re-validate it?
+                    if (!this.validated[type]) {
+                        this.validate(type, file.content);
+                    }
+
                     continue;
+                } else {
+                    // it's a new file so it's unvalidated
+                    this.validated[type] = false;
                 }
 
-                // validate the file is okay
-                try {
-                    const valid = await this.validator.validate(type, file.content);
-                    if (!valid) {
-                        throw new ValidationException(type, undefined);
-                    }
-                } catch (ex) {
-                    this.logger.error(ex);
-
-                    if (ex instanceof ValidationException) {
-                        this.publishService.publishConfigError(type, ex.message, ex.errors);
-                    }
-
+                // validate the new file, and don't publish if it's not okay
+                if (!this.validate(type, file.content)) {
                     continue;
                 }
 
@@ -69,6 +70,33 @@ export default class GitHubConfigService {
                 handler?.handle(file.content);
             }
         }
+    }
+
+    private async validate(type: ConfigFileType, content: object) {
+        this.logger.info("Validating file", type);
+
+        let valid = false;
+
+        try {
+            valid = await this.validator.validate(type, content);
+
+            if (!valid) {
+                throw new ValidationException(type, undefined);
+            }
+        } catch (ex) {
+            this.logger.error(ex);
+
+            if (ex instanceof ValidationException) {
+                this.publishService.publishConfigError(type, ex.message, ex.errors);
+            }
+
+            valid = false;
+        }
+
+        // the file is validated, so don't do it again
+        this.validated[type] = true;
+
+        return valid;
     }
 
     private async login() {
