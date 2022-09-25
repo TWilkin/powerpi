@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/babel-fish",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "PowerPi home automation voice service",
     "private": true,
     "license": "GPL-3.0-only",
