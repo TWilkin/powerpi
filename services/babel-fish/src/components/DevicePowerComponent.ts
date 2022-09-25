@@ -52,7 +52,7 @@ export default class DevicePowerComponent extends BaseComponent {
             }
 
             return this.$send({
-                message: `Turning ${device?.displayName} ${status}`,
+                message: `${status === "on" ? "Starting" : "Stopping"} ${device?.displayName}`,
                 listen: false,
             });
         }
