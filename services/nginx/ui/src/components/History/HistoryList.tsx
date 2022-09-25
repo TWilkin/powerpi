@@ -1,8 +1,7 @@
 import { History } from "@powerpi/api";
 import { useEffect, useMemo } from "react";
-import { useQueryClient } from "react-query";
 import { chain as _ } from "underscore";
-import { useGetHistory } from "../../hooks/history";
+import { useGetHistory, useInvalidateHistory } from "../../hooks/history";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import Filter from "../Components/Filter";
 import InfiniteScrollList from "../Components/InfiniteScrollList";
@@ -39,13 +38,11 @@ const HistoryList = () => {
         [history?.pages]
     );
 
-    // when the filters change clear the cache and last dates
-    const queryClient = useQueryClient();
+    // when the filters change invalidate the history we have loaded
+    const invalidateHistory = useInvalidateHistory();
     useEffect(() => {
-        const clear = async () => await queryClient.invalidateQueries("history");
-
-        clear();
-    }, [filters, queryClient]);
+        invalidateHistory();
+    }, [filters, invalidateHistory]);
 
     return (
         <>

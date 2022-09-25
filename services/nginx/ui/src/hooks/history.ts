@@ -1,7 +1,7 @@
 import { History } from "@powerpi/api";
 import PaginationResponse from "@powerpi/api/dist/src/Pagination";
 import { useCallback, useMemo } from "react";
-import { useInfiniteQuery, useQuery, UseQueryResult } from "react-query";
+import { useInfiniteQuery, useQuery, useQueryClient, UseQueryResult } from "react-query";
 import { chain as _ } from "underscore";
 import useAPI from "./api";
 
@@ -45,6 +45,12 @@ function extractResult<TRecord>(result: UseQueryResult<TRecord[], unknown>, prop
     };
 }
 
+export function useInvalidateHistory() {
+    const queryClient = useQueryClient();
+
+    return useCallback(async () => await queryClient.invalidateQueries("history"), [queryClient]);
+}
+
 export function useGetHistory(
     records: number,
     start?: Date,
@@ -74,7 +80,6 @@ export function useGetHistory(
         ) => {
             const previousTimestamp = _(allPages.at(-2)?.data).last().value()?.timestamp;
             const lastTimestamp = _(lastPage?.data).last().value()?.timestamp;
-            console.log(`pages: ${previousTimestamp} ${lastTimestamp}`);
 
             if (!lastTimestamp || !previousTimestamp || lastTimestamp < previousTimestamp) {
                 // we still have some pages so return the date to query to
