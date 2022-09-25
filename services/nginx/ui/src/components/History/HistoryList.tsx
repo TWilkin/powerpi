@@ -1,7 +1,11 @@
 import { History } from "@powerpi/api";
 import { useEffect, useMemo } from "react";
 import { chain as _ } from "underscore";
-import { useGetHistory, useInvalidateHistory } from "../../hooks/history";
+import {
+    useGetHistory,
+    useInvalidateHistory,
+    useSocketIORefreshHistory,
+} from "../../hooks/history";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import Filter from "../Components/Filter";
 import InfiniteScrollList from "../Components/InfiniteScrollList";
@@ -43,6 +47,9 @@ const HistoryList = () => {
     useEffect(() => {
         invalidateHistory();
     }, [filters, invalidateHistory]);
+
+    // when a socket.io messages arrives, also refresh the history in case it should be displayed
+    useSocketIORefreshHistory();
 
     return (
         <>

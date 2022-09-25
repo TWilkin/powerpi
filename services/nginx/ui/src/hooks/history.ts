@@ -1,6 +1,6 @@
 import { History } from "@powerpi/api";
 import PaginationResponse from "@powerpi/api/dist/src/Pagination";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useInfiniteQuery, useQuery, useQueryClient, UseQueryResult } from "react-query";
 import { chain as _ } from "underscore";
 import useAPI from "./api";
@@ -125,4 +125,23 @@ export function useGetHistoryRange(
         isHistoryError: isError,
         history: data,
     };
+}
+
+export function useSocketIORefreshHistory() {
+    const api = useAPI();
+
+    const invalidateHistory = useInvalidateHistory();
+
+    // handle socket.io updates
+    useEffect(() => {
+        const refresh = async () => await invalidateHistory();
+
+        api.addDeviceListener(refresh);
+        api.addSensorListener(refresh);
+
+        return () => {
+            api.removeDeviceListener(refresh);
+            api.removeSensorListener(refresh);
+        };
+    }, [api, invalidateHistory]);
 }
