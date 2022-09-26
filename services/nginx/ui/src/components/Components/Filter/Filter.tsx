@@ -16,7 +16,10 @@ const Filter = ({ onClear, className, children }: FilterProps) => {
 
     const [showFilter, setShowFilter] = useState<boolean | undefined>(undefined);
 
-    const closeFilter = useCallback(() => setShowFilter(false), []);
+    const closeFilter = useCallback(
+        () => setShowFilter((current) => (current !== undefined ? false : undefined)),
+        []
+    );
 
     useOnClickOutside(filterRef, closeFilter);
 
