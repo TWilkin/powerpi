@@ -24,10 +24,12 @@ const DeviceList = () => {
         filtered,
         types,
         locations,
+        categories,
         onClear,
         filteredCount,
         onTypeChange,
         onLocationChange,
+        onCategoryChange,
         onVisibleChange,
         onSearchChange,
     } = useDeviceFilter(devices);
@@ -39,8 +41,10 @@ const DeviceList = () => {
                     filters={filters}
                     types={types}
                     locations={locations}
+                    categories={categories}
                     onTypeChange={onTypeChange}
                     onLocationChange={onLocationChange}
+                    onCategoryChange={onCategoryChange}
                     onVisibleChange={onVisibleChange}
                 />
             </Filter>

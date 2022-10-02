@@ -8,8 +8,10 @@ interface DeviceFilterProps {
     filters: Filters;
     types: IListFilter[];
     locations: IListFilter[];
+    categories: IListFilter[];
     onTypeChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onLocationChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    onCategoryChange: (event: ChangeEvent<HTMLInputElement>) => void;
     onVisibleChange: () => void;
 }
 
@@ -17,8 +19,10 @@ const DeviceFilter = ({
     filters,
     types,
     locations,
+    categories,
     onTypeChange,
     onLocationChange,
+    onCategoryChange,
     onVisibleChange,
 }: DeviceFilterProps) => {
     return (
@@ -40,6 +44,13 @@ const DeviceFilter = ({
                 filters={filters.locations}
                 onChange={onLocationChange}
                 element={(location) => <>{location.value}</>}
+            />
+
+            <ListFilter
+                values={categories}
+                filters={filters.categories}
+                onChange={onCategoryChange}
+                element={(category) => <>{category.value}</>}
             />
 
             <FilterGroup>
