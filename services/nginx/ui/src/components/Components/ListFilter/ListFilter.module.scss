@@ -1,3 +1,7 @@
 .filter {
     display: flex;
+
+    &:not(:first-child) {
+        padding-left: 1rem;
+    }
 }

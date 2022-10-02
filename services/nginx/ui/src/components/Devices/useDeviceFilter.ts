@@ -148,7 +148,9 @@ export default function useDeviceFilter(devices?: Device[]) {
         (event: ChangeEvent<HTMLInputElement>) => {
             let filterTypes = [...filters.types];
 
-            if (event.target.checked) {
+            if (event.target.value === "") {
+                filterTypes = event.target.checked ? types.map((type) => type.key) : [];
+            } else if (event.target.checked) {
                 filterTypes.push(event.target.value);
             } else {
                 filterTypes = filterTypes.filter((type) => type !== event.target.value);
@@ -156,14 +158,18 @@ export default function useDeviceFilter(devices?: Device[]) {
 
             setFilters((currentFilter) => ({ ...currentFilter, types: filterTypes }));
         },
-        [filters.types, setFilters]
+        [filters.types, setFilters, types]
     );
 
     const onLocationChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
             let filterLocations = [...filters.locations];
 
-            if (event.target.checked) {
+            if (event.target.value === "") {
+                filterLocations = event.target.checked
+                    ? locations.map((location) => location.key)
+                    : [];
+            } else if (event.target.checked) {
                 filterLocations.push(event.target.value);
             } else {
                 filterLocations = filterLocations.filter(
@@ -173,14 +179,18 @@ export default function useDeviceFilter(devices?: Device[]) {
 
             setFilters((currentFilter) => ({ ...currentFilter, locations: filterLocations }));
         },
-        [filters.locations, setFilters]
+        [filters.locations, locations, setFilters]
     );
 
     const onCategoryChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
             let filterCategories = [...filters.categories];
 
-            if (event.target.checked) {
+            if (event.target.value === "") {
+                filterCategories = event.target.checked
+                    ? categories.map((category) => category.key)
+                    : [];
+            } else if (event.target.checked) {
                 filterCategories.push(event.target.value);
             } else {
                 filterCategories = filterCategories.filter(
@@ -190,7 +200,7 @@ export default function useDeviceFilter(devices?: Device[]) {
 
             setFilters((currentFilter) => ({ ...currentFilter, categories: filterCategories }));
         },
-        [filters.categories, setFilters]
+        [categories, filters.categories, setFilters]
     );
 
     const onVisibleChange = useCallback(

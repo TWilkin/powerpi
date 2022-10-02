@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactNode } from "react";
+import { ChangeEvent, ReactNode, useMemo } from "react";
 import FilterGroup from "../FilterGroup";
 import Loading from "../Loading";
 import styles from "./ListFilter.module.scss";
@@ -21,9 +21,21 @@ export default function ListFilter<TListType extends IListFilter>({
     onChange,
     element,
 }: ListFilterProps<TListType>) {
+    const allChecked = useMemo(() => (values ?? []).length === filters.length, [filters, values]);
+
     return (
         <FilterGroup>
             <Loading loading={!values}>
+                <label className={styles.filter}>
+                    <input
+                        type="checkbox"
+                        value={undefined}
+                        checked={allChecked}
+                        onChange={onChange}
+                    />
+                    <em>All</em>
+                </label>
+
                 {values?.map((value) => (
                     <label key={value.key} className={styles.filter}>
                         <input
