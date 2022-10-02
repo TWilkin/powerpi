@@ -28,7 +28,7 @@ export default function useDeviceFilter(devices?: Device[]) {
             _(devices)
                 .uniq((device) => device.type)
                 .sortBy((device) => device.type)
-                .map((device) => ({ key: device.type, value: device.type }))
+                .map((device) => ({ key: device.type, value: device.type.replace("_", " ") }))
                 .value(),
         [devices]
     );

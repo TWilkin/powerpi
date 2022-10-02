@@ -1,5 +1,6 @@
 .filter {
     display: flex;
+    text-transform: capitalize;
 
     &:not(:first-child) {
         padding-left: 1rem;
