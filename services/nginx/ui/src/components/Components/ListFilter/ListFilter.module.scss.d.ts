@@ -3,6 +3,7 @@
 interface CssExports {
   'filter': string;
   'meta': string;
+  'title': string;
 }
 export const cssExports: CssExports;
 export default cssExports;

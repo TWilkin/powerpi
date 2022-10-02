@@ -28,6 +28,7 @@ const DeviceFilter = ({
     return (
         <div>
             <ListFilter
+                title="Device Types"
                 values={types}
                 filters={filters.types}
                 onChange={onTypeChange}
@@ -40,6 +41,7 @@ const DeviceFilter = ({
             />
 
             <ListFilter
+                title="Locations"
                 values={locations}
                 filters={filters.locations}
                 onChange={onLocationChange}
@@ -47,6 +49,7 @@ const DeviceFilter = ({
             />
 
             <ListFilter
+                title="Categories"
                 values={categories}
                 filters={filters.categories}
                 onChange={onCategoryChange}

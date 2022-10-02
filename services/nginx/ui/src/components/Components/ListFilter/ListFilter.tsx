@@ -10,6 +10,7 @@ export interface IListFilter {
 }
 
 interface ListFilterProps<TListType extends IListFilter> {
+    title: string;
     values?: TListType[];
     filters: string[];
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -17,6 +18,7 @@ interface ListFilterProps<TListType extends IListFilter> {
 }
 
 export default function ListFilter<TListType extends IListFilter>({
+    title,
     values,
     filters,
     onChange,
@@ -26,6 +28,8 @@ export default function ListFilter<TListType extends IListFilter>({
 
     return (
         <FilterGroup>
+            <h4 className={styles.title}>{title}:</h4>
+
             <Loading loading={!values}>
                 <label className={classNames(styles.filter, styles.meta)}>
                     <input

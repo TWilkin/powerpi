@@ -1,8 +1,12 @@
+.title {
+    margin: 0;
+}
+
 .filter {
     display: flex;
     text-transform: capitalize;
 
-    &:not(:first-child) {
+    &:not(:nth-child(2)) {
         padding-left: 1rem;
     }
 
