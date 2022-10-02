@@ -40,6 +40,7 @@ export default class DeviceStateService extends DeviceStateListener {
             type: device.type,
             visible: device.visible ?? true,
             location: device.location,
+            categories: device.categories,
             state: DeviceState.Unknown,
             since: -1,
         }));
