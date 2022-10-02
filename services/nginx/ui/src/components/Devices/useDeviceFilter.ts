@@ -38,7 +38,10 @@ export default function useDeviceFilter(devices?: Device[]) {
 
     // handle undefined in device location and categories
     const getDeviceLocation = useCallback((device: Device) => device.location ?? "unspecified", []);
-    const getDeviceCategories = useCallback((device: Device) => device.categories ?? [], []);
+    const getDeviceCategories = useCallback(
+        (device: Device) => device.categories ?? ["unspecified"],
+        []
+    );
 
     const locations = useMemo(
         () =>
@@ -73,7 +76,7 @@ export default function useDeviceFilter(devices?: Device[]) {
                 .flatten()
                 .uniq()
                 .map((category) => ({ key: category, value: category }))
-                .sort()
+                .sortBy((filter) => filter.value)
                 .value(),
         [devices, getDeviceCategories]
     );
