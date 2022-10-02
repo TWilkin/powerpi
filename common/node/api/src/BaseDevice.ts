@@ -4,4 +4,5 @@ export default interface BaseDevice {
     visible: boolean;
     type: string;
     location?: string;
+    categories?: string[];
 }
