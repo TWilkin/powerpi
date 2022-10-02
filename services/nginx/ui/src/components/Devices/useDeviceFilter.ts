@@ -114,13 +114,17 @@ export default function useDeviceFilter(devices?: Device[]) {
             }
 
             // apply the type filters
-            result &&= filters.types.includes(device.type);
+            if (filters.types.length > 0) {
+                result &&= filters.types.includes(device.type);
+            }
 
             // apply the location filters
-            result &&= filters.locations.includes(getDeviceLocation(device));
+            if (filters.locations.length > 0) {
+                result &&= filters.locations.includes(getDeviceLocation(device));
+            }
 
             // aply the category filters
-            if ((device.categories?.length ?? 0) > 0) {
+            if (filters.categories.length > 0) {
                 result &&= _(getDeviceCategories(device))
                     .any((category) => filters.categories.includes(category))
                     .value();
