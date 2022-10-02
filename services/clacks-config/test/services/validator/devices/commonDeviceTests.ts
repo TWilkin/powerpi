@@ -46,6 +46,16 @@ export default function commonDeviceTests(validFile: object) {
         testValid({ sensors: [], ...validFile, devices: [{ ...device, visible: true }] });
     });
 
+    test("Categories", () => {
+        const device = getDevice(validFile);
+
+        testValid({
+            sensors: [],
+            ...validFile,
+            devices: [{ ...device, categories: ["TV", "Music"] }],
+        });
+    });
+
     return {
         getDevice,
         testValid,
