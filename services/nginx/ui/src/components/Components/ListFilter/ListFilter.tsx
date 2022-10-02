@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { ChangeEvent, ReactNode, useMemo } from "react";
 import FilterGroup from "../FilterGroup";
 import Loading from "../Loading";
@@ -26,18 +27,23 @@ export default function ListFilter<TListType extends IListFilter>({
     return (
         <FilterGroup>
             <Loading loading={!values}>
-                <label className={styles.filter}>
+                <label className={classNames(styles.filter, styles.meta)}>
                     <input
                         type="checkbox"
                         value={undefined}
                         checked={allChecked}
                         onChange={onChange}
                     />
-                    <em>All</em>
+                    All
                 </label>
 
                 {values?.map((value) => (
-                    <label key={value.key} className={styles.filter}>
+                    <label
+                        key={value.key}
+                        className={classNames(styles.filter, {
+                            [styles.meta]: value.key === "unspecified",
+                        })}
+                    >
                         <input
                             type="checkbox"
                             value={value.key}

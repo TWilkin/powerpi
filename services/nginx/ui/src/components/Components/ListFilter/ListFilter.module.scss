@@ -5,4 +5,9 @@
     &:not(:first-child) {
         padding-left: 1rem;
     }
+
+    &.meta {
+        text-transform: none;
+        font-style: italic;
+    }
 }
