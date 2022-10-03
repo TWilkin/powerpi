@@ -28,10 +28,32 @@ export default function commonSensorTests(validFile: object) {
     test("Valid file", () => testValid({ sensors: [], ...validFile }));
 
     test("No name", () => {
-        const sensor = getSensor(validFile);
+        const sensor = { ...getSensor(validFile) };
         delete sensor.name;
 
         testInvalid({ devices: [], ...validFile, sensors: [sensor] });
+    });
+
+    test("Location", () => {
+        const sensor = getSensor(validFile);
+
+        testValid({ devices: [], ...validFile, sensors: [{ ...sensor, location: "LivingRoom" }] });
+    });
+
+    test("Visible", () => {
+        const sensor = getSensor(validFile);
+
+        testValid({ devices: [], ...validFile, sensors: [{ ...sensor, visible: true }] });
+    });
+
+    test("Categories", () => {
+        const sensor = getSensor(validFile);
+
+        testValid({
+            devices: [],
+            ...validFile,
+            sensors: [{ ...sensor, categories: ["TV", "Music"] }],
+        });
     });
 
     return {

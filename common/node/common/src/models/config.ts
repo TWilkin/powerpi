@@ -9,6 +9,7 @@ export interface IDeviceConfig {
     display_name?: string;
     visible?: boolean;
     location?: string;
+    categories?: string[];
 }
 
 export interface IDeviceConfigFile {

@@ -12,6 +12,9 @@ export interface Filters {
     // the device locations to include
     locations: string[];
 
+    // the device categories to include
+    categories: string[];
+
     // show only visible devices
     visible: boolean;
 
@@ -25,7 +28,7 @@ export default function useDeviceFilter(devices?: Device[]) {
             _(devices)
                 .uniq((device) => device.type)
                 .sortBy((device) => device.type)
-                .map((device) => ({ key: device.type, value: device.type }))
+                .map((device) => ({ key: device.type, value: device.type.replace("_", " ") }))
                 .value(),
         [devices]
     );
@@ -33,8 +36,12 @@ export default function useDeviceFilter(devices?: Device[]) {
     // use the floorplan to get the room display names
     const { floorplan } = useGetFloorplan();
 
-    // handle undefined in device location
+    // handle undefined in device location and categories
     const getDeviceLocation = useCallback((device: Device) => device.location ?? "unspecified", []);
+    const getDeviceCategories = useCallback(
+        (device: Device) => device.categories ?? ["unspecified"],
+        []
+    );
 
     const locations = useMemo(
         () =>
@@ -62,13 +69,26 @@ export default function useDeviceFilter(devices?: Device[]) {
         [devices, floorplan?.floors, getDeviceLocation]
     );
 
+    const categories = useMemo(
+        () =>
+            _(devices)
+                .map((device) => getDeviceCategories(device))
+                .flatten()
+                .uniq()
+                .map((category) => ({ key: category, value: category }))
+                .sortBy((filter) => filter.value)
+                .value(),
+        [devices, getDeviceCategories]
+    );
+
     const naturalDefaults = useMemo(
         () => ({
             types: types.map((type) => type.key),
             locations: locations.map((location) => location.key),
+            categories: categories.map((category) => category.key),
             visible: true,
         }),
-        [locations, types]
+        [categories, locations, types]
     );
 
     // apply the filtering criteria
@@ -94,14 +114,25 @@ export default function useDeviceFilter(devices?: Device[]) {
             }
 
             // apply the type filters
-            result &&= filters.types.includes(device.type);
+            if (filters.types.length > 0) {
+                result &&= filters.types.includes(device.type);
+            }
 
             // apply the location filters
-            result &&= filters.locations.includes(getDeviceLocation(device));
+            if (filters.locations.length > 0) {
+                result &&= filters.locations.includes(getDeviceLocation(device));
+            }
+
+            // aply the category filters
+            if (filters.categories.length > 0) {
+                result &&= _(getDeviceCategories(device))
+                    .any((category) => filters.categories.includes(category))
+                    .value();
+            }
 
             return result;
         },
-        [getDeviceLocation]
+        [getDeviceCategories, getDeviceLocation]
     );
 
     const { filters, setFilters, filtered, onClear, totalCount, filteredCount } = useFilter(
@@ -117,7 +148,9 @@ export default function useDeviceFilter(devices?: Device[]) {
         (event: ChangeEvent<HTMLInputElement>) => {
             let filterTypes = [...filters.types];
 
-            if (event.target.checked) {
+            if (event.target.value === "") {
+                filterTypes = event.target.checked ? types.map((type) => type.key) : [];
+            } else if (event.target.checked) {
                 filterTypes.push(event.target.value);
             } else {
                 filterTypes = filterTypes.filter((type) => type !== event.target.value);
@@ -125,14 +158,18 @@ export default function useDeviceFilter(devices?: Device[]) {
 
             setFilters((currentFilter) => ({ ...currentFilter, types: filterTypes }));
         },
-        [filters.types, setFilters]
+        [filters.types, setFilters, types]
     );
 
     const onLocationChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
             let filterLocations = [...filters.locations];
 
-            if (event.target.checked) {
+            if (event.target.value === "") {
+                filterLocations = event.target.checked
+                    ? locations.map((location) => location.key)
+                    : [];
+            } else if (event.target.checked) {
                 filterLocations.push(event.target.value);
             } else {
                 filterLocations = filterLocations.filter(
@@ -142,7 +179,28 @@ export default function useDeviceFilter(devices?: Device[]) {
 
             setFilters((currentFilter) => ({ ...currentFilter, locations: filterLocations }));
         },
-        [filters.locations, setFilters]
+        [filters.locations, locations, setFilters]
+    );
+
+    const onCategoryChange = useCallback(
+        (event: ChangeEvent<HTMLInputElement>) => {
+            let filterCategories = [...filters.categories];
+
+            if (event.target.value === "") {
+                filterCategories = event.target.checked
+                    ? categories.map((category) => category.key)
+                    : [];
+            } else if (event.target.checked) {
+                filterCategories.push(event.target.value);
+            } else {
+                filterCategories = filterCategories.filter(
+                    (category) => category !== event.target.value
+                );
+            }
+
+            setFilters((currentFilter) => ({ ...currentFilter, categories: filterCategories }));
+        },
+        [categories, filters.categories, setFilters]
     );
 
     const onVisibleChange = useCallback(
@@ -161,11 +219,13 @@ export default function useDeviceFilter(devices?: Device[]) {
         filtered,
         types,
         locations,
+        categories,
         onClear,
         totalCount,
         filteredCount,
         onTypeChange,
         onLocationChange,
+        onCategoryChange,
         onVisibleChange,
         onSearchChange,
     };
@@ -175,6 +235,7 @@ function parseQuery(query: URLSearchParams, defaults: Filters): Filters {
     return {
         types: query.getAll("types") ?? defaults.types,
         locations: query.getAll("locations") ?? defaults.locations,
+        categories: query.getAll("categories") ?? defaults.categories,
         visible: query.get("visible") === "1" ?? defaults.visible,
         search: query.get("search") ?? defaults.search,
     };
@@ -189,6 +250,10 @@ function toQuery(filters: Filters) {
 
     for (const location of filters.locations) {
         params.push(["locations", location]);
+    }
+
+    for (const category of filters.categories) {
+        params.push(["categories", category]);
     }
 
     params.push(["visible", filters.visible ? "1" : "0"]);

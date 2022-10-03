@@ -28,10 +28,32 @@ export default function commonDeviceTests(validFile: object) {
     test("Valid file", () => testValid({ sensors: [], ...validFile }));
 
     test("No name", () => {
-        const device = getDevice(validFile);
+        const device = { ...getDevice(validFile) };
         delete device.name;
 
         testInvalid({ sensors: [], ...validFile, devices: [device] });
+    });
+
+    test("Location", () => {
+        const device = getDevice(validFile);
+
+        testValid({ sensors: [], ...validFile, devices: [{ ...device, location: "LivingRoom" }] });
+    });
+
+    test("Visible", () => {
+        const device = getDevice(validFile);
+
+        testValid({ sensors: [], ...validFile, devices: [{ ...device, visible: true }] });
+    });
+
+    test("Categories", () => {
+        const device = getDevice(validFile);
+
+        testValid({
+            sensors: [],
+            ...validFile,
+            devices: [{ ...device, categories: ["TV", "Music"] }],
+        });
     });
 
     return {

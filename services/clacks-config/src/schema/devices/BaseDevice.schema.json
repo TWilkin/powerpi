@@ -24,6 +24,13 @@
         "location": {
             "description": "The physical room location of this device",
             "type": "string"
+        },
+        "categories": {
+            "description": "The list of categories this device belongs to",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
         }
     },
     "required": ["name", "type"]
