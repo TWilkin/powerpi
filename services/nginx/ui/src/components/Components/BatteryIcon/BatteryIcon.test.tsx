@@ -9,18 +9,18 @@ test("No Sensor", () => {
 });
 
 [
-    [100, "battery-full"],
-    [76, "battery-full"],
-    [75, "battery-three-quarters"],
-    [51, "battery-three-quarters"],
-    [50, "battery-half"],
-    [26, "battery-half"],
-    [25, "battery-quarter", "warning"],
-    [11, "battery-quarter", "warning"],
-    [10, "battery-quarter", "low"],
-    [6, "battery-quarter", "low"],
-    [5, "battery-empty", "low"],
-    [0, "battery-empty", "low"],
+    [100, "full"],
+    [76, "full"],
+    [75, "three-quarter"],
+    [51, "three-quarter"],
+    [50, "half"],
+    [26, "half"],
+    [25, "quarter", "warning"],
+    [11, "quarter", "warning"],
+    [10, "quarter", "low"],
+    [6, "quarter", "low"],
+    [5, "empty", "low"],
+    [0, "empty", "low"],
 ].forEach((values) => {
     const [percentage, icon, className] = values;
 
@@ -28,11 +28,12 @@ test("No Sensor", () => {
         render(
             <BatteryIcon
                 sensor={{ battery: percentage, batterySince: new Date().getTime() } as Sensor}
+                className="test"
             />
         );
 
         const svg = screen.getByRole("img", { hidden: true });
-        expect(svg).toHaveAttribute("data-icon", icon);
+        expect(svg.classList.contains(icon as string)).toBeTruthy();
 
         if (className) {
             expect(svg.classList.contains(className as string)).toBeTruthy();

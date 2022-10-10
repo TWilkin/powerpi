@@ -52,6 +52,7 @@ const BatteryIcon = ({ sensor, className }: BatteryIconProps) => {
         <>
             {icon && (
                 <div 
+                    role="img"
                     className={classNames(
                         styles.icon,
                         className,
