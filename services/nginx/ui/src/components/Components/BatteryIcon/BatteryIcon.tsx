@@ -1,11 +1,3 @@
-import {
-    faBattery,
-    faBatteryEmpty,
-    faBatteryHalf,
-    faBatteryQuarter,
-    faBatteryThreeQuarters,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Sensor } from "@powerpi/api";
 import classNames from "classnames";
 import { useMemo } from "react";
@@ -20,18 +12,18 @@ const BatteryIcon = ({ sensor, className }: BatteryIconProps) => {
     const icon = useMemo(() => {
         if (sensor.battery !== undefined) {
             if (sensor.battery <= 5) {
-                return faBatteryEmpty;
+                return styles.empty;
             }
             if (sensor.battery <= 25) {
-                return faBatteryQuarter;
+                return styles.quarter;
             }
             if (sensor.battery <= 50) {
-                return faBatteryHalf;
+                return styles.half;
             }
             if (sensor.battery <= 75) {
-                return faBatteryThreeQuarters;
+                return styles["three-quarter"];
             }
-            return faBattery;
+            return styles.full;
         }
         return undefined;
     }, [sensor.battery]);
@@ -59,11 +51,11 @@ const BatteryIcon = ({ sensor, className }: BatteryIconProps) => {
     return (
         <>
             {icon && (
-                <FontAwesomeIcon
-                    icon={icon}
+                <div 
                     className={classNames(
                         styles.icon,
                         className,
+                        icon,
                         {
                             [styles.outdated]: outdated,
                         },

@@ -1,7 +1,63 @@
 @import "../../../styles/colours.scss";
 
+@keyframes charging {
+    0% {
+        content: "\f244";
+    }
+
+    25% {
+        content: "\f243"
+    }
+
+    50% {
+        content: "\f242"
+    }
+
+    75% {
+        content: "\f241"
+    }
+
+    100% {
+        content: "\f240";
+    }
+}
+
 .icon {
     transform: rotate(-90deg);
+
+    &::before {
+        font-family: "Font Awesome 6 Free";
+    }
+
+    &.empty {
+        &::before {
+            content: "\f244";
+        }
+    }
+
+    &.quarter {
+        &::before {
+            content: "\f243";
+        }
+    }
+
+    &.half {
+        &::before {
+            content: "\f242";
+        }
+    }
+
+    &.three-quarter {
+        &::before {
+            content: "\f241";
+        }
+    }
+
+    &.full {
+        &::before {
+            content: "\f240";
+        }
+    }
 
     &.outdated {
         opacity: 30%;
@@ -14,4 +70,11 @@
     &.warning {
         @include colour("color", "warning");
     }
+
+    &.charging {
+        &::before {
+            animation: charging 4s linear infinite;
+        }
+    }
 }
+
