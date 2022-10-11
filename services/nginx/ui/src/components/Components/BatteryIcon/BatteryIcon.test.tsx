@@ -11,8 +11,8 @@ test("No Sensor", () => {
 [
     [100, "full"],
     [76, "full"],
-    [75, "three-quarter"],
-    [51, "three-quarter"],
+    [75, "three-quarters"],
+    [51, "three-quarters"],
     [50, "half"],
     [26, "half"],
     [25, "quarter", "warning"],

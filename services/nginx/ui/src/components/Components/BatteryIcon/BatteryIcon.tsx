@@ -21,7 +21,7 @@ const BatteryIcon = ({ sensor, className }: BatteryIconProps) => {
                 return styles.half;
             }
             if (sensor.battery <= 75) {
-                return styles["three-quarter"];
+                return styles["three-quarters"];
             }
             return styles.full;
         }

@@ -1,24 +1,13 @@
 @import "../../../styles/colours.scss";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
 
-@keyframes charging {
-    0% {
-        content: "\f244";
-    }
-
-    25% {
-        content: "\f243"
-    }
-
-    50% {
-        content: "\f242"
-    }
-
-    75% {
-        content: "\f241"
-    }
-
-    100% {
-        content: "\f240";
+@mixin battery-level-animation($name, $levels) {
+    @keyframes #{$name} {
+        @each $percentage, $icon in $levels {
+            #{$percentage} {
+                content: fa-content($icon);
+            }
+        }
     }
 }
 
@@ -30,33 +19,23 @@
     }
 
     &.empty {
-        &::before {
-            content: "\f244";
-        }
+        @include fa-icon-solid($fa-var-battery-empty);
     }
 
     &.quarter {
-        &::before {
-            content: "\f243";
-        }
+        @include fa-icon-solid($fa-var-battery-quarter);
     }
 
     &.half {
-        &::before {
-            content: "\f242";
-        }
+        @include fa-icon-solid($fa-var-battery-half);
     }
 
-    &.three-quarter {
-        &::before {
-            content: "\f241";
-        }
+    &.three-quarters {
+        @include fa-icon-solid($fa-var-battery-three-quarters);
     }
 
     &.full {
-        &::before {
-            content: "\f240";
-        }
+        @include fa-icon-solid($fa-var-battery-full);
     }
 
     &.outdated {
@@ -73,8 +52,83 @@
 
     &.charging {
         &::before {
-            animation: charging 4s linear infinite;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        &.empty {
+            $animation: charging-empty;
+
+            @include battery-level-animation(
+                $animation, 
+                (
+                    "0%": $fa-var-battery-empty, 
+                    "25%": $fa-var-battery-quarter,
+                    "50%": $fa-var-battery-half,
+                    "75%": $fa-var-battery-three-quarters,
+                    "100%": $fa-var-battery-full
+                )
+            );
+
+            &::before {
+                animation-name: $animation;
+                animation-duration: 5s;
+            }
+        }
+
+        &.quarter {
+            $animation: charging-quarter;
+
+            @include battery-level-animation(
+                $animation,
+                (
+                    "0%": $fa-var-battery-quarter, 
+                    "33%": $fa-var-battery-half,
+                    "66%": $fa-var-battery-three-quarters,
+                    "100%": $fa-var-battery-full
+                )
+            );
+
+            &::before {
+                animation-name: $animation;
+                animation-duration: 4s;
+            }
+        }
+
+        &.half {
+            $animation: charging-half;
+
+            @include battery-level-animation(
+                $animation,
+                (
+                    "0%": $fa-var-battery-half, 
+                    "50%": $fa-var-battery-three-quarters,
+                    "100%": $fa-var-battery-full
+                )
+            );
+
+            &::before {
+                animation-name: $animation;
+                animation-duration: 3s;
+            }
+        }
+
+        &.three-quarters,
+        &.full {
+            $animation: charging-three-quarters;
+
+            @include battery-level-animation(
+                $animation, 
+                (
+                    "0%": $fa-var-battery-three-quarters, 
+                    "100%": $fa-var-battery-full
+                )
+            );
+
+            &::before {
+                animation-name: $animation;
+                animation-duration: 2s;
+            }
         }
     }
 }
-
