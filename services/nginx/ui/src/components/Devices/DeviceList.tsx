@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { useGetDevices } from "../../hooks/devices";
 import "../../util";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
+import BatteryIcon from "../Components/BatteryIcon";
 import DeviceIcon from "../Components/DeviceIcon";
 import DevicePowerButton from "../Components/DevicePowerButton";
 import Filter from "../Components/Filter";
@@ -82,7 +83,10 @@ const DeviceList = () => {
                                             )}
 
                                             <td>
-                                                <DeviceIcon type={device.type} />
+                                                <div className={styles.icon}>
+                                                    <DeviceIcon type={device.type} />
+                                                    <BatteryIcon sensor={device} />
+                                                </div>
                                             </td>
 
                                             <td>{device.display_name ?? device.name}</td>
@@ -104,7 +108,7 @@ const DeviceList = () => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={5}>
+                                        <td colSpan={6}>
                                             {isDevicesError ? (
                                                 <Message
                                                     error

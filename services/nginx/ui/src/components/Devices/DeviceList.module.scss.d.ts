@@ -4,6 +4,7 @@ interface CssExports {
   'device': string;
   'hidden': string;
   'history': string;
+  'icon': string;
   'list': string;
   'state': string;
 }
