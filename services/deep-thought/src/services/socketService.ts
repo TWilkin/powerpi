@@ -50,9 +50,7 @@ export default class ApiSocketService {
         state?: string,
         value?: number,
         unit?: string,
-        timestamp?: number,
-        battery?: number,
-        batteryTimestamp?: number
+        timestamp?: number
     ) {
         this.namespace?.emit("sensor", {
             sensor: sensorName,
@@ -60,8 +58,22 @@ export default class ApiSocketService {
             value,
             unit,
             timestamp,
+        });
+    }
+
+    onBatteryMessage(
+        type: "device" | "sensor",
+        name: string,
+        battery: number,
+        charging?: boolean,
+        timestamp?: number
+    ) {
+        this.namespace?.emit("battery", {
+            device: type === "device" ? name : undefined,
+            sensor: type === "sensor" ? name : undefined,
             battery,
-            batteryTimestamp,
+            charging,
+            timestamp,
         });
     }
 
@@ -85,6 +97,15 @@ class DeviceListener extends DeviceStateListener {
         timestamp?: number
     ): void {
         this.socketService.onDeviceStateMessage(deviceName, state, timestamp);
+    }
+
+    protected onDeviceBatteryMessage(
+        deviceName: string,
+        value: number,
+        timestamp?: number | undefined,
+        charging?: boolean | undefined
+    ): void {
+        this.socketService.onBatteryMessage("device", deviceName, value, charging, timestamp);
     }
 }
 
@@ -110,15 +131,12 @@ class SensorListener extends SensorStateListener {
         this.socketService.onEventMessage(sensorName, undefined, value, unit, timestamp);
     }
 
-    protected onSensorBatteryMessage(sensorName: string, value: number, timestamp?: number): void {
-        this.socketService.onEventMessage(
-            sensorName,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            value,
-            timestamp
-        );
+    protected onSensorBatteryMessage(
+        sensorName: string,
+        value: number,
+        timestamp?: number,
+        charging?: boolean
+    ): void {
+        this.socketService.onBatteryMessage("sensor", sensorName, value, charging, timestamp);
     }
 }

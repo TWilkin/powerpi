@@ -1,6 +1,7 @@
 import { Sensor } from "@powerpi/api";
 import { ISensor, Message, MqttConsumer } from "@powerpi/common";
 import MqttService from "../mqtt";
+import BatteryStateListener, { BatteryMessage } from "./BatteryStateListener";
 
 interface EventMessage extends Message {
     state?: string;
@@ -8,10 +9,15 @@ interface EventMessage extends Message {
     unit?: string;
 }
 
-export default abstract class SensorStateListener implements MqttConsumer<EventMessage> {
+export default abstract class SensorStateListener
+    extends BatteryStateListener
+    implements MqttConsumer<EventMessage>
+{
     private readonly _sensor: Sensor;
 
     constructor(private readonly mqttService: MqttService, sensor: ISensor) {
+        super();
+
         this._sensor = {
             name: sensor.name,
             display_name: sensor.display_name ?? sensor.name,
@@ -26,6 +32,7 @@ export default abstract class SensorStateListener implements MqttConsumer<EventM
             since: -1,
             battery: undefined,
             batterySince: undefined,
+            charging: false,
         };
     }
 
@@ -38,8 +45,8 @@ export default abstract class SensorStateListener implements MqttConsumer<EventM
         await this.mqttService.subscribe("event", this._sensor.entity!, this._sensor.action!, this);
 
         await this.mqttService.subscribe("event", this._sensor.entity!, "battery", {
-            message: (_: string, __: string, ___: string, message: EventMessage) =>
-                this.batteryMessage(message),
+            message: (_: string, __: string, ___: string, message: BatteryMessage) =>
+                this.batteryMessage(this.sensor.entity!, message),
         });
     }
 
@@ -63,13 +70,12 @@ export default abstract class SensorStateListener implements MqttConsumer<EventM
         }
     }
 
-    private batteryMessage(message: EventMessage) {
-        if (message.value !== undefined) {
-            this._sensor.battery = message.value;
-            this._sensor.batterySince = message.timestamp;
+    protected onBatteryMessage(_: string, value: number, timestamp?: number, charging?: boolean) {
+        this._sensor.battery = value;
+        this._sensor.batterySince = timestamp;
+        this._sensor.charging = charging;
 
-            this.onSensorBatteryMessage(this._sensor.name, message.value, message.timestamp);
-        }
+        this.onSensorBatteryMessage(this._sensor.name, value, timestamp, charging);
     }
 
     protected abstract onSensorStateMessage(
@@ -88,6 +94,7 @@ export default abstract class SensorStateListener implements MqttConsumer<EventM
     protected abstract onSensorBatteryMessage(
         sensorName: string,
         value: number,
-        timestamp?: number
+        timestamp?: number,
+        charging?: boolean
     ): void;
 }

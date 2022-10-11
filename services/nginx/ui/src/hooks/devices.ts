@@ -1,4 +1,5 @@
 import { Device, DeviceState, DeviceStatusMessage } from "@powerpi/api";
+import { BatteryStatusMessage } from "@powerpi/api/dist/src/BatteryStatus";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import useAPI from "./api";
@@ -30,8 +31,31 @@ export function useGetDevices() {
             }
         };
 
+        const onBatteryUpdate = (message: BatteryStatusMessage) => {
+            if (!devices || !message.device) {
+                return;
+            }
+
+            const index = devices.findIndex((device) => device.name === message.device);
+            if (index !== -1) {
+                const newDevices = [...devices];
+
+                newDevices[index] = { ...newDevices[index] };
+                newDevices[index].battery = message.battery;
+                newDevices[index].batterySince = message.timestamp;
+                newDevices[index].charging = message.charging;
+
+                setDevices(newDevices);
+            }
+        };
+
         api.addDeviceListener(onStatusUpdate);
-        return () => api.removeDeviceListener(onStatusUpdate);
+        api.addBatteryListener(onBatteryUpdate);
+
+        return () => {
+            api.removeDeviceListener(onStatusUpdate);
+            api.removeBatteryListener(onBatteryUpdate);
+        };
     }, [api, devices, setDevices]);
 
     return {

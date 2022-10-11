@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { connect, Socket } from "socket.io-client";
+import { BatteryStatusCallback, BatteryStatusMessage } from "./BatteryStatus";
 import Config from "./Config";
 import Device from "./Device";
 import DeviceState from "./DeviceState";
@@ -18,6 +19,7 @@ export default class PowerPiApi {
     private listeners: {
         device: DeviceStatusCallback[];
         sensor: SensorStatusCallback[];
+        battery: BatteryStatusCallback[];
     };
     private headers: { [key: string]: string };
 
@@ -29,6 +31,7 @@ export default class PowerPiApi {
         this.listeners = {
             device: [],
             sensor: [],
+            battery: [],
         };
 
         this.headers = {};
@@ -88,12 +91,23 @@ export default class PowerPiApi {
         this.listeners.sensor.push(callback);
     }
 
+    public addBatteryListener(callback: BatteryStatusCallback) {
+        this.connectSocketIO();
+        this.listeners.battery.push(callback);
+    }
+
     public removeDeviceListener(callback: DeviceStatusCallback) {
         this.listeners.device = this.listeners.device.filter((listener) => listener === callback);
     }
 
     public removeSensorListener(callback: SensorStatusCallback) {
         this.listeners.sensor = this.listeners.sensor.filter((listener) => listener === callback);
+    }
+
+    public removeBatteryListener(callback: BatteryStatusCallback) {
+        this.listeners.battery = this.listeners.battery.filter(
+            (listerner) => listerner === callback
+        );
     }
 
     public setErrorHandler(handler: ErrorHandler) {
@@ -109,6 +123,9 @@ export default class PowerPiApi {
 
     private onSensorMessage = (message: SensorStatusMessage) =>
         this.listeners.sensor.forEach((listener) => listener(message));
+
+    private onBatteryMessage = (message: BatteryStatusMessage) =>
+        this.listeners.battery.forEach((listener) => listener(message));
 
     private async get<TResult>(path: string, params?: object) {
         const result = await this.instance.get<TResult>(path, {
@@ -141,6 +158,7 @@ export default class PowerPiApi {
 
             this.socket.on("device", this.onDeviceMessage);
             this.socket.on("sensor", this.onSensorMessage);
+            this.socket.on("battery", this.onBatteryMessage);
         }
     }
 }
