@@ -1,10 +1,10 @@
-import { Sensor } from "@powerpi/api";
+import { Battery } from "@powerpi/api";
 import classNames from "classnames";
 import { useMemo } from "react";
 import styles from "./BatteryIcon.module.scss";
 
 interface BatteryIconProps {
-    sensor: Sensor;
+    sensor: Battery;
     className?: string;
 }
 
@@ -51,7 +51,7 @@ const BatteryIcon = ({ sensor, className }: BatteryIconProps) => {
     return (
         <>
             {icon && (
-                <div 
+                <div
                     role="img"
                     className={classNames(
                         styles.icon,
@@ -59,6 +59,7 @@ const BatteryIcon = ({ sensor, className }: BatteryIconProps) => {
                         icon,
                         {
                             [styles.outdated]: outdated,
+                            [styles.charging]: sensor.charging,
                         },
                         warningStyle
                     )}

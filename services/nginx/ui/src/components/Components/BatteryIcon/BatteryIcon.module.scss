@@ -60,13 +60,13 @@
             $animation: charging-empty;
 
             @include battery-level-animation(
-                $animation, 
+                $animation,
                 (
-                    "0%": $fa-var-battery-empty, 
+                    "0%": $fa-var-battery-empty,
                     "25%": $fa-var-battery-quarter,
                     "50%": $fa-var-battery-half,
                     "75%": $fa-var-battery-three-quarters,
-                    "100%": $fa-var-battery-full
+                    "100%": $fa-var-battery-full,
                 )
             );
 
@@ -82,10 +82,10 @@
             @include battery-level-animation(
                 $animation,
                 (
-                    "0%": $fa-var-battery-quarter, 
+                    "0%": $fa-var-battery-quarter,
                     "33%": $fa-var-battery-half,
                     "66%": $fa-var-battery-three-quarters,
-                    "100%": $fa-var-battery-full
+                    "100%": $fa-var-battery-full,
                 )
             );
 
@@ -101,9 +101,9 @@
             @include battery-level-animation(
                 $animation,
                 (
-                    "0%": $fa-var-battery-half, 
+                    "0%": $fa-var-battery-half,
                     "50%": $fa-var-battery-three-quarters,
-                    "100%": $fa-var-battery-full
+                    "100%": $fa-var-battery-full,
                 )
             );
 
@@ -118,10 +118,10 @@
             $animation: charging-three-quarters;
 
             @include battery-level-animation(
-                $animation, 
+                $animation,
                 (
-                    "0%": $fa-var-battery-three-quarters, 
-                    "100%": $fa-var-battery-full
+                    "0%": $fa-var-battery-three-quarters,
+                    "100%": $fa-var-battery-full,
                 )
             );
 
