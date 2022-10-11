@@ -1,4 +1,5 @@
 import {
+    faComputer,
     faEquals,
     faLayerGroup,
     faLightbulb,
@@ -10,6 +11,7 @@ import {
     faTv,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMemo } from "react";
 import styles from "./DeviceIcon.module.scss";
 
 interface DeviceIconProps {
@@ -17,9 +19,11 @@ interface DeviceIconProps {
 }
 
 const DeviceIcon = ({ type }: DeviceIconProps) => {
+    const icon = useMemo(() => getDeviceTypeIcon(type), [type]);
+
     return (
         <div className={styles.icon}>
-            <FontAwesomeIcon icon={getDeviceTypeIcon(type)} />
+            <FontAwesomeIcon icon={icon} />
         </div>
     );
 };
@@ -38,6 +42,9 @@ function getDeviceTypeIcon(type: string) {
             switch (deviceType) {
                 case "composite":
                     return faLayerGroup;
+
+                case "computer":
+                    return faComputer;
 
                 case "delay":
                     return faStopwatch;
