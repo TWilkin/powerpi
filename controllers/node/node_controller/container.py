@@ -2,6 +2,7 @@ from dependency_injector import containers, providers
 from powerpi_common.container import Container as CommonContainer
 
 from node_controller.__version__ import __app_name__, __version__
+from node_controller.pijuice import PiJuiceInterface
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -18,6 +19,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
         version=__version__
     )
 
-
-def add_sensors(container):
-    pass
+    pijuice = providers.Singleton(
+        PiJuiceInterface
+    )
