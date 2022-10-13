@@ -1,6 +1,8 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class PiJuiceInterface(ABC):
-    def __init__(self):
-        pass
+    @property
+    @abstractmethod
+    def battery_level(self) -> int:
+        raise NotImplementedError

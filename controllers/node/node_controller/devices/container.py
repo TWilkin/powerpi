@@ -1,6 +1,6 @@
 from dependency_injector import providers
 from node_controller.config import NodeConfig
-from node_controller.pijuice import import_pijuice
+from node_controller.pijuice import PiJuiceImpl
 
 from .node import NodeDevice
 
@@ -14,15 +14,13 @@ def add_devices(container):
         NodeConfig
     ))
 
-    pijuice_interface_type = import_pijuice(
-        container.config(), container.common().logger()
-    )
-
     setattr(
         device_container,
         'pijuice',
         providers.Factory(
-            pijuice_interface_type
+            PiJuiceImpl,
+            config=container.common.config,
+            logger=container.common.logger
         )
     )
 

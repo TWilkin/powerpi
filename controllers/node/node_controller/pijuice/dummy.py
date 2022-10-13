@@ -2,4 +2,6 @@ from .interface import PiJuiceInterface
 
 
 class DummyPiJuiceInterface(PiJuiceInterface):
-    pass
+    @property
+    def battery_level(self):
+        return 21

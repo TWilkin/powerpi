@@ -22,7 +22,7 @@ class NodeDevice(Device, PollableMixin, BatteryMixin):
         self.__pijuice = pijuice
 
     async def poll(self):
-        self.on_battery_change(21)
+        self.on_battery_change(self.__pijuice.battery_level)
 
     async def _turn_on(self):
         raise NotImplementedError
