@@ -42,5 +42,10 @@ class PiJuiceImpl(PiJuiceInterface):
         result = self.__pijuice.status.GetChargeLevel()
         return result['data']
 
+    @property
+    def battery_charging(self) -> bool:
+        result = self.__pijuice.status.GetStatus()
+        return result['data']['battery'] in ('CHARGING_FROM_IN', 'CHARGING_FROM_5V_IO')
+
     def __connect(self):
         self.__pijuice = PiJuice()
