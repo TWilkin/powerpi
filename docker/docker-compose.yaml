@@ -114,6 +114,25 @@ services:
         depends_on:
             - mosquitto
 
+    device-mapper-node:
+        image: twilkin/powerpi-device-mapper:0.0.7
+        networks:
+            - powerpi
+        deploy:
+            mode: global
+            placement:
+                constraints:
+                    - node.labels.pijuice == true
+        depends_on:
+            - mosquitto
+        environment:
+            - ENV=PIJUICE=true
+            - CONTROLLER_NAME=node-controller
+            - IMAGE=twilkin/powerpi-node-controller:0.0.1
+            - DEVICE=/dev/i2c-1
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+
     device-mapper-zigbee:
         image: twilkin/powerpi-device-mapper:0.0.7
         networks:
