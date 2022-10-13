@@ -9,7 +9,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pijuice-gui = {git = "https://github.com/PiSupply/PiJuice.git", rev = "1e1049de39800862079a309d94133fe5d8e9a856", subdirectory = "Software/Source"}
+pijuice-base = {git = "https://github.com/PiSupply/PiJuice.git", rev = "1e1049de39800862079a309d94133fe5d8e9a856", subdirectory = "Software/Source"}
+smbus = "^1.1.post2"
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}
