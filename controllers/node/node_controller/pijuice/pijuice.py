@@ -1,3 +1,7 @@
-class PiJuiceInterface:
-    def __init__(self):
-        pass
+from pijuice import PiJuice
+
+from .interface import PiJuiceInterface
+
+
+class PiJuiceImpl(PiJuiceInterface):
+    pass
