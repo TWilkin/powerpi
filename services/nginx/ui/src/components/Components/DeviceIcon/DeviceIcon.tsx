@@ -44,6 +44,7 @@ function getDeviceTypeIcon(type: string) {
                     return faLayerGroup;
 
                 case "computer":
+                case "node":
                     return faComputer;
 
                 case "delay":
