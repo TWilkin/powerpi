@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/node/Node.schema.json",
+    "title": "Node",
+    "description": "The Node device providing data for a node in the cluster",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "node"
+        }
+    }
+}
