@@ -2,33 +2,100 @@
 @import "../../styles/vars.scss";
 
 .list {
+    $visible-width: 20px;
+    $icon-width: 24px;
+    $title-width: 1fr;
+    $battery-width: 18px;
+    $slider-width: 56px;
+    $since-width: 15ch;
+    $state-width: 22px;
+    $cell-height: 26px;
+
     width: 600px;
     max-width: 600px;
 
-    table {
+    .table {
         width: 100%;
+        display: grid;
+        gap: 2px 0;
+        grid-template-columns: $icon-width $title-width $slider-width $since-width $state-width;
+        grid-auto-rows: $cell-height;
+
+        &.hidden {
+            grid-template-columns: $visible-width $icon-width $title-width $slider-width $since-width $state-width;
+        }
+
+        &.battery {
+            grid-template-columns: $icon-width $battery-width $title-width $slider-width $since-width $state-width;
+        }
+
+        &.hidden {
+            &.battery {
+                grid-template-columns: $visible-width $icon-width $battery-width $title-width $slider-width $since-width $state-width;
+            }
+        }
+
+        .cell {
+            padding: 0 1px;
+            line-height: $cell-height;
+
+            &.icon,
+            &.state {
+                display: flex;
+                align-items: center;
+            }
+
+            &.title,
+            &.since {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+
+                p {
+                    display: inline;
+                }
+            }
+
+            &.history {
+                a,
+                a:visited {
+                    @include colour("color", "text");
+                }
+            }
+
+            &.even {
+                @include colour("background-color", "highlight");
+            }
+
+            &.hidden {
+                opacity: 70%;
+            }
+        }
     }
 
     @media (orientation: portrait) {
         width: 100%;
         max-width: 100%;
-    }
 
-    .device {
-        .icon,
-        .state {
-            display: flex;
-        }
+        .table {
+            $narrow-since-width: 9ch;
 
-        .history {
-            a,
-            a:visited {
-                @include colour("color", "text");
+            grid-template-columns: $icon-width $title-width $slider-width $narrow-since-width $state-width;
+            grid-auto-rows: $cell-height;
+
+            &.hidden {
+                grid-template-columns: $visible-width $icon-width $title-width $slider-width $narrow-since-width $state-width;
             }
-        }
 
-        &.hidden {
-            opacity: 70%;
+            &.battery {
+                grid-template-columns: $icon-width $battery-width $title-width $slider-width $narrow-since-width $state-width;
+            }
+
+            &.hidden {
+                &.battery {
+                    grid-template-columns: $visible-width $icon-width $battery-width $title-width $slider-width $narrow-since-width $state-width;
+                }
+            }
         }
     }
 }

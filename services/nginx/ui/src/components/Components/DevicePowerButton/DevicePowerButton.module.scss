@@ -137,6 +137,8 @@
 }
 
 .buttons {
+    display: flex;
+
     @mixin power_button($colour) {
         color: $colour;
 
