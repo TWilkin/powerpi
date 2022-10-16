@@ -1,4 +1,5 @@
-from asyncio import CancelledError, ensure_future, get_event_loop, get_running_loop
+from asyncio import (CancelledError, ensure_future, get_event_loop,
+                     get_running_loop)
 from signal import SIGINT, SIGTERM
 
 from .config.config_retriever import ConfigRetriever
@@ -82,6 +83,8 @@ class Controller:
 
     async def __cleanup(self):
         self.__device_status_checker.stop()
+
+        await self.__device_manager.deinitialise()
 
         await self._cleanup_devices()
 
