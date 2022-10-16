@@ -8,6 +8,7 @@ interface CssExports {
   'history': string;
   'icon': string;
   'list': string;
+  'narrow': string;
   'since': string;
   'state': string;
   'table': string;

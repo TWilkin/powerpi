@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { Fragment, useMemo } from "react";
 import _ from "underscore";
 import { useGetDevices } from "../../hooks/devices";
+import useNarrow from "../../hooks/narrow";
 import "../../util";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import BatteryIcon from "../Components/BatteryIcon";
@@ -45,6 +46,8 @@ const DeviceList = () => {
         [filtered, filters.search, filters.visible]
     );
 
+    const { isNarrow } = useNarrow();
+
     return (
         <>
             <Filter onClear={onClear}>
@@ -74,6 +77,7 @@ const DeviceList = () => {
                                 className={classNames(styles.table, {
                                     [styles.hidden]: showingHidden,
                                     [styles.battery]: showingBattery,
+                                    [styles.narrow]: isNarrow,
                                 })}
                             >
                                 {filtered.map((device, i) => {

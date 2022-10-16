@@ -14,6 +14,11 @@
     width: 600px;
     max-width: 600px;
 
+    @media (orientation: portrait) {
+        width: 100%;
+        max-width: 100%;
+    }
+
     .table {
         width: 100%;
         display: grid;
@@ -32,6 +37,27 @@
         &.hidden {
             &.battery {
                 grid-template-columns: $visible-width $icon-width $battery-width $title-width $slider-width $since-width $state-width;
+            }
+        }
+
+        &.narrow {
+            $narrow-since-width: 9ch;
+
+            grid-template-columns: $icon-width $title-width $slider-width $narrow-since-width $state-width;
+            grid-auto-rows: $cell-height;
+
+            &.hidden {
+                grid-template-columns: $visible-width $icon-width $title-width $slider-width $narrow-since-width $state-width;
+            }
+
+            &.battery {
+                grid-template-columns: $icon-width $battery-width $title-width $slider-width $narrow-since-width $state-width;
+            }
+
+            &.hidden {
+                &.battery {
+                    grid-template-columns: $visible-width $icon-width $battery-width $title-width $slider-width $narrow-since-width $state-width;
+                }
             }
         }
 
@@ -69,32 +95,6 @@
 
             &.hidden {
                 opacity: 70%;
-            }
-        }
-    }
-
-    @media (orientation: portrait) {
-        width: 100%;
-        max-width: 100%;
-
-        .table {
-            $narrow-since-width: 9ch;
-
-            grid-template-columns: $icon-width $title-width $slider-width $narrow-since-width $state-width;
-            grid-auto-rows: $cell-height;
-
-            &.hidden {
-                grid-template-columns: $visible-width $icon-width $title-width $slider-width $narrow-since-width $state-width;
-            }
-
-            &.battery {
-                grid-template-columns: $icon-width $battery-width $title-width $slider-width $narrow-since-width $state-width;
-            }
-
-            &.hidden {
-                &.battery {
-                    grid-template-columns: $visible-width $icon-width $battery-width $title-width $slider-width $narrow-since-width $state-width;
-                }
             }
         }
     }
