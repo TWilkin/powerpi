@@ -13,6 +13,7 @@ class PiJuiceImpl(PiJuiceInterface):
         config: NodeConfig,
         logger: Logger
     ):
+        # pylint: disable=broad-except
         try:
             instance = super().__new__(cls)
             instance.__connect()
@@ -35,7 +36,8 @@ class PiJuiceImpl(PiJuiceInterface):
         config: NodeConfig,
         logger: Logger
     ):
-        self.__logger = logger
+        # pylint: disable=unused-argument
+        pass
 
     @property
     def battery_level(self) -> int:
@@ -48,4 +50,5 @@ class PiJuiceImpl(PiJuiceInterface):
         return result['data']['battery'] in ('CHARGING_FROM_IN', 'CHARGING_FROM_5V_IO')
 
     def __connect(self):
+        # pylint: disable=unused-private-member
         self.__pijuice = PiJuice()

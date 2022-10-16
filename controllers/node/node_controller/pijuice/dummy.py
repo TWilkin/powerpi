@@ -8,4 +8,4 @@ class DummyPiJuiceInterface(PiJuiceInterface):
 
     @property
     def battery_charging(self):
-        raise False
+        return False
