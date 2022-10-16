@@ -129,6 +129,14 @@ python-versions = ">=3.5"
 test = ["atomicwrites (>=1.3.0)", "attrs (>=19.1.0)", "codecov (>=2.0.15)", "coverage (>=4.5.3)", "more-itertools (>=7.0.0)", "pluggy (>=0.11.0)", "py (>=1.8.0)", "pytest (>=5.4.0)", "pytest-asyncio (>=0.12.0)", "pytest-cov (>=2.7.1)", "six (>=1.12.0)", "uvloop (>=0.14.0)"]
 
 [[package]]
+name = "icmplib"
+version = "3.0.3"
+description = "The power to forge ICMP packets and do ping and traceroute."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "iniconfig"
 version = "1.1.1"
 description = "iniconfig: brain-dead simple config-ini parsing"
@@ -238,7 +246,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "powerpi-common"
-version = "0.2.7"
+version = "0.2.8"
 description = "PowerPi Common Python Library"
 category = "dev"
 optional = false
@@ -503,7 +511,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "6b09d6dba3ddf214ae893df66ec99432fb2476b81817ac083ce7c861ce2c36d2"
+content-hash = "2ce911202a231358f1e5ebd550387529db46c8500a1e5de957d9a744417ffb1f"
 
 [metadata.files]
 APScheduler = [
@@ -623,6 +631,10 @@ dill = [
 gmqtt = [
     {file = "gmqtt-0.6.11-py3-none-any.whl", hash = "sha256:de728635f9fb15288e1b2da1591a091653e1ce4bc8be031f4ef4ef4da57af955"},
     {file = "gmqtt-0.6.11.tar.gz", hash = "sha256:0be6d57841538abc3ae0a41131c6d53314e0705b74876a6f94bc903df1209fb6"},
+]
+icmplib = [
+    {file = "icmplib-3.0.3-py3-none-any.whl", hash = "sha256:607cf7bbd02b161f0bfcf205c288c7b5e22f1d99ee1d95184326ac85eefefe8b"},
+    {file = "icmplib-3.0.3.tar.gz", hash = "sha256:e4fbda6ab3e0ffa5c2eedc7ffe4134b4abd4c3e3873ce576e58c56af57805afb"},
 ]
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},

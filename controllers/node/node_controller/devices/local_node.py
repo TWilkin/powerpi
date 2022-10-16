@@ -1,6 +1,6 @@
 from node_controller.pijuice import PiJuiceInterface
 from powerpi_common.config import Config
-from powerpi_common.device import Device
+from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import PollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
@@ -23,6 +23,9 @@ class LocalNodeDevice(Device, PollableMixin, BatteryMixin):
         self.__pijuice = pijuice_interface
 
     async def poll(self):
+        if self.state != DeviceStatus.ON:
+            self.state = DeviceStatus.ON
+
         self.on_battery_change(
             self.__pijuice.battery_level,
             self.__pijuice.battery_charging
