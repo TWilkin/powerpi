@@ -12,6 +12,15 @@
     "properties": {
         "type": {
             "const": "node"
+        },
+        "ip": {
+            "description": "The IP address where the cluster node can be found",
+            "type": "string",
+            "format": "ipv4"
+        },
+        "pijuice": {
+            "description": "Whether the node has a PiJuice connected or not",
+            "type": "boolean"
         }
     }
 }
