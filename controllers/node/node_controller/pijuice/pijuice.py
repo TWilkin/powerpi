@@ -49,6 +49,24 @@ class PiJuiceImpl(PiJuiceInterface):
         result = self.__pijuice.status.GetStatus()
         return result['data']['battery'] in ('CHARGING_FROM_IN', 'CHARGING_FROM_5V_IO')
 
+    @property
+    def wake_up_on_charge(self) -> int:
+        result = self.__pijuice.power.GetWakeUpOnCharge()
+        return result['data']
+
+    @wake_up_on_charge.setter
+    def wake_up_on_charge(self, new_value: int):
+        self.__pijuice.power.SetWakeUpOnCharge(new_value)
+
+    @property
+    def charge_battery(self) -> bool:
+        result = self.__pijuice.config.GetChargingConfig()
+        return result['data']['charging_enabled']
+
+    @charge_battery.setter
+    def charge_battery(self, new_value: bool):
+        self.__pijuice.config.SetChargingConfig(new_value)
+
     def __connect(self):
         # pylint: disable=unused-private-member
         self.__pijuice = PiJuice()
