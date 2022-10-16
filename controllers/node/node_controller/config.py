@@ -10,6 +10,14 @@ class NodeConfig(CommonConfig):
         return value.lower() == 'true' if value is not None else False
 
     @property
-    def pijuice(self):
-        value = os.getenv('PIJUICE')
-        return value.lower() == 'true' if value is not None else False
+    def local_hostname(self):
+        path = os.getenv('NODE_HOSTNAME')
+
+        if path is None:
+            path = '/etc/nodehostname'
+
+        if os.path.exists(path):
+            with open(path, 'r', encoding='utf8') as file:
+                return file.readline().lower()
+
+        return path.lower()

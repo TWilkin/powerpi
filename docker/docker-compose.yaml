@@ -120,13 +120,10 @@ services:
             - powerpi
         deploy:
             mode: global
-            placement:
-                constraints:
-                    - node.labels.pijuice == true
         depends_on:
             - mosquitto
         environment:
-            - ENV=PIJUICE=true
+            - ENV=DEVICE_FATAL=true
             - CONTROLLER_NAME=node-controller
             - IMAGE=twilkin/powerpi-node-controller:0.0.1
             - DEVICE=/dev/i2c-1

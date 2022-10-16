@@ -2,7 +2,9 @@ from dependency_injector import providers
 from node_controller.config import NodeConfig
 from node_controller.pijuice import PiJuiceImpl
 
-from .node import NodeDevice
+from .factory import NodeDeviceFactory
+from .local_node import LocalNodeDevice
+from .remote_node import RemoteNodeDevice
 
 
 def add_devices(container):
@@ -14,9 +16,17 @@ def add_devices(container):
         NodeConfig
     ))
 
+    # override the factory
+    device_container.device_factory.override(providers.Factory(
+        NodeDeviceFactory,
+        config=container.common.config,
+        logger=container.common.logger,
+        service_provider=container.common.device.service_provider
+    ))
+
     setattr(
         device_container,
-        'pijuice',
+        'pijuice_interface',
         providers.Factory(
             PiJuiceImpl,
             config=container.common.config,
@@ -26,12 +36,23 @@ def add_devices(container):
 
     setattr(
         device_container,
-        'node_device',
+        'local_node_device',
         providers.Factory(
-            NodeDevice,
+            LocalNodeDevice,
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
-            pijuice=container.common.device.pijuice
+            pijuice_interface=container.common.device.pijuice_interface
+        )
+    )
+
+    setattr(
+        device_container,
+        'remote_node_device',
+        providers.Factory(
+            RemoteNodeDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client
         )
     )
