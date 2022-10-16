@@ -34,12 +34,11 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
 
         self.__pijuice = pijuice_interface
 
-        if pijuice is None:
-            pijuice = PiJuiceConfig()
-
+        # set the config with defaults
         self.__pijuice_config = PiJuiceConfig({
-            'charge_battery': pijuice.get('charge_battery', True),
-            'wake_up_on_charge': pijuice.get('wake_up_on_charge', 20)
+            'charge_battery': True,
+            'wake_up_on_charge': 20,
+            **(pijuice if pijuice is not None else {})
         })
 
     async def initialise(self):
