@@ -40,10 +40,10 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         if self.state != DeviceStatus.ON:
             self.state = DeviceStatus.ON
 
-        self.on_battery_change(
-            self.__pijuice.battery_level,
-            self.__pijuice.battery_charging
-        )
+        level = self.__pijuice.battery_level
+        if level is not None:
+            charging = self.__pijuice.battery_charging
+            self.on_battery_change(level, charging)
 
     async def _turn_on(self):
         raise NotImplementedError
