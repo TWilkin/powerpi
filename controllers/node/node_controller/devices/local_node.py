@@ -21,6 +21,7 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
     ):
         Device.__init__(self, config, logger, mqtt_client, **kwargs)
         PollableMixin.__init__(self, config, **kwargs)
+        BatteryMixin.__init__(self)
 
         self.__pijuice = pijuice_interface
 
