@@ -18,7 +18,7 @@ class NodeDeviceFactory(DeviceFactory):
         if device_type == DeviceConfigType.DEVICE and instance_type == 'node':
             name = kwargs.get('name', '').lower()
 
-            if self.__config.local_hostname == name:
+            if self.__config.node_hostname == name:
                 instance_type = 'local_node'
             else:
                 instance_type = 'remote_node'

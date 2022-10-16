@@ -10,14 +10,11 @@ class NodeConfig(CommonConfig):
         return value.lower() == 'true' if value is not None else False
 
     @property
-    def local_hostname(self):
-        path = os.getenv('NODE_HOSTNAME')
-
-        if path is None:
-            path = '/etc/nodehostname'
+    def node_hostname(self):
+        path = os.getenv('NODE_HOSTNAME', '/etc/nodehostname')
 
         if os.path.exists(path):
             with open(path, 'r', encoding='utf8') as file:
-                return file.readline().lower()
+                return file.readline().strip().lower()
 
-        return path.lower()
+        return path.strip().lower()

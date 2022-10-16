@@ -127,6 +127,7 @@ services:
             - CONTROLLER_NAME=node-controller
             - IMAGE=twilkin/powerpi-node-controller:0.0.1
             - DEVICE=/dev/i2c-1
+            - VOLUME=/etc/hostname:/etc/nodehostname
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
 
