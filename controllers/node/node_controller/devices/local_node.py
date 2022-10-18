@@ -23,7 +23,7 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        pijuice_interface: PiJuiceInterface,
+        service_provider,
         pijuice: Union[PiJuiceConfig, None] = None,
         **kwargs
     ):
@@ -33,7 +33,7 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         BatteryMixin.__init__(self)
 
         if pijuice is not None:
-            self.__pijuice = pijuice_interface
+            self.__pijuice: PiJuiceInterface = service_provider.pijuice_interface()
 
             # set the config with defaults
             self.__pijuice_config = PiJuiceConfig({

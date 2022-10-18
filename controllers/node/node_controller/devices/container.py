@@ -42,7 +42,7 @@ def add_devices(container):
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
-            pijuice_interface=container.common.device.pijuice_interface
+            service_provider=container.common.device.service_provider
         )
     )
 
