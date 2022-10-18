@@ -22,6 +22,7 @@ This service expects the following environment variables to be set before it wil
 
 -   **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
 -   **I2C_DEVICE** - The path to the I2C device on the host (default _/dev/i2c-1_).
+-   **I2C_ADDRESS** - The I2C address of the PiJuice on the bus (default _0x14_).
 -   **DEVICE_FATAL** - Whether to kill the service if it's unable to communicate with the [PiJuice](https://www.pijuice.com) device, useful when debugging off the Raspberry Pi but should be true in production. (default _false_).
 -   **USE_CONFIG_FILE** - Use local config files instead of the files downloaded from GitHub by [_clacks-config_](../../services/clacks-config/README.md) (default _false_).
 -   **DEVICES_FILE** - When _USE_CONFIG_FILE_ is true, load the _devices.json_ from this path.

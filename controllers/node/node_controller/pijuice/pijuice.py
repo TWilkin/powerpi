@@ -16,7 +16,7 @@ class PiJuiceImpl(PiJuiceInterface):
         # pylint: disable=broad-except
         try:
             instance = super().__new__(cls)
-            instance.__connect()
+            instance.__connect(config)
             return instance
         except Exception as ex:
             logger.error(ex)
@@ -67,6 +67,9 @@ class PiJuiceImpl(PiJuiceInterface):
     def charge_battery(self, new_value: bool):
         self.__pijuice.config.SetChargingConfig(new_value)
 
-    def __connect(self):
+    def __connect(self, config: NodeConfig):
         # pylint: disable=unused-private-member
-        self.__pijuice = PiJuice()
+        i2c_bus_id = int(config.i2c_device[-1])
+        i2c_address = config.i2c_address
+
+        self.__pijuice = PiJuice(i2c_bus_id, i2c_address)
