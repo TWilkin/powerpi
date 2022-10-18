@@ -32,19 +32,36 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         PollableMixin.__init__(self, config, **kwargs)
         BatteryMixin.__init__(self)
 
-        self.__pijuice = pijuice_interface
+        if pijuice is not None:
+            self.__pijuice = pijuice_interface
 
-        # set the config with defaults
-        self.__pijuice_config = PiJuiceConfig({
-            'charge_battery': True,
-            'shutdown_level': 15,
-            'wake_up_on_charge': 20,
-            **(pijuice if pijuice is not None else {})
-        })
+            # set the config with defaults
+            self.__pijuice_config = PiJuiceConfig({
+                'charge_battery': True,
+                'shutdown_level': 15,
+                'wake_up_on_charge': 20,
+                **pijuice
+            })
+        else:
+            self.__pijuice_config = None
+
+    @property
+    def has_pijuice(self):
+        return self.__pijuice_config is not None
 
     async def initialise(self):
-        self.__pijuice.charge_battery = self.__pijuice_config['charge_battery']
-        self.__pijuice.wake_up_on_charge = self.__pijuice_config['wake_up_on_charge']
+        if self.has_pijuice:
+            charge_battery = self.__pijuice_config['charge_battery']
+            self.log_info(f'Charge PiJuice battery: {charge_battery}')
+            self.__pijuice.charge_battery = charge_battery
+
+            shutdown_level = self.__pijuice_config['shutdown_level']
+            self.log_info(f'Shutdown when battery is below {shutdown_level}%')
+
+            wake_up_on_charge = self.__pijuice_config['wake_up_on_charge']
+            self.log_info(
+                f'Wake up when battery is above {wake_up_on_charge}%')
+            self.__pijuice.wake_up_on_charge = wake_up_on_charge
 
     async def deinitialise(self):
         # when shutting down the service, broadcast the device is off
@@ -58,10 +75,11 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         if self.state != DeviceStatus.ON:
             self.state = DeviceStatus.ON
 
-        level = self.__pijuice.battery_level
-        if level is not None:
-            charging = self.__pijuice.battery_charging
-            self.on_battery_change(level, charging)
+        if self.has_pijuice:
+            level = self.__pijuice.battery_level
+            if level is not None:
+                charging = self.__pijuice.battery_charging
+                self.on_battery_change(level, charging)
 
     async def _turn_on(self):
         raise NotImplementedError
