@@ -49,7 +49,7 @@ export default class GitHubConfigService {
 
                     // should we re-validate it?
                     if (!this.validated[type]) {
-                        this.validate(type, file.content);
+                        await this.validate(type, file.content);
                     }
 
                     continue;
@@ -59,7 +59,8 @@ export default class GitHubConfigService {
                 }
 
                 // validate the new file, and don't publish if it's not okay
-                if (!this.validate(type, file.content)) {
+                const valid = await this.validate(type, file.content);
+                if (!valid) {
                     continue;
                 }
 
