@@ -1,5 +1,3 @@
-import json
-
 from .interface import PiJuiceInterface
 
 

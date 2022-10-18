@@ -11,7 +11,7 @@ from powerpi_common.sensor.mixin import BatteryMixin
 
 PiJuiceConfig = TypedDict(
     'PiJuiceConfig',
-    {'charge_battery': bool, 'wake_up_on_charge': int},
+    {'charge_battery': bool, 'shutdown_level': int, 'wake_up_on_charge': int},
     total=False
 )
 
@@ -37,6 +37,7 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         # set the config with defaults
         self.__pijuice_config = PiJuiceConfig({
             'charge_battery': True,
+            'shutdown_level': 15,
             'wake_up_on_charge': 20,
             **(pijuice if pijuice is not None else {})
         })
