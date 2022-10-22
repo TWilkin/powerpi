@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 	"os/signal"
 	"syscall"
 	"time"
@@ -27,6 +28,7 @@ func main() {
 	mqttHost := flag.String("host", "localhost", "The hostname of the MQTT broker")
 	mqttPort := flag.Int("port", 1883, "The port number for the MQTT broker")
 	mqttTopicBase := flag.String("topic", "powerpi", "The topic base for the MQTT broker")
+	mock := flag.Bool("mock", false, "Whether to actually shutdown or not")
 	flag.Parse()
 
 	// make the channel
@@ -39,7 +41,7 @@ func main() {
 	mqtt_options.AddBroker(mqttAddress)
 	mqtt_options.SetClientID(config.MqttClientId())
 	mqtt_options.SetCleanSession(true)
-	mqtt_options.OnConnect = func(mqttClient mqtt.Client) { onConnect(mqttClient, *mqttTopicBase) }
+	mqtt_options.OnConnect = func(mqttClient mqtt.Client) { onConnect(mqttClient, *mqttTopicBase, *mock) }
 
 	// connect to MQTT
 	fmt.Printf("Connecting to MQTT at %s as %s\n", mqttAddress, config.MqttClientId())
@@ -55,19 +57,23 @@ func main() {
 	mqttClient.Disconnect(250)
 }
 
-func onConnect(mqttClient mqtt.Client, topicBase string) {
+func onConnect(mqttClient mqtt.Client, topicBase string, mock bool) {
 	fmt.Println("Connected to MQTT")
 
 	// subscribe to the shutdown event for this device
 	topic := fmt.Sprintf("%s/device/%s/change", topicBase, config.Hostname())
 	fmt.Printf("Subscribing to %s\n", topic)
 
-	if token := mqttClient.Subscribe(topic, 2, onMessageReceived); token.Wait() && token.Error() != nil {
+	callback := func(mqttClient mqtt.Client, message mqtt.Message) {
+		onMessageReceived(mqttClient, message, mock)
+	}
+
+	if token := mqttClient.Subscribe(topic, 2, callback); token.Wait() && token.Error() != nil {
 		panic(token.Error())
 	}
 }
 
-func onMessageReceived(mqttClient mqtt.Client, message mqtt.Message) {
+func onMessageReceived(mqttClient mqtt.Client, message mqtt.Message, mock bool) {
 	fmt.Printf("Received %s: %s\n", message.Topic(), message.Payload())
 
 	data := []byte(message.Payload())
@@ -88,6 +94,14 @@ func onMessageReceived(mqttClient mqtt.Client, message mqtt.Message) {
 	// if it's not old and an off command, shutdown
 	if payload.State == "off" {
 		fmt.Println("Initiating shutdown")
+
+		if !mock {
+			err := exec.Command("shutdown").Run()
+			if err != nil {
+				fmt.Println("Failed to shutdown:", err)
+			}
+		}
+
 		os.Exit(0)
 	}
 }
