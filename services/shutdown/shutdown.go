@@ -1,15 +1,23 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/eclipse/paho.mqtt.golang"
 
 	"powerpi/shutdown/config"
 )
+
+type DeviceChangeMessage struct {
+	State string
+	Timestamp int64
+}
+
 
 func main() {
 	fmt.Println("PowerPi Shutdown Service")
@@ -53,4 +61,25 @@ func onConnect(mqttClient mqtt.Client) {
 
 func onMessageReceived(mqttClient mqtt.Client, message mqtt.Message) {
 	fmt.Printf("Received %s: %s\n", message.Topic(), message.Payload())
+
+	data := []byte(message.Payload())
+	var payload DeviceChangeMessage
+	err := json.Unmarshal(data, &payload)
+	if err != nil {
+		fmt.Println("Could not decode JSON message")
+		return
+	}
+
+	// check if the message is old
+	twoMinsAgo := time.Now().Unix() - 2 * 60
+	if twoMinsAgo >= (payload.Timestamp / 1000) {
+		fmt.Println("Ignoring old message")
+		return
+	}
+
+	// if it's not old and an off command, shutdown
+	if payload.State == "off" {
+		fmt.Println("Initiating shutdown")
+		os.Exit(0)
+	}
 }
