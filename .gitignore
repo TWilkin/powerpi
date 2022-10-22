@@ -10,3 +10,4 @@
 **/*.log
 **/*.pyc
 **/.tsconfig-build.json
+services/shutdown/shutdown
