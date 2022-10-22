@@ -59,6 +59,8 @@ const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
                     <Fragment key={sensor.name}>
                         <SensorIcon type={sensor.type} className={styles.icon} />
 
+                        <BatteryIcon sensor={sensor} className={styles.battery} />
+
                         <p className={styles.title}>{getType(sensor)}:</p>
 
                         <p className={styles.data}>
@@ -68,9 +70,7 @@ const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
                                 sensor.state
                             )}
                         </p>
-
-                        <BatteryIcon sensor={sensor} className={styles.battery} />
-
+                        
                         <AbbreviatingTime date={sensor.since} abbreviate className={styles.time} />
                     </Fragment>
                 ))}

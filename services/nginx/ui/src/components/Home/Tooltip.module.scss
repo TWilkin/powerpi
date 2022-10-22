@@ -7,7 +7,7 @@
 
     .sensors {
         display: grid;
-        grid-template-columns: 1rem 1fr 0.5fr 1rem 0.5fr;
+        grid-template-columns: 1rem 1rem 1fr 0.5fr 0.5fr;
 
         & > * {
             padding-left: 0.2rem;
@@ -19,16 +19,16 @@
             padding: 0;
         }
 
-        .title {
+        .battery {
             grid-column: 2;
+        }
+
+        .title {
+            grid-column: 3;
             font-weight: 500;
         }
 
         .data {
-            grid-column: 3;
-        }
-
-        .battery {
             grid-column: 4;
         }
 
