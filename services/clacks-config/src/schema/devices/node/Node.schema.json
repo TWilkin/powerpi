@@ -29,6 +29,11 @@
                     "description": "Whether to charge the PiJuice's battery",
                     "type": "boolean"
                 },
+                "shutdown_delay": {
+                    "description": "The time to give the Pi to shutdown before the PiJuice cuts the power",
+                    "type": "integer",
+                    "minimum": 60
+                },
                 "shutdown_level": {
                     "description": "The battery percentage at which the node shuts down to prevent power loss",
                     "type": "integer",
