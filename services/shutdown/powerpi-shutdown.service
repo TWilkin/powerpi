@@ -1,0 +1,10 @@
+[Unit]
+Description=Service to listen for shutdown events and turn off the computer.
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/local/powerpi_shutdown --host [YOUR_HOSTNAME_HERE]
+User=root
+
+[Install]
+WantedBy=multi-user.target
