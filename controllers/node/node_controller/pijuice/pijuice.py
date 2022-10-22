@@ -67,6 +67,9 @@ class PiJuiceImpl(PiJuiceInterface):
     def charge_battery(self, new_value: bool):
         self.__pijuice.config.SetChargingConfig(new_value)
 
+    def shutdown(self, delay: int):
+        self.__pijuice.power.SetPowerOff(delay)
+
     def __connect(self, config: NodeConfig):
         # pylint: disable=unused-private-member
         i2c_bus_id = int(config.i2c_device[-1])

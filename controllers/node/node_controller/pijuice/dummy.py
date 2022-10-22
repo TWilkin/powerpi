@@ -30,6 +30,9 @@ class DummyPiJuiceInterface(PiJuiceInterface):
     def charge_battery(self, new_value: bool):
         self.__charge_battery = new_value
 
+    def shutdown(self, _: int):
+        pass
+
     def __str__(self):
         return f'''
             charge_battery: {self.__charge_battery}
