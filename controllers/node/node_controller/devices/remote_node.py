@@ -30,7 +30,9 @@ class RemoteNodeDevice(Device, PollableMixin):
             self.state = new_state
 
     async def _turn_on(self):
-        raise NotImplementedError
+        # there's nothing we can do to turn the remote device on
+        pass
 
     async def _turn_off(self):
-        raise NotImplementedError
+        # there's nothing we can do to turn the remote device off
+        pass

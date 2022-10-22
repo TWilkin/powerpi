@@ -3,6 +3,7 @@ from powerpi_common.container import Container as CommonContainer
 
 from node_controller.__version__ import __app_name__, __version__
 from node_controller.config import NodeConfig
+from node_controller.services import ShutdownService
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -21,4 +22,10 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     config = providers.Singleton(
         NodeConfig
+    )
+
+    shutdown = providers.Singleton(
+        ShutdownService,
+        logger=common.logger,
+        mqtt_client=common.mqtt_client
     )
