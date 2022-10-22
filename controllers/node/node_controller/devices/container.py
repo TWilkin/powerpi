@@ -27,7 +27,7 @@ def add_devices(container):
     setattr(
         device_container,
         'pijuice_interface',
-        providers.Factory(
+        providers.Singleton(
             PiJuiceImpl,
             config=container.common.config,
             logger=container.common.logger
