@@ -1,10 +1,10 @@
 import { Floorplan as IFloorplan, Sensor } from "@powerpi/api";
 import { useMemo } from "react";
 import useGetSensors from "../../hooks/sensors";
+import Loading from "../Components/Loading";
+import Menu from "../Components/Menu";
 import Floorplan from "./Floorplan";
 import Tooltip from "./Tooltip";
-import Menu from "../Components/Menu";
-import Loading from "../Components/Loading";
 
 interface HomeProps {
     floorplan: IFloorplan | undefined;
@@ -35,6 +35,10 @@ const Home = ({ floorplan }: HomeProps) => {
 
     return (
         <div>
+            {locations?.map((location) => (
+                <Tooltip key={`${location.floor}${location.location}`} {...location} />
+            ))}
+
             <Loading loading={!floorplan}>
                 <Menu
                     items={
@@ -47,10 +51,6 @@ const Home = ({ floorplan }: HomeProps) => {
                 />
 
                 {floorplan && <Floorplan floorplan={floorplan} />}
-
-                {locations?.map((location) => (
-                    <Tooltip key={`${location.floor}${location.location}`} {...location} />
-                ))}
             </Loading>
         </div>
     );

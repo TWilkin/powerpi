@@ -1,13 +1,13 @@
 import { Sensor } from "@powerpi/api";
 import { Fragment, useCallback, useMemo } from "react";
 import ReactTooltip from "react-tooltip";
+import useColourMode from "../../hooks/colour";
+import scss from "../../styles/exports.module.scss";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import BatteryIcon from "../Components/BatteryIcon";
 import FormattedValue from "../Components/FormattedValue";
 import SensorIcon from "../Components/SensorIcon";
 import styles from "./Tooltip.module.scss";
-import scss from "../../styles/exports.module.scss";
-import useColourMode from "../../hooks/colour";
 
 interface TooltipProps {
     title: string;
@@ -42,6 +42,15 @@ const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
             clickable
             backgroundColor={backgroundColour}
             textColor={textColour}
+            place="top"
+            overridePosition={({ left, top }, _, __, tooltipElement) => {
+                return {
+                    top,
+                    left: left < 0 
+                        ? Math.max(left, 0)
+                        : Math.min(left, window.innerWidth - (tooltipElement?.offsetWidth ?? 0)),
+                };
+            }}
         >
             <h3>{title}</h3>
 
