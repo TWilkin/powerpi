@@ -1,4 +1,5 @@
 import BaseDevice from "./BaseDevice";
+import Battery from "./Battery";
 import Config from "./Config";
 import Device from "./Device";
 import DeviceState from "./DeviceState";
@@ -11,6 +12,7 @@ import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus";
 
 export {
     BaseDevice,
+    Battery,
     Config,
     Device,
     DeviceState,

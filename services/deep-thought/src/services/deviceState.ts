@@ -33,6 +33,21 @@ export default class DeviceStateService extends DeviceStateListener {
         }
     }
 
+    protected onDeviceBatteryMessage(
+        deviceName: string,
+        value: number,
+        timestamp?: number,
+        charging?: boolean
+    ) {
+        const device = this.devices.find((d) => d.name === deviceName);
+
+        if (device) {
+            device.battery = value;
+            device.batterySince = timestamp;
+            device.charging = charging;
+        }
+    }
+
     private initialise() {
         this._devices = this.config.devices.map((device) => ({
             name: device.name,
@@ -43,6 +58,9 @@ export default class DeviceStateService extends DeviceStateListener {
             categories: device.categories,
             state: DeviceState.Unknown,
             since: -1,
+            battery: undefined,
+            batterySince: undefined,
+            charging: false,
         }));
     }
 }
