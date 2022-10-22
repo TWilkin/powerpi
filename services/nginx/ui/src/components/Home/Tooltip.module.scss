@@ -6,38 +6,42 @@
     }
 
     .sensors {
-        display: grid;
-        grid-template-columns: 1rem 1rem 1fr 0.5fr 0.5fr;
+        $icon-width: 18px;
+        $battery-width: 18px;
+        $title-width: auto;
+        $state-width: auto;
+        $since-width: 9ch;
 
-        & > * {
-            padding-left: 0.2rem;
-            white-space: nowrap;
+        display: grid;
+        gap: 2px 0;
+        grid-template-columns: $icon-width $title-width $state-width $since-width;
+
+        &.battery {
+            grid-template-columns: $icon-width $battery-width $title-width $state-width $since-width;
         }
 
         .icon {
-            grid-column: 1;
             padding: 0;
         }
 
-        .battery {
-            grid-column: 2;
-        }
-
         .title {
-            grid-column: 3;
             font-weight: 500;
-        }
-
-        .data {
-            grid-column: 4;
+            margin-right: 0.4rem;
         }
 
         .time {
-            grid-column: 5;
             text-align: right;
             font-style: italic;
             font-size: 0.7rem;
             line-height: 1rem;
+        }
+
+        .title,
+        .state,
+        .time {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     }
 }
