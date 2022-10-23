@@ -56,7 +56,7 @@ class PiJuiceImpl(PiJuiceInterface):
 
     @wake_up_on_charge.setter
     def wake_up_on_charge(self, new_value: int):
-        self.__pijuice.power.SetWakeUpOnCharge(new_value)
+        self.__pijuice.power.SetWakeUpOnCharge(new_value, True)
 
     @property
     def charge_battery(self) -> bool:
@@ -65,7 +65,7 @@ class PiJuiceImpl(PiJuiceInterface):
 
     @charge_battery.setter
     def charge_battery(self, new_value: bool):
-        self.__pijuice.config.SetChargingConfig(new_value)
+        self.__pijuice.config.SetChargingConfig(new_value, True)
 
     def shutdown(self, delay: int):
         self.__pijuice.power.SetPowerOff(delay)
