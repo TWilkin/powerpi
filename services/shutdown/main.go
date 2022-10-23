@@ -12,9 +12,11 @@ import (
 	"powerpi/shutdown/mqtt"
 )
 
+var Version = "development"
+
 
 func main() {
-	fmt.Println("PowerPi Shutdown Service")
+	fmt.Printf("PowerPi Shutdown Service %s\n", Version)
 
 	// use command line args
 	host := flag.String("host", "localhost", "The hostname of the MQTT broker")
