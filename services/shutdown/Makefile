@@ -11,9 +11,9 @@ VERSION=0.0.1
 
 all: compile
 
-$(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH): main.go
+$(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH): src/main.go
 	mkdir -p $(TARGET_DIR)
-	env GOOS=$(TARGET_OS) GOARCH=$(TARGET_ARCH) go build -o $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH) -ldflags="-X 'main.Version=v$(VERSION)'"
+	cd src; env GOOS=$(TARGET_OS) GOARCH=$(TARGET_ARCH) go build -o $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH) -ldflags="-X 'main.Version=v$(VERSION)'"
 
 compile: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
 
