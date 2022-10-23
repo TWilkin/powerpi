@@ -11,8 +11,6 @@ import (
 	"time"
 
 	"github.com/eclipse/paho.mqtt.golang"
-
-	"powerpi/shutdown/config"
 )
 
 type DeviceChangeMessage struct {
@@ -31,20 +29,26 @@ func main() {
 	mock := flag.Bool("mock", false, "Whether to actually shutdown or not")
 	flag.Parse()
 
+	hostname, err := os.Hostname()
+	if err != nil {
+		panic(err)
+	}
+
 	// make the channel
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
 	// set the MQTT options
 	mqttAddress := fmt.Sprintf("tcp://%s:%d", *mqttHost, *mqttPort)
+	mqttClientId := fmt.Sprintf("shutdown-%s", hostname)
 	mqtt_options := mqtt.NewClientOptions()
 	mqtt_options.AddBroker(mqttAddress)
-	mqtt_options.SetClientID(config.MqttClientId())
+	mqtt_options.SetClientID(mqttClientId)
 	mqtt_options.SetCleanSession(true)
-	mqtt_options.OnConnect = func(mqttClient mqtt.Client) { onConnect(mqttClient, *mqttTopicBase, *mock) }
+	mqtt_options.OnConnect = func(mqttClient mqtt.Client) { onConnect(mqttClient, hostname, *mqttTopicBase, *mock) }
 
 	// connect to MQTT
-	fmt.Printf("Connecting to MQTT at %s as %s\n", mqttAddress, config.MqttClientId())
+	fmt.Printf("Connecting to MQTT at %s as %s\n", mqttAddress, mqttClientId)
 	mqttClient := mqtt.NewClient(mqtt_options)
 
 	if token := mqttClient.Connect(); token.Wait() && token.Error() != nil {
@@ -57,11 +61,11 @@ func main() {
 	mqttClient.Disconnect(250)
 }
 
-func onConnect(mqttClient mqtt.Client, topicBase string, mock bool) {
+func onConnect(mqttClient mqtt.Client, hostname string, topicBase string, mock bool) {
 	fmt.Println("Connected to MQTT")
 
 	// subscribe to the shutdown event for this device
-	topic := fmt.Sprintf("%s/device/%s/change", topicBase, config.Hostname())
+	topic := fmt.Sprintf("%s/device/%s/change", topicBase, hostname)
 	fmt.Printf("Subscribing to %s\n", topic)
 
 	callback := func(mqttClient mqtt.Client, message mqtt.Message) {
