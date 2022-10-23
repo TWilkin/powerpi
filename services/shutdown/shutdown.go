@@ -35,8 +35,8 @@ func main() {
 	}
 
 	// make the channel
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	channel := make(chan os.Signal, 1)
+	signal.Notify(channel, os.Interrupt, syscall.SIGTERM)
 
 	// set the MQTT options
 	mqttAddress := fmt.Sprintf("tcp://%s:%d", *mqttHost, *mqttPort)
@@ -56,7 +56,7 @@ func main() {
 	}
 
 	// join the channel
-	<-c
+	<-channel
 
 	mqttClient.Disconnect(250)
 }
