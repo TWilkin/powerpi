@@ -13,9 +13,15 @@ import (
 	"github.com/eclipse/paho.mqtt.golang"
 )
 
-type DeviceChangeMessage struct {
-	State string
-	Timestamp int64
+type DeviceState string
+const (
+	On DeviceState = "on"
+	Off = "off"
+)
+
+type DeviceMessage struct {
+	State DeviceState `json:"state"`
+	Timestamp int64 `json:"timestamp"`
 }
 
 
@@ -64,12 +70,15 @@ func main() {
 func onConnect(mqttClient mqtt.Client, hostname string, topicBase string, mock bool) {
 	fmt.Println("Connected to MQTT")
 
+	// publish that this device is now on
+	publishState(mqttClient, hostname, topicBase, On)
+
 	// subscribe to the shutdown event for this device
 	topic := fmt.Sprintf("%s/device/%s/change", topicBase, hostname)
 	fmt.Printf("Subscribing to %s\n", topic)
 
 	callback := func(mqttClient mqtt.Client, message mqtt.Message) {
-		onMessageReceived(mqttClient, message, mock)
+		onMessageReceived(mqttClient, message, hostname, topicBase, mock)
 	}
 
 	if token := mqttClient.Subscribe(topic, 2, callback); token.Wait() && token.Error() != nil {
@@ -77,11 +86,11 @@ func onConnect(mqttClient mqtt.Client, hostname string, topicBase string, mock b
 	}
 }
 
-func onMessageReceived(mqttClient mqtt.Client, message mqtt.Message, mock bool) {
+func onMessageReceived(mqttClient mqtt.Client, message mqtt.Message, hostname string, topicBase string, mock bool) {
 	fmt.Printf("Received %s: %s\n", message.Topic(), message.Payload())
 
 	data := []byte(message.Payload())
-	var payload DeviceChangeMessage
+	var payload DeviceMessage
 	err := json.Unmarshal(data, &payload)
 	if err != nil {
 		fmt.Println("Could not decode JSON message")
@@ -96,7 +105,7 @@ func onMessageReceived(mqttClient mqtt.Client, message mqtt.Message, mock bool) 
 	}
 
 	// if it's not old and an off command, shutdown
-	if payload.State == "off" {
+	if payload.State == Off {
 		fmt.Println("Initiating shutdown")
 
 		if !mock {
@@ -106,6 +115,23 @@ func onMessageReceived(mqttClient mqtt.Client, message mqtt.Message, mock bool) 
 			}
 		}
 
+		publishState(mqttClient, hostname, topicBase, Off)
+
 		os.Exit(0)
 	}
+}
+
+func publishState(mqttClient mqtt.Client, hostname string, topicBase string, state DeviceState) {
+	topic := fmt.Sprintf("%s/device/%s/status", topicBase, hostname)
+	message := &DeviceMessage{state, time.Now().Unix() * 1000}
+
+	payload, err := json.Marshal(message)
+	if err != nil {
+		fmt.Println("Could not encode JSON message")
+		return
+	}
+
+	fmt.Printf("Publishing %s: %s\n", topic, payload)
+
+	mqttClient.Publish(topic, 2, true, payload)
 }
