@@ -46,8 +46,8 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
             self.__pijuice_config = PiJuiceConfig({
                 'charge_battery': True,
                 'shutdown_delay': 120,
-                'shutdown_level': 15,
-                'wake_up_on_charge': 20,
+                'shutdown_level': 20,
+                'wake_up_on_charge': 25,
                 **pijuice
             })
         else:
@@ -99,7 +99,7 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
                         self.__pijuice_config['shutdown_delay']
                     )
 
-                    await self.__shutdown.shutdown()
+                    await self.__shutdown.shutdown(self)
 
                 # update the current charge level
                 charging = self.__pijuice.battery_charging
