@@ -59,7 +59,4 @@ func shutdown(client mqtt.MqttClient, state mqtt.DeviceState, mock bool) {
 			fmt.Println("Failed to shutdown:", err)
 		}
 	}
-
-	// nothing else to do so quit now
-	os.Exit(0)
 }
