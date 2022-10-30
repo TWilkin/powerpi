@@ -2,9 +2,9 @@
 // Please do not change this file!
 interface CssExports {
   'battery': string;
-  'data': string;
   'icon': string;
   'sensors': string;
+  'state': string;
   'time': string;
   'title': string;
   'tooltip': string;

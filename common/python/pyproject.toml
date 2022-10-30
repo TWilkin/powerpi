@@ -15,8 +15,8 @@ jsonpatch = "~=1.32"
 toml = "~=0.10.2"
 
 [tool.poetry.group.dev.dependencies]
-autopep8 = "~=1.7.0"
-pylint = "~=2.15.2"
+autopep8 = "~=2.0.0"
+pylint = "~=2.15.5"
 
 [tool.poetry.group.test.dependencies]
 powerpi-common-test = {path = "../pytest", develop = true}

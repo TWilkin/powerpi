@@ -1,9 +1,13 @@
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
+import { Fragment, useMemo } from "react";
+import _ from "underscore";
 import { useGetDevices } from "../../hooks/devices";
+import useNarrow from "../../hooks/narrow";
 import "../../util";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
+import BatteryIcon from "../Components/BatteryIcon";
 import DeviceIcon from "../Components/DeviceIcon";
 import DevicePowerButton from "../Components/DevicePowerButton";
 import Filter from "../Components/Filter";
@@ -34,6 +38,16 @@ const DeviceList = () => {
         onSearchChange,
     } = useDeviceFilter(devices);
 
+    const { showingHidden, showingBattery } = useMemo(
+        () => ({
+            showingHidden: !filters.visible || !String.isNullOrWhitespace(filters.search),
+            showingBattery: _(filtered ?? []).any((device) => (device.batterySince ?? 0) > 0),
+        }),
+        [filtered, filters.search, filters.visible]
+    );
+
+    const { isNarrow } = useNarrow();
+
     return (
         <>
             <Filter onClear={onClear}>
@@ -58,72 +72,85 @@ const DeviceList = () => {
                             onChange={onSearchChange}
                         />
 
-                        <table>
-                            <tbody>
-                                {filtered && filtered.length > 0 ? (
-                                    filtered.map((device) => (
-                                        <tr
-                                            key={device.name}
-                                            className={classNames(styles.device, {
-                                                [styles.hidden]: !device.visible,
-                                            })}
-                                            title={`Device ${device.name} is currently ${device.state}.`}
-                                        >
-                                            {(!filters.visible ||
-                                                !String.isNullOrWhitespace(filters.search)) && (
-                                                <td>
+                        {filtered && filtered.length > 0 ? (
+                            <div
+                                className={classNames(styles.table, {
+                                    [styles.hidden]: showingHidden,
+                                    [styles.battery]: showingBattery,
+                                    [styles.narrow]: isNarrow,
+                                })}
+                            >
+                                {filtered.map((device, i) => {
+                                    const classes = (classname: string) =>
+                                        classNames(styles.cell, classname, {
+                                            [styles.even]: i % 2 === 0,
+                                            [styles.hidden]: !device.visible,
+                                        });
+
+                                    return (
+                                        <Fragment key={device.name}>
+                                            {showingHidden && (
+                                                <div className={classes(styles.icon)}>
                                                     <FontAwesomeIcon
                                                         title={`This device is ${
                                                             device.visible ? "visible" : "hidden"
                                                         }`}
                                                         icon={device.visible ? faEye : faEyeSlash}
                                                     />
-                                                </td>
+                                                </div>
                                             )}
 
-                                            <td>
+                                            <div className={classes(styles.icon)}>
                                                 <DeviceIcon type={device.type} />
-                                            </td>
+                                            </div>
 
-                                            <td>{device.display_name ?? device.name}</td>
+                                            {showingBattery && (
+                                                <div className={classes(styles.icon)}>
+                                                    <BatteryIcon sensor={device} />
+                                                </div>
+                                            )}
 
-                                            <td className={styles.state}>
+                                            <div className={classes(styles.title)}>
+                                                {device.display_name ?? device.name}
+                                            </div>
+
+                                            <div className={classes(styles.state)}>
                                                 <DevicePowerButton device={device} />
-                                            </td>
+                                            </div>
 
-                                            <td>
+                                            <div className={classes(styles.since)}>
                                                 {device.since && device.since > -1 && (
                                                     <AbbreviatingTime date={device.since} />
                                                 )}
-                                            </td>
+                                            </div>
 
-                                            <td className={styles.history}>
+                                            <div className={classes(styles.history)}>
                                                 <HistoryLink entity={device.name} type="device" />
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={5}>
-                                            {isDevicesError ? (
-                                                <Message
-                                                    error
-                                                    message="An error occurred loading the devices."
-                                                />
-                                            ) : filteredCount !== 0 ? (
-                                                <Message
-                                                    message={`Filtered ${filteredCount} device${
-                                                        filteredCount > 1 ? "s" : ""
-                                                    }.`}
-                                                />
-                                            ) : (
-                                                <Message message="No devices." />
-                                            )}
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                            </div>
+                                        </Fragment>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <>
+                                <div>
+                                    {isDevicesError ? (
+                                        <Message
+                                            error
+                                            message="An error occurred loading the devices."
+                                        />
+                                    ) : filteredCount !== 0 ? (
+                                        <Message
+                                            message={`Filtered ${filteredCount} device${
+                                                filteredCount > 1 ? "s" : ""
+                                            }.`}
+                                        />
+                                    ) : (
+                                        <Message message="No devices." />
+                                    )}
+                                </div>
+                            </>
+                        )}
                     </List>
                 </Loading>
             </div>

@@ -1,5 +1,4 @@
 import { FileDb } from "@jovotech/db-filedb";
-import { JovoDebugger } from "@jovotech/plugin-debugger";
 import app from "./app";
 
 app.configure({
@@ -7,7 +6,6 @@ app.configure({
         new FileDb({
             pathToFile: "../db/db.json",
         }),
-        new JovoDebugger(),
     ],
 });
 

@@ -6,7 +6,7 @@ import GlobalComponent from "./components/GlobalComponent";
 import LoginComponent from "./components/LoginComponent";
 
 const app = new App({
-    components: [ErrorComponent, DevicePowerComponent, GlobalComponent, LoginComponent],
+    components: [GlobalComponent, DevicePowerComponent, ErrorComponent, LoginComponent],
     plugins: [
         new AlexaPlatform({
             intentMap: {

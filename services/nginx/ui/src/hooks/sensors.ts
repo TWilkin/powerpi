@@ -1,4 +1,5 @@
 import { Sensor, SensorStatusMessage } from "@powerpi/api";
+import { BatteryStatusMessage } from "@powerpi/api/dist/src/BatteryStatus";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import useAPI from "./api";
@@ -36,9 +37,26 @@ export default function useGetSensors() {
                     newSensor.since = message.timestamp;
                 }
 
+                setSensors(newSensors);
+            }
+        };
+
+        const onBatteryUpdate = (message: BatteryStatusMessage) => {
+            if (!sensors || !message.sensor) {
+                return;
+            }
+
+            const index = sensors.findIndex((sensor) => sensor.name === message.sensor);
+            if (index !== -1) {
+                const newSensors = [...sensors];
+
+                const newSensor = { ...newSensors[index] };
+                newSensors[index] = newSensor;
+
                 if (message.battery !== undefined) {
                     newSensor.battery = message.battery;
-                    newSensor.batterySince = message.batteryTimestamp;
+                    newSensor.batterySince = message.timestamp;
+                    newSensor.charging = message.charging;
                 }
 
                 setSensors(newSensors);
@@ -46,7 +64,12 @@ export default function useGetSensors() {
         };
 
         api.addSensorListener(onStatusUpdate);
-        return () => api.removeSensorListener(onStatusUpdate);
+        api.addBatteryListener(onBatteryUpdate);
+
+        return () => {
+            api.removeSensorListener(onStatusUpdate);
+            api.removeBatteryListener(onBatteryUpdate);
+        };
     }, [api, sensors, setSensors]);
 
     return {

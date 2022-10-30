@@ -13,7 +13,7 @@ $light-colours: (
     "filter-background": black,
     "filter-text": white,
     "critical": red,
-    "warning": #ffc,
+    "warning": orange,
     "info": blue,
     "chart-line": #ccc,
     "chart": (
@@ -38,7 +38,7 @@ $dark-colours: (
     "filter-background": black,
     "filter-text": white,
     "critical": lighten(map.get($light-colours, "critical"), 10%),
-    "warning": #ffc,
+    "warning": orange,
     "info": cyan,
     "chart-line": #444,
     "chart": (
