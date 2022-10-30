@@ -7,6 +7,7 @@ from powerpi_common.device import DeviceStatus
 from powerpi_common_test.device import DeviceTestBase
 from powerpi_common_test.device.mixin import (InitialisableMixinTestBase,
                                               PollableMixinTestBase)
+from powerpi_common_test.mqtt.mqtt import mock_producer
 from powerpi_common_test.sensor.mixin import BatteryMixinTestBase
 from pytest_mock import MockerFixture
 
@@ -51,6 +52,8 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
 
     async def test_poll_with_pijuice(self, mocker: MockerFixture):
         def set_pijuice():
+            self.publish = mock_producer(mocker, self.mqtt_client)
+
             self.pijuice = {
                 'charge_battery': False,
                 'shutdown_delay': 123,
@@ -67,7 +70,7 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
         future.set_result(None)
         self.shutdown.shutdown.return_value = future
 
-        def mock_battery(level: int, charging: Union[bool, None]):
+        def mock_battery(level: int, charging: Union[bool, None] = None):
             type(self.pijuice_interface).battery_level = PropertyMock(
                 return_value=level
             )
@@ -76,14 +79,35 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
                 return_value=charging
             )
 
-        # expected to do nothing as the battery is full
-        mock_battery(100, None)
-        await subject.poll()
-        self.pijuice_interface.shutdown.assert_not_called()
-        self.shutdown.shutdown.assert_not_called()
+            self.pijuice_interface.reset_mock()
+            self.shutdown.reset_mock()
+
+        # expected to do nothing as the battery is over the level
+        levels = [100, 50, 11]
+        for level in levels:
+            mock_battery(level)
+
+            await subject.poll()
+
+            self.pijuice_interface.shutdown.assert_not_called()
+            self.shutdown.shutdown.assert_not_called()
+
+            self.publish.assert_any_call(
+                'device/local/battery',
+                {'value': level, 'unit': '%'}
+            )
 
         # expected to shutdown
-        mock_battery(10, True)
-        await subject.poll()
-        self.pijuice_interface.shutdown.assert_called_once_with(123)
-        self.shutdown.shutdown.assert_called_once()
+        levels = [10, 9, 1]
+        for level in levels:
+            mock_battery(level, True)
+
+            await subject.poll()
+
+            self.pijuice_interface.shutdown.assert_called_once_with(123)
+            self.shutdown.shutdown.assert_called_once()
+
+            self.publish.assert_any_call(
+                'device/local/battery',
+                {'value': level, 'unit': '%', 'charging': True}
+            )

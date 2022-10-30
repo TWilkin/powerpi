@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any, Dict
+from typing import Any, Dict, Iterable
 
 from pytest_mock import MockerFixture
 
@@ -47,28 +47,44 @@ class BatteryMixinTestBase(ABC):
         subject = self.create_subject(mocker, mock_add_producer)
 
         subject.on_battery_change(10, True)
+        # repeat won't generate new message
+        subject.on_battery_change(10, True)
         subject.on_battery_change(11, False)
         subject.on_battery_change(12, None)
         subject.on_battery_change(13)
 
         assert len(self.messages) == 4
 
-        assert any(
+        assert once(
             (message['value'] == 10 and message['charging']
              is True for message in self.messages)
         )
 
-        assert any(
+        assert once(
             (message['value'] == 11 and message['charging']
              is False for message in self.messages)
         )
 
-        assert any(
+        assert once(
             (message['value'] == 12 and not hasattr(message, 'charging')
              for message in self.messages)
         )
 
-        assert any(
+        assert once(
             (message['value'] == 13 and not hasattr(message, 'charging')
              for message in self.messages)
         )
+
+
+def once(iterable: Iterable[object]):
+    found = False
+
+    for i in iterable:
+        if i:
+            if found:
+                # we have our second True, so it's not once
+                return False
+
+            found = i
+
+    return found
