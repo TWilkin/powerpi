@@ -10,6 +10,7 @@
 **/venv/
 **/.converage
 **/*.dev.js
+**/*.dev.ts
 **/*.test.ts
 **/*.test.tsx
 **/*.pyc

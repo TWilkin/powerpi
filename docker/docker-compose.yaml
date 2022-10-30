@@ -31,7 +31,7 @@ services:
             - FILE_PATH=docker/config
 
     deep-thought:
-        image: twilkin/powerpi-deep-thought:0.5.17
+        image: twilkin/powerpi-deep-thought:0.5.18
         networks:
             - powerpi
         deploy:
@@ -60,7 +60,7 @@ services:
             - OAUTH_SECRET_FILE=/var/run/secrets/powerpi_oauth
 
     babel-fish:
-        image: twilkin/powerpi-babel-fish:1.0.2
+        image: twilkin/powerpi-babel-fish:1.0.3
         networks:
             - powerpi
         deploy:
@@ -156,7 +156,7 @@ services:
             - FREEDNS_PASSWORD=/var/run/secrets/powerpi_freedns
 
     nginx:
-        image: twilkin/powerpi-nginx:1.3.6
+        image: twilkin/powerpi-nginx:1.3.7
         networks:
             - powerpi
         ports:
