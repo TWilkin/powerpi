@@ -34,7 +34,6 @@
         "@jovotech/cli-core": "^4.0.0",
         "@jovotech/db-filedb": "^4.0.0",
         "@jovotech/filebuilder": "^0.0.1",
-        "@jovotech/plugin-debugger": "^4.0.0",
         "@powerpi/common-test": "^0.0.2",
         "@types/express": "^4.17.11",
         "ts-node": "^10.9.1",
