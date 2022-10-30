@@ -66,10 +66,6 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
         assert subject.state == DeviceStatus.UNKNOWN
         assert subject.has_pijuice is True
 
-        future = Future()
-        future.set_result(None)
-        self.shutdown.shutdown.return_value = future
-
         def mock_battery(level: int, charging: Union[bool, None] = None):
             type(self.pijuice_interface).battery_level = PropertyMock(
                 return_value=level

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, create_autospec
 from pytest_mock import MockerFixture
 
 
-def mock_producer(mocker: MockerFixture, mqtt_client: MagicMock):
+def mock_producer(mocker: MockerFixture, mqtt_client: MagicMock) -> MagicMock:
     mocker.patch('powerpi_common_test.mqtt.mqtt.__mocked_mqtt_publish')
     mocker.patch.object(
         mqtt_client,

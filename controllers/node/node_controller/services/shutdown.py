@@ -14,8 +14,8 @@ class ShutdownService:
 
         self.__producer = mqtt_client.add_producer()
 
-    async def shutdown(self, device: Device):
-        self.__logger.info("Initiating shutdown")
+    def shutdown(self, device: Device):
+        self.__logger.info('Initiating shutdown')
 
         topic = f'device/{device.name}/change'
         message = {'state': DeviceStatus.OFF}
