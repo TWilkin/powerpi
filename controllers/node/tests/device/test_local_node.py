@@ -2,7 +2,7 @@ from asyncio import Future
 from typing import Union
 from unittest.mock import PropertyMock
 
-from node_controller.devices.local_node import LocalNodeDevice
+from node_controller.device.local_node import LocalNodeDevice
 from powerpi_common.device import DeviceStatus
 from powerpi_common_test.device import DeviceTestBase
 from powerpi_common_test.device.mixin import (InitialisableMixinTestBase,

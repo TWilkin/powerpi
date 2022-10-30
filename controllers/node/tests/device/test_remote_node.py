@@ -2,7 +2,7 @@ from typing import Tuple
 from unittest.mock import PropertyMock
 
 import pytest
-from node_controller.devices.remote_node import RemoteNodeDevice
+from node_controller.device.remote_node import RemoteNodeDevice
 from powerpi_common.device import DeviceStatus
 from powerpi_common_test.device import DeviceTestBase
 from powerpi_common_test.device.mixin import PollableMixinTestBase
@@ -37,7 +37,7 @@ class TestRemoteNodeDevice(DeviceTestBase, PollableMixinTestBase):
         type(host).is_alive = PropertyMock(return_value=is_alive)
 
         mocker.patch(
-            'node_controller.devices.remote_node.async_ping',
+            'node_controller.device.remote_node.async_ping',
             return_value=host
         )
 

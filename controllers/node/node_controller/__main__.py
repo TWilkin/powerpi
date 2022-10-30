@@ -1,7 +1,7 @@
 import sys
 
 from node_controller.container import ApplicationContainer
-from node_controller.devices.container import add_devices
+from node_controller.device.container import add_devices
 
 if __name__ == '__main__':
     # initialise DI
