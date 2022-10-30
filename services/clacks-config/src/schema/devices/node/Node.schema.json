@@ -29,6 +29,12 @@
                     "description": "Whether to charge the PiJuice's battery",
                     "type": "boolean"
                 },
+                "max_charge": {
+                    "description": "The maximum battery percentage to charge to",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100
+                },
                 "shutdown_delay": {
                     "description": "The time to give the Pi to shutdown before the PiJuice cuts the power",
                     "type": "integer",

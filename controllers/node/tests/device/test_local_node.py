@@ -56,6 +56,7 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
 
             self.pijuice = {
                 'charge_battery': False,
+                'max_charge': 80,
                 'shutdown_delay': 123,
                 'shutdown_level': 10,
                 'wake_up_on_charge': 15
@@ -107,3 +108,33 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
                 'device/local/battery',
                 {'value': level, 'unit': '%', 'charging': True}
             )
+
+    async def test_poll_max_charge(self, mocker: MockerFixture):
+        def set_pijuice():
+            self.pijuice = {
+                'charge_battery': True,
+                'max_charge': 80
+            }
+
+        subject = self.create_subject(mocker, set_pijuice)
+
+        def mock_battery(level: int):
+            type(self.pijuice_interface).battery_level = PropertyMock(
+                return_value=level
+            )
+
+        mock_battery(79)
+        await subject.poll()
+        self.pijuice_interface.charge_battery.assert_not_called()
+
+        mock_battery(80)
+        await subject.poll()
+        assert self.pijuice_interface.charge_battery is False
+
+        mock_battery(81)
+        await subject.poll()
+        assert self.pijuice_interface.charge_battery is False
+
+        mock_battery(79)
+        await subject.poll()
+        assert self.pijuice_interface.charge_battery is True

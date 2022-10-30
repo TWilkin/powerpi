@@ -11,6 +11,7 @@ describe("Node Devices", () => {
                     poll_frequency: 120,
                     pijuice: {
                         charge_battery: true,
+                        max_charge: 100,
                         shutdown_delay: 120,
                         shutdown_level: 15,
                         wake_up_on_charge: 20,
@@ -36,25 +37,31 @@ describe("Node Devices", () => {
             test("No PiJuice", () =>
                 testValid({ devices: [{ type: "node", name: "Node", ip: "127.0.0.1" }] }));
 
-            ["charge_battery", "shutdown_delay", "shutdown_level", "wake_up_on_charge"].forEach(
-                (key) =>
-                    test(`No ${key}`, () => {
-                        const device = {
-                            type: "node",
-                            name: "Node",
-                            ip: "127.0.0.1",
-                            pijuice: {
-                                charge_battery: true,
-                                shutdown_delay: 120,
-                                shutdown_level: 15,
-                                wake_up_on_charge: 20,
-                            },
-                        };
+            [
+                "charge_battery",
+                "max_charge",
+                "shutdown_delay",
+                "shutdown_level",
+                "wake_up_on_charge",
+            ].forEach((key) =>
+                test(`No ${key}`, () => {
+                    const device = {
+                        type: "node",
+                        name: "Node",
+                        ip: "127.0.0.1",
+                        pijuice: {
+                            charge_battery: true,
+                            max_charge: 100,
+                            shutdown_delay: 120,
+                            shutdown_level: 15,
+                            wake_up_on_charge: 20,
+                        },
+                    };
 
-                        delete device.pijuice[key as keyof typeof device.pijuice];
+                    delete device.pijuice[key as keyof typeof device.pijuice];
 
-                        testValid({ devices: [device] });
-                    })
+                    testValid({ devices: [device] });
+                })
             );
 
             [0, 100].forEach((value) => {
@@ -63,10 +70,16 @@ describe("Node Devices", () => {
                     name: "Node",
                     ip: "127.0.0.1",
                     pijuice: {
+                        max_charge: 100,
                         shutdown_level: 15,
                         wake_up_on_charge: 20,
                     },
                 };
+
+                test(`Good max_charge ${value}`, () => {
+                    device.pijuice.max_charge = value;
+                    testValid({ devices: [device] });
+                });
 
                 test(`Good shutdown_level ${value}`, () => {
                     device.pijuice.shutdown_level = value;
@@ -85,10 +98,16 @@ describe("Node Devices", () => {
                     name: "Node",
                     ip: "127.0.0.1",
                     pijuice: {
+                        max_charge: 100,
                         shutdown_level: 15,
                         wake_up_on_charge: 20,
                     },
                 };
+
+                test(`Bad max_charge ${value}`, () => {
+                    device.pijuice.max_charge = value;
+                    testInvalid({ devices: [device] });
+                });
 
                 test(`Bad shutdown_level ${value}`, () => {
                     device.pijuice.shutdown_level = value;

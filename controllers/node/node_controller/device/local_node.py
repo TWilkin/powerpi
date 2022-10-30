@@ -14,6 +14,7 @@ PiJuiceConfig = TypedDict(
     'PiJuiceConfig',
     {
         'charge_battery': bool,
+        'max_charge': int,
         'shutdown_delay': int,
         'shutdown_level': int,
         'wake_up_on_charge': int
@@ -45,6 +46,7 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
             # set the config with defaults
             self.__pijuice_config = PiJuiceConfig({
                 'charge_battery': True,
+                'max_charge': 100,
                 'shutdown_delay': 120,
                 'shutdown_level': 20,
                 'wake_up_on_charge': 25,
@@ -64,6 +66,9 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
             charge_battery = self.__pijuice_config['charge_battery']
             self.log_info(f'Charge PiJuice battery: {charge_battery}')
             self.__pijuice.charge_battery = charge_battery
+
+            max_charge = self.__pijuice_config['max_charge']
+            self.log_info(f'Charge up to maximum {max_charge}%')
 
             shutdown_delay = self.__pijuice_config['shutdown_delay']
             self.log_info(f'Shutdown after waiting for {shutdown_delay}s')
@@ -100,6 +105,16 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
                     )
 
                     self.__shutdown.shutdown(self)
+
+                # if we've reached the max charge level, stop charging
+                if level >= self.__pijuice_config['max_charge']:
+                    if self.__pijuice.charge_battery:
+                        self.log_info(f'Reached maximum charge at {level}%')
+                        self.__pijuice.charge_battery = False
+                else:
+                    if not self.__pijuice.charge_battery:
+                        self.log_info(f'Resuming charging at {level}%')
+                        self.__pijuice.charge_battery = True
 
                 # update the current charge level
                 charging = self.__pijuice.battery_charging
