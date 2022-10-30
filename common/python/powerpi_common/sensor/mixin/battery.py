@@ -32,5 +32,5 @@ class BatteryMixin(ABC):
 
             self._broadcast('battery', message)
 
-            self.__battery = message
+            self.__battery = message.copy()
             self.__battery['timestamp'] = now
