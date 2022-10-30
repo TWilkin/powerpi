@@ -1,9 +1,8 @@
-from pytest_mock import MockerFixture
-
 from powerpi_common.device import Device
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common_test.device import DeviceTestBase
 from powerpi_common_test.device.mixin import InitialisableMixinTestBase
+from pytest_mock import MockerFixture
 
 
 class DeviceImpl(Device, InitialisableMixin):

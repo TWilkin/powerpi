@@ -5,7 +5,7 @@ from typing import Union
 
 class BatteryMixin(ABC):
     '''
-    Mixing to add battery message broadcast functionality to a device/sensor.
+    Mixin to add battery message broadcast functionality to a device/sensor.
     '''
 
     def __init__(self):
@@ -14,7 +14,7 @@ class BatteryMixin(ABC):
     def on_battery_change(self, level: int, charging: Union[bool, None] = None):
         '''
         Call this method to broadcast a new battery level, and whether it's charging for this
-        device/sensor, but only if it's changed or the message is too old.
+        device/sensor, but only if it's changed or the last message is too old.
         '''
         now = int(datetime.utcnow().timestamp() * 1000)
 
