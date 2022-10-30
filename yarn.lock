@@ -1039,7 +1039,7 @@
 
 "@socket.io/component-emitter@~3.1.0":
   version "3.1.0"
-  resolved "https://registry.npmjs.org/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz"
+  resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.0.tgz#96116f2a912e0c02817345b3c10751069920d553"
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
 "@szmarczak/http-timer@^1.1.2":
@@ -1372,11 +1372,6 @@
   resolved "https://registry.yarnpkg.com/@types/cache-manager/-/cache-manager-3.4.3.tgz#eba99bf795b997ad0c309658101398c34d7faecb"
   integrity sha512-71aBXoFYXZW4TnDHHH8gExw2lS28BZaWeKefgsiJI7QYZeJfUEbMKw6CQtzGjlYQcGIWwB76hcCrkVA3YHSvsw==
 
-"@types/component-emitter@^1.2.10":
-  version "1.2.11"
-  resolved "https://registry.npmjs.org/@types/component-emitter/-/component-emitter-1.2.11.tgz"
-  integrity sha512-SRXjM+tfsSlA9VuG8hGO2nft2p8zjXCK1VcC6N4NXbBbYbSia9kzCChYQajIjzIqOOOuh5Ock6MmV2oux4jDZQ==
-
 "@types/connect-history-api-fallback@^1.3.5":
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/@types/connect-history-api-fallback/-/connect-history-api-fallback-1.3.5.tgz#d1f7a8a09d0ed5a57aee5ae9c18ab9b803205dae"
@@ -1401,7 +1396,7 @@
 
 "@types/cookie@^0.4.1":
   version "0.4.1"
-  resolved "https://registry.npmjs.org/@types/cookie/-/cookie-0.4.1.tgz"
+  resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.4.1.tgz#bfd02c1f2224567676c1545199f87c3a861d878d"
   integrity sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==
 
 "@types/cors@^2.8.10", "@types/cors@^2.8.12":
@@ -1579,9 +1574,9 @@
   integrity sha512-ce7MIiaYWCFv6A83oEultwhBXb22fxwNOQf5DIxWA4WXvDQ7K+L0fbWl/YOfCzlR5B/uFkSnVBhPcOfOECcWvA==
 
 "@types/node@>=10.0.0":
-  version "18.0.0"
-  resolved "https://registry.npmjs.org/@types/node/-/node-18.0.0.tgz"
-  integrity sha512-cHlGmko4gWLVI27cGJntjs/Sj8th9aYwplmZFwmmgYQQvL5NUsgVJG7OddLvNfLqYS31KFN0s3qlaD9qCaxACA==
+  version "18.11.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.7.tgz#8ccef136f240770c1379d50100796a6952f01f94"
+  integrity sha512-LhFTglglr63mNXUSRYD8A+ZAIu5sFqNJ4Y2fPuY7UlrySJH87rRRlhtVmMHplmfk5WkoJGmDjE9oiTfyX94CpQ==
 
 "@types/node@^18.0.0":
   version "18.7.8"
@@ -2488,7 +2483,7 @@ base64-js@^1.0.2, base64-js@^1.3.1:
 
 base64id@2.0.0, base64id@~2.0.0:
   version "2.0.0"
-  resolved "https://registry.npmjs.org/base64id/-/base64id-2.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/base64id/-/base64id-2.0.0.tgz#2770ac6bc47d312af97a8bf9a634342e0cd25cb6"
   integrity sha512-lGe34o6EHj9y3Kts9R4ZYs/Gr+6N7MCaMlIFA3F1R2O5/m7K06AxfSeO5530PEERE6/WyEg3lsuyw4GHlPZHog==
 
 base64url@3.x.x:
@@ -2987,11 +2982,6 @@ commist@^1.0.0:
   dependencies:
     leven "^2.1.0"
     minimist "^1.1.0"
-
-component-emitter@~1.3.0:
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/component-emitter/-/component-emitter-1.3.0.tgz"
-  integrity sha512-Rd3se6QB+sO1TwqZjscQrurpEPIfO0/yYnSin6Q/rD3mOutHvUrCAhJub3r90uNb+SESBuE0QYoB90YdfatsRg==
 
 compress-commons@^4.1.0:
   version "4.1.1"
@@ -3496,10 +3486,10 @@ end-of-stream@^1.1.0, end-of-stream@^1.4.1:
   dependencies:
     once "^1.4.0"
 
-engine.io-client@~6.2.1:
-  version "6.2.2"
-  resolved "https://registry.npmjs.org/engine.io-client/-/engine.io-client-6.2.2.tgz"
-  integrity sha512-8ZQmx0LQGRTYkHuogVZuGSpDqYZtCM/nv8zQ68VZ+JkOpazJ7ICdsSpaO6iXwvaU30oFg5QJOJWj8zWqhbKjkQ==
+engine.io-client@~6.2.3:
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/engine.io-client/-/engine.io-client-6.2.3.tgz#a8cbdab003162529db85e9de31575097f6d29458"
+  integrity sha512-aXPtgF1JS3RuuKcpSrBtimSjYvrbhKW9froICH4s0F3XQWLxsKNxqzG39nnvQZQnva4CMvUK63T7shevxRyYHw==
   dependencies:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.1"
@@ -3509,12 +3499,12 @@ engine.io-client@~6.2.1:
 
 engine.io-parser@~5.0.3:
   version "5.0.4"
-  resolved "https://registry.npmjs.org/engine.io-parser/-/engine.io-parser-5.0.4.tgz"
+  resolved "https://registry.yarnpkg.com/engine.io-parser/-/engine.io-parser-5.0.4.tgz#0b13f704fa9271b3ec4f33112410d8f3f41d0fc0"
   integrity sha512-+nVFp+5z1E3HcToEnO7ZIj3g+3k9389DvWtvJZz0T6/eOCPIyyxehFcedoYrZQrp0LgQbD9pPXhpMBKMd5QURg==
 
 engine.io@~6.2.0:
   version "6.2.0"
-  resolved "https://registry.npmjs.org/engine.io/-/engine.io-6.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/engine.io/-/engine.io-6.2.0.tgz#003bec48f6815926f2b1b17873e576acd54f41d0"
   integrity sha512-4KzwW3F3bk+KlzSOY57fj/Jx6LyRQ1nbcyIadehl+AnXjKT7gDO0ORdRi/84ixvMKTym6ZKuxvbzN62HDDU1Lg==
   dependencies:
     "@types/cookie" "^0.4.1"
@@ -7378,47 +7368,38 @@ snake-case@^3.0.4:
 
 socket.io-adapter@~2.4.0:
   version "2.4.0"
-  resolved "https://registry.npmjs.org/socket.io-adapter/-/socket.io-adapter-2.4.0.tgz"
+  resolved "https://registry.yarnpkg.com/socket.io-adapter/-/socket.io-adapter-2.4.0.tgz#b50a4a9ecdd00c34d4c8c808224daa1a786152a6"
   integrity sha512-W4N+o69rkMEGVuk2D/cvca3uYsvGlMwsySWV447y99gUPghxq42BxqLNMndb+a1mm/5/7NeXVQS7RLa2XyXvYg==
 
 socket.io-client@^4.0.0, socket.io-client@^4.0.1:
-  version "4.5.1"
-  resolved "https://registry.npmjs.org/socket.io-client/-/socket.io-client-4.5.1.tgz"
-  integrity sha512-e6nLVgiRYatS+AHXnOnGi4ocOpubvOUCGhyWw8v+/FxW8saHkinG6Dfhi9TU0Kt/8mwJIAASxvw6eujQmjdZVA==
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/socket.io-client/-/socket.io-client-4.5.3.tgz#bed69209d001465b2fea650d2e95c1e82768ab5e"
+  integrity sha512-I/hqDYpQ6JKwtJOf5ikM+Qz+YujZPMEl6qBLhxiP0nX+TfXKhW4KZZG8lamrD6Y5ngjmYHreESVasVCgi5Kl3A==
   dependencies:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.2"
-    engine.io-client "~6.2.1"
+    engine.io-client "~6.2.3"
     socket.io-parser "~4.2.0"
-
-socket.io-parser@~4.0.4:
-  version "4.0.5"
-  resolved "https://registry.npmjs.org/socket.io-parser/-/socket.io-parser-4.0.5.tgz"
-  integrity sha512-sNjbT9dX63nqUFIOv95tTVm6elyIU4RvB1m8dOeZt+IgWwcWklFDOdmGcfo3zSiRsnR/3pJkjY5lfoGqEe4Eig==
-  dependencies:
-    "@types/component-emitter" "^1.2.10"
-    component-emitter "~1.3.0"
-    debug "~4.3.1"
 
 socket.io-parser@~4.2.0:
   version "4.2.1"
-  resolved "https://registry.npmjs.org/socket.io-parser/-/socket.io-parser-4.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/socket.io-parser/-/socket.io-parser-4.2.1.tgz#01c96efa11ded938dcb21cbe590c26af5eff65e5"
   integrity sha512-V4GrkLy+HeF1F/en3SpUaM+7XxYXpuMUWLGde1kSSh5nQMN4hLrbPIkD+otwh6q9R6NOQBN4AMaOZ2zVjui82g==
   dependencies:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.1"
 
 socket.io@^4.1.2:
-  version "4.5.1"
-  resolved "https://registry.npmjs.org/socket.io/-/socket.io-4.5.1.tgz"
-  integrity sha512-0y9pnIso5a9i+lJmsCdtmTTgJFFSvNQKDnPQRz28mGNnxbmqYg2QPtJTLFxhymFZhAIn50eHAKzJeiNaKr+yUQ==
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/socket.io/-/socket.io-4.5.3.tgz#44dffea48d7f5aa41df4a66377c386b953bc521c"
+  integrity sha512-zdpnnKU+H6mOp7nYRXH4GNv1ux6HL6+lHL8g7Ds7Lj8CkdK1jJK/dlwsKDculbyOHifcJ0Pr/yeXnZQ5GeFrcg==
   dependencies:
     accepts "~1.3.4"
     base64id "~2.0.0"
     debug "~4.3.2"
     engine.io "~6.2.0"
     socket.io-adapter "~2.4.0"
-    socket.io-parser "~4.0.4"
+    socket.io-parser "~4.2.0"
 
 sockjs@^0.3.24:
   version "0.3.24"
@@ -8533,7 +8514,7 @@ ws@^8.4.2:
 
 ws@~8.2.3:
   version "8.2.3"
-  resolved "https://registry.npmjs.org/ws/-/ws-8.2.3.tgz"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.2.3.tgz#63a56456db1b04367d0b721a0b80cae6d8becbba"
   integrity sha512-wBuoj1BDpC6ZQ1B7DWQBYVLphPWkm8i9Y0/3YdHjHKHiohOJ1ws+3OccDWtH+PoC9DZD5WOTrJvNbWvjS6JWaA==
 
 xml-name-validator@^3.0.0:
@@ -8574,7 +8555,7 @@ xmlchars@^2.2.0:
 
 xmlhttprequest-ssl@~2.0.0:
   version "2.0.0"
-  resolved "https://registry.npmjs.org/xmlhttprequest-ssl/-/xmlhttprequest-ssl-2.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/xmlhttprequest-ssl/-/xmlhttprequest-ssl-2.0.0.tgz#91360c86b914e67f44dce769180027c0da618c67"
   integrity sha512-QKxVRxiRACQcVuQEYFsI1hhkrMlrXHPegbbd1yn9UHOmRxY+si12nQYzri3vbzt8VdTTRviqcKxcyllFas5z2A==
 
 xtend@^4.0.0, xtend@^4.0.2:
