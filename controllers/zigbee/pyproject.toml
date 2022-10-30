@@ -16,8 +16,8 @@ zigpy-znp = "~=0.8.2"
 powerpi-common = {path = "../../common/python", develop = true}
 
 [tool.poetry.group.dev.dependencies]
-autopep8 = "~=1.7.0"
-pylint = "~=2.15.2"
+autopep8 = "~=2.0.0"
+pylint = "~=2.15.5"
 
 [tool.poetry.group.test.dependencies]
 powerpi-common-test = {path = "../../common/pytest", develop = true}
