@@ -1,11 +1,12 @@
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dependency_injector import containers, providers
 
 from powerpi_common.config import Config
 from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.controller import Controller
-from powerpi_common.logger import Logger
 from powerpi_common.device import DeviceContainer
 from powerpi_common.event import EventManager
+from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import VariableContainer
 
@@ -37,6 +38,10 @@ class Container(containers.DeclarativeContainer):
         logger=logger
     )
 
+    scheduler = providers.Singleton(
+        AsyncIOScheduler
+    )
+
     config_retriever = providers.Singleton(
         ConfigRetriever,
         config=config,
@@ -48,7 +53,8 @@ class Container(containers.DeclarativeContainer):
         DeviceContainer,
         config=config,
         logger=logger,
-        mqtt_client=mqtt_client
+        mqtt_client=mqtt_client,
+        scheduler=scheduler
     )
 
     variable = providers.Container(
@@ -76,6 +82,7 @@ class Container(containers.DeclarativeContainer):
         event_manager=event_manager,
         mqtt_client=mqtt_client,
         device_status_checker=device.device_status_checker,
+        scheduler=scheduler,
         app_name=app_name,
         version=version
     )

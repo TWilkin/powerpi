@@ -2,9 +2,9 @@ from typing import Dict, List
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
-
 from powerpi_common.logger import Logger
 from powerpi_common.util import ismixin
+
 from .manager import DeviceManager
 from .mixin.pollable import PollableMixin
 
@@ -44,13 +44,6 @@ class DeviceStatusChecker:
                 ScheduledDeviceGroup(
                     self.__logger, self.__scheduler, poll_frequency, devices
                 )
-
-            self.__scheduler.start()
-
-    def stop(self):
-        if self.__scheduler.running:
-            self.__logger.info('Stopping device state change polling')
-            self.__scheduler.shutdown()
 
 
 class ScheduledDeviceGroup:

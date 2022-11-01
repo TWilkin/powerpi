@@ -2,6 +2,8 @@ from asyncio import (CancelledError, ensure_future, get_event_loop,
                      get_running_loop)
 from signal import SIGINT, SIGTERM
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 from .config.config_retriever import ConfigRetriever
 from .device import DeviceManager, DeviceStatusChecker
 from .event import EventManager
@@ -20,6 +22,7 @@ class Controller:
         event_manager: EventManager,
         mqtt_client: MQTTClient,
         device_status_checker: DeviceStatusChecker,
+        scheduler: AsyncIOScheduler,
         app_name: str,
         version: str
     ):
@@ -29,6 +32,7 @@ class Controller:
         self.__event_manager = event_manager
         self.__mqtt_client = mqtt_client
         self.__device_status_checker = device_status_checker
+        self.__scheduler = scheduler
         self.__app_name = app_name
         self.__version = version
 
@@ -58,6 +62,9 @@ class Controller:
         self._log_start()
 
         try:
+            # start the scheduler
+            self.__scheduler.start()
+
             # intially connect to MQTT
             await self.__mqtt_client.connect()
 
@@ -82,7 +89,7 @@ class Controller:
             await self.__cleanup()
 
     async def __cleanup(self):
-        self.__device_status_checker.stop()
+        self.__scheduler.shutdown()
 
         await self.__device_manager.deinitialise()
 
