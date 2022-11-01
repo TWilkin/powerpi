@@ -1,9 +1,10 @@
 from collections import OrderedDict
-from typing import Dict
+from typing import Dict, Union
 
 import aiofiles
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from node_controller.pijuice import PiJuiceInterface
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger, LogMixin
 from RPi import GPIO
@@ -16,6 +17,7 @@ PWM_FREQUENCY = 25
 
 
 class PWMService(InitialisableMixin, LogMixin):
+    # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         logger: Logger,
@@ -23,6 +25,7 @@ class PWMService(InitialisableMixin, LogMixin):
     ):
         self._logger = logger
         self.__scheduler = scheduler
+        self.__pijuice: Union[PiJuiceInterface, None] = None
 
         self.__curve: OrderedDict = {}
         self.__curve_keys = []
@@ -44,6 +47,14 @@ class PWMService(InitialisableMixin, LogMixin):
     @property
     def current_speed(self):
         return self.__current_speed
+
+    @property
+    def pijuice(self):
+        return self.__pijuice
+
+    @pijuice.setter
+    def pijuice(self, pijuice: Union[PiJuiceInterface, None]):
+        self.__pijuice = pijuice
 
     async def initialise(self):
         GPIO.setwarnings(False)
@@ -116,4 +127,10 @@ class PWMService(InitialisableMixin, LogMixin):
             return temp
 
     async def __get_battery_temperature(self):
+        if self.__pijuice:
+            temp = self.__pijuice.battery_temperature
+            self.log_debug(f'Battery temp {temp}°C')
+
+            return temp
+
         return 0

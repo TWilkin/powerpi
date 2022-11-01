@@ -21,6 +21,14 @@ class PiJuiceInterface(ABC):
 
     @property
     @abstractmethod
+    def battery_temperature(self) -> Union[int, None]:
+        '''
+        Return the current battery temperature of the PiJuice.
+        '''
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
     def wake_up_on_charge(self) -> int:
         '''
         Get the battery charge percentage at which to turn the Pi back on.

@@ -15,6 +15,10 @@ class DummyPiJuiceInterface(PiJuiceInterface):
         return False
 
     @property
+    def battery_temperature(self):
+        return None
+
+    @property
     def wake_up_on_charge(self) -> int:
         return self.__wake_up_on_charge
 

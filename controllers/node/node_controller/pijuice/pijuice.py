@@ -50,6 +50,11 @@ class PiJuiceImpl(PiJuiceInterface):
         return result['data']['battery'] in ('CHARGING_FROM_IN', 'CHARGING_FROM_5V_IO')
 
     @property
+    def battery_temperature(self):
+        result = self.__pijuice.status.GetBatteryTemperature()
+        return result['data']
+
+    @property
     def wake_up_on_charge(self) -> int:
         result = self.__pijuice.power.GetWakeUpOnCharge()
         return result['data']

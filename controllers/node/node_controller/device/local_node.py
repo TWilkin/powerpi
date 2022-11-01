@@ -64,6 +64,7 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
             self.__pijuice_config = None
 
         self.__pwm: PWMService = service_provider.pwm()
+        self.__pwm.pijuice = self.__pijuice
 
         # set the config with defaults
         self.__pwm_config = PWMConfig({
