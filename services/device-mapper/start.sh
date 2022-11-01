@@ -34,10 +34,11 @@ then
 fi
 
 # optional device
-if [ -v DEVICE ]
-then
-    args+=("--device $DEVICE")
-fi
+IFS=':'; arrDev=($DEVICE); unset IFS;
+for device in "${arrDev[@]}"
+do
+    args+=("--device $device")
+done
 
 # optional env array
 IFS=':'; arrEnv=($ENV); unset IFS;

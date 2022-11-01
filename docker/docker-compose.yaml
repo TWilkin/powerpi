@@ -78,7 +78,7 @@ services:
             - mosquitto
 
     device-mapper-energenie:
-        image: twilkin/powerpi-device-mapper:0.0.7
+        image: twilkin/powerpi-device-mapper:0.0.8
         networks:
             - powerpi
         deploy:
@@ -115,7 +115,7 @@ services:
             - mosquitto
 
     device-mapper-node:
-        image: twilkin/powerpi-device-mapper:0.0.7
+        image: twilkin/powerpi-device-mapper:0.0.8
         networks:
             - powerpi
         deploy:
@@ -126,13 +126,13 @@ services:
             - ENV=DEVICE_FATAL=true
             - CONTROLLER_NAME=node-controller
             - IMAGE=twilkin/powerpi-node-controller:0.0.1
-            - DEVICE=/dev/i2c-1
+            - DEVICE=/dev/i2c-1:/dev/gpiomem
             - VOLUME=/etc/hostname:/etc/nodehostname
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
 
     device-mapper-zigbee:
-        image: twilkin/powerpi-device-mapper:0.0.7
+        image: twilkin/powerpi-device-mapper:0.0.8
         networks:
             - powerpi
         deploy:
