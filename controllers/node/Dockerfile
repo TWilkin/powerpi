@@ -34,8 +34,10 @@ LABEL description="PowerPi Node Controller"
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
 
-RUN groupadd -g 998 i2c \
+RUN groupadd -g 997 gpio \
+    && groupadd -g 998 i2c \
     && adduser --disabled-password powerpi \
+    && usermod -a -G gpio powerpi \
     && usermod -a -G i2c powerpi
 USER powerpi
 

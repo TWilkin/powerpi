@@ -11,7 +11,9 @@ readme = "README.md"
 python = "^3.9"
 icmplib = "^3.0.3"
 pijuice-base = {git = "https://github.com/PiSupply/PiJuice.git", rev = "1e1049de39800862079a309d94133fe5d8e9a856", subdirectory = "Software/Source"}
+rpi-gpio = "^0.7.1"
 smbus = "^1.1.post2"
+aiofiles = "^22.1.0"
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}

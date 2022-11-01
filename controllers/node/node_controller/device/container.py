@@ -26,6 +26,12 @@ def add_devices(container):
 
     setattr(
         device_container,
+        'pwm',
+        container.pwm
+    )
+
+    setattr(
+        device_container,
         'pijuice_interface',
         providers.Singleton(
             PiJuiceImpl,
