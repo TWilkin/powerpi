@@ -24,11 +24,12 @@ class PWMFanService(InitialisableMixin, LogMixin):
     def __init__(
         self,
         logger: Logger,
-        scheduler: AsyncIOScheduler
+        scheduler: AsyncIOScheduler,
+        pijuice: Union[PiJuiceInterface, None]
     ):
         self._logger = logger
         self.__scheduler = scheduler
-        self.__pijuice: Union[PiJuiceInterface, None] = None
+        self.__pijuice = pijuice
 
         self.__curve: OrderedDict = {}
         self.__curve_keys = []
@@ -64,14 +65,6 @@ class PWMFanService(InitialisableMixin, LogMixin):
     def fan_speeds(self):
         return self.__fan_speeds
 
-    @property
-    def pijuice(self):
-        return self.__pijuice
-
-    @pijuice.setter
-    def pijuice(self, pijuice: Union[PiJuiceInterface, None]):
-        self.__pijuice = pijuice
-
     def clear(self):
         '''
         Reset the captured temperatures and speeds, as we're getting an average
@@ -91,7 +84,7 @@ class PWMFanService(InitialisableMixin, LogMixin):
 
         # add to the scheduler
         interval = IntervalTrigger(seconds=1)
-        self.__scheduler.add_job(self.update, trigger=interval)
+        self.__scheduler.add_job(self.__update, trigger=interval)
 
         # add a listener for fan speed change
         GPIO.add_event_detect(
@@ -106,7 +99,7 @@ class PWMFanService(InitialisableMixin, LogMixin):
 
         GPIO.cleanup()
 
-    async def update(self):
+    async def __update(self):
         cpu_temp = await self.__get_cpu_temperature()
         battery_temp = await self.__get_battery_temperature()
         temp = max(cpu_temp, battery_temp)

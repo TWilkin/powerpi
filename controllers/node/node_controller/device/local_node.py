@@ -64,8 +64,9 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         else:
             self.__pijuice_config = None
 
-        self.__pwm_fan: PWMFanService = service_provider.pwm_fan()
-        self.__pwm_fan.pijuice = self.__pijuice
+        self.__pwm_fan: PWMFanService = service_provider.pwm_fan(
+            pijuice=self.__pijuice
+        )
 
         # set the config with defaults
         self.__pwm_fan_config = PWMFanConfig({
