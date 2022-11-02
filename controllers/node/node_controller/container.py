@@ -3,7 +3,7 @@ from powerpi_common.container import Container as CommonContainer
 
 from node_controller.__version__ import __app_name__, __version__
 from node_controller.config import NodeConfig
-from node_controller.services import PWMService, ShutdownService
+from node_controller.services import PWMFanService, ShutdownService
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -24,8 +24,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
         NodeConfig
     )
 
-    pwm = providers.Singleton(
-        PWMService,
+    pwm_fan = providers.Singleton(
+        PWMFanService,
         logger=common.logger,
         scheduler=common.scheduler
     )

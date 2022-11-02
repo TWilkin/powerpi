@@ -16,7 +16,7 @@ FAN_PIN = 18
 PWM_FREQUENCY = 25
 
 
-class PWMService(InitialisableMixin, LogMixin):
+class PWMFanService(InitialisableMixin, LogMixin):
     # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
@@ -118,8 +118,8 @@ class PWMService(InitialisableMixin, LogMixin):
             self.__current_speed = new_value
 
     async def __get_cpu_temperature(self):
-        async with aiofiles.open('/sys/class/thermal/thermal_zone0/temp', 'r') as temp:
-            content = await temp.read()
+        async with aiofiles.open('/sys/class/thermal/thermal_zone0/temp', 'r') as temp_file:
+            content = await temp_file.read()
 
             temp = int(content) / 1000
             self.log_debug(f'CPU temp {temp}°C')

@@ -26,8 +26,8 @@ def add_devices(container):
 
     setattr(
         device_container,
-        'pwm',
-        container.pwm
+        'pwm_fan',
+        container.pwm_fan
     )
 
     setattr(

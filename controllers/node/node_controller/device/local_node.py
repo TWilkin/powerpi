@@ -2,7 +2,7 @@ from asyncio import sleep
 from typing import Dict, TypedDict, Union
 
 from node_controller.pijuice import PiJuiceInterface
-from node_controller.services import PWMService, ShutdownService
+from node_controller.services import PWMFanService, ShutdownService
 from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import InitialisableMixin, PollableMixin
@@ -22,7 +22,7 @@ PiJuiceConfig = TypedDict(
     total=False
 )
 
-PWMConfig = TypedDict(
+PWMFanConfig = TypedDict(
     'PWMConfig',
     {
         'curve': Dict[int, int]
@@ -40,7 +40,7 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         service_provider,
         shutdown: ShutdownService,
         pijuice: Union[PiJuiceConfig, None] = None,
-        pwm: Union[PWMConfig, None] = None,
+        pwm_fan: Union[PWMFanConfig, None] = None,
         **kwargs
     ):
         # pylint: disable=too-many-arguments
@@ -63,11 +63,11 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         else:
             self.__pijuice_config = None
 
-        self.__pwm: PWMService = service_provider.pwm()
-        self.__pwm.pijuice = self.__pijuice
+        self.__pwm_fan: PWMFanService = service_provider.pwm_fan()
+        self.__pwm_fan.pijuice = self.__pijuice
 
         # set the config with defaults
-        self.__pwm_config = PWMConfig({
+        self.__pwm_fan_config = PWMFanConfig({
             'curve': {
                 30: 20,
                 40: 50,
@@ -83,7 +83,7 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
 
     @property
     def has_pwm_fan(self):
-        return self.__pwm_config is not None
+        return self.__pwm_fan_config is not None
 
     async def initialise(self):
         if self.has_pijuice:
@@ -108,12 +108,12 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
 
         if self.has_pwm_fan:
             self.log_info('Controlling PWM fan')
-            await self.__pwm.initialise()
-            self.__pwm.curve = self.__pwm_config['curve']
+            await self.__pwm_fan.initialise()
+            self.__pwm_fan.curve = self.__pwm_fan_config['curve']
 
     async def deinitialise(self):
         if self.has_pwm_fan:
-            await self.__pwm.deinitialise()
+            await self.__pwm_fan.deinitialise()
 
         # when shutting down the service, broadcast the device is off
         if self.state != DeviceStatus.OFF:
