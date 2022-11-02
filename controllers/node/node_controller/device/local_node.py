@@ -66,19 +66,24 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
             self.__pijuice = None
             self.__pijuice_config = None
 
-        self.__pwm_fan: PWMFanInterface = service_provider.pwm_fan_controller(
-            pijuice=self.__pijuice
-        )
+        if pwm_fan is not None:
+            self.__pwm_fan: PWMFanInterface = service_provider.pwm_fan_controller(
+                pijuice=self.__pijuice
+            )
 
-        # set the config with defaults
-        self.__pwm_fan_config = PWMFanConfig({
-            'curve': {
-                30: 25,
-                40: 50,
-                50: 75,
-                60: 100
-            }
-        })
+            # set the config with defaults
+            self.__pwm_fan_config = PWMFanConfig({
+                'curve': {
+                    30: 25,
+                    40: 50,
+                    50: 75,
+                    60: 100
+                },
+                **pwm_fan
+            })
+        else:
+            self.__pwm_fan = None
+            self.__pwm_fan_config = None
 
         self.__shutdown = shutdown
 
@@ -113,7 +118,12 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
 
         if self.has_pwm_fan:
             self.log_info('Controlling PWM fan')
+
+            for temp, speed in self.__pwm_fan_config['curve'].items():
+                self.log_info(f'At {temp}°C, set the fan to {speed}%')
+
             await self.__pwm_fan.initialise()
+
             self.__pwm_fan.curve = self.__pwm_fan_config['curve']
 
     async def deinitialise(self):
