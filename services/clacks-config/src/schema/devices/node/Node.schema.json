@@ -54,6 +54,36 @@
                 }
             },
             "additionalProperties": false
+        },
+        "pwm_fan": {
+            "description": "The PWM fan configuration",
+            "type": "object",
+            "properties": {
+                "curve": {
+                    "description": "The PWM fan curve",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "temperature": {
+                                "description": "The temperature this point represents",
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 70
+                            },
+                            "speed": {
+                                "description": "The speed this point represents",
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 100
+                            }
+                        },
+                        "required": ["temperature", "speed"],
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
         }
     },
     "required": ["ip"]

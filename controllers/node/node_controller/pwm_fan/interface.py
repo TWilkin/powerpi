@@ -1,8 +1,17 @@
 from abc import ABC, abstractmethod
 from collections import OrderedDict
-from typing import Dict, List
+from typing import List, TypedDict
 
 from powerpi_common.device.mixin import InitialisableMixin
+
+PWMFanCurve = TypedDict(
+    'PWMFanCurve',
+    {
+        'temperature': int,
+        'speed': int
+    },
+    total=True
+)
 
 
 class PWMFanInterface(InitialisableMixin, ABC):
@@ -15,7 +24,7 @@ class PWMFanInterface(InitialisableMixin, ABC):
         raise NotImplementedError
 
     @curve.setter
-    def curve(self, new_value: Dict[int, int]):
+    def curve(self, new_value: PWMFanCurve):
         '''
         Set the PWM fan control curve.
         '''

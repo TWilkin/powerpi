@@ -1,6 +1,4 @@
-from typing import Dict
-
-from .interface import PWMFanInterface
+from .interface import PWMFanCurve, PWMFanInterface
 
 
 class DummyPWMFanInterface(PWMFanInterface):
@@ -9,7 +7,7 @@ class DummyPWMFanInterface(PWMFanInterface):
         return {}
 
     @curve.setter
-    def curve(self, new_value: Dict[int, int]):
+    def curve(self, new_value: PWMFanCurve):
         pass
 
     @property

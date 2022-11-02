@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from time import time
-from typing import Dict, Union
+from typing import Union
 
 import aiofiles
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -10,7 +10,7 @@ from node_controller.pijuice import PiJuiceInterface
 from powerpi_common.logger import Logger, LogMixin
 
 from .dummy import DummyPWMFanInterface
-from .interface import PWMFanInterface
+from .interface import PWMFanCurve, PWMFanInterface
 
 # the pins used in the GPIO
 FAN_PIN = 18
@@ -82,8 +82,13 @@ class PWMFanController(PWMFanInterface, LogMixin):
         return self.__curve
 
     @curve.setter
-    def curve(self, new_value: Dict[int, int]):
-        self.__curve = OrderedDict(sorted(new_value.items()))
+    def curve(self, new_value: PWMFanCurve):
+        new_curve = {}
+        for value in new_value:
+            new_curve[value['temperature']] = value['speed']
+
+        self.__curve = OrderedDict(sorted(new_curve.items()))
+
         self.__curve_keys = list(self.__curve.keys())
         self.__curve_values = list(self.__curve.values())
 

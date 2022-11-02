@@ -1,9 +1,9 @@
 import statistics
 from asyncio import sleep
-from typing import Dict, TypedDict, Union
+from typing import List, TypedDict, Union
 
 from node_controller.pijuice import PiJuiceInterface
-from node_controller.pwm_fan import PWMFanInterface
+from node_controller.pwm_fan import PWMFanCurve, PWMFanInterface
 from node_controller.services import ShutdownService
 from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceStatus
@@ -25,10 +25,11 @@ PiJuiceConfig = TypedDict(
 )
 
 PWMFanConfig = TypedDict(
-    'PWMConfig',
+    'PWMFanConfig',
     {
-        'curve': Dict[int, int]
-    }
+        'curve': List[PWMFanCurve]
+    },
+    total=False
 )
 
 
@@ -73,12 +74,12 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
 
             # set the config with defaults
             self.__pwm_fan_config = PWMFanConfig({
-                'curve': {
-                    30: 25,
-                    40: 50,
-                    50: 75,
-                    60: 100
-                },
+                'curve': [
+                    PWMFanCurve({'temperature': 30, 'speed': 25}),
+                    PWMFanCurve({'temperature': 40, 'speed': 50}),
+                    PWMFanCurve({'temperature': 50, 'speed': 75}),
+                    PWMFanCurve({'temperature': 60, 'speed': 100})
+                ],
                 **pwm_fan
             })
         else:
@@ -119,7 +120,9 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         if self.has_pwm_fan:
             self.log_info('Controlling PWM fan')
 
-            for temp, speed in self.__pwm_fan_config['curve'].items():
+            for point in self.__pwm_fan_config['curve']:
+                temp = point['temperature']
+                speed = point['speed']
                 self.log_info(f'At {temp}°C, set the fan to {speed}%')
 
             await self.__pwm_fan.initialise()
