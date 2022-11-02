@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from time import time
 from typing import Dict, Union
 
 import aiofiles
@@ -11,9 +12,11 @@ from RPi import GPIO
 
 # the pins used in the GPIO
 FAN_PIN = 18
+TACH_PIN = 24
 
 # settings for Noctua fan
 PWM_FREQUENCY = 25
+PULSE_PER_TURN = 2
 
 
 class PWMFanService(InitialisableMixin, LogMixin):
@@ -33,6 +36,11 @@ class PWMFanService(InitialisableMixin, LogMixin):
 
         self.__fan = None
         self.__current_speed = 0
+        self.__start_time = time()
+
+        self.__cpu_temps = []
+        self.__battery_temps = []
+        self.__fan_speeds = []
 
     @property
     def curve(self):
@@ -45,8 +53,16 @@ class PWMFanService(InitialisableMixin, LogMixin):
         self.__curve_values = list(self.__curve.values())
 
     @property
-    def current_speed(self):
-        return self.__current_speed
+    def cpu_temps(self):
+        return self.__cpu_temps
+
+    @property
+    def battery_temps(self):
+        return self.__battery_temps
+
+    @property
+    def fan_speeds(self):
+        return self.__fan_speeds
 
     @property
     def pijuice(self):
@@ -56,17 +72,33 @@ class PWMFanService(InitialisableMixin, LogMixin):
     def pijuice(self, pijuice: Union[PiJuiceInterface, None]):
         self.__pijuice = pijuice
 
+    def clear(self):
+        '''
+        Reset the captured temperatures and speeds, as we're getting an average
+        '''
+        self.__cpu_temps = []
+        self.__battery_temps = []
+        self.__fan_speeds = []
+
     async def initialise(self):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
 
         GPIO.setup(FAN_PIN, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setup(TACH_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
         self.__fan = GPIO.PWM(FAN_PIN, PWM_FREQUENCY)
 
         # add to the scheduler
         interval = IntervalTrigger(seconds=1)
         self.__scheduler.add_job(self.update, trigger=interval)
+
+        # add a listener for fan speed change
+        GPIO.add_event_detect(
+            TACH_PIN,
+            GPIO.FALLING,
+            lambda _: self.__get_fan_speed()
+        )
 
     async def deinitialise(self):
         # put it to 100% as we're no longer monitoring it
@@ -124,6 +156,8 @@ class PWMFanService(InitialisableMixin, LogMixin):
             temp = int(content) / 1000
             self.log_debug(f'CPU temp {temp}°C')
 
+            self.__cpu_temps.append(temp)
+
             return temp
 
     async def __get_battery_temperature(self):
@@ -131,6 +165,21 @@ class PWMFanService(InitialisableMixin, LogMixin):
             temp = self.__pijuice.battery_temperature
             self.log_debug(f'Battery temp {temp}°C')
 
+            self.__battery_temps.append(temp)
+
             return temp
 
         return 0
+
+    def __get_fan_speed(self):
+        delta_time = time() - self.__start_time
+
+        if delta_time < 0.005:
+            return
+
+        freq = 1 / delta_time
+        rpm = (freq / PULSE_PER_TURN) * 60
+
+        self.__start_time = time()
+
+        self.__fan_speeds.append(rpm)
