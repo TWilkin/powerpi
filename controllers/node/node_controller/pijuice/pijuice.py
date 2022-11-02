@@ -26,7 +26,7 @@ class PiJuiceImpl(PiJuiceInterface):
 
             # for testing off a Pi
             logger.warn(
-                'DEVICE_FATAL=false, using dummy device, no connection will be made'
+                'DEVICE_FATAL=false, using dummy device, no connection will be made to PiJuice'
             )
 
             return DummyPiJuiceInterface()

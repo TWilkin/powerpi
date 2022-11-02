@@ -1,6 +1,7 @@
 from dependency_injector import providers
 from node_controller.config import NodeConfig
 from node_controller.pijuice import PiJuiceImpl
+from node_controller.pwm_fan import PWMFanController
 
 from .factory import NodeDeviceFactory
 from .local_node import LocalNodeDevice
@@ -26,8 +27,13 @@ def add_devices(container):
 
     setattr(
         device_container,
-        'pwm_fan',
-        container.pwm_fan
+        'pwm_fan_controller',
+        providers.Singleton(
+            PWMFanController,
+            config=container.common.config,
+            logger=container.common.logger,
+            scheduler=container.common.scheduler
+        )
     )
 
     setattr(

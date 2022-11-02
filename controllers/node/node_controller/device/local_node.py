@@ -3,7 +3,8 @@ from asyncio import sleep
 from typing import Dict, TypedDict, Union
 
 from node_controller.pijuice import PiJuiceInterface
-from node_controller.services import PWMFanService, ShutdownService
+from node_controller.pwm_fan import PWMFanInterface
+from node_controller.services import ShutdownService
 from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import InitialisableMixin, PollableMixin
@@ -62,9 +63,10 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
                 **pijuice
             })
         else:
+            self.__pijuice = None
             self.__pijuice_config = None
 
-        self.__pwm_fan: PWMFanService = service_provider.pwm_fan(
+        self.__pwm_fan: PWMFanInterface = service_provider.pwm_fan_controller(
             pijuice=self.__pijuice
         )
 

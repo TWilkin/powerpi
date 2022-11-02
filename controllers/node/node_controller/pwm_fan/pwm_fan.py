@@ -5,10 +5,12 @@ from typing import Dict, Union
 import aiofiles
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from node_controller.config import NodeConfig
 from node_controller.pijuice import PiJuiceInterface
-from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger, LogMixin
-from RPi import GPIO
+
+from .dummy import DummyPWMFanInterface
+from .interface import PWMFanInterface
 
 # the pins used in the GPIO
 FAN_PIN = 18
@@ -19,14 +21,46 @@ PWM_FREQUENCY = 25
 PULSE_PER_TURN = 2
 
 
-class PWMFanController(InitialisableMixin, LogMixin):
+class PWMFanController(PWMFanInterface, LogMixin):
     # pylint: disable=too-many-instance-attributes
-    def __init__(
-        self,
+    def __new__(
+        cls,
+        config: NodeConfig,
         logger: Logger,
         scheduler: AsyncIOScheduler,
         pijuice: Union[PiJuiceInterface, None]
     ):
+        # pylint: disable=broad-except, import-outside-toplevel, unused-argument
+        try:
+            instance = super().__new__(cls)
+
+            # import the library here so we can capture that exception
+            from RPi import GPIO
+            instance.__connect(GPIO)
+
+            return instance
+        except Exception as ex:
+            logger.error(ex)
+
+            if config.device_fatal:
+                logger.error('DEVICE_FATAL=true, must be run on Raspberry Pi')
+                raise ex
+
+            # for testing off a Pi
+            logger.warn(
+                'DEVICE_FATAL=false, using dummy device, no fan control'
+            )
+
+            return DummyPWMFanInterface()
+
+    def __init__(
+        self,
+        config: NodeConfig,
+        logger: Logger,
+        scheduler: AsyncIOScheduler,
+        pijuice: Union[PiJuiceInterface, None]
+    ):
+        # pylint: disable=unused-argument
         self._logger = logger
         self.__scheduler = scheduler
         self.__pijuice = pijuice
@@ -71,22 +105,24 @@ class PWMFanController(InitialisableMixin, LogMixin):
         self.__fan_speeds = []
 
     async def initialise(self):
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)
+        gpio = self.__gpio
 
-        GPIO.setup(FAN_PIN, GPIO.OUT, initial=GPIO.LOW)
-        GPIO.setup(TACH_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        gpio.setwarnings(False)
+        gpio.setmode(gpio.BCM)
 
-        self.__fan = GPIO.PWM(FAN_PIN, PWM_FREQUENCY)
+        gpio.setup(FAN_PIN, gpio.OUT, initial=gpio.LOW)
+        gpio.setup(TACH_PIN, gpio.IN, pull_up_down=gpio.PUD_UP)
+
+        self.__fan = gpio.PWM(FAN_PIN, PWM_FREQUENCY)
 
         # add to the scheduler
         interval = IntervalTrigger(seconds=1)
         self.__scheduler.add_job(self.__update, trigger=interval)
 
         # add a listener for fan speed change
-        GPIO.add_event_detect(
+        gpio.add_event_detect(
             TACH_PIN,
-            GPIO.FALLING,
+            gpio.FALLING,
             lambda _: self.__get_fan_speed()
         )
 
@@ -94,7 +130,7 @@ class PWMFanController(InitialisableMixin, LogMixin):
         # put it to 100% as we're no longer monitoring it
         self.__set_fan_speed(100)
 
-        GPIO.cleanup()
+        self.__gpio.cleanup()
 
     async def __update(self):
         cpu_temp = await self.__get_cpu_temperature()
@@ -131,6 +167,10 @@ class PWMFanController(InitialisableMixin, LogMixin):
 
         if new_speed != self.__current_speed:
             self.__set_fan_speed(new_speed)
+
+    def __connect(self, gpio):
+        # pylint: disable=unused-private-member
+        self.__gpio = gpio
 
     def __set_fan_speed(self, new_value: float):
         if self.__fan is not None:
