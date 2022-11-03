@@ -1,6 +1,6 @@
 # PowerPi - Node Controller
 
-PowerPi service which monitors the nodes in the docker cluster as well as supporting UPS using a [PiJuice](https://www.pijuice.com). This service runs on each node of the cluster, and will produce events relating to this node, as well as checking if the other nodes are on/off.
+PowerPi service which monitors the nodes in the docker cluster as well as supporting UPS using a [PiJuice](https://www.pijuice.com) and a PWM fan. This service runs on each node of the cluster, and will produce events relating to this node, as well as checking if the other nodes are on/off.
 
 The service is built using python, with dependencies using [poetry](https://python-poetry.org/). It is also dependant on a local common library [_powerpi_common_](../../common/python/README.md), and testing library [_powerpi_common_test_](../../common/pytest/README.md).
 
@@ -8,7 +8,9 @@ The service is built using python, with dependencies using [poetry](https://pyth
 
 This controller service currently supports the following devices:
 
--   **Node** - A node in the docker cluster with an optional [PiJuice](https://www.pijuice.com).
+-   **Node** - A node in the docker cluster with the following optional hardware:
+    -   [PiJuice](https://www.pijuice.com) UPS.
+    -   PWM Fan e.g. [Noctua NF-A4x20 5V PWM](https://noctua.at/en/nf-a4x20-5v).
 
 ## Building
 
@@ -23,7 +25,7 @@ This service expects the following environment variables to be set before it wil
 -   **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
 -   **I2C_DEVICE** - The path to the I2C device on the host, if you're using an original Pi you'll want to change this to _/dev/i2c-0_ as the bus id was changed with later revisions.(default _/dev/i2c-1_).
 -   **I2C_ADDRESS** - The I2C address of the PiJuice on the bus (default _0x14_).
--   **DEVICE_FATAL** - Whether to kill the service if it's unable to communicate with the [PiJuice](https://www.pijuice.com) device, useful when debugging off the Raspberry Pi but should be true in production. (default _false_).
+-   **DEVICE_FATAL** - Whether to kill the service if it's unable to communicate with the [PiJuice](https://www.pijuice.com) device or PWM fan, useful when debugging off the Raspberry Pi but should be true in production. (default _false_).
 -   **USE_CONFIG_FILE** - Use local config files instead of the files downloaded from GitHub by [_clacks-config_](../../services/clacks-config/README.md) (default _false_).
 -   **DEVICES_FILE** - When _USE_CONFIG_FILE_ is true, load the _devices.json_ from this path.
 -   **EVENTS_FILE** - When _USE_CONFIG_FILE_ is true, load the _events.json_ from this path.
