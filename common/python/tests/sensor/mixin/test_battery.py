@@ -1,10 +1,9 @@
-from pytest_mock import MockerFixture
-
 from powerpi_common.mqtt.client import MQTTClient
-from powerpi_common.sensor.mixin.battery import BatteryMixin
+from powerpi_common.sensor.mixin import BatteryMixin
 from powerpi_common.sensor.sensor import Sensor
-from powerpi_common_test.sensor.sensor import SensorTestBase
-from powerpi_common_test.sensor.mixin.battery import BatteryMixinTestBase
+from powerpi_common_test.sensor import SensorTestBase
+from powerpi_common_test.sensor.mixin import BatteryMixinTestBase
+from pytest_mock import MockerFixture
 
 
 class SensorImpl(Sensor, BatteryMixin):
@@ -14,6 +13,7 @@ class SensorImpl(Sensor, BatteryMixin):
         **kwargs
     ):
         Sensor.__init__(self, mqtt_client, **kwargs)
+        BatteryMixin.__init__(self)
 
 
 class TestBatteryMixin(SensorTestBase, BatteryMixinTestBase):

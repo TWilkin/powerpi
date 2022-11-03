@@ -12,3 +12,9 @@ class InitialisableMixin(ABC):
         Must be async.
         '''
         raise NotImplementedError
+
+    async def deinitialise(self):
+        '''
+            Optionally implement this method to support deinitialisation on app shutdown.
+            Must be async.
+        '''

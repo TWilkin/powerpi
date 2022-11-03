@@ -16,7 +16,7 @@ services:
               target: /mosquitto/config/mosquitto.conf
 
     clacks-config:
-        image: twilkin/powerpi-clacks-config:0.2.3
+        image: twilkin/powerpi-clacks-config:0.2.4
         networks:
             - powerpi
         deploy:
@@ -78,7 +78,7 @@ services:
             - mosquitto
 
     device-mapper-energenie:
-        image: twilkin/powerpi-device-mapper:0.0.7
+        image: twilkin/powerpi-device-mapper:0.0.8
         networks:
             - powerpi
         deploy:
@@ -91,7 +91,7 @@ services:
         environment:
             - ENV=ENERGENIE_DEVICE=ENER314-RT:DEVICE_FATAL=true
             - CONTROLLER_NAME=energenie-controller
-            - IMAGE=twilkin/powerpi-energenie-controller:0.1.9
+            - IMAGE=twilkin/powerpi-energenie-controller:0.1.10
             - DEVICE=/dev/gpiomem
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
@@ -114,8 +114,25 @@ services:
         depends_on:
             - mosquitto
 
+    device-mapper-node:
+        image: twilkin/powerpi-device-mapper:0.0.8
+        networks:
+            - powerpi
+        deploy:
+            mode: global
+        depends_on:
+            - mosquitto
+        environment:
+            - ENV=DEVICE_FATAL=true
+            - CONTROLLER_NAME=node-controller
+            - IMAGE=twilkin/powerpi-node-controller:0.0.1
+            - DEVICE=/dev/i2c-1:/dev/gpiomem
+            - VOLUME=/etc/hostname:/etc/nodehostname
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+
     device-mapper-zigbee:
-        image: twilkin/powerpi-device-mapper:0.0.7
+        image: twilkin/powerpi-device-mapper:0.0.8
         networks:
             - powerpi
         deploy:
@@ -128,7 +145,7 @@ services:
         environment:
             - ENV=ZIGBEE_DEVICE=/dev/ttyACM0:DATABASE_PATH=/var/data/zigbee.db
             - CONTROLLER_NAME=zigbee-controller
-            - IMAGE=twilkin/powerpi-zigbee-controller:0.1.9
+            - IMAGE=twilkin/powerpi-zigbee-controller:0.1.10
             - DEVICE=/dev/ttyACM0
             - VOLUME=/srv/docker-volumes/powerpi/zigbee-controller
         volumes:

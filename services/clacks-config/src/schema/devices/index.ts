@@ -4,6 +4,7 @@ import * as GenericSensor from "./GenericSensor.schema.json";
 import loadHarmonySchema from "./harmony";
 import loadLIFXSchema from "./lifx";
 import loadMacroSchema from "./macro";
+import loadNodeSchema from "./node";
 import * as PollableDevice from "./PollableDevice.schema.json";
 import * as PowerPiSensor from "./PowerPiSensor.schema.json";
 import * as Sensor from "./Sensor.schema.json";
@@ -29,6 +30,9 @@ export default function loadDevicesSchema() {
 
         // the macro controller devices
         ...loadMacroSchema(),
+
+        // the node controller devices
+        ...loadNodeSchema(),
 
         // the zigbee controller devices
         ...loadZigBeeSchema(),

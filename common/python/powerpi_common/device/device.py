@@ -5,8 +5,10 @@ from typing import Awaitable, Callable, Union
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+
 from .base import BaseDevice
-from .consumers import DeviceChangeEventConsumer, DeviceInitialStatusEventConsumer
+from .consumers import (DeviceChangeEventConsumer,
+                        DeviceInitialStatusEventConsumer)
 from .types import DeviceStatus
 
 
@@ -120,6 +122,11 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
     def _format_state(self):
         return {'state': self.state}
+
+    def _broadcast(self, action: str, message: dict):
+        topic = f'device/{self.name}/{action}'
+
+        self._producer(topic, message)
 
     async def __change_power_handler(
         self,

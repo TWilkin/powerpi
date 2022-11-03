@@ -1,4 +1,3 @@
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dependency_injector import containers, providers
 
 from .factory import DeviceFactory
@@ -19,9 +18,7 @@ class DeviceContainer(containers.DeclarativeContainer):
 
     mqtt_client = providers.Dependency()
 
-    scheduler = providers.Factory(
-        AsyncIOScheduler
-    )
+    scheduler = providers.Dependency()
 
     device_factory = providers.Factory(
         DeviceFactory,

@@ -1,7 +1,6 @@
 from abc import ABC
 
 import pytest
-
 from pytest_mock import MockerFixture
 
 
@@ -12,3 +11,8 @@ class InitialisableMixinTestBase(ABC):
         subject = self.create_subject(mocker)
 
         await subject.initialise()
+
+    async def test_deinitialise_implemented(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        await subject.deinitialise()

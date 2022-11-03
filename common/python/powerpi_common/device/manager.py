@@ -5,6 +5,7 @@ from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.typing import DeviceType, SensorType
 from powerpi_common.util import ismixin
+
 from .factory import DeviceFactory
 from .mixin import InitialisableMixin
 from .types import DeviceConfigType
@@ -62,6 +63,16 @@ class DeviceManager(InitialisableMixin):
 
             for device in filtered:
                 await device.initialise()
+
+    async def deinitialise(self):
+        for device_type in DeviceConfigType:
+            filtered = filter(
+                lambda device: ismixin(device, InitialisableMixin),
+                self.__devices[device_type].values()
+            )
+
+            for device in filtered:
+                await device.deinitialise()
 
     def __get(self, device_type: DeviceConfigType, name: str):
         try:

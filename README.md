@@ -11,6 +11,7 @@ This project was devised to utilise open, reverse engineered or free home automa
 -   [LIFX](https://www.lifx.com/)
 -   [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html)
 -   [NodeMCU](https://en.wikipedia.org/wiki/NodeMCU)
+-   [PiJuice](https://www.pijuice.com)
 -   [ZigBee](https://en.wikipedia.org/wiki/Zigbee)
 
 ### Supported Services
@@ -30,6 +31,7 @@ The project is split into the following services, each of which have their own _
     -   [**harmony**](controllers/harmony/README.md) - Allows control of [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html) Smart Hub devices.
     -   [**lifx**](controllers/lifx/README.md) - Allows control of [LIFX](https://www.lifx.com/) light devices.
     -   [**macro**](controllers/macro/README.md) - Allows control of other devices with macros, delays, mutexes etc.
+    -   [**node**](controllers/node/README.md) - Allows monitoring of the cluster (docker) nodes and support for UPS using a [PiJuice](https://www.pijuice.com).
     -   [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
 -   [**deep-thought**](services/deep-thought/README.md) - API
 -   [**device-mapper**](services/device-mapper/README.md) - Workaround for accessing system devices using privileged mode in Docker Swarm mode using Docker-in-docker.

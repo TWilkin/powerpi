@@ -47,6 +47,7 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
     ):
         Sensor.__init__(self, mqtt_client, **kwargs)
         ZigbeeMixin.__init__(self, controller, **kwargs)
+        BatteryMixin.__init__(self)
 
         self._logger = logger
 

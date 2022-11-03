@@ -1,11 +1,10 @@
 import pytest
-
-from pytest import raises
-from pytest_mock import MockerFixture
-
-from powerpi_common.device import DeviceManager, DeviceNotFoundException, DeviceConfigType
+from powerpi_common.device import (DeviceConfigType, DeviceManager,
+                                   DeviceNotFoundException)
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common_test.device.mixin import InitialisableMixinTestBase
+from pytest import raises
+from pytest_mock import MockerFixture
 
 
 class DummyDevice:
@@ -15,10 +14,15 @@ class DummyDevice:
         self.name = name
         self.kwargs = kwargs
         self.initialised = False
+        self.deinitialised = False
 
     async def initialise(self):
         # this is implemented here to prove it's not called for the wrong devices
         self.initialised = True
+
+    async def deinitialise(self):
+        # this is implemented here to prove it's not called for the wrong devices
+        self.deinitialised = True
 
 
 class InitialisationDummyDevice(DummyDevice, InitialisableMixin):
@@ -107,6 +111,7 @@ class TestDeviceManager(InitialisableMixinTestBase):
             assert device.instance_type == instance_type
             assert device.name == device_name
             assert device.initialised == initialised
+            assert device.deinitialised is False
 
             if additional:
                 assert device.kwargs == {'something': 'else'}
@@ -121,11 +126,49 @@ class TestDeviceManager(InitialisableMixinTestBase):
             assert sensor.instance_type == instance_type
             assert sensor.name == sensor_name
             assert sensor.initialised == initialised
+            assert device.deinitialised is False
 
             if additional:
                 assert sensor.kwargs == {'yet_another_arg': 'more'}
             else:
                 assert sensor.kwargs == {}
+
+    async def test_deinitialise(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        def build(device_type: DeviceConfigType, instance_type: str, **kwargs):
+            if instance_type.startswith('another'):
+                return InitialisationDummyDevice(device_type, instance_type, **kwargs)
+            return DummyDevice(device_type, instance_type, **kwargs)
+        self.factory.build = build
+
+        mocker.patch.object(self.config, 'devices', {
+            'devices': [
+                {'type': 'test_device', 'name': 'a', 'something': 'else'},
+                {'type': 'another_device', 'name': 'b'},
+            ],
+            'sensors': [
+                {'type': 'test_sensor', 'name': 'c', 'yet_another_arg': 'more'},
+                {'type': 'another_sensor', 'name': 'd'},
+            ]
+        })
+
+        await subject.load()
+
+        assert all(
+            device.deinitialised is False for device in subject.devices.values()
+        )
+        assert all(
+            sensor.deinitialised is False for sensor in subject.sensors.values()
+        )
+
+        await subject.deinitialise()
+
+        assert subject.get_device('a').deinitialised is False
+        assert subject.get_device('b').deinitialised is True
+
+        assert subject.get_sensor('c').deinitialised is False
+        assert subject.get_sensor('d').deinitialised is True
 
     def test_get_device_missing(self, mocker: MockerFixture):
         subject = self.create_subject(mocker)

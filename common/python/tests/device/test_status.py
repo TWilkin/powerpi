@@ -3,13 +3,11 @@ from typing import Union
 from unittest.mock import PropertyMock
 
 import pytest
-
 from apscheduler.triggers.interval import IntervalTrigger
-from pytest_mock import MockerFixture
-
 from powerpi_common.config import Config
 from powerpi_common.device.mixin.pollable import PollableMixin
 from powerpi_common.device.status import DeviceStatusChecker
+from pytest_mock import MockerFixture
 
 
 class PollableDeviceImpl(PollableMixin):
@@ -51,6 +49,7 @@ class TestDeviceStatusChecker:
         pollable_3: int,
         disabled: int
     ):
+        # pylint: disable=too-many-arguments
         subject = self.get_subject(mocker)
 
         self.config.poll_frequency = 120
@@ -70,18 +69,14 @@ class TestDeviceStatusChecker:
 
         subject.start()
 
-        if pollable_none + pollable_60 + pollable_3 == 0:
-            self.scheduler.start.assert_not_called()
-        else:
-            count = sum([
+        if pollable_none + pollable_60 + pollable_3 != 0:
+            count = sum(
                 1 if x > 0 else 0
                 for x in [pollable_none, pollable_60, pollable_3]
-            ])
+            )
 
             assert len(timers) == count
             assert len(groups) == count
-
-            self.scheduler.start.assert_called_once()
 
         for count, interval in zip([pollable_none, pollable_60, pollable_3], [120, 60, 10]):
             if count > 0:
@@ -91,19 +86,6 @@ class TestDeviceStatusChecker:
                     and len(group.devices) == count
                     for group in groups
                 ))
-
-    @pytest.mark.parametrize('running', [True, False])
-    def test_stop(self, mocker: MockerFixture, running: bool):
-        subject = self.get_subject(mocker)
-
-        type(self.scheduler).running = PropertyMock(return_value=running)
-
-        subject.stop()
-
-        if running:
-            self.scheduler.shutdown.assert_called()
-        else:
-            self.scheduler.shutdown.assert_not_called()
 
     async def test_run(self, mocker: MockerFixture):
         subject = self.get_subject(mocker)
