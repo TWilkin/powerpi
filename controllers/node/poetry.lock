@@ -285,7 +285,7 @@ url = "../../common/python"
 
 [[package]]
 name = "powerpi-common-test"
-version = "0.2.3"
+version = "0.2.4"
 description = "PowerPi Common Python Test Library"
 category = "dev"
 optional = false

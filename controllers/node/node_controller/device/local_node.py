@@ -93,8 +93,16 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         return self.__pijuice_config is not None
 
     @property
+    def pijuice_config(self):
+        return self.__pijuice_config
+
+    @property
     def has_pwm_fan(self):
         return self.__pwm_fan_config is not None
+
+    @property
+    def pwm_fan_config(self):
+        return self.__pwm_fan_config
 
     async def initialise(self):
         if self.has_pijuice:

@@ -104,6 +104,10 @@ class PWMFanController(PWMFanInterface, LogMixin):
     def fan_speeds(self):
         return self.__fan_speeds
 
+    @property
+    def fan_speed_percentage(self):
+        return self.__current_speed
+
     def clear(self):
         self.__cpu_temps = []
         self.__battery_temps = []
@@ -122,7 +126,7 @@ class PWMFanController(PWMFanInterface, LogMixin):
 
         # add to the scheduler
         interval = IntervalTrigger(seconds=1)
-        self.__scheduler.add_job(self.__update, trigger=interval)
+        self.__scheduler.add_job(self.update, trigger=interval)
 
         # add a listener for fan speed change
         gpio.add_event_detect(
@@ -131,13 +135,15 @@ class PWMFanController(PWMFanInterface, LogMixin):
             lambda _: self.__get_fan_speed()
         )
 
+        self.__set_fan_speed(100)
+
     async def deinitialise(self):
         # put it to 100% as we're no longer monitoring it
         self.__set_fan_speed(100)
 
         self.__gpio.cleanup()
 
-    async def __update(self):
+    async def update(self):
         cpu_temp = await self.__get_cpu_temperature()
         battery_temp = await self.__get_battery_temperature()
         temp = max(cpu_temp, battery_temp)
@@ -145,7 +151,7 @@ class PWMFanController(PWMFanInterface, LogMixin):
         # identify which value it's between
         position = 0
         low = (0, 0)
-        high = (100, 100)
+        high = (temp, 100)
         for value, speed in self.__curve.items():
             if temp < value:
                 # get the previous point on the curve

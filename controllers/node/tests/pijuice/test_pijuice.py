@@ -1,15 +1,15 @@
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
+from node_controller.pijuice import PiJuiceImpl
 from node_controller.pijuice.dummy import DummyPiJuiceInterface
-from node_controller.pijuice.pijuice import PiJuiceImpl
 from pytest_mock import MockerFixture
 
 
 class TestPijuiceImpl:
     def test_no_pijuice(
         self,
-        mock_nopijuice: MagicMock,
+        mock_no_pijuice: MagicMock,
         mock_config: MagicMock,
         mocker: MockerFixture
     ):
@@ -19,7 +19,7 @@ class TestPijuiceImpl:
 
     def test_no_pijuice_gets_dummy(
         self,
-        mock_nopijuice: MagicMock,
+        mock_no_pijuice: MagicMock,
         mock_config: MagicMock,
         mocker: MockerFixture
     ):
@@ -138,7 +138,7 @@ class TestPijuiceImpl:
         return instance
 
     @pytest.fixture
-    def mock_nopijuice(self, mocker: MockerFixture):
+    def mock_no_pijuice(self, mocker: MockerFixture):
         return mocker.patch(
             'node_controller.pijuice.pijuice.PiJuice',
             side_effect=PermissionError()
