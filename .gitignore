@@ -1,6 +1,7 @@
 **/*.egg-info/
 **/.pytest_cache/
 **/__pycache__/
+**/bin/
 **/db/
 **/dist/
 **/node_modules/

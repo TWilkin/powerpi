@@ -36,6 +36,14 @@ get_autoconf_version() {
     get_version $file $file_regex $version_regex
 }
 
+get_makefile_version() {
+    local file=$1
+    local file_regex='VERSION=\s*.*'
+    local version_regex="VERSION=\s*(.*)"
+
+    get_version $file $file_regex $version_regex
+}
+
 get_docker_compose_version() {
     local file=$1
     local service=$2
@@ -71,6 +79,13 @@ tag_service() {
     if [ -f "$file" ]
     then
         get_autoconf_version $file
+    fi
+
+    # check Makefile
+    file="$path/Makefile"
+    if [ -f "$file" ]
+    then
+        get_makefile_version $file
     fi
 
     # check docker-compose.yaml
@@ -131,3 +146,4 @@ tag_service "services/freedns" "freedns"
 tag_service "services/light-fantastic" "light-fantastic"
 tag_service "services/nginx/ui" "ui"
 tag_service "services/persistence" "persistence"
+tag_service "services/shutdown" "shutdown"

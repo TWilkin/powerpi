@@ -21,3 +21,4 @@
 **/.pylintrc
 **/Dockerfile
 **/*.md
+services/shutdown/*
