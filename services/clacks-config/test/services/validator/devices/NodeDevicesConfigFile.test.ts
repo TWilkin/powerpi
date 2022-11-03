@@ -16,6 +16,13 @@ describe("Node Devices", () => {
                         shutdown_level: 15,
                         wake_up_on_charge: 20,
                     },
+                    pwm_fan: {
+                        curve: [
+                            { temperature: 20, speed: 25 },
+                            { temperature: 30, speed: 50 },
+                            { temperature: 40, speed: 75 },
+                        ],
+                    },
                 },
             ],
         });
@@ -135,6 +142,74 @@ describe("Node Devices", () => {
                         ],
                     }))
             );
+        });
+
+        describe("PWM Fan", () => {
+            test("No PWM Fan", () =>
+                testValid({ devices: [{ type: "node", name: "Node", ip: "127.0.0.1" }] }));
+
+            describe("Curve", () => {
+                test("No Curve", () =>
+                    testValid({
+                        devices: [{ type: "node", name: "Node", ip: "127.0.0.1", pwm_fan: {} }],
+                    }));
+
+                [0, 30, 70].forEach((value) =>
+                    test(`Good temperature ${value}`, () =>
+                        testValid({
+                            devices: [
+                                {
+                                    type: "node",
+                                    name: "Node",
+                                    ip: "127.0.0.1",
+                                    pwm_fan: { curve: [{ temperature: value, speed: 50 }] },
+                                },
+                            ],
+                        }))
+                );
+
+                [-1, 71].forEach((value) =>
+                    test(`Bad temperature ${value}`, () =>
+                        testInvalid({
+                            devices: [
+                                {
+                                    type: "node",
+                                    name: "Node",
+                                    ip: "127.0.0.1",
+                                    pwm_fan: { curve: [{ temperature: value, speed: 50 }] },
+                                },
+                            ],
+                        }))
+                );
+
+                [0, 30, 100].forEach((value) =>
+                    test(`Good speed ${value}`, () =>
+                        testValid({
+                            devices: [
+                                {
+                                    type: "node",
+                                    name: "Node",
+                                    ip: "127.0.0.1",
+                                    pwm_fan: { curve: [{ temperature: 40, speed: value }] },
+                                },
+                            ],
+                        }))
+                );
+
+                [-1, 101].forEach((value) =>
+                    test(`Bad speed ${value}`, () =>
+                        testInvalid({
+                            devices: [
+                                {
+                                    type: "node",
+                                    name: "Node",
+                                    ip: "127.0.0.1",
+                                    pwm_fan: { curve: [{ temperature: 40, speed: value }] },
+                                },
+                            ],
+                        }))
+                );
+            });
         });
     });
 });
