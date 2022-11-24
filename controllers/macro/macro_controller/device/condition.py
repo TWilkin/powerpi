@@ -85,7 +85,7 @@ class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
             try:
                 return parser.conditional_expression(condition)
             except ParseException as ex:
-                self.__logger.exception(ex)
+                self.log_exception(ex)
 
             return False
 
