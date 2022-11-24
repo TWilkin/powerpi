@@ -60,7 +60,7 @@ class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         await self.poll()
 
     async def poll(self):
-        pass
+        await self.set_new_state(self.device.state)
 
     async def _turn_on(self):
         if not self.__on_condition or await self.__check_condition(DeviceStatus.ON):
