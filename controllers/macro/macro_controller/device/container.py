@@ -49,7 +49,8 @@ def add_devices(container):
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
-            device_manager=container.common.device.device_manager
+            device_manager=container.common.device.device_manager,
+            variable_manager=container.common.variable.variable_manager
         )
     )
 
