@@ -34,8 +34,13 @@ class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         PollableMixin.__init__(self, config, **kwargs)
 
         self.__variable_manager = variable_manager
+
         self.__on_condition = on_condition
         self.__off_condition = off_condition
+
+    @property
+    def device(self):
+        return self.devices[0]
 
     async def initialise(self):
         await DeviceOrchestratorMixin.initialise(self)
@@ -49,27 +54,36 @@ class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         pass
 
     async def _turn_on(self):
-        pass
+        if not self.__on_condition or await self.__check_condition(DeviceStatus.ON):
+            self.device.turn_on()
 
     async def _turn_off(self):
-        pass
+        if not self.__off_condition or await self.__check_condition(DeviceStatus.OFF):
+            self.device.turn_off()
+
+    async def __check_condition(self, status: DeviceStatus):
+        try:
+            return self.__execute_parser(status)
+        except ParseException as ex:
+            self.__logger.exception(ex)
+
+        return False
+
+    def __execute_parser(self, status: DeviceStatus):
+        condition = self.__on_condition if status == DeviceStatus.ON else self.__off_condition
+
+        parser = ConditionParser(self.__variable_manager, {})
+        return parser.conditional_expression(condition)
 
     def __validate(self):
         '''
         Try and run the conditions to verify they're valid
         '''
-        parser = ConditionParser(self.__variable_manager, {})
-
-        success = True
         try:
             if self.__on_condition is not None:
-                success &= parser.conditional_expression(self.__on_condition)
+                self.__execute_parser(DeviceStatus.ON)
 
             if self.__off_condition is not None:
-                success &= parser.conditional_expression(self.__off_condition)
+                self.__execute_parser(DeviceStatus.OFF)
         except ParseException as ex:
             self.log_exception(ex)
-            raise ex
-
-        if not success:
-            raise ParseException('Could not validate condition')
