@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
-
 from macro_controller.device.composite import CompositeDevice
+from macro_controller.device.condition import ConditionDevice
 from macro_controller.device.delay import DelayDevice
 from macro_controller.device.factory import RemoteDeviceFactory
 from macro_controller.device.log import LogDevice
@@ -34,6 +34,18 @@ def add_devices(container):
         'composite_device',
         providers.Factory(
             CompositeDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client,
+            device_manager=container.common.device.device_manager
+        )
+    )
+
+    setattr(
+        device_container,
+        'condition_device',
+        providers.Factory(
+            ConditionDevice,
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
