@@ -60,7 +60,10 @@ class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         await self.poll()
 
     async def poll(self):
-        await self.set_new_state(self.device.state)
+        if self.__on_condition and await self.__check_condition(DeviceStatus.ON, False):
+            await self.set_new_state(DeviceStatus.ON)
+        elif self.__off_condition and await self.__check_condition(DeviceStatus.OFF, False):
+            await self.set_new_state(DeviceStatus.OFF)
 
     async def _turn_on(self):
         if not self.__on_condition or await self.__check_condition(DeviceStatus.ON):
@@ -70,7 +73,7 @@ class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         if not self.__off_condition or await self.__check_condition(DeviceStatus.OFF):
             await self.device.turn_off()
 
-    async def __check_condition(self, status: DeviceStatus):
+    async def __check_condition(self, status: DeviceStatus, repeat=True):
         condition = self.__on_condition if status == DeviceStatus.ON else self.__off_condition
         parser = ConditionParser(self.__variable_manager, {})
 
@@ -86,22 +89,25 @@ class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
 
             return False
 
-        # repeat the condition check every interval seconds until the timeout seconds
-        # with early termination if the condition evaluates to true
-        async def repeat_condition_check():
-            nonlocal success
+        if repeat:
+            # repeat the condition check every interval seconds until the timeout seconds
+            # with early termination if the condition evaluates to true
+            async def repeat_condition_check():
+                nonlocal success
 
-            while True:
-                if attempt():
-                    success = True
-                    break
+                while True:
+                    if attempt():
+                        success = True
+                        break
 
-                await sleep(self.__interval)
+                    await sleep(self.__interval)
 
-        # schedule the condition check in a task and wait for it to pass or timeout
-        with suppress(AsyncCancelledError) and suppress(AsyncTimeoutError):
-            task = get_event_loop().create_task(repeat_condition_check())
-            await wait_for(task, self.__timeout)
+            # schedule the condition check in a task and wait for it to pass or timeout
+            with suppress(AsyncCancelledError) and suppress(AsyncTimeoutError):
+                task = get_event_loop().create_task(repeat_condition_check())
+                await wait_for(task, self.__timeout)
+        else:
+            success = attempt()
 
         return success
 
