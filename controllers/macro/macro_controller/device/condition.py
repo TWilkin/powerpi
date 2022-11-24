@@ -64,11 +64,11 @@ class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
 
     async def _turn_on(self):
         if not self.__on_condition or await self.__check_condition(DeviceStatus.ON):
-            self.device.turn_on()
+            await self.device.turn_on()
 
     async def _turn_off(self):
         if not self.__off_condition or await self.__check_condition(DeviceStatus.OFF):
-            self.device.turn_off()
+            await self.device.turn_off()
 
     async def __check_condition(self, status: DeviceStatus):
         condition = self.__on_condition if status == DeviceStatus.ON else self.__off_condition
@@ -100,7 +100,7 @@ class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
 
         # schedule the condition check in a task and wait for it to pass or timeout
         with suppress(AsyncCancelledError) and suppress(AsyncTimeoutError):
-            task = get_event_loop().create_task(repeat_condition_check)
+            task = get_event_loop().create_task(repeat_condition_check())
             await wait_for(task, self.__timeout)
 
         return success
