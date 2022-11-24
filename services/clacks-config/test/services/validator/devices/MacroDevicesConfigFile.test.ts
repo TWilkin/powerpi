@@ -14,6 +14,84 @@ describe("Macro Devices", () => {
         );
     });
 
+    describe("Condition", () => {
+        const { testValid, testInvalid } = commonDeviceTests({
+            devices: [
+                {
+                    type: "condition",
+                    name: "Condition",
+                    device: "Device1",
+                    on_condition: { when: [{ equals: [true, true] }] },
+                    off_condition: { when: [{ equals: [false, false] }] },
+                    timeout: 120,
+                    interval: 2,
+                },
+            ],
+        });
+
+        test("Defaults", () =>
+            testValid({
+                devices: [
+                    {
+                        type: "condition",
+                        name: "Condition",
+                        device: "Device1",
+                        on_condition: { when: [{ equals: [true, true] }] },
+                    },
+                ],
+            }));
+
+        test("No device", () =>
+            testInvalid({
+                devices: [
+                    {
+                        type: "condition",
+                        name: "Condition",
+                        on_condition: { when: [{ equals: [true, true] }] },
+                    },
+                ],
+            }));
+
+        test("No conditions", () =>
+            testInvalid({
+                devices: [
+                    {
+                        type: "condition",
+                        name: "Condition",
+                        device: "Device1",
+                    },
+                ],
+            }));
+
+        [-1, 0].forEach((value) => {
+            test(`Bad timeout ${value}`, () =>
+                testInvalid({
+                    devices: [
+                        {
+                            type: "condition",
+                            name: "Condition",
+                            device: "Device1",
+                            on_condition: { when: [{ equals: [true, true] }] },
+                            timeout: value,
+                        },
+                    ],
+                }));
+
+            test(`Bad interval ${value}`, () =>
+                testInvalid({
+                    devices: [
+                        {
+                            type: "condition",
+                            name: "Condition",
+                            device: "Device1",
+                            on_condition: { when: [{ equals: [true, true] }] },
+                            interval: value,
+                        },
+                    ],
+                }));
+        });
+    });
+
     describe("Delay", () => {
         const { testValid, testInvalid } = commonDeviceTests({
             devices: [{ type: "delay", name: "Delay", start: 10, end: 11 }],
