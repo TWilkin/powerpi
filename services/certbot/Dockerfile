@@ -1,4 +1,4 @@
-FROM certbot/certbot:arm64v8-v1.29.0
+FROM certbot/certbot:arm64v8-v1.32.1
 LABEL description="PowerPi Certbot automatic SSL certificate renewal"
 
 # use non-root user
