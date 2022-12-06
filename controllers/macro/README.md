@@ -9,6 +9,7 @@ The service is built using python, with dependencies using [poetry](https://pyth
 This controller provides the following virtual devices:
 
 -   **Composite** - Group several devices together so they can be turned on/off together (in the order they are defined), as well as have additional settings applied in a group (e.g. brightness).
+-   **Condition** - Send an on or off command to the specified device only if the condition (specified in `on_condition` and `off_condition` respectively) is satisfied. For example this is useful if a device is connected to a remote socket and it cannot turn on until that socket is enabled.
 -   **Delay** - Wait for the specified interval for turn on or turn off. Used if a device takes a few seconds to start-up, and we don't want the next step to happen before it's ready.
 -   **Log** - A device used for testing, will simply output the specified log message when turned on or off.
 -   **Mutex** - A device that will ensure all the devices in the off device specification are off before attempting to turn the devices in the on device specification, akin to a mutually exclusive lock, the on devices cannot be on if the off devices are on.
