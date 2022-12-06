@@ -1,6 +1,6 @@
 [Unit]
 Description=Service to listen for shutdown events and turn off the computer.
-After=multi-user.target
+After=time-sync.target
 StartLimitBurst=20
 
 [Service]
