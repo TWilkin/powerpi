@@ -139,6 +139,7 @@ tag_service "controllers/zigbee" "zigbee-controller"
 tag_service "esp8266" "powerpi-sensor"
 
 tag_service "services/babel-fish" "babel-fish"
+tag_service "docker" "certbot"
 tag_service "services/clacks-config" "clacks-config"
 tag_service "services/deep-thought" "deep-thought"
 tag_service "docker" "device-mapper"
