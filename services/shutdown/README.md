@@ -72,6 +72,8 @@ The service takes the following command line arguments:
     	The port number for the MQTT broker (default 1883)
   -topic string
     	The topic base for the MQTT broker (default "powerpi")
+  -allowQuickShutdown
+      If true allow a message within 2 minutes of service starting to initiate a shutdown (default false)
 ```
 
 ## Testing
