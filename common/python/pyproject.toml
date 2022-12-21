@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "powerpi-common"
-version = "0.2.8"
+version = "0.2.9"
 description = "PowerPi Common Python Library"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
