@@ -31,8 +31,8 @@ class RemoteNodeDevice(Device, PollableMixin):
 
     async def _turn_on(self):
         # there's nothing we can do to turn the remote device on
-        pass
+        return False
 
     async def _turn_off(self):
         # there's nothing we can do to turn the remote device off
-        pass
+        return False

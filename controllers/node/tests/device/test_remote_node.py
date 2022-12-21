@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Tuple
 from unittest.mock import PropertyMock
 
@@ -44,3 +45,42 @@ class TestRemoteNodeDevice(DeviceTestBase, PollableMixinTestBase):
         await subject.poll()
 
         assert subject.state == state
+
+    @pytest.mark.asyncio
+    async def test_turn_on(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        assert subject.state == DeviceStatus.UNKNOWN
+
+        await subject.turn_on()
+
+        assert subject.state == DeviceStatus.UNKNOWN
+
+    @pytest.mark.asyncio
+    async def test_turn_off(self, mocker: MockerFixture):
+        subject = self.create_subject(mocker)
+
+        assert subject.state == DeviceStatus.UNKNOWN
+
+        await subject.turn_off()
+
+        assert subject.state == DeviceStatus.UNKNOWN
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('times', [1, 2])
+    async def test_change_message(self, mocker: MockerFixture, times: int):
+        subject = self.create_subject(mocker)
+
+        assert subject.state == DeviceStatus.UNKNOWN
+
+        mocker.patch.object(self.config, 'message_age_cutoff', 120)
+
+        message = {
+            'state': 'on',
+            'timestamp': int(datetime.utcnow().timestamp() * 1000)
+        }
+
+        for _ in range(1, times):
+            await subject.on_message(message, subject.name, 'change')
+
+            assert subject.state == DeviceStatus.UNKNOWN
