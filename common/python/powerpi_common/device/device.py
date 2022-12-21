@@ -3,13 +3,13 @@ from asyncio import Lock
 from typing import Awaitable, Callable, Union
 
 from powerpi_common.config import Config
+from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
 from .base import BaseDevice
 from .consumers import (DeviceChangeEventConsumer,
                         DeviceInitialStatusEventConsumer)
-from .types import DeviceStatus
 
 
 class Device(BaseDevice, DeviceChangeEventConsumer):
