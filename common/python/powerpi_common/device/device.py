@@ -24,6 +24,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
+        listener=True,
         **kwargs
     ):
         BaseDevice.__init__(self, **kwargs)
@@ -36,7 +37,8 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
         self.__lock = Lock()
 
-        mqtt_client.add_consumer(self)
+        if listener:
+            mqtt_client.add_consumer(self)
 
         # add listener to get the initial state from the queue, if there is one
         DeviceInitialStatusEventConsumer(self, config, logger, mqtt_client)
