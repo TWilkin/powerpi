@@ -39,7 +39,7 @@
         "express": "^4.17.1",
         "express-session": "^1.17.2",
         "http-status-codes": "^2.2.0",
-        "jsonwebtoken": "^8.5.1",
+        "jsonwebtoken": "^9.0.0",
         "passport": "^0.6.0",
         "passport-google-oauth20": "^2.0.0",
         "passport-http": "^0.3.0",
