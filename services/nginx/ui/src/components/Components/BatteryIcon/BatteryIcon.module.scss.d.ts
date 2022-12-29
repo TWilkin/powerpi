@@ -173,6 +173,7 @@ interface CssExports {
   'fa-ban-smoking': string;
   'fa-band-aid': string;
   'fa-bandage': string;
+  'fa-bangladeshi-taka-sign': string;
   'fa-bank': string;
   'fa-bar-chart': string;
   'fa-barcode': string;
@@ -399,6 +400,7 @@ interface CssExports {
   'fa-chevron-right': string;
   'fa-chevron-up': string;
   'fa-child': string;
+  'fa-child-combatant': string;
   'fa-child-dress': string;
   'fa-child-reaching': string;
   'fa-child-rifle': string;
@@ -437,6 +439,7 @@ interface CssExports {
   'fa-circle-xmark': string;
   'fa-city': string;
   'fa-clapperboard': string;
+  'fa-classic': string;
   'fa-clinic-medical': string;
   'fa-clipboard': string;
   'fa-clipboard-check': string;
@@ -587,7 +590,6 @@ interface CssExports {
   'fa-dumpster': string;
   'fa-dumpster-fire': string;
   'fa-dungeon': string;
-  'fa-duotone': string;
   'fa-e': string;
   'fa-ear-deaf': string;
   'fa-ear-listen': string;
@@ -1066,7 +1068,6 @@ interface CssExports {
   'fa-lg': string;
   'fa-li': string;
   'fa-life-ring': string;
-  'fa-light': string;
   'fa-lightbulb': string;
   'fa-line-chart': string;
   'fa-lines-leaning': string;
@@ -1512,6 +1513,7 @@ interface CssExports {
   'fa-share-from-square': string;
   'fa-share-nodes': string;
   'fa-share-square': string;
+  'fa-sharp': string;
   'fa-sheet-plastic': string;
   'fa-shekel': string;
   'fa-shekel-sign': string;
@@ -1775,7 +1777,6 @@ interface CssExports {
   'fa-thermometer-half': string;
   'fa-thermometer-quarter': string;
   'fa-thermometer-three-quarters': string;
-  'fa-thin': string;
   'fa-thumb-tack': string;
   'fa-thumbs-down': string;
   'fa-thumbs-up': string;
@@ -2009,11 +2010,8 @@ interface CssExports {
   'fa-z': string;
   'fa-zap': string;
   'fab': string;
-  'fad': string;
-  'fal': string;
   'far': string;
   'fas': string;
-  'fat': string;
   'full': string;
   'half': string;
   'icon': string;
