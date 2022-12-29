@@ -7,7 +7,7 @@ import {
     LineElement,
     PointElement,
     TimeSeriesScale,
-    Tooltip
+    Tooltip,
 } from "chart.js";
 import "chartjs-adapter-luxon";
 import { useMemo } from "react";
@@ -90,7 +90,10 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
             }
         }
 
-        return _(datasets).sortBy(dataset => dataset.entity).sortBy(dataset => dataset.action).value();
+        return _(datasets)
+            .sortBy((dataset) => dataset.entity)
+            .sortBy((dataset) => dataset.action)
+            .value();
     }, []);
 
     // set the chart colours in light/dark mode
@@ -200,16 +203,16 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
             }
 
             // ensure the min/max still applies with this dataset
-            const points = dataset.data.map(point => point.value);
+            const points = dataset.data.map((point) => point.value);
             let min = Math.min(...points, Number.MAX_VALUE);
             let max = Math.max(...points, Number.MIN_VALUE);
 
             // add a bit of padding to the range
-            const padding = (max - min) / 5;
+            const padding = max === min ? Math.max(max, min) : (max - min) / 5;
             min -= padding / 5;
             max += padding / 5;
 
-            scales[key].min = Math.min(min, scales[key].min ?? max)
+            scales[key].min = Math.min(min, scales[key].min ?? max);
             scales[key].max = Math.max(max, scales[key].max ?? min);
 
             return scales;
