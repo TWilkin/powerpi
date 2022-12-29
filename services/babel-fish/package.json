@@ -26,7 +26,7 @@
         "@jovotech/platform-alexa": "^4.2.22",
         "@jovotech/platform-core": "^4.2.22",
         "@jovotech/server-express": "^4.0.0",
-        "@powerpi/api": "^0.0.15",
+        "@powerpi/api": "^0.0.16",
         "@powerpi/common": "^0.0.11",
         "source-map-support": "^0.5.19"
     },
