@@ -69,7 +69,7 @@ services:
             - deep-thought
 
     macro-controller:
-        image: twilkin/powerpi-macro-controller:1.1.11
+        image: twilkin/powerpi-macro-controller:1.1.12
         networks:
             - powerpi
         deploy:
@@ -91,13 +91,13 @@ services:
         environment:
             - ENV=ENERGENIE_DEVICE=ENER314-RT:DEVICE_FATAL=true
             - CONTROLLER_NAME=energenie-controller
-            - IMAGE=twilkin/powerpi-energenie-controller:0.1.10
+            - IMAGE=twilkin/powerpi-energenie-controller:0.1.11
             - DEVICE=/dev/gpiomem
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
 
     harmony-controller:
-        image: twilkin/powerpi-harmony-controller:0.2.0
+        image: twilkin/powerpi-harmony-controller:0.2.1
         networks:
             - powerpi
         deploy:
@@ -106,7 +106,7 @@ services:
             - mosquitto
 
     lifx-controller:
-        image: twilkin/powerpi-lifx-controller:0.2.0
+        image: twilkin/powerpi-lifx-controller:0.2.1
         networks:
             - powerpi
         deploy:
@@ -125,7 +125,7 @@ services:
         environment:
             - ENV=DEVICE_FATAL=true
             - CONTROLLER_NAME=node-controller
-            - IMAGE=twilkin/powerpi-node-controller:0.0.2
+            - IMAGE=twilkin/powerpi-node-controller:0.0.3
             - DEVICE=/dev/i2c-1:/dev/gpiomem
             - VOLUME=/etc/hostname:/etc/nodehostname
         volumes:
@@ -145,7 +145,7 @@ services:
         environment:
             - ENV=ZIGBEE_DEVICE=/dev/ttyACM0:DATABASE_PATH=/var/data/zigbee.db
             - CONTROLLER_NAME=zigbee-controller
-            - IMAGE=twilkin/powerpi-zigbee-controller:0.1.10
+            - IMAGE=twilkin/powerpi-zigbee-controller:0.1.11
             - DEVICE=/dev/ttyACM0
             - VOLUME=/srv/docker-volumes/powerpi/zigbee-controller
         volumes:
