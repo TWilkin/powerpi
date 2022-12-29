@@ -2,13 +2,13 @@ from copy import deepcopy
 from typing import Any, Dict, List, Union
 
 from powerpi_common.config import Config
+from powerpi_common.device.types import DeviceConfigType
 from powerpi_common.logger import Logger
 from powerpi_common.typing import DeviceType, SensorType
 from powerpi_common.util import ismixin
 
 from .factory import DeviceFactory
 from .mixin import InitialisableMixin
-from .types import DeviceConfigType
 
 
 class DeviceManager(InitialisableMixin):

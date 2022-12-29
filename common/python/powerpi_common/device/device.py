@@ -3,13 +3,13 @@ from asyncio import Lock
 from typing import Awaitable, Callable, Union
 
 from powerpi_common.config import Config
+from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
 from .base import BaseDevice
 from .consumers import (DeviceChangeEventConsumer,
                         DeviceInitialStatusEventConsumer)
-from .types import DeviceStatus
 
 
 class Device(BaseDevice, DeviceChangeEventConsumer):
@@ -24,6 +24,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
+        listener=True,
         **kwargs
     ):
         BaseDevice.__init__(self, **kwargs)
@@ -36,7 +37,8 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
         self.__lock = Lock()
 
-        mqtt_client.add_consumer(self)
+        if listener:
+            mqtt_client.add_consumer(self)
 
         # add listener to get the initial state from the queue, if there is one
         DeviceInitialStatusEventConsumer(self, config, logger, mqtt_client)
@@ -75,13 +77,13 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
     async def turn_on(self):
         '''
-        Turn this device on, and broadcast the state change to the message queue.
+        Turn this device on, and broadcast the state change to the message queue if successful.
         '''
         await self.__change_power_handler(self._turn_on, DeviceStatus.ON)
 
     async def turn_off(self):
         '''
-        Turn this device off, and broadcast the state change to the message queue.
+        Turn this device off, and broadcast the state change to the message queue if successful.
         '''
         await self.__change_power_handler(self._turn_off, DeviceStatus.OFF)
 
@@ -97,18 +99,20 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
                 await self.turn_off()
 
     @abstractmethod
-    async def _turn_on(self):
+    async def _turn_on(self) -> bool:
         '''
         Implement this method to turn the concrete device implementation on.
         Must be async.
+        Can optionally return a boolean to indicate if device on was successful.
         '''
         raise NotImplementedError
 
     @abstractmethod
-    async def _turn_off(self):
+    async def _turn_off(self) -> bool:
         '''
         Implement this method to turn the concrete device implementation off.
         Must be async.
+        Can optionally return a boolean to indicate if device off was successful.
         '''
         raise NotImplementedError
 
@@ -136,11 +140,16 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         # pylint: disable=broad-except
         try:
             async with self.__lock:
-                self._logger.info(f'Turning {new_status} device {self}')
-                await func()
-                self.state = new_status
+                self.log_info(f'Turning {new_status} device {self}')
+
+                success = await func()
+
+                if success is not False:
+                    self.state = new_status
+                else:
+                    self.log_info(f'Failed to {new_status} device {self}')
         except Exception as ex:
-            self._logger.exception(ex)
+            self.log_exception(ex)
             self.state = DeviceStatus.UNKNOWN
 
     def __str__(self):
