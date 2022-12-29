@@ -56,45 +56,49 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
 
     const { isHistoryLoading, history } = useGetHistoryRange(start, end, "event", entity, action);
 
-    const datasets = history?.reduce<Dataset[]>((datasets, record) => {
-        // check this data point actually has data that we're looking for
-        if (record.message && "value" in record.message && "unit" in record.message) {
-            const message = record.message as { unit: string; value: number };
+    const datasets = useMemo(
+        () =>
+            history?.reduce<Dataset[]>((datasets, record) => {
+                // check this data point actually has data that we're looking for
+                if (record.message && "value" in record.message && "unit" in record.message) {
+                    const message = record.message as { unit: string; value: number };
 
-            // find the dataset
-            let dataset = datasets.find(
-                (dataset) =>
-                    dataset.entity.toLowerCase() === record.entity.toLowerCase() &&
-                    dataset.action.toLowerCase() === record.action.toLowerCase() &&
-                    dataset.unit == message.unit
-            );
+                    // find the dataset
+                    let dataset = datasets.find(
+                        (dataset) =>
+                            dataset.entity.toLowerCase() === record.entity.toLowerCase() &&
+                            dataset.action.toLowerCase() === record.action.toLowerCase() &&
+                            dataset.unit == message.unit
+                    );
 
-            if (!dataset) {
-                // create the dataset
-                dataset = {
-                    entity: record.entity,
-                    action: record.action,
-                    unit: message.unit,
-                    data: [],
-                };
+                    if (!dataset) {
+                        // create the dataset
+                        dataset = {
+                            entity: record.entity,
+                            action: record.action,
+                            unit: message.unit,
+                            data: [],
+                        };
 
-                datasets.push(dataset);
-            }
+                        datasets.push(dataset);
+                    }
 
-            // add the record
-            if (record.message && record.timestamp) {
-                dataset.data.push({
-                    value: message.value,
-                    timestamp: record.timestamp,
-                });
-            }
-        }
+                    // add the record
+                    if (record.message && record.timestamp) {
+                        dataset.data.push({
+                            value: message.value,
+                            timestamp: record.timestamp,
+                        });
+                    }
+                }
 
-        return _(datasets)
-            .sortBy((dataset) => dataset.entity)
-            .sortBy((dataset) => dataset.action)
-            .value();
-    }, []);
+                return _(datasets)
+                    .sortBy((dataset) => dataset.entity)
+                    .sortBy((dataset) => dataset.action)
+                    .value();
+            }, []),
+        [history]
+    );
 
     // set the chart colours in light/dark mode
     const { textColour, lineColour, tooltipColour, lineColours } = useMemo(() => {
@@ -124,118 +128,131 @@ const Chart = ({ start, end, entity, action }: ChartProps) => {
             min?: number;
             max?: number;
         };
-    } = {
-        time: {
-            axis: isLandscape ? "x" : "y",
-            type: "time" as const,
+    } = useMemo(
+        () => ({
             time: {
-                minUnit: "minute",
-            },
-            reverse: !isLandscape,
-            grid: {
-                color: lineColour,
-                borderColor: lineColour,
-            },
-            ticks: {
-                color: textColour,
-            },
-        },
-    };
-
-    // generate the chart options
-    const options: ChartOptions<"line"> = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                labels: {
+                axis: isLandscape ? "x" : "y",
+                type: "time",
+                time: {
+                    minUnit: "minute",
+                },
+                reverse: !isLandscape,
+                grid: {
+                    color: lineColour,
+                    borderColor: lineColour,
+                },
+                ticks: {
                     color: textColour,
                 },
             },
-            tooltip: {
-                titleColor: textColour,
-                bodyColor: textColour,
-                backgroundColor: tooltipColour,
-                callbacks: {
-                    title: (context) =>
-                        context.map((item) => (isLandscape ? item.label : item.formattedValue)),
-                    label: (context) => {
-                        const value = isLandscape ? context.parsed.y : context.parsed.x;
-                        const formatted =
-                            datasets && datasets[context.datasetIndex].unit
-                                ? getFormattedValue(value, datasets[context.datasetIndex].unit)
-                                : value;
-                        return `${formatted ?? value}`;
+        }),
+        [isLandscape, lineColour, textColour]
+    );
+
+    // generate the chart options
+    const options: ChartOptions<"line"> = useMemo(
+        () => ({
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: textColour,
+                    },
+                },
+                tooltip: {
+                    titleColor: textColour,
+                    bodyColor: textColour,
+                    backgroundColor: tooltipColour,
+                    callbacks: {
+                        title: (context) =>
+                            context.map((item) => (isLandscape ? item.label : item.formattedValue)),
+                        label: (context) => {
+                            const value = isLandscape ? context.parsed.y : context.parsed.x;
+                            const formatted =
+                                datasets && datasets[context.datasetIndex].unit
+                                    ? getFormattedValue(value, datasets[context.datasetIndex].unit)
+                                    : value;
+                            return `${formatted ?? value}`;
+                        },
                     },
                 },
             },
-        },
-        scales: datasets?.reduce((scales, dataset, i) => {
-            const key = `${dataset.action}-${dataset.unit}`.toLowerCase();
-            const formattedUnit = dataset.unit ? getFormattedUnit(dataset.unit) : undefined;
+            scales: datasets?.reduce((scales, dataset, i) => {
+                const key = `${dataset.action}-${dataset.unit}`.toLowerCase();
+                const formattedUnit = dataset.unit ? getFormattedUnit(dataset.unit) : undefined;
 
-            if (!scales[key]) {
-                scales[key] = {
-                    axis: isLandscape ? "y" : "x",
-                    title: {
-                        display: true,
-                        text: dataset.unit
-                            ? `${dataset.action} (${formattedUnit})`
-                            : dataset.action,
-                        color: textColour,
-                    },
-                    type: "linear" as const,
-                    position: isLandscape
-                        ? Object.keys(scales).length % 2 === 1
-                            ? ("left" as const)
-                            : ("right" as const)
-                        : "bottom",
-                    grid: {
-                        drawOnChartArea: i === 0,
-                        color: lineColour,
-                        borderColor: lineColour,
-                    },
-                    ticks: {
-                        includeBounds: false,
-                        color: textColour,
-                    },
-                };
-            }
+                if (!scales[key]) {
+                    scales[key] = {
+                        axis: isLandscape ? "y" : "x",
+                        title: {
+                            display: true,
+                            text: dataset.unit
+                                ? `${dataset.action} (${formattedUnit})`
+                                : dataset.action,
+                            color: textColour,
+                        },
+                        type: "linear" as const,
+                        position: isLandscape
+                            ? Object.keys(scales).length % 2 === 1
+                                ? ("left" as const)
+                                : ("right" as const)
+                            : "bottom",
+                        grid: {
+                            drawOnChartArea: i === 0,
+                            color: lineColour,
+                            borderColor: lineColour,
+                        },
+                        ticks: {
+                            includeBounds: false,
+                            color: textColour,
+                        },
+                    };
+                }
 
-            // ensure the min/max still applies with this dataset
-            const points = dataset.data.map((point) => point.value);
-            let min = Math.min(...points, Number.MAX_VALUE);
-            let max = Math.max(...points, Number.MIN_VALUE);
+                // ensure the min/max still applies with this dataset
+                const points = dataset.data.map((point) => point.value);
+                let min = Math.min(...points, Number.MAX_VALUE);
+                let max = Math.max(...points, Number.MIN_VALUE);
 
-            // add a bit of padding to the range
-            const padding = max === min ? Math.max(max, min) : (max - min) / 5;
-            min -= padding / 5;
-            max += padding / 5;
+                // add a bit of padding to the range
+                const padding = max === min ? Math.max(max, min) : (max - min) / 5;
+                min -= padding / 5;
+                max += padding / 5;
 
-            scales[key].min = Math.min(min, scales[key].min ?? max);
-            scales[key].max = Math.max(max, scales[key].max ?? min);
+                scales[key].min = Math.min(min, scales[key].min ?? max);
+                scales[key].max = Math.max(max, scales[key].max ?? min);
 
-            return scales;
-        }, scales),
-    };
+                return scales;
+            }, scales),
+        }),
+        [datasets, isLandscape, lineColour, scales, textColour, tooltipColour]
+    );
 
     // extract the data points
-    const data = {
-        datasets:
-            datasets?.map((dataset, i) => ({
-                label: `${dataset.entity} ${dataset.action}`,
-                data: dataset.data.map((data) => ({
-                    x: isLandscape ? data.timestamp : data.value,
-                    y: isLandscape ? data.value : data.timestamp,
-                })),
-                xAxisID: isLandscape ? "time" : `${dataset.action}-${dataset.unit}`.toLowerCase(),
-                yAxisID: isLandscape ? `${dataset.action}-${dataset.unit}`.toLowerCase() : "time",
-                backgroundColor: lineColours[i],
-                borderColor: lineColours[i],
-                borderWidth: 1,
-                pointRadius: 2,
-            })) ?? [],
-    };
+    const data = useMemo(
+        () => ({
+            datasets:
+                datasets?.map((dataset, i) => ({
+                    label: `${dataset.entity} ${dataset.action}`,
+                    data: dataset.data.map((data) => ({
+                        x: isLandscape ? data.timestamp : data.value,
+                        y: isLandscape ? data.value : data.timestamp,
+                    })),
+                    xAxisID: isLandscape
+                        ? "time"
+                        : `${dataset.action}-${dataset.unit}`.toLowerCase(),
+                    yAxisID: isLandscape
+                        ? `${dataset.action}-${dataset.unit}`.toLowerCase()
+                        : "time",
+                    backgroundColor: lineColours[i],
+                    borderColor: lineColours[i],
+                    borderWidth: 1,
+                    pointRadius: 2,
+                })) ?? [],
+        }),
+        [datasets, isLandscape, lineColours]
+    );
 
     return (
         <div className={styles.chart}>
