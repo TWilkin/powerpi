@@ -23,7 +23,14 @@ func main() {
 	port := flag.Int("port", 1883, "The port number for the MQTT broker")
 	topicBase := flag.String("topic", "powerpi", "The topic base for the MQTT broker")
 	mock := flag.Bool("mock", false, "Whether to actually shutdown or not")
+	allowQuickShutdown := flag.Bool("allowQuickShutdown", false, "If true allow a message within 2 minutes of service starting to initiate a shutdown")
 	flag.Parse()
+
+	// capture the start time, or clear it if we're not allowing quick shutdown
+	var startTime = time.Now()
+	if *allowQuickShutdown {
+		startTime = time.Time{}
+	}
 
 	hostname, err := os.Hostname()
 	if err != nil {
@@ -36,7 +43,7 @@ func main() {
 
 	// connect to MQTT
 	callback := func(client mqtt.MqttClient, state mqtt.DeviceState) {
-		shutdown(client, state, *mock)
+		shutdown(client, state, *mock, startTime)
 	} 
 	client := mqtt.New(hostname, *topicBase, callback)
 	client.Connect(*host, *port)
@@ -45,7 +52,13 @@ func main() {
 	<-channel
 }
 
-func shutdown(client mqtt.MqttClient, state mqtt.DeviceState, mock bool) {
+func shutdown(client mqtt.MqttClient, state mqtt.DeviceState, mock bool, startTime time.Time) {
+	// don't shutdown if the service has only just started
+	if (time.Now().Unix() - startTime.Unix()) <= 2 * 60 {
+		fmt.Println("Ignoring message as service recently started")
+		return
+	}
+
 	fmt.Println("Initiating shutdown")
 
 	// publish the off message and wait to make sure it's sent
