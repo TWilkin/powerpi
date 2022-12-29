@@ -43,7 +43,7 @@
         "passport": "^0.6.0",
         "passport-google-oauth20": "^2.0.0",
         "passport-http": "^0.3.0",
-        "passport-jwt": "^4.0.0",
+        "passport-jwt": "^4.0.1",
         "passport-local": "^1.0.0",
         "passport-strategy": "^1.0.0",
         "pg": "^8.6.0",
@@ -60,7 +60,7 @@
         "@types/node": "^18.0.0",
         "@types/passport-google-oauth20": "^2.0.8",
         "@types/passport-http": "^0.3.8",
-        "@types/passport-jwt": "^3.0.5",
+        "@types/passport-jwt": "^3.0.8",
         "@types/pg": "^8.6.5",
         "ts-node": "^10.8.1",
         "typescript": "^4.7.4"
