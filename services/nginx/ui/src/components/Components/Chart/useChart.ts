@@ -48,6 +48,15 @@ export default function useChart(datasets?: Dataset[]) {
             responsive: true,
             maintainAspectRatio: false,
 
+            animation: {
+                // disable the animations for large datasets
+                duration:
+                    (datasets?.reduce((total, dataset) => total + dataset.data.length, 0) ?? 0) >
+                    (isMobile ? 2_000 : 10_000)
+                        ? 0
+                        : 1 * 1000, // 1s
+            },
+
             plugins: {
                 legend: {
                     labels: {
