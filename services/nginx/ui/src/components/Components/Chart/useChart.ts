@@ -26,6 +26,14 @@ const dateFormats = [
     "year",
 ];
 
+type DateFormat = {
+    [key: string]: {
+        resetFormat: string;
+        normalFormat: string;
+        getCheckValue: (value: DateTime) => number;
+    };
+};
+
 export default function useChart(datasets?: Dataset[]) {
     const { isLandscape } = useOrientation();
 
@@ -196,6 +204,22 @@ function decodeTick(value: string | number) {
 function useTimeTick() {
     const { isLandscape } = useOrientation();
 
+    const formats = useMemo<DateFormat>(
+        () => ({
+            minute: {
+                resetFormat: "HH:mm",
+                normalFormat: "mm",
+                getCheckValue: (value: DateTime) => value?.hour,
+            },
+            hour: {
+                resetFormat: "dd MMM HH",
+                normalFormat: "HH",
+                getCheckValue: (value: DateTime) => value.day,
+            },
+        }),
+        []
+    );
+
     const maxTicks = useMemo(() => (isLandscape ? 64 : 32), [isLandscape]);
 
     return useCallback(
@@ -214,25 +238,19 @@ function useTimeTick() {
             const previousDate =
                 index < autoSkip ? undefined : decodeTick(ticks[index - autoSkip].value).date;
 
-            switch (scale) {
-                case "minute":
-                    if (previousDate?.hour !== date.hour) {
-                        return date.toFormat("HH:mm");
-                    }
+            // use the format list to generate the tick
+            const format = formats[scale];
+            if (format) {
+                const { resetFormat, normalFormat, getCheckValue } = formats[scale];
 
-                    return date.toFormat("mm");
-
-                case "hour":
-                    if (previousDate?.day !== date.day) {
-                        return date.toFormat("dd MMM HH");
-                    }
-
-                    return date.toFormat("HH");
-
-                default:
-                    return ticks[index].label;
+                if (!previousDate || getCheckValue(date) !== getCheckValue(previousDate)) {
+                    return date.toFormat(resetFormat);
+                }
+                return date.toFormat(normalFormat);
             }
+
+            return date.toISO();
         },
-        [maxTicks]
+        [formats, maxTicks]
     );
 }
