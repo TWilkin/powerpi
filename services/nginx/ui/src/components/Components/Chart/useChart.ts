@@ -139,7 +139,7 @@ export default function useChart(datasets?: Dataset[]) {
                     let max = Math.max(...points, Number.MIN_VALUE);
 
                     // check if all our values are positive
-                    const positive = min > 0;
+                    const positive = min >= 0;
 
                     // add a bit of padding to the range
                     const padding = (max === min ? Math.max(max, min) : max - min) / 5;
