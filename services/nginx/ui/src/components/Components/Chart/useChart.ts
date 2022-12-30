@@ -83,11 +83,11 @@ export default function useChart(datasets?: Dataset[]) {
                                     : dataset.action,
                                 color: textColour,
                             },
-                            type: "linear" as const,
+                            type: "linear",
                             position: isLandscape
                                 ? Object.keys(scales).length % 2 === 0
-                                    ? ("left" as const)
-                                    : ("right" as const)
+                                    ? "left"
+                                    : "right"
                                 : "bottom",
                             grid: {
                                 drawOnChartArea: i === 0,
@@ -106,10 +106,18 @@ export default function useChart(datasets?: Dataset[]) {
                     let min = Math.min(...points, Number.MAX_VALUE);
                     let max = Math.max(...points, Number.MIN_VALUE);
 
+                    // check if all our values are positive
+                    const positive = min > 0;
+
                     // add a bit of padding to the range
-                    const padding = max === min ? Math.max(max, min) : (max - min) / 5;
-                    min -= padding / 5;
-                    max += padding / 5;
+                    const padding = (max === min ? Math.max(max, min) : max - min) / 5;
+                    min -= padding;
+                    max += padding;
+
+                    // prevent the padding from making min negative if none of the values are
+                    if (positive && min < 0) {
+                        min = 0;
+                    }
 
                     scales[key].min = Math.min(min, scales[key].min ?? max);
                     scales[key].max = Math.max(max, scales[key].max ?? min);
