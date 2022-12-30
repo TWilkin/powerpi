@@ -1,4 +1,5 @@
-import { ChartOptions } from "chart.js";
+import { ChartOptions, Tick } from "chart.js";
+import { DateTime } from "luxon";
 import { useMemo } from "react";
 import useOrientation from "../../../hooks/orientation";
 import { getFormattedUnit, getFormattedValue } from "../FormattedValue";
@@ -12,6 +13,18 @@ type DatasetChartScale = {
         max?: number;
     };
 };
+
+const dateFormats = [
+    "milisecond",
+    "second",
+    "minute",
+    "hour",
+    "day",
+    "week",
+    "month",
+    "quarter",
+    "year",
+];
 
 export default function useChart(datasets?: Dataset[]) {
     const { isLandscape } = useOrientation();
@@ -57,6 +70,13 @@ export default function useChart(datasets?: Dataset[]) {
                     type: "time",
                     time: {
                         minUnit: "minute",
+                        displayFormats: dateFormats.reduce(
+                            (acc, format) => ({
+                                ...acc,
+                                [format]: `x '${format}'`,
+                            }),
+                            {}
+                        ),
                     },
                     reverse: !isLandscape,
                     grid: {
@@ -64,7 +84,9 @@ export default function useChart(datasets?: Dataset[]) {
                         borderColor: lineColour,
                     },
                     ticks: {
+                        autoSkip: false,
                         color: textColour,
+                        callback: timeTick,
                     },
                 },
 
@@ -155,4 +177,50 @@ export default function useChart(datasets?: Dataset[]) {
     );
 
     return { options, data };
+}
+
+function decodeTick(value: string | number) {
+    // we encode the scale alongside the format
+    const split = `${value}`.split(" ");
+    const timestamp = parseInt(split[0]);
+    const scale = split[1] ?? "hour";
+
+    return {
+        date: DateTime.fromMillis(timestamp),
+        scale,
+    };
+}
+
+function timeTick(value: string | number, index: number, ticks: Tick[]) {
+    // decide the auto-skip
+    const autoSkip = ticks.length < 64 ? 1 : Math.ceil(ticks.length / 64);
+
+    const { date, scale } = decodeTick(value);
+
+    // skip 1 in skip
+    if (index % autoSkip !== 0) {
+        return undefined;
+    }
+
+    const previousDate =
+        index < autoSkip ? undefined : decodeTick(ticks[index - autoSkip].value).date;
+
+    switch (scale) {
+        case "minute":
+            if (previousDate?.hour !== date.hour) {
+                return date.toFormat("HH:mm");
+            }
+
+            return date.toFormat("mm");
+
+        case "hour":
+            if (previousDate?.day !== date.day) {
+                return date.toFormat("dd MMM HH");
+            }
+
+            return date.toFormat("HH");
+
+        default:
+            return ticks[index].label;
+    }
 }
