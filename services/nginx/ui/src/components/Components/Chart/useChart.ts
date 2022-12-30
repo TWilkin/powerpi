@@ -222,6 +222,28 @@ function useTimeTick() {
 
     const maxTicks = useMemo(() => (isLandscape ? 64 : 32), [isLandscape]);
 
+    const getPreviousTickDate = useCallback(
+        (autoSkip: number, index: number, ticks: Tick[]) => {
+            let previousIndex: number | undefined;
+
+            // when portrait the ticks are in the opposite order
+            if (isLandscape) {
+                if (index >= autoSkip) {
+                    previousIndex = index - autoSkip;
+                }
+            } else {
+                if (index + autoSkip < ticks.length) {
+                    previousIndex = index + autoSkip;
+                }
+            }
+
+            return previousIndex !== undefined
+                ? decodeTick(ticks[previousIndex].value).date
+                : undefined;
+        },
+        [isLandscape]
+    );
+
     return useCallback(
         (value: string | number, index: number, ticks: Tick[]) => {
             // decide the auto-skip
@@ -235,8 +257,7 @@ function useTimeTick() {
             }
 
             // find the previous unskipped date
-            const previousDate =
-                index < autoSkip ? undefined : decodeTick(ticks[index - autoSkip].value).date;
+            const previousDate = getPreviousTickDate(autoSkip, index, ticks);
 
             // use the format list to generate the tick
             const format = formats[scale];
@@ -251,6 +272,6 @@ function useTimeTick() {
 
             return date.toISO();
         },
-        [formats, maxTicks]
+        [formats, getPreviousTickDate, maxTicks]
     );
 }
