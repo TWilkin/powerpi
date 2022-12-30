@@ -1,6 +1,6 @@
 import { ChartOptions, Tick } from "chart.js";
 import { DateTime } from "luxon";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import useOrientation from "../../../hooks/orientation";
 import { getFormattedUnit, getFormattedValue } from "../FormattedValue";
 import useChartColours from "./useChartColours";
@@ -30,6 +30,8 @@ export default function useChart(datasets?: Dataset[]) {
     const { isLandscape } = useOrientation();
 
     const { textColour, lineColour, tooltipColour, lineColours } = useChartColours();
+
+    const timeTickGenerator = useTimeTick();
 
     // generate the chart options
     const options: ChartOptions<"line"> = useMemo(
@@ -86,7 +88,7 @@ export default function useChart(datasets?: Dataset[]) {
                     ticks: {
                         autoSkip: false,
                         color: textColour,
-                        callback: timeTick,
+                        callback: timeTickGenerator,
                     },
                 },
 
@@ -148,7 +150,7 @@ export default function useChart(datasets?: Dataset[]) {
                 }, {} as DatasetChartScale),
             },
         }),
-        [datasets, isLandscape, lineColour, textColour, tooltipColour]
+        [datasets, isLandscape, lineColour, textColour, timeTickGenerator, tooltipColour]
     );
 
     // extract the data points
@@ -191,36 +193,46 @@ function decodeTick(value: string | number) {
     };
 }
 
-function timeTick(value: string | number, index: number, ticks: Tick[]) {
-    // decide the auto-skip
-    const autoSkip = ticks.length < 64 ? 1 : Math.ceil(ticks.length / 64);
+function useTimeTick() {
+    const { isLandscape } = useOrientation();
 
-    const { date, scale } = decodeTick(value);
+    const maxTicks = useMemo(() => (isLandscape ? 64 : 32), [isLandscape]);
 
-    // skip 1 in skip
-    if (index % autoSkip !== 0) {
-        return undefined;
-    }
+    return useCallback(
+        (value: string | number, index: number, ticks: Tick[]) => {
+            // decide the auto-skip
+            const autoSkip = ticks.length < maxTicks ? 1 : Math.ceil(ticks.length / maxTicks);
 
-    const previousDate =
-        index < autoSkip ? undefined : decodeTick(ticks[index - autoSkip].value).date;
+            const { date, scale } = decodeTick(value);
 
-    switch (scale) {
-        case "minute":
-            if (previousDate?.hour !== date.hour) {
-                return date.toFormat("HH:mm");
+            // skip 1 in skip
+            if (index % autoSkip !== 0) {
+                return undefined;
             }
 
-            return date.toFormat("mm");
+            // find the previous unskipped date
+            const previousDate =
+                index < autoSkip ? undefined : decodeTick(ticks[index - autoSkip].value).date;
 
-        case "hour":
-            if (previousDate?.day !== date.day) {
-                return date.toFormat("dd MMM HH");
+            switch (scale) {
+                case "minute":
+                    if (previousDate?.hour !== date.hour) {
+                        return date.toFormat("HH:mm");
+                    }
+
+                    return date.toFormat("mm");
+
+                case "hour":
+                    if (previousDate?.day !== date.day) {
+                        return date.toFormat("dd MMM HH");
+                    }
+
+                    return date.toFormat("HH");
+
+                default:
+                    return ticks[index].label;
             }
-
-            return date.toFormat("HH");
-
-        default:
-            return ticks[index].label;
-    }
+        },
+        [maxTicks]
+    );
 }
