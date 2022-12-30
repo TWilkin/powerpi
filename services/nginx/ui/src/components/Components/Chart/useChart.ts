@@ -209,12 +209,22 @@ function useTimeTick() {
             minute: {
                 resetFormat: "HH:mm",
                 normalFormat: "mm",
-                getCheckValue: (value: DateTime) => value?.hour,
+                getCheckValue: (value: DateTime) => value.hour,
             },
             hour: {
-                resetFormat: "dd MMM HH",
-                normalFormat: "HH",
+                resetFormat: "dd MMM HH:mm",
+                normalFormat: "HH:mm",
                 getCheckValue: (value: DateTime) => value.day,
+            },
+            day: {
+                resetFormat: "dd MMM",
+                normalFormat: "dd",
+                getCheckValue: (value: DateTime) => value.month,
+            },
+            month: {
+                resetFormat: "MMM kkkk",
+                normalFormat: "MMM",
+                getCheckValue: (value: DateTime) => value.year,
             },
         }),
         []
