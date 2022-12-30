@@ -1,6 +1,7 @@
 import { ChartOptions, Tick } from "chart.js";
 import { DateTime } from "luxon";
 import { useCallback, useMemo } from "react";
+import { isMobile } from "react-device-detect";
 import useOrientation from "../../../hooks/orientation";
 import { getFormattedUnit, getFormattedValue } from "../FormattedValue";
 import useChartColours from "./useChartColours";
@@ -230,7 +231,21 @@ function useTimeTick() {
         []
     );
 
-    const maxTicks = useMemo(() => (isLandscape ? 64 : 32), [isLandscape]);
+    const maxTicks = useMemo(() => {
+        if (isLandscape) {
+            if (isMobile) {
+                return 16;
+            }
+
+            return 64;
+        }
+
+        if (isMobile) {
+            return 12;
+        }
+
+        return 32;
+    }, [isLandscape]);
 
     const getPreviousTickDate = useCallback(
         (autoSkip: number, index: number, ticks: Tick[]) => {
