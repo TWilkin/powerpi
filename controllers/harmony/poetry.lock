@@ -594,7 +594,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "slixmpp"
-version = "1.8.2"
+version = "1.8.3"
 description = "Slixmpp is an elegant Python library for XMPP (aka Jabber)."
 category = "main"
 optional = false
@@ -1315,7 +1315,7 @@ six = [
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
 ]
 slixmpp = [
-    {file = "slixmpp-1.8.2.tar.gz", hash = "sha256:53b943da2572da04b92ada29e0f54a83e7146c8838309b7e9bab47e5a39bd58e"},
+    {file = "slixmpp-1.8.3.tar.gz", hash = "sha256:ac9b59aaaeed67f5459387cca43658c934116b53e89269f66b0e8b03e141197c"},
 ]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
