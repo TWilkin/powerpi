@@ -8,11 +8,14 @@ The code was written for the [ESP8266 NodeMCU development board](https://en.wiki
 
 The following pins on the board are used for each different type of sensor
 
+-   **deep-sleep** - _D0_ - _GPIO16_ connected to the _RST_ pin to support wake-up from deep sleep (only when PIR and button sensing is disabled in firmware).
 -   **motion** - _D1_ - _GPIO5_ for the data pin of the PIR.
 -   **temperature/humidity** - _D2_ - _GPIO4_ - for the data pin of the DHT22.
 
 As follows is the circuit diagram for a sensor including both a PIR (motion) and DHT22 (temperature/humidity). Either can be omitted, which can be configured when building the firmware. This circuit diagram was created using [Circuit Diagram](https://www.circuit-diagram.org/editor/).
 ![PowerPi sensor circuit diagram](./circuit/circuit.svg)
+
+**Note:** When flashing firmware you need to disconnect _D0_ from _RST_ on the microcontroller, otherwise the microcontroller will get stuck in a reset loop. If this connection is not made, when the firmware attempts to use deep-sleep it will not awaken after the timer period has elapsed. The deep-sleep functionality is only possible when the PIR and button sensors are disabled in the firmware.
 
 ## Building
 
