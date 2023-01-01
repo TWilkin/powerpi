@@ -17,6 +17,9 @@
 // the sensor MQTT topic
 #define MQTT_TOPIC "powerpi/event/%s/%s"
 
+// the delay after an MQTT action
+#define MQTT_ACTION_DELAY 0.5 * 1000u // half a second
+
 // the WiFi UDF for connecting to NTP
 WiFiUDP espUdp;
 

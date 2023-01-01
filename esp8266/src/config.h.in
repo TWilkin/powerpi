@@ -46,4 +46,9 @@
     #define BUTTON_SENSOR
 #endif
 
+// is deep-sleep possible?
+#if !(@enable_pir@ || @enable_button@)
+    #define DEEP_SLEEP
+#endif
+
 #endif

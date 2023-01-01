@@ -35,6 +35,15 @@ void loop() {
         mqttClient.loop();
     #endif
 
-    // delay before checking the state again
-    delay(clacksConfig.pollDelay);
+    wait();
+}
+
+void wait() {
+    #ifdef DEEP_SLEEP
+        // we want to deep sleep instead of delaying
+        ESP.deepSleep(clacksConfig.pollDelay * 1000);
+    #else
+        // delay before checking the state again
+        delay(clacksConfig.pollDelay);
+    #endif
 }

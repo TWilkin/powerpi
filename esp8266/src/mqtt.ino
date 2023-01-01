@@ -16,7 +16,7 @@ void connectMQTT(bool waitForNTP) {
             Serial.print("MQTT connection failed ");
             Serial.println(mqttClient.state());
             
-            delay(500);
+            delay(MQTT_ACTION_DELAY);
         }
     }
 
@@ -25,7 +25,7 @@ void connectMQTT(bool waitForNTP) {
         while(timeClient.getEpochTime() < 24 * 60 * 60 * 1000) {
             Serial.println("Waiting for NTP update");
 
-            delay(500);
+            delay(MQTT_ACTION_DELAY);
         }
     }
 }
@@ -46,4 +46,9 @@ void publish(const char action[], ArduinoJson::JsonDocument& message) {
     // publish the message
     connectMQTT(true);
     mqttClient.publish(topic, messageStr, true);
+
+    // wait for a moment if we're planning to deep sleep to ensure it sends
+    #ifdef DEEP_SLEEP
+        delay(MQTT_ACTION_DELAY);
+    #endif
 }
