@@ -38,10 +38,11 @@ void loop() {
     wait();
 }
 
-void wait() {
+inline void wait() {
     #ifdef DEEP_SLEEP
         // we want to deep sleep instead of delaying
-        ESP.deepSleep(clacksConfig.pollDelay * 1000);
+        // currently we use the DHT22 skip as well as that's the only sensor that uses deep sleep
+        ESP.deepSleep(clacksConfig.pollDelay * clacksConfig.dht22Skip * 1000);
     #else
         // delay before checking the state again
         delay(clacksConfig.pollDelay);
