@@ -22,10 +22,19 @@ void connectMQTT(bool waitForNTP) {
 
     // check NTP update has run
     if(waitForNTP) {
-        while(timeClient.getEpochTime() < 24 * 60 * 60 * 1000) {
+        unsigned short retries = 0;
+
+        while(retries < MAX_NTP_RETRIES && timeClient.getEpochTime() < 24 * 60 * 60 * 1000) {
+            retries++;
+
             Serial.println("Waiting for NTP update");
 
             delay(MQTT_ACTION_DELAY);
+        }
+
+        // restart the device if NTP isn't working
+        if(retries >= MAX_NTP_RETRIES) {
+            ESP.restart();
         }
     }
 }
