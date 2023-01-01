@@ -15,7 +15,7 @@ The following pins on the board are used for each different type of sensor
 As follows is the circuit diagram for a sensor including both a PIR (motion) and DHT22 (temperature/humidity). Either can be omitted, which can be configured when building the firmware. This circuit diagram was created using [Circuit Diagram](https://www.circuit-diagram.org/editor/).
 ![PowerPi sensor circuit diagram](./circuit/circuit.svg)
 
-**Note:** When flashing firmware you need to disconnect _D0_ from _RST_ on the microcontroller, otherwise the microcontroller will get stuck in a reset loop. If this connection is not made, when the firmware attempts to use deep-sleep it will not awaken after the timer period has elapsed. The deep-sleep functionality is only possible when the PIR and button sensors are disabled in the firmware.
+**Note:** When flashing firmware you need to disconnect _D0_ from _RST_ on the microcontroller, otherwise the microcontroller will get stuck in a reset loop. If this connection is not made, when the firmware attempts to use deep-sleep it will not awaken after the timer period has elapsed. The deep-sleep functionality is only possible when the PIR and button sensors are disabled in the firmware, and the `--disable-deep-sleep` option is not passed when configuring.
 
 ## Building
 
@@ -57,6 +57,9 @@ By default a sensor will retrieve configuration from [_clacks-config_](../servic
 
 # Configure a sensor that doesn't get configuration from clacks-config
 ./configure --enable-dht22 --disable-clacks location=Lounge
+
+# Configure a sensor that doesn't use deep-sleep (for more timely events or when D0 is not connected to RST)
+./configure --enable-dht22 --disable-deep-sleep location=Lounge
 ```
 
 Finally we can compile and deploy the code, connect your NodeMCU to your computer with the USB cable and execute the following:

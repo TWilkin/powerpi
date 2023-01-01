@@ -32,6 +32,15 @@ AC_ARG_ENABLE(
 )
 AC_SUBST([enable_clacks])
 
+dnl Identify whether to use deep-sleep
+AC_ARG_ENABLE(
+    [deep_sleep],
+    [AS_HELP_STRING([--disable-deep-sleep], [Disable support for deep-sleep])],
+    [enable_deep_sleep=0],
+    [enable_deep_sleep=1]
+)
+AC_SUBST([enable_deep_sleep])
+
 dnl Identify whether to include the DHT22 sensor
 AC_ARG_ENABLE(
     [dht22],
