@@ -1,6 +1,7 @@
 from dependency_injector import containers, providers
-
 from zigbee_controller.config import ZigbeeConfig
+
+from .innr import add_innr_devices
 from .zigbee_controller import ZigbeeController
 from .zigbee_pairing import ZigbeePairingDevice
 
@@ -43,3 +44,5 @@ def add_devices(container):
             zigbee_controller=container.device.zigbee_controller
         )
     )
+
+    add_innr_devices(container)
