@@ -111,7 +111,9 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                 await self.__send_command(cluster, command, **options)
 
             # update the hue/saturation
-            if self.__supports_colour and 'hue' in new_additional_state and 'saturation' in new_additional_state:
+            if self.__supports_colour \
+                    and 'hue' in new_additional_state \
+                    and 'saturation' in new_additional_state:
                 command = 0x06  # move_to_hue_and_saturation
                 options = {
                     'hue': new_additional_state['hue'],
@@ -137,10 +139,10 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         return keys
 
     async def _turn_on(self):
-        await self._update_device_state(DeviceStatus.ON)
+        return await self._update_device_state(DeviceStatus.ON)
 
     async def _turn_off(self):
-        await self._update_device_state(DeviceStatus.OFF)
+        return await self._update_device_state(DeviceStatus.OFF)
 
     async def _update_device_state(self, new_state: DeviceStatus):
         device = self._zigbee_device
@@ -148,16 +150,19 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
         command = OnOff.get(new_state)
 
-        return self.__send_command(cluster, command)
+        return await self.__send_command(cluster, command)
 
     async def __send_command(self, cluster: Cluster, command: int, **kwargs):
-        result = await cluster.command(command, **kwargs)
+        try:
+            result = await cluster.command(command, **kwargs)
 
-        if result.status != Status.SUCCESS:
-            self.log_error(
-                f'Command {command} failed with status {result.status}'
-            )
+            if result.status != Status.SUCCESS:
+                self.log_error(
+                    f'Command {command} failed with status {result.status}'
+                )
 
+                return False
+        except DeliveryError:
             return False
 
         return True
