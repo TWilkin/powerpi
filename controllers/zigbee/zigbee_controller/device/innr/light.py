@@ -1,3 +1,5 @@
+from typing import Union
+
 from powerpi_common.config import Config
 from powerpi_common.device import AdditionalStateDevice, DeviceStatus
 from powerpi_common.device.mixin import AdditionalState, PollableMixin
@@ -31,10 +33,13 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         PollableMixin.__init__(self, config, **kwargs)
         ZigbeeMixin.__init__(self, controller, **kwargs)
 
-        self.__supports_temperature = False
-        self.__supports_colour = False
+        self.__supports_temperature: Union[bool, None] = None
+        self.__supports_colour: Union[bool, None] = None
 
     async def poll(self):
+        # we need the capabilties to be set
+        await self.__get_capabilities()
+
         device = self._zigbee_device
         changed = False
 
@@ -78,20 +83,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         pass
 
     async def initialise(self):
-        device = self._zigbee_device
-
-        # find out what features are supported
-        cluster: ColorCluster = device[1].in_clusters[ColorCluster.cluster_id]
-        capabilities, _ = await cluster.read_attributes(['color_capabilities'])
-        color_capabilities = capabilities['color_capabilities']
-
-        self.__supports_temperature = color_capabilities \
-            & ColorCluster.ColorCapabilities.Color_temperature \
-            == ColorCluster.ColorCapabilities.Color_temperature
-
-        self.__supports_colour = color_capabilities \
-            & ColorCluster.ColorCapabilities.Hue_and_saturation \
-            == ColorCluster.ColorCapabilities.Hue_and_saturation
+        await self.__get_capabilities()
 
     def _additional_state_keys(self):
         keys = ['brightness']
@@ -122,3 +114,26 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             return False
 
         return True
+
+    async def __get_capabilities(self):
+        # if we already have the capabilties don't update
+        if self.__supports_temperature is not None and self.__supports_colour is not None:
+            return
+
+        # find out what features are supported
+        try:
+            device = self._zigbee_device
+            cluster: ColorCluster = device[1].in_clusters[ColorCluster.cluster_id]
+
+            capabilities, _ = await cluster.read_attributes(['color_capabilities'])
+            color_capabilities = capabilities['color_capabilities']
+
+            self.__supports_temperature = color_capabilities \
+                & ColorCluster.ColorCapabilities.Color_temperature \
+                == ColorCluster.ColorCapabilities.Color_temperature
+
+            self.__supports_colour = color_capabilities \
+                & ColorCluster.ColorCapabilities.Hue_and_saturation \
+                == ColorCluster.ColorCapabilities.Hue_and_saturation
+        except DeliveryError:
+            pass
