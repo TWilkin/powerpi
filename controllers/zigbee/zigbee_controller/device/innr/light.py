@@ -8,6 +8,7 @@ from powerpi_common.mqtt import MQTTClient
 from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import OnOff, ZigbeeMixin
 from zigpy.exceptions import DeliveryError
+from zigpy.zcl import Cluster
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 from zigpy.zcl.clusters.lighting import Color as ColorCluster
 from zigpy.zcl.foundation import Status
@@ -25,6 +26,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         logger: Logger,
         mqtt_client: MQTTClient,
         controller: ZigbeeController,
+        duration: int = 500,
         **kwargs
     ):
         AdditionalStateDevice.__init__(
@@ -33,8 +35,15 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         PollableMixin.__init__(self, config, **kwargs)
         ZigbeeMixin.__init__(self, controller, **kwargs)
 
+        self.__duration = duration
+
         self.__supports_temperature: Union[bool, None] = None
         self.__supports_colour: Union[bool, None] = None
+
+    @property
+    def duration(self):
+        # we pass it in ms, but it's s
+        return self.__duration / 1000
 
     async def poll(self):
         # we need the capabilties to be set
@@ -43,7 +52,6 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         device = self._zigbee_device
         changed = False
 
-        # pylint: disable=bare-except
         try:
             # get the power state
             cluster: OnOffCluster = device[1].in_clusters[OnOffCluster.cluster_id]
@@ -80,7 +88,40 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             self.set_state_and_additional(new_state, new_additional_state)
 
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
-        pass
+        if new_additional_state is not None:
+            # we need the capabilties to be set
+            await self.__get_capabilities()
+
+            new_additional_state = {
+                **self.additional_state,
+                **new_additional_state
+            }
+
+            device = self._zigbee_device
+            cluster: ColorCluster = device[1].in_clusters[ColorCluster.cluster_id]
+
+            # update the colour temperature
+            if self.__supports_temperature and 'temperature' in new_additional_state:
+                command = 0x0A  # move_to_color_temp
+                options = {
+                    'color_temp_mireds': new_additional_state['temperature'],
+                    'transition_time': self.duration
+                }
+
+                await self.__send_command(cluster, command, **options)
+
+            # update the hue/saturation
+            if self.__supports_colour and 'hue' in new_additional_state and 'saturation' in new_additional_state:
+                command = 0x06  # move_to_hue_and_saturation
+                options = {
+                    'hue': new_additional_state['hue'],
+                    'saturation': new_additional_state['saturation'],
+                    'transition_time': self.duration
+                }
+
+                await self.__send_command(cluster, command, **options)
+
+        return new_additional_state
 
     async def initialise(self):
         await self.__get_capabilities()
@@ -102,15 +143,21 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         await self._update_device_state(DeviceStatus.OFF)
 
     async def _update_device_state(self, new_state: DeviceStatus):
-        command = OnOff.get(new_state)
-
         device = self._zigbee_device
         cluster: OnOffCluster = device[1].in_clusters[OnOffCluster.cluster_id]
 
-        result = await cluster.command(command)
+        command = OnOff.get(new_state)
+
+        return self.__send_command(cluster, command)
+
+    async def __send_command(self, cluster: Cluster, command: int, **kwargs):
+        result = await cluster.command(command, **kwargs)
 
         if result.status != Status.SUCCESS:
-            self.log_error(f'Command failed with status {result.status}')
+            self.log_error(
+                f'Command {command} failed with status {result.status}'
+            )
+
             return False
 
         return True
