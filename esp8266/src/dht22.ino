@@ -23,6 +23,9 @@ void pollDHT22() {
 
         if(isnan(humidity) || isnan(temperature)) {
             Serial.println("DHT22 read error");
+
+            ESP.restart();
+
             return;
         }
 
@@ -42,6 +45,6 @@ void pollDHT22() {
     }
 }
 
-double round2dp(double value) {
+inline double round2dp(double value) {
    return (int)(value * 100 + 0.5) / 100.0;
 }

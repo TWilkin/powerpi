@@ -9,5 +9,6 @@
 
 void setup();
 void loop();
+void wait();
 
 #endif
