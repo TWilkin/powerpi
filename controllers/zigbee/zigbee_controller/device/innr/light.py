@@ -1,10 +1,11 @@
 from powerpi_common.config import Config
-from powerpi_common.device import AdditionalStateDevice
+from powerpi_common.device import AdditionalStateDevice, DeviceStatus
 from powerpi_common.device.mixin import AdditionalState, PollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import ZigbeeMixin
+from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 
 
 #pylint: disable=too-many-ancestors
@@ -33,12 +34,26 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
         pass
 
+    async def initialise(self):
+        pass
+
     def _additional_state_keys(self):
         # TODO find a way to dynamically identify which are supported by the bulb
         return ['brightness', 'temperature', 'hue', 'saturation']
 
     async def _turn_on(self):
-        pass
+        await self._update_device_state(DeviceStatus.ON)
 
     async def _turn_off(self):
-        pass
+        await self._update_device_state(DeviceStatus.OFF)
+
+    async def _update_device_state(self, new_state: DeviceStatus):
+        device = self._zigbee_device
+
+        command = 0x00 if new_state == DeviceStatus.OFF else 0x01
+
+        cluster: OnOffCluster = device[1].in_clusters[OnOffCluster.cluster_id]
+
+        self.log_info('Sending command?')
+        result = await cluster.command(command)
+        self.log_info(result)
