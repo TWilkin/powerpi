@@ -4,8 +4,9 @@ from powerpi_common.device.mixin import AdditionalState, PollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from zigbee_controller.device.zigbee_controller import ZigbeeController
-from zigbee_controller.zigbee import ZigbeeMixin
+from zigbee_controller.zigbee import OnOff, ZigbeeMixin
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
+from zigpy.zcl.foundation import Status
 
 
 #pylint: disable=too-many-ancestors
@@ -48,12 +49,15 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         await self._update_device_state(DeviceStatus.OFF)
 
     async def _update_device_state(self, new_state: DeviceStatus):
+        command = OnOff.get(new_state)
+
         device = self._zigbee_device
-
-        command = 0x00 if new_state == DeviceStatus.OFF else 0x01
-
         cluster: OnOffCluster = device[1].in_clusters[OnOffCluster.cluster_id]
 
-        self.log_info('Sending command?')
         result = await cluster.command(command)
-        self.log_info(result)
+
+        if result.status != Status.SUCCESS:
+            self.log_error(f'Command failed with status {result.status}')
+            return False
+
+        return True
