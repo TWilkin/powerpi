@@ -1,10 +1,11 @@
-from typing import Union
+from typing import Tuple, Union
 
 from powerpi_common.config import Config
 from powerpi_common.device import AdditionalStateDevice, DeviceStatus
 from powerpi_common.device.mixin import AdditionalState, PollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+from powerpi_common.util.data import DataType, Standardiser, restrict
 from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import OnOff, ZigbeeMixin
 from zigpy.exceptions import DeliveryError
@@ -20,6 +21,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
     Adds support for Innr Smart RGB bulb.
     '''
 
+    #pylint: disable=too-many-arguments
     def __init__(
         self,
         config: Config,
@@ -37,13 +39,26 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
         self.__duration = duration
 
+        self.__standardiser = Standardiser({
+            # the duration the bulb supports is measure in seconds
+            DataType.DURATION: (
+                lambda value: value / 1000,
+                lambda value: value * 1000
+            ),
+            # the colour temperature the bulb supports is Kelvin / 10
+            DataType.TEMPERATURE: (
+                lambda value: value / 10,
+                lambda value: value * 10
+            )
+        })
+
         self.__supports_temperature: Union[bool, None] = None
         self.__supports_colour: Union[bool, None] = None
+        self.__colour_temp_range: Union[Tuple[int, int], None] = None
 
     @property
     def duration(self):
-        # we pass it in ms, but it's s
-        return self.__duration / 1000
+        return self.__standardiser.convert(DataType.DURATION, self.__duration)
 
     async def poll(self):
         # we need the capabilties to be set
@@ -70,11 +85,16 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             values, _ = await cluster.read_attributes(keys)
 
             colour = {}
+
             if self.__supports_temperature:
-                colour['temperature'] = values['color_temperature']
+                colour[DataType.TEMPERATURE] = self.__standardiser.revert(
+                    DataType.TEMPERATURE,
+                    values['color_temperature']
+                )
+
             if self.__supports_colour:
-                colour['hue'] = values['current_hue']
-                colour['saturation'] = values['current_saturation']
+                colour[DataType.HUE] = values['current_hue']
+                colour[DataType.SATURATION] = values['current_saturation']
 
             changed |= colour != self.additional_state
             new_additional_state = {**self.additional_state, **colour}
@@ -101,10 +121,16 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             cluster: ColorCluster = device[1].in_clusters[ColorCluster.cluster_id]
 
             # update the colour temperature
-            if self.__supports_temperature and 'temperature' in new_additional_state:
+            if self.__supports_temperature and DataType.TEMPERATURE in new_additional_state:
                 command = 0x0A  # move_to_color_temp
                 options = {
-                    'color_temp_mireds': new_additional_state['temperature'],
+                    'color_temp_mireds': restrict(
+                        self.__standardiser.revert(
+                            DataType.TEMPERATURE,
+                            new_additional_state[DataType.TEMPERATURE]
+                        ),
+                        self.__colour_temp_range
+                    ),
                     'transition_time': self.duration
                 }
 
@@ -112,12 +138,12 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
             # update the hue/saturation
             if self.__supports_colour \
-                    and 'hue' in new_additional_state \
-                    and 'saturation' in new_additional_state:
+                    and DataType.HUE in new_additional_state \
+                    and DataType.SATURATION in new_additional_state:
                 command = 0x06  # move_to_hue_and_saturation
                 options = {
-                    'hue': new_additional_state['hue'],
-                    'saturation': new_additional_state['saturation'],
+                    'hue': new_additional_state[DataType.HUE],
+                    'saturation': new_additional_state[DataType.SATURATION],
                     'transition_time': self.duration
                 }
 
@@ -129,12 +155,12 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         await self.__get_capabilities()
 
     def _additional_state_keys(self):
-        keys = ['brightness']
+        keys = [DataType.BRIGHTNESS]
 
         if self.__supports_temperature:
-            keys.append('temperature')
+            keys.append(DataType.TEMPERATURE)
         if self.__supports_colour:
-            keys.extend(['hue', 'saturation'])
+            keys.extend([DataType.HUE, DataType.SATURATION])
 
         return keys
 
@@ -177,8 +203,12 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             device = self._zigbee_device
             cluster: ColorCluster = device[1].in_clusters[ColorCluster.cluster_id]
 
-            capabilities, _ = await cluster.read_attributes(['color_capabilities'])
-            color_capabilities = capabilities['color_capabilities']
+            attributes, _ = await cluster.read_attributes([
+                'color_capabilities',
+                'color_temp_physical_min',
+                'color_temp_physical_max'
+            ])
+            color_capabilities = attributes['color_capabilities']
 
             self.__supports_temperature = color_capabilities \
                 & ColorCluster.ColorCapabilities.Color_temperature \
@@ -187,5 +217,12 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             self.__supports_colour = color_capabilities \
                 & ColorCluster.ColorCapabilities.Hue_and_saturation \
                 == ColorCluster.ColorCapabilities.Hue_and_saturation
+
+            self.__colour_temp_range = (
+                attributes['color_temp_physical_min'], attributes['color_temp_physical_max']
+            )
         except DeliveryError:
             pass
+
+    def __str__(self):
+        return ZigbeeMixin.__str__(self)
