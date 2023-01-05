@@ -23,6 +23,27 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
     Adds support for Innr Smart RGB bulb.
     '''
 
+    __standardiser = Standardiser({
+        # brightness is uint8 and we want a uint16,
+        # TODO this should be a percentage, but making consistent with LIFX for now
+        DataType.BRIGHTNESS: (
+            lambda value: math.ceil(
+                (value / Ranges.UINT16[1]) * Ranges.UINT8[1]),
+            lambda value: math.ceil(
+                (value / Ranges.UINT8[1]) * Ranges.UINT16[1])
+        ),
+        # the duration the bulb supports is measured in seconds
+        DataType.DURATION: (
+            lambda value: value / 1000,
+            lambda value: value * 1000
+        ),
+        # the colour temperature the bulb supports is Kelvin / 10
+        DataType.TEMPERATURE: (
+            lambda value: value / 10,
+            lambda value: value * 10
+        )
+    })
+
     #pylint: disable=too-many-arguments
     def __init__(
         self,
@@ -40,27 +61,6 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         ZigbeeMixin.__init__(self, controller, **kwargs)
 
         self.__duration = duration
-
-        self.__standardiser = Standardiser({
-            # brightness is uint8 and we want a uint16,
-            # TODO this should be a percentage, but making consistent with LIFX for now
-            DataType.BRIGHTNESS: (
-                lambda value: math.ceil(
-                    (value / Ranges.UINT16[1]) * Ranges.UINT8[1]),
-                lambda value: math.ceil(
-                    (value / Ranges.UINT8[1]) * Ranges.UINT16[1])
-            ),
-            # the duration the bulb supports is measured in seconds
-            DataType.DURATION: (
-                lambda value: value / 1000,
-                lambda value: value * 1000
-            ),
-            # the colour temperature the bulb supports is Kelvin / 10
-            DataType.TEMPERATURE: (
-                lambda value: value / 10,
-                lambda value: value * 10
-            )
-        })
 
         self.__supports_temperature: Union[bool, None] = None
         self.__supports_colour: Union[bool, None] = None
