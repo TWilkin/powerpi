@@ -1,7 +1,7 @@
 import commonDeviceTests from "./commonDeviceTests";
 import commonSensorTests from "./commonSensorTests";
 
-function commonZigBeeTests(validFile: object, sensor = true) {
+function commonZigBeeTests(validFile: object, sensor = false) {
     const { getDevice, testValid, testInvalid } = sensor
         ? commonSensorTests(validFile)
         : commonDeviceTests(validFile);
@@ -59,23 +59,72 @@ describe("ZigBee Devices", () => {
         const type = `aqara_${sensorType}`;
 
         describe(`Aqara ${sensorType} Sensor`, () => {
-            commonZigBeeTests({
-                sensors: [{ type, name: "Aqara", nwk: "0xabcd", ieee: "00:11:22:33:44:55:66:77" }],
-            });
+            commonZigBeeTests(
+                {
+                    sensors: [
+                        { type, name: "Aqara", nwk: "0xabcd", ieee: "00:11:22:33:44:55:66:77" },
+                    ],
+                },
+                true
+            );
         });
     });
 
-    describe("Osram Switch Mini Sensor", () => {
-        commonZigBeeTests({
-            sensors: [
+    describe("Innr Light", () => {
+        const { testValid, testInvalid } = commonZigBeeTests({
+            devices: [
                 {
-                    type: "osram_switch_mini",
-                    name: "Osram",
+                    type: "innr_light",
+                    name: "Innr",
                     nwk: "0xabcd",
                     ieee: "00:11:22:33:44:55:66:77",
+                    duration: 1000,
                 },
             ],
         });
+
+        test("No duration", () =>
+            testValid({
+                devices: [
+                    {
+                        type: "innr_light",
+                        name: "Innr",
+                        nwk: "0xabcd",
+                        ieee: "00:11:22:33:44:55:66:77",
+                    },
+                ],
+            }));
+
+        [-1, "5"].forEach((duration) =>
+            test(`Bad duration ${duration}`, () =>
+                testInvalid({
+                    devices: [
+                        {
+                            type: "innr_light",
+                            name: "Innr",
+                            nwk: "0xabcd",
+                            ieee: "00:11:22:33:44:55:66:77",
+                            duration,
+                        },
+                    ],
+                }))
+        );
+    });
+
+    describe("Osram Switch Mini Sensor", () => {
+        commonZigBeeTests(
+            {
+                sensors: [
+                    {
+                        type: "osram_switch_mini",
+                        name: "Osram",
+                        nwk: "0xabcd",
+                        ieee: "00:11:22:33:44:55:66:77",
+                    },
+                ],
+            },
+            true
+        );
     });
 
     describe("ZigBee Pairing", () => {
