@@ -1,3 +1,4 @@
+import math
 from typing import Tuple, Union
 
 from powerpi_common.config import Config
@@ -10,6 +11,7 @@ from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import OnOff, ZigbeeMixin
 from zigpy.exceptions import DeliveryError
 from zigpy.zcl import Cluster
+from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 from zigpy.zcl.clusters.lighting import Color as ColorCluster
 from zigpy.zcl.foundation import Status
@@ -40,7 +42,15 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         self.__duration = duration
 
         self.__standardiser = Standardiser({
-            # the duration the bulb supports is measure in seconds
+            # brightness is uint8 and we want a uint16,
+            # TODO this should be a percentage, but making consistent with LIFX for now
+            DataType.BRIGHTNESS: (
+                lambda value: math.ceil(
+                    (value / Ranges.UINT16[1]) * Ranges.UINT8[1]),
+                lambda value: math.ceil(
+                    (value / Ranges.UINT8[1]) * Ranges.UINT16[1])
+            ),
+            # the duration the bulb supports is measured in seconds
             DataType.DURATION: (
                 lambda value: value / 1000,
                 lambda value: value * 1000
@@ -75,29 +85,43 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             changed = new_state != self.state
 
             # get the additional state
+            updated_additonal_state = {}
+
+            # get the brightness
+            cluster: LevelControlCluster = device[1].in_clusters[LevelControlCluster.cluster_id]
+            values, _ = await cluster.read_attributes(['current_level'])
+
+            updated_additonal_state[DataType.BRIGHTNESS] = self.__standardiser.revert(
+                DataType.BRIGHTNESS,
+                values['current_level']
+            )
+
+            # get the colour state (if supported)
             keys = []
             if self.__supports_temperature:
                 keys.append('color_temperature')
             if self.__supports_colour:
                 keys.extend(['current_hue', 'current_saturation'])
 
-            cluster: ColorCluster = device[1].in_clusters[ColorCluster.cluster_id]
-            values, _ = await cluster.read_attributes(keys)
+            if len(keys) > 0:
+                cluster: ColorCluster = device[1].in_clusters[ColorCluster.cluster_id]
+                values, _ = await cluster.read_attributes(keys)
 
-            colour = {}
+                if self.__supports_temperature:
+                    updated_additonal_state[DataType.TEMPERATURE] = self.__standardiser.revert(
+                        DataType.TEMPERATURE,
+                        values['color_temperature']
+                    )
 
-            if self.__supports_temperature:
-                colour[DataType.TEMPERATURE] = self.__standardiser.revert(
-                    DataType.TEMPERATURE,
-                    values['color_temperature']
-                )
+                if self.__supports_colour:
+                    updated_additonal_state[DataType.HUE] = values['current_hue']
+                    updated_additonal_state[DataType.SATURATION] = values['current_saturation']
 
-            if self.__supports_colour:
-                colour[DataType.HUE] = values['current_hue']
-                colour[DataType.SATURATION] = values['current_saturation']
-
-            changed |= colour != self.additional_state
-            new_additional_state = {**self.additional_state, **colour}
+            changed |= updated_additonal_state != self.additional_state
+            new_additional_state = {
+                **self.additional_state,
+                **updated_additonal_state
+            }
         except DeliveryError:
             # we couldn't contact it so set to unknown
             new_state = DeviceStatus.UNKNOWN
@@ -118,6 +142,24 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             }
 
             device = self._zigbee_device
+
+            # update the brightness
+            cluster: LevelControlCluster = device[1].in_clusters[LevelControlCluster.cluster_id]
+            command = 0x00  # move_to_level
+            options = {
+                'level': restrict(
+                    self.__standardiser.convert(
+                        DataType.BRIGHTNESS,
+                        new_additional_state[DataType.BRIGHTNESS]
+                    ),
+                    Ranges.UINT8
+                ),
+                'transition_time': self.duration
+            }
+
+            await self.__send_command(cluster, command, **options)
+
+            # update the colour
             cluster: ColorCluster = device[1].in_clusters[ColorCluster.cluster_id]
 
             # update the colour temperature
@@ -125,7 +167,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                 command = 0x0A  # move_to_color_temp
                 options = {
                     'color_temp_mireds': restrict(
-                        self.__standardiser.revert(
+                        self.__standardiser.convert(
                             DataType.TEMPERATURE,
                             new_additional_state[DataType.TEMPERATURE]
                         ),

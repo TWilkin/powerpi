@@ -3,8 +3,8 @@ from typing import Callable, Dict, Tuple
 
 
 class Ranges(Tuple[int, int], Enum):
-    UINT8 = (0, 2 ** 8)
-    UINT16 = (0, 2 ** 16)
+    UINT8 = (0, 2 ** 8 - 1)
+    UINT16 = (0, 2 ** 16 - 1)
 
 
 def restrict(value: int, value_range: Tuple[int, int]):
