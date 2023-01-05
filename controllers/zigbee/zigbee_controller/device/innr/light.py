@@ -5,7 +5,7 @@ from powerpi_common.device import AdditionalStateDevice, DeviceStatus
 from powerpi_common.device.mixin import AdditionalState, PollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
-from powerpi_common.util.data import DataType, Standardiser, restrict
+from powerpi_common.util.data import DataType, Ranges, Standardiser, restrict
 from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import OnOff, ZigbeeMixin
 from zigpy.exceptions import DeliveryError
@@ -142,8 +142,11 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                     and DataType.SATURATION in new_additional_state:
                 command = 0x06  # move_to_hue_and_saturation
                 options = {
-                    'hue': new_additional_state[DataType.HUE],
-                    'saturation': new_additional_state[DataType.SATURATION],
+                    'hue': restrict(new_additional_state[DataType.HUE], Ranges.UINT8),
+                    'saturation': restrict(
+                        new_additional_state[DataType.SATURATION],
+                        Ranges.UINT8
+                    ),
                     'transition_time': self.duration
                 }
 
