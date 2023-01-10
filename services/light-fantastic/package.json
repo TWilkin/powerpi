@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@powerpi/common": "^0.0.11",
-        "luxon": "^2.0.2",
+        "luxon": "^2.5.2",
         "typedi": "^0.10.0"
     },
     "devDependencies": {
