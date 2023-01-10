@@ -34,7 +34,7 @@
         "@jovotech/cli-core": "^4.0.0",
         "@jovotech/db-filedb": "^4.0.0",
         "@jovotech/filebuilder": "^0.0.1",
-        "@powerpi/common-test": "^0.0.2",
+        "@powerpi/common-test": "^0.0.3",
         "@types/express": "^4.17.11",
         "ts-node": "^10.9.1",
         "tsc-watch": "^4.2.9"
