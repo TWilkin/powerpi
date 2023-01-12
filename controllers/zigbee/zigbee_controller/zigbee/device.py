@@ -1,8 +1,9 @@
+from powerpi_common.device.mixin import InitialisableMixin
+from zigbee_controller.device import ZigbeeController
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 
-from powerpi_common.device.mixin import InitialisableMixin
-from zigbee_controller.device import ZigbeeController
+from .zigbee_listener import ZigBeeListener
 
 
 class ZigbeeMixin(InitialisableMixin):
@@ -20,6 +21,9 @@ class ZigbeeMixin(InitialisableMixin):
     @property
     def _zigbee_device(self) -> DeviceType:
         return self.__controller.get_device(self.__ieee, self.__nwk)
+
+    def _add_zigbee_listener(self, listener: ZigBeeListener):
+        self._zigbee_device.zdo.add_listener(listener)
 
     async def describe(self):
         return await self._zigbee_device.get_node_descriptor()

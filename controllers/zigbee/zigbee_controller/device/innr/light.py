@@ -1,4 +1,5 @@
 import math
+from asyncio import ensure_future
 from typing import List, Tuple, Union
 
 from powerpi_common.config import Config
@@ -8,7 +9,7 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util.data import DataType, Ranges, Standardiser, restrict
 from zigbee_controller.device.zigbee_controller import ZigbeeController
-from zigbee_controller.zigbee import OnOff, ZigbeeMixin
+from zigbee_controller.zigbee import DeviceAnnounceListener, OnOff, ZigbeeMixin
 from zigpy.exceptions import DeliveryError
 from zigpy.zcl import Cluster
 from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
@@ -236,11 +237,20 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         return new_additional_state
 
     async def initialise(self):
-        # retrieve what capabilities this device supports
-        await self.__get_capabilities()
+        async def on_device_announce():
+            # retrieve what capabilities this device supports
+            await self.__get_capabilities()
 
-        # configure the device
-        await self.__set_options()
+            # configure the device
+            await self.__set_options()
+
+        # when the device joins the network retrieve its capabilities and set the options
+        self._add_zigbee_listener(DeviceAnnounceListener(
+            lambda _: ensure_future(on_device_announce()))
+        )
+
+        # also call it now in case it's already on
+        await on_device_announce()
 
     def _additional_state_keys(self):
         keys = [DataType.BRIGHTNESS]
