@@ -1,5 +1,5 @@
 import math
-from typing import Tuple, Union
+from typing import List, Tuple, Union
 
 from powerpi_common.config import Config
 from powerpi_common.device import AdditionalStateDevice, DeviceStatus
@@ -17,7 +17,7 @@ from zigpy.zcl.clusters.lighting import Color as ColorCluster
 from zigpy.zcl.foundation import Status
 
 
-#pylint: disable=too-many-ancestors
+# pylint: disable=too-many-ancestors
 class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
     '''
     Adds support for Innr Smart RGB bulb.
@@ -44,7 +44,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         )
     })
 
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         config: Config,
@@ -62,6 +62,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
         self.__duration = duration
 
+        self.__options_set = False
         self.__supports_temperature: Union[bool, None] = None
         self.__supports_colour: Union[bool, None] = None
         self.__colour_temp_range: Union[Tuple[int, int], None] = None
@@ -71,8 +72,8 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         return self.__standardiser.convert(DataType.DURATION, self.__duration)
 
     async def poll(self):
-        # we need the capabilties to be set
-        await self.__get_capabilities()
+        # we need the device to be initialised
+        await self.initialise()
 
         device = self._zigbee_device
         changed = False
@@ -133,8 +134,8 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
         if new_additional_state is not None:
-            # we need the capabilties to be set
-            await self.__get_capabilities()
+            # we need the device to be initialised
+            await self.initialise()
 
             new_additional_state = {
                 **self.additional_state,
@@ -157,7 +158,10 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                 'transition_time': self.duration
             }
 
-            await self.__send_command(cluster, command, **options)
+            if not await self.__send_command(cluster, command, **options):
+                new_additional_state[DataType.BRIGHTNESS] = getattr(
+                    self.additional_state, DataType.BRIGHTNESS, None
+                )
 
             # update the colour
             cluster: ColorCluster = device[1].in_clusters[ColorCluster.cluster_id]
@@ -176,7 +180,10 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                     'transition_time': self.duration
                 }
 
-                await self.__send_command(cluster, command, **options)
+                if not await self.__send_command(cluster, command, **options):
+                    new_additional_state[DataType.TEMPERATURE] = getattr(
+                        self.additional_state, DataType.TEMPERATURE, None
+                    )
 
             # update the hue/saturation
             if self.__supports_colour \
@@ -192,12 +199,22 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                     'transition_time': self.duration
                 }
 
-                await self.__send_command(cluster, command, **options)
+                if not await self.__send_command(cluster, command, **options):
+                    new_additional_state[DataType.HUE] = getattr(
+                        self.additional_state, DataType.HUE, None
+                    )
+                    new_additional_state[DataType.SATURATION] = getattr(
+                        self.additional_state, DataType.SATURATION, None
+                    )
 
         return new_additional_state
 
     async def initialise(self):
+        # retrieve what capabilities this device supports
         await self.__get_capabilities()
+
+        # configure the device
+        await self.__set_options()
 
     def _additional_state_keys(self):
         keys = [DataType.BRIGHTNESS]
@@ -268,6 +285,30 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             )
         except DeliveryError:
             pass
+
+    async def __set_options(self):
+        # if we already set the options, don't update
+        if self.__options_set:
+            return
+
+        device = self._zigbee_device
+
+        # the options for each cluster
+        pairs: List[Tuple[Cluster, int]] = zip([
+            device[1].in_clusters[ColorCluster.cluster_id],
+            device[1].in_clusters[LevelControlCluster.cluster_id]
+        ], [
+            ColorCluster.Options.Execute_if_off,
+            LevelControlCluster.Options.Execute_if_off
+        ])
+
+        try:
+            for cluster, options in pairs:
+                await cluster.write_attributes({'options': options})
+
+            self.__options_set = True
+        except DeliveryError:
+            self.__options_set = False
 
     def __str__(self):
         return ZigbeeMixin.__str__(self)
