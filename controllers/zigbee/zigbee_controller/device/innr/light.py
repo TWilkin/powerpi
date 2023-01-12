@@ -160,73 +160,25 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                 **new_additional_state
             }
 
-            device = self._zigbee_device
-
             # update the brightness
-            cluster: LevelControlCluster = device[1].in_clusters[LevelControlCluster.cluster_id]
-            command = 0x00  # move_to_level
-            options = {
-                'level': restrict(
-                    self.__standardiser.convert(
-                        DataType.BRIGHTNESS,
-                        new_additional_state[DataType.BRIGHTNESS]
-                    ),
-                    Ranges.UINT8
-                ),
-                'transition_time': self.duration
-            }
-
-            if not await self.__send_command(cluster, command, **options):
+            if not await self.__set_brightness(new_additional_state[DataType.BRIGHTNESS]):
                 new_additional_state[DataType.BRIGHTNESS] = getattr(
                     self.additional_state, DataType.BRIGHTNESS, None
                 )
 
-            # update the colour
-            cluster: ColorCluster = device[1].in_clusters[ColorCluster.cluster_id]
-
             # update the colour temperature
-            if self.__supports_temperature and DataType.TEMPERATURE in new_additional_state:
-                command = 0x0A  # move_to_color_temp
-                options = {
-                    'color_temp_mireds': restrict(
-                        self.__standardiser.convert(
-                            DataType.TEMPERATURE,
-                            new_additional_state[DataType.TEMPERATURE]
-                        ),
-                        self.__colour_temp_range
-                    ),
-                    'transition_time': self.duration
-                }
-
-                if not await self.__send_command(cluster, command, **options):
+            if DataType.TEMPERATURE in new_additional_state:
+                if not await self.__set_temperature(new_additional_state[DataType.TEMPERATURE]):
                     new_additional_state[DataType.TEMPERATURE] = getattr(
                         self.additional_state, DataType.TEMPERATURE, None
                     )
 
             # update the hue/saturation
-            if self.__supports_colour \
-                    and DataType.HUE in new_additional_state \
-                    and DataType.SATURATION in new_additional_state:
-                command = 0x06  # move_to_hue_and_saturation
-                options = {
-                    'hue': restrict(
-                        self.__standardiser.convert(
-                            DataType.HUE,
-                            new_additional_state[DataType.HUE]
-                        ),
-                        Ranges.UINT8
-                    ),
-                    'saturation': restrict(
-                        self.__standardiser.convert(
-                            DataType.SATURATION,
-                            new_additional_state[DataType.SATURATION]
-                        ),
-                        Ranges.UINT8
-                    ),
-                    'transition_time': self.duration
-                }
-
-                if not await self.__send_command(cluster, command, **options):
+            if DataType.HUE in new_additional_state and DataType.SATURATION in new_additional_state:
+                if not await self.__set_hue_saturation(
+                    new_additional_state[DataType.HUE],
+                    new_additional_state[DataType.SATURATION]
+                ):
                     new_additional_state[DataType.HUE] = getattr(
                         self.additional_state, DataType.HUE, None
                     )
@@ -345,6 +297,84 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             self.__options_set = True
         except DeliveryError:
             self.__options_set = False
+
+    async def __set_brightness(self, brightness: int):
+        cluster: LevelControlCluster = self._zigbee_device[1] \
+            .in_clusters[LevelControlCluster.cluster_id]
+
+        command = 0x00  # move_to_level
+
+        options = {
+            'level': restrict(
+                self.__standardiser.convert(
+                    DataType.BRIGHTNESS,
+                    brightness
+                ),
+                Ranges.UINT8
+            ),
+            'transition_time': self.duration
+        }
+
+        success = await self.__send_command(cluster, command, **options)
+
+        await cluster.write_attributes({'start_up_current_level': options['level']})
+
+        return success
+
+    async def __set_temperature(self, temperature: int):
+        if self.__supports_temperature:
+            cluster: ColorCluster = self._zigbee_device[1] \
+                .in_clusters[ColorCluster.cluster_id]
+
+            command = 0x0A  # move_to_color_temp
+
+            options = {
+                'color_temp_mireds': restrict(
+                    self.__standardiser.convert(
+                        DataType.TEMPERATURE,
+                        temperature
+                    ),
+                    self.__colour_temp_range
+                ),
+                'transition_time': self.duration
+            }
+
+            success = await self.__send_command(cluster, command, **options)
+
+            await cluster.write_attributes({
+                'start_up_color_temperature': options['color_temp_mireds']
+            })
+
+            return success
+        return False
+
+    async def __set_hue_saturation(self, hue: int, saturation):
+        if self.__supports_colour:
+            cluster: ColorCluster = self._zigbee_device[1] \
+                .in_clusters[ColorCluster.cluster_id]
+
+            command = 0x06  # move_to_hue_and_saturation
+
+            options = {
+                'hue': restrict(
+                    self.__standardiser.convert(
+                        DataType.HUE,
+                        hue
+                    ),
+                    Ranges.UINT8
+                ),
+                'saturation': restrict(
+                    self.__standardiser.convert(
+                        DataType.SATURATION,
+                        saturation
+                    ),
+                    Ranges.UINT8
+                ),
+                'transition_time': self.duration
+            }
+
+            return await self.__send_command(cluster, command, **options)
+        return False
 
     def __str__(self):
         return ZigbeeMixin.__str__(self)
