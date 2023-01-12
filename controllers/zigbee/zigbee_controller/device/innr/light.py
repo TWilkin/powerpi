@@ -37,10 +37,10 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             lambda value: value / 1000,
             lambda value: value * 1000
         ),
-        # the colour temperature the bulb supports is Kelvin / 10
+        # convert from Kelvin to mired and vice versa
         DataType.TEMPERATURE: (
-            lambda value: value / 10,
-            lambda value: value * 10
+            lambda value: 1_000_000 / value,  # mired = 1m / kelvin
+            lambda value: 1_000_000 / value   # kelvin = 1m / mired
         )
     })
 
