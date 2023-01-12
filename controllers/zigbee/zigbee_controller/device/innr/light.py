@@ -84,7 +84,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
     async def poll(self):
         # we need the device to be initialised
-        await self.initialise()
+        await self.__initialise()
 
         device = self._zigbee_device
         changed = False
@@ -153,7 +153,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
         if new_additional_state is not None:
             # we need the device to be initialised
-            await self.initialise()
+            await self.__initialise()
 
             new_additional_state = {
                 **self.additional_state,
@@ -237,20 +237,13 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         return new_additional_state
 
     async def initialise(self):
-        async def on_device_announce():
-            # retrieve what capabilities this device supports
-            await self.__get_capabilities()
-
-            # configure the device
-            await self.__set_options()
-
         # when the device joins the network retrieve its capabilities and set the options
         self._add_zigbee_listener(DeviceAnnounceListener(
-            lambda _: ensure_future(on_device_announce()))
+            lambda _: ensure_future(self.__initialise()))
         )
 
         # also call it now in case it's already on
-        await on_device_announce()
+        await self.__initialise()
 
     def _additional_state_keys(self):
         keys = [DataType.BRIGHTNESS]
@@ -290,6 +283,13 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             return False
 
         return True
+
+    async def __initialise(self):
+        # retrieve what capabilities this device supports
+        await self.__get_capabilities()
+
+        # configure the device
+        await self.__set_options()
 
     async def __get_capabilities(self):
         # if we already have the capabilties don't update
