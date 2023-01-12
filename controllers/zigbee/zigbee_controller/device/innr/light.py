@@ -34,14 +34,24 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         ),
         # the duration the bulb supports is measured in seconds
         DataType.DURATION: (
-            lambda value: value / 1000,
-            lambda value: value * 1000
+            lambda value: math.ceil(value / 1000),
+            lambda value: math.ceil(value * 1000)
         ),
         # convert from Kelvin to mired and vice versa
         DataType.TEMPERATURE: (
-            lambda value: 1_000_000 / value,  # mired = 1m / kelvin
-            lambda value: 1_000_000 / value   # kelvin = 1m / mired
-        )
+            lambda value: math.ceil(1_000_000 / value),  # mired = 1m / kelvin
+            lambda value: math.ceil(1_000_000 / value)   # kelvin = 1m / mired
+        ),
+        # hue is 0-360
+        DataType.HUE: (
+            lambda value: math.ceil((value / 360) * 254),
+            lambda value: math.ceil((value / 254) * 360),
+        ),
+        # saturation is a percentage
+        DataType.SATURATION: (
+            lambda value: math.ceil((value / 100) * 254),
+            lambda value: math.ceil((value / 254) * 100),
+        ),
     })
 
     # pylint: disable=too-many-arguments
@@ -115,8 +125,15 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                     )
 
                 if self.__supports_colour:
-                    updated_additonal_state[DataType.HUE] = values['current_hue']
-                    updated_additonal_state[DataType.SATURATION] = values['current_saturation']
+                    updated_additonal_state[DataType.HUE] = self.__standardiser.revert(
+                        DataType.HUE,
+                        values['current_hue']
+                    )
+
+                    updated_additonal_state[DataType.SATURATION] = self.__standardiser.revert(
+                        DataType.SATURATION,
+                        values['current_saturation']
+                    )
 
             changed |= updated_additonal_state != self.additional_state
             new_additional_state = {
@@ -191,9 +208,18 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                     and DataType.SATURATION in new_additional_state:
                 command = 0x06  # move_to_hue_and_saturation
                 options = {
-                    'hue': restrict(new_additional_state[DataType.HUE], Ranges.UINT8),
+                    'hue': restrict(
+                        self.__standardiser.convert(
+                            DataType.HUE,
+                            new_additional_state[DataType.HUE]
+                        ),
+                        Ranges.UINT8
+                    ),
                     'saturation': restrict(
-                        new_additional_state[DataType.SATURATION],
+                        self.__standardiser.convert(
+                            DataType.SATURATION,
+                            new_additional_state[DataType.SATURATION]
+                        ),
                         Ranges.UINT8
                     ),
                     'transition_time': self.duration
@@ -246,7 +272,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
             if result.status != Status.SUCCESS:
                 self.log_error(
-                    f'Command {command} failed with status {result.status}'
+                    f'Command {command:#04x} failed with status {result.status}'
                 )
 
                 return False

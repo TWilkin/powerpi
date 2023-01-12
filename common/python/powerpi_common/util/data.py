@@ -2,12 +2,12 @@ from enum import Enum
 from typing import Callable, Dict, Tuple
 
 
-class Ranges(Tuple[int, int], Enum):
+class Ranges(Tuple[float, float], Enum):
     UINT8 = (0, 2 ** 8 - 1)
     UINT16 = (0, 2 ** 16 - 1)
 
 
-def restrict(value: int, value_range: Tuple[int, int]):
+def restrict(value: float, value_range: Tuple[float, float]):
     min_value, max_value = value_range
 
     return max(min_value, min(max_value, value))
@@ -40,11 +40,11 @@ class Standardiser:
             self,
             converters: Dict[
                 DataType,
-                Tuple[Callable[[int], int], Callable[[int], int]]
+                Tuple[Callable[[float], float], Callable[[float], float]]
             ]):
         self.__converters = converters
 
-    def convert(self, data_type: DataType, value: int):
+    def convert(self, data_type: DataType, value: float):
         '''
         Convert the value from the standard value to the internal value for the device.
         '''
@@ -54,7 +54,7 @@ class Standardiser:
 
         return value
 
-    def revert(self, data_type: DataType, value: int):
+    def revert(self, data_type: DataType, value: float):
         '''
         Convert the value from the internal value to the standard value for the device.
         '''
