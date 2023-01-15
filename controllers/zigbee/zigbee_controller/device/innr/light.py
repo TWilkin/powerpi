@@ -11,12 +11,11 @@ from powerpi_common.util.data import DataType, Ranges, Standardiser, restrict
 from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import DeviceAnnounceListener, OnOff, ZigbeeMixin
 from zigpy.exceptions import DeliveryError
-from zigpy.types import bitmap8, uint8_t
+from zigpy.types import bitmap8
 from zigpy.zcl import Cluster
 from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 from zigpy.zcl.clusters.lighting import Color as ColorCluster
-from zigpy.zcl.foundation import Status
 
 
 # pylint: disable=too-many-ancestors
@@ -220,22 +219,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
         command = OnOff.get(new_state)
 
-        return await self.__send_command(cluster, command)
-
-    async def __send_command(self, cluster: Cluster, command: uint8_t, **kwargs):
-        try:
-            result = await cluster.command(command, **kwargs)
-
-            if result.status != Status.SUCCESS:
-                self.log_error(
-                    f'Command {command:#04x} failed with status {result.status}'
-                )
-
-                return False
-        except DeliveryError:
-            return False
-
-        return True
+        return await self._send_command(cluster, command)
 
     async def __initialise(self):
         # retrieve what capabilities this device supports
@@ -316,7 +300,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             'transition_time': self.duration
         }
 
-        success = await self.__send_command(cluster, command, **options)
+        success = await self._send_command(cluster, command, **options)
 
         await cluster.write_attributes({'start_up_current_level': options['level']})
 
@@ -340,7 +324,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                 'transition_time': self.duration
             }
 
-            success = await self.__send_command(cluster, command, **options)
+            success = await self._send_command(cluster, command, **options)
 
             await cluster.write_attributes({
                 'start_up_color_temperature': options['color_temp_mireds']
@@ -374,7 +358,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                 'transition_time': self.duration
             }
 
-            return await self.__send_command(cluster, command, **options)
+            return await self._send_command(cluster, command, **options)
         return False
 
     def __str__(self):

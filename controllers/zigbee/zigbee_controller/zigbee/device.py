@@ -1,7 +1,10 @@
 from powerpi_common.device.mixin import InitialisableMixin
 from zigbee_controller.device import ZigbeeController
-from zigpy.types import EUI64
+from zigpy.exceptions import DeliveryError
+from zigpy.types import EUI64, uint8_t
 from zigpy.typing import DeviceType
+from zigpy.zcl import Cluster
+from zigpy.zcl.foundation import Status
 
 from .zigbee_listener import ZigBeeListener
 
@@ -27,6 +30,21 @@ class ZigbeeMixin(InitialisableMixin):
 
     async def describe(self):
         return await self._zigbee_device.get_node_descriptor()
+
+    async def _send_command(self, cluster: Cluster, command: uint8_t, **kwargs):
+        try:
+            result = await cluster.command(command, **kwargs)
+
+            if result.status != Status.SUCCESS:
+                self.log_error(
+                    f'Command {command:#04x} failed with status {result.status}'
+                )
+
+                return False
+        except DeliveryError:
+            return False
+
+        return True
 
     def __str__(self):
         device = self._zigbee_device
