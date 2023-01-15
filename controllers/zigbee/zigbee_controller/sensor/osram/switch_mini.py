@@ -1,14 +1,18 @@
 from enum import Enum
-from typing import List
-
-from zigpy.zcl.clusters.general import LevelControl, OnOff
-from zigpy.zcl.clusters.lighting import Color
+from typing import Any, List
 
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
+from powerpi_common.sensor.mixin import BatteryMixin
 from zigbee_controller.device import ZigbeeController
-from zigbee_controller.zigbee import ClusterCommandListener, ZigbeeMixin
+from zigbee_controller.zigbee import (ClusterAttributeListener,
+                                      ClusterCommandListener, ZigbeeMixin)
+from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
+from zigpy.zcl.clusters.general import OnOff as OnOffCluster
+from zigpy.zcl.clusters.general import \
+    PowerConfiguration as PowerConfigurationCluster
+from zigpy.zcl.clusters.lighting import Color as ColorCluster
 
 
 class ButtonEndpoint(int, Enum):
@@ -29,8 +33,8 @@ class PressType(str, Enum):
     RELEASE = 'release'
 
 
-class OsramSwitchMiniSensor(Sensor, ZigbeeMixin):
-    ''' 
+class OsramSwitchMiniSensor(Sensor, ZigbeeMixin, BatteryMixin):
+    '''
     Adds support for Osram Smart+ Switch Mini
     Generates the following events on button clicks where NAME is the
     configured name of the device.
@@ -62,6 +66,7 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin):
     ):
         Sensor.__init__(self, mqtt_client, **kwargs)
         ZigbeeMixin.__init__(self, controller, **kwargs)
+        BatteryMixin.__init__(self)
 
         self._logger = logger
 
@@ -101,42 +106,52 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin):
         device = self._zigbee_device
 
         # single press
-        device[ButtonEndpoint.UP].out_clusters[OnOff.cluster_id].add_listener(
+        device[ButtonEndpoint.UP].out_clusters[OnOffCluster.cluster_id].add_listener(
             ClusterCommandListener(lambda _, __, ___: self.button_press_handler(
                 Button.UP, PressType.SINGLE
             ))
         )
-        device[ButtonEndpoint.DOWN].out_clusters[OnOff.cluster_id].add_listener(
+        device[ButtonEndpoint.DOWN].out_clusters[OnOffCluster.cluster_id].add_listener(
             ClusterCommandListener(lambda _, __, ___: self.button_press_handler(
                 Button.DOWN, PressType.SINGLE
             ))
         )
-        device[ButtonEndpoint.MIDDLE].out_clusters[LevelControl.cluster_id].add_listener(
+        device[ButtonEndpoint.MIDDLE].out_clusters[LevelControlCluster.cluster_id].add_listener(
             ClusterCommandListener(lambda _, __, ___: self.button_press_handler(
                 Button.MIDDLE, PressType.SINGLE
             ))
         )
 
         # long press
-        device[ButtonEndpoint.UP].out_clusters[LevelControl.cluster_id].add_listener(
+        device[ButtonEndpoint.UP].out_clusters[LevelControlCluster.cluster_id].add_listener(
             ClusterCommandListener(
                 lambda _, __, args: self.long_button_press_handler(
                     Button.UP, args
                 )
             )
         )
-        device[ButtonEndpoint.DOWN].out_clusters[LevelControl.cluster_id].add_listener(
+        device[ButtonEndpoint.DOWN].out_clusters[LevelControlCluster.cluster_id].add_listener(
             ClusterCommandListener(
                 lambda _, __, args: self.long_button_press_handler(
                     Button.DOWN, args
                 )
             )
         )
-        device[ButtonEndpoint.MIDDLE].out_clusters[Color.cluster_id].add_listener(
+        device[ButtonEndpoint.MIDDLE].out_clusters[ColorCluster.cluster_id].add_listener(
             ClusterCommandListener(
                 lambda _, __, args: self.long_middle_button_press_handler(args)
             )
         )
+
+        # battery level
+        device[1].in_clusters[PowerConfigurationCluster.cluster_id].add_listener(
+            ClusterAttributeListener(self.__on_attribute_updated)
+        )
+
+    def __on_attribute_updated(self, attribute_id: int, value: Any):
+        if attribute_id == 0x0021:
+            # battery level
+            self.on_battery_change(value)
 
     def __str__(self):
         return ZigbeeMixin.__str__(self)
