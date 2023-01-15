@@ -197,8 +197,6 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         # also call it now in case it's already on
         await self.__initialise()
 
-        await self.on_additional_state_change({'brightness': 65000})
-
     def _additional_state_keys(self):
         keys = [DataType.BRIGHTNESS]
 
