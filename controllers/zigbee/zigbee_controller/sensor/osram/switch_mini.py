@@ -36,6 +36,13 @@ class PressType(str, Enum):
 class OsramSwitchMiniSensor(Sensor, ZigbeeMixin, BatteryMixin):
     '''
     Adds support for Osram Smart+ Switch Mini
+
+    To pair this device with the network you need to use the undocumented UP + MIDDLE button
+    pairing mode, not the "Touchlink" mode described in the documentation leaflet as this will
+    try and pair directly using LightLink.
+
+    To unpair this device from the network use the undocumented DOWN + MIDDLE button.
+
     Generates the following events on button clicks where NAME is the
     configured name of the device.
 
