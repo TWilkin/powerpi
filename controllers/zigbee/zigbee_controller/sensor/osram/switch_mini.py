@@ -94,11 +94,12 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin, BatteryMixin):
 
         self._broadcast('press', message)
 
-        # we want to get the updated battery
-        ensure_future(self._zigbee_device[1]
-                      .in_clusters[PowerConfigurationCluster.cluster_id]
-                      .read_attributes(['battery_voltage'])
-                      )
+        # we want to get the updated battery level
+        ensure_future(
+            self._zigbee_device[1]
+                .in_clusters[PowerConfigurationCluster.cluster_id]
+                .read_attributes(['battery_voltage'])
+        )
 
     def long_button_press_handler(self, button: Button, args: List[List[int]]):
         if len(args) == 1:
@@ -166,15 +167,9 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin, BatteryMixin):
         # battery level
         cluster: PowerConfigurationCluster = device[1] \
             .in_clusters[PowerConfigurationCluster.cluster_id]
-        attribute = cluster.find_attribute('battery_voltage')
         cluster.add_listener(
             ClusterAttributeListener(self.__on_attribute_updated)
         )
-        await cluster.configure_reporting(attribute.id, 1, 10, 1)
-
-        cluster: PowerConfigurationCluster = self._zigbee_device[
-            1].in_clusters[PowerConfigurationCluster.cluster_id]
-        await cluster.read_attributes(['battery_voltage'])
 
     def __on_attribute_updated(self, attribute_id: int, value: Any):
         device = self._zigbee_device
