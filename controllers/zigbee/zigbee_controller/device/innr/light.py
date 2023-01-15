@@ -33,10 +33,10 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             lambda value: math.ceil(
                 (value / Ranges.UINT8[1]) * Ranges.UINT16[1])
         ),
-        # the duration the bulb supports is measured in seconds
+        # the duration the bulb supports seems to be 1/10 a second
         DataType.DURATION: (
-            lambda value: math.ceil(value / 1000),
-            lambda value: math.ceil(value * 1000)
+            lambda value: math.ceil(value / 100),
+            lambda value: math.ceil(value * 100)
         ),
         # convert from Kelvin to mired and vice versa
         DataType.TEMPERATURE: (
@@ -196,6 +196,8 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
         # also call it now in case it's already on
         await self.__initialise()
+
+        await self.on_additional_state_change({'brightness': 65000})
 
     def _additional_state_keys(self):
         keys = [DataType.BRIGHTNESS]
