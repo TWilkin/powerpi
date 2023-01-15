@@ -1,11 +1,12 @@
 from enum import Enum
 
 from powerpi_common.device.types import DeviceStatus
+from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 
 
 class OnOff(int, Enum):
-    OFF = 0x00
-    ON = 0x01
+    OFF = OnOffCluster.commands_by_name['off'].id
+    ON = OnOffCluster.commands_by_name['on'].id
 
     @classmethod
     def get(cls, state: DeviceStatus):

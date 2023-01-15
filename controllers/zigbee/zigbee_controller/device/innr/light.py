@@ -11,6 +11,7 @@ from powerpi_common.util.data import DataType, Ranges, Standardiser, restrict
 from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import DeviceAnnounceListener, OnOff, ZigbeeMixin
 from zigpy.exceptions import DeliveryError
+from zigpy.types import bitmap8, uint8_t
 from zigpy.zcl import Cluster
 from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
@@ -221,7 +222,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
         return await self.__send_command(cluster, command)
 
-    async def __send_command(self, cluster: Cluster, command: int, **kwargs):
+    async def __send_command(self, cluster: Cluster, command: uint8_t, **kwargs):
         try:
             result = await cluster.command(command, **kwargs)
 
@@ -282,7 +283,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         device = self._zigbee_device
 
         # the options for each cluster
-        pairs: List[Tuple[Cluster, int]] = zip([
+        pairs: List[Tuple[Cluster, bitmap8]] = zip([
             device[1].in_clusters[ColorCluster.cluster_id],
             device[1].in_clusters[LevelControlCluster.cluster_id]
         ], [
@@ -302,7 +303,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         cluster: LevelControlCluster = self._zigbee_device[1] \
             .in_clusters[LevelControlCluster.cluster_id]
 
-        command = 0x00  # move_to_level
+        command = cluster.commands_by_name['move_to_level'].id
 
         options = {
             'level': restrict(
@@ -326,7 +327,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             cluster: ColorCluster = self._zigbee_device[1] \
                 .in_clusters[ColorCluster.cluster_id]
 
-            command = 0x0A  # move_to_color_temp
+            command = cluster.commands_by_name['move_to_color_temp'].id
 
             options = {
                 'color_temp_mireds': restrict(
@@ -353,7 +354,7 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             cluster: ColorCluster = self._zigbee_device[1] \
                 .in_clusters[ColorCluster.cluster_id]
 
-            command = 0x06  # move_to_hue_and_saturation
+            command = cluster.commands_by_name['move_to_hue_and_saturation'].id
 
             options = {
                 'hue': restrict(
