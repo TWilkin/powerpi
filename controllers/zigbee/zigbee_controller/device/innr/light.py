@@ -9,7 +9,7 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util.data import DataType, Ranges, Standardiser, restrict
 from zigbee_controller.device.zigbee_controller import ZigbeeController
-from zigbee_controller.zigbee import DeviceAnnounceListener, OnOff, ZigbeeMixin
+from zigbee_controller.zigbee import DeviceAnnounceListener, ZigbeeMixin
 from zigpy.exceptions import DeliveryError
 from zigpy.types import bitmap8
 from zigpy.zcl import Cluster
@@ -215,11 +215,25 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
     async def _update_device_state(self, new_state: DeviceStatus):
         device = self._zigbee_device
-        cluster: OnOffCluster = device[1].in_clusters[OnOffCluster.cluster_id]
+        cluster: LevelControlCluster = device[1].in_clusters[LevelControlCluster.cluster_id]
 
-        command = OnOff.get(new_state)
+        command = cluster.commands_by_name['move_to_level_with_on_off'].id
 
-        return await self._send_command(cluster, command)
+        brightness = getattr(self.additional_state, 'brightness', Ranges.UINT16[1]) \
+            if new_state == DeviceStatus.ON else 0
+
+        options = {
+            'level': restrict(
+                self.__standardiser.convert(
+                    DataType.BRIGHTNESS,
+                    brightness
+                ),
+                Ranges.UINT8
+            ),
+            'transition_time': self.duration
+        }
+
+        return await self._send_command(cluster, command, **options)
 
     async def __initialise(self):
         # retrieve what capabilities this device supports
