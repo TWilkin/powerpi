@@ -208,32 +208,10 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         return keys
 
     async def _turn_on(self):
-        return await self._update_device_state(DeviceStatus.ON)
+        return await self.__set_power_state(DeviceStatus.ON)
 
     async def _turn_off(self):
-        return await self._update_device_state(DeviceStatus.OFF)
-
-    async def _update_device_state(self, new_state: DeviceStatus):
-        device = self._zigbee_device
-        cluster: LevelControlCluster = device[1].in_clusters[LevelControlCluster.cluster_id]
-
-        command = cluster.commands_by_name['move_to_level_with_on_off'].id
-
-        brightness = getattr(self.additional_state, 'brightness', Ranges.UINT16[1]) \
-            if new_state == DeviceStatus.ON else 0
-
-        options = {
-            'level': restrict(
-                self.__standardiser.convert(
-                    DataType.BRIGHTNESS,
-                    brightness
-                ),
-                Ranges.UINT8
-            ),
-            'transition_time': self.duration
-        }
-
-        return await self._send_command(cluster, command, **options)
+        return await self.__set_power_state(DeviceStatus.OFF)
 
     async def __initialise(self):
         # retrieve what capabilities this device supports
@@ -296,6 +274,28 @@ class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             self.__options_set = True
         except DeliveryError:
             self.__options_set = False
+
+    async def __set_power_state(self, new_state: DeviceStatus):
+        device = self._zigbee_device
+        cluster: LevelControlCluster = device[1].in_clusters[LevelControlCluster.cluster_id]
+
+        command = cluster.commands_by_name['move_to_level_with_on_off'].id
+
+        brightness = getattr(self.additional_state, 'brightness', Ranges.UINT16[1]) \
+            if new_state == DeviceStatus.ON else 0
+
+        options = {
+            'level': restrict(
+                self.__standardiser.convert(
+                    DataType.BRIGHTNESS,
+                    brightness
+                ),
+                Ranges.UINT8
+            ),
+            'transition_time': self.duration
+        }
+
+        return await self._send_command(cluster, command, **options)
 
     async def __set_brightness(self, brightness: int):
         cluster: LevelControlCluster = self._zigbee_device[1] \
