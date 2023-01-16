@@ -35,7 +35,7 @@ class ZigbeeMixin(InitialisableMixin):
         try:
             result = await cluster.command(command, **kwargs)
 
-            if result.status != Status.SUCCESS:
+            if getattr(result, 'status', Status.SUCCESS) != Status.SUCCESS:
                 self.log_error(
                     f'Command {command:#04x} failed with status {result.status}'
                 )
