@@ -50,7 +50,7 @@
                         "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/node/Node.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/InnrLight.schema.json"
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/ZigBeeLight.schema.json"
                     },
                     {
                         "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/ZigBeePairing.schema.json"

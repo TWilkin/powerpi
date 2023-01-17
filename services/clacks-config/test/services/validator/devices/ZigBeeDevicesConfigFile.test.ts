@@ -70,12 +70,12 @@ describe("ZigBee Devices", () => {
         });
     });
 
-    describe("Innr Light", () => {
+    describe("Light", () => {
         const { testValid, testInvalid } = commonZigBeeTests({
             devices: [
                 {
-                    type: "innr_light",
-                    name: "Innr",
+                    type: "zigbee_light",
+                    name: "Light",
                     nwk: "0xabcd",
                     ieee: "00:11:22:33:44:55:66:77",
                     duration: 1000,
@@ -87,8 +87,8 @@ describe("ZigBee Devices", () => {
             testValid({
                 devices: [
                     {
-                        type: "innr_light",
-                        name: "Innr",
+                        type: "zigbee_light",
+                        name: "Light",
                         nwk: "0xabcd",
                         ieee: "00:11:22:33:44:55:66:77",
                     },
@@ -100,8 +100,8 @@ describe("ZigBee Devices", () => {
                 testInvalid({
                     devices: [
                         {
-                            type: "innr_light",
-                            name: "Innr",
+                            type: "zigbee_light",
+                            name: "Light",
                             nwk: "0xabcd",
                             ieee: "00:11:22:33:44:55:66:77",
                             duration,

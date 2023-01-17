@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/InnrLight.schema.json",
-    "title": "InnrLight",
-    "description": "The Innr Light device",
+    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/ZigBeeLight.schema.json",
+    "title": "ZigBeeLight",
+    "description": "The ZigBee Light device",
     "type": "object",
     "allOf": [
         {
@@ -17,7 +17,7 @@
     ],
     "properties": {
         "type": {
-            "const": "innr_light"
+            "const": "zigbee_light"
         },
         "duration": {
             "description": "How long to take to dim/brighten the light when turning on/off in milliseconds",
