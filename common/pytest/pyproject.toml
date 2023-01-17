@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "powerpi-common-test"
-version = "0.2.4"
+version = "0.2.5"
 description = "PowerPi Common Python Test Library"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]

@@ -1,81 +1,87 @@
+from asyncio import Future
 from typing import List, Tuple
+from unittest.mock import MagicMock
 
 import pytest
-
-from pytest_mock import MockerFixture
-
-from powerpi_common_test.device.mixin import InitialisableMixinTestBase
-from powerpi_common_test.mqtt import mock_producer
-from powerpi_common_test.sensor import SensorTestBase
-from zigbee_controller.sensor.osram.switch_mini import Button, PressType, OsramSwitchMiniSensor
+from zigbee_controller.sensor.osram.switch_mini import (Button,
+                                                        OsramSwitchMiniSensor,
+                                                        PressType)
+from zigpy.zcl import Cluster
 
 
-class TestOsramSwitchMiniSensor(SensorTestBase, InitialisableMixinTestBase):
-    def get_subject(self, mocker: MockerFixture):
-        self.controller = mocker.MagicMock()
-
-        self.endpoints = {
-            1: mocker.Mock(),
-            2: mocker.Mock(),
-            3: mocker.Mock()
-        }
-
-        def getitem(key: str):
-            return self.endpoints[key]
-
-        self.controller.__getitem__.side_effect = getitem
-
-        self.publish = mock_producer(mocker, self.mqtt_client)
-
-        return OsramSwitchMiniSensor(
-            self.logger, self.controller, self.mqtt_client,
-            ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA', name='test'
-        )
-
+class TestOsramSwitchMiniSensor:
     @pytest.mark.parametrize('button', [Button.UP, Button.MIDDLE, Button.DOWN])
-    def test_single_press_handler(self, mocker: MockerFixture, button: Button):
-        subject = self.create_subject(mocker)
-
+    def test_single_press_handler(
+        self,
+        subject: OsramSwitchMiniSensor,
+        powerpi_mqtt_producer: MagicMock,
+        button: Button
+    ):
         subject.button_press_handler(button, PressType.SINGLE)
 
-        self.__verify_publish(button, PressType.SINGLE)
+        self.__verify_publish(powerpi_mqtt_producer, button, PressType.SINGLE)
 
     @pytest.mark.parametrize('button', [Button.UP, Button.DOWN])
-    def test_long_button_press_handler_hold(self, mocker: MockerFixture, button: Button):
-        subject = self.create_subject(mocker)
-
+    def test_long_button_press_handler_hold(
+        self,
+        subject: OsramSwitchMiniSensor,
+        powerpi_mqtt_producer: MagicMock,
+        button: Button
+    ):
         subject.long_button_press_handler(button, [[0, 38]])
 
-        self.__verify_publish(button, PressType.HOLD)
+        self.__verify_publish(powerpi_mqtt_producer, button, PressType.HOLD)
 
     @pytest.mark.parametrize('button', [Button.UP, Button.DOWN])
-    def test_long_button_press_handler_release(self, mocker: MockerFixture, button: Button):
-        subject = self.create_subject(mocker)
-
+    def test_long_button_press_handler_release(
+        self,
+        subject: OsramSwitchMiniSensor,
+        powerpi_mqtt_producer: MagicMock,
+        button: Button
+    ):
         subject.long_button_press_handler(button, [[]])
 
-        self.__verify_publish(button, PressType.RELEASE)
+        self.__verify_publish(powerpi_mqtt_producer, button, PressType.RELEASE)
 
     @pytest.mark.parametrize('args', [(PressType.HOLD, [254, 2]), (PressType.RELEASE, [0, 0])])
     def test_long_middle_button_press_handler(
         self,
-        mocker: MockerFixture,
+        subject: OsramSwitchMiniSensor,
+        powerpi_mqtt_producer: MagicMock,
         args: Tuple[PressType, List[int]]
     ):
-        subject = self.create_subject(mocker)
+        press_type, data = args
 
-        subject.long_middle_button_press_handler([args[1]])
+        subject.long_middle_button_press_handler([data])
 
-        self.__verify_publish(Button.MIDDLE, args[0])
+        self.__verify_publish(powerpi_mqtt_producer, Button.MIDDLE, press_type)
 
-    def test_long_middle_button_press_handler_skip(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    def test_long_middle_button_press_handler_skip(
+        self,
+        subject: OsramSwitchMiniSensor,
+        powerpi_mqtt_producer: MagicMock,
+    ):
         subject.long_middle_button_press_handler([[1, 1]])
 
-        self.publish.assert_not_called()
+        powerpi_mqtt_producer.assert_not_called()
 
-    def __verify_publish(self, button: Button, press_type: PressType):
+    @pytest.fixture
+    def subject(self, powerpi_logger, zigbee_controller, powerpi_mqtt_client):
+        return OsramSwitchMiniSensor(
+            powerpi_logger, zigbee_controller, powerpi_mqtt_client,
+            ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA', name='test'
+        )
+
+    @pytest.fixture(autouse=True)
+    def cluster(self, zigbee_in_cluster: Cluster):
+        zigbee_in_cluster.read_attributes.return_value = Future()
+
+    def __verify_publish(
+        self,
+        powerpi_mqtt_producer: MagicMock,
+        button: Button,
+        press_type: PressType
+    ):
         topic = 'event/test/press'
 
         message = {
@@ -83,4 +89,5 @@ class TestOsramSwitchMiniSensor(SensorTestBase, InitialisableMixinTestBase):
             "type": press_type
         }
 
-        self.publish.assert_called_once_with(topic, message)
+        powerpi_mqtt_producer.assert_called_once()
+        powerpi_mqtt_producer.assert_called_once_with(topic, message)
