@@ -7,7 +7,7 @@ from powerpi_common.device import AdditionalStateDevice, DeviceStatus
 from powerpi_common.device.mixin import AdditionalState, PollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
-from powerpi_common.util.data import DataType, Ranges, Standardiser, restrict
+from powerpi_common.util.data import DataType, Range, Ranges, Standardiser
 from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import DeviceAnnounceListener, ZigbeeMixin
 from zigpy.exceptions import DeliveryError
@@ -29,9 +29,10 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         # TODO this should be a percentage, but making consistent with LIFX for now
         DataType.BRIGHTNESS: (
             lambda value: math.ceil(
-                (value / Ranges.UINT16[1]) * Ranges.UINT8[1]),
+                (value / Ranges.UINT16.max) * Ranges.UINT8.max),
             lambda value: math.ceil(
-                (value / Ranges.UINT8[1]) * Ranges.UINT16[1])
+                (value / Ranges.UINT8.max) * Ranges.UINT16.max),
+            Ranges.UINT8
         ),
         # the duration the bulb supports seems to be 1/10 a second
         DataType.DURATION: (
@@ -41,17 +42,20 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         # convert from Kelvin to mired and vice versa
         DataType.TEMPERATURE: (
             lambda value: math.ceil(1_000_000 / value),  # mired = 1m / kelvin
-            lambda value: math.ceil(1_000_000 / value)   # kelvin = 1m / mired
+            lambda value: math.ceil(1_000_000 / value),  # kelvin = 1m / mired
+            Ranges.UINT16
         ),
         # hue is 0-360
         DataType.HUE: (
             lambda value: math.ceil((value / 360) * 254),
             lambda value: math.ceil((value / 254) * 360),
+            Ranges.UINT8
         ),
         # saturation is a percentage
         DataType.SATURATION: (
             lambda value: math.ceil((value / 100) * 254),
             lambda value: math.ceil((value / 254) * 100),
+            Ranges.UINT8
         ),
     })
 
@@ -76,7 +80,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         self.__options_set = False
         self.__supports_temperature: Union[bool, None] = None
         self.__supports_colour: Union[bool, None] = None
-        self.__colour_temp_range: Union[Tuple[int, int], None] = None
+        self.__colour_temp_range: Union[Range, None] = None
 
     @property
     def duration(self):
@@ -245,7 +249,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                 & ColorCluster.ColorCapabilities.Hue_and_saturation \
                 == ColorCluster.ColorCapabilities.Hue_and_saturation
 
-            self.__colour_temp_range = (
+            self.__colour_temp_range = Range(
                 attributes['color_temp_physical_min'], attributes['color_temp_physical_max']
             )
         except DeliveryError:
@@ -281,16 +285,13 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
         command = cluster.commands_by_name['move_to_level_with_on_off'].id
 
-        brightness = getattr(self.additional_state, 'brightness', Ranges.UINT16[1]) \
+        brightness = getattr(self.additional_state, 'brightness', Ranges.UINT16.max) \
             if new_state == DeviceStatus.ON else 0
 
         options = {
-            'level': restrict(
-                self.__standardiser.convert(
-                    DataType.BRIGHTNESS,
-                    brightness
-                ),
-                Ranges.UINT8
+            'level': self.__standardiser.convert(
+                DataType.BRIGHTNESS,
+                brightness
             ),
             'transition_time': self.duration
         }
@@ -304,12 +305,9 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         command = cluster.commands_by_name['move_to_level'].id
 
         options = {
-            'level': restrict(
-                self.__standardiser.convert(
-                    DataType.BRIGHTNESS,
-                    brightness
-                ),
-                Ranges.UINT8
+            'level': self.__standardiser.convert(
+                DataType.BRIGHTNESS,
+                brightness
             ),
             'transition_time': self.duration
         }
@@ -328,12 +326,11 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             command = cluster.commands_by_name['move_to_color_temp'].id
 
             options = {
-                'color_temp_mireds': restrict(
+                'color_temp_mireds': self.__colour_temp_range.restrict(
                     self.__standardiser.convert(
                         DataType.TEMPERATURE,
                         temperature
-                    ),
-                    self.__colour_temp_range
+                    )
                 ),
                 'transition_time': self.duration
             }
@@ -355,19 +352,13 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             command = cluster.commands_by_name['move_to_hue_and_saturation'].id
 
             options = {
-                'hue': restrict(
-                    self.__standardiser.convert(
-                        DataType.HUE,
-                        hue
-                    ),
-                    Ranges.UINT8
+                'hue': self.__standardiser.convert(
+                    DataType.HUE,
+                    hue
                 ),
-                'saturation': restrict(
-                    self.__standardiser.convert(
-                        DataType.SATURATION,
-                        saturation
-                    ),
-                    Ranges.UINT8
+                'saturation': self.__standardiser.convert(
+                    DataType.SATURATION,
+                    saturation
                 ),
                 'transition_time': self.duration
             }
