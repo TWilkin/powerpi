@@ -1,7 +1,7 @@
 from powerpi_common.device.mixin import InitialisableMixin
 from zigbee_controller.device import ZigbeeController
 from zigpy.exceptions import DeliveryError
-from zigpy.types import EUI64, uint8_t
+from zigpy.types import EUI64, NWK, uint8_t
 from zigpy.typing import DeviceType
 from zigpy.zcl import Cluster
 from zigpy.zcl.foundation import Status
@@ -19,7 +19,15 @@ class ZigbeeMixin(InitialisableMixin):
     ):
         self.__controller = controller
         self.__ieee = EUI64.convert(ieee)
-        self.__nwk = int(nwk, 16)
+        self.__nwk = NWK.convert(nwk[2:])
+
+    @property
+    def ieee(self):
+        return self.__ieee
+
+    @property
+    def nwk(self):
+        return self.__nwk
 
     @property
     def _zigbee_device(self) -> DeviceType:

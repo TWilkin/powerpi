@@ -12,6 +12,7 @@ from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import DeviceAnnounceListener, ZigbeeMixin
 from zigpy.exceptions import DeliveryError
 from zigpy.types import bitmap8
+from zigpy.typing import DeviceType
 from zigpy.zcl import Cluster
 from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
@@ -194,8 +195,8 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
     async def initialise(self):
         # when the device joins the network retrieve its capabilities and set the options
-        self._add_zigbee_listener(DeviceAnnounceListener(
-            lambda _: ensure_future(self.__initialise()))
+        self._add_zigbee_listener(
+            DeviceAnnounceListener(self.__on_device_announce)
         )
 
         # also call it now in case it's already on
@@ -216,6 +217,10 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
 
     async def _turn_off(self):
         return await self.__set_power_state(DeviceStatus.OFF)
+
+    def __on_device_announce(self, device: DeviceType):
+        if device.nwk == self.nwk and device.ieee == self.ieee:
+            ensure_future(self.__initialise())
 
     async def __initialise(self):
         # retrieve what capabilities this device supports
