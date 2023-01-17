@@ -19,9 +19,9 @@ from zigpy.zcl.clusters.lighting import Color as ColorCluster
 
 
 # pylint: disable=too-many-ancestors
-class InnrLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
+class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
     '''
-    Adds support for Innr Smart RGB bulb.
+    Adds support for ZigBee RGB/temperature/brightness lights.
     '''
 
     __standardiser = Standardiser({
