@@ -42,8 +42,10 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
         ),
         # convert from Kelvin to mired and vice versa
         DataType.TEMPERATURE: (
-            lambda value: math.ceil(1_000_000 / value),  # mired = 1m / kelvin
-            lambda value: math.ceil(1_000_000 / value),  # kelvin = 1m / mired
+            # mired = 1m / kelvin
+            lambda value: 0 if value == 0 else math.ceil(1_000_000 / value),
+            # kelvin = 1m / mired
+            lambda value: 0 if value == 0 else math.ceil(1_000_000 / value),
             Ranges.UINT16
         ),
         # hue is 0-360
@@ -349,7 +351,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             return success
         return False
 
-    async def __set_hue_saturation(self, hue: int, saturation):
+    async def __set_hue_saturation(self, hue: int, saturation: int):
         if self.__supports_colour:
             cluster: ColorCluster = self._zigbee_device[1] \
                 .in_clusters[ColorCluster.cluster_id]
