@@ -168,10 +168,10 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin, BatteryMixin):
         cluster: PowerConfigurationCluster = device[1] \
             .in_clusters[PowerConfigurationCluster.cluster_id]
         cluster.add_listener(
-            ClusterAttributeListener(self.__on_attribute_updated)
+            ClusterAttributeListener(self.on_attribute_updated)
         )
 
-    def __on_attribute_updated(self, attribute_id: int, value: Any):
+    def on_attribute_updated(self, attribute_id: int, value: Any):
         device = self._zigbee_device
         cluster: PowerConfigurationCluster = device[1] \
             .in_clusters[PowerConfigurationCluster.cluster_id]

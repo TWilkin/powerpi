@@ -1,10 +1,11 @@
 from asyncio import Future
 from typing import List, Tuple
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, PropertyMock
 
 import pytest
 from powerpi_common_test.device.base import BaseDeviceTestBaseNew
 from powerpi_common_test.device.mixin import InitialisableMixinTestBaseNew
+from pytest_mock import MockerFixture
 from zigbee_controller.sensor.osram.switch_mini import (Button,
                                                         OsramSwitchMiniSensor,
                                                         PressType)
@@ -64,6 +65,51 @@ class TestOsramSwitchMiniSensor(BaseDeviceTestBaseNew, InitialisableMixinTestBas
         powerpi_mqtt_producer: MagicMock,
     ):
         subject.long_middle_button_press_handler([[1, 1]])
+
+        powerpi_mqtt_producer.assert_not_called()
+
+    @pytest.mark.parametrize('values', [
+        (32, 100),
+        (31, 100),
+        (27, 0),
+        (28, 0),
+        (29, 29),
+        (30, 64)
+    ])
+    def test_on_attribute_updated(
+        self,
+        subject: OsramSwitchMiniSensor,
+        zigbee_in_cluster: Cluster,
+        powerpi_mqtt_producer: MagicMock,
+        mocker: MockerFixture,
+        values: Tuple[int, int]
+    ):
+        #pylint: disable=too-many-arguments
+        (data, percent) = values
+
+        attribute = mocker.MagicMock()
+        type(attribute).id = PropertyMock(return_value=0x0020)
+        zigbee_in_cluster.find_attribute.return_value = attribute
+
+        subject.on_attribute_updated(0x0020, data)
+
+        topic = 'event/test/battery'
+        message = {'value': percent, 'unit': '%'}
+        powerpi_mqtt_producer.assert_called_once_with(topic, message)
+
+    def test_on_attribute_updated_wrong_attribute(
+        self,
+        subject: OsramSwitchMiniSensor,
+        zigbee_in_cluster: Cluster,
+        powerpi_mqtt_producer: MagicMock,
+        mocker: MockerFixture
+    ):
+        #pylint: disable=too-many-arguments
+        attribute = mocker.MagicMock()
+        type(attribute).id = PropertyMock(return_value=0x0021)
+        zigbee_in_cluster.find_attribute.return_value = attribute
+
+        subject.on_attribute_updated(0x0020, 29)
 
         powerpi_mqtt_producer.assert_not_called()
 
