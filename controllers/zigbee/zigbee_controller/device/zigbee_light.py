@@ -168,10 +168,11 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             }
 
             # update the brightness
-            if not await self.__set_brightness(new_additional_state[DataType.BRIGHTNESS]):
-                new_additional_state[DataType.BRIGHTNESS] = getattr(
-                    self.additional_state, DataType.BRIGHTNESS, None
-                )
+            if DataType.BRIGHTNESS in new_additional_state:
+                if not await self.__set_brightness(new_additional_state[DataType.BRIGHTNESS]):
+                    new_additional_state[DataType.BRIGHTNESS] = getattr(
+                        self.additional_state, DataType.BRIGHTNESS, None
+                    )
 
             # update the colour temperature
             if DataType.TEMPERATURE in new_additional_state:
