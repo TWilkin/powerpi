@@ -89,6 +89,18 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
     def duration(self):
         return self.__standardiser.convert(DataType.DURATION, self.__duration)
 
+    @property
+    def supports_colour(self):
+        return self.__supports_colour
+
+    @property
+    def supports_temperature(self):
+        return self.__supports_temperature
+
+    @property
+    def temperature_range(self):
+        return self.__colour_temp_range
+
     async def poll(self):
         # we need the device to be initialised
         await self.__initialise()
