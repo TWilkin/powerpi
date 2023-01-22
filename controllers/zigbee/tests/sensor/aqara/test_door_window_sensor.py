@@ -4,11 +4,12 @@ from unittest.mock import MagicMock
 import pytest
 from powerpi_common_test.device.base import BaseDeviceTestBaseNew
 from powerpi_common_test.device.mixin import InitialisableMixinTestBaseNew
+from powerpi_common_test.sensor.mixin import BatteryMixinTestBaseNew
 from zigbee_controller.sensor.aqara.door_window_sensor import \
     AqaraDoorWindowSensor
 
 
-class TestAqaraDoorWindowSensor(BaseDeviceTestBaseNew, InitialisableMixinTestBaseNew):
+class TestAqaraDoorWindowSensor(BaseDeviceTestBaseNew, InitialisableMixinTestBaseNew, BatteryMixinTestBaseNew):
     @pytest.mark.parametrize(
         'values', [(0, 'close'), (1, 'open'), (False, 'close'), (True, 'open')]
     )
