@@ -40,6 +40,7 @@ class ZigbeeMixin(InitialisableMixin):
         return await self._zigbee_device.get_node_descriptor()
 
     async def _send_command(self, cluster: Cluster, command: uint8_t, **kwargs):
+        self.log_debug(f'Sending command: {cluster.name} {command}: {kwargs}')
         try:
             result = await cluster.command(command, **kwargs)
 

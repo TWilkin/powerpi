@@ -177,8 +177,9 @@ class TestZigbeeeLight(
         {'brightness': 51_400},
         {'temperature': 6667},
         {'hue': 180, 'saturation': 50},
-        {'brightness': 51_400, 'hue': 180, 'saturation': 50},
         {'brightness': 51_400, 'temperature': 6667},
+        {'brightness': 51_400, 'hue': 180, 'saturation': 50},
+        {'brightness': 51_400, 'temperature': 6667, 'hue': 180, 'saturation': 50}
     ])
     async def test_on_additional_state_change_sets_values(
         self,
@@ -226,16 +227,19 @@ class TestZigbeeeLight(
             call({'options': 1})
         ]
 
-        assert result.get('brightness') \
-            == additional_state.get('brightness')
+        if temperature:
+            assert result.get('temperature') \
+                == additional_state.get('temperature')
 
-        if 'brightness' in additional_state:
-            expected_command_calls.append(call(
-                1, level=200, transition_time=13
-            ))
-            expected_write_calls.append(call(
-                {'start_up_current_level': 200}
-            ))
+            if 'temperature' in additional_state:
+                expected_command_calls.append(call(
+                    2, color_temp_mireds=150, transition_time=13
+                ))
+                expected_write_calls.append(call(
+                    {'start_up_color_temperature': 150}
+                ))
+        else:
+            assert 'temperature' not in result
 
         if colour:
             assert result.get('hue') \
@@ -252,19 +256,16 @@ class TestZigbeeeLight(
             assert 'hue' not in result
             assert 'saturation' not in result
 
-        if temperature:
-            assert result.get('temperature') \
-                == additional_state.get('temperature')
+        assert result.get('brightness') \
+            == additional_state.get('brightness')
 
-            if 'temperature' in additional_state:
-                expected_command_calls.append(call(
-                    2, color_temp_mireds=150, transition_time=13
-                ))
-                expected_write_calls.append(call(
-                    {'start_up_color_temperature': 150}
-                ))
-        else:
-            assert 'temperature' not in result
+        if 'brightness' in additional_state:
+            expected_command_calls.append(call(
+                1, level=200, transition_time=13
+            ))
+            expected_write_calls.append(call(
+                {'start_up_current_level': 200}
+            ))
 
         if len(expected_command_calls) > 0:
             cluster.command.assert_has_calls(expected_command_calls)

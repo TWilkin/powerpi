@@ -174,27 +174,27 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             # we need the device to be initialised
             await self.__initialise()
 
+            # is this a temperature or colour command
+            temperature = DataType.TEMPERATURE in new_additional_state
+            colour = DataType.HUE in new_additional_state \
+                and DataType.SATURATION in new_additional_state
+
             new_additional_state = {
                 **self.additional_state,
                 **new_additional_state
             }
 
-            # update the brightness
-            if DataType.BRIGHTNESS in new_additional_state:
-                if not await self.__set_brightness(new_additional_state[DataType.BRIGHTNESS]):
-                    new_additional_state[DataType.BRIGHTNESS] = getattr(
-                        self.additional_state, DataType.BRIGHTNESS, None
-                    )
-
             # update the colour temperature
-            if DataType.TEMPERATURE in new_additional_state:
-                if not await self.__set_temperature(new_additional_state[DataType.TEMPERATURE]):
+            if temperature:
+                if not await self.__set_temperature(
+                    new_additional_state[DataType.TEMPERATURE]
+                ):
                     new_additional_state[DataType.TEMPERATURE] = getattr(
                         self.additional_state, DataType.TEMPERATURE, None
                     )
 
             # update the hue/saturation
-            if DataType.HUE in new_additional_state and DataType.SATURATION in new_additional_state:
+            if colour:
                 if not await self.__set_hue_saturation(
                     new_additional_state[DataType.HUE],
                     new_additional_state[DataType.SATURATION]
@@ -204,6 +204,13 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                     )
                     new_additional_state[DataType.SATURATION] = getattr(
                         self.additional_state, DataType.SATURATION, None
+                    )
+
+            # update the brightness
+            if DataType.BRIGHTNESS in new_additional_state:
+                if not await self.__set_brightness(new_additional_state[DataType.BRIGHTNESS]):
+                    new_additional_state[DataType.BRIGHTNESS] = getattr(
+                        self.additional_state, DataType.BRIGHTNESS, None
                     )
 
         # remove any keys with a None value
@@ -337,11 +344,9 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
             'transition_time': self.duration
         }
 
-        success = await self._send_command(cluster, command, **options)
-
         await cluster.write_attributes({'start_up_current_level': options['level']})
 
-        return success
+        return await self._send_command(cluster, command, **options)
 
     async def __set_temperature(self, temperature: int):
         if self.__supports_temperature:
@@ -360,13 +365,11 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                 'transition_time': self.duration
             }
 
-            success = await self._send_command(cluster, command, **options)
-
             await cluster.write_attributes({
                 'start_up_color_temperature': options['color_temp_mireds']
             })
 
-            return success
+            return await self._send_command(cluster, command, **options)
         return False
 
     async def __set_hue_saturation(self, hue: int, saturation: int):
