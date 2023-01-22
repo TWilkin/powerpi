@@ -206,6 +206,11 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                         self.additional_state, DataType.SATURATION, None
                     )
 
+        # remove any keys with a None value
+        new_additional_state = dict(
+            (key, value) for key, value in new_additional_state.items() if value is not None
+        )
+
         return new_additional_state
 
     async def initialise(self):
