@@ -1,2 +1,2 @@
 from .additional_state import AdditionalStateDeviceTestBase
-from .device import DeviceTestBase
+from .device import DeviceTestBase, DeviceTestBaseNew
