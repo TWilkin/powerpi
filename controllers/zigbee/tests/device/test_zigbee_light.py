@@ -2,7 +2,7 @@ from asyncio import Future
 from typing import List
 
 import pytest
-from powerpi_common_test.device import DeviceTestBaseNew
+from powerpi_common_test.device import AdditionalStateDeviceTestBaseNew
 from powerpi_common_test.device.mixin import (InitialisableMixinTestBaseNew,
                                               PollableMixingTestBaseNew)
 from pytest_mock import MockerFixture
@@ -11,7 +11,7 @@ from zigpy.zcl import Cluster
 from zigpy.zcl.foundation import Status
 
 
-class TestZigbeeeLight(DeviceTestBaseNew, InitialisableMixinTestBaseNew, PollableMixingTestBaseNew):
+class TestZigbeeeLight(AdditionalStateDeviceTestBaseNew, InitialisableMixinTestBaseNew, PollableMixingTestBaseNew):
     @pytest.fixture
     def subject(
         self,

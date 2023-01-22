@@ -151,7 +151,7 @@ class DeviceTestBase(BaseDeviceTestBase):
 
 
 class DeviceTestBaseNew(BaseDeviceTestBaseNew):
-    __initial_state_consumer: Union[MQTTConsumer, None] = None
+    _initial_state_consumer: Union[MQTTConsumer, None] = None
 
     @pytest.mark.asyncio
     async def test_turn_on(self, subject: Device):
@@ -237,12 +237,12 @@ class DeviceTestBaseNew(BaseDeviceTestBaseNew):
         assert subject.state == 'unknown'
 
         # first message should set the state
-        await self.__initial_state_consumer.on_message(message, subject.name, 'status')
+        await self._initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
 
         # subsequent messages should be ignored
         message['state'] = 'off'
-        await self.__initial_state_consumer.on_message(message, subject.name, 'status')
+        await self._initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
 
     @pytest.fixture(autouse=True)
@@ -253,6 +253,6 @@ class DeviceTestBaseNew(BaseDeviceTestBaseNew):
     def powerpi_mqtt_initial_state(self, powerpi_mqtt_client: MQTTClient, mocker: MockerFixture):
         def add_consumer(consumer: MQTTConsumer):
             if consumer.topic.endswith('status'):
-                self.__initial_state_consumer = consumer
+                self._initial_state_consumer = consumer
 
         mocker.patch.object(powerpi_mqtt_client, 'add_consumer', add_consumer)
