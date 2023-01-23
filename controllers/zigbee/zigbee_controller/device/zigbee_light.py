@@ -103,7 +103,19 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
     @CapabilityMixin.supports_colour_temperature.getter
     def supports_colour_temperature(self):
         # pylint: disable=invalid-overridden-method
-        return self.__colour_temp_range if self.__supports_temperature else False
+        if self.__supports_temperature:
+            return Range(
+                self.__standardiser.revert(
+                    DataType.TEMPERATURE,
+                    self.__colour_temp_range.max
+                ),
+                self.__standardiser.revert(
+                    DataType.TEMPERATURE,
+                    self.__colour_temp_range.min
+                ),
+            )
+
+        return False
 
     async def poll(self):
         # we need the device to be initialised

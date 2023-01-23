@@ -155,8 +155,8 @@ class TestZigbeeeLight(
         assert subject.supports_colour_hue_and_saturation is colour
 
         if temperature:
-            assert subject.supports_colour_temperature.min == 100
-            assert subject.supports_colour_temperature.max == 200
+            assert subject.supports_colour_temperature.min == 5000
+            assert subject.supports_colour_temperature.max == 10000
         else:
             assert subject.supports_colour_temperature is False
 
