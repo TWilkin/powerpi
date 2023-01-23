@@ -3,7 +3,6 @@ from typing import Any, Dict, List
 
 from powerpi_common.device.types import DeviceStatus
 
-
 AdditionalState = Dict[str, Any]
 
 
@@ -25,23 +24,24 @@ class AdditionalStateMixin(ABC):
         '''
         # pylint: disable=broad-except
         try:
+            # update additional state first
+            if len(new_additional_state) > 0:
+                new_additional_state = await self.on_additional_state_change(
+                    new_additional_state
+                )
+
+            # then update state
             if new_state is not None:
-                self._logger.info(f'Turning {new_state} device {self}')
+                self.log_info(f'Turning {new_state} device {self}')
 
                 func = self._turn_on if new_state == DeviceStatus.ON else self._turn_off
                 await func()
 
             new_additional_state = self._filter_keys(new_additional_state)
 
-            if len(new_additional_state) > 0:
-                # there is other work to do
-                new_additional_state = await self.on_additional_state_change(
-                    new_additional_state
-                )
-
             self.set_state_and_additional(new_state, new_additional_state)
         except Exception as ex:
-            self._logger.exception(ex)
+            self.log_exception(ex)
             return
 
     @property

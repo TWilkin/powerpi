@@ -1,7 +1,8 @@
 from dependency_injector import containers, providers
-
 from zigbee_controller.config import ZigbeeConfig
+
 from .zigbee_controller import ZigbeeController
+from .zigbee_light import ZigbeeLight
 from .zigbee_pairing import ZigbeePairingDevice
 
 
@@ -41,5 +42,17 @@ def add_devices(container):
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
             zigbee_controller=container.device.zigbee_controller
+        )
+    )
+
+    setattr(
+        device_container,
+        'zigbee_light_device',
+        providers.Factory(
+            ZigbeeLight,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client,
+            controller=container.device.zigbee_controller
         )
     )
