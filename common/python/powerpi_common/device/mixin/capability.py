@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import TypedDict, Union
 
-from powerpi_common.util.data import Range
+from powerpi_common.util.data import DataType, Range
 
 
 class ColourCapability(TypedDict):
@@ -11,7 +11,7 @@ class ColourCapability(TypedDict):
     :param hue: Whether colour uisng hue is supported.
     :param saturation: Whether colour using saturation is supported.
     '''
-    temperature: Union[Range, None]
+    temperature: Union[Range, bool]
     hue: bool
     saturation: bool
 
@@ -36,4 +36,33 @@ class CapabilityMixin(ABC):
         Call this method to broadcast the capabilities supported by this device,
         when that information becomes available.
         '''
-        self._broadcast('capability', capability)
+        if len(capability) > 0:
+            message = {}
+
+            if DataType.BRIGHTNESS in capability:
+                message['brightness'] = capability[DataType.BRIGHTNESS]
+
+            if 'colour' in capability:
+                colour = {}
+
+                if DataType.HUE in capability['colour']:
+                    colour[DataType.HUE] = capability['colour'][DataType.HUE]
+
+                if DataType.SATURATION in capability['colour']:
+                    colour[DataType.SATURATION] = capability['colour'][DataType.SATURATION]
+
+                if DataType.TEMPERATURE in capability['colour']:
+                    temperature = capability['colour'][DataType.TEMPERATURE]
+
+                    if temperature is not False:
+                        colour[DataType.TEMPERATURE] = {
+                            'min': temperature.min,
+                            'max': temperature.max
+                        }
+                    else:
+                        colour[DataType.TEMPERATURE] = False
+
+                if len(colour) > 0:
+                    message['colour'] = colour
+
+            self._broadcast('capability', message)
