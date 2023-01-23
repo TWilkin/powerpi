@@ -1,4 +1,3 @@
-from .capability import CapabilityMixinTestBase
 from .initialisable import (InitialisableMixinTestBase,
                             InitialisableMixinTestBaseNew)
 from .orchestrator import DeviceOrchestratorMixinTestBase

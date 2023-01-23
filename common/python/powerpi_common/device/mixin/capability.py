@@ -1,29 +1,7 @@
 from abc import ABC
-from typing import TypedDict, Union
+from typing import Union
 
 from powerpi_common.util.data import DataType, Range
-
-
-class ColourCapability(TypedDict):
-    '''
-    Dictionary of colour capabilities.
-    :param temperature: The range of the colour temperature, or none if not supported.
-    :param hue: Whether colour uisng hue is supported.
-    :param saturation: Whether colour using saturation is supported.
-    '''
-    temperature: Union[Range, bool]
-    hue: bool
-    saturation: bool
-
-
-class Capability(TypedDict):
-    '''
-    Dictionary of device capabilities.
-    :param brightness: Whether brightness level is supported.
-    :param colour: The colour capabilities of the device.
-    '''
-    brightness: bool
-    colour: ColourCapability
 
 
 class CapabilityMixin(ABC):
@@ -31,38 +9,53 @@ class CapabilityMixin(ABC):
     Mixin to add capability broadcast functionality to a device.
     '''
 
-    def on_capability_change(self, capability: Capability):
+    @property
+    def supports_brightness(self) -> bool:
+        '''
+        Override to indicate this device supports brightness or not.
+        '''
+        return False
+
+    @property
+    def supports_colour_temperature(self) -> Union[Range, bool]:
+        '''
+        Override to indicate this device supports colour temperature or not.
+        '''
+        return False
+
+    @property
+    def supports_colour_hue_and_saturation(self) -> bool:
+        '''
+        Override to indicate this device supports colour hue and saturation or not.
+        '''
+        return False
+
+    def on_capability_change(self):
         '''
         Call this method to broadcast the capabilities supported by this device,
         when that information becomes available.
         '''
-        if len(capability) > 0:
-            message = {}
+        message = {}
 
-            if DataType.BRIGHTNESS in capability:
-                message['brightness'] = capability[DataType.BRIGHTNESS]
+        if self.supports_brightness:
+            message['brightness'] = True
 
-            if 'colour' in capability:
-                colour = {}
+        colour = {}
 
-                if DataType.HUE in capability['colour']:
-                    colour[DataType.HUE] = capability['colour'][DataType.HUE]
+        if self.supports_colour_hue_and_saturation:
+            colour[DataType.HUE] = True
+            colour[DataType.SATURATION] = True
 
-                if DataType.SATURATION in capability['colour']:
-                    colour[DataType.SATURATION] = capability['colour'][DataType.SATURATION]
+        if isinstance(self.supports_colour_temperature, Range):
+            temperature: Range = self.supports_colour_temperature
 
-                if DataType.TEMPERATURE in capability['colour']:
-                    temperature = capability['colour'][DataType.TEMPERATURE]
+            colour[DataType.TEMPERATURE] = {
+                'min': temperature.min,
+                'max': temperature.max
+            }
 
-                    if temperature is not False:
-                        colour[DataType.TEMPERATURE] = {
-                            'min': temperature.min,
-                            'max': temperature.max
-                        }
-                    else:
-                        colour[DataType.TEMPERATURE] = False
+        if len(colour) > 0:
+            message['colour'] = colour
 
-                if len(colour) > 0:
-                    message['colour'] = colour
-
+        if len(message) > 0:
             self._broadcast('capability', message)
