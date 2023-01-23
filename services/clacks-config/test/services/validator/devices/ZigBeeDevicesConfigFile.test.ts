@@ -1,43 +1,54 @@
 import commonDeviceTests from "./commonDeviceTests";
 import commonSensorTests from "./commonSensorTests";
 
-function commonZigBeeTests(validFile: object) {
-    const { getSensor, testValid, testInvalid } = commonSensorTests(validFile);
+function commonZigBeeTests(validFile: object, sensor = false) {
+    const { getDevice, testValid, testInvalid } = sensor
+        ? commonSensorTests(validFile)
+        : commonDeviceTests(validFile);
+
+    function populateConfig(device: object) {
+        if (sensor) {
+            return { devices: [], ...validFile, sensors: [device] };
+        }
+
+        return { sensors: [], ...validFile, devices: [device] };
+    }
 
     test("No nwk", () => {
-        const sensor = getSensor(validFile);
-        delete sensor.nwk;
+        const device = getDevice(validFile);
+        delete device.nwk;
 
-        testInvalid({ devices: [], ...validFile, sensors: [sensor] });
+        testInvalid(populateConfig(device));
     });
 
     [1, "test", "0xabcg"].forEach((nwk) =>
         test(`Bad nwk ${nwk}`, () => {
-            const sensor = getSensor(validFile);
-            sensor.nwk = nwk;
+            const device = getDevice(validFile);
+            device.nwk = nwk;
 
-            testInvalid({ devices: [], ...validFile, sensors: [sensor] });
+            testInvalid(populateConfig(device));
         })
     );
 
     test("No ieee", () => {
-        const sensor = getSensor(validFile);
-        delete sensor.ieee;
+        const device = getDevice(validFile);
+        delete device.ieee;
 
-        testInvalid({ devices: [], ...validFile, sensors: [sensor] });
+        testInvalid(populateConfig(device));
     });
 
     [1, "test", "00:11:22:33:44:55:66:88", "00:11:22:33:44:55:66:GG"].forEach((ieee) =>
         test(`Bad ieee ${ieee}`, () => {
-            const sensor = getSensor(validFile);
-            sensor.ieee = ieee;
+            const device = getDevice(validFile);
+            device.ieee = ieee;
 
-            testInvalid({ devices: [], ...validFile, sensors: [sensor] });
+            testInvalid(populateConfig(device));
         })
     );
 
     return {
-        getSensor,
+        getSensor: sensor ? getDevice : undefined,
+        getDevice: sensor ? undefined : getDevice,
         testValid,
         testInvalid,
     };
@@ -48,23 +59,72 @@ describe("ZigBee Devices", () => {
         const type = `aqara_${sensorType}`;
 
         describe(`Aqara ${sensorType} Sensor`, () => {
-            commonZigBeeTests({
-                sensors: [{ type, name: "Aqara", nwk: "0xabcd", ieee: "00:11:22:33:44:55:66:77" }],
-            });
+            commonZigBeeTests(
+                {
+                    sensors: [
+                        { type, name: "Aqara", nwk: "0xabcd", ieee: "00:11:22:33:44:55:66:77" },
+                    ],
+                },
+                true
+            );
         });
     });
 
-    describe("Osram Switch Mini Sensor", () => {
-        commonZigBeeTests({
-            sensors: [
+    describe("Light", () => {
+        const { testValid, testInvalid } = commonZigBeeTests({
+            devices: [
                 {
-                    type: "osram_switch_mini",
-                    name: "Osram",
+                    type: "zigbee_light",
+                    name: "Light",
                     nwk: "0xabcd",
                     ieee: "00:11:22:33:44:55:66:77",
+                    duration: 1000,
                 },
             ],
         });
+
+        test("No duration", () =>
+            testValid({
+                devices: [
+                    {
+                        type: "zigbee_light",
+                        name: "Light",
+                        nwk: "0xabcd",
+                        ieee: "00:11:22:33:44:55:66:77",
+                    },
+                ],
+            }));
+
+        [-1, "5"].forEach((duration) =>
+            test(`Bad duration ${duration}`, () =>
+                testInvalid({
+                    devices: [
+                        {
+                            type: "zigbee_light",
+                            name: "Light",
+                            nwk: "0xabcd",
+                            ieee: "00:11:22:33:44:55:66:77",
+                            duration,
+                        },
+                    ],
+                }))
+        );
+    });
+
+    describe("Osram Switch Mini Sensor", () => {
+        commonZigBeeTests(
+            {
+                sensors: [
+                    {
+                        type: "osram_switch_mini",
+                        name: "Osram",
+                        nwk: "0xabcd",
+                        ieee: "00:11:22:33:44:55:66:77",
+                    },
+                ],
+            },
+            true
+        );
     });
 
     describe("ZigBee Pairing", () => {

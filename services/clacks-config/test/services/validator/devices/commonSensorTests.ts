@@ -58,6 +58,7 @@ export default function commonSensorTests(validFile: object) {
 
     return {
         getSensor,
+        getDevice: getSensor,
         testValid,
         testInvalid,
     };
