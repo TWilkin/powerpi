@@ -4,7 +4,8 @@ from lifx_controller.device.lifx_client import LIFXClient
 from lifx_controller.device.lifx_colour import LIFXColour
 from powerpi_common.config import Config
 from powerpi_common.device import AdditionalStateDevice, DeviceStatus
-from powerpi_common.device.mixin import CapabilityMixin, PollableMixin
+from powerpi_common.device.mixin import (CapabilityMixin, InitialisableMixin,
+                                         PollableMixin)
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util.data import DataType
@@ -18,7 +19,7 @@ class AdditionalState(TypedDict):
 
 
 #pylint: disable=too-many-ancestors
-class LIFXLightDevice(AdditionalStateDevice, PollableMixin, CapabilityMixin):
+class LIFXLightDevice(AdditionalStateDevice, PollableMixin, InitialisableMixin, CapabilityMixin):
     #pylint: disable=too-many-arguments
     def __init__(
         self,
@@ -52,7 +53,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin, CapabilityMixin):
     @CapabilityMixin.supports_colour_hue_and_saturation.getter
     def supports_colour_hue_and_saturation(self):
         # pylint: disable=invalid-overridden-method
-        return self.__light.supports_colour
+        return self.__light.supports_colour if self.__light.supports_colour is not None else False
 
     @CapabilityMixin.supports_colour_temperature.getter
     def supports_colour_temperature(self):
@@ -62,6 +63,15 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin, CapabilityMixin):
     @property
     def colour(self):
         return LIFXColour(self.additional_state)
+
+    async def initialise(self):
+        try:
+            # pylint: disable=bare-except
+            # if we don't know what is supported, try and retrieve it
+            if self.__light.supports_temperature is None or self.__light.supports_colour is None:
+                await self.__light.connect()
+        except:
+            pass
 
     async def poll(self):
         is_powered: Union[int, None] = None

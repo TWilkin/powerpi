@@ -8,25 +8,37 @@ from lifx_controller.device.lifx_colour import LIFXColour
 from lifx_controller.device.lifx_light import LIFXLightDevice
 from powerpi_common.util.data import Range
 from powerpi_common_test.device import AdditionalStateDeviceTestBaseNew
-from powerpi_common_test.device.mixin import PollableMixingTestBaseNew
+from powerpi_common_test.device.mixin import (InitialisableMixinTestBaseNew,
+                                              PollableMixingTestBaseNew)
 from pytest_mock import MockerFixture
 
 
-class TestLIFXLightDevice(AdditionalStateDeviceTestBaseNew, PollableMixingTestBaseNew):
+class TestLIFXLightDevice(
+    AdditionalStateDeviceTestBaseNew,
+    PollableMixingTestBaseNew,
+    InitialisableMixinTestBaseNew
+):
+    @pytest.mark.asyncio
     @pytest.mark.parametrize('supports_colour', [None, True, False])
     @pytest.mark.parametrize('supports_temperature', [None, True, False])
-    def test_supports(
+    async def test_initialise_gets_capabilities(
         self,
         subject: LIFXLightDevice,
         lifx_client: LIFXClient,
         supports_colour: bool,
         supports_temperature: bool
     ):
+        # pylint: disable=protected-access, simplifiable-if-expression
+
         self.__mock_supports(
             lifx_client, supports_colour, supports_temperature
         )
 
-        assert subject.supports_colour_hue_and_saturation is supports_colour
+        await subject.initialise()
+
+        assert subject.supports_brightness is True
+        assert subject.supports_colour_hue_and_saturation is \
+            (True if supports_colour is True else False)
 
         if supports_temperature:
             assert subject.supports_colour_temperature.min == 1000
@@ -34,14 +46,13 @@ class TestLIFXLightDevice(AdditionalStateDeviceTestBaseNew, PollableMixingTestBa
         else:
             assert subject.supports_colour_temperature is False
 
-        # pylint: disable=protected-access, simplifiable-if-expression
         keys = subject._additional_state_keys()
         assert 'brightness' in keys
         assert ('temperature' in keys) is \
             (True if supports_temperature is True else False)
         assert ('hue' in keys) is (True if supports_colour is True else False)
-        assert ('saturation' in keys) is (
-            True if supports_colour is True else False)
+        assert ('saturation' in keys) is \
+            (True if supports_colour is True else False)
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('powered', [None, 1, 0])
