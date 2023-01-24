@@ -173,7 +173,7 @@ services:
             - FREEDNS_PASSWORD=/var/run/secrets/powerpi_freedns
 
     nginx:
-        image: twilkin/powerpi-nginx:1.3.10
+        image: twilkin/powerpi-nginx:1.3.11
         networks:
             - powerpi
         ports:
