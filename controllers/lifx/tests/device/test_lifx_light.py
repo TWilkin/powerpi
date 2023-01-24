@@ -6,6 +6,7 @@ import pytest
 from lifx_controller.device.lifx_client import LIFXClient
 from lifx_controller.device.lifx_colour import LIFXColour
 from lifx_controller.device.lifx_light import LIFXLightDevice
+from powerpi_common.util.data import Range
 from powerpi_common_test.device import AdditionalStateDeviceTestBaseNew
 from powerpi_common_test.device.mixin import PollableMixingTestBaseNew
 from pytest_mock import MockerFixture
@@ -24,6 +25,14 @@ class TestLIFXLightDevice(AdditionalStateDeviceTestBaseNew, PollableMixingTestBa
         self.__mock_supports(
             lifx_client, supports_colour, supports_temperature
         )
+
+        assert subject.supports_colour_hue_and_saturation is supports_colour
+
+        if supports_temperature:
+            assert subject.supports_colour_temperature.min == 1000
+            assert subject.supports_colour_temperature.max == 2000
+        else:
+            assert subject.supports_colour_temperature is False
 
         # pylint: disable=protected-access, simplifiable-if-expression
         keys = subject._additional_state_keys()
@@ -170,3 +179,8 @@ class TestLIFXLightDevice(AdditionalStateDeviceTestBaseNew, PollableMixingTestBa
         type(lifx_client).supports_temperature = PropertyMock(
             return_value=temperature
         )
+
+        if temperature:
+            type(lifx_client).colour_temperature_range = PropertyMock(
+                return_value=Range(1000, 2000)
+            )
