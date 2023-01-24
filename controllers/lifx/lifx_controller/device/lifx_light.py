@@ -7,6 +7,7 @@ from powerpi_common.device import AdditionalStateDevice, DeviceStatus
 from powerpi_common.device.mixin import CapabilityMixin, PollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+from powerpi_common.util.data import DataType
 
 
 class AdditionalState(TypedDict):
@@ -99,12 +100,12 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin, CapabilityMixin):
         return new_additional_state
 
     def _additional_state_keys(self):
-        keys = ['brightness']
+        keys = [DataType.BRIGHTNESS]
 
         if self.__light.supports_temperature:
-            keys.append('temperature')
+            keys.append(DataType.TEMPERATURE)
         if self.__light.supports_colour:
-            keys.extend(['hue', 'saturation'])
+            keys.extend([DataType.HUE, DataType.SATURATION])
 
         return keys
 
