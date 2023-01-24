@@ -1,6 +1,6 @@
 [[package]]
 name = "aiolifx"
-version = "0.8.4"
+version = "0.8.7"
 description = "API for local communication with LIFX devices over a LAN with asyncio."
 category = "main"
 optional = false
@@ -261,7 +261,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "powerpi-common"
-version = "0.2.10"
+version = "0.2.12"
 description = "PowerPi Common Python Library"
 category = "dev"
 optional = false
@@ -281,7 +281,7 @@ url = "../../common/python"
 
 [[package]]
 name = "powerpi-common-test"
-version = "0.2.4"
+version = "0.2.6"
 description = "PowerPi Common Python Test Library"
 category = "dev"
 optional = false
@@ -510,12 +510,12 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "f2e11990e13d168bd83beae630f76bc09c71729d81a18badd2019de8a5b2027d"
+content-hash = "1b69d13334b3e9ad883cc6e20bea59efd1afe117b368b103cd9dbf973e3e2d77"
 
 [metadata.files]
 aiolifx = [
-    {file = "aiolifx-0.8.4-py3-none-any.whl", hash = "sha256:9bfd5e2da62232463a0f15b3acae80c8c3a255d6ac2c2fd366bb8a50f535bd3f"},
-    {file = "aiolifx-0.8.4.tar.gz", hash = "sha256:af96c1a2602847094823ca53ff6a3ed2f6bfa01af7b3c6fcbf68eaf67e960f02"},
+    {file = "aiolifx-0.8.7-py3-none-any.whl", hash = "sha256:dbe87fdacbc91176a95f9b366006b5057d1f4eb5b097ef3f349af1cc1cb2541e"},
+    {file = "aiolifx-0.8.7.tar.gz", hash = "sha256:a6a9de5f83b70670c7eef4fb4601621083292dca173a906f28e62e3256b722ae"},
 ]
 apscheduler = [
     {file = "APScheduler-3.9.1.post1-py2.py3-none-any.whl", hash = "sha256:c8c618241dbb2785ed5a687504b14cb1851d6f7b5a4edf3a51e39cc6a069967a"},

@@ -9,7 +9,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-aiolifx = "~=0.8.4"
+aiolifx = "~=0.8.7"
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}
