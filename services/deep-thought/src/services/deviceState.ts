@@ -1,6 +1,7 @@
 import { Device, DeviceState } from "@powerpi/api";
 import { Service } from "@tsed/common";
 import ConfigService from "./config";
+import { CapabilityMessage } from "./listeners/CapabilityStateListener";
 import DeviceStateListener from "./listeners/DeviceStateListener";
 import MqttService from "./mqtt";
 
@@ -45,6 +46,16 @@ export default class DeviceStateService extends DeviceStateListener {
             device.battery = value;
             device.batterySince = timestamp;
             device.charging = charging;
+        }
+    }
+
+    onCapabilityMessage(deviceName: string, message: CapabilityMessage): void {
+        const device = this.devices.find((d) => d.name === deviceName);
+
+        if (device) {
+            const capability = { ...message };
+            delete capability.timestamp;
+            device.capability = capability;
         }
     }
 
