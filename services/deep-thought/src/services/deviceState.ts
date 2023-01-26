@@ -1,4 +1,4 @@
-import { Device, DeviceState } from "@powerpi/api";
+import { AdditionalState, Device, DeviceState } from "@powerpi/api";
 import { Service } from "@tsed/common";
 import ConfigService from "./config";
 import { CapabilityMessage } from "./listeners/CapabilityStateListener";
@@ -25,12 +25,23 @@ export default class DeviceStateService extends DeviceStateListener {
         await super.$onInit();
     }
 
-    protected onDeviceStateMessage(deviceName: string, state: DeviceState, timestamp?: number) {
-        const device = this.devices.find((d) => d.name === deviceName);
+    protected onDeviceStateMessage(
+        deviceName: string,
+        state: DeviceState,
+        timestamp?: number,
+        additionalState?: AdditionalState
+    ) {
+        const index = this.devices.findIndex((d) => d.name === deviceName);
 
-        if (device) {
+        if (index !== -1) {
+            const device = this.devices[index];
+
             device.state = state;
             device.since = timestamp ?? -1;
+
+            const updatedDevice = { ...device, ...additionalState };
+
+            this.devices.splice(index, 1, updatedDevice);
         }
     }
 
