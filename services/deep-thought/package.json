@@ -61,7 +61,7 @@
         "@types/passport-google-oauth20": "^2.0.8",
         "@types/passport-http": "^0.3.8",
         "@types/passport-jwt": "^3.0.8",
-        "@types/pg": "^8.6.5",
+        "@types/pg": "^8.6.6",
         "ts-node": "^10.8.1",
         "typescript": "^4.7.4"
     }
