@@ -2,6 +2,7 @@ import AdditionalState from "./AdditionalState";
 import BaseDevice from "./BaseDevice";
 import Battery from "./Battery";
 import Capability from "./Capability";
+import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityStatus";
 import Config from "./Config";
 import Device from "./Device";
 import DeviceState from "./DeviceState";
@@ -17,6 +18,8 @@ export {
     BaseDevice,
     Battery,
     Capability,
+    CapabilityStatusCallback,
+    CapabilityStatusMessage,
     Config,
     Device,
     DeviceState,

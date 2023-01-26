@@ -1,9 +1,10 @@
-import { DeviceState } from "@powerpi/api";
+import { AdditionalState, Capability, DeviceState } from "@powerpi/api";
 import { ISensor } from "@powerpi/common";
 import { $log } from "@tsed/common";
 import { Nsp, SocketService } from "@tsed/socketio";
 import { Namespace } from "socket.io";
 import ConfigService from "./config";
+import { CapabilityMessage } from "./listeners/CapabilityStateListener";
 import DeviceStateListener from "./listeners/DeviceStateListener";
 import SensorStateListener from "./listeners/SensorStateListener";
 import MqttService from "./mqtt";
@@ -37,11 +38,17 @@ export default class ApiSocketService {
         this.namespace = namespace;
     }
 
-    onDeviceStateMessage(deviceName: string, state: DeviceState, timestamp?: number) {
+    onDeviceStateMessage(
+        deviceName: string,
+        state: DeviceState,
+        timestamp?: number,
+        additionalState?: AdditionalState
+    ) {
         this.namespace?.emit("device", {
             device: deviceName,
             state,
             timestamp,
+            additionalState,
         });
     }
 
@@ -77,6 +84,10 @@ export default class ApiSocketService {
         });
     }
 
+    onCapabilityMessage(deviceName: string, capability: Capability, timestamp?: number) {
+        this.namespace?.emit("capability", { device: deviceName, capability, timestamp });
+    }
+
     $onConnection() {
         $log.info("Client connected to socket.");
     }
@@ -94,9 +105,10 @@ class DeviceListener extends DeviceStateListener {
     protected onDeviceStateMessage(
         deviceName: string,
         state: DeviceState,
-        timestamp?: number
+        timestamp?: number,
+        additionalState?: AdditionalState
     ): void {
-        this.socketService.onDeviceStateMessage(deviceName, state, timestamp);
+        this.socketService.onDeviceStateMessage(deviceName, state, timestamp, additionalState);
     }
 
     protected onDeviceBatteryMessage(
@@ -106,6 +118,12 @@ class DeviceListener extends DeviceStateListener {
         charging?: boolean | undefined
     ): void {
         this.socketService.onBatteryMessage("device", deviceName, value, charging, timestamp);
+    }
+
+    onCapabilityMessage(deviceName: string, message: CapabilityMessage): void {
+        const capability = { ...message };
+        delete capability.timestamp;
+        this.socketService.onCapabilityMessage(deviceName, capability, message.timestamp);
     }
 }
 

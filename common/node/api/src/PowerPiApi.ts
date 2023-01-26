@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { connect, Socket } from "socket.io-client";
 import { BatteryStatusCallback, BatteryStatusMessage } from "./BatteryStatus";
+import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityStatus";
 import Config from "./Config";
 import Device from "./Device";
 import DeviceState from "./DeviceState";
@@ -20,6 +21,7 @@ export default class PowerPiApi {
         device: DeviceStatusCallback[];
         sensor: SensorStatusCallback[];
         battery: BatteryStatusCallback[];
+        capability: CapabilityStatusCallback[];
     };
     private headers: { [key: string]: string };
 
@@ -32,6 +34,7 @@ export default class PowerPiApi {
             device: [],
             sensor: [],
             battery: [],
+            capability: [],
         };
 
         this.headers = {};
@@ -96,6 +99,11 @@ export default class PowerPiApi {
         this.listeners.battery.push(callback);
     }
 
+    public addCapabilityListener(callback: CapabilityStatusCallback) {
+        this.connectSocketIO();
+        this.listeners.capability.push(callback);
+    }
+
     public removeDeviceListener(callback: DeviceStatusCallback) {
         this.listeners.device = this.listeners.device.filter((listener) => listener === callback);
     }
@@ -105,8 +113,12 @@ export default class PowerPiApi {
     }
 
     public removeBatteryListener(callback: BatteryStatusCallback) {
-        this.listeners.battery = this.listeners.battery.filter(
-            (listerner) => listerner === callback
+        this.listeners.battery = this.listeners.battery.filter((listener) => listener === callback);
+    }
+
+    public removeCapabilityListener(callback: CapabilityStatusCallback) {
+        this.listeners.capability = this.listeners.capability.filter(
+            (listener) => listener === callback
         );
     }
 
@@ -126,6 +138,9 @@ export default class PowerPiApi {
 
     private onBatteryMessage = (message: BatteryStatusMessage) =>
         this.listeners.battery.forEach((listener) => listener(message));
+
+    private onCapabilityMessage = (message: CapabilityStatusMessage) =>
+        this.listeners.capability.forEach((listener) => listener(message));
 
     private async get<TResult>(path: string, params?: object) {
         const result = await this.instance.get<TResult>(path, {
@@ -159,6 +174,7 @@ export default class PowerPiApi {
             this.socket.on("device", this.onDeviceMessage);
             this.socket.on("sensor", this.onSensorMessage);
             this.socket.on("battery", this.onBatteryMessage);
+            this.socket.on("capability", this.onCapabilityMessage);
         }
     }
 }
