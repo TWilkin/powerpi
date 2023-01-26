@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { connect, Socket } from "socket.io-client";
+import AdditionalState from "./AdditionalState";
 import { BatteryStatusCallback, BatteryStatusMessage } from "./BatteryStatus";
 import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityStatus";
 import Config from "./Config";
@@ -82,8 +83,8 @@ export default class PowerPiApi {
     public getHistoryActions = (type?: string) =>
         this.get<{ action: string }[]>("history/actions", { type });
 
-    public postMessage = (device: string, state: DeviceState) =>
-        this.post(`topic/device/${device}/change`, { state });
+    public postMessage = (device: string, state: DeviceState, additionalState?: AdditionalState) =>
+        this.post(`topic/device/${device}/change`, { state, ...additionalState });
 
     public addDeviceListener(callback: DeviceStatusCallback) {
         this.connectSocketIO();
