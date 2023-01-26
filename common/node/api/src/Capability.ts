@@ -5,7 +5,9 @@ export interface MinMax {
 
 export default interface Capability {
     brightness?: boolean;
-    temperature?: boolean | MinMax;
-    hue?: boolean;
-    saturation?: boolean;
+    colour?: {
+        temperature?: boolean | MinMax;
+        hue?: boolean;
+        saturation?: boolean;
+    };
 }
