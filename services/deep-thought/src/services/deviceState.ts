@@ -25,23 +25,20 @@ export default class DeviceStateService extends DeviceStateListener {
         await super.$onInit();
     }
 
+    protected getDevice = (name: string) => this.devices.find((device) => device.name === name);
+
     protected onDeviceStateMessage(
         deviceName: string,
         state: DeviceState,
         timestamp?: number,
         additionalState?: AdditionalState
     ) {
-        const index = this.devices.findIndex((d) => d.name === deviceName);
+        const device = this.getDevice(deviceName);
 
-        if (index !== -1) {
-            const device = this.devices[index];
-
+        if (device) {
             device.state = state;
             device.since = timestamp ?? -1;
-
-            const updatedDevice = { ...device, ...additionalState };
-
-            this.devices.splice(index, 1, updatedDevice);
+            device.additionalState = additionalState;
         }
     }
 
@@ -51,7 +48,7 @@ export default class DeviceStateService extends DeviceStateListener {
         timestamp?: number,
         charging?: boolean
     ) {
-        const device = this.devices.find((d) => d.name === deviceName);
+        const device = this.getDevice(deviceName);
 
         if (device) {
             device.battery = value;
@@ -61,7 +58,7 @@ export default class DeviceStateService extends DeviceStateListener {
     }
 
     onCapabilityMessage(deviceName: string, message: CapabilityMessage): void {
-        const device = this.devices.find((d) => d.name === deviceName);
+        const device = this.getDevice(deviceName);
 
         if (device) {
             const capability = { ...message };
