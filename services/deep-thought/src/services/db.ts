@@ -1,5 +1,5 @@
 import { $log, Service } from "@tsed/common";
-import { Pool, PoolClient } from "pg";
+import { Pool, PoolClient, QueryResultRow } from "pg";
 import Message from "../models/message";
 import ConfigService from "./config";
 
@@ -106,13 +106,13 @@ export default class DatabaseService {
     }
 
     public getHistoryTypes = async () =>
-        await this.query<string>("SELECT DISTINCT type FROM mqtt ORDER BY type ASC");
+        await this.query<{ type: string }>("SELECT DISTINCT type FROM mqtt ORDER BY type ASC");
 
     public async getHistoryEntities(type: string | undefined) {
         const params = optionalParameterList(type);
         const dbQueryParams = [{ name: "type", value: type }];
 
-        return await this.query<string>(
+        return await this.query<{ entity: string }>(
             this.generateQuery(
                 "SELECT DISTINCT entity FROM mqtt",
                 "ORDER BY entity ASC",
@@ -126,7 +126,7 @@ export default class DatabaseService {
         const params = optionalParameterList(type);
         const dbQueryParams = [{ name: "type", value: type }];
 
-        return await this.query<string>(
+        return await this.query<{ action: string }>(
             this.generateQuery(
                 "SELECT DISTINCT action FROM mqtt",
                 "ORDER BY action ASC",
@@ -136,7 +136,7 @@ export default class DatabaseService {
         );
     }
 
-    private async query<TResult>(sql: string, params?: (string | Date)[]) {
+    private async query<TResult extends QueryResultRow>(sql: string, params?: (string | Date)[]) {
         let client: PoolClient | undefined;
 
         try {
