@@ -11,6 +11,7 @@ import History from "./History";
 import PaginationResponse from "./Pagination";
 import Sensor from "./Sensor";
 import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus";
+import SocketIONamespace from "./SocketIONamespace";
 
 type ErrorHandler = (error: { response: { status: number } }) => void;
 
@@ -171,10 +172,10 @@ export default class PowerPiApi {
                 path: "/api/socket.io",
             });
 
-            this.socket.on("device", this.onDeviceMessage);
-            this.socket.on("sensor", this.onSensorMessage);
-            this.socket.on("battery", this.onBatteryMessage);
-            this.socket.on("capability", this.onCapabilityMessage);
+            this.socket.on(SocketIONamespace.Device, this.onDeviceMessage);
+            this.socket.on(SocketIONamespace.Sensor, this.onSensorMessage);
+            this.socket.on(SocketIONamespace.Battery, this.onBatteryMessage);
+            this.socket.on(SocketIONamespace.Capability, this.onCapabilityMessage);
         }
     }
 }

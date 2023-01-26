@@ -1,4 +1,4 @@
-import { AdditionalState, Capability, DeviceState } from "@powerpi/api";
+import { AdditionalState, Capability, DeviceState, SocketIONamespace } from "@powerpi/api";
 import { ISensor } from "@powerpi/common";
 import { $log } from "@tsed/common";
 import { Nsp, SocketService } from "@tsed/socketio";
@@ -44,7 +44,7 @@ export default class ApiSocketService {
         timestamp?: number,
         additionalState?: AdditionalState
     ) {
-        this.namespace?.emit("device", {
+        this.namespace?.emit(SocketIONamespace.Device, {
             device: deviceName,
             state,
             timestamp,
@@ -59,7 +59,7 @@ export default class ApiSocketService {
         unit?: string,
         timestamp?: number
     ) {
-        this.namespace?.emit("sensor", {
+        this.namespace?.emit(SocketIONamespace.Sensor, {
             sensor: sensorName,
             state,
             value,
@@ -75,7 +75,7 @@ export default class ApiSocketService {
         charging?: boolean,
         timestamp?: number
     ) {
-        this.namespace?.emit("battery", {
+        this.namespace?.emit(SocketIONamespace.Battery, {
             device: type === "device" ? name : undefined,
             sensor: type === "sensor" ? name : undefined,
             battery,
@@ -85,7 +85,11 @@ export default class ApiSocketService {
     }
 
     onCapabilityMessage(deviceName: string, capability: Capability, timestamp?: number) {
-        this.namespace?.emit("capability", { device: deviceName, capability, timestamp });
+        this.namespace?.emit(SocketIONamespace.Capability, {
+            device: deviceName,
+            capability,
+            timestamp,
+        });
     }
 
     $onConnection() {

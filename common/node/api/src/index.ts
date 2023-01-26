@@ -12,6 +12,7 @@ import History from "./History";
 import PowerPiApi from "./PowerPiApi";
 import Sensor from "./Sensor";
 import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus";
+import SocketIONamespace from "./SocketIONamespace";
 
 export {
     AdditionalState,
@@ -34,4 +35,5 @@ export {
     Sensor,
     SensorStatusCallback,
     SensorStatusMessage,
+    SocketIONamespace,
 };
