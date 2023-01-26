@@ -19,7 +19,7 @@
         "start:prd": "node dist/src/app.js"
     },
     "dependencies": {
-        "@powerpi/api": "^0.0.16",
+        "@powerpi/api": "^0.0.17",
         "@powerpi/common": "^0.0.11",
         "@tsed/common": "^6.115.0",
         "@tsed/core": "^6.115.0",
