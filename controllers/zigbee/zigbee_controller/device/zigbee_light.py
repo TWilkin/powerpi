@@ -4,7 +4,8 @@ from typing import List, Tuple, Union
 
 from powerpi_common.config import Config
 from powerpi_common.device import AdditionalStateDevice, DeviceStatus
-from powerpi_common.device.mixin import AdditionalState, PollableMixin
+from powerpi_common.device.mixin import (AdditionalState, CapabilityMixin,
+                                         PollableMixin)
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util.data import DataType, Range, Ranges, Standardiser
@@ -20,7 +21,7 @@ from zigpy.zcl.clusters.lighting import Color as ColorCluster
 
 
 # pylint: disable=too-many-ancestors
-class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
+class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeMixin):
     '''
     Adds support for ZigBee RGB/temperature/brightness lights.
     '''
@@ -89,17 +90,32 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
     def duration(self):
         return self.__standardiser.convert(DataType.DURATION, self.__duration)
 
-    @property
-    def supports_colour(self):
-        return self.__supports_colour
+    @CapabilityMixin.supports_brightness.getter
+    def supports_brightness(self):
+        # pylint: disable=invalid-overridden-method
+        return True
 
-    @property
-    def supports_temperature(self):
-        return self.__supports_temperature
+    @CapabilityMixin.supports_colour_hue_and_saturation.getter
+    def supports_colour_hue_and_saturation(self):
+        # pylint: disable=invalid-overridden-method
+        return self.__supports_colour if self.__supports_colour is not None else False
 
-    @property
-    def temperature_range(self):
-        return self.__colour_temp_range
+    @CapabilityMixin.supports_colour_temperature.getter
+    def supports_colour_temperature(self):
+        # pylint: disable=invalid-overridden-method
+        if self.__supports_temperature:
+            return Range(
+                self.__standardiser.revert(
+                    DataType.TEMPERATURE,
+                    self.__colour_temp_range.max
+                ),
+                self.__standardiser.revert(
+                    DataType.TEMPERATURE,
+                    self.__colour_temp_range.min
+                ),
+            )
+
+        return False
 
     async def poll(self):
         # we need the device to be initialised
@@ -281,9 +297,13 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, ZigbeeMixin):
                 & ColorCluster.ColorCapabilities.Hue_and_saturation \
                 == ColorCluster.ColorCapabilities.Hue_and_saturation
 
-            self.__colour_temp_range = Range(
-                attributes['color_temp_physical_min'], attributes['color_temp_physical_max']
-            )
+            if self.__supports_temperature:
+                self.__colour_temp_range = Range(
+                    attributes['color_temp_physical_min'], attributes['color_temp_physical_max']
+                )
+
+            # broadcast the capabilities of this device
+            self.on_capability_change()
         except DeliveryError:
             pass
 

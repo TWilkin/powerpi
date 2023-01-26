@@ -1,5 +1,5 @@
 from asyncio import get_running_loop
-from socket import AF_INET, SOCK_STREAM, gethostbyname, socket
+from socket import AF_INET, SOCK_STREAM, socket
 from typing import Callable, Tuple, Union
 
 from aiolifx.aiolifx import Light
@@ -7,9 +7,12 @@ from aiolifx.msgtypes import LightState, StateVersion
 from aiolifx.products import features_map
 from lifx_controller.device.lifx_colour import LIFXColour
 from powerpi_common.logger import Logger
+from powerpi_common.util.data import Range
 
 
 class LIFXClient:
+    # pylint: disable=too-many-instance-attributes
+
     def __init__(
         self,
         logger: Logger
@@ -18,10 +21,12 @@ class LIFXClient:
 
         self.__light = None
 
+        self.__feature_listener: Union[Callable, None] = None
+
         self.__supports_colour: Union[bool, None] = None
         self.__supports_temperature: Union[bool, None] = None
 
-        self.__kelvin_range: Union(Tuple(int, int), None) = None
+        self.__kelvin_range: Union[Range, None] = None
 
     @property
     def address(self):
@@ -46,6 +51,13 @@ class LIFXClient:
     @property
     def supports_temperature(self):
         return self.__supports_temperature
+
+    @property
+    def colour_temperature_range(self):
+        return self.__kelvin_range
+
+    def add_feature_listener(self, listener: Callable):
+        self.__feature_listener = listener
 
     async def connect(self):
         if self.__light is None:
@@ -98,12 +110,13 @@ class LIFXClient:
         await self.connect()
 
         # ensure the values are in the allowable range
-        if self.supports_temperature and (colour.temperature < self.__kelvin_range[0] or colour.temperature > self.__kelvin_range[1]):
+        if self.supports_temperature and \
+                (colour.temperature < self.__kelvin_range.min
+                    or colour.temperature > self.__kelvin_range.max):
             original = colour.temperature
 
-            colour.temperature = max(
-                self.__kelvin_range[0],
-                min(self.__kelvin_range[1], colour.temperature)
+            colour.temperature = self.__kelvin_range.restrict(
+                colour.temperature
             )
 
             self.__logger.warning(
@@ -123,8 +136,13 @@ class LIFXClient:
             min_kelvin = features.get('min_kelvin', None)
             max_kelvin = features.get('max_kelvin', None)
 
-            self.__kelvin_range = (min_kelvin, max_kelvin)
-            self.__supports_temperature = min_kelvin is not None and max_kelvin is not None and min_kelvin != max_kelvin
+            self.__kelvin_range = Range(min_kelvin, max_kelvin)
+            self.__supports_temperature = min_kelvin is not None \
+                and max_kelvin is not None \
+                and min_kelvin != max_kelvin
+
+            if self.__feature_listener is not None:
+                self.__feature_listener()
 
     @classmethod
     def __find_free_port(cls):

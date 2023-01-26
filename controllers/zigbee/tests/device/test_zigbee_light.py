@@ -79,7 +79,7 @@ class TestZigbeeeLight(
             'state': 'on' if state else 'off',
             **expected
         }
-        powerpi_mqtt_producer.assert_called_once_with(topic, message)
+        powerpi_mqtt_producer.assert_called_with(topic, message)
 
         # polling again doesn't produce anything as nothing changed
         powerpi_mqtt_producer.reset_mock()
@@ -125,6 +125,7 @@ class TestZigbeeeLight(
         self,
         subject: ZigbeeLight,
         cluster: Cluster,
+        powerpi_mqtt_producer: MagicMock,
         mocker: MockerFixture,
         colour: bool,
         temperature: bool
@@ -145,16 +146,22 @@ class TestZigbeeeLight(
             read_attributes
         )
 
-        assert subject.supports_colour is None
-        assert subject.supports_temperature is None
-        assert subject.temperature_range is None
+        assert subject.supports_brightness is True
+        assert subject.supports_colour_hue_and_saturation is False
+        assert subject.supports_colour_temperature is False
 
         await subject.initialise()
 
-        assert subject.supports_colour is colour
-        assert subject.supports_temperature is temperature
-        assert subject.temperature_range.min == 100
-        assert subject.temperature_range.max == 200
+        assert subject.supports_colour_hue_and_saturation is colour
+
+        if temperature:
+            assert subject.supports_colour_temperature.min == 5000
+            assert subject.supports_colour_temperature.max == 10000
+        else:
+            assert subject.supports_colour_temperature is False
+
+        # the updated capability should be broadcast
+        powerpi_mqtt_producer.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_initialise_sets_options(

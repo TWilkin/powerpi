@@ -1,22 +1,29 @@
 import asyncio
 from typing import Callable, Tuple
-from unittest.mock import MagicMock, Mock, PropertyMock
+from unittest.mock import MagicMock, PropertyMock
 
 import pytest
 from lifx_controller.device.lifx_client import LIFXClient
 from lifx_controller.device.lifx_colour import LIFXColour
+from powerpi_common.logger import Logger
 from pytest_mock import MockerFixture
 
 
 class TestLIFXClient:
-    pytestmark = pytest.mark.asyncio
 
+    @pytest.mark.asyncio
     @pytest.mark.parametrize('data', [
         (1, True, True),
         (18, False, True),
         (51, False, False)
     ])
-    async def test_connect(self, subject: LIFXClient, mock_light: MagicMock, mocker: MockerFixture, data: Tuple[int, bool, bool]):
+    async def test_connect(
+        self,
+        subject: LIFXClient,
+        mock_light: MagicMock,
+        mocker: MockerFixture,
+        data: Tuple[int, bool, bool]
+    ):
         product, supports_colour, supports_temperature = data
 
         def get_version(callb: Callable):
@@ -36,7 +43,8 @@ class TestLIFXClient:
         assert subject.supports_colour is supports_colour
         assert subject.supports_temperature is supports_temperature
 
-    async def test_get_state(self, subject: LIFXClient, mock_colour: MagicMock):
+    @pytest.mark.asyncio
+    async def test_get_state(self, subject: LIFXClient):
         result = await subject.get_state()
 
         assert result[0] is True
@@ -46,12 +54,14 @@ class TestLIFXClient:
         assert result[1].brightness == 3
         assert result[1].temperature == 4
 
-    async def test_get_power(self, subject: LIFXClient, mock_colour: MagicMock):
+    @pytest.mark.asyncio
+    async def test_get_power(self, subject: LIFXClient):
         result = await subject.get_power()
 
         assert result is True
 
-    async def test_get_colour(self, subject: LIFXClient, mock_colour: MagicMock):
+    @pytest.mark.asyncio
+    async def test_get_colour(self, subject: LIFXClient):
         result = await subject.get_colour()
 
         assert result.hue == 1
@@ -59,6 +69,7 @@ class TestLIFXClient:
         assert result.brightness == 3
         assert result.temperature == 4
 
+    @pytest.mark.asyncio
     async def test_set_power(self, subject: LIFXClient, mock_light: MagicMock):
         def set_power(callb: Callable, value: bool, duration: int):
             assert value is True
@@ -70,13 +81,20 @@ class TestLIFXClient:
 
         await subject.set_power(True, 10)
 
+    @pytest.mark.asyncio
     @pytest.mark.parametrize('data', [
         (1, 3000, 3000),
         (1, 2000, 2500),
         (1, 10000, 9000),
         (51, 0, 0),
     ])
-    async def test_set_colour(self, subject: LIFXClient, mock_light: MagicMock, mocker: MockerFixture, data: Tuple[int, int, int]):
+    async def test_set_colour(
+        self,
+        subject: LIFXClient,
+        mock_light: MagicMock,
+        mocker: MockerFixture,
+        data: Tuple[int, int, int]
+    ):
         product, actual_temperature, expected_temperature = data
 
         def get_version(callb: Callable):
@@ -102,10 +120,8 @@ class TestLIFXClient:
         await subject.set_colour(LIFXColour((1, 2, 3, actual_temperature)), 10)
 
     @pytest.fixture
-    def subject(self, mocker: MockerFixture):
-        self.logger = mocker.Mock()
-
-        client = LIFXClient(self.logger)
+    def subject(self, powerpi_logger: Logger):
+        client = LIFXClient(powerpi_logger)
         client.address = '127.0.0.1'
         client.mac_address = 'AA:BB:CC:DD:EE:FF'
 
@@ -131,7 +147,7 @@ class TestLIFXClient:
 
         return mock_light
 
-    @pytest.fixture
+    @pytest.fixture(autouse=True)
     def mock_colour(self, mock_light: MagicMock, mocker: MockerFixture):
         def get_colour(callb: Callable):
             mock_colour = mocker.Mock()
