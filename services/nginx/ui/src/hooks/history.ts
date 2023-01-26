@@ -62,10 +62,10 @@ export function useGetHistory(
     const api = useAPI();
 
     const nextPage = useCallback(
-        ({ pageParam = end }) => {
+        ({ pageParam = end }: { pageParam?: Date | boolean }) => {
             if (pageParam !== false) {
                 // only make the request if we have data
-                return api.getHistory(type, entity, action, start, pageParam, records);
+                return api.getHistory(type, entity, action, start, pageParam as Date, records);
             }
 
             return undefined;
