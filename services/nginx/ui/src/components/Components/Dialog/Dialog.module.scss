@@ -1,3 +1,5 @@
+@import "../../../styles/colours.scss";
+
 .backdrop {
     position: fixed;
     top: 0;
@@ -7,13 +9,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.1);
+    @include colour("background-color", "modal-backdrop");
     z-index: 1;
 
     .dialog {
         position: relative;
         width: 100px;
         height: 100px;
-        background-color: white;
+        padding: 2px;
+        @include colour("background-color", "background");
+        @include colour("color", "text");
+        border: 1px solid;
+        @include colour("border-color", "menu-border");
+        border-radius: 6px;
     }
 }
