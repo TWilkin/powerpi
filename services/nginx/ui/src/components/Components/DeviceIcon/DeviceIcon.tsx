@@ -12,6 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMemo } from "react";
+import Dialog, { useDialog } from "../Dialog";
 import styles from "./DeviceIcon.module.scss";
 
 interface DeviceIconProps {
@@ -21,9 +22,17 @@ interface DeviceIconProps {
 const DeviceIcon = ({ type }: DeviceIconProps) => {
     const icon = useMemo(() => getDeviceTypeIcon(type), [type]);
 
+    const { showDialog, closeDialog, toggleDialog } = useDialog();
+
     return (
         <div className={styles.icon}>
-            <FontAwesomeIcon icon={icon} />
+            <FontAwesomeIcon icon={icon} onClick={toggleDialog} className={styles.clickable} />
+
+            {showDialog && (
+                <Dialog title="Beep" closeDialog={closeDialog}>
+                    Boop
+                </Dialog>
+            )}
         </div>
     );
 };
