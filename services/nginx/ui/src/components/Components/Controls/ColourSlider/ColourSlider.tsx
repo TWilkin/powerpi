@@ -11,10 +11,17 @@ import styles from "./ColourSlider.module.scss";
 type ColourSliderProps = {
     hue?: number;
     saturation?: number;
+    brightness?: number;
 } & AdditionalStateControlsProps;
 
-const ColourSlider = ({ hue = 360, saturation = 100, disabled, onChange }: ColourSliderProps) => {
-    const [colour, setColour] = useState({ h: hue, s: saturation, l: 100 });
+const ColourSlider = ({
+    hue = 360,
+    saturation = 100,
+    brightness = 65535,
+    disabled,
+    onChange,
+}: ColourSliderProps) => {
+    const [colour, setColour] = useState({ h: hue, s: saturation / 100, l: brightness / 65535 });
 
     const onColourChange = useCallback((color: ColorResult) => setColour({ ...color.hsl }), []);
 

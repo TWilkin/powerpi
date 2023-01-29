@@ -68,6 +68,7 @@ const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
                             <ColourSlider
                                 hue={device.additionalState?.hue}
                                 saturation={device.additionalState?.saturation}
+                                brightness={device.additionalState?.brightness}
                                 disabled={isDeviceAdditionalStateLoading}
                                 onChange={updateDeviceAdditionalState}
                             />
