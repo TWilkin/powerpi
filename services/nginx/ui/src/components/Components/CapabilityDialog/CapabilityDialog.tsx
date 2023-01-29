@@ -2,6 +2,7 @@ import { Device } from "@powerpi/api";
 import classNames from "classnames";
 import { useMemo } from "react";
 import _ from "underscore";
+import { useSetDeviceAdditionalState } from "../../../hooks/devices";
 import BrightnessSlider from "../Controls/BrightnessSlider";
 import DeviceIcon from "../DeviceIcon";
 import Dialog, { useDialog } from "../Dialog";
@@ -19,6 +20,9 @@ const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
         () => _(capabilities).any((capability) => capability),
         [capabilities]
     );
+
+    const { updateDeviceAdditionalState, isDeviceAdditionalStateLoading } =
+        useSetDeviceAdditionalState(device);
 
     return (
         <>
@@ -40,7 +44,11 @@ const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
                     closeDialog={closeDialog}
                 >
                     {capabilities.brightness && (
-                        <BrightnessSlider brightness={device.additionalState?.brightness} />
+                        <BrightnessSlider
+                            brightness={device.additionalState?.brightness}
+                            disabled={isDeviceAdditionalStateLoading}
+                            onChange={updateDeviceAdditionalState}
+                        />
                     )}
                 </Dialog>
             )}

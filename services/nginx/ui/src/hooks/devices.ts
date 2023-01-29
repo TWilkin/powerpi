@@ -1,4 +1,4 @@
-import { Device, DeviceState, DeviceStatusMessage } from "@powerpi/api";
+import { AdditionalState, Device, DeviceState, DeviceStatusMessage } from "@powerpi/api";
 import { BatteryStatusMessage } from "@powerpi/api/dist/src/BatteryStatus";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -88,5 +88,31 @@ export function useSetDeviceState(device: Device) {
         updateDeviceState: mutation.mutateAsync,
         isDeviceStateLoading: loading || mutation.isLoading,
         changeState,
+    };
+}
+
+export function useSetDeviceAdditionalState(device: Device) {
+    const api = useAPI();
+    const [changeAdditionalState, setChangeAdditionalState] = useState<AdditionalState>({});
+    const [loading, setLoading] = useState(false);
+
+    // manually handling loading as we want to change it when socket.io
+    // updates the state
+    useEffect(() => setLoading(false), [device.additionalState]);
+
+    const mutation = useMutation(
+        async (newAdditionalState: AdditionalState) => {
+            setLoading(true);
+            api.postMessage(device.name, undefined, newAdditionalState);
+        },
+        {
+            onError: () => setChangeAdditionalState({}),
+        }
+    );
+
+    return {
+        updateDeviceAdditionalState: mutation.mutateAsync,
+        isDeviceAdditionalStateLoading: loading || mutation.isLoading,
+        changeAdditionalState,
     };
 }
