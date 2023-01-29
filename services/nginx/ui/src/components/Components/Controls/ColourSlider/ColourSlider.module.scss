@@ -1,19 +1,20 @@
+@import "../../../../styles/vars.scss";
+
 .wrapper {
-    width: #{129px + 16px + 16px};
+    width: 100%;
     display: flex;
     justify-content: flex-start;
     align-items: center;
 
     .slider {
         position: relative;
-        width: 129px;
+        width: $capability-slider-width;
         height: 10px;
-        border-radius: 2px;
     }
 
     .box {
         position: relative;
-        width: 75px;
-        height: 75px;
+        width: $capability-slider-width / 2;
+        height: $capability-slider-width / 2;
     }
 }

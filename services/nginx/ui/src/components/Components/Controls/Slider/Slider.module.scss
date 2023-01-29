@@ -1,5 +1,11 @@
+@import "../../../../styles/vars.scss";
+
 .container {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+
+    input {
+        width: $capability-slider-width;
+    }
 }

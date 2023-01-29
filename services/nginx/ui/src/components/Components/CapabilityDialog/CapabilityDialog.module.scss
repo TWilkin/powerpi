@@ -7,4 +7,12 @@
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
+
+    & > div {
+        margin-bottom: 10px;
+    }
+
+    svg {
+        padding: 0 3px;
+    }
 }
