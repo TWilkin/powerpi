@@ -13,14 +13,38 @@
     z-index: 1;
 
     .dialog {
+        $padding: 4px;
+        $border-radius: 6px;
+
         position: relative;
-        width: 100px;
-        height: 100px;
-        padding: 2px;
+        min-width: 100px;
+        max-width: 80vw;
+        min-height: 100px;
+        max-height: 80vh;
         @include colour("background-color", "background");
         @include colour("color", "text");
         border: 1px solid;
-        @include colour("border-color", "menu-border");
-        border-radius: 6px;
+        @include colour("border-color", "dialog-border");
+        border-radius: $border-radius;
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: $padding;
+            border-radius: $border-radius $border-radius 0 0;
+            @include colour("background-color", "menu");
+            border-bottom: 1px solid;
+            @include colour("border-color-bottom", "dialog-border");
+
+            .close {
+                cursor: pointer;
+            }
+        }
+
+        .content {
+            padding: $padding;
+            border-radius: 0 0 $border-radius $border-radius;
+        }
     }
 }

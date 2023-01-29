@@ -2,7 +2,10 @@
 // Please do not change this file!
 interface CssExports {
   'backdrop': string;
+  'close': string;
+  'content': string;
   'dialog': string;
+  'header': string;
 }
 export const cssExports: CssExports;
 export default cssExports;

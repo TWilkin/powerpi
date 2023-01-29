@@ -1,13 +1,14 @@
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { forwardRef, PropsWithChildren, ReactPortal, useEffect, useMemo, useRef } from "react";
 import ReactDOM from "react-dom";
 import useOnClickOutside from "../../../hooks/useOnClickOutside";
 import styles from "./Dialog.module.scss";
 
-type DialogBodyProps = PropsWithChildren<{ title: string }>;
-
-type DialogProps = {
+type DialogProps = PropsWithChildren<{
+    title: string;
     closeDialog: () => void;
-} & DialogBodyProps;
+}>;
 
 const Dialog = ({ closeDialog, ...bodyProps }: DialogProps): ReactPortal => {
     const bodyRef = useRef<HTMLDivElement>(null);
@@ -24,16 +25,30 @@ const Dialog = ({ closeDialog, ...bodyProps }: DialogProps): ReactPortal => {
         };
     }, [element]);
 
-    return ReactDOM.createPortal(<DialogBody ref={bodyRef} {...bodyProps} />, element);
+    return ReactDOM.createPortal(
+        <DialogBody ref={bodyRef} closeDialog={closeDialog} {...bodyProps} />,
+        element
+    );
 };
 export default Dialog;
 
-const DialogBody = forwardRef<HTMLDivElement, DialogBodyProps>(({ title, children }, ref) => (
-    <div className={styles.backdrop}>
-        <div ref={ref} className={styles.dialog}>
-            <p>{title}</p>
-            {children}
+const DialogBody = forwardRef<HTMLDivElement, DialogProps>(
+    ({ title, closeDialog, children }, ref) => (
+        <div className={styles.backdrop}>
+            <div ref={ref} className={styles.dialog}>
+                <div className={styles.header}>
+                    {title}
+
+                    <FontAwesomeIcon
+                        className={styles.close}
+                        icon={faXmark}
+                        onClick={closeDialog}
+                    />
+                </div>
+
+                <div className={styles.content}>{children}</div>
+            </div>
         </div>
-    </div>
-));
+    )
+);
 DialogBody.displayName = "DialogBody";
