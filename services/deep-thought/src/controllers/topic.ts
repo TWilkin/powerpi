@@ -1,4 +1,4 @@
-import { AdditionalState, DeviceState } from "@powerpi/api";
+import { DeviceChangeMessage } from "@powerpi/api";
 import { OutgoingMessage } from "@powerpi/common";
 import { BodyParams, Controller, PathParams, Post, Res } from "@tsed/common";
 import { Required } from "@tsed/schema";
@@ -7,8 +7,6 @@ import HttpStatus from "http-status-codes";
 import _ from "underscore";
 import Authorize from "../middleware/auth";
 import MqttService from "../services/mqtt";
-
-type ChangeMessage = AdditionalState & { state?: DeviceState };
 
 @Controller("/topic")
 export default class TopicController {
@@ -28,7 +26,7 @@ export default class TopicController {
         @PathParams("type") type: string,
         @PathParams("entity") entity: string,
         @PathParams("action") action: string,
-        @Required() @BodyParams() body: ChangeMessage,
+        @Required() @BodyParams() body: DeviceChangeMessage,
         @Res() response: Response
     ) {
         // fail if there is no message or it contains disallowed keys

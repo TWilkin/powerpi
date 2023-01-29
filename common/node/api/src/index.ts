@@ -5,6 +5,7 @@ import Capability from "./Capability";
 import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityStatus";
 import Config from "./Config";
 import Device from "./Device";
+import DeviceChangeMessage from "./DeviceChangeMessage";
 import DeviceState from "./DeviceState";
 import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import { Floor, Floorplan, Point, Room } from "./Floorplan";
@@ -23,6 +24,7 @@ export {
     CapabilityStatusMessage,
     Config,
     Device,
+    DeviceChangeMessage,
     DeviceState,
     DeviceStatusCallback,
     DeviceStatusMessage,
