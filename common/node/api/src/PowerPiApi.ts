@@ -5,6 +5,7 @@ import { BatteryStatusCallback, BatteryStatusMessage } from "./BatteryStatus";
 import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityStatus";
 import Config from "./Config";
 import Device from "./Device";
+import DeviceChangeMessage from "./DeviceChangeMessage";
 import DeviceState from "./DeviceState";
 import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import { Floorplan } from "./Floorplan";
@@ -83,8 +84,19 @@ export default class PowerPiApi {
     public getHistoryActions = (type?: string) =>
         this.get<{ action: string }[]>("history/actions", { type });
 
-    public postMessage = (device: string, state: DeviceState, additionalState?: AdditionalState) =>
-        this.post(`topic/device/${device}/change`, { state, ...additionalState });
+    public postMessage(device: string, state?: DeviceState, additionalState?: AdditionalState) {
+        let message: DeviceChangeMessage = {};
+
+        if (state) {
+            message["state"] = state;
+        }
+
+        if (additionalState) {
+            message = { ...message, ...additionalState };
+        }
+
+        this.post(`topic/device/${device}/change`, message);
+    }
 
     public addDeviceListener(callback: DeviceStatusCallback) {
         this.connectSocketIO();
