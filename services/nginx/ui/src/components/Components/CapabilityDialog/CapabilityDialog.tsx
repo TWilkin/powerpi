@@ -2,6 +2,7 @@ import { Device } from "@powerpi/api";
 import classNames from "classnames";
 import { useMemo } from "react";
 import _ from "underscore";
+import BrightnessSlider from "../Controls/BrightnessSlider";
 import DeviceIcon from "../DeviceIcon";
 import Dialog, { useDialog } from "../Dialog";
 import styles from "./CapabilityDialog.module.scss";
@@ -38,7 +39,9 @@ const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
                     }
                     closeDialog={closeDialog}
                 >
-                    Boop
+                    {capabilities.brightness && (
+                        <BrightnessSlider brightness={device.additionalState?.brightness} />
+                    )}
                 </Dialog>
             )}
         </>
