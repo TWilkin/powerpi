@@ -1,6 +1,6 @@
 import {
+    faCode,
     faComputer,
-    faEquals,
     faLayerGroup,
     faLightbulb,
     faLock,
@@ -64,7 +64,7 @@ function getDeviceTypeIcon(type: string) {
                     return faPlug;
 
                 case "variable":
-                    return faEquals;
+                    return faCode;
 
                 default:
                     return faQuestion;
