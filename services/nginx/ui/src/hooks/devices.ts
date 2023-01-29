@@ -1,4 +1,10 @@
-import { AdditionalState, Device, DeviceState, DeviceStatusMessage } from "@powerpi/api";
+import {
+    AdditionalState,
+    CapabilityStatusMessage,
+    Device,
+    DeviceState,
+    DeviceStatusMessage,
+} from "@powerpi/api";
 import { BatteryStatusMessage } from "@powerpi/api/dist/src/BatteryStatus";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -26,6 +32,7 @@ export function useGetDevices() {
                 newDevices[index] = { ...newDevices[index] };
                 newDevices[index].state = message.state;
                 newDevices[index].since = message.timestamp;
+                newDevices[index].additionalState = message.additionalState;
 
                 setDevices(newDevices);
             }
@@ -49,12 +56,30 @@ export function useGetDevices() {
             }
         };
 
+        const onCapabilityUpdate = (message: CapabilityStatusMessage) => {
+            if (!devices) {
+                return;
+            }
+
+            const index = devices.findIndex((device) => device.name === message.device);
+            if (index !== -1) {
+                const newDevices = [...devices];
+
+                newDevices[index] = { ...newDevices[index] };
+                newDevices[index].capability = message.capability;
+
+                setDevices(newDevices);
+            }
+        };
+
         api.addDeviceListener(onStatusUpdate);
         api.addBatteryListener(onBatteryUpdate);
+        api.addCapabilityListener(onCapabilityUpdate);
 
         return () => {
             api.removeDeviceListener(onStatusUpdate);
             api.removeBatteryListener(onBatteryUpdate);
+            api.removeCapabilityListener(onCapabilityUpdate);
         };
     }, [api, devices, setDevices]);
 
