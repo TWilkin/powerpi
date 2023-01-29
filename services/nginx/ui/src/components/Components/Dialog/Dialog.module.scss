@@ -38,6 +38,7 @@
             @include colour("border-color-bottom", "dialog-border");
 
             .close {
+                padding-left: 1rem;
                 cursor: pointer;
             }
         }

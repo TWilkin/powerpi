@@ -8,7 +8,7 @@ import useNarrow from "../../hooks/narrow";
 import "../../util";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import BatteryIcon from "../Components/BatteryIcon";
-import DeviceIcon from "../Components/DeviceIcon";
+import CapabilityDialog from "../Components/CapabilityDialog";
 import DevicePowerButton from "../Components/DevicePowerButton";
 import Filter from "../Components/Filter";
 import HistoryLink from "../Components/HistoryLink";
@@ -101,7 +101,7 @@ const DeviceList = () => {
                                             )}
 
                                             <div className={classes(styles.icon)}>
-                                                <DeviceIcon type={device.type} />
+                                                <CapabilityDialog device={device} />
                                             </div>
 
                                             {showingBattery && (

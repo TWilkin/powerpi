@@ -1,12 +1,20 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { forwardRef, PropsWithChildren, ReactPortal, useEffect, useMemo, useRef } from "react";
+import {
+    forwardRef,
+    PropsWithChildren,
+    ReactNode,
+    ReactPortal,
+    useEffect,
+    useMemo,
+    useRef,
+} from "react";
 import ReactDOM from "react-dom";
 import useOnClickOutside from "../../../hooks/useOnClickOutside";
 import styles from "./Dialog.module.scss";
 
 type DialogProps = PropsWithChildren<{
-    title: string;
+    title: string | ReactNode;
     closeDialog: () => void;
 }>;
 
