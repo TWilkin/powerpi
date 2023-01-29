@@ -3,6 +3,7 @@
 interface CssExports {
   'clickable': string;
   'dialog': string;
+  'gear': string;
 }
 export const cssExports: CssExports;
 export default cssExports;

@@ -1,3 +1,5 @@
+import { faGear } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Device } from "@powerpi/api";
 import classNames from "classnames";
 import { useMemo } from "react";
@@ -32,8 +34,11 @@ const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
             <div
                 className={classNames({ [styles.clickable]: hasCapability })}
                 onClick={hasCapability ? toggleDialog : undefined}
+                title={hasCapability ? "Show capability menu" : undefined}
             >
                 <DeviceIcon type={device.type} />
+
+                {hasCapability && <FontAwesomeIcon icon={faGear} className={styles.gear} />}
             </div>
 
             {hasCapability && showDialog && (
