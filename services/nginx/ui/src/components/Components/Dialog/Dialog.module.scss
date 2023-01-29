@@ -17,9 +17,7 @@
         $border-radius: 6px;
 
         position: relative;
-        min-width: 100px;
         max-width: 80vw;
-        min-height: 100px;
         max-height: 80vh;
         @include colour("background-color", "background");
         @include colour("color", "text");

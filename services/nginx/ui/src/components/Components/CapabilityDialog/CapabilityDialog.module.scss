@@ -10,9 +10,14 @@
 
     & > div {
         margin-bottom: 10px;
+
+        &:last-child {
+            margin: 0;
+        }
     }
 
     svg {
+        width: 16px;
         padding: 0 3px;
     }
 }

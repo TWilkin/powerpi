@@ -53,7 +53,7 @@ type ColourPickerProps = { disabled: boolean } & InjectedColorProps;
 
 const ColourPicker = CustomPicker(({ disabled, onChange, ...passthrough }: ColourPickerProps) => {
     const onColourChange = useCallback(
-        (color) => {
+        (color: ColorResult) => {
             if (disabled || !onChange) {
                 return;
             }
