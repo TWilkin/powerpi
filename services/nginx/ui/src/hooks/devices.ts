@@ -35,7 +35,11 @@ export function useGetDevices() {
                 newDevices[index] = { ...newDevices[index] };
                 newDevices[index].state = message.state;
                 newDevices[index].since = message.timestamp;
-                newDevices[index].additionalState = message.additionalState;
+
+                newDevices[index].additionalState = {
+                    ...newDevices[index].additionalState,
+                    ...message.additionalState,
+                };
 
                 setDevices(newDevices);
             }
