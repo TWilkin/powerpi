@@ -2,6 +2,7 @@
 // Please do not change this file!
 interface CssExports {
   'box': string;
+  'disabled': string;
   'slider': string;
   'wrapper': string;
 }

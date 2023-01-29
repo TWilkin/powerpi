@@ -1,5 +1,6 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import { MouseEvent, TouchEvent, useCallback } from "react";
 import AdditionalStateControlsProps from "../AdditionalStateControlProps";
 import styles from "./Slider.module.scss";
@@ -40,7 +41,10 @@ const Slider = ({
     );
 
     return (
-        <div className={styles.container} title={title}>
+        <div
+            className={classNames(styles.container, { [styles.disabled]: disabled })}
+            title={title}
+        >
             <FontAwesomeIcon icon={lowIcon} />
 
             <input
