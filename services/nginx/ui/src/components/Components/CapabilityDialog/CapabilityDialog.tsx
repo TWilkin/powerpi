@@ -7,6 +7,7 @@ import BrightnessSlider from "../Controls/BrightnessSlider";
 import ColourSlider from "../Controls/ColourSlider";
 import ColourTemperatureSlider from "../Controls/ColourTemperatureSlider";
 import DeviceIcon from "../DeviceIcon";
+import DevicePowerButton from "../DevicePowerButton";
 import Dialog, { useDialog } from "../Dialog";
 import styles from "./CapabilityDialog.module.scss";
 
@@ -46,6 +47,8 @@ const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
                     closeDialog={closeDialog}
                 >
                     <div className={styles.dialog}>
+                        <DevicePowerButton device={device} />
+
                         {capabilities.brightness && (
                             <BrightnessSlider
                                 brightness={device.additionalState?.brightness}
