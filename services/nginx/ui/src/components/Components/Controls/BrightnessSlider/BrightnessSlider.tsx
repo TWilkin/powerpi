@@ -1,5 +1,5 @@
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
-import { MouseEvent, useCallback } from "react";
+import { MouseEvent, TouchEvent, useCallback } from "react";
 import AdditionalStateControlsProps from "../AdditionalStateControlProps";
 import Slider from "../Slider";
 
@@ -9,7 +9,7 @@ type BrightnessSliderProps = {
 
 const BrightnessSlider = ({ brightness = 65535, disabled, onChange }: BrightnessSliderProps) => {
     const onBrightnessChange = useCallback(
-        (event: MouseEvent<HTMLInputElement>) => {
+        (event: MouseEvent<HTMLInputElement> | TouchEvent<HTMLInputElement>) => {
             event.preventDefault();
 
             const target = event.target as HTMLInputElement;
@@ -30,6 +30,7 @@ const BrightnessSlider = ({ brightness = 65535, disabled, onChange }: Brightness
                 defaultValue={brightness}
                 disabled={disabled}
                 onMouseOut={onBrightnessChange}
+                onTouchEnd={onBrightnessChange}
             />
         </Slider>
     );
