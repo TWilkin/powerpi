@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import _ from "underscore";
 import { useSetDeviceAdditionalState } from "../../../hooks/devices";
 import BrightnessSlider from "../Controls/BrightnessSlider";
+import ColourTemperatureSlider from "../Controls/ColourTemperatureSlider";
 import DeviceIcon from "../DeviceIcon";
 import Dialog, { useDialog } from "../Dialog";
 import styles from "./CapabilityDialog.module.scss";
@@ -15,7 +16,7 @@ type CapabilityDialogProps = {
 const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
     const { showDialog, closeDialog, toggleDialog } = useDialog();
 
-    const capabilities = useMemo(() => getCapabilities(device), [device]);
+    const { capabilities, temperatureRange } = useMemo(() => getCapabilities(device), [device]);
     const hasCapability = useMemo(
         () => _(capabilities).any((capability) => capability),
         [capabilities]
@@ -43,13 +44,25 @@ const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
                     }
                     closeDialog={closeDialog}
                 >
-                    {capabilities.brightness && (
-                        <BrightnessSlider
-                            brightness={device.additionalState?.brightness}
-                            disabled={isDeviceAdditionalStateLoading}
-                            onChange={updateDeviceAdditionalState}
-                        />
-                    )}
+                    <>
+                        {capabilities.brightness && (
+                            <BrightnessSlider
+                                brightness={device.additionalState?.brightness}
+                                disabled={isDeviceAdditionalStateLoading}
+                                onChange={updateDeviceAdditionalState}
+                            />
+                        )}
+
+                        {capabilities.temperature && (
+                            <ColourTemperatureSlider
+                                temperature={device.additionalState?.temperature}
+                                min={temperatureRange.min}
+                                max={temperatureRange.max}
+                                disabled={isDeviceAdditionalStateLoading}
+                                onChange={updateDeviceAdditionalState}
+                            />
+                        )}
+                    </>
                 </Dialog>
             )}
         </>
@@ -58,15 +71,23 @@ const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
 export default CapabilityDialog;
 
 function getCapabilities(device: Device) {
-    const capbility = {
+    const capabilities = {
         brightness: device.capability?.brightness ?? false,
         temperature: false,
         colour: device.capability?.colour?.hue ?? false,
     };
+    let temperatureRange = { min: 0, max: 0 };
 
     if (device.capability?.colour?.temperature) {
-        capbility.temperature = true;
+        capabilities.temperature = true;
+        temperatureRange = device.capability?.colour?.temperature as {
+            min: number;
+            max: number;
+        };
     }
 
-    return capbility;
+    return {
+        capabilities,
+        temperatureRange,
+    };
 }
