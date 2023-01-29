@@ -1,6 +1,7 @@
 import {
     faCode,
     faComputer,
+    faGreaterThanEqual,
     faLayerGroup,
     faLightbulb,
     faLock,
@@ -42,6 +43,9 @@ function getDeviceTypeIcon(type: string) {
             switch (deviceType) {
                 case "composite":
                     return faLayerGroup;
+
+                case "condition":
+                    return faGreaterThanEqual;
 
                 case "computer":
                 case "node":
