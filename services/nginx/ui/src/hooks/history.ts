@@ -138,10 +138,14 @@ export function useSocketIORefreshHistory() {
 
         api.addDeviceListener(refresh);
         api.addSensorListener(refresh);
+        api.addBatteryListener(refresh);
+        api.addCapabilityListener(refresh);
 
         return () => {
             api.removeDeviceListener(refresh);
             api.removeSensorListener(refresh);
+            api.removeBatteryListener(refresh);
+            api.removeCapabilityListener(refresh);
         };
     }, [api, invalidateHistory]);
 }
