@@ -1,15 +1,24 @@
 import { History } from "@powerpi/api";
 import PaginationResponse from "@powerpi/api/dist/src/Pagination";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import { useInfiniteQuery, useQuery, useQueryClient, UseQueryResult } from "react-query";
 import { chain as _ } from "underscore";
 import useAPI from "./api";
+import { HistoryQueryKeyFactory } from "./QueryKeyFactory";
 
 export function useGetHistoryFilters(type?: string) {
     const api = useAPI();
-    const actions = useGetHistoryFilter("actions", api.getHistoryActions, type);
-    const entities = useGetHistoryFilter("entities", api.getHistoryEntities, type);
-    const types = useGetHistoryFilter("types", (_) => api.getHistoryTypes());
+    const actions = useGetHistoryFilter(
+        HistoryQueryKeyFactory.actions(),
+        api.getHistoryActions,
+        type
+    );
+    const entities = useGetHistoryFilter(
+        HistoryQueryKeyFactory.entities(),
+        api.getHistoryEntities,
+        type
+    );
+    const types = useGetHistoryFilter(HistoryQueryKeyFactory.types(), (_) => api.getHistoryTypes());
 
     return {
         actions: extractResult(actions, "action"),
@@ -19,20 +28,10 @@ export function useGetHistoryFilters(type?: string) {
 }
 
 function useGetHistoryFilter<TFilter>(
-    name: string,
+    key: string[],
     method: (type?: string) => Promise<TFilter[]>,
     type?: string
 ) {
-    const key = useMemo(() => {
-        const key = ["history", name];
-
-        if (type) {
-            key.push(type);
-        }
-
-        return key;
-    }, [name, type]);
-
     return useQuery(key, () => method(type));
 }
 
@@ -48,7 +47,10 @@ function extractResult<TRecord>(result: UseQueryResult<TRecord[], unknown>, prop
 export function useInvalidateHistory() {
     const queryClient = useQueryClient();
 
-    return useCallback(async () => await queryClient.invalidateQueries("history"), [queryClient]);
+    return useCallback(
+        async () => await queryClient.invalidateQueries(HistoryQueryKeyFactory.base()),
+        [queryClient]
+    );
 }
 
 export function useGetHistory(
@@ -92,7 +94,7 @@ export function useGetHistory(
     );
 
     const { isLoading, isError, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, data } =
-        useInfiniteQuery(["history", type, entity, action, start, end], nextPage, {
+        useInfiniteQuery(HistoryQueryKeyFactory.page(type, entity, action, start, end), nextPage, {
             getNextPageParam,
         });
 

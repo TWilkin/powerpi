@@ -9,11 +9,14 @@ import { BatteryStatusMessage } from "@powerpi/api/dist/src/BatteryStatus";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import useAPI from "./api";
+import QueryKeyFactory from "./QueryKeyFactory";
 
 export function useGetDevices() {
     const api = useAPI();
     const [devices, setDevices] = useState<Device[] | undefined>();
-    const { isLoading, isError, data } = useQuery("devices", () => api.getDevices());
+    const { isLoading, isError, data } = useQuery(QueryKeyFactory.devices(), () =>
+        api.getDevices()
+    );
 
     // handle react-query updates
     useEffect(() => setDevices(data), [data]);
