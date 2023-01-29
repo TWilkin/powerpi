@@ -65,11 +65,16 @@ const ColourPicker = CustomPicker(({ disabled, onChange, ...passthrough }: Colou
 
     return (
         <>
-            <Slider icon={faPalette} disabled={disabled}>
+            <Slider icon={faPalette} title="Set the hue for this device" disabled={disabled}>
                 <Hue {...passthrough} onChange={onColourChange} direction="horizontal" />
             </Slider>
 
-            <Slider icon={faCircleHalfStroke} disabled={disabled} box>
+            <Slider
+                icon={faCircleHalfStroke}
+                title="Set the saturation for this device"
+                disabled={disabled}
+                box
+            >
                 <Saturation {...passthrough} onChange={onColourChange} />
             </Slider>
         </>
@@ -78,12 +83,13 @@ const ColourPicker = CustomPicker(({ disabled, onChange, ...passthrough }: Colou
 
 type SliderProps = PropsWithChildren<{
     icon: IconProp;
+    title: string;
     disabled: boolean;
     box?: boolean;
 }>;
 
-const Slider = ({ icon, disabled, box = false, children }: SliderProps) => (
-    <div className={classNames(styles.wrapper, { [styles.disabled]: disabled })}>
+const Slider = ({ icon, title, disabled, box = false, children }: SliderProps) => (
+    <div className={classNames(styles.wrapper, { [styles.disabled]: disabled })} title={title}>
         <FontAwesomeIcon icon={icon} />
 
         <div className={classNames({ [styles.slider]: !box, [styles.box]: box })}>{children}</div>
