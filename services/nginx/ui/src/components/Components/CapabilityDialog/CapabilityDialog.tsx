@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import _ from "underscore";
 import { useSetDeviceAdditionalState } from "../../../hooks/devices";
 import BrightnessSlider from "../Controls/BrightnessSlider";
+import ColourSlider from "../Controls/ColourSlider";
 import ColourTemperatureSlider from "../Controls/ColourTemperatureSlider";
 import DeviceIcon from "../DeviceIcon";
 import Dialog, { useDialog } from "../Dialog";
@@ -44,7 +45,7 @@ const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
                     }
                     closeDialog={closeDialog}
                 >
-                    <>
+                    <div className={styles.dialog}>
                         {capabilities.brightness && (
                             <BrightnessSlider
                                 brightness={device.additionalState?.brightness}
@@ -62,7 +63,16 @@ const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
                                 onChange={updateDeviceAdditionalState}
                             />
                         )}
-                    </>
+
+                        {capabilities.colour && (
+                            <ColourSlider
+                                hue={device.additionalState?.hue}
+                                saturation={device.additionalState?.saturation}
+                                disabled={isDeviceAdditionalStateLoading}
+                                onChange={updateDeviceAdditionalState}
+                            />
+                        )}
+                    </div>
                 </Dialog>
             )}
         </>
@@ -74,7 +84,9 @@ function getCapabilities(device: Device) {
     const capabilities = {
         brightness: device.capability?.brightness ?? false,
         temperature: false,
-        colour: device.capability?.colour?.hue ?? false,
+        colour:
+            (device.capability?.colour?.hue ?? false) &&
+            (device.capability?.colour?.saturation ?? false),
     };
     let temperatureRange = { min: 0, max: 0 };
 
