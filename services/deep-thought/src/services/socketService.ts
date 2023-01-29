@@ -1,9 +1,10 @@
-import { DeviceState } from "@powerpi/api";
+import { AdditionalState, Capability, DeviceState, SocketIONamespace } from "@powerpi/api";
 import { ISensor } from "@powerpi/common";
 import { $log } from "@tsed/common";
 import { Nsp, SocketService } from "@tsed/socketio";
 import { Namespace } from "socket.io";
 import ConfigService from "./config";
+import { CapabilityMessage } from "./listeners/CapabilityStateListener";
 import DeviceStateListener from "./listeners/DeviceStateListener";
 import SensorStateListener from "./listeners/SensorStateListener";
 import MqttService from "./mqtt";
@@ -37,11 +38,17 @@ export default class ApiSocketService {
         this.namespace = namespace;
     }
 
-    onDeviceStateMessage(deviceName: string, state: DeviceState, timestamp?: number) {
-        this.namespace?.emit("device", {
+    onDeviceStateMessage(
+        deviceName: string,
+        state: DeviceState,
+        timestamp?: number,
+        additionalState?: AdditionalState
+    ) {
+        this.namespace?.emit(SocketIONamespace.Device, {
             device: deviceName,
             state,
             timestamp,
+            additionalState,
         });
     }
 
@@ -52,7 +59,7 @@ export default class ApiSocketService {
         unit?: string,
         timestamp?: number
     ) {
-        this.namespace?.emit("sensor", {
+        this.namespace?.emit(SocketIONamespace.Sensor, {
             sensor: sensorName,
             state,
             value,
@@ -68,11 +75,19 @@ export default class ApiSocketService {
         charging?: boolean,
         timestamp?: number
     ) {
-        this.namespace?.emit("battery", {
+        this.namespace?.emit(SocketIONamespace.Battery, {
             device: type === "device" ? name : undefined,
             sensor: type === "sensor" ? name : undefined,
             battery,
             charging,
+            timestamp,
+        });
+    }
+
+    onCapabilityMessage(deviceName: string, capability: Capability, timestamp?: number) {
+        this.namespace?.emit(SocketIONamespace.Capability, {
+            device: deviceName,
+            capability,
             timestamp,
         });
     }
@@ -94,9 +109,10 @@ class DeviceListener extends DeviceStateListener {
     protected onDeviceStateMessage(
         deviceName: string,
         state: DeviceState,
-        timestamp?: number
+        timestamp?: number,
+        additionalState?: AdditionalState
     ): void {
-        this.socketService.onDeviceStateMessage(deviceName, state, timestamp);
+        this.socketService.onDeviceStateMessage(deviceName, state, timestamp, additionalState);
     }
 
     protected onDeviceBatteryMessage(
@@ -106,6 +122,12 @@ class DeviceListener extends DeviceStateListener {
         charging?: boolean | undefined
     ): void {
         this.socketService.onBatteryMessage("device", deviceName, value, charging, timestamp);
+    }
+
+    onCapabilityMessage(deviceName: string, message: CapabilityMessage): void {
+        const capability = { ...message };
+        delete capability.timestamp;
+        this.socketService.onCapabilityMessage(deviceName, capability, message.timestamp);
     }
 }
 

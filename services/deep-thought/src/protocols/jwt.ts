@@ -1,3 +1,4 @@
+import { Req } from "@tsed/common";
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { Request } from "express";
 import { ExtractJwt, Strategy, StrategyOptions } from "passport-jwt";
@@ -65,7 +66,7 @@ async function getSecret(
     }
 }
 
-function getToken(request: Request): string | null {
+function getToken(request: Req): string | null {
     // read from the authorization header
     let token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
 

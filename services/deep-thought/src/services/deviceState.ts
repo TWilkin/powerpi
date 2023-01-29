@@ -1,6 +1,7 @@
-import { Device, DeviceState } from "@powerpi/api";
+import { AdditionalState, Device, DeviceState } from "@powerpi/api";
 import { Service } from "@tsed/common";
 import ConfigService from "./config";
+import { CapabilityMessage } from "./listeners/CapabilityStateListener";
 import DeviceStateListener from "./listeners/DeviceStateListener";
 import MqttService from "./mqtt";
 
@@ -24,12 +25,20 @@ export default class DeviceStateService extends DeviceStateListener {
         await super.$onInit();
     }
 
-    protected onDeviceStateMessage(deviceName: string, state: DeviceState, timestamp?: number) {
-        const device = this.devices.find((d) => d.name === deviceName);
+    protected getDevice = (name: string) => this.devices.find((device) => device.name === name);
+
+    protected onDeviceStateMessage(
+        deviceName: string,
+        state: DeviceState,
+        timestamp?: number,
+        additionalState?: AdditionalState
+    ) {
+        const device = this.getDevice(deviceName);
 
         if (device) {
             device.state = state;
             device.since = timestamp ?? -1;
+            device.additionalState = additionalState;
         }
     }
 
@@ -39,12 +48,22 @@ export default class DeviceStateService extends DeviceStateListener {
         timestamp?: number,
         charging?: boolean
     ) {
-        const device = this.devices.find((d) => d.name === deviceName);
+        const device = this.getDevice(deviceName);
 
         if (device) {
             device.battery = value;
             device.batterySince = timestamp;
             device.charging = charging;
+        }
+    }
+
+    onCapabilityMessage(deviceName: string, message: CapabilityMessage): void {
+        const device = this.getDevice(deviceName);
+
+        if (device) {
+            const capability = { ...message };
+            delete capability.timestamp;
+            device.capability = capability;
         }
     }
 

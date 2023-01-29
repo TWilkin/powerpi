@@ -31,7 +31,7 @@ services:
             - FILE_PATH=docker/config
 
     deep-thought:
-        image: twilkin/powerpi-deep-thought:0.5.20
+        image: twilkin/powerpi-deep-thought:0.5.21
         networks:
             - powerpi
         deploy:
