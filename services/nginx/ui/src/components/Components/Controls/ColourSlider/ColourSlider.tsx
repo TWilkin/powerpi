@@ -28,9 +28,9 @@ const ColourSlider = ({
     const onColourChangeComplete = useCallback(
         (color: ColorResult) => {
             const message = {
-                hue: Math.round(color.hsl.h),
-                saturation: Math.round(color.hsl.s * 100),
-                brightness: Math.round(color.hsl.l * 65535),
+                hue: +color.hsl.h.toFixed(2),
+                saturation: +(color.hsl.s * 100).toFixed(2),
+                brightness: +(color.hsl.l * 65535).toFixed(2),
             };
 
             onChange(message);
