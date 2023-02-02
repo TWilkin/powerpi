@@ -1,3 +1,4 @@
+@import "../../../../styles/colours.scss";
 @import "../../../../styles/vars.scss";
 
 .container {
@@ -9,8 +10,37 @@
         opacity: 0.5;
     }
 
-    input {
+    input[type="range"] {
         width: $capability-slider-width;
+        height: 10px;
         appearance: none;
+        background: transparent;
+        border-radius: 6px;
+        cursor: pointer;
+
+        &::-webkit-slider-runnable-track {
+            @include colour("background-color", "highlight");
+            height: 10px;
+            border: 0.1px solid;
+            border-radius: 6px;
+            @include colour("border-color", "dialog-border");
+        }
+
+        &::-webkit-slider-thumb {
+            height: 15px;
+            width: 15px;
+            appearance: none;
+            margin-top: -3px;
+            @include colour("background-color", "button");
+            border: 0.1px solid;
+            border-radius: 15px;
+            @include colour("border-color", "dialog-border");
+        }
+
+        &.custom {
+            &::-webkit-slider-runnable-track {
+                background-color: transparent;
+            }
+        }
     }
 }

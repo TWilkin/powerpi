@@ -2,6 +2,7 @@
 // Please do not change this file!
 interface CssExports {
   'container': string;
+  'custom': string;
   'disabled': string;
 }
 export const cssExports: CssExports;

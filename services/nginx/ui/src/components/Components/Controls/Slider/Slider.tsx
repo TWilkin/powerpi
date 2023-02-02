@@ -57,6 +57,7 @@ const Slider = ({
                 disabled={disabled}
                 onMouseOut={onValueSettled}
                 onTouchEnd={onValueSettled}
+                className={classNames({ [styles.custom]: inputProps?.style })}
                 {...inputProps}
             />
 
