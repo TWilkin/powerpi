@@ -1,7 +1,7 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { MouseEvent, TouchEvent, useCallback } from "react";
+import { HTMLProps, MouseEvent, TouchEvent, useCallback } from "react";
 import AdditionalStateControlsProps from "../AdditionalStateControlProps";
 import styles from "./Slider.module.scss";
 
@@ -13,6 +13,7 @@ type SliderProps = {
     value: number;
     min: number;
     max: number;
+    inputProps?: HTMLProps<HTMLInputElement>;
 } & AdditionalStateControlsProps;
 
 const Slider = ({
@@ -25,6 +26,7 @@ const Slider = ({
     max,
     disabled,
     onChange,
+    inputProps,
 }: SliderProps) => {
     const onValueSettled = useCallback(
         (event: MouseEvent<HTMLInputElement> | TouchEvent<HTMLInputElement>) => {
@@ -55,6 +57,7 @@ const Slider = ({
                 disabled={disabled}
                 onMouseOut={onValueSettled}
                 onTouchEnd={onValueSettled}
+                {...inputProps}
             />
 
             <FontAwesomeIcon icon={highIcon} />

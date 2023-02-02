@@ -26,6 +26,7 @@
         "chart.js": "^3.7.0",
         "chartjs-adapter-luxon": "^1.1.0",
         "classnames": "^2.3.1",
+        "color-temperature": "^0.2.7",
         "http-status-codes": "^2.1.4",
         "luxon": "^3.2.1",
         "prop-types": "^15.7.2",

@@ -3105,6 +3105,11 @@ color-name@~1.1.4:
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
+color-temperature@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/color-temperature/-/color-temperature-0.2.7.tgz#6c32ad9dd9c0fe07ccf2d8680734781712332b40"
+  integrity sha512-hFuGKuSBO4V2+AY4KAUvPr3fnNgfgSR1Kf3P1zp80t+zJF0Y37Z1VW2HZIPN90g29NkrlZK5ATIrDul7PCJYZA==
+
 colorette@^2.0.10, colorette@^2.0.14:
   version "2.0.19"
   resolved "https://registry.npmjs.org/colorette/-/colorette-2.0.19.tgz"
