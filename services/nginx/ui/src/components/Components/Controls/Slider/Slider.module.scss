@@ -19,8 +19,8 @@
         cursor: pointer;
 
         &::-webkit-slider-runnable-track {
-            @include colour("background-color", "highlight");
             height: 10px;
+            @include colour("background-color", "highlight");
             border: 0.1px solid;
             border-radius: 6px;
             @include colour("border-color", "dialog-border");
@@ -28,12 +28,12 @@
 
         &::-webkit-slider-thumb {
             height: 15px;
-            width: 15px;
-            appearance: none;
+            width: 5px;
             margin-top: -3px;
+            appearance: none;
             @include colour("background-color", "button");
             border: 0.1px solid;
-            border-radius: 15px;
+            border-radius: 5px;
             @include colour("border-color", "dialog-border");
         }
 

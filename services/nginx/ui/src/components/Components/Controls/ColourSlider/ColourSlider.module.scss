@@ -1,4 +1,5 @@
 @use "sass:math";
+@import "../../../../styles/colours.scss";
 @import "../../../../styles/vars.scss";
 
 .wrapper {
@@ -13,13 +14,42 @@
 
     .slider {
         position: relative;
-        width: $capability-slider-width;
         height: 10px;
+
+        :global {
+            .hue-horizontal {
+                height: 10px;
+                width: calc(#{$capability-slider-width} - 4px);
+                margin-left: 2px;
+                @include colour("background-color", "highlight");
+                border: 0.1px solid;
+                border-radius: 6px;
+                @include colour("border-color", "dialog-border");
+                cursor: pointer;
+
+                & > div {
+                    height: 15px;
+                    width: 4px;
+                    margin: -3px 0 -2.5px 0;
+                    @include colour("background-color", "button");
+                    border: 0.1px solid;
+                    border-radius: 5px;
+                    @include colour("border-color", "dialog-border");
+
+                    & > div {
+                        display: none;
+                    }
+                }
+            }
+        }
     }
 
     .box {
         position: relative;
         width: math.div($capability-slider-width, 2);
         height: math.div($capability-slider-width, 2);
+        border: 0.1px solid;
+        @include colour("border-color", "dialog-border");
+        cursor: pointer;
     }
 }
