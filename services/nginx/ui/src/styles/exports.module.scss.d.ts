@@ -15,6 +15,7 @@ interface CssExports {
   'darkMenu': string;
   'darkMenuBorder': string;
   'darkModalBackdrop': string;
+  'darkShadow': string;
   'darkText': string;
   'darkThead': string;
   'darkWarning': string;
@@ -32,6 +33,7 @@ interface CssExports {
   'lightMenu': string;
   'lightMenuBorder': string;
   'lightModalBackdrop': string;
+  'lightShadow': string;
   'lightText': string;
   'lightThead': string;
   'lightWarning': string;

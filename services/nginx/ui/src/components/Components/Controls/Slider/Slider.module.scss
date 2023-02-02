@@ -35,6 +35,8 @@
             border: 0.1px solid;
             border-radius: 5px;
             @include colour("border-color", "dialog-border");
+            box-shadow: 1.2px 1.2px;
+            @include colour("color", "shadow");
         }
 
         &.custom {
