@@ -12,32 +12,6 @@
 
     input[type="range"] {
         width: $capability-slider-width;
-        height: 10px;
-        appearance: none;
-        background: transparent;
-        border-radius: 6px;
-        cursor: pointer;
-
-        &::-webkit-slider-runnable-track {
-            height: 10px;
-            @include colour("background-color", "highlight");
-            border: 0.1px solid;
-            border-radius: 6px;
-            @include colour("border-color", "dialog-border");
-        }
-
-        &::-webkit-slider-thumb {
-            height: 15px;
-            width: 5px;
-            margin-top: -3px;
-            appearance: none;
-            @include colour("background-color", "button");
-            border: 0.1px solid;
-            border-radius: 5px;
-            @include colour("border-color", "dialog-border");
-            box-shadow: 1.2px 1.2px;
-            @include colour("color", "shadow");
-        }
 
         &.custom {
             &::-webkit-slider-runnable-track {

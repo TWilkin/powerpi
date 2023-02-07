@@ -12,6 +12,8 @@ interface CssExports {
   'darkFilterText': string;
   'darkHighlight': string;
   'darkInfo': string;
+  'darkInputBackground': string;
+  'darkInputForeground': string;
   'darkMenu': string;
   'darkMenuBorder': string;
   'darkModalBackdrop': string;
@@ -30,6 +32,8 @@ interface CssExports {
   'lightFilterText': string;
   'lightHighlight': string;
   'lightInfo': string;
+  'lightInputBackground': string;
+  'lightInputForeground': string;
   'lightMenu': string;
   'lightMenuBorder': string;
   'lightModalBackdrop': string;

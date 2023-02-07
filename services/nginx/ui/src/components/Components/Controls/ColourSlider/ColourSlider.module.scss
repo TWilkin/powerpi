@@ -21,7 +21,7 @@
                 height: 10px;
                 width: calc(#{$capability-slider-width} - 4px);
                 margin-left: 2px;
-                @include colour("background-color", "highlight");
+                @include colour("background-color", "input-background");
                 border: 0.1px solid;
                 border-radius: 6px;
                 @include colour("border-color", "dialog-border");
@@ -29,14 +29,11 @@
 
                 & > div {
                     height: 15px;
-                    width: 4px;
-                    margin: -3px 0 -2.5px 0;
-                    @include colour("background-color", "button");
-                    border: 0.1px solid;
-                    border-radius: 5px;
-                    @include colour("border-color", "dialog-border");
-                    box-shadow: 1.2px 1.2px;
-                    @include colour("color", "shadow");
+                    width: 15px;
+                    position: relative;
+                    clip-path: polygon(0 0, 50% 50%, 100% 0);
+                    transform: translate(-50%, -25%);
+                    @include colour("background-color", "input-foreground");
 
                     & > div {
                         display: none;
