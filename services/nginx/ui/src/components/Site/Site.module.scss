@@ -79,6 +79,11 @@ table {
 }
 
 input {
+    &[type="checkbox"],
+    &[type="radio"] {
+        @include colour("accent-color", "input-background");
+    }
+
     &[type="range"] {
         height: 10px;
         -webkit-appearance: none;
