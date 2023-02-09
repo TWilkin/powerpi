@@ -2,7 +2,7 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCircleHalfStroke, faPalette } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { PropsWithChildren, useCallback, useState } from "react";
+import { PropsWithChildren, useCallback, useLayoutEffect, useState } from "react";
 import { ColorResult, CustomPicker, InjectedColorProps } from "react-color";
 import { Hue, Saturation } from "react-color/lib/components/common";
 import AdditionalStateControlsProps from "../AdditionalStateControlProps";
@@ -36,6 +36,11 @@ const ColourSlider = ({
             onChange(message);
         },
         [onChange]
+    );
+
+    useLayoutEffect(
+        () => setColour({ h: hue, s: saturation / 100, l: brightness / 65535 }),
+        [brightness, hue, saturation]
     );
 
     return (

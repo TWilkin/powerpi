@@ -1,7 +1,15 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { HTMLProps, MouseEvent, TouchEvent, useCallback } from "react";
+import {
+    ChangeEvent,
+    HTMLProps,
+    MouseEvent,
+    TouchEvent,
+    useCallback,
+    useLayoutEffect,
+    useState,
+} from "react";
 import AdditionalStateControlsProps from "../AdditionalStateControlProps";
 import styles from "./Slider.module.scss";
 
@@ -28,6 +36,13 @@ const Slider = ({
     onChange,
     inputProps,
 }: SliderProps) => {
+    const [currentValue, setCurrentValue] = useState(value);
+
+    const onValueChange = useCallback(
+        (event: ChangeEvent<HTMLInputElement>) => setCurrentValue(parseInt(event.target.value)),
+        []
+    );
+
     const onValueSettled = useCallback(
         (event: MouseEvent<HTMLInputElement> | TouchEvent<HTMLInputElement>) => {
             event.preventDefault();
@@ -42,6 +57,8 @@ const Slider = ({
         [additionalStateName, onChange, value]
     );
 
+    useLayoutEffect(() => setCurrentValue(value), [value]);
+
     return (
         <div
             className={classNames(styles.container, { [styles.disabled]: disabled })}
@@ -53,8 +70,9 @@ const Slider = ({
                 type="range"
                 min={min}
                 max={max}
-                defaultValue={value}
+                value={currentValue}
                 disabled={disabled}
+                onChange={onValueChange}
                 onMouseOut={onValueSettled}
                 onTouchEnd={onValueSettled}
                 className={classNames({ [styles.custom]: inputProps?.style })}
