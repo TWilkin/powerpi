@@ -91,7 +91,7 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
     @CapabilityMixin.supports_brightness.getter
     def supports_brightness(self):
         return any(
-            device[DataType.BRIGHTNESS] if DataType.BRIGHTNESS in device else None
+            device[DataType.BRIGHTNESS] if DataType.BRIGHTNESS in device else False
             for device in self.__capabilities.values()
         )
 
@@ -100,12 +100,12 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
         return any(
             device['colour'][DataType.HUE]
             if 'colour' in device and DataType.HUE in device['colour']
-            else None
+            else False
             for device in self.__capabilities.values()
         ) and any(
             device['colour'][DataType.SATURATION]
             if 'colour' in device and DataType.SATURATION in device['colour']
-            else None
+            else False
             for device in self.__capabilities.values()
         )
 
