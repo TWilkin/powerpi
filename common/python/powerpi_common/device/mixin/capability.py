@@ -1,7 +1,13 @@
 from abc import ABC
+from collections import namedtuple
 from typing import Union
 
 from powerpi_common.util.data import DataType, Range
+
+Capability = namedtuple(
+    'Capability',
+    ['brightness', 'temperature', 'hue', 'saturation']
+)
 
 
 class CapabilityMixin(ABC):

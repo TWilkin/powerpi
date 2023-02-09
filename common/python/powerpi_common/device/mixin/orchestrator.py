@@ -1,16 +1,22 @@
 from abc import abstractmethod
-from typing import List
+from typing import Dict, List, Union
 
 from powerpi_common.config import Config
-from powerpi_common.device.consumers.status_event_consumer import DeviceStatusEventConsumer
+from powerpi_common.device.consumers.capability_event_consumer import \
+    CapabilityEventConsumer
+from powerpi_common.device.consumers.status_event_consumer import \
+    DeviceStatusEventConsumer
+from powerpi_common.device.mixin import Capability, CapabilityMixin
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, MQTTMessage
 from powerpi_common.typing import DeviceManagerType, DeviceType
+from powerpi_common.util.data import DataType
+
 from .initialisable import InitialisableMixin
 
 
-class DeviceOrchestratorMixin(InitialisableMixin):
+class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
     '''
     Mixin to add device orchestrator functionality (for devices that
     control other devices.)
@@ -31,9 +37,30 @@ class DeviceOrchestratorMixin(InitialisableMixin):
             if self._is_message_valid(entity, None):
                 new_power_state = message.get('state', DeviceStatus.UNKNOWN)
 
-                await self.__main_device.on_referenced_device_status(self._device.name, new_power_state)
+                await self.__main_device.on_referenced_device_status(
+                    self._device.name,
+                    new_power_state
+                )
 
-    #pylint: disable=too-many-arguments
+    class ReferencedCapabilityEventListener(CapabilityEventConsumer):
+        def __init__(
+            self,
+            main_device: Union['DeviceOrchestratorMixin', CapabilityMixin],
+            device: DeviceType,
+            config: Config,
+            logger: Logger
+        ):
+            CapabilityEventConsumer.__init__(self, device, config, logger)
+
+            self.__main_device = main_device
+
+        async def on_message(self, message: MQTTMessage, entity: str, _: str):
+            self.__main_device.on_referenced_device_capability(
+                entity,
+                message
+            )
+
+    # pylint: disable=too-many-arguments, invalid-overridden-method
     def __init__(
         self,
         config: Config,
@@ -48,6 +75,7 @@ class DeviceOrchestratorMixin(InitialisableMixin):
         self.__mqtt_client = mqtt_client
         self.__device_manager = device_manager
         self.__devices = devices
+        self.__capabilities: Dict[str, Capability] = {}
 
     @property
     def devices(self) -> List[DeviceType]:
@@ -55,6 +83,30 @@ class DeviceOrchestratorMixin(InitialisableMixin):
         Return the list of devices this device controls.
         '''
         return [self.__device_manager.get_device(device_name) for device_name in self.__devices]
+
+    @CapabilityMixin.supports_brightness.getter
+    def supports_brightness(self):
+        return any(
+            device[DataType.BRIGHTNESS] if DataType.BRIGHTNESS in device else None
+            for device in self.__capabilities.values()
+        )
+
+    @CapabilityMixin.supports_colour_hue_and_saturation.getter
+    def supports_colour_hue_and_saturation(self):
+        return any(
+            device[DataType.HUE] if DataType.HUE in device else None
+            for device in self.__capabilities.values()
+        ) and any(
+            device[DataType.SATURATION] if DataType.SATURATION in device else None
+            for device in self.__capabilities.values()
+        )
+
+    @CapabilityMixin.supports_colour_temperature.getter
+    def supports_colour_temperature(self):
+        any(
+            device[DataType.TEMPERATURE] if DataType.TEMPERATURE in device else None
+            for device in self.__capabilities.values()
+        )
 
     @abstractmethod
     async def on_referenced_device_status(self, device_name: str, state: DeviceStatus):
@@ -65,10 +117,30 @@ class DeviceOrchestratorMixin(InitialisableMixin):
         '''
         raise NotImplementedError
 
+    def on_referenced_device_capability(self, device_name: str, capability: Capability):
+        '''
+        Method to refresh the orchestrator devices' capabilities based on the changed
+        capability from the referenced device.
+        '''
+        new_capabilities = {**self.__capabilities}
+        new_capabilities[device_name] = capability
+
+        if new_capabilities != self.__capabilities:
+            # the capabilities have been updated
+            self.__capabilities = new_capabilities
+
+            self.on_capability_change()
+
     async def initialise(self):
         for device in self.devices:
-            consumer = self.ReferencedDeviceStateEventListener(
+            state_listener = self.ReferencedDeviceStateEventListener(
                 self, device, self.__config, self.__logger
             )
 
-            self.__mqtt_client.add_consumer(consumer)
+            self.__mqtt_client.add_consumer(state_listener)
+
+            capability_listener = self.ReferencedCapabilityEventListener(
+                self, device, self.__config, self.__logger
+            )
+
+            self.__mqtt_client.add_consumer(capability_listener)
