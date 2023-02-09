@@ -17,6 +17,10 @@
             &::-webkit-slider-runnable-track {
                 background-color: transparent;
             }
+
+            &::-moz-range-track {
+                background-color: transparent;
+            }
         }
     }
 }
