@@ -1,3 +1,4 @@
+import sys
 from abc import abstractmethod
 from typing import Dict, List, Union
 
@@ -11,7 +12,7 @@ from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, MQTTMessage
 from powerpi_common.typing import DeviceManagerType, DeviceType
-from powerpi_common.util.data import DataType
+from powerpi_common.util.data import DataType, Range
 
 from .initialisable import InitialisableMixin
 
@@ -55,9 +56,12 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
             self.__main_device = main_device
 
         async def on_message(self, message: MQTTMessage, entity: str, _: str):
+            capability = {**message}
+            capability.pop('timestamp', None)
+
             self.__main_device.on_referenced_device_capability(
                 entity,
-                message
+                capability
             )
 
     # pylint: disable=too-many-arguments, invalid-overridden-method
@@ -94,19 +98,35 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
     @CapabilityMixin.supports_colour_hue_and_saturation.getter
     def supports_colour_hue_and_saturation(self):
         return any(
-            device[DataType.HUE] if DataType.HUE in device else None
+            device['colour'][DataType.HUE]
+            if 'colour' in device and DataType.HUE in device['colour']
+            else None
             for device in self.__capabilities.values()
         ) and any(
-            device[DataType.SATURATION] if DataType.SATURATION in device else None
+            device['colour'][DataType.SATURATION]
+            if 'colour' in device and DataType.SATURATION in device['colour']
+            else None
             for device in self.__capabilities.values()
         )
 
     @CapabilityMixin.supports_colour_temperature.getter
     def supports_colour_temperature(self):
-        any(
-            device[DataType.TEMPERATURE] if DataType.TEMPERATURE in device else None
-            for device in self.__capabilities.values()
-        )
+        min_temp = sys.maxsize
+        max_temp = -sys.maxsize
+        supports_temp = False
+
+        for device in self.__capabilities.values():
+            if 'colour' in device and DataType.TEMPERATURE in device['colour']:
+                temp = device['colour'][DataType.TEMPERATURE]
+
+                if temp is not False and 'min' in temp and 'max' in temp:
+                    min_temp = min(min_temp, temp['min'])
+                    max_temp = max(max_temp, temp['max'])
+                    supports_temp = True
+
+        if supports_temp:
+            return Range(min_temp, max_temp)
+        return False
 
     @abstractmethod
     async def on_referenced_device_status(self, device_name: str, state: DeviceStatus):
