@@ -22,7 +22,7 @@ const HistoryLink = ({ type = "", entity = "", action = "" }: HistoryLinkProps) 
     }, [action, entity, type]);
 
     return (
-        <Link to={target}>
+        <Link to={target} title="Show history for this device">
             <FontAwesomeIcon icon={faHistory} />
         </Link>
     );

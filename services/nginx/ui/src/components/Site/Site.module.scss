@@ -77,3 +77,57 @@ table {
         }
     }
 }
+
+input {
+    &[type="checkbox"],
+    &[type="radio"] {
+        @include colour("accent-color", "input-background");
+    }
+
+    &[type="range"] {
+        height: 10px;
+        -webkit-appearance: none;
+        appearance: none;
+        background: transparent;
+        border-radius: 6px;
+        cursor: pointer;
+
+        &::-webkit-slider-runnable-track {
+            height: 10px;
+            @include colour("background-color", "input-background");
+            border: 0.1px solid;
+            border-radius: 6px;
+            @include colour("border-color", "dialog-border");
+        }
+
+        &::-moz-range-track {
+            height: 10px;
+            @include colour("background-color", "input-background");
+            border: 0.1px solid;
+            border-radius: 6px;
+            @include colour("border-color", "dialog-border");
+        }
+
+        &::-webkit-slider-thumb {
+            height: 15px;
+            width: 15px;
+            position: relative;
+            clip-path: polygon(0 0, 50% 50%, 100% 0);
+            transform: translateY(-25%);
+            -webkit-appearance: none;
+            appearance: none;
+            @include colour("background-color", "input-foreground");
+        }
+
+        &::-moz-range-thumb {
+            height: 15px;
+            width: 15px;
+            margin-top: -0.25rem;
+            clip-path: polygon(0 0, 50% 50%, 100% 0);
+            transform: translateY(-25%);
+            -webkit-appearance: none;
+            appearance: none;
+            @include colour("background-color", "input-foreground");
+        }
+    }
+}

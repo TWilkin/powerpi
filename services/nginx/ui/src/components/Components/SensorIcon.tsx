@@ -3,6 +3,7 @@ import {
     faBurn,
     faDoorOpen,
     faHome,
+    faMobileRetro,
     faQuestion,
     faThermometerHalf,
     faTint,
@@ -25,7 +26,20 @@ function mapSensorIcon(type: string) {
     const manufacturerType = split.length >= 2 ? split.at(0) ?? type : type;
     const sensorType = split.length >= 2 ? type.substring(manufacturerType.length + 1) : type;
 
-    switch (sensorType) {
+    let icon = typeSwitch(sensorType);
+    for (const str of split) {
+        if (icon !== faQuestion) {
+            break;
+        }
+
+        icon = typeSwitch(str);
+    }
+
+    return icon;
+}
+
+function typeSwitch(type: string) {
+    switch (type) {
         case "door":
             return faDoorOpen;
 
@@ -40,6 +54,9 @@ function mapSensorIcon(type: string) {
 
         case "motion":
             return faWalking;
+
+        case "switch":
+            return faMobileRetro;
 
         case "temperature":
             return faThermometerHalf;

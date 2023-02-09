@@ -1,13 +1,22 @@
-import { Device, DeviceState, DeviceStatusMessage } from "@powerpi/api";
+import {
+    AdditionalState,
+    CapabilityStatusMessage,
+    Device,
+    DeviceState,
+    DeviceStatusMessage,
+} from "@powerpi/api";
 import { BatteryStatusMessage } from "@powerpi/api/dist/src/BatteryStatus";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import useAPI from "./api";
+import QueryKeyFactory from "./QueryKeyFactory";
 
 export function useGetDevices() {
     const api = useAPI();
     const [devices, setDevices] = useState<Device[] | undefined>();
-    const { isLoading, isError, data } = useQuery("devices", () => api.getDevices());
+    const { isLoading, isError, data } = useQuery(QueryKeyFactory.devices(), () =>
+        api.getDevices()
+    );
 
     // handle react-query updates
     useEffect(() => setDevices(data), [data]);
@@ -26,6 +35,11 @@ export function useGetDevices() {
                 newDevices[index] = { ...newDevices[index] };
                 newDevices[index].state = message.state;
                 newDevices[index].since = message.timestamp;
+
+                newDevices[index].additionalState = {
+                    ...newDevices[index].additionalState,
+                    ...message.additionalState,
+                };
 
                 setDevices(newDevices);
             }
@@ -49,12 +63,30 @@ export function useGetDevices() {
             }
         };
 
+        const onCapabilityUpdate = (message: CapabilityStatusMessage) => {
+            if (!devices) {
+                return;
+            }
+
+            const index = devices.findIndex((device) => device.name === message.device);
+            if (index !== -1) {
+                const newDevices = [...devices];
+
+                newDevices[index] = { ...newDevices[index] };
+                newDevices[index].capability = message.capability;
+
+                setDevices(newDevices);
+            }
+        };
+
         api.addDeviceListener(onStatusUpdate);
         api.addBatteryListener(onBatteryUpdate);
+        api.addCapabilityListener(onCapabilityUpdate);
 
         return () => {
             api.removeDeviceListener(onStatusUpdate);
             api.removeBatteryListener(onBatteryUpdate);
+            api.removeCapabilityListener(onCapabilityUpdate);
         };
     }, [api, devices, setDevices]);
 
@@ -88,5 +120,31 @@ export function useSetDeviceState(device: Device) {
         updateDeviceState: mutation.mutateAsync,
         isDeviceStateLoading: loading || mutation.isLoading,
         changeState,
+    };
+}
+
+export function useSetDeviceAdditionalState(device: Device) {
+    const api = useAPI();
+    const [changeAdditionalState, setChangeAdditionalState] = useState<AdditionalState>({});
+    const [loading, setLoading] = useState(false);
+
+    // manually handling loading as we want to change it when socket.io
+    // updates the state
+    useEffect(() => setLoading(false), [device.additionalState]);
+
+    const mutation = useMutation(
+        async (newAdditionalState: AdditionalState) => {
+            setLoading(true);
+            api.postMessage(device.name, undefined, newAdditionalState);
+        },
+        {
+            onError: () => setChangeAdditionalState({}),
+        }
+    );
+
+    return {
+        updateDeviceAdditionalState: mutation.mutateAsync,
+        isDeviceAdditionalStateLoading: loading || mutation.isLoading,
+        changeAdditionalState,
     };
 }

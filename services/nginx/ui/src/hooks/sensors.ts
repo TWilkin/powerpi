@@ -3,11 +3,14 @@ import { BatteryStatusMessage } from "@powerpi/api/dist/src/BatteryStatus";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import useAPI from "./api";
+import QueryKeyFactory from "./QueryKeyFactory";
 
 export default function useGetSensors() {
     const api = useAPI();
     const [sensors, setSensors] = useState<Sensor[] | undefined>();
-    const { isLoading, isError, data } = useQuery("sensors", () => api.getSensors());
+    const { isLoading, isError, data } = useQuery(QueryKeyFactory.sensors(), () =>
+        api.getSensors()
+    );
 
     // handle react-query updates
     useEffect(() => setSensors(data), [data]);

@@ -1,0 +1,26 @@
+@import "../../../../styles/colours.scss";
+@import "../../../../styles/vars.scss";
+
+.container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+
+    &.disabled {
+        opacity: 0.5;
+    }
+
+    input[type="range"] {
+        width: $capability-slider-width;
+
+        &.custom {
+            &::-webkit-slider-runnable-track {
+                background-color: transparent;
+            }
+
+            &::-moz-range-track {
+                background-color: transparent;
+            }
+        }
+    }
+}

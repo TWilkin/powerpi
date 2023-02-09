@@ -1,6 +1,7 @@
 import {
+    faCode,
     faComputer,
-    faEquals,
+    faGreaterThanEqual,
     faLayerGroup,
     faLightbulb,
     faLock,
@@ -14,9 +15,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMemo } from "react";
 import styles from "./DeviceIcon.module.scss";
 
-interface DeviceIconProps {
+type DeviceIconProps = {
     type: string;
-}
+};
 
 const DeviceIcon = ({ type }: DeviceIconProps) => {
     const icon = useMemo(() => getDeviceTypeIcon(type), [type]);
@@ -43,6 +44,9 @@ function getDeviceTypeIcon(type: string) {
                 case "composite":
                     return faLayerGroup;
 
+                case "condition":
+                    return faGreaterThanEqual;
+
                 case "computer":
                 case "node":
                     return faComputer;
@@ -64,7 +68,7 @@ function getDeviceTypeIcon(type: string) {
                     return faPlug;
 
                 case "variable":
-                    return faEquals;
+                    return faCode;
 
                 default:
                     return faQuestion;

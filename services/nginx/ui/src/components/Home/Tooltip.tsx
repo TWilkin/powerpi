@@ -21,7 +21,15 @@ interface TooltipProps {
 const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
     const { isDark } = useColourMode();
 
-    const getType = useCallback((sensor: Sensor) => sensor.type.split("_").at(-1), []);
+    const getType = useCallback((sensor: Sensor) => {
+        const split = sensor.type.split("_");
+
+        if (split.length <= 2) {
+            return split.at(-1);
+        }
+
+        return split.at(-2);
+    }, []);
 
     const { backgroundColour, textColour } = useMemo(() => {
         if (isDark) {

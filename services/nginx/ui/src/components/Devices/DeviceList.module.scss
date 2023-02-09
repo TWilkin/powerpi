@@ -64,6 +64,7 @@
         .cell {
             padding: 0 1px;
             line-height: $cell-height;
+            user-select: none;
 
             &.icon,
             &.state {
