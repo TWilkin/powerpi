@@ -7,13 +7,13 @@ from powerpi_common.device.consumers.capability_event_consumer import \
     CapabilityEventConsumer
 from powerpi_common.device.consumers.status_event_consumer import \
     DeviceStatusEventConsumer
-from powerpi_common.device.mixin import Capability, CapabilityMixin
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, MQTTMessage
 from powerpi_common.typing import DeviceManagerType, DeviceType
 from powerpi_common.util.data import DataType, Range
 
+from .capability import Capability, CapabilityMixin
 from .initialisable import InitialisableMixin
 
 
