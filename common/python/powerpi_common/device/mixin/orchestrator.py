@@ -101,9 +101,7 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
             device['colour'][DataType.HUE]
             if 'colour' in device and DataType.HUE in device['colour']
             else False
-            for device in self.__capabilities.values()
-        ) and any(
-            device['colour'][DataType.SATURATION]
+            and device['colour'][DataType.SATURATION]
             if 'colour' in device and DataType.SATURATION in device['colour']
             else False
             for device in self.__capabilities.values()
@@ -142,14 +140,17 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
         Method to refresh the orchestrator devices' capabilities based on the changed
         capability from the referenced device.
         '''
-        new_capabilities = {**self.__capabilities}
-        new_capabilities[device_name] = capability
+        current = None
+        if device_name in self.__capabilities:
+            current = self.__capabilities[device_name]
 
-        if new_capabilities != self.__capabilities:
-            # the capabilities have been updated
-            self.__capabilities = new_capabilities
+        if current != capability:
+            # the capabilities for this referenced device have been updated
+            self.__capabilities[device_name] = capability
 
-            self.on_capability_change()
+            if len(self.__capabilities.keys()) == len(self.devices):
+                # broadcast when we have the capabilities for all the referenced devices
+                self.on_capability_change()
 
     async def initialise(self):
         for device in self.devices:
