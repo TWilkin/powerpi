@@ -6,14 +6,14 @@ import pytest
 from macro_controller.device import MutexDevice
 from powerpi_common_test.device import DeviceTestBaseNew
 from powerpi_common_test.device.mixin import (
-    DeviceOrchestratorMixinTestBaseNew, PollableMixingTestBaseNew)
+    DeviceOrchestratorMixinTestBaseNew, PollableMixinTestBaseNew)
 from pytest_mock import MockerFixture
 
 
 class TestMutexDevice(
     DeviceTestBaseNew,
     DeviceOrchestratorMixinTestBaseNew,
-    PollableMixingTestBaseNew
+    PollableMixinTestBaseNew
 ):
     @pytest.mark.asyncio
     async def test_all_on(self, subject: MutexDevice, devices: List[MagicMock]):

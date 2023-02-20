@@ -26,7 +26,7 @@ class PollableMixinTestBase(ABC):
         assert subject.poll_frequency >= 10
 
 
-class PollableMixingTestBaseNew(ABC):
+class PollableMixinTestBaseNew(ABC):
     @pytest.mark.asyncio
     async def test_poll_implemented(self, subject: PollableMixin):
         await subject.poll()

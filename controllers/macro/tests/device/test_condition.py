@@ -6,14 +6,14 @@ from macro_controller.device.condition import ConditionDevice
 from powerpi_common.device import DeviceStatus
 from powerpi_common_test.device import DeviceTestBaseNew
 from powerpi_common_test.device.mixin import (
-    DeviceOrchestratorMixinTestBaseNew, PollableMixingTestBaseNew)
+    DeviceOrchestratorMixinTestBaseNew, PollableMixinTestBaseNew)
 from pytest_mock import MockerFixture
 
 
 class TestCondition(
     DeviceTestBaseNew,
     DeviceOrchestratorMixinTestBaseNew,
-    PollableMixingTestBaseNew
+    PollableMixinTestBaseNew
 ):
 
     @pytest.mark.asyncio
