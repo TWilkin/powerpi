@@ -92,7 +92,7 @@ class TestCapabilityMixin:
         else:
             powerpi_mqtt_producer.assert_not_called()
 
-    @ pytest.fixture
+    @pytest.fixture
     def subject(
         self,
         powerpi_config: Config,

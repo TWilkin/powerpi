@@ -22,6 +22,7 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
     Mixin to add device orchestrator functionality (for devices that
     control other devices.)
     '''
+
     class ReferencedDeviceStateEventListener(DeviceStatusEventConsumer):
         def __init__(
             self,
