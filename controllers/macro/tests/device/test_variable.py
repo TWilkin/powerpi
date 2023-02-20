@@ -1,14 +1,17 @@
-from pytest_mock import MockerFixture
-
+import pytest
 from macro_controller.device import VariableDevice
-from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device import DeviceTestBaseNew
 
 
-class TestVariableDevice(DeviceTestBase):
-    def get_subject(self, _: MockerFixture):
-        self.message = 'test message'
-
+class TestVariableDevice(DeviceTestBaseNew):
+    @pytest.fixture
+    def subject(
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client
+    ):
         return VariableDevice(
-            self.config, self.logger, self.mqtt_client,
+            powerpi_config, powerpi_logger, powerpi_mqtt_client,
             name='variable'
         )

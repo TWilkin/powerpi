@@ -69,7 +69,7 @@ services:
             - deep-thought
 
     macro-controller:
-        image: twilkin/powerpi-macro-controller:1.1.12
+        image: twilkin/powerpi-macro-controller:1.1.13
         networks:
             - powerpi
         deploy:

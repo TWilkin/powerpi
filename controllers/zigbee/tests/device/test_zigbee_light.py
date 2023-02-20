@@ -6,7 +6,7 @@ import pytest
 from powerpi_common.device.mixin import AdditionalState
 from powerpi_common_test.device import AdditionalStateDeviceTestBaseNew
 from powerpi_common_test.device.mixin import (InitialisableMixinTestBaseNew,
-                                              PollableMixingTestBaseNew)
+                                              PollableMixinTestBaseNew)
 from pytest_mock import MockerFixture
 from zigbee_controller.device.zigbee_light import ZigbeeLight
 from zigpy.exceptions import DeliveryError
@@ -17,7 +17,7 @@ from zigpy.zcl.foundation import Status
 class TestZigbeeeLight(
     AdditionalStateDeviceTestBaseNew,
     InitialisableMixinTestBaseNew,
-    PollableMixingTestBaseNew
+    PollableMixinTestBaseNew
 ):
     def test_duration(self, subject: ZigbeeLight):
         assert subject.duration == 13

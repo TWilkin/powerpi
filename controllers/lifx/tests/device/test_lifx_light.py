@@ -9,13 +9,13 @@ from lifx_controller.device.lifx_light import LIFXLightDevice
 from powerpi_common.util.data import Range
 from powerpi_common_test.device import AdditionalStateDeviceTestBaseNew
 from powerpi_common_test.device.mixin import (InitialisableMixinTestBaseNew,
-                                              PollableMixingTestBaseNew)
+                                              PollableMixinTestBaseNew)
 from pytest_mock import MockerFixture
 
 
 class TestLIFXLightDevice(
     AdditionalStateDeviceTestBaseNew,
-    PollableMixingTestBaseNew,
+    PollableMixinTestBaseNew,
     InitialisableMixinTestBaseNew
 ):
     @pytest.mark.asyncio
