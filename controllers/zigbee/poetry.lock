@@ -397,7 +397,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "powerpi-common"
-version = "0.2.10"
+version = "0.2.13"
 description = "PowerPi Common Python Library"
 category = "dev"
 optional = false
@@ -417,7 +417,7 @@ url = "../../common/python"
 
 [[package]]
 name = "powerpi-common-test"
-version = "0.2.4"
+version = "0.2.6"
 description = "PowerPi Common Python Test Library"
 category = "dev"
 optional = false
@@ -711,45 +711,47 @@ multidict = ">=4.0"
 
 [[package]]
 name = "zigpy"
-version = "0.50.3"
+version = "0.53.1"
 description = "Library implementing a ZigBee stack"
 category = "main"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 
 [package.dependencies]
 aiohttp = "*"
 aiosqlite = ">=0.16.0"
+async-timeout = "*"
+attrs = "*"
 crccheck = "*"
 cryptography = "*"
-voluptuous = "*"
-
-[[package]]
-name = "zigpy-znp"
-version = "0.8.2"
-description = "A library for zigpy which communicates with TI ZNP radios"
-category = "main"
-optional = false
-python-versions = ">=3.7"
-
-[package.dependencies]
-async-timeout = "*"
-coloredlogs = "*"
-jsonschema = "*"
 pyserial-asyncio = [
     {version = "*", markers = "platform_system != \"Windows\""},
     {version = "!=0.5", markers = "platform_system == \"Windows\""},
 ]
 voluptuous = "*"
-zigpy = ">=0.50.0"
+
+[[package]]
+name = "zigpy-znp"
+version = "0.9.3"
+description = "A library for zigpy which communicates with TI ZNP radios"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[package.dependencies]
+async-timeout = "*"
+coloredlogs = "*"
+jsonschema = "*"
+voluptuous = "*"
+zigpy = ">=0.52.0"
 
 [package.extras]
-testing = ["asynctest", "coveralls", "pytest (>=7.1.2)", "pytest-asyncio (>=0.19.0)", "pytest-cov (>=3.0.0)", "pytest-mock (>=3.8.2)", "pytest-timeout (>=2.1.0)"]
+testing = ["coveralls", "pytest (>=7.1.2)", "pytest-asyncio (>=0.19.0)", "pytest-cov (>=3.0.0)", "pytest-mock (>=3.8.2)", "pytest-timeout (>=2.1.0)"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "e119ac99e3645618a07e71041339686f2c06b8aee47ed1fff8d5a167a06625be"
+content-hash = "df7b845c280cdbbc1400706239e27925273b98a8f874d8931e7a19b154dd14df"
 
 [metadata.files]
 aiohttp = [
@@ -1512,10 +1514,10 @@ yarl = [
     {file = "yarl-1.8.1.tar.gz", hash = "sha256:af887845b8c2e060eb5605ff72b6f2dd2aab7a761379373fd89d314f4752abbf"},
 ]
 zigpy = [
-    {file = "zigpy-0.50.3-py3-none-any.whl", hash = "sha256:79704cd400aa509ac38760298274e2dcd3b4ba3b54f0fb0d82fcbf96fa78abf7"},
-    {file = "zigpy-0.50.3.tar.gz", hash = "sha256:63832229839a1a6395c57ef129f46e34f8c4b03052200afa25ab4918efca0747"},
+    {file = "zigpy-0.53.1-py3-none-any.whl", hash = "sha256:f043fdcf15188f5a23c3d782757c22c6c4bee520c2f27eba8fa5d13fb62c294a"},
+    {file = "zigpy-0.53.1.tar.gz", hash = "sha256:dcabcc4e42368f9057187ed16ac69d28bbf21c37b3827f58929e963f4691db93"},
 ]
 zigpy-znp = [
-    {file = "zigpy-znp-0.8.2.tar.gz", hash = "sha256:54e228604cd6ea6955bebce01d5bfcd0aa9bec679fbf1b5f7ab5f85e18db91d0"},
-    {file = "zigpy_znp-0.8.2-py3-none-any.whl", hash = "sha256:604eacc7673c5f7e4b66e1980f880cb96259855573968ff4c37eee0776375017"},
+    {file = "zigpy-znp-0.9.3.tar.gz", hash = "sha256:d3a787fc8693b68b1c8cb08fb415800b1205daaf3869f4da61fc13314d4070c7"},
+    {file = "zigpy_znp-0.9.3-py3-none-any.whl", hash = "sha256:3d3308526dcffd0313e99be6b6d909aac8f43dbd0c2e258f594de6b416c3c4e3"},
 ]

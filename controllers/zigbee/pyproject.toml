@@ -9,8 +9,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-zigpy = "~=0.50.0"
-zigpy-znp = "~=0.8.2"
+zigpy = "~=0.53.1"
+zigpy-znp = "~=0.9.3"
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}
