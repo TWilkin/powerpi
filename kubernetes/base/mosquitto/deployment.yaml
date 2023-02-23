@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto
+spec:
+  template:
+    spec:
+      containers:
+      - name: mosquitto
+        image: eclipse-mosquitto:2.0.15
+        ports:
+          - containerPort: 1883
+            name: mosquitto
+        volumeMounts:
+        - name: mosquitto-config
+          mountPath: /mosquitto/config/mosquitto.conf
+          subPath: mosquitto.conf
+      volumes:
+        - name: mosquitto-config
+          configMap:
+            name: mosquitto-config
