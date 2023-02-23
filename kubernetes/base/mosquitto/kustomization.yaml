@@ -3,7 +3,13 @@ kind: Kustomization
 resources:
 - ./deployment.yaml
 - ./service.yaml
+commonLabels:
+  app.kubernetes.io/name: mosquitto
+  app.kubernetes.io/version: 2.0.5
 configMapGenerator:
 - files:
   - ./config/mosquitto.conf
   name: mosquitto-config
+images:
+- name: eclipse-mosquitto
+  newTag: 2.0.5

@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: clacks-config
-        image: twilkin/powerpi-clacks-config:0.2.6
+        image: twilkin/powerpi-clacks-config
         env:
         - name: FILE_PATH
           value: docker/config

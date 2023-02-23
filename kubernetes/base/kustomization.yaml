@@ -6,4 +6,5 @@ resources:
 - ./namespace.yaml
 namespace: powerpi
 commonLabels:
-  app: powerpi
+  app.kubernetes.io/part-of: powerpi
+  app.kubernetes.io/managed-by: kubectl
