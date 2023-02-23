@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clacks-config
+spec:
+  template:
+    spec:
+      containers:
+      - name: clacks-config
+        image: twilkin/powerpi-clacks-config:0.2.6
+        env:
+        - name: FILE_PATH
+          value: docker/config
+        - name: GITHUB_USER
+          valueFrom:
+            secretKeyRef:
+              name: github-secret
+              key: username
+        - name: GITHUB_SECRET_FILE
+          value: /var/run/secrets/powerpi_github/password
+        volumeMounts:
+        - name: github-secret
+          mountPath: /var/run/secrets/powerpi_github
+          readOnly: true
+      volumes:
+        - name: github-secret
+          secret:
+            secretName: github-secret
