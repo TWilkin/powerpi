@@ -36,7 +36,7 @@ class TestZigbeeeLight(
         colour: bool,
         temperature: bool
     ):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
         capability = (1 if colour else 0) | (0b10000 if temperature else 0)
 
         async def read_attributes(_):
@@ -100,7 +100,7 @@ class TestZigbeeeLight(
         mocker: MockerFixture
     ):
         async def read_attributes(_):
-            raise DeliveryError()
+            raise DeliveryError('Boom')
 
         mocker.patch.object(
             cluster,
@@ -130,7 +130,7 @@ class TestZigbeeeLight(
         colour: bool,
         temperature: bool
     ):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
         capability = (1 if colour else 0) | (0b10000 if temperature else 0)
 
         async def read_attributes(_):
@@ -197,7 +197,7 @@ class TestZigbeeeLight(
         temperature: bool,
         additional_state: AdditionalState
     ):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
         capability = (1 if colour else 0) | (0b10000 if temperature else 0)
 
         async def read_attributes(_):
@@ -317,7 +317,7 @@ class TestZigbeeeLight(
             return mock
         cluster.commands_by_name.__getitem__.side_effect = command
 
-        cluster.command.side_effect = DeliveryError()
+        cluster.command.side_effect = DeliveryError('Boom')
 
         result = await subject.on_additional_state_change(additional_state)
 
