@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
 - ./clacks-config
 - ./mosquitto
+- ./nginx
 - ./namespace.yaml
 namespace: powerpi
 commonLabels:
