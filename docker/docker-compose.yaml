@@ -224,7 +224,7 @@ services:
             - /srv/docker-volumes/powerpi/postgres/data:/var/lib/postgresql/data/pgdata
 
     persistence:
-        image: twilkin/powerpi-persistence:0.1.4
+        image: twilkin/powerpi-persistence:0.1.5
         networks:
             - powerpi
         deploy:
