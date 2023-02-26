@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ./deployment.yaml
+- ./service.yaml
+
+commonLabels:
+  app.kubernetes.io/name: database
+  app.kubernetes.io/version: 13.0-alpine
+  app.kubernetes.io/component: database
+
+images:
+- name: postgres
+  newTag: 13.0-alpine

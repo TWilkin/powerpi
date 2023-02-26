@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database
+spec:
+  template:
+    spec:
+      nodeSelector:
+        database: "true"
+      containers:
+      - name: database
+        image: postgres
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        - name: POSTGRES_DB
+          value: powerpi
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: username
+        - name: POSTGRES_PASSWORD_FILE
+          value: /var/run/secrets/powerpi_database/password
+        volumeMounts:
+        - name: database-data
+          mountPath: /var/lib/postgresql/data/pgdata
+        - name: database-secret
+          mountPath: /var/run/secrets/powerpi_database
+          readOnly: true
+      volumes:
+        - name: database-data
+          hostPath:
+            path: /srv/k8s-volumes/powerpi/postgres
+        - name: database-secret
+          secret:
+            secretName: database-secret
