@@ -5,6 +5,7 @@ metadata:
 spec:
   template:
     spec:
+      priorityClassName: powerpi-critical
       containers:
       - name: clacks-config
         image: twilkin/powerpi-clacks-config

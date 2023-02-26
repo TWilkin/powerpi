@@ -18,7 +18,7 @@ spec:
       annotations:
         node.kubernetes.io/bootstrap-checkpoint: "true"
     spec:
-      priorityClassName: "system-node-critical"
+      priorityClassName: powerpi-critical
       hostname: smarter-device-management
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet

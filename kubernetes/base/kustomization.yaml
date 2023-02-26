@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
 - ./namespace.yaml
+- ./priority-class.yaml
 # utilities
 - ./resources/smarter-device-manager
 # services
