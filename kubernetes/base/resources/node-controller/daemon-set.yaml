@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-controller
+spec:
+  template:
+    spec:
+      nodeSelector:
+        pijuice: "false"
+      containers:
+      - name: node-controller
+        image: twilkin/powerpi-node-controller
+        volumeMounts:
+        - name: hostname
+          mountPath: /etc/nodehostname
+          readOnly: true
+      volumes:
+      - name: hostname
+        hostPath:
+          path: /etc/hostname
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-controller-pijuice
+spec:
+  template:
+    spec:
+      nodeSelector:
+        pijuice: "true"
+      containers:
+      - name: node-controller-pijuice
+        image: twilkin/powerpi-node-controller
+        env:
+        - name: DEVICE_FATAL
+          value: "true"
+        resources:
+          requests:
+            smarter-devices/gpiomem: 1
+            smarter-devices/i2c-1: 1
+          limits:
+            smarter-devices/gpiomem: 1
+            smarter-devices/i2c-1: 1
+        volumeMounts:
+        - name: hostname
+          mountPath: /etc/nodehostname
+          readOnly: true
+      volumes:
+      - name: hostname
+        hostPath:
+          path: /etc/hostname

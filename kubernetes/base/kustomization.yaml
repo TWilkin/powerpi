@@ -15,6 +15,7 @@ resources:
 - ./resources/harmony-controller
 - ./resources/lifx-controller
 - ./resources/macro-controller
+- ./resources/node-controller
 - ./resources/zigbee-controller
 
 namespace: powerpi
