@@ -26,6 +26,6 @@ spec:
           mountPath: /var/run/secrets/powerpi_github
           readOnly: true
       volumes:
-        - name: github-secret
-          secret:
-            secretName: github-secret
+      - name: github-secret
+        secret:
+          secretName: github-secret

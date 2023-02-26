@@ -8,3 +8,19 @@ spec:
       containers:
       - name: freedns
         image: twilkin/powerpi-freedns
+        env:
+        - name: FREEDNS_USER
+          valueFrom:
+            secretKeyRef:
+              name: freedns-secret
+              key: username
+        - name: FREEDNS_PASSWORD
+          value: /var/run/secrets/powerpi_freedns/password
+        volumeMounts:
+        - name: freedns-secret
+          mountPath: /var/run/secrets/powerpi_freedns
+          readOnly: true
+      volumes:
+      - name: freedns-secret
+        secret:
+          secretName: freedns-secret
