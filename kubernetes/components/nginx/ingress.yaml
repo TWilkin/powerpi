@@ -3,8 +3,13 @@ kind: Ingress
 metadata:
   name: nginx-ingress
   annotations:
+    cert-manager.io/issuer: letsencrypt-staging
     ingress.kubernetes.io/rewrite-target: /
 spec:
+  tls:
+  - hosts:
+    - EXTERNAL_HOST_NAME
+    secretName: letsencrypt-staging
   rules:
   - host: EXTERNAL_HOST_NAME
     http:

@@ -4,6 +4,7 @@ kind: Component
 resources:
 - ./deployment.yaml
 - ./ingress.yaml
+- ./issuer.yaml
 - ./service.yaml
 
 commonLabels:

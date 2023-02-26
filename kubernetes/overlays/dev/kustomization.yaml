@@ -22,3 +22,14 @@ replacements:
       name: nginx-ingress
     fieldPaths:
     - spec.rules.[host=EXTERNAL_HOST_NAME].host
+    - spec.tls.0.hosts.0
+- source:
+    kind: ConfigMap
+    name: settings
+    fieldPath: data.CERTIFICATE_EMAIL
+  targets:
+  - select:
+      kind: Issuer
+      name: letsencrypt-staging
+    fieldPaths:
+    - spec.acme.email
