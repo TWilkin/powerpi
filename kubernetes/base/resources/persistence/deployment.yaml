@@ -9,6 +9,8 @@ spec:
       - name: persistence
         image: twilkin/powerpi-persistence
         env:
+        - name: DB_HOST
+          value: database
         - name: DB_SCHEMA
           valueFrom:
             secretKeyRef:

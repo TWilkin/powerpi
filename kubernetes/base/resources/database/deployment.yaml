@@ -11,8 +11,8 @@ spec:
       - name: database
         image: postgres
         ports:
-        - containerPort: 5432
-          name: postgres
+        - name: postgres
+          containerPort: 5432          
         env:
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata

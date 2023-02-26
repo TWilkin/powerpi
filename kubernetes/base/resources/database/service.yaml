@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: database
 spec:
-  type: ClusterIP
   selector:
     app.kubernetes.io/name: database
+  type: ClusterIP
   ports:
   - name: postgres
     protocol: TCP

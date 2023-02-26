@@ -37,6 +37,8 @@ spec:
           value: /var/run/secrets/powerpi_jwt/secret
         - name: SESSION_SECRET_FILE
           value: /var/run/secrets/powerpi_session/secret
+        - name: DB_HOST
+          value: database
         - name: DB_SCHEMA
           valueFrom:
             secretKeyRef:
