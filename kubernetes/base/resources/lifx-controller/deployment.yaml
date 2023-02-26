@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lifx-controller
+spec:
+  template:
+    spec:
+      containers:
+      - name: lifx-controller
+        image: twilkin/powerpi-lifx-controller

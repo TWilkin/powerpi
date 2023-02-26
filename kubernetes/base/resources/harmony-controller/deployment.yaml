@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: harmony-controller
+spec:
+  template:
+    spec:
+      containers:
+      - name: harmony-controller
+        image: twilkin/powerpi-harmony-controller

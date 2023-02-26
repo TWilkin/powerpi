@@ -3,11 +3,17 @@ kind: Kustomization
 
 resources:
 - ./namespace.yaml
+# utilities
+- ./resources/smarter-device-manager
+# services
 - ./resources/clacks-config
 - ./resources/deep-thought
 - ./resources/mosquitto
 - ./resources/nginx
-- ./resources/smarter-device-manager
+# controllers
+- ./resources/harmony-controller
+- ./resources/lifx-controller
+- ./resources/macro-controller
 - ./resources/zigbee-controller
 
 namespace: powerpi

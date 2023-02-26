@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: zigbee-controller
-        image: twilkin/powerpi-zigbee-controller:0.1.14
+        image: twilkin/powerpi-zigbee-controller
         env:
         - name: DEVICE
           value: /dev/ttyACM0

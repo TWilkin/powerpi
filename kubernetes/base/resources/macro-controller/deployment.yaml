@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: macro-controller
+spec:
+  template:
+    spec:
+      containers:
+      - name: macro-controller
+        image: twilkin/powerpi-macro-controller
