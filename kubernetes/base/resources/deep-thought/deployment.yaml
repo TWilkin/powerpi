@@ -37,6 +37,18 @@ spec:
           value: /var/run/secrets/powerpi_jwt/secret
         - name: SESSION_SECRET_FILE
           value: /var/run/secrets/powerpi_session/secret
+        - name: DB_SCHEMA
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: schema
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: username
+        - name: DB_SECRET_FILE
+          value: /var/run/secrets/powerpi_database/password
         volumeMounts:
         - name: google-auth-secret
           mountPath: /var/run/secrets/powerpi_google_auth
@@ -49,6 +61,9 @@ spec:
           readOnly: true
         - name: session-secret
           mountPath: /var/run/secrets/powerpi_session
+          readOnly: true
+        - name: database-secret
+          mountPath: /var/run/secrets/powerpi_database
           readOnly: true
       volumes:
         - name: google-auth-secret
@@ -63,3 +78,6 @@ spec:
         - name: session-secret
           secret:
             secretName: session-secret
+        - name: database-secret
+          secret:
+            secretName: database-secret

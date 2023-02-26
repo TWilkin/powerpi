@@ -17,7 +17,10 @@ spec:
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
         - name: POSTGRES_DB
-          value: powerpi
+          valueFrom:
+            secretKeyRef:
+              name: database-secret
+              key: schema
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
