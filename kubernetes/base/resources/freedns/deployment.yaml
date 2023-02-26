@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: freedns
+spec:
+  template:
+    spec:
+      containers:
+      - name: freedns
+        image: twilkin/powerpi-freedns
