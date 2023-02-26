@@ -3,12 +3,10 @@ kind: Kustomization
 
 resources:
 - ./namespace.yaml
-
-components:
-- ../components/clacks-config
-- ../components/deep-thought
-- ../components/mosquitto
-- ../components/nginx
+- ./resources/clacks-config
+- ./resources/deep-thought
+- ./resources/mosquitto
+- ./resources/nginx
 
 namespace: powerpi
 
