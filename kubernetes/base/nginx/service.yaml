@@ -7,7 +7,7 @@ spec:
     app.kubernetes.io/name: nginx
   type: NodePort
   ports:
-  - name: nginx
+  - name: http
     protocol: TCP
-    port: 3000
-    targetPort: https
+    port: 80
+    targetPort: http
