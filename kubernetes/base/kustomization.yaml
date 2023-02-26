@@ -6,6 +6,7 @@ resources:
 # utilities
 - ./resources/smarter-device-manager
 # services
+- ./resources/babel-fish
 - ./resources/clacks-config
 - ./resources/deep-thought
 - ./resources/mosquitto

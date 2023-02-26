@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: babel-fish
+spec:
+  template:
+    spec:
+      containers:
+      - name: babel-fish
+        image: twilkin/powerpi-babel-fish
+        ports:
+        - name: http
+          containerPort: 3000
