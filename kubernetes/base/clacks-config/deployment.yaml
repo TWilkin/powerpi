@@ -10,7 +10,10 @@ spec:
         image: twilkin/powerpi-clacks-config
         env:
         - name: FILE_PATH
-          value: docker/config
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: GITHUB_FILE_PATH
         - name: GITHUB_USER
           valueFrom:
             secretKeyRef:

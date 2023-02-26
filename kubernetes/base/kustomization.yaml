@@ -1,11 +1,19 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 resources:
 - ./clacks-config
 - ./mosquitto
 - ./nginx
 - ./namespace.yaml
+
 namespace: powerpi
+
 commonLabels:
   app.kubernetes.io/part-of: powerpi
   app.kubernetes.io/managed-by: kubectl
+
+configMapGenerator:
+  - name: settings
+    envs:
+    - ./env.properties
