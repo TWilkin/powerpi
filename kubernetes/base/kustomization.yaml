@@ -15,6 +15,7 @@ resources:
 - ./resources/light-fantastic
 - ./resources/mosquitto
 - ./resources/nginx
+- ./resources/persistence
 # controllers
 - ./resources/energenie-controller
 - ./resources/harmony-controller
