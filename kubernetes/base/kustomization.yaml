@@ -9,6 +9,7 @@ resources:
 - ./resources/babel-fish
 - ./resources/clacks-config
 - ./resources/deep-thought
+- ./resources/light-fantastic
 - ./resources/mosquitto
 - ./resources/nginx
 # controllers

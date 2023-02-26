@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: light-fantastic
+spec:
+  template:
+    spec:
+      containers:
+      - name: light-fantastic
+        image: twilkin/powerpi-light-fantastic
