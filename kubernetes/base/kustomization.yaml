@@ -16,6 +16,9 @@ commonLabels:
   app.kubernetes.io/managed-by: kubectl
 
 configMapGenerator:
-  - name: settings
-    envs:
-    - ./env.properties
+- name: settings
+  envs:
+  - ./env.properties
+
+generatorOptions:
+  disableNameSuffixHash: true

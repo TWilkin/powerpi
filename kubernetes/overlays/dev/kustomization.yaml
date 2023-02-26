@@ -9,3 +9,16 @@ configMapGenerator:
   behavior: merge
   envs:
   - ./env.properties
+
+replacements:
+# nginx
+- source:
+    kind: ConfigMap
+    name: settings
+    fieldPath: data.EXTERNAL_HOST_NAME
+  targets:
+  - select:
+      kind: Ingress
+      name: nginx-ingress
+    fieldPaths:
+    - spec.rules.[host=EXTERNAL_HOST_NAME].host

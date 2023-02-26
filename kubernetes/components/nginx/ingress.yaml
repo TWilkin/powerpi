@@ -6,7 +6,7 @@ metadata:
     ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: example.com
+  - host: EXTERNAL_HOST_NAME
     http:
       paths:
       - path: /
