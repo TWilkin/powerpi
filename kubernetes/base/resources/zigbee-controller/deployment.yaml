@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zigbee-controller
+spec:
+  template:
+    spec:
+      containers:
+      - name: zigbee-controller
+        image: twilkin/powerpi-zigbee-controller:0.1.14
+        env:
+        - name: DEVICE
+          value: /dev/ttyACM0
+        - name: DATABASE_PATH
+          value: /var/data/zigbee.db
+        resources:
+          requests:
+            smarter-devices/ttyACM0: 1
+          limits:
+            smarter-devices/ttyACM0: 1
+        volumeMounts:
+        - name: zigbee-data
+          mountPath: /var/data
+      volumes:
+      - name: zigbee-data
+        hostPath:
+          path: /srv/k8s-volumes/powerpi/zigbee-controller

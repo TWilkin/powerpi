@@ -8,6 +8,7 @@ resources:
 - ./resources/mosquitto
 - ./resources/nginx
 - ./resources/smarter-device-manager
+- ./resources/zigbee-controller
 
 namespace: powerpi
 
