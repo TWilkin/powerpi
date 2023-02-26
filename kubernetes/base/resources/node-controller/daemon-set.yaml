@@ -6,7 +6,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        pijuice: "false"
+        powerpi-pijuice: "false"
       containers:
       - name: node-controller
         image: twilkin/powerpi-node-controller
@@ -27,7 +27,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        pijuice: "true"
+        powerpi-pijuice: "true"
       containers:
       - name: node-controller-pijuice
         image: twilkin/powerpi-node-controller

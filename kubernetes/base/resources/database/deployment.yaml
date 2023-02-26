@@ -6,7 +6,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        database: "true"
+        powerpi-database: "true"
       containers:
       - name: database
         image: postgres

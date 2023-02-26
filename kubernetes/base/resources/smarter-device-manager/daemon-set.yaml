@@ -17,9 +17,7 @@ spec:
         name: smarter-device-manager
       annotations:
         node.kubernetes.io/bootstrap-checkpoint: "true"
-    spec: 
-      nodeSelector:
-        smarter-device-manager: enabled
+    spec:
       priorityClassName: "system-node-critical"
       hostname: smarter-device-management
       hostNetwork: true

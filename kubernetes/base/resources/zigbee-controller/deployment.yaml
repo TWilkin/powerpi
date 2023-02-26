@@ -5,6 +5,8 @@ metadata:
 spec:
   template:
     spec:
+      nodeSelector:
+        powerpi-zigbee: "true"
       containers:
       - name: zigbee-controller
         image: twilkin/powerpi-zigbee-controller

@@ -6,7 +6,7 @@ spec:
   template:
     spec:
       nodeSelector:
-        energenie: "true"
+        powerpi-energenie: "true"
       containers:
       - name: energenie-controller
         image: twilkin/powerpi-energenie-controller
