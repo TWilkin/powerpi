@@ -11,6 +11,7 @@ resources:
 - ./resources/mosquitto
 - ./resources/nginx
 # controllers
+- ./resources/energenie-controller
 - ./resources/harmony-controller
 - ./resources/lifx-controller
 - ./resources/macro-controller

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: energenie-controller
+spec:
+  template:
+    spec:
+      nodeSelector:
+        energenie: "true"
+      containers:
+      - name: energenie-controller
+        image: twilkin/powerpi-energenie-controller
+        env:
+        - name: DEVICE_FATAL
+          value: "true"
+        - name: ENERGENIE_DEVICE
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: ENERGENIE_DEVICE
+        resources:
+          requests:
+            smarter-devices/gpiomem: 1
+          limits:
+            smarter-devices/gpiomem: 1
