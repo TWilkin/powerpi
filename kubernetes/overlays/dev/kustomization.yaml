@@ -3,3 +3,9 @@ kind: Kustomization
 
 bases:
 - ../../base
+
+configMapGenerator:
+- name: settings
+  behavior: merge
+  envs:
+  - ./env.properties

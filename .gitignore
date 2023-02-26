@@ -4,6 +4,7 @@
 **/bin/
 **/db/
 **/dist/
+**/kubernetes/overlays/local/
 **/node_modules/
 **/platforms/
 **/venv/
