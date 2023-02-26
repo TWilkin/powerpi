@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: energy-monitor
+spec:
+  template:
+    spec:
+      containers:
+      - name: energy-monitor
+        image: twilkin/powerpi-energy-monitor
+        env:
+        - name: IHD_SECRET_FILE
+          value: /var/run/secrets/powerpi_ihd/ihd
+        volumeMounts:
+        - name: ihd-secret
+          mountPath: /var/run/secrets/powerpi_ihd
+          readOnly: true
+      volumes:
+        - name: ihd-secret
+          secret:
+            secretName: ihd-secret

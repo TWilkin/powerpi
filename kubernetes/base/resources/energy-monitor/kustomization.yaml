@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- ./deployment.yaml
+
+commonLabels:
+  app.kubernetes.io/name: energy-monitor
+  app.kubernetes.io/version: 0.0.5
+  app.kubernetes.io/component: energy-monitor
+
+images:
+- name: twilkin/powerpi-energy-monitor
+  newTag: 0.0.5
