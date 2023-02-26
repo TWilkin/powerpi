@@ -6,6 +6,7 @@ resources:
 
 components:
 - ../components/clacks-config
+- ../components/deep-thought
 - ../components/mosquitto
 - ../components/nginx
 

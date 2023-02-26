@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deep-thought
+spec:
+  template:
+    spec:
+      containers:
+      - name: deep-thought
+        image: twilkin/powerpi-deep-thought
+        ports:
+        - name: http
+          containerPort: 3000
+        env:
+        - name: EXTERNAL_HOST_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: settings
+              key: EXTERNAL_HOST_NAME
+        - name: EXTERNAL_PORT
+          value: "443"
+        - name: GOOGLE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: google-auth-secret
+              key: client_id
+        - name: GOOGLE_SECRET_FILE
+          value: /var/run/secrets/powerpi_google_auth/secret
+        - name: OAUTH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: oauth-secret
+              key: client_id
+        - name: OAUTH_SECRET_FILE
+          value: /var/run/secrets/powerpi_oauth/secret
+        - name: JWT_SECRET_FILE
+          value: /var/run/secrets/powerpi_jwt/secret
+        - name: SESSION_SECRET_FILE
+          value: /var/run/secrets/powerpi_session/secret
+        volumeMounts:
+        - name: google-auth-secret
+          mountPath: /var/run/secrets/powerpi_google_auth
+          readOnly: true
+        - name: oauth-secret
+          mountPath: /var/run/secrets/powerpi_oauth
+          readOnly: true
+        - name: jwt-secret
+          mountPath: /var/run/secrets/powerpi_jwt
+          readOnly: true
+        - name: session-secret
+          mountPath: /var/run/secrets/powerpi_session
+          readOnly: true
+      volumes:
+        - name: google-auth-secret
+          secret:
+            secretName: google-auth-secret
+        - name: oauth-secret
+          secret:
+            secretName: oauth-secret
+        - name: jwt-secret
+          secret:
+            secretName: jwt-secret
+        - name: session-secret
+          secret:
+            secretName: session-secret
