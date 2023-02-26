@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: mosquitto
 spec:
+  type: NodePort
   selector:
     app.kubernetes.io/name: mosquitto
   ports:
-  - name: mosquitto
+  - name: mqtt
     protocol: TCP
     port: 1883
-    targetPort: mosquitto
+    targetPort: mqtt

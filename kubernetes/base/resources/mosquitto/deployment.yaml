@@ -9,8 +9,8 @@ spec:
       - name: mosquitto
         image: eclipse-mosquitto
         ports:
-          - containerPort: 1883
-            name: mosquitto
+        - containerPort: 1883
+          name: mqtt
         volumeMounts:
         - name: mosquitto-config
           mountPath: /mosquitto/config/mosquitto.conf
