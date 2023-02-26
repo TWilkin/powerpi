@@ -1,0 +1,4 @@
+- devicematch: ^gpiomem$
+  nummaxdevices: 40
+- devicematch: ^ttyACM[0-9]*$
+  nummaxdevices: 1

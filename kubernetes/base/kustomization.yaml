@@ -7,6 +7,7 @@ resources:
 - ./resources/deep-thought
 - ./resources/mosquitto
 - ./resources/nginx
+- ./resources/smarter-device-manager
 
 namespace: powerpi
 
