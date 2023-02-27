@@ -19,7 +19,7 @@ replacements:
   targets:
   - select:
       kind: Ingress
-      name: nginx-ingress
+      name: ingress
     fieldPaths:
     - spec.rules.[host=EXTERNAL_HOST_NAME].host
     - spec.tls.0.hosts.0

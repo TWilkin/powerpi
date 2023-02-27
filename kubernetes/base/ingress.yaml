@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx-ingress
+  name: ingress
   annotations:
     cert-manager.io/issuer: letsencrypt-staging
 spec:
@@ -13,6 +13,20 @@ spec:
   - host: EXTERNAL_HOST_NAME
     http:
       paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: deep-thought
+            port:
+              number: 80
+      - path: /webhook_alexa
+        pathType: Prefix
+        backend:
+          service:
+            name: babel-fish
+            port:
+              number: 80
       - path: /
         pathType: Prefix
         backend:
