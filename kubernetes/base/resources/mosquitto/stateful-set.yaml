@@ -1,10 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mosquitto
 spec:
   template:
     spec:
+      nodeSelector:
+        powerpi-storage: "true"
       priorityClassName: powerpi-critical
       containers:
       - name: mosquitto
@@ -13,10 +15,15 @@ spec:
         - containerPort: 1883
           name: mqtt
         volumeMounts:
+        - name: mosquitto-data
+          mountPath: /mosquitto/data
         - name: mosquitto-config
           mountPath: /mosquitto/config/mosquitto.conf
           subPath: mosquitto.conf
       volumes:
+        - name: mosquitto-data
+          persistentVolumeClaim:
+            claimName: mosquitto-volume-claim
         - name: mosquitto-config
           configMap:
             name: mosquitto-config
