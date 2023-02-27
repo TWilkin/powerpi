@@ -37,6 +37,14 @@ This service requires two configuration files, both of which are described on th
 -   [devices.json](../../services/clacks-config/README.md#devicesjson)
 -   [events.json](../../services/clacks-config/README.md#eventsjson)
 
+### Kubernetes
+
+When running this service in Kubernetes, _microk8s_ needs to know which node has the [PiJuice](https://www.pijuice.com) or PWM fan device. The following command will add a label to the node `NODE_NAME` which should host this service.
+
+```bash
+microk8s kubectl label node NODE_NAME powerpi-pijuice=true
+```
+
 ## Testing
 
 This service can be tested by executing the following commands.

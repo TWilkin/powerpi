@@ -92,9 +92,23 @@ microk8s kubectl create secret generic github-secret --namespace powerpi \
     --from-from=password=./__SECRET_NAME__
 ```
 
+### Add Labels
+
+Several of the services use node labels to identify which node in the cluster have the connected device that they want to use. The following command will add a label to the node `NODE_NAME` which should host the _mosquitto_ and _database_ services, as both require to be on the same node due to their persistent storage configuration.
+
+```bash
+microk8s kubectl label node NODE_NAME powerpi-storage=true
+```
+
+The following services also utilise labels, if you wish to use any of these apply their labels as well:
+
+-   [energenie-controller](../controllers/energenie/README.md#kubernetes) - ENER314/ENER314-RT Pi controller
+-   [node-controller](../controllers/node/README.md#kubernetes)- ZigBee USB controller
+-   [zigbee-controller](../controllers/zigbee/README.md#kubernetes) - PiJuice/PWM fan controller
+
 ## Deploying
 
-Finally once the plugins are enabled and the secrets have been created, the stack can be deployed:
+Finally once the plugins are enabled, labels added and the secrets have been created, the stack can be deployed:
 
 ```bash
 # From the root of your checkout of PowerPi

@@ -27,9 +27,18 @@ docker secret create powerpi_SECRET_NAME /path/to/secret/file
 -   **powerpi_ihd** - The MAC address of your smart energy meter IHD (In Home Device) for use with _energy-monitor_.
 -   **powerpi_github** - A GitHub personal access token which allows _clacks-config_ to retrieve configuration files from a GitHub repository.
 
+### Add Labels
+
+Several of the services use node labels to identify which node in the cluster have the connected device that they want to use.
+The following services also utilise labels, if you wish to use any of these apply their labels as well:
+
+-   [energenie-controller](../controllers/energenie/README.md#docker) - ENER314/ENER314-RT Pi controller
+-   [node-controller](../controllers/node/README.md#docker) - ZigBee USB controller
+-   [zigbee-controller](../controllers/zigbee/README.md#docker) - PiJuice/PWM fan controller
+
 ## Deploying
 
-Finally once the network and secrets are created, the stack can be deployed:
+Finally once the network and secrets are created and the nodes labelled, the stack can be deployed:
 
 ```bash
 # From the root of your checkout of PowerPi
