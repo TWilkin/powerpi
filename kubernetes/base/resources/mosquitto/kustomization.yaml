@@ -12,9 +12,9 @@ commonLabels:
   app.kubernetes.io/component: message-queue
 
 configMapGenerator:
-- files:
-  - ./config/mosquitto.conf
-  name: mosquitto-config
+- name: mosquitto-config
+  files:
+  - ./mosquitto.conf
 
 images:
 - name: eclipse-mosquitto

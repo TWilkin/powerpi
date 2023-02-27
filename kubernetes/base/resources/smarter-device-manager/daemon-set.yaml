@@ -44,7 +44,7 @@ spec:
           mountPath: /dev
         - name: config
           mountPath: /root/config/conf.yaml
-          subPath: devices.yaml
+          subPath: device-config.yaml
         - name: sys-dir
           mountPath: /sys
       volumes:

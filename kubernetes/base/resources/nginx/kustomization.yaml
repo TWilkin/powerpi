@@ -11,9 +11,9 @@ commonLabels:
   app.kubernetes.io/component: ui
 
 configMapGenerator:
-- files:
-  - ./config/nginx.conf
-  name: nginx-config
+- name: nginx-config
+  files:
+  - ./nginx.conf
 
 images:
 - name: twilkin/powerpi-nginx

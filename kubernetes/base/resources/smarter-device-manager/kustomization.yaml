@@ -10,9 +10,9 @@ commonLabels:
   app.kubernetes.io/component: device-manager
 
 configMapGenerator:
-- files:
-  - ./config/devices.yaml
-  name: smarter-device-manager-devices
+- name: smarter-device-manager-devices
+  files:
+  - ./device-config.yaml
 
 images:
 - name: registry.gitlab.com/arm-research/smarter/smarter-device-manager:v1.20.11
