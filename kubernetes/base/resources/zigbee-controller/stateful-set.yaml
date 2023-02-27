@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: zigbee-controller
 spec:
@@ -25,5 +25,5 @@ spec:
           mountPath: /var/data
       volumes:
       - name: zigbee-data
-        hostPath:
-          path: /srv/k8s-volumes/powerpi/zigbee-controller
+        persistentVolumeClaim:
+          claimName: zigbee-controller-volume-claim

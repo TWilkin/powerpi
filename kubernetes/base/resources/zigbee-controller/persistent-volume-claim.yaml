@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mosquitto-volume-claim
+  name: zigbee-controller-volume-claim
 spec:
   accessModes:
   - ReadWriteOnce
