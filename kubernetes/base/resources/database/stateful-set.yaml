@@ -1,12 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: database
 spec:
+  serviceName: database
   template:
     spec:
-      nodeSelector:
-        powerpi-database: "true"
       containers:
       - name: database
         image: postgres
@@ -36,8 +35,8 @@ spec:
           readOnly: true
       volumes:
         - name: database-data
-          hostPath:
-            path: /srv/k8s-volumes/powerpi/postgres
+          persistentVolumeClaim:
+            claimName: database-volume-claim
         - name: database-secret
           secret:
             secretName: database-secret
