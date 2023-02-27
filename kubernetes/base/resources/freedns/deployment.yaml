@@ -16,6 +16,13 @@ spec:
               key: username
         - name: FREEDNS_PASSWORD
           value: /var/run/secrets/powerpi_freedns/password
+        resources:
+          requests:
+            cpu: 50m
+            memory: 350Mi
+          limits:
+            cpu: 1
+            memory: 500Mi
         volumeMounts:
         - name: freedns-secret
           mountPath: /var/run/secrets/powerpi_freedns

@@ -20,6 +20,10 @@ spec:
               key: ENERGENIE_DEVICE
         resources:
           requests:
+            cpu: 50m
+            memory: 75Mi
             smarter-devices/gpiomem: 1
           limits:
+            cpu: 1
+            memory: 200Mi
             smarter-devices/gpiomem: 1

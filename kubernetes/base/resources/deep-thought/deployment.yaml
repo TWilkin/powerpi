@@ -51,6 +51,13 @@ spec:
               key: username
         - name: DB_SECRET_FILE
           value: /var/run/secrets/powerpi_database/password
+        resources:
+          requests:
+            cpu: 50m
+            memory: 550Mi
+          limits:
+            cpu: 1
+            memory: 700Mi
         volumeMounts:
         - name: google-auth-secret
           mountPath: /var/run/secrets/powerpi_google_auth

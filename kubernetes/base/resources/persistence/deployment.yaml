@@ -23,6 +23,13 @@ spec:
               key: username
         - name: DB_SECRET_FILE
           value: /var/run/secrets/powerpi_database/password
+        resources:
+          requests:
+            cpu: 50m
+            memory: 450Mi
+          limits:
+            cpu: 1
+            memory: 600Mi
         volumeMounts:
         - name: database-secret
           mountPath: /var/run/secrets/powerpi_database

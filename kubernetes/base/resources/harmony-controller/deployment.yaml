@@ -8,3 +8,10 @@ spec:
       containers:
       - name: harmony-controller
         image: twilkin/powerpi-harmony-controller
+        resources:
+          requests:
+            cpu: 50m
+            memory: 75Mi
+          limits:
+            cpu: 1
+            memory: 200Mi

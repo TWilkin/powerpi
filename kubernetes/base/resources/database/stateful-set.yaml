@@ -29,6 +29,13 @@ spec:
               key: username
         - name: POSTGRES_PASSWORD_FILE
           value: /var/run/secrets/powerpi_database/password
+        resources:
+          requests:
+            cpu: 50m
+            memory: 100Mi
+          limits:
+            cpu: 1
+            memory: 1Gi
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data/pgdata

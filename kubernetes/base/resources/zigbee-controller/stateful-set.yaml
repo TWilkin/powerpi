@@ -17,8 +17,12 @@ spec:
           value: /var/data/zigbee.db
         resources:
           requests:
+            cpu: 50m
+            memory: 75Mi
             smarter-devices/ttyACM0: 1
           limits:
+            cpu: 1
+            memory: 200Mi
             smarter-devices/ttyACM0: 1
         volumeMounts:
         - name: zigbee-data

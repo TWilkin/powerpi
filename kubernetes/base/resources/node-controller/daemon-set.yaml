@@ -10,6 +10,13 @@ spec:
       containers:
       - name: node-controller
         image: twilkin/powerpi-node-controller
+        resources:
+          requests:
+            cpu: 50m
+            memory: 75Mi
+          limits:
+            cpu: 1
+            memory: 200Mi
         volumeMounts:
         - name: hostname
           mountPath: /etc/nodehostname
@@ -36,9 +43,13 @@ spec:
           value: "true"
         resources:
           requests:
+            cpu: 50m
+            memory: 75Mi
             smarter-devices/gpiomem: 1
             smarter-devices/i2c-1: 1
           limits:
+            cpu: 1
+            memory: 200Mi
             smarter-devices/gpiomem: 1
             smarter-devices/i2c-1: 1
         volumeMounts:

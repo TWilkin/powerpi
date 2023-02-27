@@ -11,6 +11,13 @@ spec:
         env:
         - name: IHD_SECRET_FILE
           value: /var/run/secrets/powerpi_ihd/ihd
+        resources:
+          requests:
+            cpu: 50m
+            memory: 450Mi
+          limits:
+            cpu: 1
+            memory: 600Mi
         volumeMounts:
         - name: ihd-secret
           mountPath: /var/run/secrets/powerpi_ihd

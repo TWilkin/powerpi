@@ -8,3 +8,10 @@ spec:
       containers:
       - name: lifx-controller
         image: twilkin/powerpi-lifx-controller
+        resources:
+          requests:
+            cpu: 50m
+            memory: 75Mi
+          limits:
+            cpu: 1
+            memory: 200Mi
