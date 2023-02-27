@@ -23,6 +23,6 @@ spec:
           mountPath: /var/run/secrets/powerpi_ihd
           readOnly: true
       volumes:
-        - name: ihd-secret
-          secret:
-            secretName: ihd-secret
+      - name: ihd-secret
+        secret:
+          secretName: ihd-secret

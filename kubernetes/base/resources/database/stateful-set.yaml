@@ -43,9 +43,9 @@ spec:
           mountPath: /var/run/secrets/powerpi_database
           readOnly: true
       volumes:
-        - name: database-data
-          persistentVolumeClaim:
-            claimName: database-volume-claim
-        - name: database-secret
-          secret:
-            secretName: database-secret
+      - name: database-data
+        persistentVolumeClaim:
+          claimName: database-volume-claim
+      - name: database-secret
+        secret:
+          secretName: database-secret

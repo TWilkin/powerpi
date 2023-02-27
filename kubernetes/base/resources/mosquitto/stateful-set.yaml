@@ -28,9 +28,9 @@ spec:
           mountPath: /mosquitto/config/mosquitto.conf
           subPath: mosquitto.conf
       volumes:
-        - name: mosquitto-data
-          persistentVolumeClaim:
-            claimName: mosquitto-volume-claim
-        - name: mosquitto-config
-          configMap:
-            name: mosquitto-config
+      - name: mosquitto-data
+        persistentVolumeClaim:
+          claimName: mosquitto-volume-claim
+      - name: mosquitto-config
+        configMap:
+          name: mosquitto-config
