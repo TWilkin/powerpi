@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: mosquitto
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: mosquitto
   ports:
