@@ -6,9 +6,9 @@ resources:
 
 commonLabels:
   app.kubernetes.io/name: persistence
-  app.kubernetes.io/version: 0.1.4
+  app.kubernetes.io/version: 0.1.5
   app.kubernetes.io/component: database
 
 images:
 - name: twilkin/powerpi-persistence
-  newTag: 0.1.4
+  newTag: 0.1.5

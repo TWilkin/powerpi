@@ -8,7 +8,7 @@ resources:
 
 commonLabels:
   app.kubernetes.io/name: mosquitto
-  app.kubernetes.io/version: 2.0.5
+  app.kubernetes.io/version: 2.0.15
   app.kubernetes.io/component: message-queue
 
 configMapGenerator:
@@ -18,4 +18,4 @@ configMapGenerator:
 
 images:
 - name: eclipse-mosquitto
-  newTag: 2.0.5
+  newTag: 2.0.15
