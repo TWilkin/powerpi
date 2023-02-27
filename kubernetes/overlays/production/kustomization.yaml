@@ -3,3 +3,49 @@ kind: Kustomization
 
 bases:
 - ../../base
+
+# apply user configuration to ingress and issuer
+replacements:
+- source:
+    kind: ConfigMap
+    name: settings
+    fieldPath: data.EXTERNAL_HOST_NAME
+  targets:
+  - select:
+      kind: Ingress
+      name: ingress
+    fieldPaths:
+    - spec.rules.[host=EXTERNAL_HOST_NAME].host
+    - spec.tls.0.hosts.0
+- source:
+    kind: ConfigMap
+    name: settings
+    fieldPath: data.CERTIFICATE_EMAIL
+  targets:
+  - select:
+      kind: Issuer
+      name: letsencrypt
+    fieldPaths:
+    - spec.acme.email
+
+# delete Let's Encrypt staging
+patchesStrategicMerge:
+- |-
+  $patch: delete
+  apiVersion: cert-manager.io/v1
+  kind: Issuer
+  metadata:
+    name: letsencrypt-staging
+
+# use Let's Encrypt live
+patches:
+- target:
+    kind: Ingress
+    name: ingress
+  patch: |-
+    - op: replace
+      path: /metadata/annotations/cert-manager.io~1issuer
+      value: letsencrypt
+    - op: replace
+      path: /spec/tls/0/secretName
+      value: letsencrypt

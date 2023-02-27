@@ -10,8 +10,17 @@ configMapGenerator:
   envs:
   - ./env.properties
 
+# delete Let's Encrypt live
+patchesStrategicMerge:
+- |-
+  $patch: delete
+  apiVersion: cert-manager.io/v1
+  kind: Issuer
+  metadata:
+    name: letsencrypt
+
+# apply user configuration to ingress and issuer
 replacements:
-# nginx
 - source:
     kind: ConfigMap
     name: settings
