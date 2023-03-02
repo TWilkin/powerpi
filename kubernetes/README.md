@@ -9,8 +9,12 @@ Deploying the services is simply a matter of deploying the stack using Kubernete
 The deployment utilises several Kubernetes plugins to configure the stack, each of these is explained below with the relevant enable command which will need to be run to enable it.
 
 ```bash
+# Disable high-availability as it prevents the certificate from working
+microk8s disable ha-cluster --force
+
 # DNS is required to allow the services to find eachother dynamically
-microk8s enable dns
+# where __NAMESERVER__ is the IP address of the name server you would like to use, probably your router so DNS lookups for devices work inside the cluster
+microk8s enable dns -- __NAMESERVER__
 
 # ingress is required to allow incoming requests to the cluster for the UI, API or voice assistant integration.
 microk8s enable ingress
@@ -19,7 +23,7 @@ microk8s enable ingress
 microk8s enable cert-manager
 
 # hostpath-storage is needed by default if no alternative storage class is provided instead
-microk8s enable storage hostpath-storage
+microk8s enable hostpath-storage
 
 # metallb is needed to provide access to the message queue from outside the cluster (i.e. for sensors to generate messages)
 # when enabling this a prompt will be shown asking for the IP address range for the load-balancer
@@ -133,7 +137,7 @@ cd kubernetes
 microk8s kubectl kustomize overlays/production > deploy.yaml
 
 # Update your stack
-microk8s kubectl apply -f deploy.yaml
+microk8s kubectl patch -f deploy.yaml
 ```
 
 ## Customisation
