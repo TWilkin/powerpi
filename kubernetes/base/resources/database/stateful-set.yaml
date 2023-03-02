@@ -32,10 +32,10 @@ spec:
         resources:
           requests:
             cpu: 50m
-            memory: 100Mi
+            memory: 50Mi
           limits:
             cpu: 1
-            memory: 1Gi
+            memory: 200Mi
         volumeMounts:
         - name: database-data
           mountPath: /var/lib/postgresql/data/pgdata

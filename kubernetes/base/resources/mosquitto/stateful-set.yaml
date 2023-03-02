@@ -20,7 +20,7 @@ spec:
             memory: 50Mi
           limits:
             cpu: 1
-            memory: 300Mi
+            memory: 100Mi
         volumeMounts:
         - name: mosquitto-data
           mountPath: /mosquitto/data

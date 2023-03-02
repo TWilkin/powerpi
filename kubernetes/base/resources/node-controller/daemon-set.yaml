@@ -13,10 +13,10 @@ spec:
         resources:
           requests:
             cpu: 50m
-            memory: 75Mi
+            memory: 50Mi
           limits:
             cpu: 1
-            memory: 200Mi
+            memory: 100Mi
         volumeMounts:
         - name: hostname
           mountPath: /etc/nodehostname
@@ -44,12 +44,12 @@ spec:
         resources:
           requests:
             cpu: 50m
-            memory: 75Mi
+            memory: 50Mi
             smarter-devices/gpiomem: 1
             smarter-devices/i2c-1: 1
           limits:
             cpu: 1
-            memory: 200Mi
+            memory: 100Mi
             smarter-devices/gpiomem: 1
             smarter-devices/i2c-1: 1
         volumeMounts:
