@@ -25,13 +25,15 @@ spec:
             name: deep-thought
             port:
               number: 80
-      # - path: /webhook_alexa
-      #   pathType: Prefix
-      #   backend:
-      #     service:
-      #       name: babel-fish
-      #       port:
-      #         number: 80
+      {{- if eq .Values.global.voiceAssistant true }}
+      - path: /webhook_alexa
+        pathType: Prefix
+        backend:
+          service:
+            name: babel-fish
+            port:
+              number: 80
+      {{- end }}
       - path: /
         pathType: Prefix
         backend:

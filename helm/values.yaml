@@ -26,6 +26,9 @@ global:
   # whether to include the voice assistant service (babel-fish) for Alexa integration
   voiceAssistant: true
 
+  # whether to include Logitech Harmony support
+  harmony: true
+
 clacks-config:
   # the path to the config files in the GitHub repo
   path: "docker/config"

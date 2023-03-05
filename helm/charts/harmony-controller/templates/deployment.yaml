@@ -2,12 +2,18 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: harmony-controller
+  {{- include "powerpi.labels" $ }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "powerpi.selector" $ | indent 4 }}
   template:
+    metadata:
+      {{- include "powerpi.labels" $ | indent 4 }}
     spec:
       containers:
       - name: harmony-controller
-        image: twilkin/powerpi-harmony-controller
+        image: twilkin/powerpi-harmony-controller:{{ .Chart.AppVersion }}
         resources:
           requests:
             cpu: 50m
