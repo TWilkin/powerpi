@@ -2,22 +2,25 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: energenie-controller
+  {{- include "powerpi.labels" $ }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "powerpi.selector" $ | indent 4 }}
   template:
+    metadata:
+      {{- include "powerpi.labels" $ | indent 4 }}
     spec:
       nodeSelector:
         powerpi-energenie: "true"
       containers:
       - name: energenie-controller
-        image: twilkin/powerpi-energenie-controller
+        image: twilkin/powerpi-energenie-controller:{{ .Chart.AppVersion }}
         env:
         - name: DEVICE_FATAL
           value: "true"
         - name: ENERGENIE_DEVICE
-          valueFrom:
-            configMapKeyRef:
-              name: settings
-              key: ENERGENIE_DEVICE
+          value: {{ .Values.type | quote }}
         resources:
           requests:
             cpu: 50m

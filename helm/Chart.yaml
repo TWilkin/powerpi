@@ -18,6 +18,8 @@ dependencies:
 - name: persistence
   condition: global.persistence
 # controllers
+- name: energenie-controller
+  condition: global.energenie
 - name: harmony-controller
   condition: global.harmony
 - name: lifx-controller

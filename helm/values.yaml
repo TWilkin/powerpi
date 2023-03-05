@@ -26,6 +26,9 @@ global:
   # whether to include the voice assistant service (babel-fish) for Alexa integration
   voiceAssistant: true
 
+  # whether to include Energenie support
+  energenie: true
+
   # whether to include Logitech Harmony support
   harmony: true
 
@@ -35,3 +38,7 @@ global:
 clacks-config:
   # the path to the config files in the GitHub repo
   path: "docker/config"
+
+energenie-controller:
+  # the Energenie device type to use, either ENER314-RT or ENER314
+  type: "ENER314-RT"
