@@ -1,17 +1,6 @@
 # the component label for the main chart
 component: powerpi
 
-clacks-config:
-  # whether to include the clacks-config service to get configuration from GitHub
-  enabled: true
-
-  # the path to the config files in the GitHub repo
-  path: "docker/config"
-
-persistence:
-  # whether to include the persistence service to store messages in a database
-  enabled: true
-
 global:
   # the environment to deploy for "production" or "dev"
   env: dev
@@ -28,6 +17,12 @@ global:
   # whether to use SSL or not
   useSSL: true
 
-  # whether persistence is enabled or not
-  # overridden by persistence.enabled
-  persistence: false
+  # whether to include the clacks-config service to get configuration from GitHub
+  config: true
+
+  # whether to include the persistence service to store messages in a database
+  persistence: true
+
+clacks-config:
+  # the path to the config files in the GitHub repo
+  path: "docker/config"

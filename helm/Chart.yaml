@@ -7,12 +7,12 @@ appVersion: 0.1.0
 dependencies:
 # services
 - name: clacks-config
-  condition: clacks-config.enabled
+  condition: globa.config
 - name: database
-  condition: persistence.enabled
+  condition: global.persistence
 - name: deep-thought
 - name: mosquitto
 - name: persistence
-  condition: persistence.enabled
+  condition: global.persistence
 # controllers
 - name: macro-controller

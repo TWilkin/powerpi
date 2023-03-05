@@ -4,7 +4,9 @@ metadata:
   name: ingress
   {{- include "powerpi.labels" $ }}
   annotations:
+    {{- if eq .Values.global.useSSL true }}
     cert-manager.io/issuer: letsencrypt
+    {{- end }}
 spec:
   {{- if eq .Values.global.useSSL true }}
   tls:
