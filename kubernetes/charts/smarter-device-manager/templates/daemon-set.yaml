@@ -1,3 +1,4 @@
+{{- if or (eq .Values.global.energenie true) (eq .Values.global.pijuice true) (eq .Values.global.pwm true) (eq .Values.global.zigbee true) }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -60,3 +61,4 @@ spec:
         configMap:
           name: smarter-device-manager-config
       terminationGracePeriodSeconds: 30
+{{- end }}

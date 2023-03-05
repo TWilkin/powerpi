@@ -1,3 +1,4 @@
+{{- if or (eq .Values.global.energenie true) (eq .Values.global.pijuice true) (eq .Values.global.pwm true) (eq .Values.global.zigbee true) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,3 +7,4 @@ metadata:
 data:
   device-config.yaml: |-
 {{ .Files.Get "device-config.yaml" | indent 4 }}
+{{- end }}
