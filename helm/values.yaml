@@ -38,6 +38,15 @@ global:
   # whether to include ZigBee support
   zigbee: true
 
+  # whether to include node monitoring support
+  node: true
+
+  # whether to include PiJuice support
+  pijuice: true
+
+  # whether to include node PWM fan control
+  pwm: true
+
 clacks-config:
   # the path to the config files in the GitHub repo
   path: "docker/config"

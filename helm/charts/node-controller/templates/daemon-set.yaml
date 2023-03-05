@@ -1,0 +1,170 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-controller
+  {{- include "powerpi.labels" $ }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "powerpi.selector" $ | indent 4 }}
+  template:
+    metadata:
+      {{- include "powerpi.labels" $ | indent 4 }}
+    spec:
+      nodeSelector:
+        {{- if eq .Values.global.pijuice true }}
+        powerpi-pijuice: "false"
+        {{- end }}
+        {{- if eq .Values.global.pwm true }}
+        powerpi-pwm: "false"
+        {{- end }}
+      containers:
+      - name: node-controller
+        image: twilkin/powerpi-node-controller:{{ .Chart.AppVersion }}
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+          limits:
+            cpu: 1
+            memory: 100Mi
+        volumeMounts:
+        - name: hostname
+          mountPath: /etc/nodehostname
+          readOnly: true
+      volumes:
+      - name: hostname
+        hostPath:
+          path: /etc/hostname
+---
+{{- if eq .Values.global.pijuice true }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-controller-pijuice
+  {{- include "powerpi.labels" $ }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "powerpi.selector" $ | indent 4 }}
+  template:
+    metadata:
+      {{- include "powerpi.labels" $ | indent 4 }}
+    spec:
+      nodeSelector:
+        powerpi-pijuice: "true"
+        {{- if eq .Values.global.pwm true }}
+        powerpi-pwm: "false"
+        {{- end }}
+      containers:
+      - name: node-controller-pijuice
+        image: twilkin/powerpi-node-controller:{{ .Chart.AppVersion }}
+        env:
+        - name: DEVICE_FATAL
+          value: "true"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+            smarter-devices/i2c-1: 1
+          limits:
+            cpu: 1
+            memory: 100Mi
+            smarter-devices/i2c-1: 1
+        volumeMounts:
+        - name: hostname
+          mountPath: /etc/nodehostname
+          readOnly: true
+      volumes:
+      - name: hostname
+        hostPath:
+          path: /etc/hostname
+{{- end }}
+---
+{{- if eq .Values.global.pwm true }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-controller-pwm
+  {{- include "powerpi.labels" $ }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "powerpi.selector" $ | indent 4 }}
+  template:
+    metadata:
+      {{- include "powerpi.labels" $ | indent 4 }}
+    spec:
+      nodeSelector:
+        {{- if eq .Values.global.pijuice true }}
+        powerpi-pijuice: "false"
+        {{- end }}
+        powerpi-pwm: "true"
+      containers:
+      - name: node-controller-pwm
+        image: twilkin/powerpi-node-controller:{{ .Chart.AppVersion }}
+        env:
+        - name: DEVICE_FATAL
+          value: "true"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+            smarter-devices/gpiomem: 1
+          limits:
+            cpu: 1
+            memory: 100Mi
+            smarter-devices/gpiomem: 1
+        volumeMounts:
+        - name: hostname
+          mountPath: /etc/nodehostname
+          readOnly: true
+      volumes:
+      - name: hostname
+        hostPath:
+          path: /etc/hostname
+{{- end }}
+---
+{{- if and (eq .Values.global.pijuice true) (eq .Values.global.pwm true) }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-controller-pijuice-pwm
+  {{- include "powerpi.labels" $ }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "powerpi.selector" $ | indent 4 }}
+  template:
+    metadata:
+      {{- include "powerpi.labels" $ | indent 4 }}
+    spec:
+      nodeSelector:
+        powerpi-pijuice: "true"
+        powerpi-pwm: "false"
+      containers:
+      - name: node-controller-pijuice-pwm
+        image: twilkin/powerpi-node-controller:{{ .Chart.AppVersion }}
+        env:
+        - name: DEVICE_FATAL
+          value: "true"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+            smarter-devices/gpiomem: 1
+            smarter-devices/i2c-1: 1
+          limits:
+            cpu: 1
+            memory: 100Mi
+            smarter-devices/gpiomem: 1
+            smarter-devices/i2c-1: 1
+        volumeMounts:
+        - name: hostname
+          mountPath: /etc/nodehostname
+          readOnly: true
+      volumes:
+      - name: hostname
+        hostPath:
+          path: /etc/hostname
+{{- end }}
