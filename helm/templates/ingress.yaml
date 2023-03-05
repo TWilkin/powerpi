@@ -6,10 +6,12 @@ metadata:
   annotations:
     cert-manager.io/issuer: letsencrypt
 spec:
+  {{- if eq .Values.global.useSSL true }}
   tls:
   - hosts:
     - {{ .Values.global.externalHostName }}
     secretName: letsencrypt
+  {{- end }}
   rules:
   - host: {{ .Values.global.externalHostName }}
     http:

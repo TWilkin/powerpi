@@ -25,6 +25,9 @@ global:
   # the email address to use for HTTPS certificate renewal
   certificateEmail: user@example.com
 
+  # whether to use SSL or not
+  useSSL: true
+
   # whether persistence is enabled or not
   # overridden by persistence.enabled
   persistence: false
