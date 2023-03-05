@@ -78,32 +78,32 @@ The following services also utilise labels, if you wish to use any of these appl
 -   [node-controller](../controllers/node/README.md#kubernetes)- ZigBee USB controller
 -   [zigbee-controller](../controllers/zigbee/README.md#kubernetes) - PiJuice/PWM fan controller
 
+## Customisation
+
+When deploying the stack, you'll want to customise some of the options to configure the environment for your home automation needs.
+
+Have a look at the options in [values.yaml](./values.yaml) as these are the options that can be overridden in your own file and provided using the `-f my-override.yaml` file when deploying the stack.
+
 ## Deploying
 
-Finally once the plugins are enabled, labels added and the secrets have been created, the stack can be deployed:
+Finally once the plugins are enabled, labels added and the secrets have been created, the stack can be deployed (where _OVERRIDE_ is the path to your overriding YAML configuration file):
 
 ```bash
 # From the root of your checkout of PowerPi
 cd kubernetes
 
 # Deploy your stack
-microk8s helm install --namespace powerpi --create-namespace powerpi .
+microk8s helm install --namespace powerpi --create-namespace -f __OVERRIDE__ powerpi .
 ```
 
 ## Updating
 
-When changes have been made to PowerPi the images will be updated on [Docker Hub](https://hub.docker.com/u/twilkin); updating is simply a case of downloading the latest version of this repository and re-running the deploy step.
+When changes have been made to PowerPi the images will be updated on [Docker Hub](https://hub.docker.com/u/twilkin); updating is simply a case of downloading the latest version of this repository and re-running the deploy step (where _OVERRIDE_ is the path to your overriding YAML configuration file).
 
 ```bash
 # From the root of your checkout of PowerPi
 cd kubernetes
 
 # Update your stack
-microk8s helm upgrade --namespace powerpi powerpi .
+microk8s helm upgrade --namespace powerpi -f __OVERRIDE__ powerpi .
 ```
-
-## Customisation
-
-When deploying the stack, you'll want to customise some of the options to configure the environment for your home automation needs.
-
-Have a look at the overlays for [dev](./overlays/dev/) and [production](./overlays/production/) to see how _kustomize_ is configuring the environment. The file [env.properties](./base/env.properties) contains the environment variables that are overridable when running _kustomize_.
