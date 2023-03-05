@@ -17,6 +17,7 @@ dependencies:
 - name: nginx
 - name: persistence
   condition: global.persistence
+- name: smarter-device-manager
 # controllers
 - name: energenie-controller
   condition: global.energenie

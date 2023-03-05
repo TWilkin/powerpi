@@ -3,18 +3,17 @@ kind: DaemonSet
 metadata:
   name: smarter-device-manager
   labels:
-    name: smarter-device-manager
     role: agent
+    {{- include "powerpi.labels" $ }}
 spec:
   selector:
     matchLabels:
-      name: smarter-device-manager
+      {{- include "powerpi.selector" $ | indent 4 }}
   updateStrategy:
     type: RollingUpdate
   template:
     metadata:
-      labels: 
-        name: smarter-device-manager
+        {{- include "powerpi.labels" $ | indent 4 }}
       annotations:
         node.kubernetes.io/bootstrap-checkpoint: "true"
     spec:
@@ -24,7 +23,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: smarter-device-manager
-        image: registry.gitlab.com/arm-research/smarter/smarter-device-manager
+        image: registry.gitlab.com/arm-research/smarter/smarter-device-manager:v{{ .Chart.AppVersion }}
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -59,5 +58,5 @@ spec:
           path: /sys
       - name: config
         configMap:
-          name: smarter-device-manager-devices
+          name: smarter-device-manager-config
       terminationGracePeriodSeconds: 30
