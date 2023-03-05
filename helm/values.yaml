@@ -17,6 +17,9 @@ global:
   # whether to use SSL or not
   useSSL: true
 
+  # whether to use FreeDNS or not
+  freeDNS: true
+
   # whether to include the clacks-config service to get configuration from GitHub
   config: true
 

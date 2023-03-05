@@ -2,12 +2,18 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: light-fantastic
+  {{- include "powerpi.labels" $ }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "powerpi.selector" $ | indent 4 }}
   template:
+    metadata:
+      {{- include "powerpi.labels" $ | indent 4 }}
     spec:
       containers:
       - name: light-fantastic
-        image: twilkin/powerpi-light-fantastic
+        image: twilkin/powerpi-light-fantastic:{{ .Chart.AppVersion }}
         resources:
           requests:
             cpu: 50m
