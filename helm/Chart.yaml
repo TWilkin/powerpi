@@ -25,3 +25,5 @@ dependencies:
 - name: lifx-controller
   condition: global.lifx
 - name: macro-controller
+- name: zigbee-controller
+  condition: global.zigbee

@@ -2,14 +2,20 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: zigbee-controller
+  {{- include "powerpi.labels" $ }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "powerpi.selector" $ | indent 4 }}
   template:
+    metadata:
+      {{- include "powerpi.labels" $ | indent 4 }}
     spec:
       nodeSelector:
         powerpi-zigbee: "true"
       containers:
       - name: zigbee-controller
-        image: twilkin/powerpi-zigbee-controller
+        image: twilkin/powerpi-zigbee-controller:{{ .Chart.AppVersion }}
         env:
         - name: DEVICE
           value: /dev/ttyACM0

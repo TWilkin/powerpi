@@ -35,6 +35,9 @@ global:
   # whether to include LIFX support
   lifx: true
 
+  # whether to include ZigBee support
+  zigbee: true
+
 clacks-config:
   # the path to the config files in the GitHub repo
   path: "docker/config"
