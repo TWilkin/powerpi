@@ -4,10 +4,27 @@ component: powerpi
 clacks-config:
   # whether to include the clacks-config service to get configuration from GitHub
   enabled: true
+
   # the path to the config files in the GitHub repo
   path: "docker/config"
-
 
 persistence:
   # whether to include the persistence service to store messages in a database
   enabled: true
+
+global:
+  # the environment to deploy for "production" or "dev"
+  env: dev
+
+  # the external host name to use when requesting certificates and to configure for ingress
+  externalHostName: example.com
+
+  # the external port to use for incoming traffic, can be 443 or 80
+  externalPort: 443
+
+  # the email address to use for HTTPS certificate renewal
+  certificateEmail: user@example.com
+
+  # whether persistence is enabled or not
+  # overridden by persistence.enabled
+  persistence: false

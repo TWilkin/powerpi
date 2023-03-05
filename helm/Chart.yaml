@@ -10,6 +10,7 @@ dependencies:
   condition: clacks-config.enabled
 - name: database
   condition: persistence.enabled
+- name: deep-thought
 - name: mosquitto
 - name: persistence
   condition: persistence.enabled

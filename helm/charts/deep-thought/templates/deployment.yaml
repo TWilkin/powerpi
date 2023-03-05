@@ -2,23 +2,26 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: deep-thought
+  {{- include "powerpi.labels" $ }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "powerpi.selector" $ | indent 4 }}
   template:
+    metadata:
+      {{- include "powerpi.labels" $ | indent 4 }}
     spec:
       containers:
       - name: deep-thought
-        image: twilkin/powerpi-deep-thought
+        image: twilkin/powerpi-deep-thought:{{ .Chart.AppVersion }}
         ports:
         - name: http
           containerPort: 3000
         env:
         - name: EXTERNAL_HOST_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: settings
-              key: EXTERNAL_HOST_NAME
+          value: {{ .Values.global.externalHostName }}
         - name: EXTERNAL_PORT
-          value: "443"
+          value: {{ .Values.global.externalPort | quote }}
         - name: GOOGLE_CLIENT_ID
           valueFrom:
             secretKeyRef:
@@ -37,6 +40,7 @@ spec:
           value: /var/run/secrets/powerpi_jwt/secret
         - name: SESSION_SECRET_FILE
           value: /var/run/secrets/powerpi_session/secret
+        {{- if eq .Values.global.persistence true }}
         - name: DB_HOST
           value: database
         - name: DB_SCHEMA
@@ -51,6 +55,7 @@ spec:
               key: username
         - name: DB_SECRET_FILE
           value: /var/run/secrets/powerpi_database/password
+        {{- end }}
         resources:
           requests:
             cpu: 50m
@@ -71,9 +76,11 @@ spec:
         - name: session-secret
           mountPath: /var/run/secrets/powerpi_session
           readOnly: true
+        {{- if eq .Values.global.persistence true }}
         - name: database-secret
           mountPath: /var/run/secrets/powerpi_database
           readOnly: true
+        {{- end }}
       volumes:
       - name: google-auth-secret
         secret:
@@ -87,6 +94,8 @@ spec:
       - name: session-secret
         secret:
           secretName: session-secret
+      {{- if eq .Values.global.persistence true }}
       - name: database-secret
         secret:
           secretName: database-secret
+      {{- end }}
