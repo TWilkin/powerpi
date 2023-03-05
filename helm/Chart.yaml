@@ -5,6 +5,8 @@ type: application
 version: 0.1.0
 appVersion: 0.1.0
 dependencies:
-- name: mosquitto
 - name: database
+  condition: persistence.enabled
+- name: mosquitto
+- name: persistence
   condition: persistence.enabled
