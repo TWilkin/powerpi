@@ -2,19 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: clacks-config
+  {{- include "powerpi.labels" $ }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "powerpi.selector" $ | indent 4 }}
   template:
+    metadata:
+      {{- include "powerpi.labels" $ | indent 4 }}
     spec:
       priorityClassName: powerpi-critical
       containers:
       - name: clacks-config
-        image: twilkin/powerpi-clacks-config
+        image: twilkin/powerpi-clacks-config:{{ .Chart.AppVersion }}
         env:
         - name: FILE_PATH
-          valueFrom:
-            configMapKeyRef:
-              name: settings
-              key: GITHUB_FILE_PATH
+          value: {{ .Values.path }}
         - name: GITHUB_USER
           valueFrom:
             secretKeyRef:

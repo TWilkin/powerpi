@@ -1,6 +1,13 @@
 # the component label for the main chart
 component: powerpi
 
+clacks-config:
+  # whether to include the clacks-config service to get configuration from GitHub
+  enabled: true
+  # the path to the config files in the GitHub repo
+  path: "docker/config"
+
+
 persistence:
   # whether to include the persistence service to store messages in a database
   enabled: true

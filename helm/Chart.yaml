@@ -5,6 +5,8 @@ type: application
 version: 0.1.0
 appVersion: 0.1.0
 dependencies:
+- name: clacks-config
+  condition: clacks-config.enabled
 - name: database
   condition: persistence.enabled
 - name: mosquitto
