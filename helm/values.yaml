@@ -29,6 +29,9 @@ global:
   # whether to include Logitech Harmony support
   harmony: true
 
+  # whether to include LIFX support
+  lifx: true
+
 clacks-config:
   # the path to the config files in the GitHub repo
   path: "docker/config"

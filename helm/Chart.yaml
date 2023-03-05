@@ -20,4 +20,6 @@ dependencies:
 # controllers
 - name: harmony-controller
   condition: global.harmony
+- name: lifx-controller
+  condition: global.lifx
 - name: macro-controller
