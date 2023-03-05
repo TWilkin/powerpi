@@ -1,2 +1,6 @@
 # the component label for the main chart
 component: powerpi
+
+persistence:
+  # whether to include the persistence service to store messages in a database
+  enabled: true
