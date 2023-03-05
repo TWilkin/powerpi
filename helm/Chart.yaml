@@ -4,3 +4,6 @@ description: A Helm chart for deploying the PowerPi home automation stack
 type: application
 version: 0.1.0
 appVersion: 0.1.0
+dependencies:
+- name: mosquitto
+

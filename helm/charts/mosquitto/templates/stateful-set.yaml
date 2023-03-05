@@ -2,15 +2,21 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mosquitto
+  {{- include "powerpi.labels" $ }}
 spec:
+  selector:
+    matchLabels:
+      {{- include "powerpi.selector" $ | indent 4 }}
   template:
+    metadata:
+      {{- include "powerpi.labels" $ | indent 4 }}
     spec:
       nodeSelector:
         powerpi-storage: "true"
       priorityClassName: powerpi-critical
       containers:
       - name: mosquitto
-        image: eclipse-mosquitto
+        image: eclipse-mosquitto:{{ .Chart.AppVersion }}
         ports:
         - containerPort: 1883
           name: mqtt
