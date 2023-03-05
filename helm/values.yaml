@@ -23,6 +23,9 @@ global:
   # whether to include the persistence service to store messages in a database
   persistence: true
 
+  # whether to include the scheduler service (light-fantastic) to update devices on a schedule
+  scheduler: true
+
   # whether to include the voice assistant service (babel-fish) for Alexa integration
   voiceAssistant: true
 

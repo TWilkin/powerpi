@@ -15,6 +15,8 @@ dependencies:
 - name: deep-thought
 - name: energy-monitor
   condition: global.energy-monitor
+- name: light-fantastic
+  condition: global.scheduler
 - name: mosquitto
 - name: nginx
 - name: persistence
