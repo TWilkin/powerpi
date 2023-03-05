@@ -15,46 +15,46 @@ global:
   certificateEmail: user@example.com
 
   # whether to use SSL or not
-  useSSL: true
+  useSSL: false
 
   # whether to use FreeDNS or not
-  freeDNS: true
+  freeDNS: false
 
   # whether to include the clacks-config service to get configuration from GitHub
-  config: true
+  config: false
 
   # whether to include the persistence service to store messages in a database
-  persistence: true
+  persistence: false
 
   # whether to include the scheduler service (light-fantastic) to update devices on a schedule
-  scheduler: true
+  scheduler: false
 
   # whether to include the voice assistant service (babel-fish) for Alexa integration
-  voiceAssistant: true
+  voiceAssistant: false
 
   # whether to include Energenie support
-  energenie: true
+  energenie: false
 
   # whether to include Logitech Harmony support
-  harmony: true
+  harmony: false
 
   # whether to include LIFX support
-  lifx: true
+  lifx: false
 
   # whether to include ZigBee support
-  zigbee: true
+  zigbee: false
 
   # whether to include node monitoring support
-  node: true
+  node: false
 
   # whether to include PiJuice support
-  pijuice: true
+  pijuice: false
 
   # whether to include node PWM fan control
-  pwm: true
+  pwm: false
 
   # whether to include N3rgy energy monitoring support
-  energy-monitor: true
+  energy-monitor: false
 
 clacks-config:
   # the path to the config files in the GitHub repo
