@@ -53,5 +53,5 @@ For the energy-monitor service (where __SECRET_NAME__ is a replacement for a fil
 
 To learn more about the release, try:
 
-  $ helm status rude-cardinal
-  $ helm get all rude-cardinal
+  $ helm status {{ .Release.Name }}
+  $ helm get all {{ .Release.Name }}
