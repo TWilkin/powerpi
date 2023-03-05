@@ -5,6 +5,7 @@ type: application
 version: 0.1.0
 appVersion: 0.1.0
 dependencies:
+# services
 - name: clacks-config
   condition: clacks-config.enabled
 - name: database
@@ -12,3 +13,5 @@ dependencies:
 - name: mosquitto
 - name: persistence
   condition: persistence.enabled
+# controllers
+- name: macro-controller
