@@ -47,6 +47,9 @@ global:
   # whether to include node PWM fan control
   pwm: true
 
+  # whether to include N3rgy energy monitoring support
+  energy-monitor: true
+
 clacks-config:
   # the path to the config files in the GitHub repo
   path: "docker/config"

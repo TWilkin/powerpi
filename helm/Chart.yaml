@@ -13,6 +13,8 @@ dependencies:
 - name: database
   condition: global.persistence
 - name: deep-thought
+- name: energy-monitor
+  condition: global.energy-monitor
 - name: mosquitto
 - name: nginx
 - name: persistence
