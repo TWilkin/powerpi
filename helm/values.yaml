@@ -23,6 +23,9 @@ global:
   # whether to include the persistence service to store messages in a database
   persistence: true
 
+  # whether to include the voice assistant service (babel-fish) for Alexa integration
+  voiceAssistant: true
+
 clacks-config:
   # the path to the config files in the GitHub repo
   path: "docker/config"

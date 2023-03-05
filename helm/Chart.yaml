@@ -6,8 +6,10 @@ version: 0.1.0
 appVersion: 0.1.0
 dependencies:
 # services
+- name: babel-fish
+  condition: global.voiceAssistant
 - name: clacks-config
-  condition: globa.config
+  condition: global.config
 - name: database
   condition: global.persistence
 - name: deep-thought
