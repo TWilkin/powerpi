@@ -1,37 +1,19 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: energenie-controller
-  {{- include "powerpi.labels" . }}
-spec:
-  selector:
-    matchLabels:
-    {{- include "powerpi.selector" . | indent 4 }}
-  template:
-    metadata:
-    {{- include "powerpi.labels" . | indent 4 }}
-    spec:
-      nodeSelector:
-        powerpi-energenie: "true"
-      containers:
-      - name: energenie-controller
-        image: twilkin/powerpi-energenie-controller:{{ .Chart.AppVersion }}
-        env:
-        {{- include "powerpi.config.env.controller" . | indent 6 }}
-        - name: DEVICE_FATAL
-          value: "true"
-        - name: ENERGENIE_DEVICE
-          value: {{ .Values.type | quote }}
-        resources:
-          requests:
-            cpu: 50m
-            memory: 50Mi
-            smarter-devices/gpiomem: 1
-          limits:
-            cpu: 1
-            memory: 100Mi
-            smarter-devices/gpiomem: 1
-        volumeMounts:
-        {{- include "powerpi.config.volumeMounts" . | indent 6 }}
-      volumes:
-      {{- include "powerpi.config.volumes" . | indent 4 }}
+{{- $data := dict
+  "Env" (list
+    (dict
+      "Name" "DEVICE_FATAL"
+      "Value" (true | quote)
+    )
+    (dict
+      "Name" "ENERGENIE_DEVICE"
+      "Value" (.Values.type | quote)
+    )
+  )
+  "Resources" (list
+    (dict
+      "Name" "smarter-devices/gpiomem"
+      "Value" 1
+    )
+  )
+}}
+{{- include "powerpi.controller" (merge (dict "Params" $data) . )}}
