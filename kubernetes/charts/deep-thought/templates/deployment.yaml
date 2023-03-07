@@ -18,6 +18,10 @@ spec:
         - name: http
           containerPort: 3000
         env:
+        {{- include "powerpi.config.env" . | indent 6 }}
+        {{- include "powerpi.config.env.devices" . | indent 6 }}
+        {{- include "powerpi.config.env.floorplan" . | indent 6 }}
+        {{- include "powerpi.config.env.users" . | indent 6 }}
         - name: EXTERNAL_HOST_NAME
           value: {{ .Values.global.externalHostName }}
         - name: EXTERNAL_PORT
@@ -64,6 +68,7 @@ spec:
             cpu: 1
             memory: 300Mi
         volumeMounts:
+        {{- include "powerpi.config.volumeMounts" . | indent 6 }}
         - name: google-auth-secret
           mountPath: /var/run/secrets/powerpi_google_auth
           readOnly: true
@@ -82,6 +87,7 @@ spec:
           readOnly: true
         {{- end }}
       volumes:
+      {{- include "powerpi.config.volumes" . | indent 4 }}
       - name: google-auth-secret
         secret:
           secretName: google-auth-secret

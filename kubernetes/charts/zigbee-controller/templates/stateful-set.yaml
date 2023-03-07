@@ -15,6 +15,7 @@ spec:
       - name: zigbee-controller
         image: twilkin/powerpi-zigbee-controller:{{ .Chart.AppVersion }}
         env:
+        {{- include "powerpi.config.env.controller" . | indent 6 }}
         - name: DEVICE
           value: /dev/ttyACM0
         - name: DATABASE_PATH
@@ -29,9 +30,11 @@ spec:
             memory: 100Mi
             smarter-devices/ttyACM0: 1
         volumeMounts:
+        {{- include "powerpi.config.volumeMounts" . | indent 6 }}
         - name: zigbee-data
           mountPath: /var/data
       volumes:
+      {{- include "powerpi.config.volumes" . | indent 4 }}
       - name: zigbee-data
         persistentVolumeClaim:
           claimName: zigbee-controller-volume-claim

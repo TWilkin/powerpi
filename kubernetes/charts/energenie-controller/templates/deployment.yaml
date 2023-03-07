@@ -17,6 +17,7 @@ spec:
       - name: energenie-controller
         image: twilkin/powerpi-energenie-controller:{{ .Chart.AppVersion }}
         env:
+        {{- include "powerpi.config.env.controller" . | indent 6 }}
         - name: DEVICE_FATAL
           value: "true"
         - name: ENERGENIE_DEVICE
@@ -30,3 +31,7 @@ spec:
             cpu: 1
             memory: 100Mi
             smarter-devices/gpiomem: 1
+        volumeMounts:
+        {{- include "powerpi.config.volumeMounts" . | indent 6 }}
+      volumes:
+      {{- include "powerpi.config.volumes" . | indent 4 }}

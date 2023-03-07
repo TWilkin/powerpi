@@ -1,0 +1,14 @@
+{{- if ne .Values.global.config true }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+  {{- include "powerpi.labels" $ }}
+data:
+  {{- $files := .Files }}
+  {{- range $path, $_ := .Files.Glob "config/**.json" }}
+  {{- $name := base $path }}
+  {{ $name }}: |-
+{{ $files.Get $path | indent 4 }}
+  {{- end }}
+{{- end }}

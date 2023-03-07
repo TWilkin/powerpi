@@ -21,6 +21,8 @@ spec:
       containers:
       - name: node-controller
         image: twilkin/powerpi-node-controller:{{ .Chart.AppVersion }}
+        env:
+        {{- include "powerpi.config.env.controller" . | indent 6 }}
         resources:
           requests:
             cpu: 50m
@@ -29,10 +31,12 @@ spec:
             cpu: 1
             memory: 100Mi
         volumeMounts:
+        {{- include "powerpi.config.volumeMounts" . | indent 6 }}
         - name: hostname
           mountPath: /etc/nodehostname
           readOnly: true
       volumes:
+      {{- include "powerpi.config.volumes" . | indent 4 }}
       - name: hostname
         hostPath:
           path: /etc/hostname
@@ -60,6 +64,7 @@ spec:
       - name: node-controller-pijuice
         image: twilkin/powerpi-node-controller:{{ .Chart.AppVersion }}
         env:
+        {{- include "powerpi.config.env.controller" . | indent 6 }}
         - name: DEVICE_FATAL
           value: "true"
         resources:
@@ -72,10 +77,12 @@ spec:
             memory: 100Mi
             smarter-devices/i2c-1: 1
         volumeMounts:
+        {{- include "powerpi.config.volumeMounts" . | indent 6 }}
         - name: hostname
           mountPath: /etc/nodehostname
           readOnly: true
       volumes:
+      {{- include "powerpi.config.volumes" . | indent 4 }}
       - name: hostname
         hostPath:
           path: /etc/hostname
@@ -104,6 +111,7 @@ spec:
       - name: node-controller-pwm
         image: twilkin/powerpi-node-controller:{{ .Chart.AppVersion }}
         env:
+        {{- include "powerpi.config.env.controller" . | indent 6 }}
         - name: DEVICE_FATAL
           value: "true"
         resources:
@@ -116,10 +124,12 @@ spec:
             memory: 100Mi
             smarter-devices/gpiomem: 1
         volumeMounts:
+        {{- include "powerpi.config.volumeMounts" . | indent 6 }}
         - name: hostname
           mountPath: /etc/nodehostname
           readOnly: true
       volumes:
+      {{- include "powerpi.config.volumes" . | indent 4 }}
       - name: hostname
         hostPath:
           path: /etc/hostname
@@ -146,6 +156,7 @@ spec:
       - name: node-controller-pijuice-pwm
         image: twilkin/powerpi-node-controller:{{ .Chart.AppVersion }}
         env:
+        {{- include "powerpi.config.env.controller" . | indent 6 }}
         - name: DEVICE_FATAL
           value: "true"
         resources:
@@ -160,10 +171,12 @@ spec:
             smarter-devices/gpiomem: 1
             smarter-devices/i2c-1: 1
         volumeMounts:
+        {{- include "powerpi.config.volumeMounts" . | indent 6 }}
         - name: hostname
           mountPath: /etc/nodehostname
           readOnly: true
       volumes:
+      {{- include "powerpi.config.volumes" . | indent 4 }}
       - name: hostname
         hostPath:
           path: /etc/hostname

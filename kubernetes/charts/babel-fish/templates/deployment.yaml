@@ -17,6 +17,9 @@ spec:
         ports:
         - name: http
           containerPort: 3000
+        env:
+        {{- include "powerpi.config.env" . | indent 6 }}
+        {{- include "powerpi.config.env.devices" . | indent 6 }}
         resources:
           requests:
             cpu: 50m
@@ -24,3 +27,8 @@ spec:
           limits:
             cpu: 1
             memory: 200Mi
+        volumeMounts:
+        {{- include "powerpi.config.volumeMounts" . | indent 6 }}
+      volumes:
+      {{- include "powerpi.config.volumes" . | indent 4 }}
+
