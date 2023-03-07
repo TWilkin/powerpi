@@ -75,8 +75,7 @@ microk8s kubectl label node NODE_NAME powerpi-storage=true
 The following services also utilise labels, if you wish to use any of these apply their labels as well:
 
 -   [energenie-controller](../controllers/energenie/README.md#kubernetes) - ENER314/ENER314-RT Pi controller
--   [node-controller](../controllers/node/README.md#kubernetes)- ZigBee USB controller
--   [zigbee-controller](../controllers/zigbee/README.md#kubernetes) - PiJuice/PWM fan controller
+-   [node-controller](../controllers/node/README.md#kubernetes)- PiJuice/PWM fan controller
 
 ## Customisation
 

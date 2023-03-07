@@ -11,8 +11,6 @@ spec:
     metadata:
       {{- include "powerpi.labels" $ | indent 4 }}
     spec:
-      nodeSelector:
-        powerpi-zigbee: "true"
       containers:
       - name: zigbee-controller
         image: twilkin/powerpi-zigbee-controller:{{ .Chart.AppVersion }}

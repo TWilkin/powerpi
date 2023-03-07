@@ -47,11 +47,7 @@ docker node update --label-add zigbee=true NODE_NAME
 
 ### Kubernetes
 
-When running this service in Kubernetes, _microk8s_ needs to know which node has the ZigBee device. The following command will add a label to the node `NODE_NAME` which should host this service.
-
-```bash
-microk8s kubectl label node NODE_NAME powerpi-zigbee=true
-```
+When running this service in Kubernetes, _microk8s_ works out which node has the ZigBee device automatically, so no labelling is needed.
 
 ## Testing
 

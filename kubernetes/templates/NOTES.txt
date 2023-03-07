@@ -11,10 +11,6 @@ For the node hosting mosquitto {{- if eq .Values.global.persistence true }}or th
 For the node hosting the Energenie ENER314-RT/ENER314:
     $ microk8s kubectl label node NODE_NAME powerpi-energenie=true
 {{- end }}
-{{- if eq .Values.global.zigbee true }}
-For the node hosting the ZigBee USB controller:
-    $ microk8s kubectl label node NODE_NAME powerpi-zigbee=true
-{{- end }}
 {{- if eq .Values.global.node true }}
 {{- if eq .Values.global.pijuice true }}
 For the node(s) hosting the PiJuice:
