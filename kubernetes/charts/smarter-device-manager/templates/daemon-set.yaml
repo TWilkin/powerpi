@@ -5,16 +5,16 @@ metadata:
   name: smarter-device-manager
   labels:
     role: agent
-    {{- include "powerpi.labels" $ }}
+    {{- include "powerpi.selector" . }}
 spec:
   selector:
     matchLabels:
-      {{- include "powerpi.selector" $ | indent 4 }}
+    {{- include "powerpi.selector" . | indent 4 }}
   updateStrategy:
     type: RollingUpdate
   template:
     metadata:
-        {{- include "powerpi.labels" $ | indent 4 }}
+      {{- include "powerpi.labels" . | indent 4 }}
       annotations:
         node.kubernetes.io/bootstrap-checkpoint: "true"
     spec:
@@ -45,6 +45,7 @@ spec:
         - name: config
           mountPath: /root/config/conf.yaml
           subPath: device-config.yaml
+          readOnly: true
         - name: sys-dir
           mountPath: /sys
       volumes:

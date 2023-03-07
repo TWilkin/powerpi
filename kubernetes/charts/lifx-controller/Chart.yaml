@@ -1,6 +1,6 @@
 apiVersion: v2
 name: lifx-controller
-description: A Helm chart for the PowerPi lifx controller
+description: A Helm chart for the PowerPi LIFX device controller
 type: application
 version: 0.1.0
 appVersion: 0.2.2

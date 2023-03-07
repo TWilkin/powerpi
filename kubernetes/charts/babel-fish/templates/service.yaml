@@ -2,11 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: babel-fish
-  {{- include "powerpi.labels" $ }}
+  {{- include "powerpi.labels" . }}
 spec:
-  type: ClusterIP
   selector:
-    {{- include "powerpi.selector" $ | indent 2 }}
+  {{- include "powerpi.selector" . | indent 2 }}
+  type: ClusterIP
   ports:
   - name: http
     protocol: TCP

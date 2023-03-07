@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: zigbee-controller-volume-claim
-  {{- include "powerpi.labels" $ }}
+  {{- include "powerpi.labels" . }}
 spec:
   accessModes:
   - ReadWriteOnce

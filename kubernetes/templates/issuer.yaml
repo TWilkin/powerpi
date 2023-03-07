@@ -3,7 +3,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: letsencrypt
-  {{- include "powerpi.labels" $ }}
+  {{- include "powerpi.labels" . }}
 spec:
   acme:
     {{- if eq .Values.global.env "production" }}

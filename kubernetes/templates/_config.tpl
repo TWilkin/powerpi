@@ -39,6 +39,7 @@
 {{- if ne $.Values.global.config true }}
   - name: config
     mountPath: /var/run/config/powerpi_config
+    readOnly: true
 {{- end }}
 {{- end }}
 

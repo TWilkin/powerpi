@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: node-controller
-  {{- include "powerpi.labels" $ }}
+  {{- include "powerpi.labels" . }}
 spec:
   selector:
     matchLabels:
-      {{- include "powerpi.selector" $ | indent 4 }}
+    {{- include "powerpi.selector" . | indent 4 }}
   template:
     metadata:
-      {{- include "powerpi.labels" $ | indent 4 }}
+    {{- include "powerpi.labels" . | indent 4 }}
     spec:
       nodeSelector:
         {{- if eq .Values.global.pijuice true }}
@@ -46,14 +46,14 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: node-controller-pijuice
-  {{- include "powerpi.labels" $ }}
+  {{- include "powerpi.labels" . }}
 spec:
   selector:
     matchLabels:
-      {{- include "powerpi.selector" $ | indent 4 }}
+    {{- include "powerpi.selector" . | indent 4 }}
   template:
     metadata:
-      {{- include "powerpi.labels" $ | indent 4 }}
+    {{- include "powerpi.labels" . | indent 4 }}
     spec:
       nodeSelector:
         powerpi-pijuice: "true"
@@ -97,10 +97,10 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "powerpi.selector" $ | indent 4 }}
+    {{- include "powerpi.selector" . | indent 4 }}
   template:
     metadata:
-      {{- include "powerpi.labels" $ | indent 4 }}
+    {{- include "powerpi.labels" . | indent 4 }}
     spec:
       nodeSelector:
         {{- if eq .Values.global.pijuice true }}
@@ -140,14 +140,14 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: node-controller-pijuice-pwm
-  {{- include "powerpi.labels" $ }}
+  {{- include "powerpi.labels" . }}
 spec:
   selector:
     matchLabels:
-      {{- include "powerpi.selector" $ | indent 4 }}
+    {{- include "powerpi.selector" . | indent 4 }}
   template:
     metadata:
-      {{- include "powerpi.labels" $ | indent 4 }}
+    {{- include "powerpi.labels" . | indent 4 }}
     spec:
       nodeSelector:
         powerpi-pijuice: "true"

@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress
-  {{- include "powerpi.labels" $ }}
+  {{- include "powerpi.labels" . }}
   annotations:
     {{- if eq .Values.global.useSSL true }}
     cert-manager.io/issuer: letsencrypt

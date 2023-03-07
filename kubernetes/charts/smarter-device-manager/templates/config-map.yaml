@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: smarter-device-manager-config
-  {{- include "powerpi.labels" $ }}
+  {{- include "powerpi.labels" . }}
 data:
   device-config.yaml: |-
 {{ .Files.Get "device-config.yaml" | indent 4 }}

@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mosquitto
-  {{- include "powerpi.labels" $ }}
+  {{- include "powerpi.labels" . }}
 spec:
   selector:
     matchLabels:
-      {{- include "powerpi.selector" $ | indent 4 }}
+    {{- include "powerpi.selector" . | indent 4 }}
   template:
     metadata:
-      {{- include "powerpi.labels" $ | indent 4 }}
+    {{- include "powerpi.labels" . | indent 4 }}
     spec:
       nodeSelector:
         powerpi-storage: "true"
@@ -33,6 +33,7 @@ spec:
         - name: mosquitto-config
           mountPath: /mosquitto/config/mosquitto.conf
           subPath: mosquitto.conf
+          readOnly: true
       volumes:
       - name: mosquitto-data
         persistentVolumeClaim:
