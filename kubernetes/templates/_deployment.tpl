@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: {{ $name }}
-        image: {{ .Params.Image | default (printf "twilkin/powerpi-%s" $name) }}:{{ .Chart.AppVersion }}
+        image: {{ .Values.image | default .Params.Image | default (printf "twilkin/powerpi-%s" $name) }}:{{ .Values.imageTag | default .Chart.AppVersion }}
         {{- if eq (empty .Params.Ports) false }}
         ports:
         {{- range $element := .Params.Ports }}
