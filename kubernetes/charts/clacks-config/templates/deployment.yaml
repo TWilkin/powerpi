@@ -6,6 +6,7 @@
       "Env" (list
         (dict
           "Name" "GITHUB_SECRET_FILE"
+          "SubPath" "password"
         )
         (dict
           "Name" "GITHUB_USER"

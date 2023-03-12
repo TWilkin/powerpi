@@ -2,7 +2,6 @@
   "Secret" (list
     (dict
       "Name" "freedns-secret"
-      "SubPath" "password"
       "Env" (list
         (dict
           "Name" "FREEDNS_USER"
@@ -10,6 +9,7 @@
         )
         (dict
           "Name" "FREEDNS_PASSWORD"
+          "SubPath" "password"
         )
       )
     )

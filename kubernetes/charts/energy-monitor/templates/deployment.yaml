@@ -2,10 +2,10 @@
   "Secret" (list
     (dict
       "Name" "ihd-secret"
-      "SubPath" "secret"
       "Env" (list
         (dict
           "Name" "IHD_SECRET_FILE"
+          "SubPath" "secret"
         )
       )
     )

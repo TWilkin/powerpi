@@ -21,7 +21,6 @@
   "Secret" (list
     (dict
       "Name" "database-secret"
-      "SubPath" "password"
       "Env" (list
         (dict
           "Name" "POSTGRES_DB"
@@ -33,6 +32,7 @@
         )
         (dict
           "Name" "POSTGRES_PASSWORD_FILE"
+          "SubPath" "password"
         )
       )
     )

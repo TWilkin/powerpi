@@ -5,7 +5,7 @@ metadata:
   name: smarter-device-manager
   labels:
     role: agent
-    {{- include "powerpi.selector" . }}
+    {{- include "powerpi.selector" . | indent 2 }}
 spec:
   selector:
     matchLabels:

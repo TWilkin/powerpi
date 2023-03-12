@@ -24,7 +24,7 @@ spec:
       {{- if eq (empty .Params.NodeSelector) false }}
       nodeSelector:
       {{- range $element := .Params.NodeSelector }}
-        {{ $element.Name }}: {{ $element.Value }}
+        {{ $element.Name }}: {{ $element.Value | quote }}
       {{- end }}
       {{- end }}
 
@@ -62,7 +62,7 @@ spec:
               name: {{ $element.Name }}
               key: {{ $env.Key }}
           {{- else }}
-          value: {{ $env.Value | default (printf "/var/run/secrets/%s" $element.Name) }}
+          value: {{ $env.Value | default (printf "/var/run/secrets/%s/%s" $element.Name $env.SubPath) }}
           {{- end }}
         {{- end }}
         {{- end }}
@@ -133,9 +133,6 @@ spec:
         {{- range $element := .Params.Secret }}
         - name: {{ $element.Name }}
           mountPath: {{ printf "/var/run/secrets/%s" $element.Name }}
-          {{- if eq (empty $element.SubPath) false }}
-          subPath: {{ $element.SubPath }}
-          {{- end }}
           readOnly: true
         {{- end }}
         {{- end }}
