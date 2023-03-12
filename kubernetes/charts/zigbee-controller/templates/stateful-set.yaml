@@ -19,7 +19,6 @@
   "PersistentVolumeClaim" (dict
     "Name" "zigbee-data"
     "Path" "/var/data"
-    "Claim" "zigbee-controller-volume-claim"
     "EnvName" "DATABASE_PATH"
     "EnvValue" "/var/data/zigbee.db"
   )

@@ -15,7 +15,6 @@
   "PersistentVolumeClaim" (dict
     "Name" "mosquitto-data"
     "Path" "/mosquitto/data"
-    "Claim" "mosquitto-volume-claim"
   )
   "Config" (list
     (dict

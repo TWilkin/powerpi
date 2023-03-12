@@ -1,4 +1,4 @@
-{{$data := dict
+{{- $data := dict
   "Type" "LoadBalancer"
   "PortName" "mqtt"
   "Port" 1883

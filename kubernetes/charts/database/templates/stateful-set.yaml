@@ -16,7 +16,6 @@
   "PersistentVolumeClaim" (dict
     "Name" "database-data"
     "Path" "/var/lib/postgresql/data/pgdata"
-    "Claim" "database-volume-claim"
     "EnvName" "PGDATA"
   )
   "Secret" (list

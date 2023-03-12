@@ -151,7 +151,7 @@ spec:
       {{- if $hasVolumeClaim }}
       - name: {{ .Params.PersistentVolumeClaim.Name }}
         persistentVolumeClaim:
-          claimName: {{ .Params.PersistentVolumeClaim.Claim }}
+          claimName: {{ .Params.PersistentVolumeClaim.Claim | default (printf "%s-volume-claim" .Chart.Name) }}
       {{- end }}
 
       {{- if $hasConfig }}
