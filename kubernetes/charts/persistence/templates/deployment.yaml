@@ -1,46 +1,26 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: persistence
-  {{- include "powerpi.labels" . }}
-spec:
-  selector:
-    matchLabels:
-    {{- include "powerpi.selector" . | indent 4 }}
-  template:
-    metadata:
-    {{- include "powerpi.labels" . | indent 4 }}
-    spec:
-      containers:
-      - name: persistence
-        image: twilkin/powerpi-persistence:{{ .Chart.AppVersion }}
-        env:
-        - name: DB_HOST
-          value: database
-        - name: DB_SCHEMA
-          valueFrom:
-            secretKeyRef:
-              name: database-secret
-              key: schema
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: database-secret
-              key: username
-        - name: DB_SECRET_FILE
-          value: /var/run/secrets/powerpi_database/password
-        resources:
-          requests:
-            cpu: 50m
-            memory: 100Mi
-          limits:
-            cpu: 1
-            memory: 200Mi
-        volumeMounts:
-        - name: database-secret
-          mountPath: /var/run/secrets/powerpi_database
-          readOnly: true
-      volumes:
-      - name: database-secret
-        secret:
-          secretName: database-secret
+{{- $data := dict
+  "Secret" (list
+    (dict
+      "Name" "database-secret"
+      "SubPath" "password"
+      "Env" (list
+        (dict
+          "Name" "DB_HOST"
+          "Value" "database"
+        )
+        (dict
+          "Name" "DB_SCHEMA"
+          "Key" "schema"
+        )
+        (dict
+          "Name" "DB_USER"
+          "Key" "username"
+        )
+        (dict
+          "Name" "DB_SECRET_FILE"
+        )
+      )
+    )
+  )
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

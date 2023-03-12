@@ -57,7 +57,7 @@
       )
       (dict
         "Name" "DB_SCHEMA"
-        "Key" "database"
+        "Key" "schema"
       )
       (dict
         "Name" "DB_USER"

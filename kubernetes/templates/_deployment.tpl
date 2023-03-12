@@ -82,6 +82,9 @@ spec:
         {{- if eq .Params.UseFloorplanFile true }}
         {{- include "powerpi.config.env.floorplan" . | indent 6 }}
         {{- end }}
+        {{- if eq .Params.UseSchedulesFile true }}
+        {{- include "powerpi.config.env.schedules" . | indent 6 }}
+        {{- end }}
         {{- if eq .Params.UseUsersFile true }}
         {{- include "powerpi.config.env.users" . | indent 6 }}
         {{- end }}
@@ -140,7 +143,7 @@ spec:
         {{- if $config }}
         {{- include "powerpi.config.volumeMounts" . | indent 6 }}
         {{- end }}
-        
+
         {{- end }}
 
       {{- if or (eq (empty .Params.Volumes) false) $config $hasVolumeClaim $hasConfig $hasSecret }}

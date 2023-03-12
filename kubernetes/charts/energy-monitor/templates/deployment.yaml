@@ -1,6 +1,4 @@
 {{- $data := dict
-  "UseConfig" true
-  "UseDevicesFile" true
   "Secret" (list
     (dict
       "Name" "ihd-secret"
