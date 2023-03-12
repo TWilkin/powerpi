@@ -1,34 +1,15 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: energy-monitor
-  {{- include "powerpi.labels" . }}
-spec:
-  selector:
-    matchLabels:
-    {{- include "powerpi.selector" . | indent 4 }}
-  template:
-    metadata:
-    {{- include "powerpi.labels" . | indent 4 }}
-    spec:
-      containers:
-      - name: energy-monitor
-        image: twilkin/powerpi-energy-monitor:{{ .Chart.AppVersion }}
-        env:
-        - name: IHD_SECRET_FILE
-          value: /var/run/secrets/powerpi_ihd/ihd
-        resources:
-          requests:
-            cpu: 50m
-            memory: 100Mi
-          limits:
-            cpu: 1
-            memory: 200Mi
-        volumeMounts:
-        - name: ihd-secret
-          mountPath: /var/run/secrets/powerpi_ihd
-          readOnly: true
-      volumes:
-      - name: ihd-secret
-        secret:
-          secretName: ihd-secret
+{{$data := dict
+  "UseConfig" true
+  "UseDevicesFile" true
+  "Secret" (list
+    (dict
+      "Name" "ihd-secret"
+      "Env" (list
+        (dict
+          "Name" "IHD_SECRET_FILE"
+        )
+      )
+    )
+  )
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

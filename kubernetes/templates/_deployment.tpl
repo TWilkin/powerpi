@@ -4,6 +4,7 @@
 {{- $hasVolumeClaim := eq (empty .Params.PersistentVolumeClaim) false }}
 {{- $hasVolumeClaimEnv := and $hasVolumeClaim (eq (empty .Params.PersistentVolumeClaim.EnvName) false) }}
 {{- $hasConfig := eq (empty .Params.Config) false }}
+{{- $hasSecret := eq (empty .Params.Secret) false }}
 apiVersion: apps/v1
 kind: {{ .Params.Kind | default "Deployment" }}
 metadata:
@@ -43,12 +44,24 @@ spec:
         {{- end }}
         {{- end }}
 
-        {{- if or (eq (empty .Params.Env) false) (eq .Params.UseConfig true) $hasVolumeClaimEnv }}
+        {{- if or (eq (empty .Params.Env) false) .Params.UseConfig $hasVolumeClaimEnv $hasSecret }}
         env:
         {{- if $hasVolumeClaimEnv }}
         - name: {{ .Params.PersistentVolumeClaim.EnvName }}
           value: {{ .Params.PersistentVolumeClaim.EnvValue }}
         {{- end }}
+
+        {{- if $hasSecret }}
+        {{- range $element := .Params.Secret }}
+        {{- if eq (empty $element.Env) false }}
+        {{- range $env := $element.Env }}
+        - name: {{ $env.Name }}
+          value: {{ $env.Value | default (printf "/var/run/secrets/%s" $element.Name) }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+
         {{- if eq .Params.UseConfig true }}
         {{- include "powerpi.config.env" . | indent 6 }}
         {{- end }}
@@ -58,6 +71,7 @@ spec:
         {{- if eq .Params.UseEventsFile true }}
         {{- include "powerpi.config.env.events" . | indent 6 }}
         {{- end }}
+        
         {{- range $element := .Params.Env }}
         - name: {{ $element.Name }}
           value: {{ $element.Value }}
@@ -79,14 +93,14 @@ spec:
             {{ $element.Name }}: {{ $element.Value }}
             {{- end }}
 
-        {{- if or (eq (empty .Params.VolumeMounts) false) (eq $config true) (eq $hasVolumeClaim true) (eq $hasConfig true) }}
+        {{- if or (eq (empty .Params.VolumeMounts) false) $config $hasVolumeClaim $hasConfig $hasSecret }}
         volumeMounts:
-        {{- if eq $hasVolumeClaim true }}
+        {{- if $hasVolumeClaim }}
         - name: {{ .Params.PersistentVolumeClaim.Name }}
           mountPath: {{ .Params.PersistentVolumeClaim.Path }}
         {{- end }}
 
-        {{- if eq $hasConfig true }}
+        {{- if $hasConfig }}
         {{- range $element := .Params.Config }}
         - name: {{ $element.Name }}
           mountPath: {{ $element.Path }}
@@ -97,22 +111,38 @@ spec:
         {{- end }}
         {{- end }}
 
+        {{- if $hasSecret }}
+        {{- range $element := .Params.Secret }}
+        - name: {{ $element.Name }}
+          mountPath: {{ printf "/var/run/secrets/%s" $element.Name }}
+          readOnly: true
+        {{- end }}
+        {{- end }}
+
         {{- include "powerpi.config.volumeMounts" . | indent 6 }}
         {{- end }}
 
-      {{- if or (eq (empty .Params.Volumes) false) (eq $config true) (eq $hasVolumeClaim true) (eq $hasConfig true) }}
+      {{- if or (eq (empty .Params.Volumes) false) $config $hasVolumeClaim $hasConfig $hasSecret }}
       volumes:
-      {{- if eq $hasVolumeClaim true }}
+      {{- if $hasVolumeClaim }}
       - name: {{ .Params.PersistentVolumeClaim.Name }}
         persistentVolumeClaim:
           claimName: {{ .Params.PersistentVolumeClaim.Claim }}
       {{- end }}
 
-      {{- if eq $hasConfig true }}
+      {{- if $hasConfig }}
       {{- range $element := .Params.Config }}
       - name: {{ $element.Name }}
         configMap:
           name: {{ $element.Name }}
+      {{- end }}
+      {{- end }}
+
+      {{- if $hasSecret }}
+      {{- range $element := .Params.Secret }}
+      - name: {{ $element.Name }}
+        secret:
+          secretName: {{ $element.Name }}
       {{- end }}
       {{- end }}
 
