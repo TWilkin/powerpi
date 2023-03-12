@@ -1,6 +1,7 @@
 {{- define "powerpi.deployment" }}
 {{- $name := .Params.Name | default .Chart.Name }}
 {{- $config := and .Params.UseConfig (not .Values.global.config) }}
+{{- $hasVolumeClaim := eq (empty .Params.PersistentVolumeClaim) false }}
 apiVersion: apps/v1
 kind: {{ .Params.Kind | default "Deployment" }}
 metadata:
@@ -30,8 +31,12 @@ spec:
           containerPort: {{ $element.Port }}
         {{- end }}
         {{- end }}
-        {{- if or (eq (empty .Params.Env) false) (eq .Params.UseConfig true) }}
+        {{- if or (eq (empty .Params.Env) false) (eq .Params.UseConfig true) (eq $hasVolumeClaim true)}}
         env:
+        {{- if eq $hasVolumeClaim true }}
+        - name: {{ .Params.PersistentVolumeClaim.EnvName }}
+          value: {{ .Params.PersistentVolumeClaim.EnvValue }}
+        {{- end }}
         {{- if eq .Params.UseConfig true }}
         {{- include "powerpi.config.env" . | indent 6 }}
         {{- end }}
@@ -59,12 +64,21 @@ spec:
             {{- range $element := .Params.Resources }}
             {{ $element.Name }}: {{ $element.Value }}
             {{- end }}
-        {{- if or (eq (empty .Params.VolumeMounts) false) (eq $config true) }}
+        {{- if or (eq (empty .Params.VolumeMounts) false) (eq $config true) (eq $hasVolumeClaim true) }}
         volumeMounts:
+        {{- if eq $hasVolumeClaim true }}
+        - name: {{ .Params.PersistentVolumeClaim.Name }}
+          mountPath: {{ .Params.PersistentVolumeClaim.Path }}
+        {{- end }}
         {{- include "powerpi.config.volumeMounts" . | indent 6 }}
         {{- end }}
-      {{- if or (eq (empty .Params.Volumes) false) (eq $config true) }}
+      {{- if or (eq (empty .Params.Volumes) false) (eq $config true) (eq $hasVolumeClaim true) }}
       volumes:
+      {{- if eq $hasVolumeClaim true }}
+      - name: {{ .Params.PersistentVolumeClaim.Name }}
+        persistentVolumeClaim:
+          claimName: {{ .Params.PersistentVolumeClaim.Claim }}
+      {{- end }}
       {{- include "powerpi.config.volumes" . | indent 4 }}
       {{- end }}
 {{- end }}

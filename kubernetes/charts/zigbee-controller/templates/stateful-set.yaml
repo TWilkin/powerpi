@@ -1,40 +1,27 @@
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: zigbee-controller
-  {{- include "powerpi.labels" . }}
-spec:
-  selector:
-    matchLabels:
-    {{- include "powerpi.selector" . | indent 4 }}
-  template:
-    metadata:
-    {{- include "powerpi.labels" . | indent 4 }}
-    spec:
-      containers:
-      - name: zigbee-controller
-        image: twilkin/powerpi-zigbee-controller:{{ .Chart.AppVersion }}
-        env:
-        {{- include "powerpi.config.env.controller" . | indent 6 }}
-        - name: DEVICE
-          value: /dev/ttyACM0
-        - name: DATABASE_PATH
-          value: /var/data/zigbee.db
-        resources:
-          requests:
-            cpu: 50m
-            memory: 50Mi
-            smarter-devices/ttyACM0: 1
-          limits:
-            cpu: 1
-            memory: 100Mi
-            smarter-devices/ttyACM0: 1
-        volumeMounts:
-        {{- include "powerpi.config.volumeMounts" . | indent 6 }}
-        - name: zigbee-data
-          mountPath: /var/data
-      volumes:
-      {{- include "powerpi.config.volumes" . | indent 4 }}
-      - name: zigbee-data
-        persistentVolumeClaim:
-          claimName: zigbee-controller-volume-claim
+{{- $data := dict
+  "Kind" "StatefulSet"
+  "Env" (list
+    (dict
+      "Name" "DEVICE_FATAL"
+      "Value" (true | quote)
+    )
+    (dict
+      "Name" "DEVICE"
+      "Value" "/dev/ttyACM0"
+    )
+  )
+  "Resources" (list
+    (dict
+      "Name" "smarter-devices/ttyACM0"
+      "Value" 1
+    )
+  )
+  "PersistentVolumeClaim" (dict
+    "Name" "zigbee-data"
+    "Path" "/var/data"
+    "Claim" "zigbee-controller-volume-claim"
+    "EnvName" "DATABASE_PATH"
+    "EnvValue" "/var/data/zigbee.db"
+  )
+}}
+{{- include "powerpi.controller" (merge (dict "Params" $data) . )}}
