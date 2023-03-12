@@ -1,9 +1,10 @@
-{{$data := dict
+{{- $data := dict
   "UseConfig" true
   "UseDevicesFile" true
   "Secret" (list
     (dict
       "Name" "ihd-secret"
+      "SubPath" "secret"
       "Env" (list
         (dict
           "Name" "IHD_SECRET_FILE"

@@ -58,7 +58,7 @@ global:
 
 clacks-config:
   # the path to the config files in the GitHub repo
-  path: "docker/config"
+  path: "kubernetes/config"
 
 energenie-controller:
   # the Energenie device type to use, either ENER314-RT or ENER314

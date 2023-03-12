@@ -1,57 +1,42 @@
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: database
-  {{- include "powerpi.labels" . }}
-spec:
-  serviceName: database
-  selector:
-    matchLabels:
-    {{- include "powerpi.selector" . | indent 4 }}
-  template:
-    metadata:
-    {{- include "powerpi.labels" . | indent 4 }}
-    spec:
-      nodeSelector:
-        powerpi-storage: "true"
-      containers:
-      - name: database
-        image: postgres:{{ .Chart.AppVersion }}
-        ports:
-        - name: postgres
-          containerPort: 5432          
-        env:
-        - name: PGDATA
-          value: /var/lib/postgresql/data/pgdata
-        - name: POSTGRES_DB
-          valueFrom:
-            secretKeyRef:
-              name: database-secret
-              key: schema
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: database-secret
-              key: username
-        - name: POSTGRES_PASSWORD_FILE
-          value: /var/run/secrets/powerpi_database/password
-        resources:
-          requests:
-            cpu: 50m
-            memory: 50Mi
-          limits:
-            cpu: 1
-            memory: 200Mi
-        volumeMounts:
-        - name: database-data
-          mountPath: /var/lib/postgresql/data/pgdata
-        - name: database-secret
-          mountPath: /var/run/secrets/powerpi_database
-          readOnly: true
-      volumes:
-      - name: database-data
-        persistentVolumeClaim:
-          claimName: database-volume-claim
-      - name: database-secret
-        secret:
-          secretName: database-secret
+{{- $data := dict
+  "Kind" "StatefulSet"
+  "Image" "postgres"
+  "PriorityClassName" "powerpi-critical"
+  "RequestMemory" "50Mi"
+  "Ports" (list (dict
+    "Name" "postgres"
+    "Port" 5432
+  ))
+  "NodeSelector" (list
+    (dict
+      "Name" "powerpi-storage"
+      "Value" "true"
+    )
+  )
+  "PersistentVolumeClaim" (dict
+    "Name" "database-data"
+    "Path" "/var/lib/postgresql/data/pgdata"
+    "Claim" "database-volume-claim"
+    "EnvName" "PGDATA"
+  )
+  "Secret" (list
+    (dict
+      "Name" "database-secret"
+      "SubPath" "password"
+      "Env" (list
+        (dict
+          "Name" "POSTGRES_DB"
+          "Key" "schema"
+        )
+        (dict
+          "Name" "POSTGRES_USER"
+          "Key" "username"
+        )
+        (dict
+          "Name" "POSTGRES_PASSWORD_FILE"
+        )
+      )
+    )
+  )
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

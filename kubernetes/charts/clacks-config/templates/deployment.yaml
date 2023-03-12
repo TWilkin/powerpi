@@ -1,42 +1,24 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: clacks-config
-  {{- include "powerpi.labels" . }}
-spec:
-  selector:
-    matchLabels:
-    {{- include "powerpi.selector" . | indent 4 }}
-  template:
-    metadata:
-    {{- include "powerpi.labels" . | indent 4 }}
-    spec:
-      priorityClassName: powerpi-critical
-      containers:
-      - name: clacks-config
-        image: twilkin/powerpi-clacks-config:{{ .Chart.AppVersion }}
-        env:
-        - name: FILE_PATH
-          value: {{ .Values.path }}
-        - name: GITHUB_USER
-          valueFrom:
-            secretKeyRef:
-              name: github-secret
-              key: username
-        - name: GITHUB_SECRET_FILE
-          value: /var/run/secrets/powerpi_github/password
-        resources:
-          requests:
-            cpu: 50m
-            memory: 100Mi
-          limits:
-            cpu: 1
-            memory: 200Mi
-        volumeMounts:
-        - name: github-secret
-          mountPath: /var/run/secrets/powerpi_github
-          readOnly: true
-      volumes:
-      - name: github-secret
-        secret:
-          secretName: github-secret
+{{- $data := dict
+  "PriorityClassName" "powerpi-critical"
+  "Secret" (list
+    (dict
+      "Name" "github-secret"
+      "Env" (list
+        (dict
+          "Name" "GITHUB_SECRET_FILE"
+        )
+        (dict
+          "Name" "GITHUB_USER"
+          "Key" "username"
+        )
+      )
+    )
+  )
+  "Env" (list
+    (dict
+      "Name" "FILE_PATH"
+      "Value" .Values.path
+    )
+  )
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

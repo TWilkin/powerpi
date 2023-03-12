@@ -1,6 +1,7 @@
 {{- $secrets := list
   (dict
     "Name" "google-auth-secret"
+    "SubPath" "secret"
     "Env" (list
       (dict
         "Name" "GOOGLE_SECRET_FILE"
@@ -13,6 +14,7 @@
   )
   (dict
     "Name" "oauth-secret"
+    "SubPath" "secret"
     "Env" (list
       (dict
         "Name" "OAUTH_SECRET_FILE"
@@ -25,6 +27,7 @@
   )
   (dict
     "Name" "jwt-secret"
+    "SubPath" "secret"
     "Env" (list
       (dict
         "Name" "JWT_SECRET_FILE"
@@ -33,6 +36,7 @@
   )
   (dict
     "Name" "session-secret"
+    "SubPath" "secret"
     "Env" (list
       (dict
         "Name" "SESSION_SECRET_FILE"
@@ -45,6 +49,7 @@
 {{- $secrets = append $secrets
   (dict
     "Name" "database-secret"
+    "SubPath" "password"
     "Env" (list
       (dict
         "Name" "DB_HOST"
