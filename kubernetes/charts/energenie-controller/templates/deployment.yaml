@@ -1,4 +1,10 @@
 {{- $data := dict
+  "NodeSelector" (list
+    (dict
+      "Name" "powerpi-energenie"
+      "Value" "true"
+    )
+  )
   "Env" (list
     (dict
       "Name" "DEVICE_FATAL"

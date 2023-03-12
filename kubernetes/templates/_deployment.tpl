@@ -2,7 +2,7 @@
 {{- $name := .Params.Name | default .Chart.Name }}
 {{- $config := and .Params.UseConfig (not .Values.global.config) }}
 apiVersion: apps/v1
-kind: Deployment
+kind: {{ .Params.Kind | default "Deployment" }}
 metadata:
   name: {{ $name }}
   {{- include "powerpi.labels" . }}
@@ -14,6 +14,12 @@ spec:
     metadata:
     {{- include "powerpi.labels" . | indent 4 }}
     spec:
+      {{- if eq (empty .Params.NodeSelector) false }}
+      nodeSelector:
+      {{- range $element := .Params.NodeSelector }}
+        {{ $element.Name }}: {{ $element.Value }}
+      {{- end }}
+      {{- end }}
       containers:
       - name: {{ $name }}
         image: {{ .Values.image | default .Params.Image | default (printf "twilkin/powerpi-%s" $name) }}:{{ .Values.imageTag | default .Chart.AppVersion }}
