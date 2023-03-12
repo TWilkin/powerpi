@@ -1,107 +1,92 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: deep-thought
-  {{- include "powerpi.labels" $ }}
-spec:
-  selector:
-    matchLabels:
-    {{- include "powerpi.selector" . | indent 4 }}
-  template:
-    metadata:
-    {{- include "powerpi.labels" . | indent 4 }}
-    spec:
-      containers:
-      - name: deep-thought
-        image: twilkin/powerpi-deep-thought:{{ .Chart.AppVersion }}
-        ports:
-        - name: http
-          containerPort: 3000
-        env:
-        {{- include "powerpi.config.env" . | indent 6 }}
-        {{- include "powerpi.config.env.devices" . | indent 6 }}
-        {{- include "powerpi.config.env.floorplan" . | indent 6 }}
-        {{- include "powerpi.config.env.users" . | indent 6 }}
-        - name: EXTERNAL_HOST_NAME
-          value: {{ .Values.global.externalHostName }}
-        - name: EXTERNAL_PORT
-          value: {{ .Values.global.externalPort | quote }}
-        - name: GOOGLE_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: google-auth-secret
-              key: client_id
-        - name: GOOGLE_SECRET_FILE
-          value: /var/run/secrets/powerpi_google_auth/secret
-        - name: OAUTH_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: oauth-secret
-              key: client_id
-        - name: OAUTH_SECRET_FILE
-          value: /var/run/secrets/powerpi_oauth/secret
-        - name: JWT_SECRET_FILE
-          value: /var/run/secrets/powerpi_jwt/secret
-        - name: SESSION_SECRET_FILE
-          value: /var/run/secrets/powerpi_session/secret
-        {{- if eq .Values.global.persistence true }}
-        - name: DB_HOST
-          value: database
-        - name: DB_SCHEMA
-          valueFrom:
-            secretKeyRef:
-              name: database-secret
-              key: schema
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: database-secret
-              key: username
-        - name: DB_SECRET_FILE
-          value: /var/run/secrets/powerpi_database/password
-        {{- end }}
-        resources:
-          requests:
-            cpu: 50m
-            memory: 150Mi
-          limits:
-            cpu: 1
-            memory: 300Mi
-        volumeMounts:
-        {{- include "powerpi.config.volumeMounts" . | indent 6 }}
-        - name: google-auth-secret
-          mountPath: /var/run/secrets/powerpi_google_auth
-          readOnly: true
-        - name: oauth-secret
-          mountPath: /var/run/secrets/powerpi_oauth
-          readOnly: true
-        - name: jwt-secret
-          mountPath: /var/run/secrets/powerpi_jwt
-          readOnly: true
-        - name: session-secret
-          mountPath: /var/run/secrets/powerpi_session
-          readOnly: true
-        {{- if eq .Values.global.persistence true }}
-        - name: database-secret
-          mountPath: /var/run/secrets/powerpi_database
-          readOnly: true
-        {{- end }}
-      volumes:
-      {{- include "powerpi.config.volumes" . | indent 4 }}
-      - name: google-auth-secret
-        secret:
-          secretName: google-auth-secret
-      - name: oauth-secret
-        secret:
-          secretName: oauth-secret
-      - name: jwt-secret
-        secret:
-          secretName: jwt-secret
-      - name: session-secret
-        secret:
-          secretName: session-secret
-      {{- if eq .Values.global.persistence true }}
-      - name: database-secret
-        secret:
-          secretName: database-secret
-      {{- end }}
+{{- $secrets := list
+  (dict
+    "Name" "google-auth-secret"
+    "Env" (list
+      (dict
+        "Name" "GOOGLE_SECRET_FILE"
+      )
+      (dict
+        "Name" "GOOGLE_CLIENT_ID"
+        "Key" "client_id"
+      )
+    )
+  )
+  (dict
+    "Name" "oauth-secret"
+    "Env" (list
+      (dict
+        "Name" "OAUTH_SECRET_FILE"
+      )
+      (dict
+        "Name" "OAUTH_CLIENT_ID"
+        "Key" "client_id"
+      )
+    )
+  )
+  (dict
+    "Name" "jwt-secret"
+    "Env" (list
+      (dict
+        "Name" "JWT_SECRET_FILE"
+      )
+    )
+  )
+  (dict
+    "Name" "session-secret"
+    "Env" (list
+      (dict
+        "Name" "SESSION_SECRET_FILE"
+      )
+    )
+  )
+}}
+
+{{- if .Values.global.persistence }}
+{{- $secrets = append $secrets
+  (dict
+    "Name" "database-secret"
+    "Env" (list
+      (dict
+        "Name" "DB_HOST"
+        "Value" "database"
+      )
+      (dict
+        "Name" "DB_SCHEMA"
+        "Key" "database"
+      )
+      (dict
+        "Name" "DB_USER"
+        "Key" "username"
+      )
+      (dict
+        "Name" "DB_SECRET_FILE"
+      )
+    )
+  )
+}}
+{{- end }}
+
+{{- $data := dict
+  "Ports" (list (dict
+    "Name" "http"
+    "Port" 3000
+  ))
+  "UseConfig" true
+  "UseDevicesFile" true
+  "UseFloorplanFile" true
+  "UseUsersFile" true
+  "RequestMemory" "150Mi"
+  "LimitMemory" "300Mi"
+  "Env" (list
+    (dict
+      "Name" "EXTERNAL_HOST_NAME"
+      "Value" .Values.global.externalHostName
+    )
+    (dict
+      "Name" "EXTERNAL_PORT"
+      "Value" (.Values.global.externalPort | quote)
+    )
+  )
+  "Secret" $secrets
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

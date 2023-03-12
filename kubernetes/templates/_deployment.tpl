@@ -56,7 +56,14 @@ spec:
         {{- if eq (empty $element.Env) false }}
         {{- range $env := $element.Env }}
         - name: {{ $env.Name }}
+          {{- if eq (empty $env.Key) false }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $element.Name }}
+              key: {{ $env.Key }}
+          {{- else }}
           value: {{ $env.Value | default (printf "/var/run/secrets/%s" $element.Name) }}
+          {{- end }}
         {{- end }}
         {{- end }}
         {{- end }}
@@ -70,6 +77,12 @@ spec:
         {{- end }}
         {{- if eq .Params.UseEventsFile true }}
         {{- include "powerpi.config.env.events" . | indent 6 }}
+        {{- end }}
+        {{- if eq .Params.UseFloorplanFile true }}
+        {{- include "powerpi.config.env.floorplan" . | indent 6 }}
+        {{- end }}
+        {{- if eq .Params.UseUsersFile true }}
+        {{- include "powerpi.config.env.users" . | indent 6 }}
         {{- end }}
         
         {{- range $element := .Params.Env }}
