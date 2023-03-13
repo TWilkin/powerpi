@@ -92,7 +92,7 @@ Finally once the plugins are enabled, labels added and the secrets have been cre
 cd kubernetes
 
 # Deploy your stack
-microk8s helm install --namespace powerpi --create-namespace -f __OVERRIDE__ powerpi .
+microk8s helm upgrade --install --namespace powerpi --create-namespace -f __OVERRIDE__ powerpi .
 ```
 
 ## Updating
@@ -104,5 +104,5 @@ When changes have been made to PowerPi the images will be updated on [Docker Hub
 cd kubernetes
 
 # Update your stack
-microk8s helm upgrade --namespace powerpi -f __OVERRIDE__ powerpi .
+microk8s helm upgrade --install --namespace powerpi -f __OVERRIDE__ powerpi .
 ```

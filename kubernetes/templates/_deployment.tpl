@@ -21,9 +21,6 @@ spec:
     matchLabels:
     {{- include "powerpi.selector" . | indent 4 }}
 
-  updateStrategy:
-    type: RollingUpdate
-
   template:
     metadata:
     {{- include "powerpi.labels" . | indent 4 }}
@@ -43,7 +40,7 @@ spec:
         {{- end }}
 
         {{- if $config }}
-        # this isn't ideal as it'll always restart but helm won't access that template from the parent
+        # this isn't ideal as it'll always restart but helm can't access that config-map template from the parent
         checksum/config: {{ randAlphaNum 5 | quote }}
         {{- end }}
       {{- end }}
@@ -76,11 +73,6 @@ spec:
         # if we're using another image the tag may change
         imagePullPolicy: Always
         {{- end }}
-
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
 
         {{- if eq (empty .Params.Ports) false }}
         ports:
