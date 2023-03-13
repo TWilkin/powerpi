@@ -71,22 +71,28 @@ spec:
 
         {{- if $config }}
         {{- if eq .Params.UseConfig true }}
-        {{- include "powerpi.config.env" . | indent 6 }}
+        - name: USE_CONFIG_FILE
+          value: "true"
         {{- end }}
-        {{- if eq .Params.UseDevicesFile true }}
-        {{- include "powerpi.config.env.devices" . | indent 6 }}
+        {{- if .Params.UseDevicesFile }}
+        - name: DEVICES_FILE
+          value: /var/run/config/powerpi_config/devices.json
         {{- end }}
-        {{- if eq .Params.UseEventsFile true }}
-        {{- include "powerpi.config.env.events" . | indent 6 }}
+        {{- if .Params.UseEventsFile }}
+        - name: EVENTS_FILE
+          value: /var/run/config/powerpi_config/events.json
         {{- end }}
-        {{- if eq .Params.UseFloorplanFile true }}
-        {{- include "powerpi.config.env.floorplan" . | indent 6 }}
+        {{- if .Params.UseFloorplanFile }}
+        - name: FLOORPLAN_FILE
+          value: /var/run/config/powerpi_config/floorplan.json
         {{- end }}
-        {{- if eq .Params.UseSchedulesFile true }}
-        {{- include "powerpi.config.env.schedules" . | indent 6 }}
+        {{- if .Params.UseSchedulesFile }}
+        - name: SCHEDULES_FILE
+          value: /var/run/config/powerpi_config/schedules.json
         {{- end }}
-        {{- if eq .Params.UseUsersFile true }}
-        {{- include "powerpi.config.env.users" . | indent 6 }}
+        {{- if .Params.UseUsersFile }}
+        - name: USERS_FILE
+          value: /var/run/config/powerpi_config/users.json
         {{- end }}
         {{- end }}
         
@@ -138,7 +144,9 @@ spec:
         {{- end }}
 
         {{- if $config }}
-        {{- include "powerpi.config.volumeMounts" . | indent 6 }}
+        - name: config
+          mountPath: /var/run/config/powerpi_config
+          readOnly: true
         {{- end }}
 
         {{- end }}
@@ -168,7 +176,9 @@ spec:
       {{- end }}
 
       {{- if $config }}
-      {{- include "powerpi.config.volumes" . | indent 4 }}
+      - name: config
+        configMap:
+          name: config
       {{- end }}
 
       {{- end }}

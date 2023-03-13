@@ -18,5 +18,5 @@
   ) 
   .Params
 ) }}
-{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . ) }}
 {{- end }}
