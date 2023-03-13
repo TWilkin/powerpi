@@ -5,23 +5,37 @@
 {{- $hasVolumeClaimEnv := and $hasVolumeClaim (eq (empty .Params.PersistentVolumeClaim.EnvName) false) }}
 {{- $hasConfig := eq (empty .Params.Config) false }}
 {{- $hasSecret := eq (empty .Params.Secret) false }}
+{{- $hasAnnotations := eq (empty .Params.Annotations) false }}
+
 apiVersion: apps/v1
 kind: {{ .Params.Kind | default "Deployment" }}
 metadata:
   name: {{ $name }}
   {{- include "powerpi.labels" . }}
+    {{- if eq (empty .Params.Role) false }}
+    role: {{ .Params.Role }}
+    {{- end }}
 
 spec:
   selector:
     matchLabels:
     {{- include "powerpi.selector" . | indent 4 }}
 
+  updateStrategy:
+    type: RollingUpdate
+
   template:
     metadata:
     {{- include "powerpi.labels" . | indent 4 }}
 
-      {{- if or $config $hasConfig }}
+      {{- if or $hasAnnotations $config $hasConfig }}
       annotations:
+        {{- if $hasAnnotations }}
+        {{- range $element := .Params.Annotations }}
+        {{ $element.Name }}: {{ $element.Value | quote }}
+        {{- end }}
+        {{- end }}
+
         {{- if $hasConfig }}
         {{- range $element := .Params.Config }}
         checksum/{{ $element.Name }}: {{ include (print $.Template.BasePath "/config-map.yaml") $ | sha256sum }}
@@ -46,9 +60,22 @@ spec:
       priorityClassName: {{ .Params.PriorityClassName }}
       {{- end }}
 
+      {{- if .Params.HostNetwork }}
+      hostname: {{ $name }}
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- end }}
+
       containers:
       - name: {{ $name }}
-        image: {{ .Values.image | default .Params.Image | default (printf "twilkin/powerpi-%s" $name) }}:{{ .Values.imageTag | default .Chart.AppVersion }}
+
+        image: {{ .Values.image | default .Params.Image | default (printf "twilkin/powerpi-%s" $name) }}:{{ .Values.imageTag | default .Params.ImageTag | default .Chart.AppVersion }}
+        imagePullPolicy: IfNotPresent
+
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
 
         {{- if eq (empty .Params.Ports) false }}
         ports:
@@ -131,8 +158,13 @@ spec:
             {{ $element.Name }}: {{ $element.Value }}
             {{- end }}
 
-        {{- if or (eq (empty .Params.VolumeMounts) false) $config $hasVolumeClaim $hasConfig $hasSecret }}
+        {{- if or (eq (empty .Params.Volumes) false) $config $hasVolumeClaim $hasConfig $hasSecret }}
         volumeMounts:
+        {{- range $element := .Params.Volumes }}
+        - name: {{ $element.Name }}
+          mountPath: {{ $element.Path }}
+        {{- end }}
+
         {{- if $hasVolumeClaim }}
         - name: {{ .Params.PersistentVolumeClaim.Name }}
           mountPath: {{ .Params.PersistentVolumeClaim.Path }}
@@ -167,6 +199,12 @@ spec:
 
       {{- if or (eq (empty .Params.Volumes) false) $config $hasVolumeClaim $hasConfig $hasSecret }}
       volumes:
+      {{- range $element := .Params.Volumes }}
+      - name: {{ $element.Name }}
+        hostPath:
+          path: {{ $element.Path }}
+      {{- end }}
+
       {{- if $hasVolumeClaim }}
       - name: {{ .Params.PersistentVolumeClaim.Name }}
         persistentVolumeClaim:
@@ -196,4 +234,6 @@ spec:
       {{- end }}
 
       {{- end }}
+
+      terminationGracePeriodSeconds: 30
 {{- end }}

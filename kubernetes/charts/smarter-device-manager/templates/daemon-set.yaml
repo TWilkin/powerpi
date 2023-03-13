@@ -1,65 +1,42 @@
 {{- if or (eq .Values.global.energenie true) (eq .Values.global.pijuice true) (eq .Values.global.pwm true) (eq .Values.global.zigbee true) }}
-apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  name: smarter-device-manager
-  labels:
-    role: agent
-    {{- include "powerpi.selector" . | indent 2 }}
-spec:
-  selector:
-    matchLabels:
-    {{- include "powerpi.selector" . | indent 4 }}
-  updateStrategy:
-    type: RollingUpdate
-  template:
-    metadata:
-      {{- include "powerpi.labels" . | indent 4 }}
-      annotations:
-        node.kubernetes.io/bootstrap-checkpoint: "true"
-    spec:
-      priorityClassName: powerpi-critical
-      hostname: smarter-device-management
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
-      containers:
-      - name: smarter-device-manager
-        image: registry.gitlab.com/arm-research/smarter/smarter-device-manager:v{{ .Chart.AppVersion }}
-        imagePullPolicy: IfNotPresent
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ["ALL"]
-        resources:
-          limits:
-            cpu: 100m
-            memory: 15Mi
-          requests:
-            cpu: 10m
-            memory: 15Mi
-        volumeMounts:
-        - name: device-plugin
-          mountPath: /var/lib/kubelet/device-plugins
-        - name: dev-dir
-          mountPath: /dev
-        - name: config
-          mountPath: /root/config/conf.yaml
-          subPath: device-config.yaml
-          readOnly: true
-        - name: sys-dir
-          mountPath: /sys
-      volumes:
-      - name: device-plugin
-        hostPath:
-          path: /var/lib/kubelet/device-plugins
-      - name: dev-dir
-        hostPath:
-          path: /dev
-      - name: sys-dir
-        hostPath:
-          path: /sys
-      - name: config
-        configMap:
-          name: smarter-device-manager-config
-      terminationGracePeriodSeconds: 30
+{{- $data := dict
+  "Kind" "DaemonSet"
+  "Image" "registry.gitlab.com/arm-research/smarter/smarter-device-manager"
+  "ImageTag" (print "v" (.Values.imageTag | default .Chart.AppVersion))
+  "Role" "agent"
+  "PriorityClassName" "powerpi-critical"
+  "HostNetwork" true
+  "RequestCPU" "10m"
+  "RequestMemory" "15Mi"
+  "LimitCPU" "100m"
+  "LimitMemory" "15Mi"
+  "Annotations" (list
+    (dict
+      "Name" "node.kubernetes.io/bootstrap-checkpoint"
+      "Value" "true"
+    )
+  )
+  "Config" (list
+    (dict
+      "Name" "smarter-device-manager-config"
+      "Path" "/root/config/conf.yaml"
+      "SubPath" "device-config.yaml"
+    )
+  )
+  "Volumes" (list
+    (dict
+      "Name" "device-plugin"
+      "Path" "/var/lib/kubelet/device-plugins"
+    )
+    (dict
+      "Name" "dev-dir"
+      "Path" "/dev"
+    )
+    (dict
+      "Name" "sys-dir"
+      "Path" "/sys"
+    )
+  )
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}
 {{- end }}
