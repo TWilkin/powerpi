@@ -20,6 +20,20 @@ spec:
     metadata:
     {{- include "powerpi.labels" . | indent 4 }}
 
+      {{- if or $config $hasConfig }}
+      annotations:
+        {{- if $hasConfig }}
+        {{- range $element := .Params.Config }}
+        checksum/{{ $element.Name }}: {{ include (print $.Template.BasePath "/config-map.yaml") $ | sha256sum }}
+        {{- end }}
+        {{- end }}
+
+        {{- if $config }}
+        # this isn't ideal as it'll always restart but helm won't access that template from the parent
+        checksum/config: {{ randAlphaNum 5 | quote }}
+        {{- end }}
+      {{- end }}
+
     spec:
       {{- if eq (empty .Params.NodeSelector) false }}
       nodeSelector:

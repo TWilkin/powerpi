@@ -5,10 +5,5 @@ metadata:
   name: config
   {{- include "powerpi.labels" . }}
 data:
-  {{- $files := .Files }}
-  {{- range $path, $_ := .Files.Glob "config/**.json" }}
-  {{- $name := base $path }}
-  {{ $name }}: |-
-{{ $files.Get $path | indent 4 }}
-  {{- end }}
+{{ (.Files.Glob "config/*.json").AsConfig | indent 2 }}
 {{- end }}
