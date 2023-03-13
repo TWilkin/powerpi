@@ -159,7 +159,7 @@ spec:
         volumeMounts:
         {{- range $element := .Params.Volumes }}
         - name: {{ $element.Name }}
-          mountPath: {{ $element.Path }}
+          mountPath: {{ $element.MountPath | default $element.Path }}
         {{- end }}
 
         {{- if $hasVolumeClaim }}
@@ -199,7 +199,7 @@ spec:
       {{- range $element := .Params.Volumes }}
       - name: {{ $element.Name }}
         hostPath:
-          path: {{ $element.Path }}
+          path: {{ $element.HostPath | default $element.Path }}
       {{- end }}
 
       {{- if $hasVolumeClaim }}

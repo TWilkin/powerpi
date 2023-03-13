@@ -12,6 +12,13 @@
       "Value" "false"
     )
   )
+  "Volumes" (list
+    (dict
+      "Name" "node-hostname"
+      "HostPath" "/etc/hostname"
+      "MountPath" "/etc/nodehostname"
+    )
+  )
 }}
 {{- include "powerpi.controller" (merge (dict "Params" $data) . )}}
 

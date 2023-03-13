@@ -5,6 +5,7 @@
     "Env" (list
       (dict
         "Name" "GOOGLE_SECRET_FILE"
+        "SubPath" "secret"
       )
       (dict
         "Name" "GOOGLE_CLIENT_ID"
@@ -18,6 +19,7 @@
     "Env" (list
       (dict
         "Name" "OAUTH_SECRET_FILE"
+        "SubPath" "secret"
       )
       (dict
         "Name" "OAUTH_CLIENT_ID"
@@ -31,6 +33,7 @@
     "Env" (list
       (dict
         "Name" "JWT_SECRET_FILE"
+        "SubPath" "secret"
       )
     )
   )
@@ -40,6 +43,7 @@
     "Env" (list
       (dict
         "Name" "SESSION_SECRET_FILE"
+        "SubPath" "secret"
       )
     )
   )

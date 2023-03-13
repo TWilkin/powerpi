@@ -5,7 +5,7 @@ Your release is named "{{ .Release.Name }}":
 --- LABELS ---
 Remember to label your nodes that provide the following functionality:
 
-For the node hosting mosquitto {{- if eq .Values.global.persistence true }}or the database{{- end }}:
+For the node hosting mosquitto {{- if eq .Values.global.persistence true }} or the database{{- end }}:
     $ microk8s kubectl label node NODE_NAME powerpi-storage=true
 {{- if eq .Values.global.energenie true }}
 For the node hosting the Energenie ENER314-RT/ENER314:

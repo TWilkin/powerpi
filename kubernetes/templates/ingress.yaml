@@ -7,6 +7,7 @@ metadata:
     {{- if eq .Values.global.useSSL true }}
     cert-manager.io/issuer: letsencrypt
     {{- end }}
+    kubernetes.io/ingress.class: public
 spec:
   {{- if eq .Values.global.useSSL true }}
   tls:
