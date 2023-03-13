@@ -70,7 +70,12 @@ spec:
       - name: {{ $name }}
 
         image: {{ .Values.image | default .Params.Image | default (printf "twilkin/powerpi-%s" $name) }}:{{ .Values.imageTag | default .Params.ImageTag | default .Chart.AppVersion }}
+        {{- if and (empty .Values.image) (empty .Values.imageTag) }}
         imagePullPolicy: IfNotPresent
+        {{- else }}
+        # if we're using another image the tag may change
+        imagePullPolicy: Always
+        {{- end }}
 
         securityContext:
           allowPrivilegeEscalation: false
