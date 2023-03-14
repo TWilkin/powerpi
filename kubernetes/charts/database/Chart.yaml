@@ -3,4 +3,4 @@ name: database
 description: A Helm chart for deploying the Postgres database for PowerPi
 type: application
 version: 0.1.0
-appVersion: 13.0-alpine
+appVersion: 15.2-alpine3.17
