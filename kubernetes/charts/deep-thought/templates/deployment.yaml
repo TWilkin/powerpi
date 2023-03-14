@@ -93,7 +93,7 @@
     )
     (dict
       "Name" "EXTERNAL_PORT"
-      "Value" (.Values.global.externalPort | quote)
+      "Value" (ternary 443 80 .Values.global.useSSL | quote)
     )
   )
   "Secret" $secrets

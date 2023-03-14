@@ -8,9 +8,6 @@ global:
   # the external host name to use when requesting certificates and to configure for ingress
   externalHostName: example.com
 
-  # the external port to use for incoming traffic, can be 443 or 80
-  externalPort: 443
-
   # the email address to use for HTTPS certificate renewal
   certificateEmail: user@example.com
 
