@@ -3,7 +3,7 @@ component: powerpi
 
 global:
   # the environment to deploy for "production" or "dev"
-  env: dev
+  env: production
 
   # the external host name to use when requesting certificates and to configure for ingress
   externalHostName: example.com
@@ -13,6 +13,9 @@ global:
 
   # whether to use SSL or not
   useSSL: false
+
+  # whether PowerPi is deployed in a kubernetes cluster (true) or on a single node (false)
+  useCluster: false
 
   # whether to use FreeDNS or not
   freeDNS: false

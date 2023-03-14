@@ -1,10 +1,13 @@
-{{- $data := dict
-  "NodeSelector" (list
+{{- $nodeSelector := ternary (list
     (dict
       "Name" "powerpi-energenie"
       "Value" "true"
     )
-  )
+  ) (list) .Values.global.useCluster 
+}}
+
+{{- $data := dict
+  "NodeSelector" $nodeSelector
   "Env" (list
     (dict
       "Name" "DEVICE_FATAL"
@@ -22,4 +25,5 @@
     )
   )
 }}
+
 {{- include "powerpi.controller" (merge (dict "Params" $data) . )}}
