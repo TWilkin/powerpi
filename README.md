@@ -1,6 +1,6 @@
 # PowerPi
 
-Home automation microservice stack communicating via MQTT (using [mosquitto](https://mosquitto.org/)) built with Typescript, Python, Go and [NodeMCU](https://en.wikipedia.org/wiki/NodeMCU) C deployable with [Docker Swarm](https://docs.docker.com/engine/swarm/) on a [Raspberry Pi](https://www.raspberrypi.com/) cluster.
+Home automation microservice stack communicating via MQTT (using [mosquitto](https://mosquitto.org/)) built with Typescript, Python, Go and [NodeMCU](https://en.wikipedia.org/wiki/NodeMCU) C deployable with [Docker Swarm](https://docs.docker.com/engine/swarm/) or [microk8s Kubernetes](https://microk8s.io/) on a [Raspberry Pi](https://www.raspberrypi.com/) cluster.
 
 This project was devised to utilise open, reverse engineered or free home automation hardware and software together without the need for third-party hubs, cloud services or subscriptions wherever possible.
 
