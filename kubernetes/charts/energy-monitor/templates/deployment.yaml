@@ -5,7 +5,7 @@
       "Env" (list
         (dict
           "Name" "IHD_SECRET_FILE"
-          "SubPath" "secret"
+          "SubPath" "ihd"
         )
       )
     )
