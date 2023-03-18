@@ -1,0 +1,6 @@
+{{- $data := dict
+  "Type" "LoadBalancer"
+  "PortName" "mqtt"
+  "Port" 1883
+}}
+{{- include "powerpi.service" (merge (dict "Params" $data) . )}}

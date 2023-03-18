@@ -1,0 +1,4 @@
+{{- $data := dict
+  "Size" "100Mi"
+}}
+{{- include "powerpi.persistent-volume-claim" (merge (dict "Params" $data) . )}}

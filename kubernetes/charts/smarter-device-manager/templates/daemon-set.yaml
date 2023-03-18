@@ -1,0 +1,42 @@
+{{- if or (eq .Values.global.energenie true) (eq .Values.global.pijuice true) (eq .Values.global.pwm true) (eq .Values.global.zigbee true) }}
+{{- $data := dict
+  "Kind" "DaemonSet"
+  "Image" "registry.gitlab.com/arm-research/smarter/smarter-device-manager"
+  "ImageTag" (print "v" (.Values.imageTag | default .Chart.AppVersion))
+  "Role" "agent"
+  "PriorityClassName" "powerpi-critical"
+  "HostNetwork" true
+  "RequestCPU" "10m"
+  "RequestMemory" "15Mi"
+  "LimitCPU" "100m"
+  "LimitMemory" "15Mi"
+  "Annotations" (list
+    (dict
+      "Name" "node.kubernetes.io/bootstrap-checkpoint"
+      "Value" "true"
+    )
+  )
+  "Config" (list
+    (dict
+      "Name" "smarter-device-manager-config"
+      "Path" "/root/config/conf.yaml"
+      "SubPath" "device-config.yaml"
+    )
+  )
+  "Volumes" (list
+    (dict
+      "Name" "device-plugin"
+      "Path" "/var/lib/kubelet/device-plugins"
+    )
+    (dict
+      "Name" "dev-dir"
+      "Path" "/dev"
+    )
+    (dict
+      "Name" "sys-dir"
+      "Path" "/sys"
+    )
+  )
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}
+{{- end }}

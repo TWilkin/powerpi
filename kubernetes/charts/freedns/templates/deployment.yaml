@@ -1,0 +1,18 @@
+{{- $data := dict
+  "Secret" (list
+    (dict
+      "Name" "freedns-secret"
+      "Env" (list
+        (dict
+          "Name" "FREEDNS_USER"
+          "Key" "username"
+        )
+        (dict
+          "Name" "FREEDNS_PASSWORD"
+          "SubPath" "password"
+        )
+      )
+    )
+  )
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

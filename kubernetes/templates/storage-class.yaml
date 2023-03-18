@@ -1,0 +1,10 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: powerpi-storage
+  {{- include "powerpi.labels" . }}
+provisioner: microk8s.io/hostpath
+reclaimPolicy: Retain
+parameters:
+  pvDir: /srv/k8s-volumes
+volumeBindingMode: WaitForFirstConsumer

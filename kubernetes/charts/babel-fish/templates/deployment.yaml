@@ -1,0 +1,15 @@
+{{$data := dict
+  "Ports" (list (dict
+    "Name" "http"
+    "Port" 3000
+  ))
+  "UseConfig" true
+  "UseDevicesFile" true
+  "Env" (list
+    (dict
+      "Name" "API_ADDRESS"
+      "Value" "http://deep-thought:80/api"
+    )
+  )
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

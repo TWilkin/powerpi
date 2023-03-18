@@ -1,0 +1,25 @@
+{{- $data := dict
+  "PriorityClassName" "powerpi-critical"
+  "Secret" (list
+    (dict
+      "Name" "github-secret"
+      "Env" (list
+        (dict
+          "Name" "GITHUB_SECRET_FILE"
+          "SubPath" "password"
+        )
+        (dict
+          "Name" "GITHUB_USER"
+          "Key" "username"
+        )
+      )
+    )
+  )
+  "Env" (list
+    (dict
+      "Name" "FILE_PATH"
+      "Value" .Values.path
+    )
+  )
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

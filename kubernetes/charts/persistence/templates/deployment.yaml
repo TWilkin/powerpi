@@ -1,0 +1,26 @@
+{{- $data := dict
+  "Secret" (list
+    (dict
+      "Name" "database-secret"
+      "Env" (list
+        (dict
+          "Name" "DB_HOST"
+          "Value" "database"
+        )
+        (dict
+          "Name" "DB_SCHEMA"
+          "Key" "schema"
+        )
+        (dict
+          "Name" "DB_USER"
+          "Key" "username"
+        )
+        (dict
+          "Name" "DB_SECRET_FILE"
+          "SubPath" "password"
+        )
+      )
+    )
+  )
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

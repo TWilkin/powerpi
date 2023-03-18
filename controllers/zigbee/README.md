@@ -45,6 +45,10 @@ When running this service in Docker Swarm using the `docker-compose.yaml` file v
 docker node update --label-add zigbee=true NODE_NAME
 ```
 
+### Kubernetes
+
+When running this service in Kubernetes, _microk8s_ works out which node has the ZigBee device automatically, so no labelling is needed.
+
 ## Testing
 
 This service can be tested by executing the following commands.

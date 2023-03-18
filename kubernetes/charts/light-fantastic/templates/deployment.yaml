@@ -1,0 +1,6 @@
+{{- $data := dict
+  "UseConfig" true
+  "UseDevicesFile" true
+  "UseSchedulesFile" true
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

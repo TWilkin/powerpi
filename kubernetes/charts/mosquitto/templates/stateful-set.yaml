@@ -1,0 +1,31 @@
+{{- $nodeSelector := ternary (list
+    (dict
+      "Name" "powerpi-storage"
+      "Value" "true"
+    )
+  ) (list) .Values.global.useCluster 
+}}
+
+{{- $data := dict
+  "Kind" "StatefulSet"
+  "Image" "eclipse-mosquitto"
+  "PriorityClassName" "powerpi-critical"
+  "Ports" (list (dict
+    "Name" "mqtt"
+    "Port" 1883
+  ))
+  "NodeSelector" $nodeSelector
+  "PersistentVolumeClaim" (dict
+    "Name" "mosquitto-data"
+    "Path" "/mosquitto/data"
+  )
+  "Config" (list
+    (dict
+      "Name" "mosquitto-config"
+      "Path" "/mosquitto/config/mosquitto.conf"
+      "SubPath" "mosquitto.conf"
+    )
+  )
+}}
+
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

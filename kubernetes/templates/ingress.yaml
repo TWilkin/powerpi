@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  {{- include "powerpi.labels" . }}
+  annotations:
+    {{- if eq .Values.global.useSSL true }}
+    cert-manager.io/issuer: letsencrypt
+    {{- end }}
+    kubernetes.io/ingress.class: public
+spec:
+  {{- if eq .Values.global.useSSL true }}
+  tls:
+  - hosts:
+    - {{ .Values.global.externalHostName }}
+    secretName: letsencrypt
+  {{- end }}
+  rules:
+  - host: {{ .Values.global.externalHostName }}
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: deep-thought
+            port:
+              number: 80
+      {{- if eq .Values.global.voiceAssistant true }}
+      - path: /webhook_alexa
+        pathType: Prefix
+        backend:
+          service:
+            name: babel-fish
+            port:
+              number: 80
+      {{- end }}
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80

@@ -1,0 +1,16 @@
+{{- $data := dict
+  "RequestMemory" "25Mi"
+  "LimitMemory" "100Mi"
+  "Ports" (list (dict
+    "Name" "http"
+    "Port" 8080
+  ))
+  "Config" (list
+    (dict
+      "Name" "nginx-config"
+      "Path" "/etc/nginx/conf.d/default.conf"
+      "SubPath" "nginx.conf"
+    )
+  )
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

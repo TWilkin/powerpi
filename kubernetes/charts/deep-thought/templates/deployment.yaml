@@ -1,0 +1,101 @@
+{{- $secrets := list
+  (dict
+    "Name" "google-auth-secret"
+    "SubPath" "secret"
+    "Env" (list
+      (dict
+        "Name" "GOOGLE_SECRET_FILE"
+        "SubPath" "secret"
+      )
+      (dict
+        "Name" "GOOGLE_CLIENT_ID"
+        "Key" "client_id"
+      )
+    )
+  )
+  (dict
+    "Name" "oauth-secret"
+    "SubPath" "secret"
+    "Env" (list
+      (dict
+        "Name" "OAUTH_SECRET_FILE"
+        "SubPath" "secret"
+      )
+      (dict
+        "Name" "OAUTH_CLIENT_ID"
+        "Key" "client_id"
+      )
+    )
+  )
+  (dict
+    "Name" "jwt-secret"
+    "SubPath" "secret"
+    "Env" (list
+      (dict
+        "Name" "JWT_SECRET_FILE"
+        "SubPath" "secret"
+      )
+    )
+  )
+  (dict
+    "Name" "session-secret"
+    "SubPath" "secret"
+    "Env" (list
+      (dict
+        "Name" "SESSION_SECRET_FILE"
+        "SubPath" "secret"
+      )
+    )
+  )
+}}
+
+{{- if .Values.global.persistence }}
+{{- $secrets = append $secrets
+  (dict
+    "Name" "database-secret"
+    "Env" (list
+      (dict
+        "Name" "DB_HOST"
+        "Value" "database"
+      )
+      (dict
+        "Name" "DB_SCHEMA"
+        "Key" "schema"
+      )
+      (dict
+        "Name" "DB_USER"
+        "Key" "username"
+      )
+      (dict
+        "Name" "DB_SECRET_FILE"
+        "SubPath" "password"
+      )
+    )
+  )
+}}
+{{- end }}
+
+{{- $data := dict
+  "Ports" (list (dict
+    "Name" "http"
+    "Port" 3000
+  ))
+  "UseConfig" true
+  "UseDevicesFile" true
+  "UseFloorplanFile" true
+  "UseUsersFile" true
+  "RequestMemory" "150Mi"
+  "LimitMemory" "300Mi"
+  "Env" (list
+    (dict
+      "Name" "EXTERNAL_HOST_NAME"
+      "Value" .Values.global.externalHostName
+    )
+    (dict
+      "Name" "EXTERNAL_PORT"
+      "Value" (ternary 443 80 .Values.global.useSSL | quote)
+    )
+  )
+  "Secret" $secrets
+}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

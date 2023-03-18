@@ -1,0 +1,29 @@
+{{- $nodeSelector := ternary (list
+    (dict
+      "Name" "powerpi-energenie"
+      "Value" "true"
+    )
+  ) (list) .Values.global.useCluster 
+}}
+
+{{- $data := dict
+  "NodeSelector" $nodeSelector
+  "Env" (list
+    (dict
+      "Name" "DEVICE_FATAL"
+      "Value" (true | quote)
+    )
+    (dict
+      "Name" "ENERGENIE_DEVICE"
+      "Value" (.Values.type | quote)
+    )
+  )
+  "Resources" (list
+    (dict
+      "Name" "smarter-devices/gpiomem"
+      "Value" 1
+    )
+  )
+}}
+
+{{- include "powerpi.controller" (merge (dict "Params" $data) . )}}

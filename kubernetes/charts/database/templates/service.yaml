@@ -1,0 +1,5 @@
+{{- $data := dict
+  "PortName" "postgres"
+  "Port" 5432
+}}
+{{- include "powerpi.service" (merge (dict "Params" $data) . )}}

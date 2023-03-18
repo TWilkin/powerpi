@@ -5,6 +5,7 @@
 **/build/
 **/db/
 **/dist/
+**/kubernetes/
 **/node_modules/
 **/platforms/
 **/venv/

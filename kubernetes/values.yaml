@@ -1,0 +1,65 @@
+# the component label for the main chart
+component: powerpi
+
+global:
+  # the environment to deploy for "production" or "dev"
+  env: production
+
+  # the external host name to use when requesting certificates and to configure for ingress
+  externalHostName: example.com
+
+  # the email address to use for HTTPS certificate renewal
+  certificateEmail: user@example.com
+
+  # whether to use SSL or not
+  useSSL: false
+
+  # whether PowerPi is deployed in a kubernetes cluster (true) or on a single node (false)
+  useCluster: false
+
+  # whether to use FreeDNS or not
+  freeDNS: false
+
+  # whether to include the clacks-config service to get configuration from GitHub
+  config: false
+
+  # whether to include the persistence service to store messages in a database
+  persistence: false
+
+  # whether to include the scheduler service (light-fantastic) to update devices on a schedule
+  scheduler: false
+
+  # whether to include the voice assistant service (babel-fish) for Alexa integration
+  voiceAssistant: false
+
+  # whether to include Energenie support
+  energenie: false
+
+  # whether to include Logitech Harmony support
+  harmony: false
+
+  # whether to include LIFX support
+  lifx: false
+
+  # whether to include ZigBee support
+  zigbee: false
+
+  # whether to include node monitoring support
+  node: false
+
+  # whether to include PiJuice support
+  pijuice: false
+
+  # whether to include node PWM fan control
+  pwm: false
+
+  # whether to include N3rgy energy monitoring support
+  energy-monitor: false
+
+clacks-config:
+  # the path to the config files in the GitHub repo
+  path: "kubernetes/config"
+
+energenie-controller:
+  # the Energenie device type to use, either ENER314-RT or ENER314
+  type: "ENER314-RT"

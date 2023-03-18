@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  {{- include "powerpi.labels" . }}
+data:
+  nginx.conf: |-
+{{ .Files.Get "nginx.conf" | indent 4 }}

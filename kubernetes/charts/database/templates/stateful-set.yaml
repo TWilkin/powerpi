@@ -1,0 +1,45 @@
+{{- $nodeSelector := ternary (list
+    (dict
+      "Name" "powerpi-storage"
+      "Value" "true"
+    )
+  ) (list) .Values.global.useCluster 
+}}
+
+{{- $data := dict
+  "Kind" "StatefulSet"
+  "Image" "postgres"
+  "PriorityClassName" "powerpi-critical"
+  "RequestMemory" "50Mi"
+  "Ports" (list (dict
+    "Name" "postgres"
+    "Port" 5432
+  ))
+  "NodeSelector" $nodeSelector
+  "PersistentVolumeClaim" (dict
+    "Name" "database-data"
+    "Path" "/var/lib/postgresql/data/pgdata"
+    "EnvName" "PGDATA"
+  )
+  "Secret" (list
+    (dict
+      "Name" "database-secret"
+      "Env" (list
+        (dict
+          "Name" "POSTGRES_DB"
+          "Key" "schema"
+        )
+        (dict
+          "Name" "POSTGRES_USER"
+          "Key" "username"
+        )
+        (dict
+          "Name" "POSTGRES_PASSWORD_FILE"
+          "SubPath" "password"
+        )
+      )
+    )
+  )
+}}
+
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

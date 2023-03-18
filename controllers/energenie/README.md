@@ -48,6 +48,14 @@ When running this service in Docker Swarm using the `docker-compose.yaml` file v
 docker node update --label-add energenie=true NODE_NAME
 ```
 
+### Kubernetes
+
+When running this service in Kubernetes, _microk8s_ needs to know which node has the ENER314 or ENER314-RT device. The following command will add a label to the node `NODE_NAME` which should host this service.
+
+```bash
+microk8s kubectl label node NODE_NAME powerpi-energenie=true
+```
+
 ## Testing
 
 This service can be tested by executing the following commands.

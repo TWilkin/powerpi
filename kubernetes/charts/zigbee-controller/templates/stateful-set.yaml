@@ -1,0 +1,26 @@
+{{- $data := dict
+  "Kind" "StatefulSet"
+  "Env" (list
+    (dict
+      "Name" "DEVICE_FATAL"
+      "Value" (true | quote)
+    )
+    (dict
+      "Name" "DEVICE"
+      "Value" "/dev/ttyACM0"
+    )
+  )
+  "Resources" (list
+    (dict
+      "Name" "smarter-devices/ttyACM0"
+      "Value" 1
+    )
+  )
+  "PersistentVolumeClaim" (dict
+    "Name" "zigbee-data"
+    "Path" "/var/data"
+    "EnvName" "DATABASE_PATH"
+    "EnvValue" "/var/data/zigbee.db"
+  )
+}}
+{{- include "powerpi.controller" (merge (dict "Params" $data) . )}}

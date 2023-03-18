@@ -1,0 +1,67 @@
+🎉 Thank you for deploying {{ .Chart.Name }}! 🎉
+
+Your release is named "{{ .Release.Name }}":
+
+{{- if or .Values.global.useCluster .Values.global.pijuice .Values.global.pwm }}
+
+--- 🏷️  LABELS 🏷️  ---
+
+❗ Remember to label your nodes that provide the following functionality, (where __NODE_NAME__ is the network host name of the node, usually found in /etc/hostname):
+
+{{- if .Values.global.useCluster }}
+
+- For the node hosting mosquitto {{- if .Values.global.persistence }} and the database{{- end }}:
+    $ microk8s kubectl label node __NODE_NAME__ powerpi-storage=true
+{{- end }}
+{{- if and .Values.global.energenie  .Values.global.useCluster }}
+
+- For the node hosting the Energenie ENER314-RT/ENER314:
+    $ microk8s kubectl label node __NODE_NAME__ powerpi-energenie=true
+{{- end }}
+{{- if .Values.global.node }}
+{{- if .Values.global.pijuice }}
+
+- For the node(s) hosting the PiJuice:
+    $ microk8s kubectl label node __NODE_NAME__ powerpi-pijuice=true
+{{- end }}
+{{- if .Values.global.pwm }}
+
+- For the node(s) hosting the PWM fan:
+    $ microk8s kubectl label node __NODE_NAME__ powerpi-pwm=true
+{{- end }}
+{{- end }}
+{{- end }}
+
+--- 🙊 SECRETS 🙊 ---
+
+❗ Remember to create the secrets for services that require them:
+
+- For the PowerPi API to authenticate using Google Auth (where __CLIENT_ID__ and __SECRET_NAME__ are replacements for your Google Auth client id and a file containing your Google Auth secret respectively):
+    $ microk8s kubectl create secret generic google-auth-secret --namespace powerpi \
+        --from-literal client_id=__CLIENT_ID__ \
+        --from-file=secret=./__SECRET_NAME__
+{{- if .Values.global.freeDNS }}
+
+- For the FreeDNS service (where __USERNAME__ and __SECRET_NAME__ are replacements for your FreeDNS username and a file containing your FreeDNS password respectively):
+    $ microk8s kubectl create secret generic freedns-secret --namespace powerpi \
+        --from-literal username=__USERNAME__ \
+        --from-file=password=./__SECRET_NAME__
+{{- end }}
+{{- if .Values.global.config }}
+
+- For the configuration service (where __USERNAME__ and __SECRET_NAME__ are replacements for your GitHub username and a file containing your GitHub token respectively):
+    $ microk8s kubectl create secret generic github-secret --namespace powerpi \
+        --from-literal username=__USERNAME__ \
+        --from-file=password=./__SECRET_NAME__
+{{- end }}
+{{- if eq (index .Values "global" "energy-monitor") true }}
+
+- For the energy-monitor service (where __SECRET_NAME__ is a replacement for a file containing your IHD (In Home Device) MAC address):
+    $ microk8s kubectl create secret generic ihd-secret --namespace powerpi \
+        --from-file=ihd=./__SECRET_NAME__
+{{- end }}
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get all {{ .Release.Name }}
