@@ -11,6 +11,15 @@
   "Image" "postgres"
   "RequestMemory" "50Mi"
   "NodeSelector" $nodeSelector
+  "Schedule" "5 1 * * *"
+  "Command" (list "pg_dump")
+  "Args" (list 
+    "--dbname $POSTGRES_DB"
+    "--username $POSTGRES_USER"
+    "--file `date +\"%Y-%m-%d\"`-powerpi.sql"
+    "--data-only"
+    "--compress=9"
+  )
   "Secret" (list
     (dict
       "Name" "database-secret"

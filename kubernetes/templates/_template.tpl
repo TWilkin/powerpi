@@ -61,6 +61,20 @@ template:
       imagePullPolicy: Always
       {{- end }}
 
+      {{- if eq (empty .Params.Command) false }}
+      command:
+      {{- range $element := .Params.Command }}
+      - {{ $element | quote }}
+      {{- end }}
+      {{- end }}
+
+      {{- if eq (empty .Params.Args) false }}
+      args:
+      {{- range $element := .Params.Args }}
+      - {{ $element | quote }}
+      {{- end }}
+      {{- end }}
+
       {{- if eq (empty .Params.Ports) false }}
       ports:
       {{- range $element := .Params.Ports }}
