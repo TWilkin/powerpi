@@ -64,6 +64,10 @@ update_version() {
     subchartVersion=$newVersion
     echo "Increasing helm subchart $service to v$subchartVersion"
     set_chart_version $subchartPath $appVersion $subchartVersion
+
+    # commit the change
+    echo "Committing version changes"
+    git commit -m "Bump $service to v$appVersion"
 }
 
 get_version() {
@@ -80,6 +84,8 @@ set_chart_version() {
 
     yq e -i ".appVersion = \"$appVersion\"" $path
     yq e -i ".version = \"$chartVersion\"" $path
+
+    git add $path
 }
 
 
@@ -117,6 +123,7 @@ update_service_version() {
     if [ -f "$file" ]
     then
         yq -e -i -I4 ".version = \"$version\"" $file
+        git add $file
         return
     fi
 
@@ -125,8 +132,12 @@ update_service_version() {
     if [ -f "$file" ]
     then
         sed -i "s/version = \".*\"/version = \"$version\"/" $file
+        git add $file
         return
     fi
+
+    echo "Could not find service"
+    help
 }
 
 if [ $# -ne 2 ]
