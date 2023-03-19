@@ -17,7 +17,7 @@ metadata:
   {{- include "powerpi.labels" . }}
 
 spec:
-  {{- if ne (empty .Params.Schedule) false }}
+  {{- if eq (empty .Params.Schedule) false }}
   schedule: {{ .Params.Schedule }}
   {{- end }}
 
