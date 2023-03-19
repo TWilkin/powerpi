@@ -15,9 +15,14 @@
   "Command" (list "pg_dump")
   "Args" (list 
     "--host=database"
-    "--file=`date +\"%Y-%m-%d\"`-powerpi.sql"
+    "--file=/srv/backup/`date +\"%Y-%m-%d\"`-powerpi.sql"
     "--data-only"
     "--compress=9"
+  )
+  "PersistentVolumeClaim" (dict
+    "Name" "database-backup-data"
+    "Claim" "database-backup-volume-claim"
+    "Path" "/srv/backup"
   )
   "Secret" (list
     (dict
