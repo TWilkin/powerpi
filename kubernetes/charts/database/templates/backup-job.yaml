@@ -1,0 +1,35 @@
+{{- $nodeSelector := ternary (list
+    (dict
+      "Name" "powerpi-storage"
+      "Value" "true"
+    )
+  ) (list) .Values.global.useCluster 
+}}
+
+{{- $data := dict
+  "Name" "database-backup-job"
+  "Image" "postgres"
+  "RequestMemory" "50Mi"
+  "NodeSelector" $nodeSelector
+  "Secret" (list
+    (dict
+      "Name" "database-secret"
+      "Env" (list
+        (dict
+          "Name" "POSTGRES_DB"
+          "Key" "schema"
+        )
+        (dict
+          "Name" "POSTGRES_USER"
+          "Key" "username"
+        )
+        (dict
+          "Name" "POSTGRES_PASSWORD_FILE"
+          "SubPath" "password"
+        )
+      )
+    )
+  )
+}}
+
+{{- include "powerpi.job" (merge (dict "Params" $data) . ) }}
