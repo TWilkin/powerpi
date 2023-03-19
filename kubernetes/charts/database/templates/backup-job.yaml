@@ -12,23 +12,15 @@
   "RequestMemory" "50Mi"
   "NodeSelector" $nodeSelector
   "Schedule" "5 23 * * *"
-  "Command" (list "pg_dump")
+  "Command" (list "/bin/sh")
   "Args" (list 
-    "--host=database"
-    "--file=$(BACKUP_FILE)"
-    "--data-only"
-    "--compress=9"
+    "-c"
+    "pg_dump --host=database --data-only --compress=9 --file=/srv/backup/$(date +%Y-%m-%d)-powerpi.sql"
   )
   "PersistentVolumeClaim" (dict
     "Name" "database-backup-data"
     "Claim" "database-backup-volume-claim"
     "Path" "/srv/backup"
-  )
-  "Env" (list
-    (dict
-      "Name" "BACKUP_FILE"
-      "Value" "/srv/backup/$(date +%Y-%m-%d)-powerpi.sql"
-    )
   )
   "Secret" (list
     (dict

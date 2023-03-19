@@ -62,19 +62,17 @@ template:
       {{- end }}
 
       {{- if eq (empty .Params.Command) false }}
-      {{- $commands := list }}
+      command:
       {{- range $element := .Params.Command }}
-      {{- $commands = append $commands ($element | quote ) }}
+      - {{ $element | quote }}
       {{- end }}
-      command: [ {{ join ", " $commands }} ]
       {{- end }}
 
       {{- if eq (empty .Params.Args) false }}
-      {{- $args := list }}
+      args:
       {{- range $element := .Params.Args }}
-      {{- $args = append $args ($element | quote ) }}
+      - {{ $element | quote }}
       {{- end }}
-      args: [ {{ join ", " $args }} ]
       {{- end }}
 
       {{- if eq (empty .Params.Ports) false }}
