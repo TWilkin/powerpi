@@ -5,6 +5,7 @@
 {{- $data := (merge
   (dict
     "Name" $name
+    "RestartPolicy" "Never"
   )
   .Params
 ) }}
@@ -23,6 +24,5 @@ spec:
   jobTemplate:
     spec:
       {{- include "powerpi.template" (merge (dict "Params" $data) . ) | indent 6 }}
-          restartPolicy: Never
 
 {{- end }}

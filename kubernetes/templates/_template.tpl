@@ -194,6 +194,8 @@ template:
       {{- end }}
 
       {{- end }}
+    
+    restartPolicy: {{ .Params.RestartPolicy | default "Always" }}
 
     {{- if or (eq (empty .Params.Volumes) false) $config $hasVolumeClaim $hasConfig $hasSecret }}
     volumes:
