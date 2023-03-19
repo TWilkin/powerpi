@@ -80,7 +80,7 @@ get_version() {
 set_chart_version() {
     local path=$1
     local appVersion=$2
-    local chartVersion=$2
+    local chartVersion=$3
 
     yq e -i ".appVersion = \"$appVersion\"" $path
     yq e -i ".version = \"$chartVersion\"" $path

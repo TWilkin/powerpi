@@ -39,6 +39,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: nginx
+            name: ui
             port:
               number: 80

@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/ui",
-    "version": "1.3.13",
+    "version": "1.4.0",
     "description": "PowerPi UI",
     "private": true,
     "license": "GPL-3.0-only",
@@ -8,7 +8,7 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/TWilkin/powerpi.git",
-        "directory": "services/nginx/ui"
+        "directory": "services/ui"
     },
     "main": "src/powerpi.tsx",
     "scripts": {

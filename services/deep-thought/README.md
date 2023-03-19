@@ -2,8 +2,6 @@
 
 PowerPi service which provides the API for communicating with the MQTT message queue, and the _persistence_ database to both the UI and _babel-fish_ services.
 
-The API is not directly accessible, as NGINX acts as a reverse proxy.
-
 Authentication is handled utilising Google social login.
 
 The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) and a common API library [_@powerpi/api_](../../common/node/api/README.md), both of which need to be compiled before use.
@@ -16,7 +14,7 @@ The Docker container can be built utilising _buildx_ as described in the [projec
 
 ### Environment
 
-This service expects the following environment variables to be set before it will start successfully. When using docker these are already configured in the _docker-compose_ file, however when running locally for testing we need to define these:
+This service expects the following environment variables to be set before it will start successfully. When using kubernetes these are already configured in the helm chart, however when running locally for testing we need to define these:
 
 -   **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
 -   **EXTERNAL_HOST_NAME** - The domain name that certbot used to generate a certificate for, this is the base address the API uses for authentication redirects.

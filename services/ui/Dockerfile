@@ -17,23 +17,16 @@ LABEL description="Node.js builder for UI"
 WORKDIR /home/node/app
 COPY --from=build-api-image /home/node/app/common/node/api/package.json ./common/node/api/
 COPY --from=build-api-image /home/node/app/common/node/api/dist/ ./common/node/api/dist/
-RUN mkdir -p /home/node/app/services/nginx/ui
+RUN mkdir -p /home/node/app/services/ui
 COPY package.json yarn.lock tsconfig.json ./
-COPY services/nginx/ui/package.json ./services/nginx/ui/
+COPY services/ui/package.json ./services/ui/
 RUN yarn workspace @powerpi/ui install --frozen-lockfile
-COPY services/nginx/ui ./services/nginx/ui/
+COPY services/ui ./services/ui/
 RUN yarn workspace @powerpi/ui build
+RUN rm -rf /home/node/app/services/ui/dist/src
 
-FROM --platform=$BUILDPLATFORM curlimages/curl:7.84.0 AS curl-image
-LABEL description="Download Let's Encrypt configuration"
-
-# download the Let's Encrypt configuration files
-WORKDIR /usr/src/app
-RUN curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > options-ssl-nginx.conf
-RUN curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > ssl-dhparams.pem
-
-FROM nginx:1.23.1-alpine AS run-image
-LABEL description="PowerPi NGINX"
+FROM nginx:1.23.3-alpine-slim AS run-image
+LABEL description="PowerPi UI"
 
 # use non-root user
 RUN mkdir -p /var/www/powerpi
@@ -45,15 +38,10 @@ RUN touch /var/run/nginx.pid \
     && chown -R nginx:nginx /var/run/nginx.pid
 USER nginx
 
-EXPOSE 8080 8443
-
-# copy the Let's Encrypt configuration files
-WORKDIR /etc/nginx/
-COPY --from=curl-image --chown=nginx:nginx /usr/src/app/options-ssl-nginx.conf ./
-COPY --from=curl-image --chown=nginx:nginx /usr/src/app/ssl-dhparams.pem ./
+EXPOSE 8080
 
 # copy the built UI application into the NGINX container
 WORKDIR /var/www/powerpi
 COPY --chown=nginx:nginx LICENSE ./
-COPY --from=build-ui-image --chown=nginx:nginx /home/node/app/services/nginx/ui/public/ ./
-COPY --from=build-ui-image --chown=nginx:nginx /home/node/app/services/nginx/ui/dist/ ./
+COPY --from=build-ui-image --chown=nginx:nginx /home/node/app/services/ui/public/ ./
+COPY --from=build-ui-image --chown=nginx:nginx /home/node/app/services/ui/dist/ ./

@@ -30,6 +30,36 @@ microk8s enable metallb
 reboot
 ```
 
+## Customisation
+
+When deploying the stack, you'll want to customise some of the options to configure the environment for your home automation needs.
+
+Have a look at the options in [values.yaml](./values.yaml) as these are the options that can be overridden in your own file and provided using the `-f my-override.yaml` file when deploying the stack.
+
+## Deploying
+
+Finally once the plugins are enabled, labels added and the secrets have been created, the stack can be deployed (where _OVERRIDE_ is the path to your overriding YAML configuration file):
+
+```bash
+# From the root of your checkout of PowerPi
+cd kubernetes
+
+# Deploy your stack
+microk8s helm upgrade --install --namespace powerpi --create-namespace -f __OVERRIDE__ powerpi .
+```
+
+## Updating
+
+When changes have been made to PowerPi the images will be updated on [Docker Hub](https://hub.docker.com/u/twilkin); updating is simply a case of downloading the latest version of this repository and re-running the deploy step (where _OVERRIDE_ is the path to your overriding YAML configuration file).
+
+```bash
+# From the root of your checkout of PowerPi
+cd kubernetes
+
+# Update your stack
+microk8s helm upgrade --install --namespace powerpi -f __OVERRIDE__ powerpi .
+```
+
 ### Add Secrets
 
 The deployment expects the following secrets to already exist, they are described as follows and can be created with this command where _SECRET_NAME_ is the name of the specific secret and _/path/to/secret/file_ is the file containing that secret:
@@ -41,6 +71,7 @@ microk8s kubectl create secret generic freedns-secret --namespace powerpi \
     --from-literal username=__USERNAME__ \
     --from-file=password=./__SECRET_NAME__
 ```
+
 -   **google-auth-secret** - The Google OAuth secret used for login authentication in the API, UI and _babel-fish_.
 
 ```bash
@@ -76,33 +107,3 @@ The following services also utilise labels, if you wish to use any of these appl
 
 -   [energenie-controller](../controllers/energenie/README.md#kubernetes) - ENER314/ENER314-RT Pi controller
 -   [node-controller](../controllers/node/README.md#kubernetes)- PiJuice/PWM fan controller
-
-## Customisation
-
-When deploying the stack, you'll want to customise some of the options to configure the environment for your home automation needs.
-
-Have a look at the options in [values.yaml](./values.yaml) as these are the options that can be overridden in your own file and provided using the `-f my-override.yaml` file when deploying the stack.
-
-## Deploying
-
-Finally once the plugins are enabled, labels added and the secrets have been created, the stack can be deployed (where _OVERRIDE_ is the path to your overriding YAML configuration file):
-
-```bash
-# From the root of your checkout of PowerPi
-cd kubernetes
-
-# Deploy your stack
-microk8s helm upgrade --install --namespace powerpi --create-namespace -f __OVERRIDE__ powerpi .
-```
-
-## Updating
-
-When changes have been made to PowerPi the images will be updated on [Docker Hub](https://hub.docker.com/u/twilkin); updating is simply a case of downloading the latest version of this repository and re-running the deploy step (where _OVERRIDE_ is the path to your overriding YAML configuration file).
-
-```bash
-# From the root of your checkout of PowerPi
-cd kubernetes
-
-# Update your stack
-microk8s helm upgrade --install --namespace powerpi -f __OVERRIDE__ powerpi .
-```

@@ -16,7 +16,7 @@ The Docker container can be built utilising _buildx_ as described in the [projec
 
 ### Environment
 
-This service expects the following environment variables to be set before it will start successfully. When using docker these are already configured in the _docker-compose_ file, however when running locally for testing we need to define these:
+This service expects the following environment variables to be set before it will start successfully. When using kubernetes these are already configured in the helm chart, however when running locally for testing we need to define these:
 
 -   **FREEDNS_USER** - The user registered with FreeDNS.
 -   **FREDNS_PASSWORD** - The path to a file containing the password for the user registered with FreeDNS.

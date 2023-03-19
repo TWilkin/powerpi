@@ -16,7 +16,7 @@ The Docker container can be built utilising _buildx_ as described in the [projec
 
 ### Environment
 
-This service expects the following environment variables to be set before it will start successfully. When using docker these are already configured in the _docker-compose_ file, however when running locally for testing we need to define these:
+This service expects the following environment variables to be set before it will start successfully. When using kubernetes these are already configured in the helm chart, however when running locally for testing we need to define these:
 
 -   **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
 -   **IHD_SECRET_FILE** - The path to a file which contains the IHD (In Home Device) MAC address, which is used to authenticate against N3rgy. In the form _00-00-00-00-00-00-00-00_.

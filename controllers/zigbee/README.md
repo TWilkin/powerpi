@@ -21,7 +21,7 @@ The Docker container can be built utilising _buildx_ as described in the [projec
 
 ### Environment
 
-This service expects the following environment variables to be set before it will start successfully. When using docker these are already configured in the _docker-compose_ file, however when running locally for testing we need to define these:
+This service expects the following environment variables to be set before it will start successfully. When using kubernetes these are already configured in the helm chart, however when running locally for testing we need to define these:
 
 -   **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
 -   **ZIGBEE_DEVICE** - The path to the ZigBee device on the host (default _/dev/ttyACM0_).
@@ -36,14 +36,6 @@ This service requires two configuration files, both of which are described on th
 
 -   [devices.json](../../services/clacks-config/README.md#devicesjson)
 -   [events.json](../../services/clacks-config/README.md#eventsjson)
-
-### Docker
-
-When running this service in Docker Swarm using the `docker-compose.yaml` file via [_device-mapper_](../../services/device-mapper/README.md), docker needs to know which node has the ZigBee device. The following command will add a label to the node `NODE_NAME` which should host this service.
-
-```bash
-docker node update --label-add zigbee=true NODE_NAME
-```
 
 ### Kubernetes
 
