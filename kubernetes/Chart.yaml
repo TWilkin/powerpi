@@ -2,37 +2,37 @@ apiVersion: v2
 name: powerpi
 description: A Helm chart for deploying the PowerPi home automation stack
 type: application
-version: 0.1.0
-appVersion: 0.1.0
+version: 0.1.1
+appVersion: 0.1.1
 dependencies:
-# services
-- name: babel-fish
-  condition: global.voiceAssistant
-- name: clacks-config
-  condition: global.config
-- name: database
-  condition: global.persistence
-- name: deep-thought
-- name: energy-monitor
-  condition: global.energy-monitor
-- name: freedns
-  condition: global.freeDNS
-- name: light-fantastic
-  condition: global.scheduler
-- name: mosquitto
-- name: persistence
-  condition: global.persistence
-- name: smarter-device-manager
-- name: ui
-# controllers
-- name: energenie-controller
-  condition: global.energenie
-- name: harmony-controller
-  condition: global.harmony
-- name: lifx-controller
-  condition: global.lifx
-- name: macro-controller
-- name: node-controller
-  condition: global.node
-- name: zigbee-controller
-  condition: global.zigbee
+  # services
+  - name: babel-fish
+    condition: global.voiceAssistant
+  - name: clacks-config
+    condition: global.config
+  - name: database
+    condition: global.persistence
+  - name: deep-thought
+  - name: energy-monitor
+    condition: global.energy-monitor
+  - name: freedns
+    condition: global.freeDNS
+  - name: light-fantastic
+    condition: global.scheduler
+  - name: mosquitto
+  - name: persistence
+    condition: global.persistence
+  - name: smarter-device-manager
+  - name: ui
+  # controllers
+  - name: energenie-controller
+    condition: global.energenie
+  - name: harmony-controller
+    condition: global.harmony
+  - name: lifx-controller
+    condition: global.lifx
+  - name: macro-controller
+  - name: node-controller
+    condition: global.node
+  - name: zigbee-controller
+    condition: global.zigbee
