@@ -9,7 +9,7 @@
   .Params
 ) }}
 
-apiVersion: apps/v1
+apiVersion: batch/v1
 kind: {{ .Params.Kind | default "CronJob" }}
 metadata:
   name: {{ $name }}
@@ -23,7 +23,6 @@ spec:
   jobTemplate:
     spec:
       {{- include "powerpi.template" (merge (dict "Params" $data) . ) | indent 6 }}
-      
-      restartPolicy: Never
+          restartPolicy: Never
 
 {{- end }}
