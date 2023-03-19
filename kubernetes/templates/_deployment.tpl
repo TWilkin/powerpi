@@ -19,11 +19,11 @@ metadata:
 spec:
   selector:
     matchLabels:
-    {{- include "powerpi.selector" . | indent 4 }}
+    {{- include "powerpi.selector.no-version" . | indent 4 }}
 
   template:
     metadata:
-    {{- include "powerpi.labels" . | indent 4 }}
+    {{- include "powerpi.labels.no-version" . | indent 4 }}
 
       {{- if or $hasAnnotations $config $hasConfig }}
       annotations:
