@@ -2,8 +2,6 @@
 
 PowerPi service which provides the API for communicating with the MQTT message queue, and the _persistence_ database to both the UI and _babel-fish_ services.
 
-The API is not directly accessible, as NGINX acts as a reverse proxy.
-
 Authentication is handled utilising Google social login.
 
 The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) and a common API library [_@powerpi/api_](../../common/node/api/README.md), both of which need to be compiled before use.

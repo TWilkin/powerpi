@@ -20,10 +20,10 @@ dependencies:
 - name: light-fantastic
   condition: global.scheduler
 - name: mosquitto
-- name: nginx
 - name: persistence
   condition: global.persistence
 - name: smarter-device-manager
+- name: ui
 # controllers
 - name: energenie-controller
   condition: global.energenie
