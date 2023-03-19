@@ -14,9 +14,8 @@
   "Schedule" "5 1 * * *"
   "Command" (list "pg_dump")
   "Args" (list 
-    "--dbname $POSTGRES_DB"
-    "--username $POSTGRES_USER"
-    "--file `date +\"%Y-%m-%d\"`-powerpi.sql"
+    "--host=database"
+    "--file=`date +\"%Y-%m-%d\"`-powerpi.sql"
     "--data-only"
     "--compress=9"
   )
@@ -25,16 +24,16 @@
       "Name" "database-secret"
       "Env" (list
         (dict
-          "Name" "POSTGRES_DB"
+          "Name" "PGDATABASE"
           "Key" "schema"
         )
         (dict
-          "Name" "POSTGRES_USER"
+          "Name" "PGUSER"
           "Key" "username"
         )
         (dict
-          "Name" "POSTGRES_PASSWORD_FILE"
-          "SubPath" "password"
+          "Name" "PGPASSWORD"
+          "Key" "password"
         )
       )
     )
