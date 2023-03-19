@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mosquitto-config
-  {{- include "powerpi.labels" . }}
+  {{- include "powerpi.labels.no-version" . }}
 data:
   mosquitto.conf: |-
     {{- .Files.Get "mosquitto.conf" | indent 4 }}

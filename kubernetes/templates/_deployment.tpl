@@ -23,7 +23,7 @@ spec:
 
   template:
     metadata:
-    {{- include "powerpi.labels" . | indent 4 }}
+    {{- include "powerpi.labels.no-version" . | indent 4 }}
 
       {{- if or $hasAnnotations $config $hasConfig }}
       annotations:
