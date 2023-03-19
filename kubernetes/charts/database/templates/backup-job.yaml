@@ -15,7 +15,7 @@
   "Command" (list "/bin/sh")
   "Args" (list 
     "-c"
-    "pg_dump --host=database --data-only --compress=9 --file=/srv/backup/$(date +%Y-%m-%d)-powerpi.sql"
+    "pg_dump --host=database --data-only --compress=9 --file=/srv/backup/$(date +%Y-%m-%d)-powerpi.sql.gz"
   )
   "PersistentVolumeClaim" (dict
     "Name" "database-backup-data"
