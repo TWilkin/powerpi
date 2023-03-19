@@ -19,7 +19,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-    {{- include "powerpi.selector.no-version" . | indent 4 }}
+    {{- include "powerpi.selector" . | indent 4 }}
 
   template:
     metadata:
