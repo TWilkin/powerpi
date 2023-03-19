@@ -23,6 +23,7 @@ COPY services/ui/package.json ./services/ui/
 RUN yarn workspace @powerpi/ui install --frozen-lockfile
 COPY services/ui ./services/ui/
 RUN yarn workspace @powerpi/ui build
+RUN rm -rf /home/node/app/services/ui/dist/src
 
 FROM nginx:1.23.3-alpine-slim AS run-image
 LABEL description="PowerPi UI"
