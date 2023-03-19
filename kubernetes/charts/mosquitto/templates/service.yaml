@@ -1,6 +1,9 @@
+{{- $type := ternary "LoadBalancer" "NodePort" .Values.global.useSensors }}
+
 {{- $data := dict
-  "Type" "LoadBalancer"
+  "Type" $type
   "PortName" "mqtt"
   "Port" 1883
 }}
+
 {{- include "powerpi.service" (merge (dict "Params" $data) . )}}
