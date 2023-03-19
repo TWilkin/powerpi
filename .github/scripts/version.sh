@@ -1,0 +1,146 @@
+#!/bin/bash
+
+help() {
+    echo "PowerPi version script"
+    echo "expects 'bash version.sh service part"
+    echo "  service: one of the PowerPi services"
+    echo "  part: major|minor|macro"
+    exit
+}
+
+update_version() {
+    local service=$1
+    local versionPart=$2
+
+    local appPath="../../services/$service"
+    local subchartPath="../../kubernetes/charts/$service/Chart.yaml"
+    if [ ! -d $appPath ]
+    then
+        echo "Service $service is a controller"
+        appPath="../../controllers/$service"
+        subchartPath="../../kubernetes/charts/$service-controller/Chart.yaml"
+    fi
+
+    # check the service exists
+    if [ ! -f $subchartPath ]
+    then
+        echo "Cannot find service $service"
+        help
+    fi
+
+    # find the helm version
+    helmPath="../../kubernetes/Chart.yaml"
+    get_version $helmPath
+    powerpiVersion=$appVersion
+    helmVersion=$chartVersion
+    echo "Found v$powerpiVersion of PowerPi"
+    echo "Found v$helmVersion of helm chart"
+
+    # find the service version
+    get_version $subchartPath
+    subchartVersion=$chartVersion
+    echo "Found v$appVersion of service $service"
+    echo "Found v$subchartVersion of helm subchart $service"
+
+    # increase PowerPi version
+    increase_version $powerpiVersion "macro"
+    powerpiVersion=$newVersion
+    echo "Increasing PowerPi to v$powerpiVersion"
+
+    # increase the chart version
+    increase_version $helmVersion "macro"
+    helmVersion=$newVersion
+    echo "Increasing helm chart to v$helmVersion"
+    set_chart_version $helmPath $powerpiVersion $chartVersion
+
+    # increase the app version
+    increase_version $appVersion $versionPart
+    appVersion=$newVersion
+    echo "Increasing service $service to v$appVersion"
+    update_service_version $appPath $appVersion
+
+    # increase the subchart version
+    increase_version $subchartVersion "macro"
+    subchartVersion=$newVersion
+    echo "Increasing helm subchart $service to v$subchartVersion"
+    set_chart_version $subchartPath $appVersion $subchartVersion
+}
+
+get_version() {
+    local path=$1
+
+    appVersion=`yq .appVersion $path`
+    chartVersion=`yq .version $path`
+}
+
+set_chart_version() {
+    local path=$1
+    local appVersion=$2
+    local chartVersion=$2
+
+    yq e -i ".appVersion = \"$appVersion\"" $path
+    yq e -i ".version = \"$chartVersion\"" $path
+}
+
+
+increase_version() {
+    local version=$1
+    local versionPart=$2
+
+    IFS="." read -r -a array <<< "$version"
+    major="${array[0]}"
+    minor="${array[1]}"
+    macro="${array[2]}"
+
+    if [ $versionPart = "major" ]
+    then
+        major=$(($major+1))
+        minor=0
+        macro=0
+    elif [ $versionPart = "minor" ]
+    then
+        minor=$(($minor+1))
+        macro=0
+    else
+        macro=$(($macro+1))
+    fi
+
+    newVersion="$major.$minor.$macro"
+}
+
+update_service_version() {
+    local path=$1
+    local version=$2
+
+    # check package.json
+    local file="$path/package.json"
+    if [ -f "$file" ]
+    then
+        yq -e -i -I4 ".version = \"$version\"" $file
+        return
+    fi
+
+    # check pyproject.toml
+    file="$path/pyproject.toml"
+    if [ -f "$file" ]
+    then
+        sed -i "s/version = \".*\"/version = \"$version\"/" $file
+        return
+    fi
+}
+
+if [ $# -ne 2 ]
+then
+    help
+fi
+
+service=$1
+versionPart=$2 # major, minor, macro
+
+# validate the version part
+case $versionPart in
+    major|minor|macro) echo "Attempting to increase $versionPart version of service $service" ;;
+    *) echo "Unrecognised version part $versionPart" ; help ;;
+esac
+
+update_version $service $versionPart
