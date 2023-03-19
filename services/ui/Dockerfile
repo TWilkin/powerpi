@@ -24,7 +24,7 @@ RUN yarn workspace @powerpi/ui install --frozen-lockfile
 COPY services/ui ./services/ui/
 RUN yarn workspace @powerpi/ui build
 
-FROM nginx:1.23.1-alpine AS run-image
+FROM nginx:1.23.3-alpine-slim AS run-image
 LABEL description="PowerPi UI"
 
 # use non-root user
