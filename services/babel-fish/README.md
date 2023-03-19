@@ -58,7 +58,7 @@ yarn build:babel-fish:alexa
 
 ### Environment
 
-This service expects the following environment variables to be set before it will start successfully. When using docker these are already configured in the _docker-compose_ file, however when running locally for testing we need to define these:
+This service expects the following environment variables to be set before it will start successfully. When using kubernetes these are already configured in the helm chart, however when running locally for testing we need to define these:
 
 -   **API_ADDRESS** - The URI to the _deep-thought_ instance to use, (default _http://deep-thought:3000/api_)
 -   **JOVO_PORT** - The port the service runs on (default _3000_).

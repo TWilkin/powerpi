@@ -1,6 +1,6 @@
 # PowerPi
 
-Home automation microservice stack communicating via MQTT (using [mosquitto](https://mosquitto.org/)) built with Typescript, Python, Go and [NodeMCU](https://en.wikipedia.org/wiki/NodeMCU) C deployable with [Docker Swarm](https://docs.docker.com/engine/swarm/) or [microk8s Kubernetes](https://microk8s.io/) on a [Raspberry Pi](https://www.raspberrypi.com/) cluster.
+Home automation microservice stack communicating via MQTT (using [mosquitto](https://mosquitto.org/)) built with Typescript, Python, Go and [NodeMCU](https://en.wikipedia.org/wiki/NodeMCU) C deployable with [Kubernetes](https://kubernetes.io/) on a [Raspberry Pi](https://www.raspberrypi.com/) cluster.
 
 This project was devised to utilise open, reverse engineered or free home automation hardware and software together without the need for third-party hubs, cloud services or subscriptions wherever possible.
 
@@ -24,7 +24,6 @@ This project was devised to utilise open, reverse engineered or free home automa
 The project is split into the following services, each of which have their own _README_ describing the configuration interface they support as well as how to modify and test them.
 
 -   [**babel-fish**](services/babel-fish/README.md) - Integration with Amazon Alexa skill to receive voice commands.
--   [**certbot**](services/certbot/README.md) - Use Let's Encrypt to provide SSL certificates for NGINX.
 -   [**clacks-config**](services/clacks-config/README.md) - Retrieve configuration files from GitHub.
 -   **controllers**:
     -   [**energenie**](controllers/energenie/README.md) - Allows control of [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories) devices using the ENER314 or ENER314-RT Pi module.
@@ -34,7 +33,6 @@ The project is split into the following services, each of which have their own _
     -   [**node**](controllers/node/README.md) - Allows monitoring of the cluster (docker) nodes and support for UPS using a [PiJuice](https://www.pijuice.com).
     -   [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
 -   [**deep-thought**](services/deep-thought/README.md) - API
--   [**device-mapper**](services/device-mapper/README.md) - Workaround for accessing system devices using privileged mode in Docker Swarm mode using Docker-in-docker.
 -   [**energy-monitor**](services/energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
 -   [**freedns**](services/freedns/README.md) - Overcome changing public IP addresses of consumer ISPs by pointing a free hostname at the current public IP via [FreeDNS](https://freedns.afraid.org/)
 -   [**light-fantastic**](services/light-fantastic/README.md) - Schedule based control of light devices (LIFX), e.g. brightness, colour, temperature etc.
@@ -53,7 +51,7 @@ The images can be build with Docker's [_buildx_](https://docs.docker.com/buildx/
 
 ```bash
 # From the root of your checkout of PowerPi
-# Build an image with buildx, the image version tags can be found in docker/docker-compose.yaml
+# Build an image with buildx, the image version tags can be found in the service's package.json or pyproject.toml file.
 docker buildx build --platform linux/arm/v7 --push -t MY_DOCKER_REGISTRY/powerpi-clacks-config:0.1.1 -f services/clacks-config/Dockerfile .
 
 # Or for 64-bit ARM
@@ -65,11 +63,10 @@ docker buildx build --platform linux/amd64 --push -t MY_DOCKER_REGISTRY/powerpi-
 
 ## Deployment
 
-Deploying the services is simply a matter of deploying the stack using docker or kubernetes, which will pull the latest images from [Docker Hub](https://hub.docker.com/u/twilkin).
+Deploying the services is simply a matter of deploying the stack using kubernetes, which will pull the latest images from [Docker Hub](https://hub.docker.com/u/twilkin).
 
-The instructions for deploying the stack using either method can be found:
+The instructions for deploying the stack using Kubernetes can be found:
 
--   [Docker](docker/README.md)
 -   [Kubernetes](kubernetes/README.md)
 
 ## Authors
