@@ -43,4 +43,4 @@
   )
 }}
 
-{{- include "powerpi.job" (merge (dict "Params" $data) . ) }}
+{{- include "powerpi.cron-job" (merge (dict "Params" $data) . ) }}

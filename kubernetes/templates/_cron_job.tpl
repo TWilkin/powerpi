@@ -1,4 +1,4 @@
-{{- define "powerpi.job" }}
+{{- define "powerpi.cron-job" }}
 
 {{- $name := .Params.Name | default .Chart.Name }}
 
@@ -11,15 +11,13 @@
 ) }}
 
 apiVersion: batch/v1
-kind: {{ .Params.Kind | default "CronJob" }}
+kind: CronJob
 metadata:
   name: {{ $name }}
   {{- include "powerpi.labels" . }}
 
 spec:
-  {{- if eq (empty .Params.Schedule) false }}
   schedule: {{ .Params.Schedule }}
-  {{- end }}
 
   jobTemplate:
     spec:
