@@ -1,0 +1,46 @@
+{{- $nodeSelector := ternary (list
+    (dict
+      "Name" "powerpi-storage"
+      "Value" "true"
+    )
+  ) (list) .Values.global.useCluster 
+}}
+
+{{- $data := dict
+  "Name" "database-backup-job"
+  "Image" "postgres"
+  "RequestMemory" "50Mi"
+  "NodeSelector" $nodeSelector
+  "Schedule" (.Values.backupSchedule | default "5 23 * * *")
+  "Command" (list "/bin/sh")
+  "Args" (list 
+    "-c"
+    "pg_dump --host=database --data-only --compress=9 --file=/srv/backup/$(date +%Y-%m-%d-%H-%M)-powerpi.sql.gz"
+  )
+  "PersistentVolumeClaim" (dict
+    "Name" "database-backup-data"
+    "Claim" "database-backup-volume-claim"
+    "Path" "/srv/backup"
+  )
+  "Secret" (list
+    (dict
+      "Name" "database-secret"
+      "Env" (list
+        (dict
+          "Name" "PGDATABASE"
+          "Key" "schema"
+        )
+        (dict
+          "Name" "PGUSER"
+          "Key" "username"
+        )
+        (dict
+          "Name" "PGPASSWORD"
+          "Key" "password"
+        )
+      )
+    )
+  )
+}}
+
+{{- include "powerpi.cron-job" (merge (dict "Params" $data) . ) }}
