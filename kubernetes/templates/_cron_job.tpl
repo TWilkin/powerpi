@@ -17,7 +17,7 @@ metadata:
   {{- include "powerpi.labels" . }}
 
 spec:
-  schedule: {{ .Params.Schedule }}
+  schedule: {{ .Params.Schedule | quote }}
 
   jobTemplate:
     spec:
