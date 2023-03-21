@@ -30,7 +30,7 @@ export default class EnergyMonitorService {
             await Promise.all([electricity, gas]);
 
             if (!this.args.options.daemon) {
-                process.exit(1);
+                process.exit(0);
             }
         };
 
