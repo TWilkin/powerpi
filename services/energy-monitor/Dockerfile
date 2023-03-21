@@ -45,4 +45,4 @@ RUN yarn workspace @powerpi/energy-monitor install --production --frozen-lockfil
 COPY --from=build-service-image --chown=node:node /home/node/app/services/energy-monitor/dist/ ./services/energy-monitor/dist/
 
 # start the application once the container is ready
-CMD yarn workspace @powerpi/energy-monitor start:prd
+CMD yarn workspace @powerpi/energy-monitor start:prd --daemon
