@@ -102,9 +102,18 @@ export default class EnergyMonitorService {
 
     private get defaultDate() {
         const date = new Date();
-        date.setUTCMonth(date.getUTCMonth() - 13);
 
-        const timestamp = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1, 0, 0, 0);
+        const days = this.args.options.history ?? 0;
+        date.setUTCDate(date.getUTCDate() - days);
+
+        const timestamp = Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            0,
+            0,
+            0
+        );
 
         return new Date(timestamp);
     }
