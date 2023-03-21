@@ -5,7 +5,7 @@
     "workspace"
     "@powerpi/energy-monitor"
     "start:prd"
-    (print "--history " (.Values.history | default 30))
+    (print "--history=" (.Values.history | default 30))
   )
   "Secret" (list
     (dict
