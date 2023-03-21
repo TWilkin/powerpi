@@ -1,7 +1,7 @@
 import { parse } from "ts-command-line-args";
 import { Service } from "typedi";
 import EnergyMonitorArguments from "../models/EnergyMonitorArguments";
-import ConfigService from "./config";
+import ConfigService from "./ConfigService";
 
 @Service()
 export default class EnergyMonitorArgumentsService {

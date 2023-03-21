@@ -1,9 +1,9 @@
 import { LoggerService, MqttService } from "@powerpi/common";
 import { Service } from "typedi";
-import N3rgyData, { N3rgyDataPoint } from "../models/n3rgy";
-import ConfigService from "./config";
+import N3rgyData, { N3rgyDataPoint } from "../models/N3rgyData";
+import ConfigService from "./ConfigService";
 import EnergyMonitorArgumentsService from "./EnergyMonitorArgumentService";
-import N3rgyService, { EnergyType } from "./n3rgy";
+import N3rgyService, { EnergyType } from "./N3rgyService";
 
 @Service()
 export default class EnergyMonitorService {
