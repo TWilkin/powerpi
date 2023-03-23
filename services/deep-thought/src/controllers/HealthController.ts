@@ -1,6 +1,7 @@
 import { Controller, Get, Res } from "@tsed/common";
 import { Response } from "express";
 import HttpStatus from "http-status-codes";
+import _ from "underscore";
 import ConfigService from "../services/config";
 import DatabaseService from "../services/db";
 import MqttService from "../services/mqtt";
@@ -29,15 +30,15 @@ export default class HealthController {
         if (await this.configService.hasPersistence()) {
             const result = await this.dbService.isAlive();
 
-            status.database = (result?.rowCount ?? 0) < 1;
+            status.database = (_(result?.rows).first()?.value ?? 0) === 1;
         }
 
-        response.send(status);
-
-        if (status.database === false || !status.mqtt) {
-            response.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-        } else {
-            response.sendStatus(HttpStatus.OK);
-        }
+        response
+            .status(
+                status.database === false || !status.mqtt
+                    ? HttpStatus.INTERNAL_SERVER_ERROR
+                    : HttpStatus.OK
+            )
+            .send(status);
     }
 }
