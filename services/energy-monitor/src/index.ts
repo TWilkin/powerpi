@@ -1,8 +1,15 @@
-import { MqttService } from "@powerpi/common";
+import { LoggerService, MqttService } from "@powerpi/common";
 import Container from "./container";
-import EnergyMonitorService from "./services/monitor";
+import EnergyMonitorArgumentsService from "./services/EnergyMonitorArgumentService";
+import EnergyMonitorService from "./services/EnergyMonitorService";
 
 function start() {
+    const args = Container.get(EnergyMonitorArgumentsService);
+    if (args.options.daemon) {
+        const logger = Container.get(LoggerService);
+        logger.info("Running as daemon");
+    }
+
     const mqtt = Container.get(MqttService);
     mqtt.connect();
 

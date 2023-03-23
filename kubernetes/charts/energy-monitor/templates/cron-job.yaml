@@ -1,0 +1,23 @@
+{{- $data := dict
+  "Schedule" (.Values.schedule | default "5 5 * * *")
+  "Command" (list "yarn")
+  "Args" (list 
+    "workspace"
+    "@powerpi/energy-monitor"
+    "start:prd"
+    (print "--history=" (.Values.history | default 30))
+  )
+  "Secret" (list
+    (dict
+      "Name" "ihd-secret"
+      "Env" (list
+        (dict
+          "Name" "IHD_SECRET_FILE"
+          "SubPath" "ihd"
+        )
+      )
+    )
+  )
+}}
+
+{{- include "powerpi.cron-job" (merge (dict "Params" $data) .) }}

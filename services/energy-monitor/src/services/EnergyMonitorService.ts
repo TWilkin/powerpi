@@ -1,31 +1,40 @@
 import { LoggerService, MqttService } from "@powerpi/common";
 import { Service } from "typedi";
-import Container from "../container";
-import N3rgyData, { N3rgyDataPoint } from "../models/n3rgy";
-import ConfigService from "./config";
-import N3rgyService, { EnergyType } from "./n3rgy";
+import N3rgyData, { N3rgyDataPoint } from "../models/N3rgyData";
+import ConfigService from "./ConfigService";
+import EnergyMonitorArgumentsService from "./EnergyMonitorArgumentService";
+import N3rgyService, { EnergyType } from "./N3rgyService";
 
 @Service()
 export default class EnergyMonitorService {
-    private mqtt: MqttService;
-    private logger: LoggerService;
-
     private lastUpdate: {
         electricity?: Date;
         gas?: Date;
     };
 
-    constructor(private n3rgy: N3rgyService, private config: ConfigService) {
-        this.mqtt = Container.get(MqttService);
-        this.logger = Container.get(LoggerService);
-
+    constructor(
+        private readonly n3rgy: N3rgyService,
+        private readonly mqtt: MqttService,
+        private readonly config: ConfigService,
+        private readonly args: EnergyMonitorArgumentsService,
+        private readonly logger: LoggerService
+    ) {
         this.lastUpdate = {};
     }
 
     public start() {
-        this.update(EnergyType.Electricity);
+        const wrapper = async () => {
+            const electricity = this.update(EnergyType.Electricity);
+            const gas = this.update(EnergyType.Gas);
 
-        this.update(EnergyType.Gas);
+            await Promise.all([electricity, gas]);
+
+            if (!this.args.options.daemon) {
+                process.exit(0);
+            }
+        };
+
+        wrapper();
     }
 
     private async update(energyType: EnergyType) {
@@ -83,17 +92,28 @@ export default class EnergyMonitorService {
             }
         } while (!result.done);
 
-        // schedule the next run either at the repeat interval or after the time the results usually arrive
-        const nextRun = this.calculateNextRun(rows, this.lastUpdate[energyType]);
-        this.logger.info("Retrieving", energyType, "usage again at", nextRun);
-        setTimeout(() => this.update(energyType), nextRun.getTime() - new Date().getTime());
+        if (this.args.options.daemon) {
+            // schedule the next run either at the repeat interval or after the time the results usually arrive
+            const nextRun = this.calculateNextRun(rows, this.lastUpdate[energyType]);
+            this.logger.info("Retrieving", energyType, "usage again at", nextRun);
+            setTimeout(() => this.update(energyType), nextRun.getTime() - new Date().getTime());
+        }
     }
 
     private get defaultDate() {
         const date = new Date();
-        date.setUTCMonth(date.getUTCMonth() - 13);
 
-        const timestamp = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1, 0, 0, 0);
+        const days = this.args.options.history ?? 0;
+        date.setUTCDate(date.getUTCDate() - days);
+
+        const timestamp = Date.UTC(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            0,
+            0,
+            0
+        );
 
         return new Date(timestamp);
     }

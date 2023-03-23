@@ -1,8 +1,8 @@
 import axios from "axios";
 import dateFormat from "dateformat";
 import { Service } from "typedi";
-import N3rgyData from "../models/n3rgy";
-import ConfigService from "./config";
+import N3rgyData from "../models/N3rgyData";
+import ConfigService from "./ConfigService";
 
 export enum EnergyType {
     Electricity = "electricity",

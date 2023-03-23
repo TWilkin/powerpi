@@ -2,8 +2,8 @@ apiVersion: v2
 name: powerpi
 description: A Helm chart for deploying the PowerPi home automation stack
 type: application
-version: 0.1.3
-appVersion: 0.1.1
+version: 0.1.4
+appVersion: 0.1.2
 dependencies:
   # services
   - name: babel-fish

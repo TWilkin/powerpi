@@ -51,7 +51,7 @@ update_version() {
     increase_version $helmVersion "macro"
     helmVersion=$newVersion
     echo "Increasing helm chart to v$helmVersion"
-    set_chart_version $helmPath $powerpiVersion $chartVersion
+    set_chart_version $helmPath $powerpiVersion $helmVersion
 
     # increase the app version
     increase_version $appVersion $versionPart
