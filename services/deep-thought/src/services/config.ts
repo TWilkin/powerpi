@@ -66,6 +66,17 @@ export default class ConfigService extends CommonConfigService {
     async getSessionSecret(): Promise<string> {
         return await this.getSecret("SESSION");
     }
+
+    async hasPersistence() {
+        try {
+            await this.databaseURI;
+
+            // it worked so the db is configured
+            return true;
+        } catch {
+            return false;
+        }
+    }
 }
 
 Container.override(CommonConfigService, ConfigService);
