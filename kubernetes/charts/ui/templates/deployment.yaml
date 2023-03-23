@@ -12,5 +12,10 @@
       "SubPath" "nginx.conf"
     )
   )
+  "Probe" (dict
+    "Http" "/LICENSE.txt"
+    "ReadinessInitialDelay" 5
+    "LivenessInitialDelay" 10
+  )
 }}
 {{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}
