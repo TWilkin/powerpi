@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "@octokit/rest": "^18.12.0",
-        "@powerpi/common": "^0.0.11",
+        "@powerpi/common": "^0.0.12",
         "ajv": "^8.11.0",
         "ajv-formats": "2.1.1",
         "typedi": "^0.10.0",
