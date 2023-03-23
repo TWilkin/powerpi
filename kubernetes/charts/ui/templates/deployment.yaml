@@ -13,7 +13,7 @@
     )
   )
   "Probe" (dict
-    "Http" "/LICENSE"
+    "Http" "/health"
     "ReadinessInitialDelay" 5
     "LivenessInitialDelay" 10
   )
