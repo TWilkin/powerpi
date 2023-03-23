@@ -195,23 +195,23 @@ template:
 
       {{- end }}
     
-    {{- if eq (empty .Params.Probe) false }}
-    readinessProbe:
-      {{- if eq (empty .Params.Probe.Http) false }}
-      httpGet:
-        path: {{ .Params.Probe.Http }}
-        port: {{ (index .Params.Ports 0).Name }}
-      initialDelaySeconds: {{ .Params.Probe.ReadinessInitialDelay }}
+      {{- if eq (empty .Params.Probe) false }}
+      readinessProbe:
+        {{- if eq (empty .Params.Probe.Http) false }}
+        httpGet:
+          path: {{ .Params.Probe.Http }}
+          port: {{ (first .Params.Ports).Name }}
+        initialDelaySeconds: {{ .Params.Probe.ReadinessInitialDelay }}
+        {{- end }}
+      
+      livenessProbe:
+        {{- if eq (empty .Params.Probe.Http) false }}
+        httpGet:
+          path: {{ .Params.Probe.Http }}
+          port: {{ (first .Params.Ports).Name }}
+        initialDelaySeconds: {{ .Params.Probe.LivenessInitialDelay }}
+        {{- end }}
       {{- end }}
-    
-    livenessProbe:
-      {{- if eq (empty .Params.Probe.Http) false }}
-      httpGet:
-        path: {{ .Params.Probe.Http }}
-        port: {{ (index .Params.Ports 0).Name }}
-      initialDelaySeconds: {{ .Params.Probe.LivenessInitialDelay }}
-      {{- end }}
-    {{- end }}
 
     restartPolicy: {{ .Params.RestartPolicy | default "Always" }}
 
