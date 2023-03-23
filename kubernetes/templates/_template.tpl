@@ -195,6 +195,24 @@ template:
 
       {{- end }}
     
+    {{- if eq (empty .Params.Probe) false }}
+    readinessProbe:
+      {{- if eq (empty .Params.Probe.Http) false }}
+      httpGet:
+        path: {{ .Params.Probe.Http }}
+        port: {{ (index .Params.Ports 0).Name }}
+      initialDelaySeconds: {{ .Params.Probe.ReadinessInitialDelay }}
+      {{- end }}
+    
+    livenessProbe:
+      {{- if eq (empty .Params.Probe.Http) false }}
+      httpGet:
+        path: {{ .Params.Probe.Http }}
+        port: {{ (index .Params.Ports 0).Name }}
+      initialDelaySeconds: {{ .Params.Probe.LivenessInitialDelay }}
+      {{- end }}
+    {{- end }}
+
     restartPolicy: {{ .Params.RestartPolicy | default "Always" }}
 
     {{- if or (eq (empty .Params.Volumes) false) $config $hasVolumeClaim $hasConfig $hasSecret }}

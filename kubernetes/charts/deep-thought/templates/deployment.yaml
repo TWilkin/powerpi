@@ -97,5 +97,10 @@
     )
   )
   "Secret" $secrets
+  "Probe" (dict
+    "Http" "/api/health"
+    "ReadinessInitialDelay" 10
+    "LivenessInitialDelay" 20
+  )
 }}
-{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . ) }}
