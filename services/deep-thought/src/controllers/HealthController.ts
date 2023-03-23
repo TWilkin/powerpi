@@ -18,10 +18,7 @@ export default class HealthController {
     async getHealth(@Res() response: Response) {
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 
-        const status: { database?: boolean; mqtt: boolean } = {
-            database: undefined,
-            mqtt: true,
-        };
+        const status: { database?: boolean; mqtt?: boolean } = {};
 
         // check we can access the message queue
         status.mqtt = this.mqttService.connected;
