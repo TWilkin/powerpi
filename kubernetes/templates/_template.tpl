@@ -156,6 +156,32 @@ template:
           {{ $element.Name }}: {{ $element.Value }}
           {{- end }}
 
+      {{- if eq (empty .Params.Probe) false }}
+      readinessProbe:
+        {{- if eq (empty .Params.Probe.Http) false }}
+        httpGet:
+          path: {{ .Params.Probe.Http }}
+          port: {{ (first .Params.Ports).Name }}
+        {{- end }}
+        {{- if .Params.Probe.Tcp }}
+        tcpSocket:
+          port: {{ (first .Params.Ports).Name }}
+        {{- end }}
+        initialDelaySeconds: {{ .Params.Probe.ReadinessInitialDelay }}
+      
+      livenessProbe:
+        {{- if eq (empty .Params.Probe.Http) false }}
+        httpGet:
+          path: {{ .Params.Probe.Http }}
+          port: {{ (first .Params.Ports).Name }}
+        {{- end }}
+        {{- if .Params.Probe.Tcp }}
+        tcpSocket:
+          port: {{ (first .Params.Ports).Name }}
+        {{- end }}
+        initialDelaySeconds: {{ .Params.Probe.LivenessInitialDelay }}
+      {{- end }}
+
       {{- if or (eq (empty .Params.Volumes) false) $config $hasVolumeClaim $hasConfig $hasSecret }}
       volumeMounts:
       {{- range $element := .Params.Volumes }}
@@ -194,7 +220,7 @@ template:
       {{- end }}
 
       {{- end }}
-    
+
     restartPolicy: {{ .Params.RestartPolicy | default "Always" }}
 
     {{- if or (eq (empty .Params.Volumes) false) $config $hasVolumeClaim $hasConfig $hasSecret }}

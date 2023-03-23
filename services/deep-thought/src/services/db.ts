@@ -136,6 +136,10 @@ export default class DatabaseService {
         );
     }
 
+    public async isAlive() {
+        return await this.query<{ value: number }>("SELECT 1 AS value");
+    }
+
     private async query<TResult extends QueryResultRow>(sql: string, params?: (string | Date)[]) {
         let client: PoolClient | undefined;
 

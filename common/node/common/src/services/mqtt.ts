@@ -24,6 +24,10 @@ export class MqttService {
         this.consumers = {};
     }
 
+    public get connected() {
+        return this.client?.connected ?? false;
+    }
+
     private get clientId() {
         const prefix = this.config.service.indexOf("/")
             ? this.config.service.split("/").slice(-1)[0]

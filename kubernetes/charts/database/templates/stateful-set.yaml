@@ -40,6 +40,11 @@
       )
     )
   )
+  "Probe" (dict
+    "Tcp" true
+    "ReadinessInitialDelay" 25
+    "LivenessInitialDelay" 50
+  )
 }}
 
 {{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

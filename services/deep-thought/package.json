@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/deep-thought",
-    "version": "0.5.21",
+    "version": "0.6.0",
     "description": "PowerPi API",
     "private": true,
     "license": "GPL-3.0-only",
@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@powerpi/api": "^0.0.17",
-        "@powerpi/common": "^0.0.11",
+        "@powerpi/common": "^0.0.12",
         "@tsed/common": "^6.115.0",
         "@tsed/core": "^6.115.0",
         "@tsed/di": "^6.115.0",

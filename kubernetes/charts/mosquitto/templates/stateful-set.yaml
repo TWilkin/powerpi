@@ -26,6 +26,11 @@
       "SubPath" "mosquitto.conf"
     )
   )
+  "Probe" (dict
+    "Tcp" true
+    "ReadinessInitialDelay" 5
+    "LivenessInitialDelay" 10
+  )
 }}
 
 {{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}
