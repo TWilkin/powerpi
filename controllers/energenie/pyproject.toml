@@ -16,8 +16,8 @@ pyenergenie = {git = "https://github.com/whaleygeek/pyenergenie.git", rev = "eec
 powerpi-common = {path = "../../common/python", develop = true}
 
 [tool.poetry.group.dev.dependencies]
-autopep8 = "~=2.0.0"
-pylint = "~=2.15.5"
+autopep8 = "~=2.0.2"
+pylint = "~=2.17.1"
 
 [tool.poetry.group.test.dependencies]
 powerpi-common-test = {path = "../../common/pytest", develop = true}
