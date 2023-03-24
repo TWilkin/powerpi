@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lifx_controller"
-version = "0.2.2"
+version = "0.3.0"
 description = "PowerPi LIFX Controller"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
@@ -9,14 +9,14 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-aiolifx = "~=0.8.7"
+aiolifx = "~=0.8.9"
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}
 
 [tool.poetry.group.dev.dependencies]
-autopep8 = "~=2.0.0"
-pylint = "~=2.15.5"
+autopep8 = "~=2.0.2"
+pylint = "~=2.17.1"
 
 [tool.poetry.group.test.dependencies]
 powerpi-common-test = {path = "../../common/pytest", develop = true}
