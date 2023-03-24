@@ -3,17 +3,15 @@ import logging
 import socket
 import sys
 import time
-
 from datetime import datetime
 from typing import Dict, List, Union
 from urllib.parse import urlparse
 
 import gmqtt
-
 from gmqtt import Client
-
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
+
 from .consumer import MQTTConsumer
 from .types import MQTTMessage
 
@@ -87,6 +85,11 @@ class MQTTClient:
 
         url = urlparse(self.__config.mqtt_address)
         self.__client = Client(client_id)
+
+        self.__client.set_config({
+            'reconnect_retries': 0
+        })
+
         self.__client.on_connect = self.__on_connect
         self.__client.on_disconnect = self.__on_disconnect
         self.__client.on_message = self.__on_message
