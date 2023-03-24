@@ -1,6 +1,6 @@
 # create a base image for building
-FROM python:3.9.5-slim AS build-base-image
-RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.2.0
+FROM python:3.9.16-slim AS build-base-image
+RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.4.1
 RUN poetry config virtualenvs.in-project true
 ENV CFLAGS=-fcommon
 
@@ -28,7 +28,7 @@ RUN ln -s ../../common/python/.venv .venv \
     && poetry install --only main --no-root --no-interaction --no-ansi
 
 # use multi-stage build to remove compile dependencies
-FROM python:3.9.5-slim AS run-image
+FROM python:3.9.16-slim AS run-image
 LABEL description="PowerPi Node Controller"
 
 ENV PATH="/usr/src/app/venv/bin:$PATH"
