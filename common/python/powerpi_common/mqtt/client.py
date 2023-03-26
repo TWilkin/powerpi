@@ -35,6 +35,10 @@ class MQTTClient:
 
         self.__client = Union[Client, None]
 
+    @property
+    def connected(self):
+        return self.__connected
+
     def add_consumer(self, consumer: MQTTConsumer):
         key = consumer.topic
 

@@ -1,11 +1,11 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dependency_injector import containers, providers
-
 from powerpi_common.config import Config
 from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.controller import Controller
 from powerpi_common.device import DeviceContainer
 from powerpi_common.event import EventManager
+from powerpi_common.health import HealthService
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import VariableContainer
@@ -74,6 +74,14 @@ class Container(containers.DeclarativeContainer):
         variable_manager=variable.variable_manager
     )
 
+    health = providers.Singleton(
+        HealthService,
+        config=config,
+        logger=logger,
+        mqtt_client=mqtt_client,
+        scheduler=scheduler
+    )
+
     controller = providers.Singleton(
         Controller,
         logger=logger,
@@ -83,6 +91,7 @@ class Container(containers.DeclarativeContainer):
         mqtt_client=mqtt_client,
         device_status_checker=device.device_status_checker,
         scheduler=scheduler,
+        health=health,
         app_name=app_name,
         version=version
     )

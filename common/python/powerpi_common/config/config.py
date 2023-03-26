@@ -1,6 +1,5 @@
 import json
 import os
-
 from enum import Enum
 from typing import Any, Dict
 
@@ -35,6 +34,11 @@ class Config:
     def topic_base(self):
         base = os.getenv('TOPIC_BASE')
         return base if base is not None else 'powerpi'
+
+    @property
+    def health_check_file(self):
+        health_file = os.getenv("HEALTH_CHECK_FILE")
+        return health_file if health_file is not None else '/var/run/powerpi_health'
 
     @property
     def poll_frequency(self):

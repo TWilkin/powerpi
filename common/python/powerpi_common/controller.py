@@ -3,17 +3,17 @@ from asyncio import (CancelledError, ensure_future, get_event_loop,
 from signal import SIGINT, SIGTERM
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from powerpi_common.config.config_retriever import ConfigRetriever
+from powerpi_common.device import DeviceManager, DeviceStatusChecker
+from powerpi_common.event import EventManager
+from powerpi_common.health import HealthService
+from powerpi_common.logger import Logger
+from powerpi_common.mqtt import MQTTClient
 
-from .config.config_retriever import ConfigRetriever
-from .device import DeviceManager, DeviceStatusChecker
-from .event import EventManager
-from .logger import Logger
-from .mqtt import MQTTClient
 
-
-#pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-instance-attributes
 class Controller:
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         logger: Logger,
@@ -23,6 +23,7 @@ class Controller:
         mqtt_client: MQTTClient,
         device_status_checker: DeviceStatusChecker,
         scheduler: AsyncIOScheduler,
+        health: HealthService,
         app_name: str,
         version: str
     ):
@@ -33,6 +34,7 @@ class Controller:
         self.__mqtt_client = mqtt_client
         self.__device_status_checker = device_status_checker
         self.__scheduler = scheduler
+        self.__health = health
         self.__app_name = app_name
         self.__version = version
 
@@ -79,6 +81,9 @@ class Controller:
 
             # load the events from the config
             self.__event_manager.load()
+
+            # start the health check
+            self.__health.start()
 
             # periodically check device status
             self.__device_status_checker.start()
