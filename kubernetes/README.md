@@ -38,26 +38,26 @@ Have a look at the options in [values.yaml](./values.yaml) as these are the opti
 
 ## Deploying
 
-Finally once the plugins are enabled, labels added and the secrets have been created, the stack can be deployed (where _OVERRIDE_ is the path to your overriding YAML configuration file):
+Finally once the plugins are enabled, the stack can be deployed by adding the Helm repository and deploying the stack (where _OVERRIDE_ is the path to your overriding YAML configuration file):
 
 ```bash
-# From the root of your checkout of PowerPi
-cd kubernetes
+# Add the helm repo for PowerPi
+microk8s helm repo add powerpi https://twilkin.github.io/powerpi
 
 # Deploy your stack
-microk8s helm upgrade --install --namespace powerpi --create-namespace -f __OVERRIDE__ powerpi .
+microk8s helm upgrade --install --namespace powerpi --create-namespace -f __OVERRIDE__ powerpi/powerpi powerpi
 ```
 
 ## Updating
 
-When changes have been made to PowerPi the images will be updated on [Docker Hub](https://hub.docker.com/u/twilkin); updating is simply a case of downloading the latest version of this repository and re-running the deploy step (where _OVERRIDE_ is the path to your overriding YAML configuration file).
+When changes have been made to PowerPi the images will be updated on [Docker Hub](https://hub.docker.com/u/twilkin); updating is simply a case of downloading the latest version of the helm repository and re-running the deploy step (where _OVERRIDE_ is the path to your overriding YAML configuration file).
 
 ```bash
-# From the root of your checkout of PowerPi
-cd kubernetes
+# Update the helm repo for PowerPi
+microk8s helm repo update
 
-# Update your stack
-microk8s helm upgrade --install --namespace powerpi -f __OVERRIDE__ powerpi .
+# Deploy your stack
+microk8s helm upgrade --install --namespace powerpi -f __OVERRIDE__ powerpi/powerpi powerpi
 ```
 
 ### Add Secrets
