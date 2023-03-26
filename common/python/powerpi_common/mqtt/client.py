@@ -116,6 +116,7 @@ class MQTTClient:
     def __on_disconnect(self, _, __):
         self.__connected = False
         self.__logger.info('MQTT disconnected')
+        sys.exit(-1)
 
     async def __on_message(self, _, topic: str, payload: Dict, __, ___):
         # read the JSON

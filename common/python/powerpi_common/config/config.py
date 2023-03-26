@@ -28,7 +28,7 @@ class Config:
     @property
     def mqtt_connect_timeout(self):
         timeout = as_int(os.getenv('MQTT_CONNECT_TIMEOUT'))
-        return timeout if timeout is not None else 60
+        return timeout if timeout is not None else 10
 
     @property
     def topic_base(self):
