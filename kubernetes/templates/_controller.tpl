@@ -17,6 +17,14 @@
     "RequestMemory" "50Mi"
     "LimitMemory" "100Mi"
     "Env" $env
+    "Probe" (dict
+      "Command" (list
+        "bash"
+        "/usr/src/app/venv/lib/python3.9/site-packages/powerpi_common/health.sh"
+      )
+      "ReadinessInitialDelay" 10
+      "LivenessInitialDelay" 20
+    )
   ) 
   .Params
 ) }}

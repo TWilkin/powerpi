@@ -167,6 +167,13 @@ template:
         tcpSocket:
           port: {{ (first .Params.Ports).Name }}
         {{- end }}
+        {{- if .Params.Probe.Command }}
+        exec:
+          command:
+          {{- range $element := .Params.Probe.Command }}
+          - {{ $element }}
+          {{- end }}
+        {{- end }}
         initialDelaySeconds: {{ .Params.Probe.ReadinessInitialDelay }}
       
       livenessProbe:
@@ -178,6 +185,13 @@ template:
         {{- if .Params.Probe.Tcp }}
         tcpSocket:
           port: {{ (first .Params.Ports).Name }}
+        {{- end }}
+        {{- if .Params.Probe.Command }}
+        exec:
+          command:
+          {{- range $element := .Params.Probe.Command }}
+          - {{ $element }}
+          {{- end }}
         {{- end }}
         initialDelaySeconds: {{ .Params.Probe.LivenessInitialDelay }}
       {{- end }}
