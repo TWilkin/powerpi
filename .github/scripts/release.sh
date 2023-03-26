@@ -18,7 +18,7 @@ echo "Packaging Helm Chart"
 ./cr package "${GITHUB_WORKSPACE}/kubernetes/"
 if [ $? -ne 0 ]
 then
-    set -e
+    exit 1
 fi
 
 # upload chart to GitHub releases
@@ -29,7 +29,7 @@ echo "Creating Release"
     --release-name-template "v{{ .Version }}"
 if [ $? -ne 0 ]
 then
-    set -e
+    exit 2
 fi
 
 # update index and push to GitHub pages
@@ -43,5 +43,5 @@ echo "Updating index"
     --push
 if [ $? -ne 0 ]
 then
-    set -e
+    exit 3
 fi
