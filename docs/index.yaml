@@ -1,3 +1,78 @@
 apiVersion: v1
-entries: {}
-generated: "2023-03-26T22:10:59.036132721+01:00"
+entries:
+  powerpi:
+  - apiVersion: v2
+    appVersion: 0.1.4
+    created: "2023-03-26T22:16:34.3034837Z"
+    dependencies:
+    - condition: global.voiceAssistant
+      name: babel-fish
+      repository: ""
+      version: 0.1.0
+    - condition: global.config
+      name: clacks-config
+      repository: ""
+      version: 0.1.0
+    - condition: global.persistence
+      name: database
+      repository: ""
+      version: 0.1.2
+    - name: deep-thought
+      repository: ""
+      version: 0.1.1
+    - condition: global.energy-monitor
+      name: energy-monitor
+      repository: ""
+      version: 0.1.1
+    - condition: global.freeDNS
+      name: freedns
+      repository: ""
+      version: 0.1.0
+    - condition: global.scheduler
+      name: light-fantastic
+      repository: ""
+      version: 0.1.0
+    - name: mosquitto
+      repository: ""
+      version: 0.1.2
+    - condition: global.persistence
+      name: persistence
+      repository: ""
+      version: 0.1.0
+    - name: smarter-device-manager
+      repository: ""
+      version: 0.1.0
+    - name: ui
+      repository: ""
+      version: 0.1.2
+    - condition: global.energenie
+      name: energenie-controller
+      repository: ""
+      version: 0.1.1
+    - condition: global.harmony
+      name: harmony-controller
+      repository: ""
+      version: 0.1.1
+    - condition: global.lifx
+      name: lifx-controller
+      repository: ""
+      version: 0.1.1
+    - name: macro-controller
+      repository: ""
+      version: 0.1.1
+    - condition: global.node
+      name: node-controller
+      repository: ""
+      version: 0.1.1
+    - condition: global.zigbee
+      name: zigbee-controller
+      repository: ""
+      version: 0.1.1
+    description: A Helm chart for deploying the PowerPi home automation stack
+    digest: ef57dc62ce4752ec07731145e7fa69cd9a2457b10235e2193f6a60dee6b600f0
+    name: powerpi
+    type: application
+    urls:
+    - https://github.com/TWilkin/powerpi/releases/download/v0.1.6/powerpi-0.1.6.tgz
+    version: 0.1.6
+generated: "2023-03-26T22:16:34.3034887Z"
