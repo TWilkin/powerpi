@@ -38,7 +38,7 @@ class Config:
     @property
     def health_check_file(self):
         health_file = os.getenv("HEALTH_CHECK_FILE")
-        return health_file if health_file is not None else '/var/run/powerpi_health'
+        return health_file if health_file is not None else '/usr/src/app/powerpi_health'
 
     @property
     def poll_frequency(self):

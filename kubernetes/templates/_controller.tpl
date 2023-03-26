@@ -19,7 +19,7 @@
     "Env" $env
     "Probe" (dict
       "Command" (list
-        "bash"
+        "/bin/sh"
         "/usr/src/app/venv/lib/python3.9/site-packages/powerpi_common/health.sh"
       )
       "ReadinessInitialDelay" 10
