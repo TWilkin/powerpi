@@ -42,18 +42,7 @@ update_version() {
     echo "Found v$appVersion of service $service"
     echo "Found v$subchartVersion of helm subchart $service"
 
-    # increase PowerPi version
-    increase_version $powerpiVersion "macro"
-    powerpiVersion=$newVersion
-    echo "Increasing PowerPi to v$powerpiVersion"
-
-    # increase the chart version
-    increase_version $helmVersion "macro"
-    helmVersion=$newVersion
-    echo "Increasing helm chart to v$helmVersion"
-    set_chart_version $helmPath $powerpiVersion $helmVersion
-
-    # increase the app version
+    # increase the service version
     increase_version $appVersion $versionPart
     appVersion=$newVersion
     echo "Increasing service $service to v$appVersion"
@@ -64,6 +53,17 @@ update_version() {
     subchartVersion=$newVersion
     echo "Increasing helm subchart $service to v$subchartVersion"
     set_chart_version $subchartPath $appVersion $subchartVersion
+
+    # increase PowerPi version
+    increase_version $powerpiVersion "macro"
+    powerpiVersion=$newVersion
+    echo "Increasing PowerPi to v$powerpiVersion"
+
+    # increase the chart version
+    increase_version $helmVersion "macro"
+    helmVersion=$newVersion
+    echo "Increasing helm chart to v$helmVersion"
+    set_chart_version $helmPath $powerpiVersion $helmVersion $subchartVersion
 
     # commit the change
     echo "Committing version changes"
@@ -81,9 +81,15 @@ set_chart_version() {
     local path=$1
     local appVersion=$2
     local chartVersion=$3
+    local subchartVersion=$4
 
     yq e -i ".appVersion = \"$appVersion\"" $path
     yq e -i ".version = \"$chartVersion\"" $path
+
+    if [ ! -z $subchartVersion ]
+    then
+        yq e -i "(.dependencies[] | select(.name == \"energy-monitor\").version) = \"$subchartVersion\"" $path
+    fi
 
     git add $path
 }
@@ -122,7 +128,7 @@ update_service_version() {
     local file="$path/package.json"
     if [ -f "$file" ]
     then
-        yq -e -i -I4 ".version = \"$version\"" $file
+        yq -e -i -I4 -oj ".version = \"$version\"" $file
         git add $file
         return
     fi
