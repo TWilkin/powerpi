@@ -16,6 +16,10 @@ repo=$(cut -d '/' -f 2 <<< "$GITHUB_REPOSITORY")
 # package chart
 echo "Packaging Helm Chart"
 ./cr package "${GITHUB_WORKSPACE}/kubernetes/"
+if [ $? -ne 0 ]
+then
+    set -e
+fi
 
 # upload chart to GitHub releases
 echo "Creating Release"
@@ -23,6 +27,10 @@ echo "Creating Release"
     --owner "$owner" \
     --git-repo "$repo" \
     --release-name-template "v{{ .Version }}"
+if [ $? -ne 0 ]
+then
+    set -e
+fi
 
 # update index and push to GitHub pages
 echo "Updating index"
@@ -33,3 +41,7 @@ echo "Updating index"
     --index-path ./index.yaml \
     --pages-index-path docs/index.yaml \
     --push
+if [ $? -ne 0 ]
+then
+    set -e
+fi
