@@ -1,11 +1,12 @@
 from typing import List
 
 import pytest
-from pytest_mock import MockerFixture
-
-from powerpi_common.condition import ConditionParser, InvalidArgumentException, \
-    InvalidIdentifierException, UnexpectedTokenException
+from powerpi_common.condition import (ConditionParser,
+                                      InvalidArgumentException,
+                                      InvalidIdentifierException,
+                                      UnexpectedTokenException)
 from powerpi_common.variable import SensorValue
+from pytest_mock import MockerFixture
 
 
 class DeviceVariableImpl:
@@ -131,10 +132,10 @@ class TestConditionParser:
         ('>=', [2, 3], False),
         ('<', [2, 3], True),
         ('<=', [3, 2], False),
-        ('greater than', [3, 2], True),
-        ('greater than equal', [2, 3], False),
-        ('less than', [2, 3], True),
-        ('less than equal', [3, 2], False),
+        ('greater_than', [3, 2], True),
+        ('greater_than_equal', [2, 3], False),
+        ('less_than', [2, 3], True),
+        ('less_than_equal', [3, 2], False),
     ])
     def test_relational_expression_success(
         self, mocker: MockerFixture, operator: str, values: List, expected: bool
