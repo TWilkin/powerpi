@@ -30,9 +30,9 @@ class HealthService(LogMixin):
 
         interval = IntervalTrigger(seconds=10)
 
-        self.__scheduler.add_job(self.__run, trigger=interval)
+        self.__scheduler.add_job(self.run, trigger=interval)
 
-    async def __run(self):
+    async def run(self):
         if self.__mqtt_client.connected:
             self.log_debug('MQTT connected')
 
