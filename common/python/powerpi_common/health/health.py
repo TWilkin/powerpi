@@ -2,15 +2,15 @@ from pathlib import Path
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
-from powerpi_common.config.config import Config
+from powerpi_common.config import Config
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.mqtt import MQTTClient
 
 
 class HealthService(LogMixin):
     '''
-    HealthService which will check the health of a controller/Python service so that it can
-    be automatically restarted by the container orchestrator as needed.
+    HealthService which will check the health of a controller/Python service periodically so that 
+    it can be automatically restarted by the container orchestrator as needed.
     '''
 
     def __init__(
