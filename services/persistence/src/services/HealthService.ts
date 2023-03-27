@@ -1,19 +1,15 @@
-import { MqttService } from "@powerpi/common";
-import fs from "fs";
+import { FileService, MqttService } from "@powerpi/common";
 import { Service } from "typedi";
-import util from "util";
 import ConfigService from "./ConfigService";
 import DbService from "./DbService";
-
-// allow writing of files using await
-const writeAsync = util.promisify(fs.writeFile);
 
 @Service()
 export default class HealthService {
     constructor(
         private readonly configService: ConfigService,
         private readonly dbService: DbService,
-        private readonly mqttService: MqttService
+        private readonly mqttService: MqttService,
+        private readonly fs: FileService
     ) {}
 
     public async start() {
@@ -30,7 +26,7 @@ export default class HealthService {
         const db = true;
 
         if (mqtt && db) {
-            await writeAsync(this.configService.healthCheckFile, "");
+            await this.fs.touch(this.configService.healthCheckFile);
         }
     }
 }
