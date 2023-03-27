@@ -74,7 +74,7 @@ export class ConfigService {
     }
 
     get healthCheckFile() {
-        return process.env["HEALTH_CHECK_FILE"] ?? "/usr/src/app/powerpi_health";
+        return process.env["HEALTH_CHECK_FILE"] ?? "/home/node/app/powerpi_health";
     }
 
     get configWaitTime() {

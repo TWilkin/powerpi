@@ -13,10 +13,11 @@
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc && cp src/health.sh dist/"
     },
     "files": [
-        "dist/src"
+        "dist/src",
+        "dist/health.sh"
     ],
     "devDependencies": {
         "@types/dateformat": "^5.0.0",
