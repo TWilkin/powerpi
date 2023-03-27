@@ -201,7 +201,7 @@ yarn
 yarn build:common
 yarn build:common-test
 
-# Run the service locally
+# Run the tests
 yarn test:clacks-config
 ```
 

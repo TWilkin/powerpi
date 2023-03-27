@@ -19,7 +19,16 @@ yarn build:common
 
 ## Testing
 
-There are currently no automated tests for this library.
+This library can be tested by executing the following commands.
+
+```bash
+# From the root of your PowerPi checkout
+# Download the dependencies
+yarn
+
+# Run the tests
+yarn test:common
+```
 
 ## Local Execution
 
