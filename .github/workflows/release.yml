@@ -16,8 +16,8 @@ jobs:
     
     - name: Configure git
       run: |
-        git config user.name github-actions
-        git config user.email github-actions@github.com
+        git config user.name PowerPi-bot
+        git config user.email PowerPi-Bot@github.com
     
     - name: Add chart directory
       run: ln -s kubernetes charts
