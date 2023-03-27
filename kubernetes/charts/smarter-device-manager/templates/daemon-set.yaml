@@ -5,7 +5,6 @@
   "ImageTag" (print "v" (.Values.imageTag | default .Chart.AppVersion))
   "Role" "agent"
   "PriorityClassName" "powerpi-critical"
-  "HostNetwork" true
   "RequestCPU" "10m"
   "RequestMemory" "15Mi"
   "LimitCPU" "100m"

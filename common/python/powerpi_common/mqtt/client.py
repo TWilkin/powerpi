@@ -3,17 +3,15 @@ import logging
 import socket
 import sys
 import time
-
 from datetime import datetime
 from typing import Dict, List, Union
 from urllib.parse import urlparse
 
 import gmqtt
-
 from gmqtt import Client
-
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
+
 from .consumer import MQTTConsumer
 from .types import MQTTMessage
 
@@ -36,6 +34,10 @@ class MQTTClient:
         self.__logger.set_logger_level(gmqtt.__name__, logging.WARNING)
 
         self.__client = Union[Client, None]
+
+    @property
+    def connected(self):
+        return self.__connected
 
     def add_consumer(self, consumer: MQTTConsumer):
         key = consumer.topic
@@ -87,6 +89,11 @@ class MQTTClient:
 
         url = urlparse(self.__config.mqtt_address)
         self.__client = Client(client_id)
+
+        self.__client.set_config({
+            'reconnect_retries': 0
+        })
+
         self.__client.on_connect = self.__on_connect
         self.__client.on_disconnect = self.__on_disconnect
         self.__client.on_message = self.__on_message
@@ -109,6 +116,7 @@ class MQTTClient:
     def __on_disconnect(self, _, __):
         self.__connected = False
         self.__logger.info('MQTT disconnected')
+        sys.exit(-1)
 
     async def __on_message(self, _, topic: str, payload: Dict, __, ___):
         # read the JSON

@@ -1,6 +1,5 @@
 from dependency_injector import containers, providers
 from powerpi_common.container import Container as CommonContainer
-
 from zigbee_controller.__version__ import __app_name__, __version__
 from zigbee_controller.config import ZigbeeConfig
 from zigbee_controller.controller import Controller
@@ -41,5 +40,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
         mqtt_client=common.mqtt_client,
         device_status_checker=common.device.device_status_checker,
         scheduler=common.scheduler,
+        health=common.health,
         zigbee_controller=device.zigbee_controller
     )

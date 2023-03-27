@@ -129,11 +129,11 @@ class PWMFanController(PWMFanInterface, LogMixin):
         self.__scheduler.add_job(self.update, trigger=interval)
 
         # add a listener for fan speed change
-        gpio.add_event_detect(
-            TACH_PIN,
-            gpio.FALLING,
-            lambda _: self.__get_fan_speed()
-        )
+        # gpio.add_event_detect(
+        #     TACH_PIN,
+        #     gpio.FALLING,
+        #     lambda _: self.__get_fan_speed()
+        # )
 
         self.__set_fan_speed(100)
 

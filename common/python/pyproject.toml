@@ -1,22 +1,23 @@
 [tool.poetry]
 name = "powerpi-common"
-version = "0.2.13"
+version = "0.2.14"
 description = "PowerPi Common Python Library"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
 repository = "https://github.com/TWilkin/powerpi.git"
+include = ["powerpi_common/health.sh"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-apscheduler = "~=3.9.1"
-dependency-injector = "~=4.40.0"
-gmqtt = "~=0.6.11"
+apscheduler = "~=3.10.1"
+dependency-injector = "~=4.41.0"
+gmqtt = "~=0.6.12"
 jsonpatch = "~=1.32"
 toml = "~=0.10.2"
 
 [tool.poetry.group.dev.dependencies]
-autopep8 = "~=2.0.0"
-pylint = "~=2.15.5"
+autopep8 = "~=2.0.2"
+pylint = "~=2.17.1"
 
 [tool.poetry.group.test.dependencies]
 powerpi-common-test = {path = "../pytest", develop = true}
