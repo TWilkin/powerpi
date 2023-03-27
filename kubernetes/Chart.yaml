@@ -2,70 +2,54 @@ apiVersion: v2
 name: powerpi
 description: A Helm chart for deploying the PowerPi home automation stack
 type: application
-version: 0.1.6
-appVersion: 0.1.4
+version: 0.1.7
+appVersion: 0.1.5
 dependencies:
   # services
   - name: babel-fish
     version: 0.1.0
     condition: global.voiceAssistant
-
   - name: clacks-config
     version: 0.1.0
     condition: global.config
-
   - name: database
     version: 0.1.2
     condition: global.persistence
-
   - name: deep-thought
     version: 0.1.1
-
   - name: energy-monitor
     version: 0.1.1
     condition: global.energy-monitor
-
   - name: freedns
     version: 0.1.0
     condition: global.freeDNS
-
   - name: light-fantastic
     version: 0.1.0
     condition: global.scheduler
-
   - name: mosquitto
     version: 0.1.2
-
   - name: persistence
-    version: 0.1.0
+    version: 0.1.1
     condition: global.persistence
-
   - name: smarter-device-manager
     version: 0.1.1
-
   - name: ui
     version: 0.1.2
-
   # controllers
   - name: energenie-controller
     version: 0.1.1
     condition: global.energenie
-
   - name: harmony-controller
     version: 0.1.1
     condition: global.harmony
-
   - name: lifx-controller
     version: 0.1.1
     condition: global.lifx
-
   - name: macro-controller
     version: 0.1.1
-
   - name: node-controller
     version: 0.1.1
     condition: global.node
-
   - name: zigbee-controller
     version: 0.1.1
     condition: global.zigbee
