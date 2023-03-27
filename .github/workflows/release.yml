@@ -1,4 +1,4 @@
-name: Release Helm Chart
+name: Release PowerPi
 
 on:
   push:
@@ -21,13 +21,13 @@ jobs:
     
     - name: Add chart directory
       run: ln -s kubernetes charts
-    
+
+    - name: Tag services
+      shell: bash
+      run: "${GITHUB_WORKSPACE}/.github/scripts/tag.sh"
+
     - name: Package and upload helm chart
       shell: bash
       run: "${GITHUB_WORKSPACE}/.github/scripts/release.sh"
       env:
         CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-    
-    - name: Tag services
-      shell: bash
-      run: "${GITHUB_WORKSPACE}/.github/scripts/tag.sh"
