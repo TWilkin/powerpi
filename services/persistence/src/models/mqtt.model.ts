@@ -7,28 +7,27 @@ import { Column, DataType, Index, Model, PrimaryKey, Table } from "sequelize-typ
 export default class MqttModel extends Model<MqttModel> {
     @PrimaryKey
     @Index({
-        name: "IDX_mqtt_type",
+        order: "ASC",
     })
     @Column(DataType.STRING)
     type!: string;
 
     @PrimaryKey
     @Index({
-        name: "IDX_mqtt_entity",
+        order: "ASC",
     })
     @Column(DataType.STRING)
     entity!: string;
 
     @PrimaryKey
     @Index({
-        name: "IDX_mqtt_action",
+        order: "ASC",
     })
     @Column(DataType.STRING)
     action!: string;
 
     @PrimaryKey
     @Index({
-        name: "IDX_mqtt_timestamp",
         order: "DESC",
     })
     @Column(DataType.DATE)
