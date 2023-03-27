@@ -1,6 +1,7 @@
 import { LoggerService } from "@powerpi/common";
 import { Sequelize } from "sequelize-typescript";
 import { Service } from "typedi";
+import _ from "underscore";
 import Container from "../Container";
 import MqttModel from "../models/mqtt.model";
 import ConfigService from "./ConfigService";
@@ -27,5 +28,15 @@ export default class DbService {
         this.sequelize.addModels([MqttModel]);
 
         await this.sequelize.sync();
+    }
+
+    public async isAlive() {
+        if (this.sequelize) {
+            const [results, __] = await this.sequelize.query("SELECT 1 AS value");
+
+            return (_(results as { value: number }[]).first()?.value ?? 0) === 1;
+        }
+
+        return false;
     }
 }
