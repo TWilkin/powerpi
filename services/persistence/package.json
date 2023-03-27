@@ -16,7 +16,8 @@
         "build": "tsc",
         "clean": "rm -rf dist build",
         "start:dev": "ts-node src/index.ts",
-        "start:prd": "node dist/src/index.js"
+        "start:prd": "node dist/src/index.js",
+        "test": "jest"
     },
     "dependencies": {
         "@powerpi/common": "^0.0.13",
@@ -29,6 +30,7 @@
         "underscore": "^1.13.6"
     },
     "devDependencies": {
+        "@powerpi/common-test": "^0.0.4",
         "@types/bluebird": "^3.5.36",
         "@types/node": "^18.7.2",
         "@types/underscore": "^1.11.4",

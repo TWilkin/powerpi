@@ -2,7 +2,7 @@
 
 PowerPi service which writes all broadcast MQTT messages by the other services to a database. These messages can then be retrieved by [_deep-thought_ (API)](../deep-thought/README.md) to show history, and charts of sensor data in the UI.
 
-The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) which needs to be compiled before use.
+The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) and a common testing library [_@powerpi/common-test_](../../common/node/common-test/README.md), all of which need to be compiled before use.
 
 ## Building
 
@@ -23,7 +23,20 @@ This service expects the following environment variables to be set before it wil
 
 ## Testing
 
-There are currently no automated tests for this service.
+This service can be tested by executing the following commands.
+
+```bash
+# From the root of your PowerPi checkout
+# Download the dependencies
+yarn
+
+# Build the common and common testing library
+yarn build:common
+yarn build:common-test
+
+# Run the tests
+yarn test:persistence
+```
 
 ## Local Execution
 
@@ -34,8 +47,9 @@ The service can be started locally with the following commands.
 # Download the dependencies
 yarn
 
-# Build the common library
+# Build the common and common testing library
 yarn build:common
+yarn build:common-test
 
 # Run the service locally
 yarn start:persistence
