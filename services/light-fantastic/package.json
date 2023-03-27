@@ -19,7 +19,7 @@
         "start:prd": "node dist/src/index.js"
     },
     "dependencies": {
-        "@powerpi/common": "^0.0.12",
+        "@powerpi/common": "^0.0.13",
         "luxon": "^2.5.2",
         "typedi": "^0.10.0"
     },

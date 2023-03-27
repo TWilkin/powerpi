@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/common",
-    "version": "0.0.12",
+    "version": "0.0.13",
     "description": "PowerPi Common Typescript library",
     "private": true,
     "license": "GPL-3.0-only",
