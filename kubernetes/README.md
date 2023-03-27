@@ -45,7 +45,7 @@ Finally once the plugins are enabled, the stack can be deployed by adding the He
 microk8s helm repo add powerpi https://twilkin.github.io/powerpi
 
 # Deploy your stack
-microk8s helm upgrade --install --namespace powerpi --create-namespace -f __OVERRIDE__ powerpi/powerpi powerpi
+microk8s helm upgrade --install --namespace powerpi --create-namespace -f __OVERRIDE__ powerpi powerpi/powerpi
 ```
 
 ## Updating
@@ -57,7 +57,7 @@ When changes have been made to PowerPi the images will be updated on [Docker Hub
 microk8s helm repo update
 
 # Deploy your stack
-microk8s helm upgrade --install --namespace powerpi -f __OVERRIDE__ powerpi/powerpi powerpi
+microk8s helm upgrade --install --namespace powerpi -f __OVERRIDE__ powerpi powerpi/powerpi
 ```
 
 ### Add Secrets
