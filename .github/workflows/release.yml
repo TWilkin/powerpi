@@ -14,10 +14,10 @@ jobs:
       with:
         fetch-depth: 0
     
-    - name: Configure Git
+    - name: Configure git
       run: |
-        git config user.name github-actions
-        git config user.email github-actions@github.com
+        git config user.name PowerPi-bot
+        git config user.email PowerPi-Bot@github.com
     
     - name: Add chart directory
       run: ln -s kubernetes charts
@@ -27,3 +27,7 @@ jobs:
       run: "${GITHUB_WORKSPACE}/.github/scripts/release.sh"
       env:
         CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+    
+    - name: Tag services
+      shell: bash
+      run: "${GITHUB_WORKSPACE}/.github/scripts/tag.sh"
