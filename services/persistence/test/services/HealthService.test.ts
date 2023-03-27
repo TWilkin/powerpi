@@ -16,6 +16,10 @@ describe("HealthService", () => {
 
         jest.spyOn(FileService.prototype, "touch").mockResolvedValue(Promise.resolve());
 
+        jest.spyOn(MqttService.prototype, "connected", "get").mockReturnValue(true);
+
+        jest.spyOn(DbService.prototype, "isAlive").mockReturnValue(Promise.resolve(true));
+
         subject = new HealthService(
             config,
             fs,
@@ -27,12 +31,20 @@ describe("HealthService", () => {
         jest.clearAllMocks();
     });
 
+    test("start", async () => {
+        jest.useFakeTimers();
+
+        await subject.start(2);
+
+        expect(fs.touch).toHaveBeenCalledTimes(1);
+
+        await jest.advanceTimersByTimeAsync(2 * 1000);
+
+        expect(fs.touch).toHaveBeenCalledTimes(2);
+    });
+
     describe("execute", () => {
         test("success", async () => {
-            jest.spyOn(MqttService.prototype, "connected", "get").mockReturnValue(true);
-
-            jest.spyOn(DbService.prototype, "isAlive").mockReturnValue(Promise.resolve(true));
-
             await subject.execute();
 
             expect(fs.touch).toHaveBeenCalledTimes(1);
