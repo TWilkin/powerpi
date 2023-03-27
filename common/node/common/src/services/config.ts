@@ -76,6 +76,10 @@ export class ConfigService {
         });
     }
 
+    get healthCheckFile() {
+        return process.env["HEALTH_CHECK_FILE"] ?? "/usr/src/app/powerpi_health";
+    }
+
     get configWaitTime() {
         const str = process.env["CONFIG_WAIT_TIME"];
         if (str) {
