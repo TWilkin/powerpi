@@ -7,7 +7,7 @@
 }}
 
 {{- $data := dict
-  "Name" "database-backup-job"
+  "Name" "database-backup"
   "Image" "postgres"
   "RequestMemory" "50Mi"
   "NodeSelector" $nodeSelector
