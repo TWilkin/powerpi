@@ -63,7 +63,7 @@ update_version() {
     increase_version $helmVersion "macro"
     helmVersion=$newVersion
     echo "Increasing helm chart to v$helmVersion"
-    set_chart_version $helmPath $powerpiVersion $helmVersion $subchartVersion
+    set_chart_version $helmPath $powerpiVersion $helmVersion $service $subchartVersion
 
     # commit the change
     echo "Committing version changes"
@@ -81,14 +81,15 @@ set_chart_version() {
     local path=$1
     local appVersion=$2
     local chartVersion=$3
-    local subchartVersion=$4
+    local service=$4
+    local subchartVersion=$5
 
     yq e -i ".appVersion = \"$appVersion\"" $path
     yq e -i ".version = \"$chartVersion\"" $path
 
     if [ ! -z $subchartVersion ]
     then
-        yq e -i "(.dependencies[] | select(.name == \"energy-monitor\").version) = \"$subchartVersion\"" $path
+        yq e -i "(.dependencies[] | select(.name == \"$service\").version) = \"$subchartVersion\"" $path
     fi
 
     git add $path

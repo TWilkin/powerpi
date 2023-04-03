@@ -22,5 +22,13 @@
       )
     )
   )
+  "Probe" (dict
+    "Command" (list
+      "/bin/sh"
+      "/home/node/app/node_modules/@powerpi/common/dist/health.sh"
+    )
+    "ReadinessInitialDelay" 10
+    "LivenessInitialDelay" 20
+  )
 }}
 {{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}

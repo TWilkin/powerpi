@@ -52,7 +52,9 @@
         "start:persistence": "yarn workspace @powerpi/persistence start:dev",
         "start:ui": "yarn workspace @powerpi/ui start",
         "test:babel-fish": "yarn workspace @powerpi/babel-fish test",
+        "test:common": "yarn workspace @powerpi/common test",
         "test:clacks-config": "yarn workspace @powerpi/clacks-config test",
+        "test:persistence": "yarn workspace @powerpi/persistence test",
         "test:ui": "yarn workspace @powerpi/ui test"
     },
     "devDependencies": {

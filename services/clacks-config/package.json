@@ -21,14 +21,14 @@
     },
     "dependencies": {
         "@octokit/rest": "^18.12.0",
-        "@powerpi/common": "^0.0.12",
+        "@powerpi/common": "^0.0.13",
         "ajv": "^8.11.0",
         "ajv-formats": "2.1.1",
         "typedi": "^0.10.0",
         "underscore": "^1.13.4"
     },
     "devDependencies": {
-        "@powerpi/common-test": "^0.0.3",
+        "@powerpi/common-test": "^0.0.4",
         "@types/node": "^18.0.0",
         "@types/underscore": "^1.11.4",
         "ts-node": "^10.8.2",

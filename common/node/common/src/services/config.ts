@@ -1,6 +1,5 @@
 import fs from "fs";
 import Container, { Service } from "typedi";
-import util from "util";
 import {
     IDeviceConfigFile,
     IFloorplanConfigFile,
@@ -9,6 +8,7 @@ import {
 } from "../models/config";
 import { Device, IDevice } from "../models/device";
 import { ISensor, Sensor } from "../models/sensor";
+import FileService from "./FileService";
 import { IntervalParserService } from "./interval";
 
 export enum ConfigFileType {
@@ -19,16 +19,13 @@ export enum ConfigFileType {
     Users = "users",
 }
 
-// allow reading of files using await
-const readAsync = util.promisify(fs.readFile);
-
 @Service()
 export class ConfigService {
     protected interval: IntervalParserService;
 
     private configs: { [key in ConfigFileType]?: { data: object; checksum: string } };
 
-    constructor() {
+    constructor(protected readonly fs: FileService) {
         this.interval = Container.get(IntervalParserService);
 
         this.configs = {};
@@ -74,6 +71,10 @@ export class ConfigService {
         return this.databasePassword.then((password) => {
             return `postgres://${this.databaseUser}:${password}@${this.databaseHost}:${this.databasePort}/${this.databaseSchema}`;
         });
+    }
+
+    get healthCheckFile() {
+        return process.env["HEALTH_CHECK_FILE"] ?? "/home/node/app/powerpi_health";
     }
 
     get configWaitTime() {
@@ -151,7 +152,7 @@ export class ConfigService {
     }
 
     protected async readFile(filePath: string) {
-        return (await readAsync(filePath)).toString().trim();
+        return (await this.fs.read(filePath)).toString().trim();
     }
 
     private get databaseHost() {

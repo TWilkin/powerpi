@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/common",
-    "version": "0.0.12",
+    "version": "0.0.13",
     "description": "PowerPi Common Typescript library",
     "private": true,
     "license": "GPL-3.0-only",
@@ -13,10 +13,12 @@
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc && cp src/health.sh dist/",
+        "test": "jest"
     },
     "files": [
-        "dist/src"
+        "dist/src",
+        "dist/health.sh"
     ],
     "devDependencies": {
         "@types/dateformat": "^5.0.0",
