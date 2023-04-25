@@ -2,7 +2,9 @@ import axios, { AxiosResponse } from "axios";
 import crypto from "crypto";
 import { readFile, stat } from "fs/promises";
 import loggy from "loggy";
+import { parse } from "ts-command-line-args";
 import xml2js from "xml2js";
+import FreeDNSArguments from "./FreeDNSArguments";
 
 // constants for the application
 const urlBase = "http://freedns.afraid.org/api/?action=getdyndns&v=2&style=xml";
@@ -66,6 +68,43 @@ async function updateRecord(host: string, url: string): Promise<AxiosResponse> {
     return response;
 }
 
+async function start() {
+    const args = parse<FreeDNSArguments>(
+        {
+            daemon: {
+                type: Boolean,
+                alias: "d",
+                optional: true,
+                defaultValue: false,
+                description: "Whether to run this service as a daemon or one-off",
+            },
+            help: {
+                type: Boolean,
+                alias: "?",
+                optional: true,
+                description: "Print this usage guide",
+            },
+        },
+        {
+            helpArg: "help",
+            headerContentSections: [
+                {
+                    header: "freedns",
+                },
+            ],
+        }
+    );
+
+    // always run it when we start
+    await updateDNS();
+
+    // if it's not a daemon set the interval
+    if (!args.daemon) {
+        loggy.info(`Running every ${interval}ms`);
+
+        setInterval(updateDNS, interval);
+    }
+}
+
 // start the program
-updateDNS();
-setInterval(updateDNS, interval);
+start();
