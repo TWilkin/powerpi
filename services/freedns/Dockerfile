@@ -27,4 +27,4 @@ RUN yarn workspace @powerpi/freedns install --production --frozen-lockfile
 COPY --from=build-service-image --chown=node:node /home/node/app/services/freedns/dist/ ./services/freedns/dist/
 
 # start the application once the container is ready
-CMD yarn workspace @powerpi/freedns start:prd
+CMD yarn workspace @powerpi/freedns start:prd --daemon

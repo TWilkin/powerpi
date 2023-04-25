@@ -98,8 +98,8 @@ async function start() {
     // always run it when we start
     await updateDNS();
 
-    // if it's not a daemon set the interval
-    if (!args.daemon) {
+    // if it's a daemon set the interval
+    if (args.daemon) {
         loggy.info(`Running every ${interval}ms`);
 
         setInterval(updateDNS, interval);
