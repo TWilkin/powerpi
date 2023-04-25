@@ -1,4 +1,11 @@
 {{- $data := dict
+"Schedule" (.Values.schedule | default "*/5 * * * *")
+  "Command" (list "yarn")
+  "Args" (list 
+    "workspace"
+    "@powerpi/clacks-config"
+    "start:prd"
+  )
   "PriorityClassName" "powerpi-critical"
   "Secret" (list
     (dict
@@ -21,5 +28,5 @@
       "Value" .Values.path
     )
   )
-}}
-{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}
+-}}
+{{- include "powerpi.cron-job" (merge (dict "Params" $data) . ) -}}
