@@ -1,4 +1,5 @@
 import { Service } from "typedi";
+import { sleep } from "../util";
 import { ConfigService } from "./config";
 import { LoggerService } from "./logger";
 import { Message, MqttConsumer, MqttService } from "./mqtt";
@@ -74,25 +75,21 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
         }
     }
 
-    private waitForConfig() {
+    private async waitForConfig() {
         const interval = 1000;
         const waitTime = (this.config.configWaitTime * 1000) / interval;
 
-        return new Promise<boolean>((resolve) => {
-            let counter = 0;
+        let counter = 0;
+        while (counter < waitTime) {
+            if (this.config.isPopulated) {
+                return true;
+            }
 
-            const check = () => {
-                if (this.config.isPopulated) {
-                    resolve(true);
-                } else if (counter >= waitTime) {
-                    resolve(false);
-                } else {
-                    counter++;
-                    setTimeout(check, interval);
-                }
-            };
+            counter++;
 
-            check();
-        });
+            await sleep(interval);
+        }
+
+        return false;
     }
 }
