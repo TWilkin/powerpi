@@ -1,13 +1,15 @@
 import fs from "fs";
 import Container, { Service } from "typedi";
 import {
+    Device,
+    IDevice,
     IDeviceConfigFile,
     IFloorplanConfigFile,
     IScheduleConfigFile,
+    ISensor,
     IUserConfigFile,
-} from "../models/config";
-import { Device, IDevice } from "../models/device";
-import { ISensor, Sensor } from "../models/sensor";
+    Sensor,
+} from "../models";
 import FileService from "./FileService";
 import { IntervalParserService } from "./IntervalParserService";
 

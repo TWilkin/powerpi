@@ -1,4 +1,4 @@
-import { IDeviceConfig } from "./config";
+import { IDeviceConfig } from "./IConfigFile";
 
 export interface IDevice extends IDeviceConfig {
     displayName: string;
