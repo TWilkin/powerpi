@@ -1,7 +1,7 @@
 import dateFormat from "dateformat";
 import logger from "loglevel";
 import { Service } from "typedi";
-import { ConfigService } from "./config";
+import { ConfigService } from "./ConfigService";
 
 export type LogParameter = string | number | Date;
 export type LogErrorParameter = LogParameter | Error | unknown;

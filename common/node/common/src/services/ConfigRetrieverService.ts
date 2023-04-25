@@ -1,8 +1,8 @@
 import { Service } from "typedi";
 import { sleep } from "../util";
-import { ConfigService } from "./config";
-import { LoggerService } from "./logger";
-import { Message, MqttConsumer, MqttService } from "./mqtt";
+import { ConfigService } from "./ConfigService";
+import { LoggerService } from "./LoggerService";
+import { Message, MqttConsumer, MqttService } from "./MqttService";
 
 interface ConfigMessage extends Message {
     payload: object;

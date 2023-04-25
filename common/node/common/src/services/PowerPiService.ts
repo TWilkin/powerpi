@@ -1,7 +1,7 @@
 import { Service } from "typedi";
-import { ConfigRetrieverService } from "./configretriever";
-import { LoggerService } from "./logger";
-import { MqttService } from "./mqtt";
+import { ConfigRetrieverService } from "./ConfigRetrieverService";
+import { LoggerService } from "./LoggerService";
+import { MqttService } from "./MqttService";
 
 type AppStart = () => void | Promise<void>;
 

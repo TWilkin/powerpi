@@ -1,8 +1,8 @@
 import { AsyncMqttClient, connectAsync, IClientPublishOptions } from "async-mqtt";
 import os from "os";
 import { Service } from "typedi";
-import { ConfigService } from "./config";
-import { LoggerService } from "./logger";
+import { ConfigService } from "./ConfigService";
+import { LoggerService } from "./LoggerService";
 
 export interface Message {
     timestamp?: number;

@@ -9,7 +9,7 @@ import {
 import { Device, IDevice } from "../models/device";
 import { ISensor, Sensor } from "../models/sensor";
 import FileService from "./FileService";
-import { IntervalParserService } from "./interval";
+import { IntervalParserService } from "./IntervalParserService";
 
 export enum ConfigFileType {
     Devices = "devices",
