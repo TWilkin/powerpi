@@ -33,17 +33,19 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
         );
 
         // we have to wait until we get all the configs we're waiting for
-        this.logger.info("Waiting for configuration from queue");
-        const success = await this.waitForConfig();
+        if (this.config.configIsNeeded) {
+            this.logger.info("Waiting for configuration from queue");
+            const success = await this.waitForConfig();
 
-        if (success) {
-            this.logger.info("Retrieved all expected config from queue");
-        } else if (this.config.configIsNeeded) {
-            const error = "Failed to retrieve all expected config from queue";
+            if (success) {
+                this.logger.info("Retrieved all expected config from queue");
+            } else {
+                const error = "Failed to retrieve all expected config from queue";
 
-            this.logger.error(error);
+                this.logger.error(error);
 
-            throw error;
+                throw error;
+            }
         }
     }
 
