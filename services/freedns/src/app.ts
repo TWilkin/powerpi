@@ -1,20 +1,21 @@
 import axios, { AxiosResponse } from "axios";
 import crypto from "crypto";
-import fs from "fs";
+import { readFile, stat } from "fs/promises";
 import loggy from "loggy";
 import xml2js from "xml2js";
 
 // constants for the application
 const urlBase = "http://freedns.afraid.org/api/?action=getdyndns&v=2&style=xml";
 const username = process.env.FREEDNS_USER;
-const password = getPassword(process.env.FREEDNS_PASSWORD);
 const interval = 5 * 60 * 1000;
 
 // check if the password is a file
-function getPassword(file?: string) {
-    if (file && fs.existsSync(file)) {
-        // read from the file
-        return fs.readFileSync(file, "utf8").trim();
+async function getPassword(file?: string) {
+    if (file) {
+        if (await stat(file)) {
+            // read from the file
+            return (await readFile(file, "utf8")).trim();
+        }
     }
 
     // it's not a file
@@ -24,6 +25,7 @@ function getPassword(file?: string) {
 // update the DNS records for the specified account
 async function updateDNS() {
     // check the credentials
+    const password = await getPassword(process.env.FREEDNS_PASSWORD);
     if (!username || !password) {
         throw new Error("Username and password are required");
     }
@@ -44,7 +46,7 @@ async function updateDNS() {
         // update all the DNS entries
         for (const element of data.xml.item) {
             if (element.url && element.url[0]) {
-                updateRecord(element.host, element.url[0]);
+                await updateRecord(element.host, element.url[0]);
             }
         }
     } catch (error) {
