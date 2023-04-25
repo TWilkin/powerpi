@@ -20,7 +20,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "@powerpi/common": "^0.0.13",
+        "@powerpi/common": "^0.0.14",
         "pg": "^8.7.3",
         "pg-hstore": "^2.3.4",
         "reflect-metadata": "^0.1.13",
