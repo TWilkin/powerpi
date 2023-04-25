@@ -60,4 +60,4 @@ RUN yarn workspace @powerpi/clacks-config install --production --frozen-lockfile
 COPY --from=build-service-image --chown=node:node /home/node/app/services/clacks-config/dist/ ./services/clacks-config/dist/
 
 # start the application once the container is ready
-CMD yarn workspace @powerpi/clacks-config start:prd
+CMD yarn workspace @powerpi/clacks-config start:prd --daemon

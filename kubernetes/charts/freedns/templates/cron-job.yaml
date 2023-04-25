@@ -1,4 +1,11 @@
 {{- $data := dict
+  "Schedule" (.Values.schedule | default "*/5 * * * *")
+  "Command" (list "yarn")
+  "Args" (list 
+    "workspace"
+    "@powerpi/freedns"
+    "start:prd"
+  )
   "Secret" (list
     (dict
       "Name" "freedns-secret"
@@ -14,5 +21,5 @@
       )
     )
   )
-}}
-{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}
+-}}
+{{- include "powerpi.cron-job" (merge (dict "Params" $data) . ) -}}

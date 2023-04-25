@@ -2,26 +2,24 @@ import { Octokit } from "@octokit/rest";
 import { ConfigFileType, LoggerService } from "@powerpi/common";
 import path from "path";
 import { Service } from "typedi";
-import Container from "../container";
 import ConfigPublishService from "./ConfigPublishService";
 import ConfigService from "./ConfigService";
-import HandlerFactory from "./handlers/HandlerFactory";
+import ConfigServiceArgumentService from "./ConfigServiceArgumentService";
 import ValidatorService, { ValidationException } from "./ValidatorService";
+import HandlerFactory from "./handlers/HandlerFactory";
 
 @Service()
 export default class GitHubConfigService {
-    private publishService: ConfigPublishService;
-    private logger: LoggerService;
-    private handlerFactory: HandlerFactory;
-    private validator: ValidatorService;
     private validated: { [key: string]: boolean };
 
-    constructor(private config: ConfigService) {
-        this.publishService = Container.get(ConfigPublishService);
-        this.logger = Container.get(LoggerService);
-        this.handlerFactory = Container.get(HandlerFactory);
-        this.validator = Container.get(ValidatorService);
-
+    constructor(
+        private readonly publishService: ConfigPublishService,
+        private readonly handlerFactory: HandlerFactory,
+        private readonly validator: ValidatorService,
+        private readonly config: ConfigService,
+        private readonly args: ConfigServiceArgumentService,
+        private readonly logger: LoggerService
+    ) {
         this.validated = {};
     }
 
@@ -30,8 +28,12 @@ export default class GitHubConfigService {
         await this.checkForChanges();
 
         // now schedule again at the interval
-        this.logger.info("Scheduling to run every", this.config.pollFrequency, "seconds");
-        setInterval(() => this.checkForChanges(), this.config.pollFrequency * 1000);
+        if (this.args.options.daemon) {
+            this.logger.info("Scheduling to run every", this.config.pollFrequency, "seconds");
+            setInterval(() => this.checkForChanges(), this.config.pollFrequency * 1000);
+        } else {
+            process.exit(0);
+        }
     }
 
     private async checkForChanges() {
