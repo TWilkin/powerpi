@@ -25,5 +25,7 @@ describe("FileService", () => {
         await subject.touch(file);
 
         expect(fs.existsSync(file)).toBeTruthy();
+
+        fs.rmSync(tmpDir, { recursive: true });
     });
 });
