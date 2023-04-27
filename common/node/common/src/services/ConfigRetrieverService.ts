@@ -41,11 +41,7 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
             if (success) {
                 this.logger.info("Retrieved all expected config from queue");
             } else {
-                const error = "Failed to retrieve all expected config from queue";
-
-                this.logger.error(error);
-
-                throw error;
+                throw new Error("Failed to retrieve all expected config from queue");
             }
         }
     }
