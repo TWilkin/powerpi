@@ -21,6 +21,10 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
     ) {}
 
     public async start() {
+        if (this.config.configIsNeeded) {
+            this.logger.info("Waiting for configuration from queue");
+        }
+
         // subscribe to change topic for each device type
         await Promise.all(
             this.config.configFileTypes.map((type) =>
@@ -35,7 +39,6 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
 
         // we have to wait until we get all the configs we're waiting for
         if (this.config.configIsNeeded) {
-            this.logger.info("Waiting for configuration from queue");
             const success = await this.waitForConfig();
 
             if (success) {
