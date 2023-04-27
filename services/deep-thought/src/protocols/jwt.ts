@@ -1,3 +1,4 @@
+import { FileService } from "@powerpi/common";
 import { Req } from "@tsed/common";
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { Request } from "express";
@@ -59,7 +60,7 @@ async function getSecret(
     done: (err: string | null | unknown, secret?: string) => void
 ) {
     try {
-        const secret = await new ConfigService().getJWTSecret();
+        const secret = await new ConfigService(new FileService()).getJWTSecret();
         done(null, secret);
     } catch (error) {
         done(error);
