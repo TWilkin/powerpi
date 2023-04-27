@@ -1,4 +1,4 @@
-import { ConfigFileType, ConfigService as CommonConfigService } from "@powerpi/common";
+import { ConfigService as CommonConfigService, ConfigFileType } from "@powerpi/common";
 import { Service } from "typedi";
 import Container from "../container";
 import app = require("../../package.json");
@@ -27,7 +27,16 @@ export default class ConfigService extends CommonConfigService {
     }
 
     get apiAddress() {
-        return process.env["API_ADDRESS"] ?? "http://deep-thought:3000/api";
+        let address = process.env["API_ADDRESS"];
+
+        if (!address) {
+            const host = process.env["API_HOST"] ?? "deep-thought";
+            const port = process.env["API_PORT"] ?? 80;
+
+            address = `http://${host}:${port}/api`;
+        }
+
+        return address;
     }
 }
 
