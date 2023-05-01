@@ -1,8 +1,8 @@
-# PowerPi - Light Fantastic
+# PowerPi - Scheduler
 
 PowerPi service which adjusts the temperature, colour, brightness and on/off status of light devices via a schedule.
 
-The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) which needs to be compiled before use.
+The service is built using python, with dependencies using [poetry](https://python-poetry.org/). It is also dependant on a local common library [_powerpi_common_](../../common/python/README.md), and testing library [_powerpi_common_test_](../../common/pytest/README.md).
 
 ## Building
 
@@ -28,20 +28,26 @@ This service requires two configuration files, both of which are described on th
 
 ## Testing
 
-There are currently no automated tests for this service.
+This service can be tested by executing the following commands.
+
+```bash
+# From the services/scheduler directory in your PowerPi checkout
+# Download the dependencies
+poetry install
+
+# Run the tests
+poetry run pytest
+```
 
 ## Local Execution
 
 The service can be started locally with the following commands.
 
 ```bash
-# From the root of your PowerPi checkout
+# From the services/scheduler directory in your PowerPi checkout
 # Download the dependencies
-yarn
-
-# Build the common library
-yarn build:common
+poetry install
 
 # Run the service locally
-yarn start:light-fantastic
+poetry run python -m scheduler
 ```
