@@ -50,8 +50,12 @@ class DeviceSchedule(LogMixin):
 
         self.__start_schedule()
 
-    def execute(self):
+    def execute(self, end_date: datetime):
         self.log_info('Executing schedule for %s', self.__device)
+
+        if end_date <= datetime.now(pytz.UTC):
+            # this will be the last run so schedule the next one
+            self.__start_schedule(end_date)
 
     def __parse(self, device_schedule: Dict[str, Any]):
         self.__device: str = device_schedule['device']
@@ -134,7 +138,7 @@ class DeviceSchedule(LogMixin):
         )
 
         self.__scheduler.add_job(
-            self.execute, trigger, name=job_name
+            self.execute, trigger, (end_date,), name=job_name
         )
 
     def __str__(self):
