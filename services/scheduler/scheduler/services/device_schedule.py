@@ -6,7 +6,9 @@ from typing import Any, Dict, List, Union
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from powerpi_common.device import DeviceStatus
 from powerpi_common.logger import Logger, LogMixin
+from powerpi_common.mqtt import MQTTClient
 from scheduler.config import SchedulerConfig
 
 
@@ -40,12 +42,15 @@ class DeviceSchedule(LogMixin):
         self,
         config: SchedulerConfig,
         logger: Logger,
+        mqtt_client: MQTTClient,
         scheduler: AsyncIOScheduler,
         device_schedule: Dict[str, Any]
     ):
         self.__config = config
         self._logger = logger
         self.__scheduler = scheduler
+
+        self.__producer = mqtt_client.add_producer()
 
         self.__parse(device_schedule)
 
@@ -59,6 +64,8 @@ class DeviceSchedule(LogMixin):
             # this will be the last run so schedule the next one
             self.__start_schedule(end_date)
 
+        message = {}
+
         for delta_type, delta in self.__delta.items():
             new_value = self.__calculate_new_value(start_date, delta)
 
@@ -68,6 +75,19 @@ class DeviceSchedule(LogMixin):
                 self.__device,
                 new_value
             )
+
+            message[delta_type] = new_value
+
+        if self.__power is not None:
+            new_state = DeviceStatus.ON if self.__power else DeviceStatus.OFF
+
+            self.log_info('Setting %s power to %s', self.__device, new_state)
+
+            message['state'] = new_state
+
+        if len(message) > 0:
+            topic = f'device/{self.__device}/change'
+            self.__producer(topic, message)
 
     def __parse(self, device_schedule: Dict[str, Any]):
         self.__device: str = device_schedule['device']
@@ -94,7 +114,7 @@ class DeviceSchedule(LogMixin):
                 )
 
         self.__power = bool(device_schedule['power']) if 'power' in device_schedule \
-            else False
+            else None
 
     def __start_schedule(self, start: Union[datetime, None] = None):
         '''Schedule the next run.'''

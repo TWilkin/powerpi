@@ -28,6 +28,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
         DeviceSchedule,
         config=config,
         logger=common.logger,
+        mqtt_client=common.mqtt_client,
         scheduler=common.scheduler
     )
 
