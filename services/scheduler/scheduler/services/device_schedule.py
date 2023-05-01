@@ -46,6 +46,8 @@ class DeviceSchedule(LogMixin):
         scheduler: AsyncIOScheduler,
         device_schedule: Dict[str, Any]
     ):
+        # pylint: disable=too-many-arguments
+
         self.__config = config
         self._logger = logger
         self.__scheduler = scheduler
