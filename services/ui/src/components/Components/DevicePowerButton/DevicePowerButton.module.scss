@@ -140,6 +140,7 @@
     display: flex;
 
     @mixin power_button($colour) {
+        width: 27px;
         color: $colour;
 
         @media (prefers-color-scheme: dark) {
