@@ -1,7 +1,7 @@
-import { faPowerOff } from "@fortawesome/free-solid-svg-icons";
+import { faLock, faLockOpen, faPowerOff } from "@fortawesome/free-solid-svg-icons";
 import { Device, DeviceState } from "@powerpi/api";
 import classNames from "classnames";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useMemo, useState } from "react";
 import { useLongPress } from "use-long-press";
 import { useSetDeviceState } from "../../../hooks/devices";
 import Button from "../Button";
@@ -47,9 +47,9 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
     };
 
     // support long press to change button type
-    const longPress = useLongPress(() => {
-        setToggle(false);
-    });
+    const longPress = useLongPress(() => setToggle(false));
+
+    const isLock = useMemo(() => device.type.endsWith("pairing"), [device.type]);
 
     // show the power toggle control
     if (toggle) {
@@ -58,7 +58,7 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
                 <span
                     className={classNames(
                         styles.bar,
-                        { [styles.lock]: device.type.endsWith("pairing") },
+                        { [styles.lock]: isLock },
                         { [styles.on]: device.state === DeviceState.On },
                         { [styles.off]: device.state === DeviceState.Off },
                         { [styles.unknown]: device.state === DeviceState.Unknown },
@@ -71,17 +71,21 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
 
     // show an on/off button
     return (
-        <div className={styles.buttons}>
+        <div
+            className={classNames(styles.buttons, {
+                [styles.lock]: isLock,
+            })}
+        >
             <Button
                 className={styles.on}
                 onClick={(event) => handleButtonClick(event, DeviceState.On)}
-                icon={faPowerOff}
+                icon={isLock ? faLockOpen : faPowerOff}
             />
 
             <Button
                 className={styles.off}
                 onClick={(event) => handleButtonClick(event, DeviceState.Off)}
-                icon={faPowerOff}
+                icon={isLock ? faLock : faPowerOff}
             />
         </div>
     );

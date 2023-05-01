@@ -155,4 +155,14 @@
     .off {
         @include power_button(red);
     }
+
+    &.lock {
+        .on {
+            @include power_button(red);
+        }
+
+        .off {
+            @include power_button(orange);
+        }
+    }
 }
