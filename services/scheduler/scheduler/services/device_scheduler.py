@@ -1,9 +1,9 @@
 from typing import List
 
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from powerpi_common.device import DeviceConfigType, DeviceNotFoundException
 from powerpi_common.logger import Logger, LogMixin
 from scheduler.config import SchedulerConfig
+from scheduler.services.device_schedule import DeviceSchedule
 
 
 class DeviceScheduler(LogMixin):
@@ -15,12 +15,10 @@ class DeviceScheduler(LogMixin):
         self,
         config: SchedulerConfig,
         logger: Logger,
-        scheduler: AsyncIOScheduler,
         service_provider
     ):
         self.__config = config
         self._logger = logger
-        self.__scheduler = scheduler
         self.__service_provider = service_provider
 
     def start(self):
@@ -35,14 +33,17 @@ class DeviceScheduler(LogMixin):
         timezone = schedule_config['timezone']
         self.log_info('Using timezone %s', timezone)
 
+        factory = self.__service_provider.device_schedule
+
         schedules = schedule_config['schedules']
         for schedule in schedules:
             if schedule['device'] in devices:
-                self.__schedule(timezone, schedule)
+                device_schedule: DeviceSchedule = factory(
+                    device_schedule=schedule
+                )
+
+                device_schedule.start()
             else:
                 raise DeviceNotFoundException(
                     DeviceConfigType.DEVICE, schedule['device']
                 )
-
-    def __schedule(self, timezone: str, schedule):
-        self.log_info('Scheduling for %s', schedule['device'])
