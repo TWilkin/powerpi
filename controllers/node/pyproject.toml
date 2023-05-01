@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "node_controller"
-version = "0.1.0"
+version = "0.1.1"
 description = "PowerPi Node Controller"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
