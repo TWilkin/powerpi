@@ -140,6 +140,7 @@
     display: flex;
 
     @mixin power_button($colour) {
+        width: 27px;
         color: $colour;
 
         @media (prefers-color-scheme: dark) {
@@ -154,5 +155,15 @@
 
     .off {
         @include power_button(red);
+    }
+
+    &.lock {
+        .on {
+            @include power_button(red);
+        }
+
+        .off {
+            @include power_button(orange);
+        }
     }
 }
