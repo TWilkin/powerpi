@@ -26,7 +26,9 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     device_schedule = providers.Factory(
         DeviceSchedule,
-        logger=common.logger
+        config=config,
+        logger=common.logger,
+        scheduler=common.scheduler
     )
 
     device_scheduler = providers.Factory(
