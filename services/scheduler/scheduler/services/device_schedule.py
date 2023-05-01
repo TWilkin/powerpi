@@ -69,21 +69,46 @@ class DeviceSchedule(LogMixin):
 
         for delta_type in [DeltaType.BRIGHTNESS, DeltaType.TEMPERATURE]:
             if delta_type in device_schedule:
-                self.__delta[delta_type] = [
-                    int(value) for value in device_schedule[delta_type]
-                ]
+                self.__delta[delta_type] = self.__calculate_delta(
+                    int(device_schedule[delta_type][0]),
+                    int(device_schedule[delta_type][1])
+                )
 
         for delta_type in [DeltaType.HUE, DeltaType.SATURATION]:
             if delta_type in device_schedule:
-                self.__delta[delta_type] = [
-                    float(value) for value in device_schedule[delta_type]
-                ]
+                self.__delta[delta_type] = self.__calculate_delta(
+                    float(device_schedule[delta_type][0]),
+                    float(device_schedule[delta_type][1])
+                )
 
         self.__power = bool(device_schedule['power']) if 'power' in device_schedule \
             else False
 
     def __start_schedule(self, start: Union[datetime, None] = None):
         '''Schedule the next run.'''
+        (start_date, end_date) = self.__calculate_dates(start)
+
+        trigger = IntervalTrigger(
+            start_date=start_date,
+            end_date=end_date,
+            seconds=self.__interval
+        )
+
+        job_name = f'DeviceSchedule.execute({self.__device})'
+
+        self.log_info(
+            'Scheduling %s between %s and %s every %ds',
+            job_name,
+            start_date,
+            end_date,
+            self.__interval
+        )
+
+        self.__scheduler.add_job(
+            self.execute, trigger, (end_date,), name=job_name
+        )
+
+    def __calculate_dates(self, start: Union[datetime, None] = None):
         start_time = [int(part) for part in self.__between[0].split(':', 3)]
         end_time = [int(part) for part in self.__between[1].split(':', 3)]
 
@@ -93,7 +118,7 @@ class DeviceSchedule(LogMixin):
         start_date = start.astimezone(timezone) if start is not None else datetime.now(timezone) \
             .replace(hour=start_time[0], minute=start_time[1], second=start_time[2], microsecond=0)
         end_date = start_date \
-            .replace(hour=end_time[0], minute=end_time[1], second=end_time[2], microsecond=0) \
+            .replace(hour=end_time[0], minute=end_time[1], second=end_time[2], microsecond=0)
 
         # check it's not in the past
         if end_date <= datetime.now(timezone):
@@ -121,25 +146,19 @@ class DeviceSchedule(LogMixin):
         if end_date <= start_date:
             end_date = end_date + timedelta(days=1)
 
-        trigger = IntervalTrigger(
-            start_date=start_date,
-            end_date=end_date,
-            seconds=self.__interval
-        )
+        return (start_date, end_date)
 
-        job_name = f'DeviceSchedule.execute({self.__device})'
+    def __calculate_delta(self, start: float, end: float):
+        (start_date, end_date) = self.__calculate_dates()
 
-        self.log_info(
-            'Scheduling %s between %s and %s every %ds',
-            job_name,
-            start_date,
-            end_date,
-            self.__interval
-        )
+        # how many seconds between the dates
+        seconds = end_date.timestamp() - start_date.timestamp()
 
-        self.__scheduler.add_job(
-            self.execute, trigger, (end_date,), name=job_name
-        )
+        # how many intervals will there be
+        intervals = seconds / self.__interval
+
+        # what is the delta
+        return (end - start) / intervals
 
     def __str__(self):
         builder = f'Every {self.__interval}s between {self.__between[0]} and {self.__between[1]}'
@@ -152,8 +171,9 @@ class DeviceSchedule(LogMixin):
 
         builder += f' adjust {self.__device}'
 
-        for device_type, values in self.__delta.items():
-            builder += f' {device_type} between {values[0]} and {values[1]}'
+        for device_type, increment in self.__delta.items():
+            operator = '+' if increment > 0 else '-'
+            builder += f' {device_type} {operator}{abs(increment)}'
 
         if self.__power:
             builder += ' and turn it on'
