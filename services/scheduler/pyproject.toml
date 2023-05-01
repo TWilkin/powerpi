@@ -20,7 +20,7 @@ pylint = "~=2.17.3"
 powerpi-common-test = {path = "../../common/pytest", develop = true}
 
 [tool.pytest.ini_options]
-addopts = "-v --cov=energenie_controller"
+addopts = "-v --cov=scheduler"
 
 [build-system]
 requires = ["poetry-core>=1.1.0"]
