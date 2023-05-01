@@ -3,6 +3,7 @@ from powerpi_common.container import Container as CommonContainer
 from scheduler.__version__ import __app_name__, __version__
 from scheduler.application import Application
 from scheduler.config import SchedulerConfig
+from scheduler.services import DeviceScheduler
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -23,11 +24,20 @@ class ApplicationContainer(containers.DeclarativeContainer):
         version=__version__
     )
 
+    device_scheduler = providers.Factory(
+        DeviceScheduler,
+        config=config,
+        logger=common.logger,
+        scheduler=common.scheduler,
+        service_provider=service_provider
+    )
+
     application = providers.Singleton(
         Application,
         logger=common.logger,
         config_retriever=common.config_retriever,
         mqtt_client=common.mqtt_client,
         scheduler=common.scheduler,
-        health=common.health
+        health=common.health,
+        device_scheduler=device_scheduler
     )

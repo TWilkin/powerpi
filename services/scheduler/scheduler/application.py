@@ -5,6 +5,7 @@ from powerpi_common.health import HealthService
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from scheduler.__version__ import __app_name__, __version__
+from scheduler.services import DeviceScheduler
 
 
 class Application(CommonApplication):
@@ -15,7 +16,8 @@ class Application(CommonApplication):
         config_retriever: ConfigRetriever,
         mqtt_client: MQTTClient,
         scheduler: AsyncIOScheduler,
-        health: HealthService
+        health: HealthService,
+        device_scheduler: DeviceScheduler
     ):
         CommonApplication.__init__(
             self, logger, config_retriever, mqtt_client,
@@ -23,8 +25,10 @@ class Application(CommonApplication):
             __app_name__, __version__
         )
 
+        self.__device_scheduler = device_scheduler
+
     async def _app_start(self):
-        pass
+        self.__device_scheduler.start()
 
     async def _app_stop(self):
         pass
