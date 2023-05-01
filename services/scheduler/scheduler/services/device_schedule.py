@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from enum import Enum, IntEnum
 from typing import Any, Dict, List, Union
 
+import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from powerpi_common.logger import Logger, LogMixin
@@ -77,17 +78,21 @@ class DeviceSchedule(LogMixin):
         self.__power = bool(device_schedule['power']) if 'power' in device_schedule \
             else False
 
-    def __start_schedule(self):
+    def __start_schedule(self, start: Union[datetime, None] = None):
         '''Schedule the next run.'''
         start_time = [int(part) for part in self.__between[0].split(':', 3)]
         end_time = [int(part) for part in self.__between[1].split(':', 3)]
 
-        # get a first guess start_date
-        start_date = datetime.now() \
+        timezone = pytz.timezone(self.__config.timezone)
+
+        # get a first guess start_date and end_date
+        start_date = start.astimezone(timezone) if start is not None else datetime.now(timezone) \
             .replace(hour=start_time[0], minute=start_time[1], second=start_time[2], microsecond=0)
+        end_date = start_date \
+            .replace(hour=end_time[0], minute=end_time[1], second=end_time[2], microsecond=0) \
 
         # check it's not in the past
-        if start_date <= datetime.now():
+        if end_date <= datetime.now(timezone):
             start_date += timedelta(days=1)
 
         # find the next appropriate day-of-week
@@ -103,7 +108,10 @@ class DeviceSchedule(LogMixin):
             .replace(hour=start_time[0], minute=start_time[1], second=start_time[2], microsecond=0)
 
         end_date = start_date \
-            .replace(hour=end_time[0], minute=end_time[1], second=end_time[2], microsecond=0)
+            .replace(hour=end_time[0], minute=end_time[1], second=end_time[2], microsecond=0) \
+            .astimezone(pytz.UTC)
+
+        start_date = start_date.astimezone(pytz.UTC)
 
         # handle end_time on the next day
         if end_date <= start_date:
@@ -112,8 +120,7 @@ class DeviceSchedule(LogMixin):
         trigger = IntervalTrigger(
             start_date=start_date,
             end_date=end_date,
-            seconds=self.__interval,
-            timezone=self.__config.timezone
+            seconds=self.__interval
         )
 
         job_name = f'DeviceSchedule.execute({self.__device})'
@@ -126,7 +133,9 @@ class DeviceSchedule(LogMixin):
             self.__interval
         )
 
-        self.__scheduler.add_job(self.execute, trigger, name=job_name)
+        self.__scheduler.add_job(
+            self.execute, trigger, name=job_name
+        )
 
     def __str__(self):
         builder = f'Every {self.__interval}s between {self.__between[0]} and {self.__between[1]}'
