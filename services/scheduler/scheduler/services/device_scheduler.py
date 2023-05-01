@@ -30,8 +30,8 @@ class DeviceScheduler(LogMixin):
         ]
         self.log_info('Found %d device(s)', len(devices))
 
-        timezone = schedule_config['timezone']
-        self.log_info('Using timezone %s', timezone)
+        self.__config.timezone = schedule_config['timezone']
+        self.log_info('Using timezone %s', self.__config.timezone)
 
         factory = self.__service_provider.device_schedule
 
