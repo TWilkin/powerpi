@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/clacks-config",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "PowerPi config retrieval from GitHub pushing to message queue",
     "private": true,
     "license": "GPL-3.0-only",
@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "@octokit/rest": "^18.12.0",
-        "@powerpi/common": "^0.0.13",
+        "@powerpi/common": "^0.0.14",
         "ajv": "^8.11.0",
         "ajv-formats": "2.1.1",
         "ts-command-line-args": "^2.5.0",
@@ -29,7 +29,7 @@
         "underscore": "^1.13.4"
     },
     "devDependencies": {
-        "@powerpi/common-test": "^0.0.5",
+        "@powerpi/common-test": "^0.0.6",
         "@types/node": "^18.0.0",
         "@types/underscore": "^1.11.4",
         "ts-node": "^10.8.2",

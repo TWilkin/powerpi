@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/persistence",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "PowerPi database persistence service",
     "private": true,
     "license": "GPL-3.0-only",
@@ -20,7 +20,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "@powerpi/common": "^0.0.13",
+        "@powerpi/common": "^0.0.14",
         "pg": "^8.7.3",
         "pg-hstore": "^2.3.4",
         "reflect-metadata": "^0.1.13",
@@ -30,7 +30,7 @@
         "underscore": "^1.13.6"
     },
     "devDependencies": {
-        "@powerpi/common-test": "^0.0.5",
+        "@powerpi/common-test": "^0.0.6",
         "@types/bluebird": "^3.5.36",
         "@types/node": "^18.7.2",
         "@types/underscore": "^1.11.4",

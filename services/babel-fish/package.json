@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/babel-fish",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "PowerPi home automation voice service",
     "private": true,
     "license": "GPL-3.0-only",
@@ -27,14 +27,14 @@
         "@jovotech/platform-core": "^4.2.22",
         "@jovotech/server-express": "^4.0.0",
         "@powerpi/api": "^0.0.17",
-        "@powerpi/common": "^0.0.13",
+        "@powerpi/common": "^0.0.14",
         "source-map-support": "^0.5.19"
     },
     "devDependencies": {
         "@jovotech/cli-core": "^4.0.0",
         "@jovotech/db-filedb": "^4.0.0",
         "@jovotech/filebuilder": "^0.0.1",
-        "@powerpi/common-test": "^0.0.5",
+        "@powerpi/common-test": "^0.0.6",
         "@types/express": "^4.17.11",
         "ts-node": "^10.9.1",
         "tsc-watch": "^4.2.9"

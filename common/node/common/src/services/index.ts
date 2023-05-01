@@ -1,6 +1,6 @@
-export * from "./config";
+export * from "./ConfigService";
 export { default as FileService } from "./FileService";
-export * from "./interval";
-export * from "./logger";
-export * from "./mqtt";
-export * from "./powerpi";
+export * from "./IntervalParserService";
+export * from "./LoggerService";
+export * from "./MqttService";
+export * from "./PowerPiService";

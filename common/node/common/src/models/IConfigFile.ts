@@ -1,7 +1,7 @@
-import { IFloorplan } from "./floorplan";
-import { ISchedule } from "./schedule";
-import { ISensor } from "./sensor";
-import { IUser } from "./user";
+import { IFloorplan } from "./IFloorplan";
+import { ISchedule } from "./ISchedule";
+import { ISensor } from "./ISensor";
+import { IUser } from "./IUser";
 
 export interface IDeviceConfig {
     name: string;

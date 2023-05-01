@@ -1,7 +1,8 @@
 import { Service } from "typedi";
-import { ConfigService } from "./config";
-import { LoggerService } from "./logger";
-import { Message, MqttConsumer, MqttService } from "./mqtt";
+import { sleep } from "../util";
+import { ConfigService } from "./ConfigService";
+import { LoggerService } from "./LoggerService";
+import { Message, MqttConsumer, MqttService } from "./MqttService";
 
 interface ConfigMessage extends Message {
     payload: object;
@@ -20,6 +21,10 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
     ) {}
 
     public async start() {
+        if (this.config.configIsNeeded) {
+            this.logger.info("Waiting for configuration from queue");
+        }
+
         // subscribe to change topic for each device type
         await Promise.all(
             this.config.configFileTypes.map((type) =>
@@ -33,17 +38,14 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
         );
 
         // we have to wait until we get all the configs we're waiting for
-        this.logger.info("Waiting for configuration from queue");
-        const success = await this.waitForConfig();
+        if (this.config.configIsNeeded) {
+            const success = await this.waitForConfig();
 
-        if (success) {
-            this.logger.info("Retrieved all expected config from queue");
-        } else if (this.config.configIsNeeded) {
-            const error = "Failed to retrieve all expected config from queue";
-
-            this.logger.error(error);
-
-            throw error;
+            if (success) {
+                this.logger.info("Retrieved all expected config from queue");
+            } else {
+                throw new Error("Failed to retrieve all expected config from queue");
+            }
         }
     }
 
@@ -72,25 +74,21 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
         }
     }
 
-    private waitForConfig() {
+    private async waitForConfig() {
         const interval = 1000;
         const waitTime = (this.config.configWaitTime * 1000) / interval;
 
-        return new Promise<boolean>((resolve) => {
-            let counter = 0;
+        let counter = 0;
+        while (counter < waitTime) {
+            if (this.config.isPopulated) {
+                return true;
+            }
 
-            const check = () => {
-                if (this.config.isPopulated) {
-                    resolve(true);
-                } else if (counter >= waitTime) {
-                    resolve(false);
-                } else {
-                    counter++;
-                    setTimeout(check, interval);
-                }
-            };
+            counter++;
 
-            check();
-        });
+            await sleep(interval);
+        }
+
+        return false;
     }
 }
