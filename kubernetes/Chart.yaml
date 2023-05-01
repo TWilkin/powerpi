@@ -2,8 +2,8 @@ apiVersion: v2
 name: powerpi
 description: A Helm chart for deploying the PowerPi home automation stack
 type: application
-version: 0.1.11
-appVersion: 0.1.9
+version: 0.1.12
+appVersion: 0.1.10
 dependencies:
   # services
   - name: babel-fish
@@ -23,14 +23,14 @@ dependencies:
   - name: freedns
     version: 0.1.2
     condition: global.freeDNS
-  - name: light-fantastic
-    version: 0.1.1
-    condition: global.scheduler
   - name: mosquitto
     version: 0.1.2
   - name: persistence
     version: 0.1.2
     condition: global.persistence
+  - name: scheduler
+    version: 0.2.0
+    condition: global.scheduler
   - name: smarter-device-manager
     version: 0.1.1
   - name: ui
