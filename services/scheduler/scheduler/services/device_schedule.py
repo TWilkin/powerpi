@@ -59,7 +59,7 @@ class DeviceSchedule(LogMixin):
 
         self.__start_schedule()
 
-    def execute(self, start_date: datetime, end_date: datetime):
+    async def execute(self, start_date: datetime, end_date: datetime):
         if end_date <= datetime.now(pytz.UTC):
             # this will be the last run so schedule the next one
             self.__start_schedule(end_date)
