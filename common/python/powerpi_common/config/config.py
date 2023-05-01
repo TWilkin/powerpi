@@ -79,7 +79,7 @@ class Config:
 
     @property
     def is_populated(self):
-        types = [file_type.value for file_type in ConfigFileType]
+        types = self.used_config
         return all((self.__configs.get(fileType) is not None for fileType in types))
 
     @property
