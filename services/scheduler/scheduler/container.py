@@ -2,6 +2,7 @@ from dependency_injector import containers, providers
 from powerpi_common.container import Container as CommonContainer
 from scheduler.__version__ import __app_name__, __version__
 from scheduler.application import Application
+from scheduler.config import SchedulerConfig
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -10,6 +11,10 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     service_provider = providers.Singleton(
         __self__
+    )
+
+    config = providers.Singleton(
+        SchedulerConfig
     )
 
     common = providers.Container(
