@@ -7,6 +7,7 @@ from typing import Any, Dict
 class ConfigFileType(str, Enum):
     DEVICES = 'devices'
     EVENTS = 'events'
+    SCHEDULES = 'schedules'
 
 
 class Config:
@@ -73,8 +74,12 @@ class Config:
         return self.__file_or_config('EVENTS_FILE', ConfigFileType.EVENTS)
 
     @property
+    def schedules(self):
+        return self.__file_or_config('SCHEDULES_FILE', ConfigFileType.SCHEDULES)
+
+    @property
     def is_populated(self):
-        types = [file_type.value for file_type in ConfigFileType]
+        types = self.used_config
         return all((self.__configs.get(fileType) is not None for fileType in types))
 
     @property

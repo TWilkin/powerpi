@@ -2,7 +2,7 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/config/schedules.schema.json",
     "title": "Schedules",
-    "description": "The configuration for the schedules used by light-fantastic",
+    "description": "The configuration for the schedules used by the scheduler service",
     "type": "object",
     "properties": {
         "timezone": {
@@ -10,7 +10,7 @@
             "type": "string"
         },
         "schedules": {
-            "description": "The schedules for light-fantastic to follow",
+            "description": "The schedules for the scheduler service to follow",
             "type": "array",
             "items": {
                 "type": "object",

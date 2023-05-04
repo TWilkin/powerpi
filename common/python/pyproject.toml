@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "powerpi-common"
-version = "0.2.14"
+version = "0.3.0"
 description = "PowerPi Common Python Library"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
@@ -17,7 +17,7 @@ toml = "~=0.10.2"
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "~=2.0.2"
-pylint = "~=2.17.1"
+pylint = "~=2.17.3"
 
 [tool.poetry.group.test.dependencies]
 powerpi-common-test = {path = "../pytest", develop = true}

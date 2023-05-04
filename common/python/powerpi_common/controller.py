@@ -1,8 +1,5 @@
-from asyncio import (CancelledError, ensure_future, get_event_loop,
-                     get_running_loop)
-from signal import SIGINT, SIGTERM
-
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from powerpi_common.application import Application
 from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.device import DeviceManager, DeviceStatusChecker
 from powerpi_common.event import EventManager
@@ -12,7 +9,7 @@ from powerpi_common.mqtt import MQTTClient
 
 
 # pylint: disable=too-many-instance-attributes
-class Controller:
+class Controller(Application):
     # pylint: disable=too-many-arguments
     def __init__(
         self,
@@ -27,31 +24,14 @@ class Controller:
         app_name: str,
         version: str
     ):
-        self._logger = logger
-        self.__config_retriever = config_retriever
+        Application.__init__(
+            self, logger, config_retriever, mqtt_client,
+            scheduler, health, app_name, version
+        )
+
         self.__device_manager = device_manager
         self.__event_manager = event_manager
-        self.__mqtt_client = mqtt_client
         self.__device_status_checker = device_status_checker
-        self.__scheduler = scheduler
-        self.__health = health
-        self.__app_name = app_name
-        self.__version = version
-
-    def start(self):
-        loop = get_event_loop()
-        main = ensure_future(self.__main())
-
-        for signal in [SIGINT, SIGTERM]:
-            loop.add_signal_handler(signal, main.cancel)
-
-        try:
-            loop.run_until_complete(main)
-        finally:
-            loop.close()
-
-    def _log_start(self):
-        pass
 
     async def _initialise_devices(self):
         pass
@@ -59,45 +39,20 @@ class Controller:
     async def _cleanup_devices(self):
         pass
 
-    async def __main(self):
-        self._logger.info(f'PowerPi {self.__app_name} v{self.__version}')
-        self._log_start()
+    async def _app_start(self):
+        # perform any device initialisation
+        await self._initialise_devices()
 
-        try:
-            # start the scheduler
-            self.__scheduler.start()
+        # load the devices from the config
+        await self.__device_manager.load()
 
-            # intially connect to MQTT
-            await self.__mqtt_client.connect()
+        # load the events from the config
+        self.__event_manager.load()
 
-            # retrieve any config from the queue
-            await self.__config_retriever.start()
+        # periodically check device status
+        self.__device_status_checker.start()
 
-            # perform any device initialisation
-            await self._initialise_devices()
-
-            # load the devices from the config
-            await self.__device_manager.load()
-
-            # load the events from the config
-            self.__event_manager.load()
-
-            # start the health check
-            self.__health.start()
-
-            # periodically check device status
-            self.__device_status_checker.start()
-
-            # loop forever
-            await get_running_loop().create_future()
-        except CancelledError:
-            await self.__cleanup()
-
-    async def __cleanup(self):
-        self.__scheduler.shutdown()
-
+    async def _app_stop(self):
         await self.__device_manager.deinitialise()
 
         await self._cleanup_devices()
-
-        await self.__mqtt_client.disconnect()
