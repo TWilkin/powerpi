@@ -11,7 +11,7 @@ import pytz
 from apscheduler.triggers.interval import IntervalTrigger
 from scheduler.services import DeviceSchedule
 
-ExpectedTime = namedtuple('ExpectedTime', "day hour minute")
+ExpectedTime = namedtuple('ExpectedTime', 'day hour minute')
 
 
 class TestDeviceSchedule:
