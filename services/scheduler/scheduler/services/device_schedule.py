@@ -220,9 +220,9 @@ class DeviceSchedule(LogMixin):
 
         new_value = round(new_value)
         if delta.delta > 0:
-            new_value = min(new_value, delta.end)
+            new_value = min(max(new_value, delta.start), delta.end)
         else:
-            new_value = max(new_value, delta.end)
+            new_value = max(min(new_value, delta.start), delta.end)
 
         return new_value
 
