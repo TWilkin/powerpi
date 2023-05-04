@@ -21,3 +21,10 @@ def powerpi_scheduler(mocker: MockerFixture):
     scheduler = mocker.MagicMock()
 
     return scheduler
+
+
+@pytest.fixture
+def powerpi_service_provider(mocker: MockerFixture):
+    service_provider = mocker.MagicMock()
+
+    return service_provider

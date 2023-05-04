@@ -152,7 +152,7 @@ The _floorplan.json_ file contains a floorplan description of the home, which is
 
 #### schedules.json
 
-The _schedules.json_ file contains the scheduled events that _light-fantastic_ uses to adjust light brightness, temperature and colour throughout the day. The file takes the following format using the [schedules JSON schema](./src/schema/config/schedules.schema.json):
+The _schedules.json_ file contains the scheduled events that _scheduler_ uses to adjust light brightness, temperature and colour throughout the day. The file takes the following format using the [schedules JSON schema](./src/schema/config/schedules.schema.json):
 
 ```json
 {
