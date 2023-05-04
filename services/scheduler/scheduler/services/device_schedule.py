@@ -148,15 +148,36 @@ class DeviceSchedule(LogMixin):
 
         timezone = pytz.timezone(self.__config.timezone)
 
-        # get a first guess start_date and end_date
-        start_date = start.astimezone(timezone) if start is not None else datetime.now(timezone) \
-            .replace(hour=start_time[0], minute=start_time[1], second=start_time[2], microsecond=0)
-        end_date = start_date \
-            .replace(hour=end_time[0], minute=end_time[1], second=end_time[2], microsecond=0)
+        def make_dates(start: datetime):
+            start_date = start.replace(
+                hour=start_time[0],
+                minute=start_time[1],
+                second=start_time[2],
+                microsecond=0
+            )
 
-        # check it's not in the past
-        if end_date <= datetime.now(timezone):
-            start_date += timedelta(days=1)
+            end_date = start_date.replace(
+                hour=end_time[0],
+                minute=end_time[1],
+                second=end_time[2],
+                microsecond=0
+            )
+
+            # handle end_time on the next day
+            if end_date <= start_date:
+                end_date = end_date + timedelta(days=1)
+
+            # check it's not in the past
+            if end_date <= datetime.now(timezone):
+                start_date += timedelta(days=1)
+
+            return start_date, end_date
+
+        # get a first guess start_date
+        (start_date, _) = make_dates(
+            start.astimezone(timezone) if start is not None
+            else datetime.now(timezone)
+        )
 
         # find the next appropriate day-of-week
         if self.__days is not None:
@@ -167,18 +188,10 @@ class DeviceSchedule(LogMixin):
             while start_date.weekday() not in days:
                 start_date += timedelta(days=1)
 
-        start_date = start_date \
-            .replace(hour=start_time[0], minute=start_time[1], second=start_time[2], microsecond=0)
-
-        end_date = start_date \
-            .replace(hour=end_time[0], minute=end_time[1], second=end_time[2], microsecond=0) \
-            .astimezone(pytz.UTC)
+        (start_date, end_date) = make_dates(start_date)
 
         start_date = start_date.astimezone(pytz.UTC)
-
-        # handle end_time on the next day
-        if end_date <= start_date:
-            end_date = end_date + timedelta(days=1)
+        end_date = end_date.astimezone(pytz.UTC)
 
         return (start_date, end_date)
 
