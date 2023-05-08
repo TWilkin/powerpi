@@ -9,6 +9,7 @@ from unittest.mock import MagicMock, PropertyMock, patch
 import pytest
 import pytz
 from apscheduler.triggers.interval import IntervalTrigger
+from pytest_mock import MockerFixture
 from scheduler.services import DeviceSchedule
 
 ExpectedTime = namedtuple('ExpectedTime', 'day hour minute')
@@ -220,13 +221,62 @@ class TestDeviceSchedule:
         assert job[2][0] == job[1].start_date
         assert job[2][1] == job[1].end_date
 
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('data', [
+        ([0, 100], 50, 50 + 21),
+        ([100, 0], 50, 50 - 21),
+        ([0, 100], 0, 21 * 2),
+        ([100, 0], 100, 100 - 21 * 2),
+        ([0, 100], 100, 100),
+        ([100, 0], 0, 0)
+    ])
+    async def test_execute_current_value(
+        self,
+        subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
+        powerpi_mqtt_producer: MagicMock,
+        powerpi_variable_manager: MagicMock,
+        mocker: MockerFixture,
+        data: Tuple[List[int], int, int]
+    ):
+        # pylint: disable=too-many-arguments,too-many-locals
+        (brightness, current, expected) = data
+
+        variable = mocker.MagicMock()
+        powerpi_variable_manager.get_device = lambda _: variable
+
+        type(variable).additional_state = PropertyMock(
+            return_value={'brightness': current}
+        )
+
+        with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+            mock_datetime.now.return_value = datetime(
+                2023, 3, 1, 9, 31
+            ).astimezone(pytz.UTC)
+
+            subject = subject_builder({
+                'device': 'SomeDevice',
+                'between': ['09:10:00', '10:00:00'],
+                'interval': 60,
+                'brightness': brightness
+            })
+
+            start_date = datetime(2023, 3, 1, 9, 10)
+            end_date = datetime(2023, 3, 1, 10, 0).astimezone(pytz.UTC)
+
+            await subject.execute(start_date, end_date)
+
+        topic = 'device/SomeDevice/change'
+        message = {'brightness': expected}
+        powerpi_mqtt_producer.assert_called_once_with(topic, message)
+
     @pytest.fixture
     def subject_builder(
         self,
         scheduler_config,
         powerpi_logger,
         powerpi_mqtt_client,
-        powerpi_scheduler
+        powerpi_scheduler,
+        powerpi_variable_manager
     ):
         # pylint: disable=too-many-arguments
 
@@ -240,6 +290,7 @@ class TestDeviceSchedule:
                 powerpi_logger,
                 powerpi_mqtt_client,
                 powerpi_scheduler,
+                powerpi_variable_manager,
                 schedule['device'],
                 schedule
             )
