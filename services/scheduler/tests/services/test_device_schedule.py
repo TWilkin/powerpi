@@ -240,6 +240,7 @@ class TestDeviceSchedule:
                 powerpi_logger,
                 powerpi_mqtt_client,
                 powerpi_scheduler,
+                schedule['device'],
                 schedule
             )
 

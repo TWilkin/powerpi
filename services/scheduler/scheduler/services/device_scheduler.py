@@ -37,13 +37,18 @@ class DeviceScheduler(LogMixin):
 
         schedules = schedule_config['schedules']
         for schedule in schedules:
-            if schedule['device'] in devices:
-                device_schedule: DeviceSchedule = factory(
-                    device_schedule=schedule
-                )
+            schedule_devices = [schedule['device']] if 'device' in schedule \
+                else schedule['devices']
 
-                device_schedule.start()
-            else:
-                raise DeviceNotFoundException(
-                    DeviceConfigType.DEVICE, schedule['device']
-                )
+            for schedule_device in schedule_devices:
+                if schedule_device in devices:
+                    device_schedule: DeviceSchedule = factory(
+                        device=schedule_device,
+                        device_schedule=schedule
+                    )
+
+                    device_schedule.start()
+                else:
+                    raise DeviceNotFoundException(
+                        DeviceConfigType.DEVICE, schedule_device
+                    )

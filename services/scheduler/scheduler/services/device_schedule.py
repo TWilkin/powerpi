@@ -44,6 +44,7 @@ class DeviceSchedule(LogMixin):
         logger: Logger,
         mqtt_client: MQTTClient,
         scheduler: AsyncIOScheduler,
+        device: str,
         device_schedule: Dict[str, Any]
     ):
         # pylint: disable=too-many-arguments
@@ -54,6 +55,7 @@ class DeviceSchedule(LogMixin):
 
         self.__producer = mqtt_client.add_producer()
 
+        self.__device = device
         self.__parse(device_schedule)
 
     def start(self):
@@ -92,7 +94,6 @@ class DeviceSchedule(LogMixin):
             self.__producer(topic, message)
 
     def __parse(self, device_schedule: Dict[str, Any]):
-        self.__device: str = device_schedule['device']
         self.__between: List[str] = device_schedule['between']
         self.__interval = int(device_schedule['interval'])
 
