@@ -6,7 +6,8 @@ from typing import Any, Dict, List, Union
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
-from powerpi_common.condition import ConditionParser, Expression
+from powerpi_common.condition import (ConditionParser, Expression,
+                                      ParseException)
 from powerpi_common.device import DeviceStatus
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.mqtt import MQTTClient
@@ -67,6 +68,17 @@ class DeviceSchedule(LogMixin):
 
         # retrieve this variable to register the listener
         self.__variable_manager.get_device(self.__device)
+
+        # evaluate the condition if there is one
+        try:
+            self.__check_condition()
+        except ParseException as ex:
+            self.log_error(
+                'Failed to schedule job for %s due to bad condition',
+                self.__device
+            )
+            self.log_exception(ex)
+            return
 
         self.__start_schedule()
 

@@ -9,6 +9,7 @@ from unittest.mock import MagicMock, PropertyMock, patch
 import pytest
 import pytz
 from apscheduler.triggers.interval import IntervalTrigger
+from powerpi_common.condition import Expression
 from pytest_mock import MockerFixture
 from scheduler.services import DeviceSchedule
 
@@ -83,6 +84,35 @@ class TestDeviceSchedule:
 
         assert job[2][0] == job[1].start_date
         assert job[2][1] == job[1].end_date
+
+    @pytest.mark.parametrize('data', [
+        (None, True),
+        ({'when': [{'equals': [True, True]}]}, True),
+        ({'when': {'wrong'}}, False),
+    ])
+    def test_start_condition(
+        self,
+        subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
+        add_job,
+        data: Tuple[Union[Expression, None], bool]
+    ):
+        (condition, expected) = data
+
+        subject = subject_builder({
+            'device': 'SomeDevice',
+            'between': ['09:00:00', '10:00:00'],
+            'interval': 60,
+            'condition': condition
+        })
+
+        with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+            mock_datetime.now.return_value = datetime(
+                2023, 3, 1, 18, 23, 1
+            )
+            subject.start()
+
+        # if the condition is valid we expected it to schedule
+        assert (len(add_job) == 1) is expected
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('data', [
