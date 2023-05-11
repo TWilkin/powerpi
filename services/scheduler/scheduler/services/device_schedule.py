@@ -271,6 +271,9 @@ class DeviceSchedule(LogMixin):
         else:
             builder += ' every day'
 
+        if self.__condition:
+            builder += ', if the condition is true,'
+
         builder += f' adjust {self.__device}'
 
         for device_type, delta in self.__delta.items():
