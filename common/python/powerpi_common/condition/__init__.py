@@ -1,4 +1,4 @@
 from .container import ConditionContainer
 from .errors import (InvalidArgumentException, InvalidIdentifierException,
                      ParseException, UnexpectedTokenException)
-from .parser import ConditionParser, Expression
+from .parser import ConditionParser, Constant, Expression

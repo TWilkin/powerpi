@@ -1,13 +1,15 @@
+from datetime import date, datetime
 from typing import Callable, Dict, List, Union
 
-from powerpi_common.condition.errors import InvalidArgumentException, InvalidIdentifierException, \
-    UnexpectedTokenException
+from powerpi_common.condition.errors import (InvalidArgumentException,
+                                             InvalidIdentifierException,
+                                             UnexpectedTokenException)
 from powerpi_common.condition.lexeme import Lexeme
 from powerpi_common.mqtt import MQTTMessage
 from powerpi_common.variable import VariableManager, VariableType
 
-
-Expression = Union[Dict, List, str, float, bool]
+Constant = Union[bool, float, int, str, date, datetime, None]
+Expression = Union[Dict, List, Constant]
 
 
 class ConditionParser:
@@ -50,14 +52,14 @@ class ConditionParser:
         self.__message = message
 
     @classmethod
-    def constant(cls, constant: str):
+    def constant(cls, constant: Constant):
         '''
         Evaluate and return the constant in the parameter.
         '''
         if constant is None:
             return None
 
-        if isinstance(constant, (bool, float, int, str)):
+        if isinstance(constant, (bool, float, int, str, date, datetime)):
             return constant
 
         raise UnexpectedTokenException(constant)
@@ -91,6 +93,9 @@ class ConditionParser:
                     if len(split) == 2:
                         prop = split[1]
                         return self.message_identifier(identifier, prop)
+
+            if identifier == 'now':
+                return datetime.utcnow()
 
             raise InvalidIdentifierException(identifier)
 

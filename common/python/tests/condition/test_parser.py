@@ -1,7 +1,9 @@
+from datetime import date, datetime
 from typing import List
+from unittest.mock import patch
 
 import pytest
-from powerpi_common.condition import (ConditionParser,
+from powerpi_common.condition import (ConditionParser, Constant,
                                       InvalidArgumentException,
                                       InvalidIdentifierException,
                                       UnexpectedTokenException)
@@ -35,9 +37,11 @@ class TestConditionParser:
         10,
         10.23,
         True,
+        datetime(2023, 3, 5, 12, 13),
+        date(2023, 3, 5),
         None
     ])
-    def test_constant_success(self, mocker: MockerFixture, constant: str):
+    def test_constant_success(self, mocker: MockerFixture, constant: Constant):
         subject = self.create_subject(mocker)
 
         result = subject.constant(constant)
@@ -57,13 +61,19 @@ class TestConditionParser:
         ('sensor.office.temperature.unit', 'temperature/office'),
         ('message.timestamp', 1337),
         ('message.whatever', None),
+        ('now', datetime(2023, 3, 1, 18, 23, 1))
     ])
     def test_identifier_success(self, mocker: MockerFixture, identifier: str, expected: str):
         message = {'timestamp': 1337}
 
         subject = self.create_subject(mocker, message)
 
-        result = subject.identifier({'var': identifier})
+        with patch('powerpi_common.condition.parser.datetime') as mock_datetime:
+            mock_datetime.utcnow.return_value = datetime(
+                2023, 3, 1, 18, 23, 1
+            )
+
+            result = subject.identifier({'var': identifier})
 
         assert result == expected
 
