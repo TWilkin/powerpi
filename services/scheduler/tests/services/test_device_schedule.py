@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, PropertyMock, patch
 import pytest
 import pytz
 from apscheduler.triggers.interval import IntervalTrigger
-from powerpi_common.condition import Expression
+from powerpi_common.condition import ConditionParser, Expression
 from pytest_mock import MockerFixture
 from scheduler.services import DeviceSchedule
 
@@ -17,7 +17,7 @@ ExpectedTime = namedtuple('ExpectedTime', 'day hour minute')
 
 
 class TestDeviceSchedule:
-    @pytest.mark.parametrize('data', [
+    @pytest.mark.parametrize('start_time,end_time,days,expected_start,expected_end', [
         (
             '09:00:00', '09:30:00', None,
             ExpectedTime(2, 9, 0), ExpectedTime(2, 9, 30)
@@ -48,10 +48,14 @@ class TestDeviceSchedule:
         self,
         subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
         add_job,
-        data: Tuple[str, str, Union[List[int], None], ExpectedTime, ExpectedTime],
-        interval: int
+        start_time: str,
+        end_time: str,
+        days: Union[List[str], None],
+        expected_start: ExpectedTime,
+        expected_end: ExpectedTime,
+        interval: List[int]
     ):
-        (start_time, end_time, days, expected_start, expected_end) = data
+        # pylint: disable=too-many-arguments
 
         subject = subject_builder({
             'device': 'SomeDevice',
@@ -85,7 +89,7 @@ class TestDeviceSchedule:
         assert job[2][0] == job[1].start_date
         assert job[2][1] == job[1].end_date
 
-    @pytest.mark.parametrize('data', [
+    @pytest.mark.parametrize('condition,expected', [
         (None, True),
         ({'when': [{'equals': [True, True]}]}, True),
         ({'when': {'wrong'}}, False),
@@ -94,10 +98,9 @@ class TestDeviceSchedule:
         self,
         subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
         add_job,
-        data: Tuple[Union[Expression, None], bool]
+        condition: Union[Expression, None],
+        expected: bool
     ):
-        (condition, expected) = data
-
         subject = subject_builder({
             'device': 'SomeDevice',
             'between': ['09:00:00', '10:00:00'],
@@ -115,7 +118,7 @@ class TestDeviceSchedule:
         assert (len(add_job) == 1) is expected
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize('data', [
+    @pytest.mark.parametrize('config,expected', [
         ({}, None),
         ({'power': True}, {'state': 'on'}),
         ({'brightness': [0, 50]}, {'brightness': 31}),
@@ -140,9 +143,10 @@ class TestDeviceSchedule:
         subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
         add_job,
         powerpi_mqtt_producer: MagicMock,
-        data: Tuple[dict, dict]
+        config: Dict,
+        expected: Dict
     ):
-        (config, expected) = data
+        # pylint: disable=too-many-arguments
 
         with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
             mock_datetime.now.return_value = datetime(
@@ -171,7 +175,7 @@ class TestDeviceSchedule:
             powerpi_mqtt_producer.assert_not_called()
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize('data', [
+    @pytest.mark.parametrize('brightness,hour,minute,expected', [
         ([0, 100], 8, 55, 0),
         ([100, 0], 8, 55, 100),
         ([0, 100], 10, 1, 100),
@@ -181,9 +185,12 @@ class TestDeviceSchedule:
         self,
         subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
         powerpi_mqtt_producer: MagicMock,
-        data: Tuple[List[int], int, int, int]
+        brightness: List[int],
+        hour: int,
+        minute: int,
+        expected: int
     ):
-        (brightness, hour, minute, expected) = data
+        # pylint: disable=too-many-arguments
 
         with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
             mock_datetime.now.return_value = datetime(
@@ -252,7 +259,7 @@ class TestDeviceSchedule:
         assert job[2][1] == job[1].end_date
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize('data', [
+    @pytest.mark.parametrize('brightness,current,expected', [
         ([0, 100], 50, 50 + 21),
         ([100, 0], 50, 50 - 21),
         ([0, 100], 0, 21 * 2),
@@ -266,10 +273,11 @@ class TestDeviceSchedule:
         powerpi_mqtt_producer: MagicMock,
         powerpi_variable_manager: MagicMock,
         mocker: MockerFixture,
-        data: Tuple[List[int], int, int]
+        brightness: List[int],
+        current: int,
+        expected: int
     ):
         # pylint: disable=too-many-arguments,too-many-locals
-        (brightness, current, expected) = data
 
         variable = mocker.MagicMock()
         powerpi_variable_manager.get_device = lambda _: variable
@@ -300,7 +308,7 @@ class TestDeviceSchedule:
         powerpi_mqtt_producer.assert_called_once_with(topic, message)
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize('data', [
+    @pytest.mark.parametrize('set_condition,current_state,expected', [
         (True, 'on', True),
         (True, 'off', False),
         (False, 'off', True)
@@ -311,10 +319,11 @@ class TestDeviceSchedule:
         powerpi_mqtt_producer: MagicMock,
         powerpi_variable_manager: MagicMock,
         mocker: MockerFixture,
-        data: Tuple[bool, str, bool]
+        set_condition: bool,
+        current_state: str,
+        expected: bool
     ):
         # pylint: disable=too-many-arguments
-        (set_condition, current_state, expected) = data
 
         variable = mocker.MagicMock()
         powerpi_variable_manager.get_device = lambda _: variable
@@ -354,7 +363,8 @@ class TestDeviceSchedule:
         powerpi_logger,
         powerpi_mqtt_client,
         powerpi_scheduler,
-        powerpi_variable_manager
+        powerpi_variable_manager,
+        condition_parser_factory
     ):
         # pylint: disable=too-many-arguments
 
@@ -369,6 +379,7 @@ class TestDeviceSchedule:
                 powerpi_mqtt_client,
                 powerpi_scheduler,
                 powerpi_variable_manager,
+                condition_parser_factory,
                 schedule['device'],
                 schedule
             )
@@ -395,3 +406,9 @@ class TestDeviceSchedule:
         powerpi_scheduler.add_job = add_job
 
         return job_results
+
+    @pytest.fixture
+    def condition_parser_factory(self, powerpi_variable_manager):
+        return lambda: ConditionParser(
+            powerpi_variable_manager
+        )

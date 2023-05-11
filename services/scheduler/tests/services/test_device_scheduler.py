@@ -127,14 +127,16 @@ class TestDeviceScheduler:
         self,
         scheduler_config,
         powerpi_logger,
-        powerpi_service_provider
+        device_schedule_factory
     ):
         return DeviceScheduler(
             scheduler_config,
             powerpi_logger,
-            powerpi_service_provider
+            device_schedule_factory
         )
 
     @pytest.fixture
-    def device_schedule_factory(self, powerpi_service_provider):
-        return powerpi_service_provider.device_schedule
+    def device_schedule_factory(self, mocker: MockerFixture):
+        factory = mocker.MagicMock()
+
+        return factory
