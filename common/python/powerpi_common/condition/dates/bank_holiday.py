@@ -44,7 +44,7 @@ class BankHolidayService(LogMixin):
                     '%Y-%m-%d'
                 ).date()
 
-                if event_date >= datetime.utcnow():
+                if event_date >= datetime.utcnow().date():
                     self.__holidays.append(event_date)
 
         self.log_info('Found %d bank holidays', len(self.__holidays))

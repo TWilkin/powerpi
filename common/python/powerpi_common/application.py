@@ -7,6 +7,7 @@ from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.health import HealthService
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.mqtt import MQTTClient
+from powerpi_common.startup import StartUpService
 
 
 class Application(LogMixin):
@@ -22,6 +23,7 @@ class Application(LogMixin):
         mqtt_client: MQTTClient,
         scheduler: AsyncIOScheduler,
         health: HealthService,
+        startup: StartUpService,
         app_name: str,
         version: str
     ):
@@ -30,6 +32,7 @@ class Application(LogMixin):
         self.__mqtt_client = mqtt_client
         self.__scheduler = scheduler
         self.__health = health
+        self.__startup = startup
         self.__app_name = app_name
         self.__version = version
 
@@ -73,6 +76,9 @@ class Application(LogMixin):
 
             # start the health check
             self.__health.start()
+
+            # start any conditional services
+            await self.__startup.start()
 
             # loop forever
             await get_running_loop().create_future()

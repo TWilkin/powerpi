@@ -6,6 +6,7 @@ from powerpi_common.event import EventManager
 from powerpi_common.health import HealthService
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+from powerpi_common.startup import StartUpService
 
 
 # pylint: disable=too-many-instance-attributes
@@ -21,12 +22,13 @@ class Controller(Application):
         device_status_checker: DeviceStatusChecker,
         scheduler: AsyncIOScheduler,
         health: HealthService,
+        startup: StartUpService,
         app_name: str,
         version: str
     ):
         Application.__init__(
             self, logger, config_retriever, mqtt_client,
-            scheduler, health, app_name, version
+            scheduler, health, startup, app_name, version
         )
 
         self.__device_manager = device_manager

@@ -9,6 +9,7 @@ from powerpi_common.event import EventManager
 from powerpi_common.health import HealthService
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+from powerpi_common.startup import StartUpService
 from powerpi_common.variable import VariableContainer
 
 
@@ -51,7 +52,8 @@ class Container(containers.DeclarativeContainer):
     )
 
     condition = providers.Container(
-        ConditionContainer
+        ConditionContainer,
+        logger=logger
     )
 
     device = providers.Container(
@@ -87,6 +89,12 @@ class Container(containers.DeclarativeContainer):
         scheduler=scheduler
     )
 
+    startup = providers.Factory(
+        StartUpService,
+        config=config,
+        service_provider=service_provider
+    )
+
     controller = providers.Singleton(
         Controller,
         logger=logger,
@@ -97,6 +105,7 @@ class Container(containers.DeclarativeContainer):
         device_status_checker=device.device_status_checker,
         scheduler=scheduler,
         health=health,
+        startup=startup,
         app_name=app_name,
         version=version
     )
