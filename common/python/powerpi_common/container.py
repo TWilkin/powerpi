@@ -51,12 +51,6 @@ class Container(containers.DeclarativeContainer):
         mqtt_client=mqtt_client
     )
 
-    condition = providers.Container(
-        ConditionContainer,
-        config=config,
-        logger=logger
-    )
-
     device = providers.Container(
         DeviceContainer,
         config=config,
@@ -71,6 +65,13 @@ class Container(containers.DeclarativeContainer):
         logger=logger,
         mqtt_client=mqtt_client,
         device_manager=device.device_manager
+    )
+
+    condition = providers.Container(
+        ConditionContainer,
+        config=config,
+        logger=logger,
+        variable_manager=variable.variable_manager
     )
 
     event_manager = providers.Singleton(

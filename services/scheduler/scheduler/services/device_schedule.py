@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Union
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from dependency_injector import providers
 from powerpi_common.condition import (ConditionParser, Expression,
                                       ParseException)
 from powerpi_common.device import DeviceStatus
@@ -48,6 +49,7 @@ class DeviceSchedule(LogMixin):
         mqtt_client: MQTTClient,
         scheduler: AsyncIOScheduler,
         variable_manager: VariableManager,
+        condition_parser_factory: providers.Factory,
         device: str,
         device_schedule: Dict[str, Any]
     ):
@@ -57,6 +59,7 @@ class DeviceSchedule(LogMixin):
         self._logger = logger
         self.__scheduler = scheduler
         self.__variable_manager = variable_manager
+        self.__condition_parser_factory = condition_parser_factory
 
         self.__producer = mqtt_client.add_producer()
 
@@ -152,7 +155,7 @@ class DeviceSchedule(LogMixin):
 
     def __check_condition(self):
         if self.__condition is not None:
-            parser = ConditionParser(self.__variable_manager)
+            parser: ConditionParser = self.__condition_parser_factory()
             return parser.conditional_expression(self.__condition)
 
         return True
