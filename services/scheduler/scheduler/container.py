@@ -47,5 +47,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
         mqtt_client=common.mqtt_client,
         scheduler=common.scheduler,
         health=common.health,
+        startup=common.startup,
         device_scheduler=device_scheduler
     )
