@@ -1,5 +1,6 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dependency_injector import containers, providers
+from powerpi_common.condition import ConditionContainer
 from powerpi_common.config import Config
 from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.controller import Controller
@@ -47,6 +48,10 @@ class Container(containers.DeclarativeContainer):
         config=config,
         logger=logger,
         mqtt_client=mqtt_client
+    )
+
+    condition = providers.Container(
+        ConditionContainer
     )
 
     device = providers.Container(
