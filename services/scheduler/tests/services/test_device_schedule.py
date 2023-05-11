@@ -269,6 +269,54 @@ class TestDeviceSchedule:
         message = {'brightness': expected}
         powerpi_mqtt_producer.assert_called_once_with(topic, message)
 
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('data', [
+        (True, 'on', True),
+        (True, 'off', False),
+        (False, 'off', True)
+    ])
+    async def test_execute_condition(
+        self,
+        subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
+        powerpi_mqtt_producer: MagicMock,
+        powerpi_variable_manager: MagicMock,
+        mocker: MockerFixture,
+        data: Tuple[bool, str, bool]
+    ):
+        # pylint: disable=too-many-arguments
+        (set_condition, current_state, expected) = data
+
+        variable = mocker.MagicMock()
+        powerpi_variable_manager.get_device = lambda _: variable
+
+        type(variable).state = PropertyMock(
+            return_value=current_state
+        )
+
+        with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+            mock_datetime.now.return_value = datetime(
+                2023, 3, 1, 9, 31
+            ).astimezone(pytz.UTC)
+
+            subject = subject_builder({
+                'device': 'SomeDevice',
+                'between': ['09:10:00', '10:00:00'],
+                'interval': 60,
+                'brightness': [0, 100],
+                'condition': None if not set_condition
+                else {'when': [{'equals': [{'var': 'device.Test.state'}, 'on']}]}
+            })
+
+            start_date = datetime(2023, 3, 1, 9, 10)
+            end_date = datetime(2023, 3, 1, 10, 0).astimezone(pytz.UTC)
+
+            await subject.execute(start_date, end_date)
+
+        if expected:
+            powerpi_mqtt_producer.assert_called_once()
+        else:
+            powerpi_mqtt_producer.assert_not_called()
+
     @pytest.fixture
     def subject_builder(
         self,

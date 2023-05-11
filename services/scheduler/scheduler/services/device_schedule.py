@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Union
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from powerpi_common.condition import ConditionParser, Expression
 from powerpi_common.device import DeviceStatus
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.mqtt import MQTTClient
@@ -74,6 +75,12 @@ class DeviceSchedule(LogMixin):
             # this will be the last run so schedule the next one
             self.__start_schedule(end_date)
 
+        if not self.__check_condition():
+            self.log_info(
+                'Skipping for %s as condition is false', self.__device
+            )
+            return
+
         message = {}
 
         for _, delta_range in self.__delta.items():
@@ -126,6 +133,17 @@ class DeviceSchedule(LogMixin):
 
         self.__power = bool(device_schedule['power']) if 'power' in device_schedule \
             else None
+
+        self.__condition: Union[Expression, None] = device_schedule['condition'] \
+            if 'condition' in device_schedule \
+            else None
+
+    def __check_condition(self):
+        if self.__condition is not None:
+            parser = ConditionParser(self.__variable_manager)
+            return parser.conditional_expression(self.__condition)
+
+        return True
 
     def __start_schedule(self, start: Union[datetime, None] = None):
         '''Schedule the next run.'''
