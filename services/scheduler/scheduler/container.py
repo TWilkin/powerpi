@@ -38,7 +38,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
         DeviceScheduler,
         config=config,
         logger=common.logger,
-        service_provider=service_provider
+        device_schedule_factory=device_schedule.provider
     )
 
     application = providers.Singleton(
