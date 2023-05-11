@@ -53,6 +53,7 @@ class Container(containers.DeclarativeContainer):
 
     condition = providers.Container(
         ConditionContainer,
+        config=config,
         logger=logger
     )
 
