@@ -65,6 +65,13 @@ class Container(containers.DeclarativeContainer):
         device_manager=device.device_manager
     )
 
+    condition = providers.Container(
+        ConditionContainer,
+        config=config,
+        logger=logger,
+        variable_manager=variable.variable_manager
+    )
+
     event_manager = providers.Singleton(
         EventManager,
         config=config,
