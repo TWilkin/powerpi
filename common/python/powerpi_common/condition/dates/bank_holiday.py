@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import List
+from typing import List, Union
 
 from httpx import AsyncClient
 from powerpi_common.logger import Logger, LogMixin
@@ -23,6 +23,12 @@ class BankHolidayService(LogMixin):
     @property
     def holidays(self):
         return self.__holidays
+
+    def is_bank_holiday(self, value: Union[date, datetime]):
+        if isinstance(value, datetime):
+            value = value.date()
+
+        return value in self.__holidays
 
     async def update(self):
         '''
