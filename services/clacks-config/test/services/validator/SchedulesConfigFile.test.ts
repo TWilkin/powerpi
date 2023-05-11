@@ -1,9 +1,9 @@
 import { ConfigFileType, ISchedule } from "@powerpi/common";
 import ValidatorService from "../../../src/services/ValidatorService";
 import {
-    setupValidator,
     testInvalid as _testInvalid,
     testValid as _testValid,
+    setupValidator,
 } from "./setupValidator";
 
 describe("Users", () => {
@@ -35,6 +35,13 @@ describe("Users", () => {
                     hue: [0, 100],
                     saturation: [1000, 10000],
                     power: true,
+                },
+                {
+                    devices: ["BedroomLight", "HallwayLight"],
+                    between: ["01:00:00", "01:59:59"],
+                    interval: 60,
+                    brightness: [0, 1000],
+                    temperature: [2000, 4000],
                 },
             ],
         }));
@@ -84,6 +91,19 @@ describe("Users", () => {
                     ],
                 }));
         });
+
+        test("duplicate device(s)", () =>
+            testInvalid({
+                timezone: "Europe/London",
+                schedules: [
+                    {
+                        device: "BedroomLight",
+                        devices: ["BedroomLight", "HallwayLight"],
+                        between: ["01:00:00", "01:59:59"],
+                        interval: 60,
+                    },
+                ],
+            }));
 
         test("Other properties", () =>
             testInvalid({

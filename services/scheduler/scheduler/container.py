@@ -29,7 +29,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
         config=config,
         logger=common.logger,
         mqtt_client=common.mqtt_client,
-        scheduler=common.scheduler
+        scheduler=common.scheduler,
+        variable_manager=common.variable.variable_manager
     )
 
     device_scheduler = providers.Factory(
