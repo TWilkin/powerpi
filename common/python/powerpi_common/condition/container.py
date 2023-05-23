@@ -1,6 +1,5 @@
 from dependency_injector import containers, providers
 
-from .dates import BankHolidayService
 from .parser import ConditionParser
 
 
