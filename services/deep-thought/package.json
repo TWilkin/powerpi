@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/deep-thought",
-    "version": "0.6.2",
+    "version": "0.6.3",
     "description": "PowerPi API",
     "private": true,
     "license": "GPL-3.0-only",
