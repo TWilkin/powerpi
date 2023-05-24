@@ -1,5 +1,6 @@
 from typing import List
 
+from dependency_injector import providers
 from powerpi_common.device import DeviceConfigType, DeviceNotFoundException
 from powerpi_common.logger import Logger, LogMixin
 from scheduler.config import SchedulerConfig
@@ -15,11 +16,11 @@ class DeviceScheduler(LogMixin):
         self,
         config: SchedulerConfig,
         logger: Logger,
-        service_provider
+        device_schedule_factory: providers.Factory
     ):
         self.__config = config
         self._logger = logger
-        self.__service_provider = service_provider
+        self.__device_schedule_factory = device_schedule_factory
 
     def start(self):
         device_config = self.__config.devices
@@ -33,8 +34,6 @@ class DeviceScheduler(LogMixin):
         self.__config.timezone = schedule_config['timezone']
         self.log_info('Using timezone %s', self.__config.timezone)
 
-        factory = self.__service_provider.device_schedule
-
         schedules = schedule_config['schedules']
         for schedule in schedules:
             schedule_devices = [schedule['device']] if 'device' in schedule \
@@ -42,7 +41,7 @@ class DeviceScheduler(LogMixin):
 
             for schedule_device in schedule_devices:
                 if schedule_device in devices:
-                    device_schedule: DeviceSchedule = factory(
+                    device_schedule: DeviceSchedule = self.__device_schedule_factory(
                         device=schedule_device,
                         device_schedule=schedule
                     )

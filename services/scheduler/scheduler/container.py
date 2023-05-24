@@ -30,14 +30,15 @@ class ApplicationContainer(containers.DeclarativeContainer):
         logger=common.logger,
         mqtt_client=common.mqtt_client,
         scheduler=common.scheduler,
-        variable_manager=common.variable.variable_manager
+        variable_manager=common.variable.variable_manager,
+        condition_parser_factory=common.condition.condition_parser.provider
     )
 
     device_scheduler = providers.Factory(
         DeviceScheduler,
         config=config,
         logger=common.logger,
-        service_provider=service_provider
+        device_schedule_factory=device_schedule.provider
     )
 
     application = providers.Singleton(
