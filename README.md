@@ -73,6 +73,7 @@ The instructions for deploying the stack using Kubernetes can be found:
 
 -   **Tom Wilkin** - Most of what you see - [TWilkin](https://github.com/TWilkin)
 -   **Paul Sandwell** - Testing, feedback and some excellent ideas - [peasandwell](https://github.com/peasandwell)
+-   **Camila Neyra** - Some excellent ideas, specifically floorplans, and putting up with my incessant home automation talk.
 
 See also the list of [contributors](https://github.com/TWilkin/powerpi/contributors) who participated in this project.
 
