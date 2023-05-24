@@ -45,7 +45,7 @@ The project also includes sensor NodeMCU code in the [_esp8266_](esp8266/README.
 
 ## Building
 
-The latest image for each service can be found on [Docker Hub](https://hub.docker.com/u/twilkin), if you've made local changes (or want to try out a service locally) you can built it from scratch with the following instructions.
+The latest image for each service can be found on [Docker Hub](https://hub.docker.com/u/twilkin), if you've made local changes (or want to try out a service locally) you can build it from scratch with the following instructions.
 
 The images can be built with Docker's [_buildx_](https://docs.docker.com/buildx/working-with-buildx/) tool which supports cross-compilation of images, allowing us to build ARM images for deployment on a Raspberry Pi on an x86_64 architecture. Although, if you're not using Energenie, or PiJuice and therefore don't need the Pi module you can build and run the stack on other architectures supported by the base images.
 
@@ -63,9 +63,9 @@ docker buildx build --platform linux/amd64 --push -t MY_DOCKER_REGISTRY/powerpi-
 
 ## Deployment
 
-Deploying the services is simply a matter of deploying the stack using kubernetes, which will pull the latest images from [Docker Hub](https://hub.docker.com/u/twilkin).
+Deploying the services is simply a matter of deploying the stack using Kubernetes, which will pull the latest images from [Docker Hub](https://hub.docker.com/u/twilkin).
 
-The instructions for deploying the stack using Kubernetes can be found:
+The instructions for deploying the stack using Kubernetes can be found as follows:
 
 -   [Kubernetes](kubernetes/README.md)
 
