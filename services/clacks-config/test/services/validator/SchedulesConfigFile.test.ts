@@ -6,7 +6,7 @@ import {
     setupValidator,
 } from "./setupValidator";
 
-describe("Users", () => {
+describe("Schedules", () => {
     let subject: ValidatorService | undefined;
 
     const testValid = (file: object) => _testValid(subject, ConfigFileType.Schedules, file);
@@ -40,6 +40,9 @@ describe("Users", () => {
                     devices: ["BedroomLight", "HallwayLight"],
                     between: ["01:00:00", "01:59:59"],
                     interval: 60,
+                    condition: {
+                        when: [{ equals: [{ var: "device.OfficeLight.state" }, "on"] }],
+                    },
                     brightness: [0, 1000],
                     temperature: [2000, 4000],
                 },

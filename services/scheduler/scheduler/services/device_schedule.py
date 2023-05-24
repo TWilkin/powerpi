@@ -6,6 +6,9 @@ from typing import Any, Dict, List, Union
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from dependency_injector import providers
+from powerpi_common.condition import (ConditionParser, Expression,
+                                      ParseException)
 from powerpi_common.device import DeviceStatus
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.mqtt import MQTTClient
@@ -46,6 +49,7 @@ class DeviceSchedule(LogMixin):
         mqtt_client: MQTTClient,
         scheduler: AsyncIOScheduler,
         variable_manager: VariableManager,
+        condition_parser_factory: providers.Factory,
         device: str,
         device_schedule: Dict[str, Any]
     ):
@@ -55,6 +59,7 @@ class DeviceSchedule(LogMixin):
         self._logger = logger
         self.__scheduler = scheduler
         self.__variable_manager = variable_manager
+        self.__condition_parser_factory = condition_parser_factory
 
         self.__producer = mqtt_client.add_producer()
 
@@ -67,12 +72,29 @@ class DeviceSchedule(LogMixin):
         # retrieve this variable to register the listener
         self.__variable_manager.get_device(self.__device)
 
+        # evaluate the condition if there is one
+        try:
+            self.__check_condition()
+        except ParseException as ex:
+            self.log_error(
+                'Failed to schedule job for %s due to bad condition',
+                self.__device
+            )
+            self.log_exception(ex)
+            return
+
         self.__start_schedule()
 
     async def execute(self, start_date: datetime, end_date: datetime):
         if end_date <= datetime.now(pytz.UTC):
             # this will be the last run so schedule the next one
             self.__start_schedule(end_date)
+
+        if not self.__check_condition():
+            self.log_info(
+                'Skipping for %s as condition is false', self.__device
+            )
+            return
 
         message = {}
 
@@ -126,6 +148,17 @@ class DeviceSchedule(LogMixin):
 
         self.__power = bool(device_schedule['power']) if 'power' in device_schedule \
             else None
+
+        self.__condition: Union[Expression, None] = device_schedule['condition'] \
+            if 'condition' in device_schedule \
+            else None
+
+    def __check_condition(self):
+        if self.__condition is not None:
+            parser: ConditionParser = self.__condition_parser_factory()
+            return parser.conditional_expression(self.__condition)
+
+        return True
 
     def __start_schedule(self, start: Union[datetime, None] = None):
         '''Schedule the next run.'''
@@ -252,6 +285,9 @@ class DeviceSchedule(LogMixin):
             builder += f' on {days}'
         else:
             builder += ' every day'
+
+        if self.__condition:
+            builder += ', if the condition is true,'
 
         builder += f' adjust {self.__device}'
 
