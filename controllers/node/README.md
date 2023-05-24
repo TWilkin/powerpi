@@ -1,6 +1,6 @@
 # PowerPi - Node Controller
 
-PowerPi service which monitors the nodes in the docker cluster as well as supporting UPS using a [PiJuice](https://www.pijuice.com) and a PWM fan. This service runs on each node of the cluster, and will produce events relating to this node, as well as checking if the other nodes are on/off.
+PowerPi service which monitors the nodes in the Kubernetes cluster as well as supporting UPS using a [PiJuice](https://www.pijuice.com) and a PWM fan. This service runs on each node of the cluster, and will produce events relating to this node, as well as checking if the other nodes are on/off.
 
 The service is built using python, with dependencies using [poetry](https://python-poetry.org/). It is also dependant on a local common library [_powerpi_common_](../../common/python/README.md), and testing library [_powerpi_common_test_](../../common/pytest/README.md).
 

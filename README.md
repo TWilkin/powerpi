@@ -30,7 +30,7 @@ The project is split into the following services, each of which have their own _
     -   [**harmony**](controllers/harmony/README.md) - Allows control of [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html) Smart Hub devices.
     -   [**lifx**](controllers/lifx/README.md) - Allows control of [LIFX](https://www.lifx.com/) light devices.
     -   [**macro**](controllers/macro/README.md) - Allows control of other devices with macros, delays, mutexes etc.
-    -   [**node**](controllers/node/README.md) - Allows monitoring of the cluster (docker) nodes and support for UPS using a [PiJuice](https://www.pijuice.com).
+    -   [**node**](controllers/node/README.md) - Allows monitoring of the cluster (Kubernetes) nodes and support for UPS using a [PiJuice](https://www.pijuice.com).
     -   [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
 -   [**deep-thought**](services/deep-thought/README.md) - API
 -   [**energy-monitor**](services/energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
@@ -45,9 +45,9 @@ The project also includes sensor NodeMCU code in the [_esp8266_](esp8266/README.
 
 ## Building
 
-The latest image for each service can be found on [Docker Hub](https://hub.docker.com/u/twilkin), if you've made local changes (or want to try out a service locally) you can build it from scratch with the following instructions.
+The latest image for each service can be found on [Docker Hub](https://hub.docker.com/u/twilkin), if you've made local changes (or want to try out a service locally) you can built it from scratch with the following instructions.
 
-The images can be build with Docker's [_buildx_](https://docs.docker.com/buildx/working-with-buildx/) tool which supports cross-compilation of images, allowing us to build ARM images for deployment on a Raspberry Pi on an x86_64 architecture. Although, if you're not using Energenie, and therefore don't need the Pi module you can build and run the stack on other architectures supported by the base images.
+The images can be built with Docker's [_buildx_](https://docs.docker.com/buildx/working-with-buildx/) tool which supports cross-compilation of images, allowing us to build ARM images for deployment on a Raspberry Pi on an x86_64 architecture. Although, if you're not using Energenie, or PiJuice and therefore don't need the Pi module you can build and run the stack on other architectures supported by the base images.
 
 ```bash
 # From the root of your checkout of PowerPi
@@ -73,6 +73,7 @@ The instructions for deploying the stack using Kubernetes can be found:
 
 -   **Tom Wilkin** - Most of what you see - [TWilkin](https://github.com/TWilkin)
 -   **Paul Sandwell** - Testing, feedback and some excellent ideas - [peasandwell](https://github.com/peasandwell)
+-   **Camila Neyra** - Some excellent ideas, specifically floorplans, and putting up with my incessant home automation talk.
 
 See also the list of [contributors](https://github.com/TWilkin/powerpi/contributors) who participated in this project.
 
