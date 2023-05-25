@@ -25,7 +25,7 @@ class LIFXColour:
         # saturation is a percentage we want uint16
         DataType.SATURATION: (
             lambda value: math.ceil((value / 100) * Ranges.UINT16.max),
-            lambda value: round((value / Ranges.UINT16.max) * 100),
+            lambda value: round((value / Ranges.UINT16.max) * 100, 2),
             Ranges.UINT16
         ),
     })
