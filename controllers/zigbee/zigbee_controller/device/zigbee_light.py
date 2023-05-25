@@ -27,13 +27,10 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
     '''
 
     __standardiser = Standardiser({
-        # brightness is uint8 and we want a uint16,
-        # TODO this should be a percentage, but making consistent with LIFX for now
+        # brightness is a percentage
         DataType.BRIGHTNESS: (
-            lambda value: math.ceil(
-                (value / Ranges.UINT16.max) * Ranges.UINT8.max),
-            lambda value: math.ceil(
-                (value / Ranges.UINT8.max) * Ranges.UINT16.max),
+            lambda value: math.ceil((value / 100) * Ranges.UINT8.max),
+            lambda value: round((value / Ranges.UINT8.max) * 100, 2),
             Ranges.UINT8
         ),
         # the duration the bulb supports seems to be 1/10 a second
@@ -58,7 +55,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
         # saturation is a percentage
         DataType.SATURATION: (
             lambda value: math.ceil((value / 100) * 254),
-            lambda value: math.ceil((value / 254) * 100),
+            lambda value: round((value / 254) * 100, 2),
             Ranges.UINT8
         ),
     })

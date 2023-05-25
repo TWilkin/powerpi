@@ -63,11 +63,11 @@ class TestZigbeeeLight(
         await subject.poll()
 
         expected = {
-            'brightness': 51_400
+            'brightness': 78.43
         }
         if colour:
             expected['hue'] = 256
-            expected['saturation'] = 40
+            expected['saturation'] = 39.37
         if temperature:
             expected['temperature'] = 6667
 
@@ -181,12 +181,12 @@ class TestZigbeeeLight(
     @pytest.mark.parametrize('temperature', [True, False])
     @pytest.mark.parametrize('additional_state', [
         {},
-        {'brightness': 51_400},
+        {'brightness': 78.43},
         {'temperature': 6667},
         {'hue': 180, 'saturation': 50},
-        {'brightness': 51_400, 'temperature': 6667},
-        {'brightness': 51_400, 'hue': 180, 'saturation': 50},
-        {'brightness': 51_400, 'temperature': 6667, 'hue': 180, 'saturation': 50}
+        {'brightness': 78.43, 'temperature': 6667},
+        {'brightness': 78.43, 'hue': 180, 'saturation': 50},
+        {'brightness': 78.43, 'temperature': 6667, 'hue': 180, 'saturation': 50}
     ])
     async def test_on_additional_state_change_sets_values(
         self,
@@ -286,7 +286,7 @@ class TestZigbeeeLight(
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('additional_state', [
-        {'brightness': 51_400},
+        {'brightness': 78.43},
         {'temperature': 6667},
         {'hue': 180, 'saturation': 50}
     ])
