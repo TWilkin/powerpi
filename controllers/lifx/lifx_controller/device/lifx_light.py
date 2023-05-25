@@ -13,14 +13,18 @@ from powerpi_common.util.data import DataType
 
 class AdditionalState(TypedDict):
     hue: int
-    saturation: int
-    brightness: int
+    saturation: float
+    brightness: float
     temperature: int
 
 
-#pylint: disable=too-many-ancestors
+# pylint: disable=too-many-ancestors
 class LIFXLightDevice(AdditionalStateDevice, PollableMixin, InitialisableMixin, CapabilityMixin):
-    #pylint: disable=too-many-arguments
+    '''
+    Adds support for LIFX WiFi lights.
+    '''
+
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         config: Config,
@@ -62,7 +66,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin, InitialisableMixin, 
 
     @property
     def colour(self):
-        return LIFXColour(self.additional_state)
+        return LIFXColour.from_standard_unit(self.additional_state)
 
     async def initialise(self):
         try:
@@ -93,17 +97,17 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin, InitialisableMixin, 
             # before we compare, let's remove any disabled keys
             colour = LIFXColour(self._filter_keys(colour.to_json()))
             changed |= colour != self.colour
-            new_additional_state = colour.to_json()
+            new_additional_state = colour.to_standard_unit()
 
         if changed:
             self.set_state_and_additional(new_state, new_additional_state)
 
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
         if new_additional_state is not None:
-            lifx_colour = LIFXColour(self.additional_state)
+            lifx_colour = LIFXColour.from_standard_unit(self.additional_state)
             lifx_colour.patch(new_additional_state)
 
-            new_additional_state = lifx_colour.to_json()
+            new_additional_state = lifx_colour.to_standard_unit()
 
             await self.__light.set_colour(lifx_colour, self.__duration)
 
