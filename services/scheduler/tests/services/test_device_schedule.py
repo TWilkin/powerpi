@@ -124,7 +124,7 @@ class TestDeviceSchedule:
         ({'brightness': [0, 50]}, {'brightness': 31}),
         ({'temperature': [1000, 2000]}, {'temperature': 1620}),
         ({'hue': [0, 360]}, {'hue': 223}),
-        ({'saturation': [0, 255]}, {'saturation': 158}),
+        ({'saturation': [0, 1]}, {'saturation': 0.62}),
         (
             {
                 'power': False,
