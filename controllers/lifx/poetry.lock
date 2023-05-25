@@ -502,7 +502,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "powerpi-common"
-version = "0.3.1"
+version = "0.3.2"
 description = "PowerPi Common Python Library"
 category = "dev"
 optional = false

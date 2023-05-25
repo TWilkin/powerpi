@@ -85,7 +85,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
 
     @property
     def duration(self):
-        return self.__standardiser.convert(DataType.DURATION, self.__duration)
+        return self.__standardiser.from_standard_unit(DataType.DURATION, self.__duration)
 
     @CapabilityMixin.supports_brightness.getter
     def supports_brightness(self):
@@ -102,11 +102,11 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
         # pylint: disable=invalid-overridden-method
         if self.__supports_temperature:
             return Range(
-                self.__standardiser.revert(
+                self.__standardiser.to_standard_unit(
                     DataType.TEMPERATURE,
                     self.__colour_temp_range.max
                 ),
-                self.__standardiser.revert(
+                self.__standardiser.to_standard_unit(
                     DataType.TEMPERATURE,
                     self.__colour_temp_range.min
                 ),
@@ -135,7 +135,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
             cluster: LevelControlCluster = device[1].in_clusters[LevelControlCluster.cluster_id]
             values, _ = await cluster.read_attributes(['current_level'])
 
-            updated_additonal_state[DataType.BRIGHTNESS] = self.__standardiser.revert(
+            updated_additonal_state[DataType.BRIGHTNESS] = self.__standardiser.to_standard_unit(
                 DataType.BRIGHTNESS,
                 values['current_level']
             )
@@ -152,18 +152,18 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
                 values, _ = await cluster.read_attributes(keys)
 
                 if self.__supports_temperature:
-                    updated_additonal_state[DataType.TEMPERATURE] = self.__standardiser.revert(
+                    updated_additonal_state[DataType.TEMPERATURE] = self.__standardiser.to_standard_unit(
                         DataType.TEMPERATURE,
                         values['color_temperature']
                     )
 
                 if self.__supports_colour:
-                    updated_additonal_state[DataType.HUE] = self.__standardiser.revert(
+                    updated_additonal_state[DataType.HUE] = self.__standardiser.to_standard_unit(
                         DataType.HUE,
                         values['current_hue']
                     )
 
-                    updated_additonal_state[DataType.SATURATION] = self.__standardiser.revert(
+                    updated_additonal_state[DataType.SATURATION] = self.__standardiser.to_standard_unit(
                         DataType.SATURATION,
                         values['current_saturation']
                     )
@@ -338,7 +338,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
             if new_state == DeviceStatus.ON else 0
 
         options = {
-            'level': self.__standardiser.convert(
+            'level': self.__standardiser.from_standard_unit(
                 DataType.BRIGHTNESS,
                 brightness
             ),
@@ -354,7 +354,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
         command = cluster.commands_by_name['move_to_level'].id
 
         options = {
-            'level': self.__standardiser.convert(
+            'level': self.__standardiser.from_standard_unit(
                 DataType.BRIGHTNESS,
                 brightness
             ),
@@ -374,7 +374,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
 
             options = {
                 'color_temp_mireds': self.__colour_temp_range.restrict(
-                    self.__standardiser.convert(
+                    self.__standardiser.from_standard_unit(
                         DataType.TEMPERATURE,
                         temperature
                     )
@@ -397,11 +397,11 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
             command = cluster.commands_by_name['move_to_hue_and_saturation'].id
 
             options = {
-                'hue': self.__standardiser.convert(
+                'hue': self.__standardiser.from_standard_unit(
                     DataType.HUE,
                     hue
                 ),
-                'saturation': self.__standardiser.convert(
+                'saturation': self.__standardiser.from_standard_unit(
                     DataType.SATURATION,
                     saturation
                 ),

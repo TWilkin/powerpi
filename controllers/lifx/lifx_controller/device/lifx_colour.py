@@ -55,7 +55,7 @@ class LIFXColour:
     def from_standard_unit(colour: Dict[str, float]):
         '''Convert colour from PowerPi standard units to LIFX'''
 
-        converted = {key: LIFXColour.__standardiser.convert(key, value)
+        converted = {key: LIFXColour.__standardiser.from_standard_unit(key, value)
                      for key, value in colour.items()}
 
         return LIFXColour(converted)
@@ -63,10 +63,14 @@ class LIFXColour:
     def to_standard_unit(self):
         '''Convert colour from LIFX units to PowerPi standard units and return as JSON'''
         return {
-            DataType.HUE: self.__standardiser.revert(DataType.HUE, self.hue),
-            DataType.SATURATION: self.__standardiser.revert(DataType.SATURATION, self.saturation),
-            DataType.BRIGHTNESS: self.__standardiser.revert(DataType.BRIGHTNESS, self.brightness),
-            DataType.TEMPERATURE: self.__standardiser.revert(
+            DataType.HUE: self.__standardiser.to_standard_unit(DataType.HUE, self.hue),
+            DataType.SATURATION: self.__standardiser.to_standard_unit(
+                DataType.SATURATION, self.saturation
+            ),
+            DataType.BRIGHTNESS: self.__standardiser.to_standard_unit(
+                DataType.BRIGHTNESS, self.brightness
+            ),
+            DataType.TEMPERATURE: self.__standardiser.to_standard_unit(
                 DataType.TEMPERATURE, self.temperature
             )
         }
@@ -80,7 +84,9 @@ class LIFXColour:
                     # handle an increment/decrement
                     if value.startswith('+') or value.startswith('-'):
                         # convert the old value back to the standard unit
-                        old_value = self.__standardiser.revert(key, self[key])
+                        old_value = self.__standardiser.to_standard_unit(
+                            key, self[key]
+                        )
 
                         # get the patch increment in standard unit
                         multiplier = -1 if value[0] == '-' else 1
@@ -93,7 +99,9 @@ class LIFXColour:
                         new_value = float(value)
 
                 # convert the value to LIFX unit
-                self[key] = self.__standardiser.convert(key, new_value)
+                self[key] = self.__standardiser.from_standard_unit(
+                    key, new_value
+                )
 
     def to_json(self):
         return {
