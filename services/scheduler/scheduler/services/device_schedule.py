@@ -269,7 +269,7 @@ class DeviceSchedule(LogMixin):
 
         new_value = delta_range.start + delta * intervals
 
-        new_value = round(new_value)
+        new_value = round_for_type(delta_range.type, new_value)
         if delta > 0:
             new_value = min(max(new_value, delta_range.start), delta_range.end)
         else:
@@ -298,3 +298,12 @@ class DeviceSchedule(LogMixin):
             builder += ' and turn it on'
 
         return builder
+
+
+def round_for_type(delta_type: DeltaType, value: float):
+    places = 0
+
+    if delta_type in [DeltaType.BRIGHTNESS, DeltaType.SATURATION]:
+        places = 2
+
+    return round(value, places)

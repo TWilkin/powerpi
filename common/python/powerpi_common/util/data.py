@@ -59,7 +59,7 @@ class Standardiser:
             ]):
         self.__converters = converters
 
-    def convert(self, data_type: DataType, value: float):
+    def from_standard_unit(self, data_type: DataType, value: float):
         '''
         Convert the value from the standard value to the internal value for the device.
         '''
@@ -75,7 +75,7 @@ class Standardiser:
 
         return value
 
-    def revert(self, data_type: DataType, value: float):
+    def to_standard_unit(self, data_type: DataType, value: float):
         '''
         Convert the value from the internal value to the standard value for the device.
         '''

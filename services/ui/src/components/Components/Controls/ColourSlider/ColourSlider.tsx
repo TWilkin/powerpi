@@ -17,11 +17,11 @@ type ColourSliderProps = {
 const ColourSlider = ({
     hue = 360,
     saturation = 100,
-    brightness = 65535,
+    brightness = 100,
     disabled,
     onChange,
 }: ColourSliderProps) => {
-    const [colour, setColour] = useState({ h: hue, s: saturation / 100, l: brightness / 65535 });
+    const [colour, setColour] = useState({ h: hue, s: saturation / 100, l: brightness / 100 });
 
     const onColourChange = useCallback((color: ColorResult) => setColour({ ...color.hsl }), []);
 
@@ -30,7 +30,7 @@ const ColourSlider = ({
             const message = {
                 hue: +color.hsl.h.toFixed(2),
                 saturation: +(color.hsl.s * 100).toFixed(2),
-                brightness: +(color.hsl.l * 65535).toFixed(2),
+                brightness: +(color.hsl.l * 100).toFixed(2),
             };
 
             onChange(message);
@@ -39,7 +39,7 @@ const ColourSlider = ({
     );
 
     useLayoutEffect(
-        () => setColour({ h: hue, s: saturation / 100, l: brightness / 65535 }),
+        () => setColour({ h: hue, s: saturation / 100, l: brightness / 100 }),
         [brightness, hue, saturation]
     );
 

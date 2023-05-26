@@ -56,7 +56,7 @@ class TestLIFXLightDevice(
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('powered', [None, 1, 0])
-    @pytest.mark.parametrize('colour', [None, (1, 2, 3, 4)])
+    @pytest.mark.parametrize('colour', [None, (65535, 65535, 65535, 4000)])
     @pytest.mark.parametrize('supports_colour', [None, True, False])
     @pytest.mark.parametrize('supports_temperature', [None, True, False])
     async def test_poll(
@@ -99,22 +99,22 @@ class TestLIFXLightDevice(
             assert subject.state == 'off'
 
         if supports_colour is True and colour is not None:
-            assert subject.additional_state.get('hue', None) == colour[0]
+            assert subject.additional_state.get('hue', None) == 360
             assert subject.additional_state.get('saturation', None) \
-                == colour[1]
+                == 100
         else:
             assert subject.additional_state.get('hue', None) is None
             assert subject.additional_state.get('saturation', None) is None
 
         if colour is not None:
             assert subject.additional_state.get('brightness', None) \
-                == colour[2]
+                == 100
         else:
             assert subject.additional_state.get('brightness', None) is None
 
         if supports_temperature is True and colour is not None:
             assert subject.additional_state.get('temperature', None) \
-                == colour[3]
+                == 4000
         else:
             assert subject.additional_state.get('temperature', None) is None
 
@@ -137,7 +137,7 @@ class TestLIFXLightDevice(
         )
 
         future = Future()
-        future.set_result((False, LIFXColour((1, 2, 3, 4))))
+        future.set_result((False, LIFXColour((65535, 65535, 65535, 4000))))
         mocker.patch.object(
             lifx_client,
             'get_state',
@@ -153,13 +153,13 @@ class TestLIFXLightDevice(
         topic = 'device/light/status'
         message = {
             'state': 'off',
-            'brightness': 3
+            'brightness': 100
         }
         if supports_colour:
-            message['hue'] = 1
-            message['saturation'] = 2
+            message['hue'] = 360
+            message['saturation'] = 100
         if supports_temperature:
-            message['temperature'] = 4
+            message['temperature'] = 4000
 
         powerpi_mqtt_producer.assert_called_once_with(topic, message)
 
