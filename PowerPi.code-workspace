@@ -1,0 +1,189 @@
+{
+    "folders": [
+        {
+            "name": "PowerPi",
+            "path": "."
+        },
+
+        // Common
+        {
+            "name": "Common API",
+            "path": "common/node/api"
+        },
+        {
+            "name": "Common Node",
+            "path": "common/node/common"
+        },
+        {
+            "name": "Common Node Test",
+            "path": "common/node/common-test"
+        },
+        {
+            "name": "Common Python",
+            "path": "common/python"
+        },
+        {
+            "name": "Common Python Test",
+            "path": "common/pytest"
+        },
+
+        // Services
+        {
+            "name": "API",
+            "path": "services/deep-thought"
+        },
+        {
+            "name": "Config Service",
+            "path": "services/clacks-config"
+        },
+        {
+            "name": "Energy Monitor",
+            "path": "services/energy-monitor"
+        },
+        {
+            "name": "FreeDNS",
+            "path": "services/freedns"
+        },
+        {
+            "name": "Persistence",
+            "path": "services/persistence"
+        },
+        {
+            "name": "Scheduler",
+            "path": "services/scheduler"
+        },
+        {
+            "name": "Shutdown",
+            "path": "services/shutdown"
+        },
+        {
+            "name": "UI",
+            "path": "services/ui"
+        },
+        {
+            "name": "Voice Assistant",
+            "path": "services/voice-assistant"
+        },
+
+        // Controllers
+        {
+            "name": "Energenie Controller",
+            "path": "controllers/energenie"
+        },
+        {
+            "name": "Harmony Controller",
+            "path": "controllers/harmony"
+        },
+        {
+            "name": "LIFX Controller",
+            "path": "controllers/lifx"
+        },
+        {
+            "name": "Macro Controller",
+            "path": "controllers/macro"
+        },
+        {
+            "name": "Node Controller",
+            "path": "controllers/node"
+        },
+        {
+            "name": "ZigBee Controller",
+            "path": "controllers/zigbee"
+        },
+
+        // Other
+        {
+            "name": "Sensors",
+            "path": "esp8266"
+        },
+        {
+            "name": "Kubernetes",
+            "path": "kubernetes"
+        }
+    ],
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [],
+        "compounds": []
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "Build node libraries",
+                "command": "yarn build:lib",
+                "type": "shell",
+                "args": [],
+                "presentation": {
+                    "reveal": "always"
+                },
+                "group": "build"
+            },
+            {
+                "label": "Clean node",
+                "command": "yarn clean",
+                "type": "shell",
+                "args": [],
+                "presentation": {
+                    "reveal": "always"
+                }
+            }
+        ]
+    },
+    "settings": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+        "[scss]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[javascript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[jsonc]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescriptreact]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "editor.formatOnSave": true,
+        "eslint.packageManager": "yarn",
+        "jest.disabledWorkspaceFolders": [
+            "PowerPi",
+            "Common Node Test",
+            "Common Python",
+            "Common Python Test",
+            "Scheduler",
+            "Shutdown",
+            "Energenie Controller",
+            "Harmony Controller",
+            "LIFX Controller",
+            "Macro Controller",
+            "Node Controller",
+            "ZigBee Controller",
+            "Sensors",
+            "Kubernetes"
+        ],
+        "python.linting.pylintEnabled": true,
+        "python.linting.enabled": true,
+        "python.linting.pylintArgs": ["--rcfile=${workspaceFolder}/../../.pylintrc"],
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true
+    },
+    "extensions": {
+        "recommendations": [
+            "golang.Go",
+            "ms-kubernetes-tools.vscode-kubernetes-tools",
+            "dbaeumer.vscode-eslint",
+            "esbenp.prettier-vscode",
+            "Orta.vscode-jest",
+            "ms-python.python"
+        ]
+    }
+}

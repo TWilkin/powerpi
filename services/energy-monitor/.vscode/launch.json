@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Energy Monitor",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start:dev"],
+            "resolveSourceMapLocations": ["**", "!**/node_modules/**"],
+            "presentation": {
+                "group": "Services"
+            }
+        }
+    ]
+}

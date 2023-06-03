@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "API",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start:dev"],
+            "resolveSourceMapLocations": ["**", "!**/node_modules/**"],
+            "env": {
+                "EXTERNAL_HOST_NAME": "localhost",
+                "EXTERNAL_PORT": "3000",
+                "USE_HTTP": "false"
+            },
+            "presentation": {
+                "group": "Services"
+            }
+        }
+    ]
+}
