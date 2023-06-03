@@ -4,6 +4,29 @@
             "name": "PowerPi",
             "path": "."
         },
+
+        // Common
+        {
+            "name": "Common API",
+            "path": "common/node/api"
+        },
+        {
+            "name": "Common Node",
+            "path": "common/node/common"
+        },
+        {
+            "name": "Common Node Test",
+            "path": "common/node/common-test"
+        },
+        {
+            "name": "Common Python",
+            "path": "common/python"
+        },
+        {
+            "name": "Common Python Test",
+            "path": "common/pytest"
+        },
+
         // Services
         {
             "name": "API",
@@ -133,6 +156,9 @@
         "eslint.packageManager": "yarn",
         "jest.disabledWorkspaceFolders": [
             "PowerPi",
+            "Common Node Test",
+            "Common Python",
+            "Common Python Test",
             "Scheduler",
             "Shutdown",
             "Energenie Controller",
