@@ -107,6 +107,19 @@
         },
         "editor.formatOnSave": true,
         "eslint.packageManager": "yarn",
+        "jest.disabledWorkspaceFolders": [
+            "PowerPi",
+            "Scheduler",
+            "Shutdown",
+            "Energenie Controller",
+            "Harmony Controller",
+            "LIFX Controller",
+            "Macro Controller",
+            "Node Controller",
+            "ZigBee Controller",
+            "Sensors",
+            "Kubernetes"
+        ],
         "python.linting.pylintEnabled": true,
         "python.linting.enabled": true,
         "python.testing.unittestEnabled": false,
@@ -118,6 +131,7 @@
             "ms-kubernetes-tools.vscode-kubernetes-tools",
             "dbaeumer.vscode-eslint",
             "esbenp.prettier-vscode",
+            "Orta.vscode-jest",
             "ms-python.python"
         ]
     }
