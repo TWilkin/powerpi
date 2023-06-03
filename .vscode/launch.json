@@ -1,7 +1,20 @@
 {
     "configurations": [
         {
-            "name": "PowerPi UI",
+            "name": "API",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start:deep-thought"],
+            "resolveSourceMapLocations": ["**", "!**/node_modules/**"],
+            "env": {
+                "EXTERNAL_HOST_NAME": "localhost",
+                "EXTERNAL_PORT": "3000",
+                "USE_HTTP": "false"
+            }
+        },
+        {
+            "name": "UI",
             "type": "chrome",
             "request": "launch",
             "url": "http://localhost:8080",
