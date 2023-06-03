@@ -118,7 +118,6 @@ tag_service "controllers/zigbee" "zigbee-controller"
 
 tag_service "esp8266" "powerpi-sensor"
 
-tag_service "services/babel-fish" "babel-fish"
 tag_service "services/clacks-config" "clacks-config"
 tag_service "services/deep-thought" "deep-thought"
 tag_service "services/energy-monitor" "energy-monitor"
@@ -127,3 +126,4 @@ tag_service "services/persistence" "persistence"
 tag_service "services/scheduler" "scheduler"
 tag_service "services/shutdown" "shutdown"
 tag_service "services/ui" "ui"
+tag_service "services/voice-assistant" "voice-assistant"

@@ -14,7 +14,7 @@ const project = new ProjectConfig({
                                     summary: "PowerPi Alexa Integration",
                                     examplePhrases: ["Alexa start PowerPi"],
                                     keywords: ["powerpi"],
-                                    name: "PowerPI babel-fish",
+                                    name: "PowerPI voice-assistant",
                                     description: "PowerPi Alexa Integration",
                                     smallIconUri:
                                         "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15/svgs/solid/plug.svg",

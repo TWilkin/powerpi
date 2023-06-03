@@ -31,7 +31,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: babel-fish
+            name: voice-assistant
             port:
               number: 80
       {{- end }}

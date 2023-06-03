@@ -1,14 +1,14 @@
 {
-    "name": "@powerpi/babel-fish",
-    "version": "1.0.5",
-    "description": "PowerPi home automation voice service",
+    "name": "@powerpi/voice-assistant",
+    "version": "2.0.0",
+    "description": "PowerPi home automation voice assistant service",
     "private": true,
     "license": "GPL-3.0-only",
     "author": "TWilkin",
     "repository": {
         "type": "git",
         "url": "https://github.com/TWilkin/powerpi.git",
-        "directory": "services/babel-fish"
+        "directory": "services/voice-assistant"
     },
     "main": "./dist/src/index.js",
     "types": "./dist/src/index.d.ts",
