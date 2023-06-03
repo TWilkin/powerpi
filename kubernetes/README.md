@@ -72,7 +72,7 @@ microk8s kubectl create secret generic freedns-secret --namespace powerpi \
     --from-file=password=./__SECRET_NAME__
 ```
 
--   **google-auth-secret** - The Google OAuth secret used for login authentication in the API, UI and _babel-fish_.
+-   **google-auth-secret** - The Google OAuth secret used for login authentication in the API, UI and _voice-assistant_.
 
 ```bash
 microk8s kubectl create secret generic google-auth-secret --namespace powerpi \
