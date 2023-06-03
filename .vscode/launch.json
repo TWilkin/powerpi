@@ -1,5 +1,6 @@
 {
     "configurations": [
+        // services
         {
             "name": "API",
             "type": "node",
@@ -11,6 +12,19 @@
                 "EXTERNAL_HOST_NAME": "localhost",
                 "EXTERNAL_PORT": "3000",
                 "USE_HTTP": "false"
+            },
+            "presentation": {
+                "group": "Services"
+            }
+        },
+        {
+            "name": "Scheduler",
+            "type": "python",
+            "request": "launch",
+            "module": "scheduler",
+            "cwd": "${workspaceFolder}/services/scheduler",
+            "presentation": {
+                "group": "Services"
             }
         },
         {
@@ -18,7 +32,72 @@
             "type": "chrome",
             "request": "launch",
             "url": "http://localhost:8080",
-            "webRoot": "${workspaceFolder}/services/ui"
+            "webRoot": "${workspaceFolder}/services/ui",
+            "presentation": {
+                "group": "Services"
+            }
+        },
+
+        // controllers
+        {
+            "name": "Energenie Controller",
+            "type": "python",
+            "request": "launch",
+            "module": "energenie_controller",
+            "cwd": "${workspaceFolder}/controllers/energenie",
+            "presentation": {
+                "group": "Controllers"
+            }
+        },
+        {
+            "name": "Harmony Controller",
+            "type": "python",
+            "request": "launch",
+            "module": "harmony_controller",
+            "cwd": "${workspaceFolder}/controllers/harmony",
+            "presentation": {
+                "group": "Controllers"
+            }
+        },
+        {
+            "name": "LIFX Controller",
+            "type": "python",
+            "request": "launch",
+            "module": "lifx_controller",
+            "cwd": "${workspaceFolder}/controllers/lifx",
+            "presentation": {
+                "group": "Controllers"
+            }
+        },
+        {
+            "name": "Macro Controller",
+            "type": "python",
+            "request": "launch",
+            "module": "macro_controller",
+            "cwd": "${workspaceFolder}/controllers/macro",
+            "presentation": {
+                "group": "Controllers"
+            }
+        },
+        {
+            "name": "Node Controller",
+            "type": "python",
+            "request": "launch",
+            "module": "node_controller",
+            "cwd": "${workspaceFolder}/controllers/node",
+            "presentation": {
+                "group": "Controllers"
+            }
+        },
+        {
+            "name": "ZigBee Controller",
+            "type": "python",
+            "request": "launch",
+            "module": "zigbee_controller",
+            "cwd": "${workspaceFolder}/controllers/zigbee",
+            "presentation": {
+                "group": "Controllers"
+            }
         }
     ]
 }
