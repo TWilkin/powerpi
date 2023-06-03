@@ -6,9 +6,6 @@ version: 0.1.18
 appVersion: 0.1.16
 dependencies:
   # services
-  - name: babel-fish
-    version: 0.1.2
-    condition: global.voiceAssistant
   - name: clacks-config
     version: 0.1.5
     condition: global.config
@@ -35,6 +32,9 @@ dependencies:
     version: 0.1.1
   - name: ui
     version: 0.1.5
+  - name: voice-assistant
+    version: 0.1.2
+    condition: global.voiceAssistant
   # controllers
   - name: energenie-controller
     version: 0.1.2

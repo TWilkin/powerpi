@@ -35,7 +35,7 @@ RUN yarn workspace @powerpi/common-test build
 
 # build the service
 FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-service-image
-LABEL description="Node.js builder for babel-fish service"
+LABEL description="Node.js builder for voice-assistant service"
 WORKDIR /home/node/app
 COPY --from=build-api-image /home/node/app/common/node/api/package.json ./common/node/api/
 COPY --from=build-api-image /home/node/app/common/node/api/dist/ ./common/node/api/dist/
@@ -43,16 +43,16 @@ COPY --from=build-common-image /home/node/app/common/node/common/package.json ./
 COPY --from=build-common-image /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 COPY --from=build-common-test-image /home/node/app/common/node/common-test/package.json ./common/node/common-test/
 COPY --from=build-common-test-image /home/node/app/common/node/common-test/dist/ ./common/node/common-test/dist/
-RUN mkdir -p /home/node/app/services/babel-fish
+RUN mkdir -p /home/node/app/services/voice-assistant
 COPY package.json yarn.lock tsconfig.json ./
-COPY services/babel-fish/package.json ./services/babel-fish/
-RUN yarn workspace @powerpi/babel-fish install --frozen-lockfile
-COPY services/babel-fish ./services/babel-fish/
-RUN yarn workspace @powerpi/babel-fish build
+COPY services/voice-assistant/package.json ./services/voice-assistant/
+RUN yarn workspace @powerpi/voice-assistant install --frozen-lockfile
+COPY services/voice-assistant ./services/voice-assistant/
+RUN yarn workspace @powerpi/voice-assistant build
 
-# babel-fish service image
+# voice-assistant service image
 FROM node:16.16.0-alpine3.16 as run-image
-LABEL description="PowerPi babel-fish Alexa webhook service"
+LABEL description="PowerPi voice-assistant Alexa webhook service"
 
 # expose the port used by the application
 EXPOSE 3000
@@ -61,7 +61,7 @@ EXPOSE 3000
 USER node
 RUN mkdir -p /home/node/app/common/node/api/dist \
     /home/node/app/common/node/common/dist \
-    /home/node/app/services/babel-fish/dist
+    /home/node/app/services/voice-assistant/dist
 
 # copy the built common libraries
 WORKDIR /home/node/app
@@ -72,11 +72,11 @@ COPY --from=build-common-image --chown=node:node /home/node/app/common/node/comm
 COPY --from=build-common-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 
 # install the dependencies
-COPY --from=build-service-image --chown=node:node /home/node/app/services/babel-fish/package.json ./services/babel-fish/
-RUN yarn workspace @powerpi/babel-fish install --production --frozen-lockfile
+COPY --from=build-service-image --chown=node:node /home/node/app/services/voice-assistant/package.json ./services/voice-assistant/
+RUN yarn workspace @powerpi/voice-assistant install --production --frozen-lockfile
 
 # copy the built application
-COPY --from=build-service-image --chown=node:node /home/node/app/services/babel-fish/dist/ ./services/babel-fish/dist/
+COPY --from=build-service-image --chown=node:node /home/node/app/services/voice-assistant/dist/ ./services/voice-assistant/dist/
 
 # start the application once the container is ready
-CMD yarn workspace @powerpi/babel-fish start:prd
+CMD yarn workspace @powerpi/voice-assistant start:prd
