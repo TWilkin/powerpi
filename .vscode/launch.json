@@ -65,6 +65,7 @@
             "name": "Scheduler",
             "type": "python",
             "request": "launch",
+            "python": "${workspaceFolder}/services/scheduler/.venv/bin/python",
             "module": "scheduler",
             "cwd": "${workspaceFolder}/services/scheduler",
             "presentation": {
@@ -108,6 +109,7 @@
             "name": "Energenie Controller",
             "type": "python",
             "request": "launch",
+            "python": "${workspaceFolder}/controllers/energenie/.venv/bin/python",
             "module": "energenie_controller",
             "cwd": "${workspaceFolder}/controllers/energenie",
             "presentation": {
@@ -118,6 +120,7 @@
             "name": "Harmony Controller",
             "type": "python",
             "request": "launch",
+            "python": "${workspaceFolder}/controllers/harmony/.venv/bin/python",
             "module": "harmony_controller",
             "cwd": "${workspaceFolder}/controllers/harmony",
             "presentation": {
@@ -128,6 +131,7 @@
             "name": "LIFX Controller",
             "type": "python",
             "request": "launch",
+            "python": "${workspaceFolder}/controllers/lifx/.venv/bin/python",
             "module": "lifx_controller",
             "cwd": "${workspaceFolder}/controllers/lifx",
             "presentation": {
@@ -138,6 +142,7 @@
             "name": "Macro Controller",
             "type": "python",
             "request": "launch",
+            "python": "${workspaceFolder}/controllers/macro/.venv/bin/python",
             "module": "macro_controller",
             "cwd": "${workspaceFolder}/controllers/macro",
             "presentation": {
@@ -148,6 +153,7 @@
             "name": "Node Controller",
             "type": "python",
             "request": "launch",
+            "python": "${workspaceFolder}/controllers/node/.venv/bin/python",
             "module": "node_controller",
             "cwd": "${workspaceFolder}/controllers/node",
             "presentation": {
@@ -158,6 +164,7 @@
             "name": "ZigBee Controller",
             "type": "python",
             "request": "launch",
+            "python": "${workspaceFolder}/controllers/zigbee/.venv/bin/python",
             "module": "zigbee_controller",
             "cwd": "${workspaceFolder}/controllers/zigbee",
             "presentation": {
