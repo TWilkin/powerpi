@@ -19,6 +19,11 @@ jobs:
         git config user.name PowerPi-bot
         git config user.email PowerPi-Bot@github.com
     
+    - name: Get tags
+      run: |
+        git fetch origin
+        git fetch --prune origin +refs/tags/*:refs/tags/*
+    
     - name: Add chart directory
       run: ln -s kubernetes charts
 
