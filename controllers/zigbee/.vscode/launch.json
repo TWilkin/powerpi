@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ZigBee Controller",
+            "type": "python",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "module": "zigbee_controller",
+            "presentation": {
+                "group": "Controllers"
+            }
+        }
+    ]
+}
