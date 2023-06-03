@@ -72,6 +72,16 @@
             }
         },
         {
+            "name": "Shutdown",
+            "type": "go",
+            "request": "launch",
+            "program": "${workspaceFolder}/services/shutdown/src",
+            "args": ["--mock"],
+            "presentation": {
+                "group": "Services"
+            }
+        },
+        {
             "name": "UI",
             "type": "chrome",
             "request": "launch",
