@@ -3,7 +3,7 @@ name: Release PowerPi
 on:
   push:
     branches:
-    - master
+    - 330.release-no-change
 
 jobs:
   release:
