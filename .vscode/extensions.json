@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "golang.Go",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-python.python"
+    ]
+}
