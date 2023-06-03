@@ -83,6 +83,30 @@
         "configurations": [],
         "compounds": []
     },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "Build node libraries",
+                "command": "yarn build:lib",
+                "type": "shell",
+                "args": [],
+                "presentation": {
+                    "reveal": "always"
+                },
+                "group": "build"
+            },
+            {
+                "label": "Clean node",
+                "command": "yarn clean",
+                "type": "shell",
+                "args": [],
+                "presentation": {
+                    "reveal": "always"
+                }
+            }
+        ]
+    },
     "settings": {
         "editor.codeActionsOnSave": {
             "source.organizeImports": true
