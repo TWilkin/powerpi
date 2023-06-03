@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# setup Git
-git config user.name github-actions
-git config user.email github-actions@github.com
-
 # donwload helm chart releaser
 echo "Downloading Chart Releaser"
 curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/v1.5.0/chart-releaser_1.5.0_linux_amd64.tar.gz"
