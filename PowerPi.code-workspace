@@ -172,6 +172,7 @@
         ],
         "python.linting.pylintEnabled": true,
         "python.linting.enabled": true,
+        "python.linting.pylintArgs": ["--rcfile=${workspaceFolder}/../../.pylintrc"],
         "python.testing.unittestEnabled": false,
         "python.testing.pytestEnabled": true
     },
