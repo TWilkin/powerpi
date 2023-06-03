@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# find the new version
+version_str=`grep "^version:\s*.*$" "${GITHUB_WORKSPACE}/kubernetes/Chart.yaml" | head -n 1`
+version_regex="version:\s*(.*)"
+if [[ $version_str =~ $version_regex ]]
+then 
+    version="${BASH_REMATCH[1]}"
+else 
+    version=-1 
+fi
+
+# if the tag already exists, don't release
+tag_exists=`git tag | grep $version | wc -l`
+if [ $tag_exists -ne "0" ]
+then
+    exit 0
+fi
+
 # donwload helm chart releaser
 echo "Downloading Chart Releaser"
 curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/v1.5.0/chart-releaser_1.5.0_linux_amd64.tar.gz"
