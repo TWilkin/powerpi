@@ -18,6 +18,50 @@
             }
         },
         {
+            "name": "Config Server",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start:clacks-config"],
+            "resolveSourceMapLocations": ["**", "!**/node_modules/**"],
+            "presentation": {
+                "group": "Services"
+            }
+        },
+        {
+            "name": "Energy Monitor",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start:energy-monitor"],
+            "resolveSourceMapLocations": ["**", "!**/node_modules/**"],
+            "presentation": {
+                "group": "Services"
+            }
+        },
+        {
+            "name": "FreeDNS",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start:freedns"],
+            "resolveSourceMapLocations": ["**", "!**/node_modules/**"],
+            "presentation": {
+                "group": "Services"
+            }
+        },
+        {
+            "name": "Persistence",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start:persistence"],
+            "resolveSourceMapLocations": ["**", "!**/node_modules/**"],
+            "presentation": {
+                "group": "Services"
+            }
+        },
+        {
             "name": "Scheduler",
             "type": "python",
             "request": "launch",
@@ -33,6 +77,17 @@
             "request": "launch",
             "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}/services/ui",
+            "presentation": {
+                "group": "Services"
+            }
+        },
+        {
+            "name": "Voice Assistant",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start:voice-assistant"],
+            "resolveSourceMapLocations": ["**", "!**/node_modules/**"],
             "presentation": {
                 "group": "Services"
             }
