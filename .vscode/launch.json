@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "name": "PowerPi UI",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}/services/ui"
+        }
+    ]
+}
