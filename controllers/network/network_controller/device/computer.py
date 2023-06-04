@@ -40,10 +40,7 @@ class ComputerDevice(Device, PollableMixin):
         return self.__network_address
 
     async def poll(self):
-        result = await async_ping(
-            self.__network_address,
-            count=4, interval=0.2, timeout=2, privileged=False
-        )
+        result = await async_ping(self.__network_address, count=4, interval=0.2, timeout=2)
 
         new_state = DeviceStatus.ON if result.is_alive else DeviceStatus.OFF
 
@@ -58,4 +55,4 @@ class ComputerDevice(Device, PollableMixin):
 
     async def _turn_off(self):
         # do nothing as this will be handled by the shutdown service running on that computer
-        pass
+        return False

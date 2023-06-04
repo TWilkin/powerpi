@@ -30,10 +30,13 @@ RUN ln -s ../../common/python/.venv .venv \
 FROM python:3.9.16-alpine3.17 AS run-image
 LABEL description="PowerPi Network Controller"
 
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat libcap
 
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
+
+# ensure the controller can run ping
+RUN setcap cap_net_raw+ep /usr/local/bin/python3.9
 
 RUN adduser --disabled-password powerpi
 USER powerpi
