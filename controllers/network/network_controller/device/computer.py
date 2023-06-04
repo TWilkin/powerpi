@@ -30,7 +30,7 @@ class ComputerDevice(Device, PollableMixin):
         Device.__init__(self, config, logger, mqtt_client, **kwargs)
         PollableMixin.__init__(self, config, **kwargs)
 
-        self.__mac_address = mac.replace(':', '.')
+        self.__mac_address = mac
         self.__network_address = ip if ip is not None else hostname
 
     @property
