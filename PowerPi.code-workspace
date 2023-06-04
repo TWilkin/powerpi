@@ -83,6 +83,10 @@
             "path": "controllers/macro"
         },
         {
+            "name": "Network Controller",
+            "path": "controllers/network"
+        },
+        {
             "name": "Node Controller",
             "path": "controllers/node"
         },
@@ -184,6 +188,7 @@
             "Harmony Controller",
             "LIFX Controller",
             "Macro Controller",
+            "Network Controller",
             "Node Controller",
             "ZigBee Controller",
             "Sensors",
