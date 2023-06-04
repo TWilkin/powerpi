@@ -147,7 +147,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
                 if success is not False:
                     self.state = new_status
                 else:
-                    self.log_info(f'Failed to {new_status} device {self}')
+                    self.log_info(f'Failed to turn {new_status} device {self}')
         except Exception as ex:
             self.log_exception(ex)
             self.state = DeviceStatus.UNKNOWN

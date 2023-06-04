@@ -1,10 +1,8 @@
-from datetime import datetime
-
 import pytest
+from powerpi_common_test.base import BaseTest
 from pytest_mock import MockerFixture
 
 from powerpi_common.event.consumer import EventConsumer
-from powerpi_common_test.base import BaseTest
 
 
 class EventHandlerImpl:
@@ -40,7 +38,7 @@ class TestEventConsumer(BaseTest):
         )
 
     @pytest.mark.parametrize('timestamp,expected', [
-        (datetime.now().timestamp() * 1000, 2),
+        (1685910908 * 1000, 2),
         (None, 2),
         (0, 0)
     ])
