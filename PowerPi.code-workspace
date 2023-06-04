@@ -175,6 +175,12 @@
         "[typescriptreact]": {
             "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
+        "[yaml]": {
+            "editor.defaultFormatter": "redhat.vscode-yaml"
+        },
+        "[helm]": {
+            "editor.defaultFormatter": "redhat.vscode-yaml"
+        },
         "editor.formatOnSave": true,
         "eslint.packageManager": "yarn",
         "jest.disabledWorkspaceFolders": [
@@ -207,7 +213,8 @@
             "dbaeumer.vscode-eslint",
             "esbenp.prettier-vscode",
             "Orta.vscode-jest",
-            "ms-python.python"
+            "ms-python.python",
+            "redhat.vscode-yaml"
         ]
     }
 }
