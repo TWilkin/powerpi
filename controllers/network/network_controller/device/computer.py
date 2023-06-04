@@ -1,3 +1,5 @@
+from asyncio import sleep
+
 from icmplib import async_ping
 from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceStatus
@@ -48,7 +50,10 @@ class ComputerDevice(Device, PollableMixin):
             self.state = new_state
 
     async def _turn_on(self):
-        send_magic_packet(self.__mac_address)
+        for _ in range(0, 4):
+            send_magic_packet(self.__mac_address)
+
+            await sleep(0.2)
 
     async def _turn_off(self):
         # do nothing as this will be handled by the shutdown service running on that computer
