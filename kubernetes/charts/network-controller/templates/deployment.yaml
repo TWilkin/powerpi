@@ -1,0 +1,6 @@
+{{- 
+    $data := dict
+    "HostNetwork" (true | quote)
+-}}
+
+{{- include "powerpi.controller" (merge (dict "Params" $data) . ) -}}

@@ -83,6 +83,10 @@
             "path": "controllers/macro"
         },
         {
+            "name": "Network Controller",
+            "path": "controllers/network"
+        },
+        {
             "name": "Node Controller",
             "path": "controllers/node"
         },
@@ -113,7 +117,6 @@
                 "label": "Build node libraries",
                 "command": "yarn build:lib",
                 "type": "shell",
-                "args": [],
                 "presentation": {
                     "reveal": "always"
                 },
@@ -123,10 +126,30 @@
                 "label": "Clean node",
                 "command": "yarn clean",
                 "type": "shell",
-                "args": [],
                 "presentation": {
                     "reveal": "always"
                 }
+            },
+            {
+                "label": "Version",
+                "command": "bash ${workspaceFolder}/.github/scripts/version.sh ${input:service} ${input:versionPart}",
+                "type": "shell",
+                "presentation": {
+                    "reveal": "always"
+                }
+            }
+        ],
+        "inputs": [
+            {
+                "id": "service",
+                "description": "The name of the service",
+                "type": "promptString"
+            },
+            {
+                "id": "versionPart",
+                "description": "The part of the version to increase, either major, minor or macro",
+                "default": "minor",
+                "type": "promptString"
             }
         ]
     },
@@ -152,6 +175,12 @@
         "[typescriptreact]": {
             "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
+        "[yaml]": {
+            "editor.defaultFormatter": "redhat.vscode-yaml"
+        },
+        "[helm]": {
+            "editor.defaultFormatter": "redhat.vscode-yaml"
+        },
         "editor.formatOnSave": true,
         "eslint.packageManager": "yarn",
         "jest.disabledWorkspaceFolders": [
@@ -165,6 +194,7 @@
             "Harmony Controller",
             "LIFX Controller",
             "Macro Controller",
+            "Network Controller",
             "Node Controller",
             "ZigBee Controller",
             "Sensors",
@@ -183,7 +213,8 @@
             "dbaeumer.vscode-eslint",
             "esbenp.prettier-vscode",
             "Orta.vscode-jest",
-            "ms-python.python"
+            "ms-python.python",
+            "redhat.vscode-yaml"
         ]
     }
 }

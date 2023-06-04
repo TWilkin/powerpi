@@ -2,12 +2,12 @@ apiVersion: v2
 name: powerpi
 description: A Helm chart for deploying the PowerPi home automation stack
 type: application
-version: 0.1.18
-appVersion: 0.1.16
+version: 0.2.0
+appVersion: 0.2.0
 dependencies:
   # services
   - name: clacks-config
-    version: 0.1.5
+    version: 0.1.6
     condition: global.config
   - name: database
     version: 0.1.3
@@ -47,6 +47,9 @@ dependencies:
     condition: global.lifx
   - name: macro-controller
     version: 0.1.2
+  - name: network-controller
+    version: 0.1.0
+    condition: global.network
   - name: node-controller
     version: 0.1.2
     condition: global.node

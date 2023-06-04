@@ -47,6 +47,9 @@ global:
   # whether to include ZigBee support
   zigbee: false
 
+  # whether to include control of networked devices (i.e. computers)
+  network: false
+
   # whether to include node monitoring support
   node: false
 

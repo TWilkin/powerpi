@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "network_controller"
+version = "0.1.0"
+description = "PowerPi Network Controller"
+license = "GPL-3.0-only"
+authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
+repository = "https://github.com/TWilkin/powerpi.git"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+icmplib = "^3.0.3"
+wakeonlan = "^3.0.0"
+
+[tool.poetry.group.powerpi.dependencies]
+powerpi-common = {path = "../../common/python", develop = true}
+
+[tool.poetry.group.dev.dependencies]
+autopep8 = "~=2.0.2"
+pylint = "~=2.17.4"
+
+[tool.poetry.group.test.dependencies]
+powerpi-common-test = {path = "../../common/pytest", develop = true}
+
+[tool.pytest.ini_options]
+addopts = "-v --cov=network_controller"
+
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+scriptPath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 help() {
     echo "PowerPi version script"
     echo "expects 'bash version.sh service part"
@@ -12,13 +14,15 @@ update_version() {
     local service=$1
     local versionPart=$2
 
-    local appPath="../../services/$service"
-    local subchartPath="../../kubernetes/charts/$service/Chart.yaml"
+    local appPath="$scriptPath/../../services/$service"
+    local subchartPath="$scriptPath/../../kubernetes/charts/$service/Chart.yaml"
+    echo $appPath
+    echo $subchartPath
     if [ ! -d $appPath ]
     then
         echo "Service $service is a controller"
-        appPath="../../controllers/$service"
-        subchartPath="../../kubernetes/charts/$service-controller/Chart.yaml"
+        appPath="$scriptPath/../../controllers/$service"
+        subchartPath="$scriptPath/../../kubernetes/charts/$service-controller/Chart.yaml"
     fi
 
     # check the service exists
@@ -29,7 +33,7 @@ update_version() {
     fi
 
     # find the helm version
-    helmPath="../../kubernetes/Chart.yaml"
+    helmPath="$scriptPath/../../kubernetes/Chart.yaml"
     get_version $helmPath
     powerpiVersion=$appVersion
     helmVersion=$chartVersion

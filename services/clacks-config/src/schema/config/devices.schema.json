@@ -47,6 +47,9 @@
                         "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Variable.schema.json"
                     },
                     {
+                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/network/Computer.schema.json"
+                    },
+                    {
                         "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/node/Node.schema.json"
                     },
                     {
