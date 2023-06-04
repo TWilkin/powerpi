@@ -2,15 +2,17 @@ import statistics
 from asyncio import sleep
 from typing import List, TypedDict, Union
 
-from node_controller.pijuice import PiJuiceInterface
-from node_controller.pwm_fan import PWMFanCurve, PWMFanInterface
-from node_controller.services import ShutdownService
+from dependency_injector import providers
 from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import InitialisableMixin, PollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor.mixin import BatteryMixin
+
+from node_controller.pijuice import PiJuiceInterface
+from node_controller.pwm_fan import PWMFanCurve, PWMFanInterface
+from node_controller.services import ShutdownService
 
 PiJuiceConfig = TypedDict(
     'PiJuiceConfig',
@@ -40,7 +42,8 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        service_provider,
+        pijuice_interface_factory: providers.Factory,
+        pwm_fan_controller_factory: providers.Factory,
         shutdown: ShutdownService,
         pijuice: Union[PiJuiceConfig, None] = None,
         pwm_fan: Union[PWMFanConfig, None] = None,
@@ -52,7 +55,7 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
         BatteryMixin.__init__(self)
 
         if pijuice is not None:
-            self.__pijuice: PiJuiceInterface = service_provider.pijuice_interface()
+            self.__pijuice: PiJuiceInterface = pijuice_interface_factory()
 
             # set the config with defaults
             self.__pijuice_config = PiJuiceConfig({
@@ -68,7 +71,7 @@ class LocalNodeDevice(Device, InitialisableMixin, PollableMixin, BatteryMixin):
             self.__pijuice_config = None
 
         if pwm_fan is not None:
-            self.__pwm_fan: PWMFanInterface = service_provider.pwm_fan_controller(
+            self.__pwm_fan: PWMFanInterface = pwm_fan_controller_factory(
                 pijuice=self.__pijuice
             )
 

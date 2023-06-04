@@ -1,4 +1,5 @@
 from dependency_injector import providers
+
 from node_controller.config import NodeConfig
 from node_controller.pijuice import PiJuiceImpl
 from node_controller.pwm_fan import PWMFanController
@@ -54,7 +55,8 @@ def add_devices(container):
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
-            service_provider=container.common.device.service_provider,
+            pijuice_interface_factory=device_container.pijuice_interface.provider,
+            pwm_fan_controller_factory=device_container.pwm_fan_controller.provider,
             shutdown=container.shutdown
         )
     )
