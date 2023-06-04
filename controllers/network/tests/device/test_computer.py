@@ -56,22 +56,44 @@ class TestComputer(DeviceTestBaseNew, PollableMixinTestBaseNew):
         assert subject.state == state
 
     @pytest.mark.asyncio
-    async def test_turn_on(self, subject: ComputerDevice):
+    @pytest.mark.parametrize('attempts,success', [(1, True), (3, True), (5, False)])
+    @pytest.mark.timeout(60)
+    async def test_turn_on(
+        self,
+        subject: ComputerDevice,
+        mocker: MockerFixture,
+        attempts: int,
+        success: bool
+    ):
+        # pylint: disable=arguments-differ
+
         assert subject.state == DeviceStatus.UNKNOWN
+
+        is_alive = [i == attempts for i in range(1, attempts + 1)]
+
+        host = mocker.MagicMock()
+        type(host).is_alive = PropertyMock(side_effect=is_alive)
+
+        mocker.patch(
+            'network_controller.device.computer.async_ping',
+            return_value=host
+        )
 
         with patch('network_controller.device.computer.send_magic_packet') as wol:
             await subject.turn_on()
 
-            wol.assert_has_calls([
-                call('00:00:00:00:00'),
-                call('00:00:00:00:00'),
-                call('00:00:00:00:00'),
+            calls = [
                 call('00:00:00:00:00')
-            ])
+                for _ in range(0, min(4, attempts))
+            ]
+            wol.assert_has_calls(calls)
 
-        assert subject.state == DeviceStatus.ON
+        if success:
+            assert subject.state == DeviceStatus.ON
+        else:
+            assert subject.state == DeviceStatus.UNKNOWN
 
-    @pytest.mark.asyncio
+    @ pytest.mark.asyncio
     async def test_turn_off(self, subject: ComputerDevice):
         assert subject.state == DeviceStatus.UNKNOWN
 
@@ -79,7 +101,7 @@ class TestComputer(DeviceTestBaseNew, PollableMixinTestBaseNew):
 
         assert subject.state == DeviceStatus.UNKNOWN
 
-    @pytest.mark.asyncio
+    @ pytest.mark.asyncio
     async def test_change_message(
         self,
         subject: ComputerDevice,
@@ -91,6 +113,14 @@ class TestComputer(DeviceTestBaseNew, PollableMixinTestBaseNew):
         assert subject.state == DeviceStatus.UNKNOWN
 
         mocker.patch.object(powerpi_config, 'message_age_cutoff', 120)
+
+        host = mocker.Mock()
+        type(host).is_alive = PropertyMock(return_value=True)
+
+        mocker.patch(
+            'network_controller.device.computer.async_ping',
+            return_value=host
+        )
 
         message = {
             'state': 'on',
