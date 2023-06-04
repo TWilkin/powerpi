@@ -5,14 +5,14 @@ version_str=`grep "^version:\s*.*$" "${GITHUB_WORKSPACE}/kubernetes/Chart.yaml" 
 version_regex="version:\s*(.*)"
 if [[ $version_str =~ $version_regex ]]
 then 
-    version="${BASH_REMATCH[1]}"
-    echo "Found v$version of PowerPi helm chart"
+    version="v${BASH_REMATCH[1]}"
+    echo "Found $version of PowerPi helm chart"
 else 
     version=-1
 fi
 
 # if the tag already exists, don't release
-tag_exists=`git tag | grep $version | wc -l`
+tag_exists=`git tag | grep ^$version$ | wc -l`
 if [ $tag_exists -ne "0" ]
 then
     echo "Skipping release as tag already exists"
