@@ -47,6 +47,9 @@ dependencies:
     condition: global.lifx
   - name: macro-controller
     version: 0.1.2
+  - name: network-controller
+    version: 0.1.0
+    condition: global.network
   - name: node-controller
     version: 0.1.2
     condition: global.node
