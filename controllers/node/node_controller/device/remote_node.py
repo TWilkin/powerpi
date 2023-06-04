@@ -22,7 +22,7 @@ class RemoteNodeDevice(Device, PollableMixin):
         self.__ip = ip
 
     async def poll(self):
-        result = await async_ping(self.__ip, count=4, interval=0.2, timeout=2, privileged=False)
+        result = await async_ping(self.__ip, count=4, interval=0.2, timeout=2)
 
         new_state = DeviceStatus.ON if result.is_alive else DeviceStatus.OFF
 

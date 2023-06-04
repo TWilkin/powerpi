@@ -31,8 +31,14 @@ RUN ln -s ../../common/python/.venv .venv \
 FROM python:3.9.16-slim AS run-image
 LABEL description="PowerPi Node Controller"
 
+RUN apt-get update \
+    && apt-get install -y libcap2-bin
+
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
+
+# ensure the controller can run ping
+RUN setcap cap_net_raw+ep /usr/local/bin/python3.9
 
 RUN groupadd -g 997 gpio \
     && groupadd -g 998 i2c \
