@@ -1,9 +1,10 @@
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
+from pytest_mock import MockerFixture
+
 from node_controller.pijuice import PiJuiceImpl
 from node_controller.pijuice.dummy import DummyPiJuiceInterface
-from pytest_mock import MockerFixture
 
 
 class TestPijuiceImpl:
@@ -115,14 +116,12 @@ class TestPijuiceImpl:
         return PiJuiceImpl(mock_config, mocker.Mock())
 
     @pytest.fixture
-    def mock_config(self, mocker: MockerFixture):
-        config = mocker.Mock()
+    def mock_config(self, powerpi_config):
+        type(powerpi_config).device_fatal = PropertyMock(return_value=True)
+        type(powerpi_config).i2c_device = '/dev/i2c-2'
+        type(powerpi_config).i2c_address = 0x14
 
-        type(config).device_fatal = PropertyMock(return_value=True)
-        type(config).i2c_device = '/dev/i2c-2'
-        type(config).i2c_address = 0x14
-
-        return config
+        return powerpi_config
 
     @pytest.fixture
     def mock_pijuice(self, mocker: MockerFixture):

@@ -2,20 +2,21 @@ from typing import List, Tuple
 from unittest.mock import AsyncMock, MagicMock, PropertyMock
 
 import pytest
+from pytest_mock import MockerFixture
+
 from node_controller.pwm_fan import PWMFanController
 from node_controller.pwm_fan.dummy import DummyPWMFanInterface
-from pytest_mock import MockerFixture
 
 
 class TestPWMFanController:
     def test_no_pwm_fan(
         self,
-        mock_config: MagicMock,
+        powerpi_config: MagicMock,
         mocker: MockerFixture
     ):
         with pytest.raises(RuntimeError):
             _ = PWMFanController(
-                mock_config,
+                powerpi_config,
                 mocker.Mock(),
                 mocker.Mock(),
                 None
@@ -23,13 +24,13 @@ class TestPWMFanController:
 
     def test_no_pwm_fan_gets_dummy(
         self,
-        mock_config: MagicMock,
+        powerpi_config: MagicMock,
         mocker: MockerFixture
     ):
-        type(mock_config).device_fatal = PropertyMock(return_value=False)
+        type(powerpi_config).device_fatal = PropertyMock(return_value=False)
 
         subject = PWMFanController(
-            mock_config,
+            powerpi_config,
             mocker.Mock(),
             mocker.Mock(),
             None
@@ -120,25 +121,17 @@ class TestPWMFanController:
     def subject(
         self,
         mock_rpi: MagicMock,
-        mock_config: MagicMock,
+        powerpi_config: MagicMock,
         mock_pijuice: MagicMock,
         mocker: MockerFixture
     ):
         # pylint: disable=unused-argument
         return PWMFanController(
-            mock_config,
+            powerpi_config,
             mocker.Mock(),
             mocker.Mock(),
             mock_pijuice
         )
-
-    @pytest.fixture
-    def mock_config(self, mocker: MockerFixture):
-        config = mocker.Mock()
-
-        type(config).device_fatal = PropertyMock(return_value=True)
-
-        return config
 
     @pytest.fixture
     def mock_pijuice(self, mocker: MockerFixture):

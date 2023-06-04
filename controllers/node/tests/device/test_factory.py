@@ -1,9 +1,10 @@
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
-from node_controller.device.factory import NodeDeviceFactory
 from powerpi_common.device.types import DeviceConfigType
 from pytest_mock import MockerFixture
+
+from node_controller.device.factory import NodeDeviceFactory
 
 
 class TestNodeDeviceFactory:
@@ -37,12 +38,11 @@ class TestNodeDeviceFactory:
         assert result == 'sensor'
 
     @pytest.fixture
-    def mock_config(self, mocker: MockerFixture):
-        config = mocker.Mock()
+    def mock_config(self, powerpi_config):
+        type(powerpi_config).node_hostname = PropertyMock(
+            return_value='NODE123')
 
-        type(config).node_hostname = PropertyMock(return_value='NODE123')
-
-        return config
+        return powerpi_config
 
     @pytest.fixture
     def mock_service_provider(self, mocker: MockerFixture):
