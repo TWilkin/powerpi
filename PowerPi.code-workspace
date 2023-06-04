@@ -113,7 +113,6 @@
                 "label": "Build node libraries",
                 "command": "yarn build:lib",
                 "type": "shell",
-                "args": [],
                 "presentation": {
                     "reveal": "always"
                 },
@@ -123,10 +122,30 @@
                 "label": "Clean node",
                 "command": "yarn clean",
                 "type": "shell",
-                "args": [],
                 "presentation": {
                     "reveal": "always"
                 }
+            },
+            {
+                "label": "Version",
+                "command": "bash ${workspaceFolder}/.github/scripts/version.sh ${input:service} ${input:versionPart}",
+                "type": "shell",
+                "presentation": {
+                    "reveal": "always"
+                }
+            }
+        ],
+        "inputs": [
+            {
+                "id": "service",
+                "description": "The name of the service",
+                "type": "promptString"
+            },
+            {
+                "id": "versionPart",
+                "description": "The part of the version to increase, either major, minor or macro",
+                "default": "minor",
+                "type": "promptString"
             }
         ]
     },
