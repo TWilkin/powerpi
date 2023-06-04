@@ -1,5 +1,5 @@
 from asyncio import Future
-from typing import Callable, Dict, List, Tuple, Union
+from typing import Any, Callable, Dict, List, Tuple, Union
 from unittest.mock import PropertyMock, call
 
 import pytest
@@ -7,14 +7,13 @@ from powerpi_common.device import DeviceStatus
 from powerpi_common_test.device import DeviceTestBaseNew
 from powerpi_common_test.device.mixin import (InitialisableMixinTestBaseNew,
                                               PollableMixinTestBaseNew)
-from powerpi_common_test.mqtt.mqtt import mock_producer
 from powerpi_common_test.sensor.mixin import BatteryMixinTestBaseNew
 from pytest_mock import MockerFixture
 
 from node_controller.device.local_node import LocalNodeDevice
 
 SubjectBuilder = Callable[
-    [Union[Dict, None], Union[Dict, None]],
+    [Union[Dict[str, Any], None], Union[Dict[str, Any], None]],
     LocalNodeDevice
 ]
 
@@ -326,7 +325,7 @@ class TestLocalNode(
     ):
         # pylint: disable=too-many-arguments
 
-        def build(pijuice: Union[Dict, None], pwm_fan: Union[Dict, None]):
+        def build(pijuice: Union[Dict[str, Any], None], pwm_fan: Union[Dict[str, Any], None]):
             return LocalNodeDevice(
                 powerpi_config,
                 powerpi_logger,
