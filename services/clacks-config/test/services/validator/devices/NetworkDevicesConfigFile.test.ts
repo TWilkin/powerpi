@@ -9,6 +9,7 @@ describe("Network Devices", () => {
                     name: "Computer",
                     mac: "00:AA:BB:CC:DD:EE",
                     ip: "127.0.0.1",
+                    delay: 10,
                 },
             ],
         });
@@ -74,5 +75,20 @@ describe("Network Devices", () => {
                     },
                 ],
             }));
+
+        ["test", 0, 61].forEach((delay) =>
+            test(`Bad delay ${delay}`, () =>
+                testInvalid({
+                    devices: [
+                        {
+                            type: "computer",
+                            name: "Computer",
+                            mac: "00:AA:BB:CC:DD:EE",
+                            hostname: "computer.example.com",
+                            delay,
+                        },
+                    ],
+                }))
+        );
     });
 });
