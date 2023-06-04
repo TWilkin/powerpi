@@ -4,6 +4,7 @@ import * as GenericSensor from "./GenericSensor.schema.json";
 import loadHarmonySchema from "./harmony";
 import loadLIFXSchema from "./lifx";
 import loadMacroSchema from "./macro";
+import loadNetworkSchema from "./network";
 import loadNodeSchema from "./node";
 import * as PollableDevice from "./PollableDevice.schema.json";
 import * as PowerPiSensor from "./PowerPiSensor.schema.json";
@@ -30,6 +31,9 @@ export default function loadDevicesSchema() {
 
         // the macro controller devices
         ...loadMacroSchema(),
+
+        // the network controller devices
+        ...loadNetworkSchema(),
 
         // the node controller devices
         ...loadNodeSchema(),
