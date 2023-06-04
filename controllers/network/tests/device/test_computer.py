@@ -57,7 +57,6 @@ class TestComputer(DeviceTestBaseNew, PollableMixinTestBaseNew):
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('attempts,success', [(1, True), (3, True), (5, False)])
-    @pytest.mark.timeout(60)
     async def test_turn_on(
         self,
         subject: ComputerDevice,
@@ -141,6 +140,6 @@ class TestComputer(DeviceTestBaseNew, PollableMixinTestBaseNew):
     ):
         return ComputerDevice(
             powerpi_config, powerpi_logger, powerpi_mqtt_client,
-            mac='00:00:00:00:00', hostname='mycomputer.home',
+            mac='00:00:00:00:00', hostname='mycomputer.home', delay=0.1,
             name='computer', poll_frequency=120
         )

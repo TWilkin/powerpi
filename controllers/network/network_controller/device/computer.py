@@ -24,6 +24,7 @@ class ComputerDevice(Device, PollableMixin):
         mac: str,
         ip: str = None,
         hostname: str = None,
+        delay: int = 1,
         **kwargs
     ):
         # pylint: disable=too-many-arguments
@@ -32,6 +33,7 @@ class ComputerDevice(Device, PollableMixin):
 
         self.__mac_address = mac
         self.__network_address = ip if ip is not None else hostname
+        self.__delay = delay
 
     @property
     def mac_address(self):
@@ -53,7 +55,7 @@ class ComputerDevice(Device, PollableMixin):
         for _ in range(0, 4):
             send_magic_packet(self.__mac_address)
 
-            await sleep(1)
+            await sleep(self.__delay)
 
             if await self.__is_alive():
                 return True
