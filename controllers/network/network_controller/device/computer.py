@@ -48,10 +48,7 @@ class ComputerDevice(Device, PollableMixin):
             self.state = new_state
 
     async def _turn_on(self):
-        send_magic_packet(
-            self.__mac_address,
-            ip_address=self.__network_address
-        )
+        send_magic_packet(self.__mac_address)
 
     async def _turn_off(self):
         # do nothing as this will be handled by the shutdown service running on that computer

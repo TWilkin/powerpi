@@ -30,7 +30,7 @@ RUN ln -s ../../common/python/.venv .venv \
 FROM python:3.9.16-alpine3.17 AS run-image
 LABEL description="PowerPi Network Controller"
 
-RUN apk add --no-cache libc6-compat libcap
+RUN apk add --no-cache libcap
 
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
