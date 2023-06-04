@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/clacks-config",
-    "version": "0.3.4",
+    "version": "0.3.5",
     "description": "PowerPi config retrieval from GitHub pushing to message queue",
     "private": true,
     "license": "GPL-3.0-only",
