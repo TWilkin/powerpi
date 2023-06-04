@@ -24,7 +24,7 @@ class ComputerDevice(Device, PollableMixin):
         mac: str,
         ip: str = None,
         hostname: str = None,
-        delay: int = 1,
+        delay: int = 10,
         **kwargs
     ):
         # pylint: disable=too-many-arguments
