@@ -92,7 +92,7 @@ class TestComputer(DeviceTestBaseNew, PollableMixinTestBaseNew):
         else:
             assert subject.state == DeviceStatus.UNKNOWN
 
-    @ pytest.mark.asyncio
+    @pytest.mark.asyncio
     async def test_turn_off(self, subject: ComputerDevice):
         assert subject.state == DeviceStatus.UNKNOWN
 
@@ -100,7 +100,7 @@ class TestComputer(DeviceTestBaseNew, PollableMixinTestBaseNew):
 
         assert subject.state == DeviceStatus.UNKNOWN
 
-    @ pytest.mark.asyncio
+    @pytest.mark.asyncio
     async def test_change_message(
         self,
         subject: ComputerDevice,
