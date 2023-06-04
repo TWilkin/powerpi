@@ -25,6 +25,7 @@ class TestRemoteNodeDevice(DeviceTestBaseNew, PollableMixinTestBaseNew):
 
         await subject.poll()
 
+    @pytest.mark.asyncio
     @pytest.mark.parametrize('is_alive,state', [
         (False, DeviceStatus.OFF),
         (True, DeviceStatus.ON)

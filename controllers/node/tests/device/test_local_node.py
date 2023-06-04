@@ -1,47 +1,33 @@
-from typing import List, Tuple, Union
+from asyncio import Future
+from typing import Callable, Dict, List, Tuple, Union
 from unittest.mock import PropertyMock, call
 
 import pytest
-from node_controller.device.local_node import LocalNodeDevice
 from powerpi_common.device import DeviceStatus
-from powerpi_common_test.device import DeviceTestBase
-from powerpi_common_test.device.mixin import (InitialisableMixinTestBase,
-                                              PollableMixinTestBase)
+from powerpi_common_test.device import DeviceTestBaseNew
+from powerpi_common_test.device.mixin import (InitialisableMixinTestBaseNew,
+                                              PollableMixinTestBaseNew)
 from powerpi_common_test.mqtt.mqtt import mock_producer
-from powerpi_common_test.sensor.mixin import BatteryMixinTestBase
+from powerpi_common_test.sensor.mixin import BatteryMixinTestBaseNew
 from pytest_mock import MockerFixture
 
+from node_controller.device.local_node import LocalNodeDevice
 
-class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTestBase, BatteryMixinTestBase):
-    def get_subject(self, mocker: MockerFixture):
-        self.service_provider = mocker.Mock()
-        self.shutdown = mocker.Mock()
+SubjectBuilder = Callable[
+    [Union[Dict, None], Union[Dict, None]],
+    LocalNodeDevice
+]
 
-        self.pijuice_interface = mocker.Mock()
-        self.service_provider.pijuice_interface = lambda **_: self.pijuice_interface
 
-        self.pwm_fan_controller = mocker.Mock()
-        self.service_provider.pwm_fan_controller = lambda **_: self.pwm_fan_controller
+class TestLocalNode(
+    DeviceTestBaseNew,
+    InitialisableMixinTestBaseNew,
+    PollableMixinTestBaseNew,
+    BatteryMixinTestBaseNew
+):
 
-        return LocalNodeDevice(
-            self.config,
-            self.logger,
-            self.mqtt_client,
-            self.service_provider,
-            self.shutdown,
-            getattr(self, 'pijuice', None),
-            getattr(self, 'pwm_fan', None),
-            name='local',
-            poll_frequency=60
-        )
-
-    async def test_config_defaults(self, mocker: MockerFixture):
-        def set_addons():
-            self.pijuice = {}
-            self.pwm_fan = {}
-
-        subject = self.create_subject(mocker, set_addons)
-
+    @pytest.mark.asyncio
+    async def test_config_defaults(self, subject: LocalNodeDevice):
         assert subject.has_pijuice is True
         assert subject.pijuice_config['charge_battery'] is True
         assert subject.pijuice_config['max_charge'] == 100
@@ -64,6 +50,7 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
             'temperature': 60, 'speed': 100
         }
 
+    @pytest.mark.asyncio
     @pytest.mark.parametrize('charge_battery', [True, False])
     @pytest.mark.parametrize('max_charge', [90])
     @pytest.mark.parametrize('shutdown_delay', [60])
@@ -75,7 +62,7 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
     ])
     async def test_config_override(
         self,
-        mocker: MockerFixture,
+        subject_builder: SubjectBuilder,
         charge_battery: bool,
         max_charge: int,
         shutdown_delay: int,
@@ -84,23 +71,23 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
         curve: List[Tuple[int, int]]
     ):
         # pylint: disable=too-many-arguments
-        def set_addons():
-            self.pijuice = {
-                'charge_battery': charge_battery,
-                'max_charge': max_charge,
-                'shutdown_delay': shutdown_delay,
-                'shutdown_level': shutdown_level,
-                'wake_up_on_charge': wake_up_on_charge
-            }
 
-            self.pwm_fan = {
-                'curve': [
-                    {'temperature': value[0], 'speed': value[1]}
-                    for value in curve
-                ]
-            }
+        pijuice = {
+            'charge_battery': charge_battery,
+            'max_charge': max_charge,
+            'shutdown_delay': shutdown_delay,
+            'shutdown_level': shutdown_level,
+            'wake_up_on_charge': wake_up_on_charge
+        }
 
-        subject = self.create_subject(mocker, set_addons)
+        pwm_fan = {
+            'curve': [
+                  {'temperature': value[0], 'speed': value[1]}
+                for value in curve
+            ]
+        }
+
+        subject = subject_builder(pijuice, pwm_fan)
 
         assert subject.has_pijuice is True
         assert subject.pijuice_config['charge_battery'] is charge_battery
@@ -116,68 +103,68 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
             for value in curve
         ]
 
-    async def test_deinitialise_set_off(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    @pytest.mark.asyncio
+    async def test_deinitialise_set_off(self, subject: LocalNodeDevice):
         assert subject.state == DeviceStatus.UNKNOWN
 
         await subject.deinitialise()
 
         assert subject.state == DeviceStatus.OFF
 
-    async def test_poll_set_on(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    @pytest.mark.asyncio
+    async def test_poll_set_on(self, subject: LocalNodeDevice):
         assert subject.state == DeviceStatus.UNKNOWN
 
         await subject.poll()
 
         assert subject.state == DeviceStatus.ON
 
-    async def test_poll_no_addons(self, mocker: MockerFixture):
-        def set_producer():
-            self.publish = mock_producer(mocker, self.mqtt_client)
-
-        subject = self.create_subject(mocker, set_producer)
+    @pytest.mark.asyncio
+    async def test_poll_no_addons(self, subject_builder: SubjectBuilder, powerpi_mqtt_producer):
+        subject = subject_builder(None, None)
 
         assert subject.has_pijuice is False
         assert subject.has_pwm_fan is False
 
         await subject.poll()
 
-        self.publish.assert_called_once_with(
+        powerpi_mqtt_producer.assert_called_once_with(
             'device/local/status',
             {'state': 'on'}
         )
 
-    async def test_poll_with_pijuice(self, mocker: MockerFixture):
-        def set_pijuice():
-            self.publish = mock_producer(mocker, self.mqtt_client)
+    @pytest.mark.asyncio
+    async def test_poll_with_pijuice(
+        self,
+        subject_builder: SubjectBuilder,
+        pijuice_interface,
+        shutdown,
+        powerpi_mqtt_producer
+    ):
+        pijuice = {
+            'charge_battery': False,
+            'max_charge': 80,
+            'shutdown_delay': 123,
+            'shutdown_level': 10,
+            'wake_up_on_charge': 15
+        }
 
-            self.pijuice = {
-                'charge_battery': False,
-                'max_charge': 80,
-                'shutdown_delay': 123,
-                'shutdown_level': 10,
-                'wake_up_on_charge': 15
-            }
-
-        subject = self.create_subject(mocker, set_pijuice)
+        subject = subject_builder(pijuice, None)
 
         assert subject.state == DeviceStatus.UNKNOWN
         assert subject.has_pijuice is True
 
         def mock_battery(level: int, charging: Union[bool, None] = None):
-            type(self.pijuice_interface).battery_level = PropertyMock(
+            type(pijuice_interface).battery_level = PropertyMock(
                 return_value=level
             )
 
-            type(self.pijuice_interface).battery_charging = PropertyMock(
+            type(pijuice_interface).battery_charging = PropertyMock(
                 return_value=charging
             )
 
-            self.pijuice_interface.reset_mock()
-            self.shutdown.reset_mock()
+            pijuice_interface.reset_mock()
+            shutdown.reset_mock()
 
         # expected to do nothing as the battery is over the level
         levels = [100, 50, 11]
@@ -186,10 +173,10 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
 
             await subject.poll()
 
-            self.pijuice_interface.shutdown.assert_not_called()
-            self.shutdown.shutdown.assert_not_called()
+            pijuice_interface.shutdown.assert_not_called()
+            shutdown.shutdown.assert_not_called()
 
-            self.publish.assert_any_call(
+            powerpi_mqtt_producer.assert_any_call(
                 'device/local/battery',
                 {'value': level, 'unit': '%'}
             )
@@ -201,88 +188,93 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
 
             await subject.poll()
 
-            self.pijuice_interface.shutdown.assert_called_once_with(123)
-            self.shutdown.shutdown.assert_called_once()
+            pijuice_interface.shutdown.assert_called_once_with(123)
+            shutdown.shutdown.assert_called_once()
 
-            self.publish.assert_any_call(
+            powerpi_mqtt_producer.assert_any_call(
                 'device/local/battery',
                 {'value': level, 'unit': '%', 'charging': True}
             )
 
-    async def test_poll_max_charge(self, mocker: MockerFixture):
-        def set_pijuice():
-            self.pijuice = {
-                'charge_battery': True,
-                'max_charge': 80
-            }
+    @pytest.mark.asyncio
+    async def test_poll_max_charge(
+        self,
+        subject_builder: SubjectBuilder,
+        pijuice_interface
+    ):
+        pijuice = {
+            'charge_battery': True,
+            'max_charge': 80
+        }
 
-        subject = self.create_subject(mocker, set_pijuice)
+        subject = subject_builder(pijuice, None)
 
         def mock_battery(level: int):
-            type(self.pijuice_interface).battery_level = PropertyMock(
+            type(pijuice_interface).battery_level = PropertyMock(
                 return_value=level
             )
 
         mock_battery(79)
         await subject.poll()
-        self.pijuice_interface.charge_battery.assert_not_called()
+        pijuice_interface.charge_battery.assert_not_called()
 
         mock_battery(80)
         await subject.poll()
-        assert self.pijuice_interface.charge_battery is False
+        assert pijuice_interface.charge_battery is False
 
         mock_battery(81)
         await subject.poll()
-        assert self.pijuice_interface.charge_battery is False
+        assert pijuice_interface.charge_battery is False
 
         mock_battery(79)
         await subject.poll()
-        assert self.pijuice_interface.charge_battery is True
+        assert pijuice_interface.charge_battery is True
 
+    @pytest.mark.asyncio
     @pytest.mark.parametrize('has_cpu_temps', [True, False])
     @pytest.mark.parametrize('has_battery_temps', [True, False, None])
     @pytest.mark.parametrize('has_fan_speed', [True, False])
     async def test_poll_pwm(
         self,
-        mocker: MockerFixture,
+        subject_builder: SubjectBuilder,
+        pijuice_interface,
+        pwm_fan_controller,
+        powerpi_mqtt_producer,
         has_cpu_temps: bool,
         has_battery_temps: Union[bool, None],
         has_fan_speed: bool
     ):
-        def set_pwm_fan():
-            self.publish = mock_producer(mocker, self.mqtt_client)
 
-            if has_battery_temps is not None:
-                self.pijuice = {}
+        pijuice = {} if has_battery_temps is not None else None
 
-            self.pwm_fan = {
-                'curve': [
-                    {'temperature': 20, 'speed': 20},
-                    {'temperature': 30, 'speed': 40}
-                ]
-            }
+        pwm_fan = {
+            'curve': [
+                {'temperature': 20, 'speed': 20},
+                {'temperature': 30, 'speed': 40}
+            ]
+        }
 
-        subject = self.create_subject(mocker, set_pwm_fan)
+        subject = subject_builder(pijuice, pwm_fan)
 
         assert subject.state == DeviceStatus.UNKNOWN
         assert subject.has_pwm_fan is True
 
-        type(self.pijuice_interface).battery_level = PropertyMock(
+        type(pijuice_interface).battery_level = PropertyMock(
             return_value=100
         )
-        type(self.pijuice_interface).battery_charging = PropertyMock(
+        type(pijuice_interface).battery_charging = PropertyMock(
             return_value=False
         )
 
-        type(self.pwm_fan_controller).cpu_temps = PropertyMock(
+        type(pwm_fan_controller).cpu_temps = PropertyMock(
             return_value=[1, 2, 3, 4, 5] if has_cpu_temps else []
         )
 
-        type(self.pwm_fan_controller).battery_temps = PropertyMock(
+        type(pwm_fan_controller).battery_temps = PropertyMock(
             return_value=[1, 2, 3, 4, 5] if has_battery_temps else []
         )
 
-        type(self.pwm_fan_controller).fan_speeds = PropertyMock(
+        type(pwm_fan_controller).fan_speeds = PropertyMock(
             return_value=[1000, 2000, 3000, 4000, 5000]
             if has_fan_speed else []
         )
@@ -320,6 +312,61 @@ class TestLocalNode(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTes
                 {'value': 3000, 'unit': 'rpm'}
             ))
 
-        print(self.publish.call_args)
+        powerpi_mqtt_producer.assert_has_calls(calls, True)
 
-        self.publish.assert_has_calls(calls, True)
+    @pytest.fixture
+    def subject_builder(
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+        pijuice_interface,
+        pwm_fan_controller,
+        shutdown
+    ):
+        # pylint: disable=too-many-arguments
+
+        def build(pijuice: Union[Dict, None], pwm_fan: Union[Dict, None]):
+            return LocalNodeDevice(
+                powerpi_config,
+                powerpi_logger,
+                powerpi_mqtt_client,
+                lambda **_: pijuice_interface,
+                lambda **_: pwm_fan_controller,
+                shutdown,
+                pijuice,
+                pwm_fan,
+                name='local',
+                poll_frequency=60
+            )
+
+        return build
+
+    @pytest.fixture
+    def subject(self, subject_builder: SubjectBuilder):
+        return subject_builder({}, {})
+
+    @pytest.fixture
+    def pijuice_interface(self, mocker: MockerFixture):
+        pijuice_interface = mocker.MagicMock()
+
+        type(pijuice_interface).battery_level = PropertyMock(
+            return_value=100
+        )
+
+        return pijuice_interface
+
+    @pytest.fixture
+    def pwm_fan_controller(self, mocker: MockerFixture):
+        pwm_fan = mocker.MagicMock()
+
+        future = Future()
+        future.set_result(1)
+        pwm_fan.initialise.return_value = future
+        pwm_fan.deinitialise.return_value = future
+
+        return pwm_fan
+
+    @pytest.fixture
+    def shutdown(self, mocker: MockerFixture):
+        return mocker.MagicMock()
