@@ -6,7 +6,7 @@ version: 0.2.2
 appVersion: 0.2.2
 dependencies:
   # services
-  - name: clacks-config
+  - name: config-server
     version: 0.1.8
     condition: global.config
   - name: database

@@ -3,7 +3,7 @@
   "Command" (list "yarn")
   "Args" (list 
     "workspace"
-    "@powerpi/clacks-config"
+    "@powerpi/config-server"
     "start:prd"
   )
   "PriorityClassName" "powerpi-critical"
