@@ -1,9 +1,9 @@
 import { ConfigFileType } from "@powerpi/common";
 import ValidatorService from "../../../src/services/ValidatorService";
 import {
-    setupValidator,
     testInvalid as _testInvalid,
     testValid as _testValid,
+    setupValidator,
 } from "./setupValidator";
 
 describe("Events", () => {
@@ -18,6 +18,8 @@ describe("Events", () => {
 
     test("Valid file", () =>
         testValid({
+            $schema:
+                "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/events.schema.json",
             listeners: [
                 {
                     topic: "Office/motion",

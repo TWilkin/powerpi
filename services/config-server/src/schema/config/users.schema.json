@@ -5,6 +5,9 @@
     "description": "The configuration for the users who are allowed to use PowerPi",
     "type": "object",
     "properties": {
+        "$schema": {
+            "const": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/users.schema.json"
+        },
         "users": {
             "description": "The list of users who can access PowerPi",
             "type": "array",

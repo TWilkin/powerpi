@@ -5,6 +5,9 @@
     "description": "The configuration for the floorplan to show in the UI",
     "type": "object",
     "properties": {
+        "$schema": {
+            "const": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/floorplan.schema.json"
+        },
         "floorplan": {
             "description": "The floorplan",
             "type": "object",

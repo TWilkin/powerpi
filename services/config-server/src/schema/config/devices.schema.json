@@ -5,6 +5,9 @@
     "description": "The configuration for the devices and sensors controlled by PowerPi",
     "type": "object",
     "properties": {
+        "$schema": {
+            "const": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/devices.schema.json"
+        },
         "devices": {
             "description": "The list of devices controlled by PowerPi",
             "type": "array",

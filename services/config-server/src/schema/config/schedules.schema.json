@@ -5,6 +5,9 @@
     "description": "The configuration for the schedules used by the scheduler service",
     "type": "object",
     "properties": {
+        "$schema": {
+            "const": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/schedules.schema.json"
+        },
         "timezone": {
             "description": "The timezone the schedule times are using",
             "type": "string"

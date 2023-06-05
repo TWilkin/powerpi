@@ -18,6 +18,8 @@ describe("Schedules", () => {
 
     test("Valid file", () =>
         testValid({
+            $schema:
+                "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/schedules.schema.json",
             timezone: "Europe/London",
             schedules: [
                 {

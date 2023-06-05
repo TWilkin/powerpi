@@ -1,9 +1,9 @@
 import { ConfigFileType } from "@powerpi/common";
 import ValidatorService from "../../../src/services/ValidatorService";
 import {
-    setupValidator,
     testInvalid as _testInvalid,
     testValid as _testValid,
+    setupValidator,
 } from "./setupValidator";
 
 describe("Devices", () => {
@@ -18,6 +18,8 @@ describe("Devices", () => {
 
     test("Valid file", () =>
         testValid({
+            $schema:
+                "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/devices.schema.json",
             devices: [
                 { type: "log", name: "Logger", message: "Test" },
                 { type: "delay", name: "Delay", start: 10, stop: 5 },

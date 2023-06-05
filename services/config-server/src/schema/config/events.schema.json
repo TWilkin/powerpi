@@ -5,6 +5,9 @@
     "description": "The configuration for the event triggers",
     "type": "object",
     "properties": {
+        "$schema": {
+            "const": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/events.schema.json"
+        },
         "listeners": {
             "description": "The list of listeners for the event triggers",
             "type": "array",

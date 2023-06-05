@@ -1,9 +1,9 @@
 import { ConfigFileType } from "@powerpi/common";
 import ValidatorService from "../../../src/services/ValidatorService";
 import {
-    setupValidator,
     testInvalid as _testInvalid,
     testValid as _testValid,
+    setupValidator,
 } from "./setupValidator";
 
 describe("Floorplan", () => {
@@ -18,6 +18,8 @@ describe("Floorplan", () => {
 
     test("Valid file", () =>
         testValid({
+            $schema:
+                "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/floorplan.schema.json",
             floorplan: {
                 floors: [
                     {
