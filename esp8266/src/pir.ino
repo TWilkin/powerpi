@@ -2,7 +2,7 @@
 
 void setupPIR() {
     // wait for the PIR to initialise
-    delay(clacksConfig.pirInitDelay);
+    delay(powerpiConfig.pirInitDelay);
 
     pirPreviousState = digitalRead(PIR_PIN) == HIGH ? DETECTED : UNDETECTED;
 }
@@ -10,19 +10,19 @@ void setupPIR() {
 void configurePIR(ArduinoJson::JsonVariant config) {
     Serial.println("PIR:");
         
-    clacksConfig.pirInitDelay = (config["init_delay"] | PIR_INIT_DELAY) * 1000u;
+    powerpiConfig.pirInitDelay = (config["init_delay"] | PIR_INIT_DELAY) * 1000u;
     Serial.print("\tInit Delay: ");
-    Serial.print(clacksConfig.pirInitDelay);
+    Serial.print(powerpiConfig.pirInitDelay);
     Serial.println("ms");
 
-    clacksConfig.pirPostDetectSkip = secondsToInterval(config["post_detect_skip"] | PIR_POST_DETECT_SKIP);
+    powerpiConfig.pirPostDetectSkip = secondsToInterval(config["post_detect_skip"] | PIR_POST_DETECT_SKIP);
     Serial.print("\tPost Detect Skip: ");
-    Serial.print(clacksConfig.pirPostDetectSkip);
+    Serial.print(powerpiConfig.pirPostDetectSkip);
     Serial.println(" intervals");
 
-    clacksConfig.pirPostMotionCheck = secondsToInterval(config["post_motion_check"] | PIR_POST_MOTION_CHECK);
+    powerpiConfig.pirPostMotionCheck = secondsToInterval(config["post_motion_check"] | PIR_POST_MOTION_CHECK);
     Serial.print("\tPost Motion Check: ");
-    Serial.print(clacksConfig.pirPostMotionCheck);
+    Serial.print(powerpiConfig.pirPostMotionCheck);
     Serial.println(" intervals");
 }
 
@@ -52,7 +52,7 @@ void pollPIR() {
             pirCheckCounter = 0;
 
             // after HIGH to LOW we need to allow the sensor to reacclimatise
-            pirCounterMax = clacksConfig.pirPostDetectSkip;
+            pirCounterMax = powerpiConfig.pirPostDetectSkip;
         }
     } else {
         // we are in CHECK state, should we publish undetected?
@@ -60,7 +60,7 @@ void pollPIR() {
             // it's still low so increment the counter
             pirCheckCounter++;
 
-            if(pirCheckCounter == clacksConfig.pirPostMotionCheck) {
+            if(pirCheckCounter == powerpiConfig.pirPostMotionCheck) {
                 // once the counter hits the limit, publish that motion was no longer detected
                 pirPreviousState = UNDETECTED;
                 handleMotionEvent(UNDETECTED);

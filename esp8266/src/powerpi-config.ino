@@ -1,14 +1,14 @@
-#include "clacks.h"
+#include "powerpi-config.h"
 
-void setupClacksConfig() {
-    // initialise the clacks config with the default values
-    clacksConfig = ClacksConfig_default;
+void setupPowerPiConfig() {
+    // initialise the PowerPi config with the default values
+    powerpiConfig = PowerPiConfig_default;
 
-    // if we are using clacks-config
-    #ifdef CLACKS_CONFIG
+    // if we are using config-server
+    #ifdef POWERPI_CONFIG_SERVER
         // generate the topic
         char topic[TOPIC_LEN];
-        snprintf(topic, TOPIC_LEN, CLACKS_MQTT_TOPIC, HOSTNAME);
+        snprintf(topic, TOPIC_LEN, POWERPI_CONFIG_MQTT_TOPIC, HOSTNAME);
 
         // subscribe to MQTT
         mqttClient.setCallback(configCallback);
@@ -18,7 +18,7 @@ void setupClacksConfig() {
         // wait for the message
         Serial.println("Waiting for configuration");
         int counter = 0;
-        while(!clacksConfig.received) {
+        while(!powerpiConfig.received) {
             Serial.print(".");
 
             mqttClient.loop();
@@ -60,11 +60,11 @@ void configCallback(char* topic, byte* payload, unsigned int length) {
     configureSensors(doc["payload"]);
 
     // once the configuration is parsed, set the configuration received
-    clacksConfig.received = true;
+    powerpiConfig.received = true;
 }
 
 unsigned short secondsToInterval(unsigned int seconds) {
-    double intervalsPerSecond = 1000.0 / clacksConfig.pollDelay;
+    double intervalsPerSecond = 1000.0 / powerpiConfig.pollDelay;
 
     unsigned int intervals = ((double)seconds) * intervalsPerSecond;
 
@@ -76,8 +76,8 @@ unsigned short secondsToInterval(unsigned int seconds) {
 }
 
 void configureGeneral(float pollDelay) {
-    clacksConfig.pollDelay = pollDelay * 1000u;
+    powerpiConfig.pollDelay = pollDelay * 1000u;
     Serial.print("Poll Delay: ");
-    Serial.print(clacksConfig.pollDelay);
+    Serial.print(powerpiConfig.pollDelay);
     Serial.println("ms");
 }

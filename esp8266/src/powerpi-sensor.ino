@@ -14,8 +14,8 @@ void setup() {
     connectWiFi();
     setupMQTT();
 
-    // retrieve the configuration from clacks
-    setupClacksConfig();
+    // retrieve the configuration from config-server
+    setupPowerPiConfig();
 
     // initialise the sensors
     setupSensors();
@@ -30,8 +30,8 @@ void loop() {
     // poll the sensors
     pollSensors();
 
-    #ifdef CLACKS_CONFIG
-        // check for messages if clacks is enabled
+    #ifdef POWERPI_CONFIG_SERVER
+        // check for messages if config-server is enabled
         mqttClient.loop();
     #endif
 
@@ -42,9 +42,9 @@ inline void wait() {
     #ifdef DEEP_SLEEP
         // we want to deep sleep instead of delaying
         // currently we use the DHT22 skip as well as that's the only sensor that uses deep sleep
-        ESP.deepSleep(clacksConfig.pollDelay * clacksConfig.dht22Skip * 1000);
+        ESP.deepSleep(powerpiConfig.pollDelay * powerpiConfig.dht22Skip * 1000);
     #else
         // delay before checking the state again
-        delay(clacksConfig.pollDelay);
+        delay(powerpiConfig.pollDelay);
     #endif
 }

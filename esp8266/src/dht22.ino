@@ -7,15 +7,15 @@ void setupDHT22() {
 void configureDHT22(ArduinoJson::JsonVariant config) {
     Serial.println("DHT22:");
 
-    clacksConfig.dht22Skip = secondsToInterval(config["skip"] | DHT22_SKIP);
+    powerpiConfig.dht22Skip = secondsToInterval(config["skip"] | DHT22_SKIP);
     Serial.print("\tSkip: ");
-    Serial.print(clacksConfig.dht22Skip);
+    Serial.print(powerpiConfig.dht22Skip);
     Serial.println(" intervals");
 }
 
 void pollDHT22() {
     // check if we've skipped enough counts
-    if(++dhtCounter >= clacksConfig.dht22Skip) {
+    if(++dhtCounter >= powerpiConfig.dht22Skip) {
         dhtCounter = 0;
 
         float humidity = dht.readHumidity();

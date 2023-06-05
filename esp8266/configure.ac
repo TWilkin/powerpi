@@ -1,4 +1,4 @@
-AC_INIT([powerpi-sensor], [0.2.5])
+AC_INIT([powerpi-sensor], [0.3.0])
 
 dnl The arguments the user can override
 AC_ARG_VAR([location], [The location of this sensor])
@@ -23,14 +23,14 @@ m4_foreach_w(
     ]
 )
 
-dnl Identify whether to use clacks-config
+dnl Identify whether to use config-server
 AC_ARG_ENABLE(
-    [clacks],
-    [AS_HELP_STRING([--disable-clacks], [Disable getting configuration from the message queue])],
-    [enable_clacks=0],
-    [enable_clacks=1]
+    [config_server],
+    [AS_HELP_STRING([--disable-config-server], [Disable getting configuration from the message queue])],
+    [enable_config_server=0],
+    [enable_config_server=1]
 )
-AC_SUBST([enable_clacks])
+AC_SUBST([enable_config_server])
 
 dnl Identify whether to use deep-sleep
 AC_ARG_ENABLE(

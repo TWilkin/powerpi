@@ -1,5 +1,5 @@
-#ifndef __INCLUDED_CLACKS_H
-#define __INCLUDED_CLACKS_H
+#ifndef __INCLUDED_POWERPI_CONFIG_H
+#define __INCLUDED_POWERPI_CONFIG_H
 
 #include <ArduinoJson.h>
 
@@ -7,7 +7,7 @@
 #include "mqtt.h"
 #include "sensors.h"
 
-#define CLACKS_MQTT_TOPIC "powerpi/config/%s/change"
+#define POWERPI_CONFIG_MQTT_TOPIC "powerpi/config/%s/change"
 
 // the number of seconds to wait before giving up waiting for the config (1 minute)
 #define CONFIG_WAIT 60 * 2
@@ -16,7 +16,7 @@
 // the delay between sensor polling (half a second)
 #define POLL_DELAY 0.5f
 
-struct ClacksConfig_s {
+struct PowerPiConfig_s {
     // whether the configuration was received yet
     bool received;
 
@@ -36,14 +36,14 @@ struct ClacksConfig_s {
 
     // the number of checks after we stop seeing motion
     unsigned short pirPostMotionCheck;
-} ClacksConfig_default = { false, 0, 0, 0, 0, 0 };
+} PowerPiConfig_default = { false, 0, 0, 0, 0, 0 };
 
-typedef struct ClacksConfig_s ClacksConfig;
+typedef struct PowerPiConfig_s PowerPiConfig;
 
 // the global configuration
-ClacksConfig clacksConfig;
+PowerPiConfig powerpiConfig;
 
-void setupClacksConfig();
+void setupPowerPiConfig();
 void useDefaultConfig();
 void configCallback(char* topic, byte* payload, unsigned int length);
 unsigned short secondsToInterval(unsigned int seconds);

@@ -5,8 +5,8 @@
 #include <DHT.h>
 #include <limits.h>
 
-#include "clacks.h"
 #include "mqtt.h"
+#include "powerpi-config.h"
 
 // the data pin for the DHT22 (GPIO4/D2)
 #define DHT22_PIN 4

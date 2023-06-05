@@ -40,7 +40,7 @@ Next, we need to configure the compiler with the options we wish to include, we 
 -   **wifi_password** - The password for the aforementioned WiFi SSID.
 -   **serial_baud** - _optional_ - The baud rate to use when connecting to the serial monitor on the sensor, default is 115200.
 
-By default a sensor will retrieve configuration from [_config-server_](../services/config-server/README.md), but this can be disabled with the `--disable-clacks` option if you wish to always use the configuration options provided in the code.
+By default a sensor will retrieve configuration from [_config-server_](../services/config-server/README.md), but this can be disabled with the `--disable-config-server` option if you wish to always use the configuration options provided in the code.
 
 ```bash
 # Configure a motion sensor
@@ -56,7 +56,7 @@ By default a sensor will retrieve configuration from [_config-server_](../servic
 ./configure --enable-dht22 --enable-pir --enable-button location=Office
 
 # Configure a sensor that doesn't get configuration from config-server
-./configure --enable-dht22 --disable-clacks location=Lounge
+./configure --enable-dht22 --disable-config-server location=Lounge
 
 # Configure a sensor that doesn't use deep-sleep (for more timely events or when D0 is not connected to RST)
 ./configure --enable-dht22 --disable-deep-sleep location=Lounge
@@ -74,6 +74,6 @@ make
 
 ### Configuration Files
 
-This sensor uses a configuration file (if the `--disable-clacks` option is not included), which is described on the following [_config-server_](../services/config-server/README.md) page.
+This sensor uses a configuration file (if the `--disable-config-server` option is not included), which is described on the following [_config-server_](../services/config-server/README.md) page.
 
 -   [devices.json](../services/config-server/README.md#devicesjson)

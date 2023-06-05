@@ -3,8 +3,8 @@
 
 #include <ArduinoJson.h>
 
-#include "clacks.h"
 #include "mqtt.h"
+#include "powerpi-config.h"
 
 // the data pin for the PIR (GPIO5/D1)
 #define PIR_PIN 5
