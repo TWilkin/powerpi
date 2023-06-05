@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/config/events.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/events.schema.json",
     "title": "Users",
     "description": "The configuration for the event triggers",
     "type": "object",
@@ -29,15 +29,15 @@
                                     "properties": {
                                         "device": {
                                             "description": "The device to perform the action on",
-                                            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
+                                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
                                         },
                                         "state": {
                                             "description": "Whether to turn the device on or off",
-                                            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/DeviceState.schema.json"
+                                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/DeviceState.schema.json"
                                         },
                                         "patch": {
                                             "description": "The JSON patch operation(s) to apply to the device",
-                                            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/JsonPatch.schema.json"
+                                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/JsonPatch.schema.json"
                                         }
                                     },
                                     "required": ["device"],
@@ -46,7 +46,7 @@
                                 },
                                 "condition": {
                                     "description": "The condition to test if this action should be taken",
-                                    "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Condition.schema.json"
+                                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Condition.schema.json"
                                 }
                             },
                             "required": ["action", "condition"],

@@ -1,12 +1,12 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Variable.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Variable.schema.json",
     "title": "Variable",
     "description": "The Variable device",
     "type": "object",
     "allOf": [
         {
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
         }
     ],
     "properties": {

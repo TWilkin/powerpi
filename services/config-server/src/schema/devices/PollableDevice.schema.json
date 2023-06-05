@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/PollableDevice.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PollableDevice.schema.json",
     "title": "PollableDevice",
     "description": "The common properties for a pollable device or sensor in PowerPi",
     "type": "object",

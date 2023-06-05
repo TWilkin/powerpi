@@ -1,15 +1,15 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/network/Computer.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/network/Computer.schema.json",
     "title": "Computer",
     "description": "The computer device allowing control of a network computer using Wake-On-LAN and the shutdown service",
     "type": "object",
     "allOf": [
         {
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
         },
         {
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/PollableDevice.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PollableDevice.schema.json"
         }
     ],
     "properties": {
@@ -28,7 +28,7 @@
         },
         "mac": {
             "description": "The MAC address where the Wake-On-LAN packet can be sent",
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/MACAddress.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/MACAddress.schema.json"
         },
         "delay": {
             "description": "The amount of time (in seconds) to wait between WOL packets to check if the computer has booted",

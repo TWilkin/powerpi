@@ -1,12 +1,12 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/energenie/EnergenieSocketGroup.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energenie/EnergenieSocketGroup.schema.json",
     "title": "EnergenieSocketGroup",
     "description": "The EnergenieSocketGroup device",
     "type": "object",
     "allOf": [
         {
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/energenie/EnergenieCommon.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energenie/EnergenieCommon.schema.json"
         }
     ],
     "properties": {
@@ -19,7 +19,7 @@
             "minItems": 1,
             "maxItems": 4,
             "items": {
-                "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
             }
         }
     },

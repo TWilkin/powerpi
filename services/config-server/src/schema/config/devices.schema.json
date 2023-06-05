@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/config/devices.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/devices.schema.json",
     "title": "Devices",
     "description": "The configuration for the devices and sensors controlled by PowerPi",
     "type": "object",
@@ -11,52 +11,52 @@
             "items": {
                 "oneOf": [
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/energenie/EnergeniePairing.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energenie/EnergeniePairing.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/energenie/EnergenieSocket.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energenie/EnergenieSocket.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/energenie/EnergenieSocketGroup.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energenie/EnergenieSocketGroup.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/harmony/HarmonyActivity.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/harmony/HarmonyActivity.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/harmony/HarmonyHub.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/harmony/HarmonyHub.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/lifx/LIFXLight.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/lifx/LIFXLight.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Composite.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Composite.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Condition.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Condition.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Delay.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Delay.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Log.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Log.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Mutex.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Mutex.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Variable.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Variable.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/network/Computer.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/network/Computer.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/node/Node.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/node/Node.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/ZigBeeLight.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeeLight.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/ZigBeePairing.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeePairing.schema.json"
                     }
                 ]
             }
@@ -67,16 +67,16 @@
             "items": {
                 "oneOf": [
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/GenericSensor.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/GenericSensor.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/PowerPiSensor.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PowerPiSensor.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/AqaraDoor.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/AqaraDoor.schema.json"
                     },
                     {
-                        "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/zigbee/OsramSwitchMini.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/OsramSwitchMini.schema.json"
                     }
                 ]
             }

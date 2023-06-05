@@ -1,13 +1,13 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json",
     "title": "BaseDevice",
     "description": "The common properties for a device or sensor in PowerPi",
     "type": "object",
     "properties": {
         "name": {
             "description": "The name of this device",
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
         },
         "display_name": {
             "description": "The display name of this device",

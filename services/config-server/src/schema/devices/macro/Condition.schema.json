@@ -1,15 +1,15 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Condition.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Condition.schema.json",
     "title": "Condition",
     "description": "The Condition device",
     "type": "object",
     "allOf": [
         {
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
         },
         {
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/PollableDevice.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PollableDevice.schema.json"
         }
     ],
     "properties": {
@@ -18,15 +18,15 @@
         },
         "device": {
             "description": "The device that will be turned on or off if the conditions evaluate to true",
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
         },
         "on_condition": {
             "description": "The condition to check before turning the device on",
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Condition.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Condition.schema.json"
         },
         "off_condition": {
             "description": "The condition to check before turning the device off",
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Condition.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Condition.schema.json"
         },
         "timeout": {
             "description": "The timeout period in seconds that the condition will be checked for",

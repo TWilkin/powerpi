@@ -1,15 +1,15 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/macro/Mutex.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Mutex.schema.json",
     "title": "Mutex",
     "description": "The Mutex device",
     "type": "object",
     "allOf": [
         {
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/BaseDevice.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
         },
         {
-            "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/devices/PollableDevice.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PollableDevice.schema.json"
         }
     ],
     "properties": {
@@ -21,7 +21,7 @@
             "type": "array",
             "minItems": 1,
             "items": {
-                "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
             }
         },
         "off_devices": {
@@ -29,7 +29,7 @@
             "type": "array",
             "minItems": 1,
             "items": {
-                "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Identifier.schema.json"
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
             }
         }
     },
