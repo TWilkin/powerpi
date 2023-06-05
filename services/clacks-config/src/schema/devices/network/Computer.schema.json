@@ -29,6 +29,12 @@
         "mac": {
             "description": "The MAC address where the Wake-On-LAN packet can be sent",
             "$ref": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/MACAddress.schema.json"
+        },
+        "delay": {
+            "description": "The amount of time (in seconds) to wait between WOL packets to check if the computer has booted",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 60
         }
     },
     "required": ["mac"],

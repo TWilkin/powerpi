@@ -24,6 +24,7 @@ class ComputerDevice(Device, PollableMixin):
         mac: str,
         ip: str = None,
         hostname: str = None,
+        delay: int = 10,
         **kwargs
     ):
         # pylint: disable=too-many-arguments
@@ -32,6 +33,7 @@ class ComputerDevice(Device, PollableMixin):
 
         self.__mac_address = mac
         self.__network_address = ip if ip is not None else hostname
+        self.__delay = delay
 
     @property
     def mac_address(self):
@@ -42,9 +44,9 @@ class ComputerDevice(Device, PollableMixin):
         return self.__network_address
 
     async def poll(self):
-        result = await async_ping(self.__network_address, count=4, interval=0.2, timeout=2)
+        is_alive = await self.__is_alive(4)
 
-        new_state = DeviceStatus.ON if result.is_alive else DeviceStatus.OFF
+        new_state = DeviceStatus.ON if is_alive else DeviceStatus.OFF
 
         if new_state != self.state:
             self.state = new_state
@@ -53,8 +55,18 @@ class ComputerDevice(Device, PollableMixin):
         for _ in range(0, 4):
             send_magic_packet(self.__mac_address)
 
-            await sleep(0.2)
+            await sleep(self.__delay)
+
+            if await self.__is_alive():
+                return True
+
+        return False
 
     async def _turn_off(self):
         # do nothing as this will be handled by the shutdown service running on that computer
         return False
+
+    async def __is_alive(self, count=1):
+        result = await async_ping(self.__network_address, count=count, interval=0.2, timeout=2)
+
+        return result.is_alive

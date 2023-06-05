@@ -136,7 +136,8 @@
                 "type": "shell",
                 "presentation": {
                     "reveal": "always"
-                }
+                },
+                "problemMatcher": []
             }
         ],
         "inputs": [
