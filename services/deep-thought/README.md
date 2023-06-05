@@ -30,17 +30,17 @@ This service expects the following environment variables to be set before it wil
 -   **SESSION_SECRET_FILE** - The path to a secret that is used to encrypt sessions, this can be anything but ensure it's a long confidential string.
 -   **OAUTH_CLIENT_ID** - The client id registered with Amazon for _voice-assistant_.
 -   **OAUTH_SECRET_FILE** - The path to the secret associated with the client id registered with Amazon for _voice-assistant_.
--   **USE_CONFIG_FILE** - Use local config files instead of the files downloaded from GitHub by [_clacks-config_](../clacks-config/README.md) (default _false_).
+-   **USE_CONFIG_FILE** - Use local config files instead of the files downloaded from GitHub by [_config-server_](../config-server/README.md) (default _false_).
 -   **DEVICES_FILE** - When _USE_CONFIG_FILE_ is true, load the _devices.json_ from this path.
 -   **USERS_FILE** - When _USE_CONFIG_FILE_ is true, load the _users.json_ from this path.
 
 ### Configuration Files
 
-This service requires two configuration files, both of which are described on the following [_clacks-config_](../clacks-config/README.md) pages.
+This service requires two configuration files, both of which are described on the following [_config-server_](../config-server/README.md) pages.
 
--   [devices.json](../clacks-config/README.md#devicesjson)
--   [floorplan.json](../clacks-config/README.md#floorplanjson)
--   [users.json](../clacks-config/README.md#usersjson)
+-   [devices.json](../config-server/README.md#devicesjson)
+-   [floorplan.json](../config-server/README.md#floorplanjson)
+-   [users.json](../config-server/README.md#usersjson)
 
 ## Testing
 

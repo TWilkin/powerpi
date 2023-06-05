@@ -1,4 +1,4 @@
-# PowerPi - Clacks Config
+# PowerPi - Config Server
 
 PowerPi service which downloads the configuration files from GitHub on an interval, publishing the changed configuration files to the MQTT message queue notifying the other services that configuration has been modified.
 
@@ -68,7 +68,7 @@ The _devices.json_ file contains the list of devices that are added to PowerPi. 
             "entity": "electricity",
             "action": "usage"
         },
-        // example of an ESP8266 sensor which clacks-config will also generate a config event for
+        // example of an ESP8266 sensor which config-server will also generate a config event for
         // this will cause the sensor to poll for changes every 5 minutes instead of the default
         {
             "type": "esp8266",
@@ -202,7 +202,7 @@ yarn build:common
 yarn build:common-test
 
 # Run the tests
-yarn test:clacks-config
+yarn test:config-server
 ```
 
 ## Local Execution
@@ -219,5 +219,5 @@ yarn build:common
 yarn build:common-test
 
 # Run the service locally
-yarn start:clacks-config
+yarn start:config-server
 ```
