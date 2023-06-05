@@ -98,7 +98,7 @@
         // Other
         {
             "name": "Sensors",
-            "path": "esp8266"
+            "path": "sensors"
         },
         {
             "name": "Kubernetes",
