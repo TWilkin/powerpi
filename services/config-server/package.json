@@ -20,18 +20,18 @@
         "test": "jest"
     },
     "dependencies": {
-        "@octokit/rest": "^18.12.0",
+        "@octokit/rest": "^19.0.11",
         "@powerpi/common": "^0.0.14",
         "ajv": "^8.11.0",
         "ajv-formats": "2.1.1",
-        "ts-command-line-args": "^2.5.0",
+        "ts-command-line-args": "^2.5.1",
         "typedi": "^0.10.0",
         "underscore": "^1.13.4"
     },
     "devDependencies": {
         "@powerpi/common-test": "^0.0.6",
-        "@types/node": "^18.0.0",
-        "@types/underscore": "^1.11.4",
+        "@types/node": "^20.2.5",
+        "@types/underscore": "^1.11.5",
         "ts-node": "^10.8.2",
         "typescript": "^4.7.4"
     }
