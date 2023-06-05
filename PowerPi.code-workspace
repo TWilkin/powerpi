@@ -33,8 +33,8 @@
             "path": "services/deep-thought"
         },
         {
-            "name": "Config Service",
-            "path": "services/clacks-config"
+            "name": "Config Server",
+            "path": "services/config-server"
         },
         {
             "name": "Energy Monitor",

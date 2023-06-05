@@ -24,27 +24,27 @@ RUN yarn workspace @powerpi/common-test build
 
 # build the service
 FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-service-image
-LABEL description="Node.js builder for clacks-config service"
+LABEL description="Node.js builder for config-server service"
 WORKDIR /home/node/app
 COPY --from=build-common-image /home/node/app/common/node/common/package.json ./common/node/common/
 COPY --from=build-common-image /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 COPY --from=build-common-test-image /home/node/app/common/node/common-test/package.json ./common/node/common-test/
 COPY --from=build-common-test-image /home/node/app/common/node/common-test/dist/ ./common/node/common-test/dist/
-RUN mkdir -p /home/node/app/services/clacks-config
+RUN mkdir -p /home/node/app/services/config-server
 COPY package.json yarn.lock tsconfig.json ./
-COPY services/clacks-config/package.json ./services/clacks-config/
-RUN yarn workspace @powerpi/clacks-config install --frozen-lockfile
-COPY services/clacks-config ./services/clacks-config/
-RUN yarn workspace @powerpi/clacks-config build
+COPY services/config-server/package.json ./services/config-server/
+RUN yarn workspace @powerpi/config-server install --frozen-lockfile
+COPY services/config-server ./services/config-server/
+RUN yarn workspace @powerpi/config-server build
 
 # service image
 FROM node:16.16.0-alpine3.16 as run-image
-LABEL description="PowerPi clacks-config configuration service"
+LABEL description="PowerPi config-server configuration service"
 
 # use non-root account
 USER node
 RUN mkdir -p /home/node/app/common/node/common/dist \
-    /home/node/app/services/clacks-config
+    /home/node/app/services/config-server
 
 # copy the built common libraries
 WORKDIR /home/node/app
@@ -53,11 +53,11 @@ COPY --from=build-common-image --chown=node:node /home/node/app/common/node/comm
 COPY --from=build-common-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 
 # install the dependencies
-COPY --from=build-service-image --chown=node:node /home/node/app/services/clacks-config/package.json ./services/clacks-config/
-RUN yarn workspace @powerpi/clacks-config install --production --frozen-lockfile
+COPY --from=build-service-image --chown=node:node /home/node/app/services/config-server/package.json ./services/config-server/
+RUN yarn workspace @powerpi/config-server install --production --frozen-lockfile
 
 # copy the built application
-COPY --from=build-service-image --chown=node:node /home/node/app/services/clacks-config/dist/ ./services/clacks-config/dist/
+COPY --from=build-service-image --chown=node:node /home/node/app/services/config-server/dist/ ./services/config-server/dist/
 
 # start the application once the container is ready
-CMD yarn workspace @powerpi/clacks-config start:prd --daemon
+CMD yarn workspace @powerpi/config-server start:prd --daemon
