@@ -34,7 +34,7 @@ export default class ConfigService extends CommonConfigService {
     }
 
     get branch(): string {
-        return process.env["BRANCH"] ?? "master";
+        return process.env["BRANCH"] ?? "main";
     }
 
     get path(): string {
