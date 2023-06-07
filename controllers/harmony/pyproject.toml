@@ -26,6 +26,7 @@ powerpi-common-test = {path = "../../common/pytest", develop = true}
 
 [tool.pytest.ini_options]
 addopts = "-v --cov=harmony_controller"
+markers = ["first"]
 
 [build-system]
 requires = ["poetry-core>=1.1.0"]

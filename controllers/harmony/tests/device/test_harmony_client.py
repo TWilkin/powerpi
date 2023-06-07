@@ -1,9 +1,10 @@
-from unittest.mock import AsyncMock, MagicMock, PropertyMock, patch
+from unittest.mock import AsyncMock, MagicMock, PropertyMock
 
 import pytest
-from harmony_controller.device.harmony_client import HarmonyClient
 from pytest import raises
 from pytest_mock import MockerFixture
+
+from harmony_controller.device.harmony_client import HarmonyClient
 
 
 class TestHarmonyClient(object):
@@ -14,6 +15,8 @@ class TestHarmonyClient(object):
 
         mock_api.assert_called_once_with(subject.address)
         mock_api.return_value.connect.assert_called_once()
+
+        # pylint: disable=protected-access
         mock_api.return_value._harmony_client.refresh_info_from_hub.assert_called_once()
 
     @pytest.mark.skip(reason='the property mock isn\'t working')
@@ -25,6 +28,8 @@ class TestHarmonyClient(object):
         result = await subject.get_current_activity()
 
         mock_api.assert_called_once_with(subject.address)
+
+        # pylint: disable=protected-access
         mock_api.return_value._harmony_client.refresh_info_from_hub.assert_called_once()
 
         assert result == -1
@@ -47,7 +52,12 @@ class TestHarmonyClient(object):
         mock_api.assert_called_once_with(subject.address)
         mock_api.return_value.power_off.assert_called_once()
 
-    async def test_reconnect(self, subject: HarmonyClient, mock_api: MagicMock, mocker: MockerFixture):
+    async def test_reconnect(
+        self,
+        subject: HarmonyClient,
+        mock_api: MagicMock,
+        mocker: MockerFixture
+    ):
         mock_connect = AsyncMock()
         mock_connect.return_value = False
         mock_api.return_value.connect = mock_connect
@@ -58,10 +68,8 @@ class TestHarmonyClient(object):
         mock_api.assert_has_calls([mocker.call(subject.address)])
 
     @pytest.fixture
-    def subject(self, mocker: MockerFixture):
-        self.logger = mocker.Mock()
-
-        client = HarmonyClient(self.logger)
+    def subject(self, powerpi_logger):
+        client = HarmonyClient(powerpi_logger)
         client.address = 'my.harmony.address'
 
         return client
@@ -78,6 +86,8 @@ class TestHarmonyClient(object):
 
         mock_client = MagicMock()
         mock_client.refresh_info_from_hub = AsyncMock()
+
+        # pylint: disable=protected-access
         mock_api.return_value._harmony_client = mock_client
 
         return mock_api

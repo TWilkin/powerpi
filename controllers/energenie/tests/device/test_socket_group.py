@@ -1,14 +1,13 @@
-from typing import List, Tuple
+from typing import Dict, List
+from unittest.mock import MagicMock
 
 import pytest
-
+from powerpi_common.device import Device
+from powerpi_common_test.device import DeviceTestBaseNew
+from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBaseNew
 from pytest_mock import MockerFixture
 
 from energenie_controller.device.socket_group import SocketGroupDevice
-from powerpi_common.device import Device
-from powerpi_common_test.device import DeviceTestBase
-from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase
-from powerpi_common_test.mqtt import mock_producer
 
 
 class MockSocket(Device):
@@ -22,32 +21,22 @@ class MockSocket(Device):
         pass
 
 
-class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
-    def get_subject(self, mocker: MockerFixture):
-        self.device_manager = mocker.Mock()
-        self.energenie = mocker.Mock()
+class TestSocketGroupDevice(DeviceTestBaseNew, DeviceOrchestratorMixinTestBaseNew):
 
-        self.publish = mock_producer(mocker, self.mqtt_client)
-
-        self.sockets = {f'socket{i}': MockSocket(
-            self.config, self.logger, self.mqtt_client, f'socket{i}'
-        ) for i in range(0, 4)}
-
-        self.device_manager.get_device = lambda name: self.sockets[name]
-
-        self.devices = self.sockets.keys()
-
-        return SocketGroupDevice(
-            self.config, self.logger, self.mqtt_client, self.device_manager, self.energenie,
-            name='socket_group', devices=self.devices, retries=2, delay=0
-        )
-
+    @pytest.mark.asyncio
     @pytest.mark.parametrize('state', ['on', 'off'])
-    async def test_turn_x_only_updates_state_once(self, mocker: MockerFixture, state: str):
-        subject = self.create_subject(mocker)
+    async def test_turn_x_only_updates_state_once(
+        self,
+        subject: SocketGroupDevice,
+        sockets: Dict[str, MockSocket],
+        powerpi_mqtt_producer: MagicMock,
+        mocker: MockerFixture,
+        state: str
+    ):
+        # pylint: disable=too-many-arguments
 
         assert subject.state == 'unknown'
-        for socket in self.sockets.values():
+        for socket in sockets.values():
             assert socket.state == 'unknown'
 
         # call it twice so we can check the messages
@@ -56,43 +45,50 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
         await func()
 
         assert subject.state == state
-        for socket in self.sockets.values():
+        for socket in sockets.values():
             assert socket.state == state
 
         # 2 for the group (turn_x always broadcasts) and 1 for each socket
-        assert self.publish.call_count == 2 + len(self.sockets)
+        assert powerpi_mqtt_producer.call_count == 2 + len(sockets)
 
         calls = [
             mocker.call(f'device/{name}/status', {'state': state})
-            for name in self.devices
+            for name in sockets.keys()
         ]
         calls.extend([
             mocker.call('device/socket_group/status', {'state': state})
             for _ in range(0, 2)
         ])
-        self.publish.assert_has_calls(calls)
+        powerpi_mqtt_producer.assert_has_calls(calls)
 
+    @pytest.mark.asyncio
     @pytest.mark.parametrize('state', ['on', 'off'])
-    async def test_run_updates_devices(self, mocker: MockerFixture, state: str):
-        subject = self.create_subject(mocker)
-
-        self.counter = 0
+    async def test_run_updates_devices(
+        self,
+        subject: SocketGroupDevice,
+        sockets: Dict[str, MockSocket],
+        state: str
+    ):
+        counter = 0
 
         def func():
-            self.counter += 1
+            nonlocal counter
+            counter += 1
 
-        for socket in self.sockets.values():
+        for socket in sockets.values():
             assert socket.state == 'unknown'
 
+        # pylint: disable=protected-access
         await subject._run(func, state)
 
         # we retry twice by default
-        assert self.counter == 2
+        assert counter == 2
 
-        for socket in self.sockets.values():
+        for socket in sockets.values():
             assert socket.state == state
 
-    @pytest.mark.parametrize('states', [
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('initial_state,update_state,expected_states', [
         ('unknown', 'on', ['unknown', 'unknown', 'unknown', 'on']),
         ('unknown', 'off', ['unknown', 'unknown', 'unknown', 'off']),
         ('unknown', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown']),
@@ -103,14 +99,17 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
         ('off', 'off', ['off', 'off', 'off', 'off']),
         ('off', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown'])
     ])
-    async def test_on_referenced_device_status(self, mocker: MockerFixture, states: Tuple[str, str, List[str]]):
-        (initial_state, update_state, expected_states) = states
-
-        subject = self.create_subject(mocker)
-
+    async def test_on_referenced_device_status(
+        self,
+        subject: SocketGroupDevice,
+        sockets: Dict[str, MockSocket],
+        initial_state: str,
+        update_state: str,
+        expected_states: List[str]
+    ):
         assert subject.state == 'unknown'
 
-        sockets = list(self.sockets.values())
+        sockets = list(sockets.values())
 
         # initialise the devices
         for device in sockets:
@@ -123,3 +122,44 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
             assert subject.state == expected
 
         assert subject.state == update_state
+
+    @pytest.fixture
+    def subject(
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+        powerpi_device_manager,
+        sockets,
+        mocker: MockerFixture
+    ):
+        # pylint: disable=too-many-arguments
+
+        energenie = mocker.MagicMock()
+
+        powerpi_device_manager.get_device = lambda name: sockets[name]
+
+        devices = sockets.keys()
+
+        return SocketGroupDevice(
+            powerpi_config,
+            powerpi_logger,
+            powerpi_mqtt_client,
+            powerpi_device_manager,
+            energenie,
+            name='socket_group',
+            devices=devices,
+            retries=2,
+            delay=0
+        )
+
+    @pytest.fixture
+    def sockets(
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+    ):
+        return {f'socket{i}': MockSocket(
+            powerpi_config, powerpi_logger, powerpi_mqtt_client, f'socket{i}'
+        ) for i in range(0, 4)}
