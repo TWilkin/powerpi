@@ -1,26 +1,39 @@
+import pytest
+from powerpi_common_test.device import DeviceTestBaseNew
 from pytest_mock import MockerFixture
 
 from energenie_controller.device.socket import SocketDevice
-from powerpi_common_test.device import DeviceTestBase
 
 
-class TestSocketDevice(DeviceTestBase):
-    def get_subject(self, mocker: MockerFixture):
-        self.energenie = mocker.Mock()
+class TestSocketDevice(DeviceTestBaseNew):
 
-        return SocketDevice(
-            self.config, self.logger, self.mqtt_client, self.energenie,
-            name='test', retries=2, delay=0
-        )
-
-    async def test_run(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
-        self.counter = 0
+    @pytest.mark.asyncio
+    async def test_run(self, subject: SocketDevice):
+        counter = 0
 
         def func():
-            self.counter += 1
+            nonlocal counter
+            counter += 1
 
+        # pylint: disable=protected-access
         await subject._run(func)
 
-        assert self.counter == 2
+        assert counter == 2
+
+    @pytest.fixture
+    def subject(
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+        mocker: MockerFixture
+    ):
+        energenie = mocker.MagicMock()
+
+        return SocketDevice(
+            powerpi_config,
+            powerpi_logger,
+            powerpi_mqtt_client,
+            energenie,
+            name='test', retries=2, delay=0
+        )
