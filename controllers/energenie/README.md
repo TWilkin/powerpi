@@ -29,16 +29,16 @@ This service expects the following environment variables to be set before it wil
 -   **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
 -   **ENERGENIE_DEVICE** - Which Energenie controller board to use, either ENER314 or ENER314-RT (default _ENER314-RT_).
 -   **DEVICE_FATAL** - Whether to kill the service if it's unable to communicate with the Energenie device, useful when debugging off the Raspberry Pi but should be true in production. (default _false_).
--   **USE_CONFIG_FILE** - Use local config files instead of the files downloaded from GitHub by [_clacks-config_](../../services/clacks-config/README.md) (default _false_).
+-   **USE_CONFIG_FILE** - Use local config files instead of the files downloaded from GitHub by [_config-server_](../../services/config-server/README.md) (default _false_).
 -   **DEVICES_FILE** - When _USE_CONFIG_FILE_ is true, load the _devices.json_ from this path.
 -   **EVENTS_FILE** - When _USE_CONFIG_FILE_ is true, load the _events.json_ from this path.
 
 ### Configuration Files
 
-This service requires two configuration files, both of which are described on the following [_clacks-config_](../../services/clacks-config/README.md) pages.
+This service requires two configuration files, both of which are described on the following [_config-server_](../../services/config-server/README.md) pages.
 
--   [devices.json](../../services/clacks-config/README.md#devicesjson)
--   [events.json](../../services/clacks-config/README.md#eventsjson)
+-   [devices.json](../../services/config-server/README.md#devicesjson)
+-   [events.json](../../services/config-server/README.md#eventsjson)
 
 ### Kubernetes
 

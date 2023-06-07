@@ -1,9 +1,0 @@
-{
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://github.com/TWilkin/powerpi/tree/master/services/clacks-config/src/schema/common/Percentage.schema.json",
-    "title": "Percentage",
-    "description": "A floating point percentage including between 0-100%",
-    "type": "number",
-    "minimum": 0,
-    "maximum": 100
-}

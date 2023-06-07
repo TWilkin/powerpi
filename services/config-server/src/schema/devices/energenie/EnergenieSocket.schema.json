@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energenie/EnergenieSocket.schema.json",
+    "title": "EnergenieSocket",
+    "description": "The EnergenieSocket device",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energenie/EnergenieCommon.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "energenie_socket"
+        },
+        "device_id": {
+            "description": "The socket on a multi-socket device, 0 for all",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+        }
+    }
+}

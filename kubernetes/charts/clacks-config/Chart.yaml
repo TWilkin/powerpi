@@ -1,6 +1,0 @@
-apiVersion: v2
-name: clacks-config
-description: A Helm chart for the PowerPi clacks-config configuration service
-type: application
-version: 0.1.7
-appVersion: 0.3.6

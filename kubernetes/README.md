@@ -87,7 +87,7 @@ microk8s kubectl create secret generic ihd-secret --namespace powerpi \
     --from-file=ihd=./__SECRET_NAME__
 ```
 
--   **github-secret** - A GitHub personal access token which allows _clacks-config_ to retrieve configuration files from a GitHub repository.
+-   **github-secret** - A GitHub personal access token which allows _config-server_ to retrieve configuration files from a GitHub repository.
 
 ```bash
 microk8s kubectl create secret generic github-secret --namespace powerpi \

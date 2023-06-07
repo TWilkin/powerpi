@@ -117,9 +117,9 @@ tag_service "controllers/network" "network-controller"
 tag_service "controllers/node" "node-controller"
 tag_service "controllers/zigbee" "zigbee-controller"
 
-tag_service "esp8266" "powerpi-sensor"
+tag_service "sensors" "powerpi-sensor"
 
-tag_service "services/clacks-config" "clacks-config"
+tag_service "services/config-server" "config-server"
 tag_service "services/deep-thought" "deep-thought"
 tag_service "services/energy-monitor" "energy-monitor"
 tag_service "services/freedns" "freedns"

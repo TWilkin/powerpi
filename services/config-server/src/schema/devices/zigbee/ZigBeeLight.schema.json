@@ -1,0 +1,28 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeeLight.schema.json",
+    "title": "ZigBeeLight",
+    "description": "The ZigBee Light device",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PollableDevice.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeeDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "zigbee_light"
+        },
+        "duration": {
+            "description": "How long to take to dim/brighten the light when turning on/off in milliseconds",
+            "type": "integer",
+            "minimum": 0
+        }
+    }
+}

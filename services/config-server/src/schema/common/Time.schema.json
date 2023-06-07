@@ -1,0 +1,8 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Time.schema.json",
+    "title": "Time",
+    "description": "A 24-hour time to second granularity",
+    "type": "string",
+    "pattern": "^(?:\\d|[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d$"
+}

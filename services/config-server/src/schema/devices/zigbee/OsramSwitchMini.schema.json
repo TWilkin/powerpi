@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/OsramSwitchMini.schema.json",
+    "title": "OsramSwitchMini",
+    "description": "The OsramSwitchMini sensor",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Sensor.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeeDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "osram_switch_mini"
+        }
+    }
+}

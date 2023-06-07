@@ -1,0 +1,42 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/network/Computer.schema.json",
+    "title": "Computer",
+    "description": "The computer device allowing control of a network computer using Wake-On-LAN and the shutdown service",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PollableDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "computer"
+        },
+        "hostname": {
+            "description": "The hostname where the computer can be found",
+            "type": "string",
+            "format": "hostname"
+        },
+        "ip": {
+            "description": "The IP address where the computer can be found",
+            "type": "string",
+            "format": "ipv4"
+        },
+        "mac": {
+            "description": "The MAC address where the Wake-On-LAN packet can be sent",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/MACAddress.schema.json"
+        },
+        "delay": {
+            "description": "The amount of time (in seconds) to wait between WOL packets to check if the computer has booted",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 60
+        }
+    },
+    "required": ["mac"],
+    "oneOf": [{ "required": ["hostname"] }, { "required": ["ip"] }]
+}

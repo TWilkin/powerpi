@@ -1,0 +1,35 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/users.schema.json",
+    "title": "Users",
+    "description": "The configuration for the users who are allowed to use PowerPi",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "const": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/users.schema.json"
+        },
+        "users": {
+            "description": "The list of users who can access PowerPi",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "description": "The user's email address for use with Google authentication",
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "role": {
+                        "description": "The user's role, at the moment only USER is supported",
+                        "type": "string",
+                        "enum": ["USER"]
+                    }
+                },
+                "required": ["email", "role"],
+                "additionalProperties": false
+            }
+        }
+    },
+    "required": ["users"],
+    "additionalProperties": false
+}

@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/AqaraDoor.schema.json",
+    "title": "AqaraDoor",
+    "description": "The AqaraDoor sensor",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Sensor.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeeDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "oneOf": [{ "const": "aqara_door" }, { "const": "aqara_window" }]
+        }
+    }
+}

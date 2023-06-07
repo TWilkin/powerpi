@@ -1,0 +1,14 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PollableDevice.schema.json",
+    "title": "PollableDevice",
+    "description": "The common properties for a pollable device or sensor in PowerPi",
+    "type": "object",
+    "properties": {
+        "poll_frequency": {
+            "description": "The frequency in seconds to poll this device, or disabled",
+            "type": ["integer", "null"]
+        }
+    },
+    "required": []
+}

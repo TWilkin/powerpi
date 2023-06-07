@@ -1,0 +1,36 @@
+{{- $data := dict
+"Schedule" (.Values.schedule | default "*/5 * * * *")
+  "Command" (list "yarn")
+  "Args" (list 
+    "workspace"
+    "@powerpi/config-server"
+    "start:prd"
+  )
+  "PriorityClassName" "powerpi-critical"
+  "Secret" (list
+    (dict
+      "Name" "github-secret"
+      "Env" (list
+        (dict
+          "Name" "GITHUB_SECRET_FILE"
+          "SubPath" "password"
+        )
+        (dict
+          "Name" "GITHUB_USER"
+          "Key" "username"
+        )
+      )
+    )
+  )
+  "Env" (list
+    (dict
+      "Name" "FILE_PATH"
+      "Value" .Values.path
+    )
+    (dict
+      "Name" "BRANCH"
+      "Value" .Values.branch
+    )
+  )
+-}}
+{{- include "powerpi.cron-job" (merge (dict "Params" $data) . ) -}}

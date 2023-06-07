@@ -1,0 +1,50 @@
+#include "dht22.h"
+
+void setupDHT22() {
+    dht.begin();
+}
+
+void configureDHT22(ArduinoJson::JsonVariant config) {
+    Serial.println("DHT22:");
+
+    powerpiConfig.dht22Skip = secondsToInterval(config["skip"] | DHT22_SKIP);
+    Serial.print("\tSkip: ");
+    Serial.print(powerpiConfig.dht22Skip);
+    Serial.println(" intervals");
+}
+
+void pollDHT22() {
+    // check if we've skipped enough counts
+    if(++dhtCounter >= powerpiConfig.dht22Skip) {
+        dhtCounter = 0;
+
+        float humidity = dht.readHumidity();
+        float temperature = dht.readTemperature();
+
+        if(isnan(humidity) || isnan(temperature)) {
+            Serial.println("DHT22 read error");
+
+            ESP.restart();
+
+            return;
+        }
+
+        StaticJsonDocument<96> message;
+
+        // generate and publish the temperature message
+        message["value"] = round2dp(temperature);
+        message["unit"] = "°C";
+        publish("temperature", message);
+
+        // generate and publish the humidity message
+        message["value"] = round2dp(humidity);
+        message["unit"] = "%";
+        publish("humidity", message);
+
+        Serial.print("TH");
+    }
+}
+
+inline double round2dp(double value) {
+   return (int)(value * 100 + 0.5) / 100.0;
+}
