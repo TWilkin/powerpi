@@ -1,6 +1,8 @@
-from pytest_mock import MockerFixture
+from typing import Callable, Union
 
-from powerpi_common_test.device.base import BaseDeviceTestBase
+import pytest
+from powerpi_common_test.device.base import BaseDeviceTestBaseNew
+
 from powerpi_common.device.base import BaseDevice
 
 
@@ -8,24 +10,32 @@ class DeviceImpl(BaseDevice):
     pass
 
 
-class TestBaseDevice(BaseDeviceTestBase):
-    def create_subject(self, _: MockerFixture):
-        self.display_name = getattr(self, 'display_name', None)
+SubjectBuilder = Callable[[Union[str, None]], BaseDevice]
 
-        return DeviceImpl('TestDevice', self.display_name)
 
-    def test_name(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
+class TestBaseDevice(BaseDeviceTestBaseNew):
 
+    def test_name(self, subject: BaseDevice):
         assert subject.name == 'TestDevice'
 
-    def test_display_name(self, mocker: MockerFixture):
-        self.display_name = 'Test Device'
-        subject = self.create_subject(mocker)
+    def test_display_name(self, subject_builder: SubjectBuilder):
+        # pylint: disable=arguments-renamed
 
-        assert subject.display_name == 'Test Device'
+        display_name = 'Test Device'
+        subject = subject_builder(display_name)
 
-    def test_no_display_name(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
+        assert subject.display_name == display_name
 
+    def test_no_display_name(self, subject: SubjectBuilder):
         assert subject.display_name == 'TestDevice'
+
+    @pytest.fixture
+    def subject_builder(self):
+        def build(display_name: Union[str, None] = None):
+            return DeviceImpl('TestDevice', display_name)
+
+        return build
+
+    @pytest.fixture
+    def subject(self, subject_builder):
+        return subject_builder()

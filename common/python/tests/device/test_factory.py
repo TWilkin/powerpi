@@ -1,19 +1,12 @@
-from pytest_mock import MockerFixture
+import pytest
 
-from powerpi_common.device import DeviceFactory, DeviceConfigType
+from powerpi_common.device import DeviceConfigType, DeviceFactory
 
 
 class TestFactory:
-    def get_subject(self, mocker: MockerFixture):
-        self.logger = mocker.Mock()
-        self.service_provider = mocker.Mock()
 
-        return DeviceFactory(self.logger, self.service_provider)
-
-    def test_build(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
-
-        self.service_provider.test_device = lambda **kwargs: kwargs
+    def test_build(self, subject: DeviceFactory, powerpi_service_provider):
+        powerpi_service_provider.test_device = lambda **kwargs: kwargs
 
         result = subject.build(
             DeviceConfigType.DEVICE, 'test',
@@ -22,10 +15,12 @@ class TestFactory:
 
         assert result == {'a': 1, 'b': 2, 'c': {'complex': 'thing'}}
 
-    def test_build_no_factory(self, mocker: MockerFixture):
-        subject = self.get_subject(mocker)
-
-        self.service_provider.test_device = None
+    def test_build_no_factory(self, subject: DeviceFactory, powerpi_service_provider):
+        powerpi_service_provider.test_device = None
 
         result = subject.build(DeviceConfigType.DEVICE, 'test')
         assert result is None
+
+    @pytest.fixture
+    def subject(self, powerpi_logger, powerpi_service_provider):
+        return DeviceFactory(powerpi_logger, powerpi_service_provider)
