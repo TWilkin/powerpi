@@ -28,12 +28,12 @@ jobs:
           node-version: 16.x
 
       # install node dependencies
-      - name: Install node dependencies
+      - name: Install Node.js dependencies
         if: steps.check_modified.outputs.node
         run: yarn install
 
       # setup python
-      - name: Install python
+      - name: Install Python
         if: steps.check_modified.outputs.python
         uses: actions/setup-python@v4
         with:

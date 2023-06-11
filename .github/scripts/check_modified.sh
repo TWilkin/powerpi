@@ -50,9 +50,6 @@ do
         include_project scheduler "python"
     fi
 
-    # for now just make it happen
-    check_file $file ".github" "ui" "node"
-
     # check the controllers
     check_file $file "controllers/energenie" "energenie_controller" "python"
     check_file $file "controllers/harmony" "harmony_controller" "python"
