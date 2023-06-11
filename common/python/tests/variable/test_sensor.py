@@ -1,10 +1,10 @@
 import pytest
-from powerpi_common_test.variable.variable import VariableTestBaseNew
+from powerpi_common_test.variable.variable import VariableTestBase
 
 from powerpi_common.variable.sensor import SensorVariable
 
 
-class TestSensorVariable(VariableTestBaseNew):
+class TestSensorVariable(VariableTestBase):
 
     def test_topic(self, subject: SensorVariable):
         assert subject.topic == 'event/TestSensor/detect'

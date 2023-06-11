@@ -1,5 +1,5 @@
 import pytest
-from powerpi_common_test.device import DeviceTestBaseNew
+from powerpi_common_test.device import DeviceTestBase
 
 from powerpi_common.device import Device, DeviceStatus
 
@@ -18,7 +18,7 @@ class DeviceImpl(Device):
         return True
 
 
-class TestDevice(DeviceTestBaseNew):
+class TestDevice(DeviceTestBase):
 
     @pytest.fixture
     def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):

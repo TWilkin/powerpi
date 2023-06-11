@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 import pytest
-from powerpi_common_test.device import AdditionalStateDeviceTestBaseNew
+from powerpi_common_test.device import AdditionalStateDeviceTestBase
 
 from powerpi_common.device import AdditionalStateDevice
 
@@ -27,7 +27,7 @@ class DeviceImpl(AdditionalStateDevice):
         return ['a', 'b', 'c']
 
 
-class TestAdditionalStateDevice(AdditionalStateDeviceTestBaseNew):
+class TestAdditionalStateDevice(AdditionalStateDeviceTestBase):
 
     @pytest.fixture
     def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):

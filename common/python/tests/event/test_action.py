@@ -3,8 +3,6 @@ import pytest
 from powerpi_common.event.action import (device_additional_state_action,
                                          device_off_action, device_on_action)
 
-pytestmark = pytest.mark.asyncio
-
 
 class DeviceImpl:
     def __init__(self):
@@ -24,6 +22,7 @@ class DeviceImpl:
         self.additional_state = new_additional_state
 
 
+@pytest.mark.asyncio
 async def test_device_on_action():
     device = DeviceImpl()
 
@@ -34,6 +33,7 @@ async def test_device_on_action():
     assert device.state == 'on'
 
 
+@pytest.mark.asyncio
 async def test_device_off_action():
     device = DeviceImpl()
 
@@ -44,6 +44,7 @@ async def test_device_off_action():
     assert device.state == 'off'
 
 
+@pytest.mark.asyncio
 async def test_device_additional_state_action(powerpi_variable_manager):
     device = DeviceImpl()
 
@@ -72,6 +73,7 @@ async def test_device_additional_state_action(powerpi_variable_manager):
     assert device.additional_state['other'] == 'untouched'
 
 
+@pytest.mark.asyncio
 async def test_device_additional_state_action_with_variable(powerpi_variable_manager):
     device = DeviceImpl()
 

@@ -1,7 +1,7 @@
 from typing import Union
 
 import pytest
-from powerpi_common_test.sensor import SensorTestBaseNew
+from powerpi_common_test.sensor import SensorTestBase
 
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
@@ -18,7 +18,7 @@ class SensorImpl(Sensor):
         Sensor.__init__(self, mqtt_client, entity, action, **kwargs)
 
 
-class TestSensor(SensorTestBaseNew):
+class TestSensor(SensorTestBase):
 
     def test_broadcast_entity(self, subject_builder, powerpi_mqtt_producer):
         self.__broadcast(
