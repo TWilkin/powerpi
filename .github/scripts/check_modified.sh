@@ -4,6 +4,7 @@ include_project() {
     local $project=$1
 
     echo "$project=true" >> $GITHUB_OUTPUT
+    echo "python=true" >> $GITHUB_OUTPUT
 }
 
 check_file() {
@@ -16,8 +17,6 @@ check_file() {
         include_project $project
     fi
 }
-
-
 
 # iterate through the changed files
 git diff --name-only HEAD^ HEAD > files.txt
@@ -40,6 +39,9 @@ do
 
         include_project scheduler
     fi
+
+    # for now just make it happen
+    check_file $file ".github"
 
     # check the controllers
     check_file $file "controllers/energenie" "energenie_controller"

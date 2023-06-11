@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,50 +20,69 @@ jobs:
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/check_modified.sh"
 
+      # setup poetry
+      - name: Install Poetry
+        if: steps.check_modified.outputs.python
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.4.2
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+
       # test the common libraries
       - name: Test PowerPi Python Common
         if: steps.check_modified.outputs.python_common
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh common/python"
+        working-directory: common/python
 
       # test the controllers
       - name: Test Energenie Controller
         if: steps.check_modified.outputs.energenie_controller
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/energenie"
+        working-directory: controllers/energenie
 
       - name: Test Harmony Controller
         if: steps.check_modified.outputs.harmony_controller
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/harmony"
+        working-directory: controllers/harmony
 
       - name: Test LIFX Controller
         if: steps.check_modified.outputs.lifx_controller
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/lifx"
+        working-directory: controllers/lifx
 
       - name: Test Macro Controller
         if: steps.check_modified.outputs.macro_controller
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/macro"
+        working-directory: controllers/macro
 
       - name: Test Network Controller
         if: steps.check_modified.outputs.network_controller
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/network"
+        working-directory: controllers/network
 
       - name: Test Node Controller
         if: steps.check_modified.outputs.node_controller
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/node"
+        working-directory: controllers/node
 
       - name: Test ZigBee Controller
         if: steps.check_modified.outputs.zigbee_controller
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/zigbee"
+        working-directory: controllers/zigbee
 
       # test the services
       - name: Test Scheduler
         if: steps.check_modified.outputs.scheduler
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh services/scheduler"
+        working-directory: services/scheduler
