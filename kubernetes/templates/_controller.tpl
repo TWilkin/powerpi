@@ -1,13 +1,13 @@
-{{- define "powerpi.controller" }}
+{{- define "powerpi.controller" -}}
 
-{{- $env := .Params.Env | default list }}
+{{- $env := .Params.Env | default list -}}
 
-{{- if eq (empty .Values.pollFrequency) false }}
+{{- if eq (empty .Values.pollFrequency) false -}}
 {{- $env = append $env (dict
   "Name" "POLL_FREQUENCY"
   "Value" (.Values.pollFrequency | quote)
-) }}
-{{- end }}
+) -}}
+{{- end -}}
 
 {{- $data := (merge 
   (dict
@@ -23,11 +23,11 @@
         "/usr/src/app/venv/lib/python3.9/site-packages/powerpi_common/health.sh"
       )
       "ReadinessInitialDelay" 10
-      "LivenessInitialDelay" 20
+      "LivenessInitialDelay" 30
     )
   ) 
   .Params
-) }}
+) -}}
 
-{{- include "powerpi.deployment" (merge (dict "Params" $data) . ) }}
-{{- end }}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . ) -}}
+{{- end -}}
