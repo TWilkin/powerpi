@@ -1,11 +1,11 @@
 import pytest
-from powerpi_common_test.device import DeviceTestBaseNew
+from powerpi_common_test.device import DeviceTestBase
 from pytest_mock import MockerFixture
 
 from energenie_controller.device.socket import SocketDevice
 
 
-class TestSocketDevice(DeviceTestBaseNew):
+class TestSocketDevice(DeviceTestBase):
 
     @pytest.mark.asyncio
     async def test_run(self, subject: SocketDevice):
