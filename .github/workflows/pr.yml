@@ -20,7 +20,50 @@ jobs:
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/check_modified.sh"
 
+      # test the common libraries
       - name: Test PowerPi Python Common
         if: steps.check_modified.outputs.python_common
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh common/python"
+
+      # test the controllers
+      - name: Test Energenie Controller
+        if: steps.check_modified.outputs.energenie_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/energenie"
+
+      - name: Test Harmony Controller
+        if: steps.check_modified.outputs.harmony_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/harmony"
+
+      - name: Test LIFX Controller
+        if: steps.check_modified.outputs.lifx_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/lifx"
+
+      - name: Test Macro Controller
+        if: steps.check_modified.outputs.macro_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/macro"
+
+      - name: Test Network Controller
+        if: steps.check_modified.outputs.network_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/network"
+
+      - name: Test Node Controller
+        if: steps.check_modified.outputs.node_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/node"
+
+      - name: Test ZigBee Controller
+        if: steps.check_modified.outputs.zigbee_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/zigbee"
+
+      # test the services
+      - name: Test Scheduler
+        if: steps.check_modified.outputs.scheduler
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh services/scheduler"
