@@ -156,14 +156,14 @@ zookeeper = ["kazoo"]
 
 [[package]]
 name = "astroid"
-version = "2.15.0"
+version = "2.15.5"
 description = "An abstract syntax tree for Python with inference support."
 category = "dev"
 optional = false
 python-versions = ">=3.7.2"
 files = [
-    {file = "astroid-2.15.0-py3-none-any.whl", hash = "sha256:e3e4d0ffc2d15d954065579689c36aac57a339a4679a679579af6401db4d3fdb"},
-    {file = "astroid-2.15.0.tar.gz", hash = "sha256:525f126d5dc1b8b0b6ee398b33159105615d92dc4a17f2cd064125d57f6186fa"},
+    {file = "astroid-2.15.5-py3-none-any.whl", hash = "sha256:078e5212f9885fa85fbb0cf0101978a336190aadea6e13305409d099f71b2324"},
+    {file = "astroid-2.15.5.tar.gz", hash = "sha256:1039262575027b441137ab4a62a793a9b43defb42c32d5670f38686207cd780f"},
 ]
 
 [package.dependencies]
@@ -950,7 +950,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "powerpi-common"
-version = "0.3.3"
+version = "0.4.0"
 description = "PowerPi Common Python Library"
 category = "dev"
 optional = false
@@ -1015,18 +1015,18 @@ files = [
 
 [[package]]
 name = "pylint"
-version = "2.17.1"
+version = "2.17.4"
 description = "python code static checker"
 category = "dev"
 optional = false
 python-versions = ">=3.7.2"
 files = [
-    {file = "pylint-2.17.1-py3-none-any.whl", hash = "sha256:8660a54e3f696243d644fca98f79013a959c03f979992c1ab59c24d3f4ec2700"},
-    {file = "pylint-2.17.1.tar.gz", hash = "sha256:d4d009b0116e16845533bc2163493d6681846ac725eab8ca8014afb520178ddd"},
+    {file = "pylint-2.17.4-py3-none-any.whl", hash = "sha256:7a1145fb08c251bdb5cca11739722ce64a63db479283d10ce718b2460e54123c"},
+    {file = "pylint-2.17.4.tar.gz", hash = "sha256:5dcf1d9e19f41f38e4e85d10f511e5b9c35e1aa74251bf95cdd8cb23584e2db1"},
 ]
 
 [package.dependencies]
-astroid = ">=2.15.0,<=2.17.0-dev0"
+astroid = ">=2.15.4,<=2.17.0-dev0"
 colorama = {version = ">=0.4.5", markers = "sys_platform == \"win32\""}
 dill = [
     {version = ">=0.2", markers = "python_version < \"3.11\""},
@@ -1507,14 +1507,14 @@ multidict = ">=4.0"
 
 [[package]]
 name = "zigpy"
-version = "0.53.3"
+version = "0.56.0"
 description = "Library implementing a ZigBee stack"
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "zigpy-0.53.3-py3-none-any.whl", hash = "sha256:ab37ea06523daa458021f94b9d87fbe363980fdc8c4546d04a12e9f26b0b9823"},
-    {file = "zigpy-0.53.3.tar.gz", hash = "sha256:0fe70d1036d5a9024147615433fa00d269609e0305afdb106f98d9d11942cacb"},
+    {file = "zigpy-0.56.0-py3-none-any.whl", hash = "sha256:7c461c7b73f8b7b12e5148f1644bd0dd5bbf046d401811680121947ba89bc8d5"},
+    {file = "zigpy-0.56.0.tar.gz", hash = "sha256:48852272d800fbf30a80cc1ed021f7af6d427bebeb535f285346944a6839f5fe"},
 ]
 
 [package.dependencies]
@@ -1528,18 +1528,19 @@ pyserial-asyncio = [
     {version = "*", markers = "platform_system != \"Windows\""},
     {version = "!=0.5", markers = "platform_system == \"Windows\""},
 ]
+typing-extensions = "*"
 voluptuous = "*"
 
 [[package]]
 name = "zigpy-znp"
-version = "0.9.3"
+version = "0.11.1"
 description = "A library for zigpy which communicates with TI ZNP radios"
 category = "main"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "zigpy-znp-0.9.3.tar.gz", hash = "sha256:d3a787fc8693b68b1c8cb08fb415800b1205daaf3869f4da61fc13314d4070c7"},
-    {file = "zigpy_znp-0.9.3-py3-none-any.whl", hash = "sha256:3d3308526dcffd0313e99be6b6d909aac8f43dbd0c2e258f594de6b416c3c4e3"},
+    {file = "zigpy-znp-0.11.1.tar.gz", hash = "sha256:2e671b1ac2cffb99f12dcb22df5cf59f6bc2ca8679843ed41a4663da0391d05b"},
+    {file = "zigpy_znp-0.11.1-py3-none-any.whl", hash = "sha256:cab9be6e64d7ae1852f0be88cc43a3249920eeeac9b0b807111de779f6ab142f"},
 ]
 
 [package.dependencies]
@@ -1547,7 +1548,7 @@ async-timeout = "*"
 coloredlogs = "*"
 jsonschema = "*"
 voluptuous = "*"
-zigpy = ">=0.52.0"
+zigpy = ">=0.55.0"
 
 [package.extras]
 testing = ["coveralls", "pytest (>=7.1.2)", "pytest-asyncio (>=0.19.0)", "pytest-cov (>=3.0.0)", "pytest-mock (>=3.8.2)", "pytest-timeout (>=2.1.0)"]
@@ -1555,4 +1556,4 @@ testing = ["coveralls", "pytest (>=7.1.2)", "pytest-asyncio (>=0.19.0)", "pytest
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "14cd9b8610e64142b6375932ca138d326b9f1965f7331a9b08fed863838de63f"
+content-hash = "1d695dac6636af0ff55ecaf97f8db2a41fd6695376a5d0bffcd992538627d03b"
