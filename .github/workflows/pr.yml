@@ -1,0 +1,26 @@
+name: Test PowerPi
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check modified projects
+        id: check_modified
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/check_modified.sh"
+
+      - name: Test PowerPi Python Common
+        if: steps.check_modified.outputs.python_common
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh common/python"
