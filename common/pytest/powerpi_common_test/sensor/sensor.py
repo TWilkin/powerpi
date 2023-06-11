@@ -1,11 +1,11 @@
 from abc import abstractmethod
 from typing import Callable
 
-import pytest
-
 from pytest_mock import MockerFixture
 
-from powerpi_common_test.device.base import BaseDeviceTestBase
+import pytest
+from powerpi_common_test.device.base import (BaseDeviceTestBase,
+                                             BaseDeviceTestBaseNew)
 
 
 class SensorTestBase(BaseDeviceTestBase):
@@ -25,3 +25,7 @@ class SensorTestBase(BaseDeviceTestBase):
     @abstractmethod
     def get_subject(self, mocker: MockerFixture):
         raise NotImplementedError
+
+
+class SensorTestBaseNew(BaseDeviceTestBaseNew):
+    pass
