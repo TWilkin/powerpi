@@ -3,8 +3,8 @@ from typing import List, Tuple
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
-from powerpi_common_test.device.base import BaseDeviceTestBase
 from powerpi_common_test.device.mixin import InitialisableMixinTestBase
+from powerpi_common_test.sensor import SensorTestBase
 from powerpi_common_test.sensor.mixin import BatteryMixinTestBase
 from pytest_mock import MockerFixture
 from zigpy.zcl import Cluster
@@ -14,7 +14,7 @@ from zigbee_controller.sensor.osram.switch_mini import (Button,
                                                         PressType)
 
 
-class TestOsramSwitchMiniSensor(BaseDeviceTestBase, InitialisableMixinTestBase, BatteryMixinTestBase):
+class TestOsramSwitchMiniSensor(SensorTestBase, InitialisableMixinTestBase, BatteryMixinTestBase):
     @pytest.mark.parametrize('button', [Button.UP, Button.MIDDLE, Button.DOWN])
     def test_single_press_handler(
         self,
