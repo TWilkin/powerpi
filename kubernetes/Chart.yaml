@@ -43,7 +43,7 @@ dependencies:
     version: 0.1.3
     condition: global.harmony
   - name: lifx-controller
-    version: 0.1.3
+    version: 0.1.4
     condition: global.lifx
   - name: macro-controller
     version: 0.1.2
