@@ -1,49 +1,27 @@
 from unittest.mock import patch
 
 import pytest
-from pytest_mock import MockerFixture
 
 from powerpi_common.condition import ParseException
 from powerpi_common.event.handler import EventHandler
-from powerpi_common_test.base import BaseTest
 
 
-class TestEventHandler(BaseTest):
-    pytestmark = pytest.mark.asyncio
+class TestEventHandler:
 
-    def create_subject(self, mocker: MockerFixture):
-        #pylint: disable=attribute-defined-outside-init
+    __action = None
 
-        self.action = None
-
-        async def action(device):
-            self.action = device
-
-        return EventHandler(
-            mocker.Mock(),
-            mocker.Mock(),
-            'MyDevice',
-            {'equals': [True]},
-            action
-        )
-
-    def test_validate_success(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    def test_validate_success(self, subject: EventHandler):
         assert subject.validate() is True
 
-    def test_validate_fail(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    def test_validate_fail(self, subject: EventHandler):
         with patch('powerpi_common.condition.ConditionParser.conditional_expression') as parser:
             parser.side_effect = ParseException()
 
             assert subject.validate() is False
 
+    @pytest.mark.asyncio
     @pytest.mark.parametrize('condition', [True, False])
-    async def test_execute_condition_pass(self, mocker: MockerFixture, condition: bool):
-        subject = self.create_subject(mocker)
-
+    async def test_execute_condition_pass(self, subject: EventHandler, condition: bool):
         with patch('powerpi_common.condition.ConditionParser.conditional_expression') as parser:
             parser.return_value = condition
 
@@ -51,11 +29,10 @@ class TestEventHandler(BaseTest):
 
             assert result is condition
 
-        assert self.action == ('MyDevice' if condition else None)
+        assert self.__action == ('MyDevice' if condition else None)
 
-    async def test_execute_condition_fail(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    @pytest.mark.asyncio
+    async def test_execute_condition_fail(self, subject: EventHandler):
         with patch('powerpi_common.condition.ConditionParser.conditional_expression') as parser:
             parser.side_effect = ParseException()
 
@@ -63,4 +40,17 @@ class TestEventHandler(BaseTest):
 
             assert result is False
 
-        assert self.action is None
+        assert self.__action is None
+
+    @pytest.fixture
+    def subject(self, powerpi_logger, powerpi_variable_manager):
+        async def action(device):
+            self.__action = device
+
+        return EventHandler(
+            powerpi_logger,
+            powerpi_variable_manager,
+            'MyDevice',
+            {'equals': [True]},
+            action
+        )

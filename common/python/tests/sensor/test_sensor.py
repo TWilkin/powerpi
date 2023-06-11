@@ -1,11 +1,10 @@
 from typing import Union
 
-from pytest_mock import MockerFixture
+import pytest
+from powerpi_common_test.sensor import SensorTestBaseNew
 
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
-from powerpi_common_test.mqtt import mock_producer
-from powerpi_common_test.sensor import SensorTestBase
 
 
 class SensorImpl(Sensor):
@@ -19,48 +18,64 @@ class SensorImpl(Sensor):
         Sensor.__init__(self, mqtt_client, entity, action, **kwargs)
 
 
-class TestSensor(SensorTestBase):
-    def get_subject(self, mocker: MockerFixture):
-        self.publish = mock_producer(mocker, self.mqtt_client)
+class TestSensor(SensorTestBaseNew):
 
-        self.entity = getattr(self, 'entity', None)
-        self.action = getattr(self, 'action', None)
-
-        return SensorImpl(
-            self.mqtt_client, self.entity, self.action,
-            name='TestSensor'
-        )
-
-    def test_broadcast_entity(self, mocker: MockerFixture):
+    def test_broadcast_entity(self, subject_builder, powerpi_mqtt_producer):
         self.__broadcast(
-            mocker,
+            subject_builder,
+            powerpi_mqtt_producer,
             'event/Entity/Action',
-            entity='Entity', action='Action'
+            entity='Entity',
+            action='Action'
         )
 
-    def test_broadcast_name(self, mocker: MockerFixture):
-        self.__broadcast(mocker, 'event/TestSensor/Action', action='Action')
-
-    def test_broadcast_action(self, mocker: MockerFixture):
+    def test_broadcast_name(self, subject_builder, powerpi_mqtt_producer):
         self.__broadcast(
-            mocker, 'event/Entity/ActionParam',
-            entity='Entity', action='Action', action_param='ActionParam'
+            subject_builder,
+            powerpi_mqtt_producer,
+            'event/TestSensor/Action',
+            action='Action'
+        )
+
+    def test_broadcast_action(self, subject_builder, powerpi_mqtt_producer):
+        self.__broadcast(
+            subject_builder,
+            powerpi_mqtt_producer,
+            'event/Entity/ActionParam',
+            entity='Entity',
+            action='Action',
+            action_param='ActionParam'
         )
 
     def __broadcast(
         self,
-        mocker: MockerFixture,
+        subject_builder,
+        powerpi_mqtt_producer,
         topic: str,
         entity: Union[str, None] = None,
         action: Union[str, None] = None,
         action_param: Union[str, None] = None
     ):
-        self.entity = entity
-        self.action = action
-
-        subject = self.create_subject(mocker)
+        # pylint: disable=too-many-arguments
+        subject = subject_builder(entity, action)
 
         message = {'test': 'me'}
+
+        # pylint: disable=protected-access
         subject._broadcast(action_param, message)
 
-        self.publish.assert_called_once_with(topic, message)
+        powerpi_mqtt_producer.assert_called_once_with(topic, message)
+
+    @pytest.fixture
+    def subject_builder(self, powerpi_mqtt_client):
+        def build(entity: Union[str, None] = None, action: Union[str, None] = None):
+            return SensorImpl(
+                powerpi_mqtt_client, entity, action,
+                name='TestSensor'
+            )
+
+        return build
+
+    @pytest.fixture
+    def subject(self, subject_builder):
+        return subject_builder()

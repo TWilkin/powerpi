@@ -1,10 +1,11 @@
 import pytest
+from powerpi_common_test.device.mixin import InitialisableMixinTestBaseNew
+from pytest import raises
+from pytest_mock import MockerFixture
+
 from powerpi_common.device import (DeviceConfigType, DeviceManager,
                                    DeviceNotFoundException)
 from powerpi_common.device.mixin import InitialisableMixin
-from powerpi_common_test.device.mixin import InitialisableMixinTestBase
-from pytest import raises
-from pytest_mock import MockerFixture
 
 
 class DummyDevice:
@@ -29,22 +30,16 @@ class InitialisationDummyDevice(DummyDevice, InitialisableMixin):
     pass
 
 
-class TestDeviceManager(InitialisableMixinTestBase):
-    pytestmark = pytest.mark.asyncio
+class TestDeviceManager(InitialisableMixinTestBaseNew):
 
-    def create_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.factory = mocker.Mock()
-
-        return DeviceManager(
-            self.config, self.logger, self.factory
-        )
-
-    async def test_load_no_content(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
-        mocker.patch.object(self.config, 'devices', {
+    @pytest.mark.asyncio
+    async def test_load_no_content(
+        self,
+        subject: DeviceManager,
+        powerpi_config,
+        mocker: MockerFixture
+    ):
+        mocker.patch.object(powerpi_config, 'devices', {
             'devices': [],
             'sensors': []
         })
@@ -55,14 +50,19 @@ class TestDeviceManager(InitialisableMixinTestBase):
         assert len(subject.sensors) == 0
         assert len(subject.devices_and_sensors) == 0
 
-    async def test_load_unknown(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    @pytest.mark.asyncio
+    async def test_load_unknown(
+        self,
+        subject: DeviceManager,
+        powerpi_config,
+        device_factory,
+        mocker: MockerFixture
+    ):
         def build(_, __, **___):
             pass
-        self.factory.build = build
+        device_factory.build = build
 
-        mocker.patch.object(self.config, 'devices', {
+        mocker.patch.object(powerpi_config, 'devices', {
             'devices': [
                 {'type': 'unknown'}
             ],
@@ -77,16 +77,21 @@ class TestDeviceManager(InitialisableMixinTestBase):
         assert len(subject.sensors) == 0
         assert len(subject.devices_and_sensors) == 0
 
-    async def test_load_content(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    @pytest.mark.asyncio
+    async def test_load_content(
+        self,
+        subject: DeviceManager,
+        powerpi_config,
+        device_factory,
+        mocker: MockerFixture
+    ):
         def build(device_type: DeviceConfigType, instance_type: str, **kwargs):
             if instance_type.startswith('another'):
                 return InitialisationDummyDevice(device_type, instance_type, **kwargs)
             return DummyDevice(device_type, instance_type, **kwargs)
-        self.factory.build = build
+        device_factory.build = build
 
-        mocker.patch.object(self.config, 'devices', {
+        mocker.patch.object(powerpi_config, 'devices', {
             'devices': [
                 {'type': 'test_device', 'name': 'a', 'something': 'else'},
                 {'type': 'another_device', 'name': 'b'},
@@ -133,16 +138,21 @@ class TestDeviceManager(InitialisableMixinTestBase):
             else:
                 assert sensor.kwargs == {}
 
-    async def test_deinitialise(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    @pytest.mark.asyncio
+    async def test_deinitialise(
+        self,
+        subject: DeviceManager,
+        powerpi_config,
+        device_factory,
+        mocker: MockerFixture
+    ):
         def build(device_type: DeviceConfigType, instance_type: str, **kwargs):
             if instance_type.startswith('another'):
                 return InitialisationDummyDevice(device_type, instance_type, **kwargs)
             return DummyDevice(device_type, instance_type, **kwargs)
-        self.factory.build = build
+        device_factory.build = build
 
-        mocker.patch.object(self.config, 'devices', {
+        mocker.patch.object(powerpi_config, 'devices', {
             'devices': [
                 {'type': 'test_device', 'name': 'a', 'something': 'else'},
                 {'type': 'another_device', 'name': 'b'},
@@ -170,16 +180,24 @@ class TestDeviceManager(InitialisableMixinTestBase):
         assert subject.get_sensor('c').deinitialised is False
         assert subject.get_sensor('d').deinitialised is True
 
-    def test_get_device_missing(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    def test_get_device_missing(self, subject: DeviceManager):
         with raises(DeviceNotFoundException) as ex:
             subject.get_device('unknown')
+
         assert ex.match('Cannot find device "unknown"')
 
-    def test_get_sensor_missing(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    def test_get_sensor_missing(self, subject: DeviceManager):
         with raises(DeviceNotFoundException) as ex:
             subject.get_sensor('unknown')
+
         assert ex.match('Cannot find sensor "unknown"')
+
+    @pytest.fixture
+    def subject(self, powerpi_config, powerpi_logger, device_factory):
+        return DeviceManager(
+            powerpi_config, powerpi_logger, device_factory
+        )
+
+    @pytest.fixture
+    def device_factory(self, mocker: MockerFixture):
+        return mocker.MagicMock()

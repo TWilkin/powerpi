@@ -1,7 +1,7 @@
 import pytest
+from powerpi_common_test.device import DeviceTestBaseNew
+
 from powerpi_common.device import Device, DeviceStatus
-from powerpi_common_test.device import DeviceTestBase
-from pytest_mock import MockerFixture
 
 
 class DeviceImpl(Device):
@@ -18,9 +18,11 @@ class DeviceImpl(Device):
         return True
 
 
-class TestDevice(DeviceTestBase):
-    def get_subject(self, _: MockerFixture):
-        return DeviceImpl(self.config, self.logger, self.mqtt_client)
+class TestDevice(DeviceTestBaseNew):
+
+    @pytest.fixture
+    def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
+        return DeviceImpl(powerpi_config, powerpi_logger, powerpi_mqtt_client)
 
 
 class BadDeviceImpl(Device):
@@ -38,6 +40,7 @@ class BadDeviceImpl(Device):
 
 
 class TestBadDevice:
+
     @pytest.mark.asyncio
     async def test_turn_on(self, subject: BadDeviceImpl):
         assert subject.state == DeviceStatus.UNKNOWN
@@ -55,5 +58,5 @@ class TestBadDevice:
         assert subject.state == DeviceStatus.UNKNOWN
 
     @pytest.fixture
-    def subject(self, mocker: MockerFixture):
-        return BadDeviceImpl(mocker.Mock(), mocker.Mock(), mocker.Mock())
+    def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
+        return BadDeviceImpl(powerpi_config, powerpi_logger, powerpi_mqtt_client)

@@ -1,12 +1,12 @@
 from typing import Any, Dict
 
-from pytest_mock import MockerFixture
+import pytest
+from powerpi_common_test.device import AdditionalStateDeviceTestBaseNew
 
 from powerpi_common.device import AdditionalStateDevice
-from powerpi_common_test.device import AdditionalStateDeviceTestBase
 
 
-#pylint: disable=too-many-ancestors
+# pylint: disable=too-many-ancestors
 class DeviceImpl(AdditionalStateDevice):
     def __init__(self, config, logger, mqtt_client):
         AdditionalStateDevice.__init__(
@@ -27,6 +27,8 @@ class DeviceImpl(AdditionalStateDevice):
         return ['a', 'b', 'c']
 
 
-class TestAdditionalStateDevice(AdditionalStateDeviceTestBase):
-    def get_subject(self, _: MockerFixture):
-        return DeviceImpl(self.config, self.logger, self.mqtt_client)
+class TestAdditionalStateDevice(AdditionalStateDeviceTestBaseNew):
+
+    @pytest.fixture
+    def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
+        return DeviceImpl(powerpi_config, powerpi_logger, powerpi_mqtt_client)

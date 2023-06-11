@@ -1,10 +1,15 @@
-import pytest
+from unittest.mock import PropertyMock
+
 from pytest_mock import MockerFixture
+
+import pytest
 
 
 @pytest.fixture
 def powerpi_config(mocker: MockerFixture):
     config = mocker.MagicMock()
+
+    type(config).message_age_cutoff = PropertyMock(return_value=120)
 
     return config
 
