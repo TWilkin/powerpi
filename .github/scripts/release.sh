@@ -41,6 +41,7 @@ echo "Creating Release"
 ./cr upload \
     --owner "$owner" \
     --git-repo "$repo" \
+    --generate-release-notes \
     --release-name-template "v{{ .Version }}"
 if [ $? -ne 0 ]
 then
