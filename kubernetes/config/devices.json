@@ -1,7 +1,10 @@
 {
+    "$schema": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/devices.schema.json",
+
     "devices": [
         { "type": "energenie_pairing", "name": "EnergeniePairing" },
         { "type": "zigbee_pairing", "name": "ZigBeePairing" }
     ],
+
     "sensors": []
 }
