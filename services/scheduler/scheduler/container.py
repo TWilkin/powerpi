@@ -1,5 +1,6 @@
 from dependency_injector import containers, providers
 from powerpi_common.container import Container as CommonContainer
+
 from scheduler.__version__ import __app_name__, __version__
 from scheduler.application import Application
 from scheduler.config import SchedulerConfig
@@ -21,7 +22,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
     common = providers.Container(
         CommonContainer,
         app_name=__app_name__,
-        version=__version__
+        version=__version__,
+        config=config
     )
 
     device_schedule = providers.Factory(
