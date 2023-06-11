@@ -41,7 +41,7 @@ do
     fi
 
     # for now just make it happen
-    check_file $file ".github"
+    check_file $file ".github" "lifx_controller"
 
     # check the controllers
     check_file $file "controllers/energenie" "energenie_controller"
