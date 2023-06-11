@@ -3,6 +3,7 @@
 include_project() {
     local project=$1
 
+    echo "Enabling tests for $project"
     echo "$project=true" >> $GITHUB_OUTPUT
     echo "python=true" >> $GITHUB_OUTPUT
 }
