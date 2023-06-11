@@ -3,17 +3,18 @@ from typing import List, Tuple
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
-from powerpi_common_test.device.base import BaseDeviceTestBaseNew
-from powerpi_common_test.device.mixin import InitialisableMixinTestBaseNew
-from powerpi_common_test.sensor.mixin import BatteryMixinTestBaseNew
+from powerpi_common_test.device.base import BaseDeviceTestBase
+from powerpi_common_test.device.mixin import InitialisableMixinTestBase
+from powerpi_common_test.sensor.mixin import BatteryMixinTestBase
 from pytest_mock import MockerFixture
+from zigpy.zcl import Cluster
+
 from zigbee_controller.sensor.osram.switch_mini import (Button,
                                                         OsramSwitchMiniSensor,
                                                         PressType)
-from zigpy.zcl import Cluster
 
 
-class TestOsramSwitchMiniSensor(BaseDeviceTestBaseNew, InitialisableMixinTestBaseNew, BatteryMixinTestBaseNew):
+class TestOsramSwitchMiniSensor(BaseDeviceTestBase, InitialisableMixinTestBase, BatteryMixinTestBase):
     @pytest.mark.parametrize('button', [Button.UP, Button.MIDDLE, Button.DOWN])
     def test_single_press_handler(
         self,
@@ -85,7 +86,7 @@ class TestOsramSwitchMiniSensor(BaseDeviceTestBaseNew, InitialisableMixinTestBas
         mocker: MockerFixture,
         values: Tuple[int, int]
     ):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
         (data, percent) = values
 
         attribute = mocker.MagicMock()
@@ -105,7 +106,7 @@ class TestOsramSwitchMiniSensor(BaseDeviceTestBaseNew, InitialisableMixinTestBas
         powerpi_mqtt_producer: MagicMock,
         mocker: MockerFixture
     ):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
         attribute = mocker.MagicMock()
         type(attribute).id = PropertyMock(return_value=0x0021)
         zigbee_in_cluster.find_attribute.return_value = attribute

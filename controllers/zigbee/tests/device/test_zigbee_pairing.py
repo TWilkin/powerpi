@@ -2,13 +2,14 @@ from asyncio import Future
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
-from powerpi_common_test.device import DeviceTestBaseNew
+from powerpi_common_test.device import DeviceTestBase
 from pytest_mock import MockerFixture
-from zigbee_controller.device.zigbee_pairing import ZigbeePairingDevice
 from zigpy.typing import DeviceType
 
+from zigbee_controller.device.zigbee_pairing import ZigbeePairingDevice
 
-class TestZigbeePairingDevice(DeviceTestBaseNew):
+
+class TestZigbeePairingDevice(DeviceTestBase):
     @pytest.mark.asyncio
     async def test_pair(self, subject: ZigbeePairingDevice, zigbee_controller: MagicMock):
         assert subject.state == 'unknown'
