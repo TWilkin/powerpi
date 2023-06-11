@@ -1,7 +1,8 @@
 import pytest
-from lifx_controller.device.lifx_colour import LIFXColour
 from powerpi_common.util.data import DataType
 from pytest import raises
+
+from lifx_controller.device.lifx_colour import LIFXColour
 
 
 class TestLIFXColour:
