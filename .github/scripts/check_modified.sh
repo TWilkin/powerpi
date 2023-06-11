@@ -4,16 +4,9 @@ include_project() {
     local project=$1
     local type=$2
 
-    echo "Enabling tests for $project"
+    echo "Enabling tests for $type project $project"
     echo "$project=true" >> $GITHUB_OUTPUT
-
-    if [[ $type -eq "node" ]]
-    then
-        echo "node=true" >> $GITHUB_OUTPUT
-    elif [[ $type -eq "python" ]]
-    then
-        echo "python=true" >> $GITHUB_OUTPUT
-    fi
+    echo "$type=true" >> $GITHUB_OUTPUT
 }
 
 check_file() {
@@ -32,32 +25,33 @@ check_file() {
 git diff --name-only HEAD^ HEAD > files.txt
 while IFS= read -r file
 do
+    echo .
     echo $file
 
     # updating API requires testing everything using it
     if [[ $file == common/node/api/* ]]
     then
-        include_project "ui" "node"
-        include_project "voice-assistant" "node"
+        include_project "ui" "nodejs"
+        include_project "voice-assistant" "nodejs"
     fi
 
     # updating node common requires testing everything using it
     if [[ $file == common/node/common/* ]]
     then
-        include_project "node_common" "node"
+        include_project "node_common" "nodejs"
 
-        include_project "config-server" "node"
-        include_project "persistence" "node"
-        include_project "voice-assistant" "node"
+        include_project "config-server" "nodejs"
+        include_project "persistence" "nodejs"
+        include_project "voice-assistant" "nodejs"
     fi
 
     # updating node common-test requires testing everything using it
     if [[ $file == common/node/common-test/* ]]
     then
-        include_project "config-server" "node"
-        include_project "persistence" "node"
-        include_project "ui" "node"
-        include_project "voice-assistant" "node"
+        include_project "config-server" "nodejs"
+        include_project "persistence" "nodejs"
+        include_project "ui" "nodejs"
+        include_project "voice-assistant" "nodejs"
     fi
 
     # updating common python/pytest requires retesting everything using python
@@ -86,9 +80,9 @@ do
     check_file $file "controllers/zigbee" "zigbee_controller" "python"
 
     # check the services
-    check_file $file "services/config-server" "config_server" "node"
-    check_file $file "services/persistence" "persistence" "node"
+    check_file $file "services/config-server" "config_server" "nodejs"
+    check_file $file "services/persistence" "persistence" "nodejs"
     check_file $file "services/scheduler" "scheduler" "python"
-    check_file $file "services/ui" "ui" "node"
-    check_file $file "services/voice-assistant" "voice_assistant" "node"
+    check_file $file "services/ui" "ui" "nodejs"
+    check_file $file "services/voice-assistant" "voice_assistant" "nodejs"
 done < files.txt
