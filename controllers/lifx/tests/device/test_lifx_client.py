@@ -3,10 +3,11 @@ from typing import Callable, Tuple
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
-from lifx_controller.device.lifx_client import LIFXClient
-from lifx_controller.device.lifx_colour import LIFXColour
 from powerpi_common.logger import Logger
 from pytest_mock import MockerFixture
+
+from lifx_controller.device.lifx_client import LIFXClient
+from lifx_controller.device.lifx_colour import LIFXColour
 
 
 class TestLIFXClient:

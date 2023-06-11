@@ -3,8 +3,8 @@ from unittest.mock import MagicMock
 
 import pytest
 from powerpi_common.device import Device
-from powerpi_common_test.device import DeviceTestBaseNew
-from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBaseNew
+from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase
 from pytest_mock import MockerFixture
 
 from energenie_controller.device.socket_group import SocketGroupDevice
@@ -21,7 +21,7 @@ class MockSocket(Device):
         pass
 
 
-class TestSocketGroupDevice(DeviceTestBaseNew, DeviceOrchestratorMixinTestBaseNew):
+class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('state', ['on', 'off'])

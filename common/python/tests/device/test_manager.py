@@ -1,5 +1,5 @@
 import pytest
-from powerpi_common_test.device.mixin import InitialisableMixinTestBaseNew
+from powerpi_common_test.device.mixin import InitialisableMixinTestBase
 from pytest import raises
 from pytest_mock import MockerFixture
 
@@ -30,7 +30,7 @@ class InitialisationDummyDevice(DummyDevice, InitialisableMixin):
     pass
 
 
-class TestDeviceManager(InitialisableMixinTestBaseNew):
+class TestDeviceManager(InitialisableMixinTestBase):
 
     @pytest.mark.asyncio
     async def test_load_no_content(

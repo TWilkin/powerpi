@@ -1,7 +1,7 @@
 from typing import Dict, List, Union
 
 import pytest
-from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBaseNew
+from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase
 
 from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import DeviceOrchestratorMixin
@@ -35,7 +35,7 @@ class DummyDevice:
         self.name = name
 
 
-class TestDeviceOrchestratorMixin(DeviceOrchestratorMixinTestBaseNew):
+class TestDeviceOrchestratorMixin(DeviceOrchestratorMixinTestBase):
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('state', ['on', 'off', 'unknown'])

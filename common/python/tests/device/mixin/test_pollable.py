@@ -1,6 +1,6 @@
 import pytest
-from powerpi_common_test.device import DeviceTestBaseNew
-from powerpi_common_test.device.mixin import PollableMixinTestBaseNew
+from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import PollableMixinTestBase
 
 from powerpi_common.device import Device
 from powerpi_common.device.mixin import PollableMixin
@@ -24,7 +24,7 @@ class DeviceImpl(Device, PollableMixin):
         pass
 
 
-class TestPollableMixin(DeviceTestBaseNew, PollableMixinTestBaseNew):
+class TestPollableMixin(DeviceTestBase, PollableMixinTestBase):
 
     def test_poll_frequency_default(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
         device = DeviceImpl(

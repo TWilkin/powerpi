@@ -1,5 +1,5 @@
 import pytest
-from powerpi_common_test.variable import VariableTestBaseNew
+from powerpi_common_test.variable import VariableTestBase
 
 from powerpi_common.variable.types import VariableType
 from powerpi_common.variable.variable import Variable
@@ -19,7 +19,7 @@ class VariableImpl(Variable):
         return self._name
 
 
-class TestVariable(VariableTestBaseNew):
+class TestVariable(VariableTestBase):
 
     @pytest.fixture
     def subject(self):

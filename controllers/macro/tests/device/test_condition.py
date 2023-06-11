@@ -2,18 +2,19 @@ from asyncio import Future
 from unittest.mock import MagicMock, Mock, PropertyMock
 
 import pytest
-from macro_controller.device.condition import ConditionDevice
 from powerpi_common.device import DeviceStatus
-from powerpi_common_test.device import DeviceTestBaseNew
-from powerpi_common_test.device.mixin import (
-    DeviceOrchestratorMixinTestBaseNew, PollableMixinTestBaseNew)
+from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import (DeviceOrchestratorMixinTestBase,
+                                              PollableMixinTestBase)
 from pytest_mock import MockerFixture
+
+from macro_controller.device.condition import ConditionDevice
 
 
 class TestCondition(
-    DeviceTestBaseNew,
-    DeviceOrchestratorMixinTestBaseNew,
-    PollableMixinTestBaseNew
+    DeviceTestBase,
+    DeviceOrchestratorMixinTestBase,
+    PollableMixinTestBase
 ):
 
     @pytest.mark.asyncio
@@ -89,7 +90,7 @@ class TestCondition(
         mocker: MockerFixture,
         state: DeviceStatus
     ):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
         opposite = DeviceStatus.OFF if state == DeviceStatus.ON else DeviceStatus.ON
 
         device_variable = mocker.Mock()
@@ -125,7 +126,7 @@ class TestCondition(
         mocker: MockerFixture,
         state: DeviceStatus
     ):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
         opposite = DeviceStatus.OFF if state == DeviceStatus.ON else DeviceStatus.ON
 
         device_variable = mocker.Mock()
@@ -185,7 +186,7 @@ class TestCondition(
         device_manager,
         variable_manager
     ):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
         return ConditionDevice(
             powerpi_config, powerpi_logger, powerpi_mqtt_client, device_manager, variable_manager,
             name='condition',
@@ -210,7 +211,7 @@ class TestCondition(
         device_manager,
         variable_manager
     ):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
         return ConditionDevice(
             powerpi_config, powerpi_logger, powerpi_mqtt_client, device_manager, variable_manager,
             name='condition',

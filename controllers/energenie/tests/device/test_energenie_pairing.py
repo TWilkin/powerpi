@@ -3,14 +3,14 @@ from asyncio import Future, sleep
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
-from powerpi_common_test.device import DeviceTestBaseNew
+from powerpi_common_test.device import DeviceTestBase
 from pytest_mock import MockerFixture
 
 from energenie_controller.device.energenie_pairing import \
     EnergeniePairingDevice
 
 
-class TestEnergeniePairingDevice(DeviceTestBaseNew):
+class TestEnergeniePairingDevice(DeviceTestBase):
 
     __timeout = 0.1
 

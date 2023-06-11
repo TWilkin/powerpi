@@ -4,20 +4,21 @@ from unittest.mock import AsyncMock, MagicMock, PropertyMock, call
 
 import pytest
 from powerpi_common.device.mixin import AdditionalState
-from powerpi_common_test.device import AdditionalStateDeviceTestBaseNew
-from powerpi_common_test.device.mixin import (InitialisableMixinTestBaseNew,
-                                              PollableMixinTestBaseNew)
+from powerpi_common_test.device import AdditionalStateDeviceTestBase
+from powerpi_common_test.device.mixin import (InitialisableMixinTestBase,
+                                              PollableMixinTestBase)
 from pytest_mock import MockerFixture
-from zigbee_controller.device.zigbee_light import ZigbeeLight
 from zigpy.exceptions import DeliveryError
 from zigpy.zcl import Cluster
 from zigpy.zcl.foundation import Status
 
+from zigbee_controller.device.zigbee_light import ZigbeeLight
+
 
 class TestZigbeeeLight(
-    AdditionalStateDeviceTestBaseNew,
-    InitialisableMixinTestBaseNew,
-    PollableMixinTestBaseNew
+    AdditionalStateDeviceTestBase,
+    InitialisableMixinTestBase,
+    PollableMixinTestBase
 ):
     def test_duration(self, subject: ZigbeeLight):
         assert subject.duration == 13

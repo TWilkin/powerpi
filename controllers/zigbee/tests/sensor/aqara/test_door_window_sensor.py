@@ -2,14 +2,15 @@ from typing import Tuple, Union
 from unittest.mock import MagicMock
 
 import pytest
-from powerpi_common_test.device.base import BaseDeviceTestBaseNew
-from powerpi_common_test.device.mixin import InitialisableMixinTestBaseNew
-from powerpi_common_test.sensor.mixin import BatteryMixinTestBaseNew
+from powerpi_common_test.device.mixin import InitialisableMixinTestBase
+from powerpi_common_test.sensor import SensorTestBase
+from powerpi_common_test.sensor.mixin import BatteryMixinTestBase
+
 from zigbee_controller.sensor.aqara.door_window_sensor import \
     AqaraDoorWindowSensor
 
 
-class TestAqaraDoorWindowSensor(BaseDeviceTestBaseNew, InitialisableMixinTestBaseNew, BatteryMixinTestBaseNew):
+class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, BatteryMixinTestBase):
     @pytest.mark.parametrize(
         'values', [(0, 'close'), (1, 'open'), (False, 'close'), (True, 'open')]
     )

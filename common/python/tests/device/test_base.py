@@ -1,7 +1,7 @@
 from typing import Callable, Union
 
 import pytest
-from powerpi_common_test.device.base import BaseDeviceTestBaseNew
+from powerpi_common_test.device.base import BaseDeviceTestBase
 
 from powerpi_common.device.base import BaseDevice
 
@@ -13,7 +13,7 @@ class DeviceImpl(BaseDevice):
 SubjectBuilder = Callable[[Union[str, None]], BaseDevice]
 
 
-class TestBaseDevice(BaseDeviceTestBaseNew):
+class TestBaseDevice(BaseDeviceTestBase):
 
     def test_name(self, subject: BaseDevice):
         assert subject.name == 'TestDevice'

@@ -3,17 +3,18 @@ from typing import Dict, List, Tuple
 from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
-from macro_controller.device import CompositeDevice
-from powerpi_common_test.device import AdditionalStateDeviceTestBaseNew
-from powerpi_common_test.device.mixin import (
-    DeviceOrchestratorMixinTestBaseNew, PollableMixinTestBaseNew)
+from powerpi_common_test.device import AdditionalStateDeviceTestBase
+from powerpi_common_test.device.mixin import (DeviceOrchestratorMixinTestBase,
+                                              PollableMixinTestBase)
 from pytest_mock import MockerFixture
+
+from macro_controller.device import CompositeDevice
 
 
 class TestCompositeDevice(
-    AdditionalStateDeviceTestBaseNew,
-    DeviceOrchestratorMixinTestBaseNew,
-    PollableMixinTestBaseNew
+    AdditionalStateDeviceTestBase,
+    DeviceOrchestratorMixinTestBase,
+    PollableMixinTestBase
 ):
 
     @pytest.mark.asyncio

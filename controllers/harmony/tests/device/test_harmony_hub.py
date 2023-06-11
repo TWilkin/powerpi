@@ -1,18 +1,18 @@
 from asyncio import Future
-from typing import List, Tuple
+from typing import List
 from unittest.mock import MagicMock
 
 import pytest
 from powerpi_common.device import DeviceManager
-from powerpi_common_test.device import DeviceTestBaseNew
-from powerpi_common_test.device.mixin import PollableMixinTestBaseNew
+from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import PollableMixinTestBase
 from pytest_mock import MockerFixture
 
 from harmony_controller.device.harmony_activity import HarmonyActivityDevice
 from harmony_controller.device.harmony_hub import HarmonyHubDevice
 
 
-class TestHarmonyHubDevice(DeviceTestBaseNew, PollableMixinTestBaseNew):
+class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
 
     __hub_name = 'TestHub'
 

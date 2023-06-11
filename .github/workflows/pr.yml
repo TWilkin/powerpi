@@ -20,16 +20,16 @@ jobs:
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/check_modified.sh"
 
-      # setup node
+      # setup node.js
       - name: Install Node.js
-        if: steps.check_modified.outputs.node
+        if: steps.check_modified.outputs.nodejs
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
 
-      # install node dependencies
+      # install node.js dependencies
       - name: Install Node.js dependencies
-        if: steps.check_modified.outputs.node
+        if: steps.check_modified.outputs.nodejs
         run: |
           yarn install
           yarn build:lib

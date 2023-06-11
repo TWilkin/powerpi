@@ -3,13 +3,13 @@ from unittest.mock import MagicMock
 
 import pytest
 from powerpi_common.device import DeviceManager
-from powerpi_common_test.device import DeviceTestBaseNew
+from powerpi_common_test.device import DeviceTestBase
 from pytest_mock import MockerFixture
 
 from harmony_controller.device.harmony_activity import HarmonyActivityDevice
 
 
-class TestHarmonyActivityDevice(DeviceTestBaseNew):
+class TestHarmonyActivityDevice(DeviceTestBase):
 
     @pytest.mark.asyncio
     async def test_turn_on_hub(self, subject: HarmonyActivityDevice, harmony_hub: MagicMock):

@@ -1,10 +1,10 @@
 import pytest
-from powerpi_common_test.variable import VariableTestBaseNew
+from powerpi_common_test.variable import VariableTestBase
 
 from powerpi_common.variable.device import DeviceVariable
 
 
-class TestDeviceVariable(VariableTestBaseNew):
+class TestDeviceVariable(VariableTestBase):
 
     @pytest.fixture
     def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):

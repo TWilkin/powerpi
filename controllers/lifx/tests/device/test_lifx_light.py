@@ -3,20 +3,21 @@ from typing import Tuple, Union
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
+from powerpi_common.util.data import Range
+from powerpi_common_test.device import AdditionalStateDeviceTestBase
+from powerpi_common_test.device.mixin import (InitialisableMixinTestBase,
+                                              PollableMixinTestBase)
+from pytest_mock import MockerFixture
+
 from lifx_controller.device.lifx_client import LIFXClient
 from lifx_controller.device.lifx_colour import LIFXColour
 from lifx_controller.device.lifx_light import LIFXLightDevice
-from powerpi_common.util.data import Range
-from powerpi_common_test.device import AdditionalStateDeviceTestBaseNew
-from powerpi_common_test.device.mixin import (InitialisableMixinTestBaseNew,
-                                              PollableMixinTestBaseNew)
-from pytest_mock import MockerFixture
 
 
 class TestLIFXLightDevice(
-    AdditionalStateDeviceTestBaseNew,
-    PollableMixinTestBaseNew,
-    InitialisableMixinTestBaseNew
+    AdditionalStateDeviceTestBase,
+    PollableMixinTestBase,
+    InitialisableMixinTestBase
 ):
     @pytest.mark.asyncio
     @pytest.mark.parametrize('supports_colour', [None, True, False])

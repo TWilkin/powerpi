@@ -1,9 +1,10 @@
 import pytest
+from powerpi_common_test.device import DeviceTestBase
+
 from macro_controller.device import LogDevice
-from powerpi_common_test.device import DeviceTestBaseNew
 
 
-class TestLogDevice(DeviceTestBaseNew):
+class TestLogDevice(DeviceTestBase):
     @pytest.fixture
     def subject(
         self,
