@@ -1,7 +1,8 @@
 import json
 import os
+from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 
 class ConfigFileType(str, Enum):
@@ -10,7 +11,11 @@ class ConfigFileType(str, Enum):
     SCHEDULES = 'schedules'
 
 
-class Config:
+class Config(ABC):
+    '''
+    Extend to define a service's configuration paramters.
+    '''
+
     __configs: Dict[ConfigFileType, Dict[str, Any]]
 
     def __init__(self):
@@ -83,8 +88,12 @@ class Config:
         return all((self.__configs.get(fileType) is not None for fileType in types))
 
     @property
-    def used_config(self):
-        return [fileType.value for fileType in ConfigFileType]
+    @abstractmethod
+    def used_config(self) -> List[ConfigFileType]:
+        '''
+        Extend to define the list of config file types the extending service requires.
+        '''
+        raise NotImplementedError
 
     def get_config(self, file_type: ConfigFileType):
         return self.__configs.get(file_type)
