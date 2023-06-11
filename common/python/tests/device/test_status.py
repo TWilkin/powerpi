@@ -77,6 +77,7 @@ class TestDeviceStatusChecker:
                     for group in groups
                 ))
 
+    @pytest.mark.asyncio
     async def test_run(self, subject: DeviceStatusChecker, powerpi_scheduler, device_builder):
         groups = []
 

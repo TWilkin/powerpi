@@ -1,43 +1,24 @@
 from unittest.mock import patch
 
-from pytest_mock import MockerFixture
+import pytest
 
 from powerpi_common.device import DeviceConfigType, DeviceNotFoundException
 from powerpi_common.event import EventManager
-from powerpi_common_test.base import BaseTest
 
 
-class TestEventManager(BaseTest):
-    def create_subject(self, mocker: MockerFixture):
-        #pylint: disable=attribute-defined-outside-init
-        self.config = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
-        self.device_manager = mocker.Mock()
-        self.variable_manager = mocker.Mock()
+class TestEventManager:
 
-        return EventManager(
-            self.config,
-            mocker.Mock(),
-            self.mqtt_client,
-            self.device_manager,
-            self.variable_manager
-        )
-
-    def test_load_no_content(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
-        self.config.events = {
+    def test_load_no_content(self, subject: EventManager, powerpi_config, powerpi_mqtt_client):
+        powerpi_config.events = {
             'listeners': []
         }
 
         subject.load()
 
-        self.mqtt_client.add_consumer.assert_not_called()
+        powerpi_mqtt_client.add_consumer.assert_not_called()
 
-    def test_load_content(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
-        self.config.events = {
+    def test_load_content(self, subject: EventManager, powerpi_config, powerpi_device_manager):
+        powerpi_config.events = {
             'listeners': [
                 {
                     'topic': 'Sensor/Action',
@@ -91,7 +72,7 @@ class TestEventManager(BaseTest):
 
                 raise DeviceNotFoundException(DeviceConfigType.DEVICE, name)
 
-            self.device_manager.get_device = get_device
+            powerpi_device_manager.get_device = get_device
 
             subject.load()
 
@@ -114,3 +95,21 @@ class TestEventManager(BaseTest):
 
         assert subject.consumers[1].events[0].device == 'Device'
         assert subject.consumers[1].events[0].condition == 'condition6'
+
+    @pytest.fixture
+    def subject(
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+        powerpi_device_manager,
+        powerpi_variable_manager
+    ):
+        # pylint: disable=too-many-arguments
+        return EventManager(
+            powerpi_config,
+            powerpi_logger,
+            powerpi_mqtt_client,
+            powerpi_device_manager,
+            powerpi_variable_manager
+        )

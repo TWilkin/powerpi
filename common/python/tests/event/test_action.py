@@ -1,8 +1,7 @@
 import pytest
-from pytest_mock import MockerFixture
 
-from powerpi_common.event.action import device_additional_state_action, device_off_action, \
-    device_on_action
+from powerpi_common.event.action import (device_additional_state_action,
+                                         device_off_action, device_on_action)
 
 pytestmark = pytest.mark.asyncio
 
@@ -45,9 +44,7 @@ async def test_device_off_action():
     assert device.state == 'off'
 
 
-async def test_device_additional_state_action(mocker: MockerFixture):
-    variable_manager = mocker.Mock()
-
+async def test_device_additional_state_action(powerpi_variable_manager):
     device = DeviceImpl()
 
     patch = [
@@ -63,7 +60,7 @@ async def test_device_additional_state_action(mocker: MockerFixture):
         }
     ]
 
-    func = device_additional_state_action(patch, variable_manager)
+    func = device_additional_state_action(patch, powerpi_variable_manager)
 
     assert device.additional_state['brightness'] is None
     assert device.additional_state['other'] == 'untouched'
@@ -75,12 +72,10 @@ async def test_device_additional_state_action(mocker: MockerFixture):
     assert device.additional_state['other'] == 'untouched'
 
 
-async def test_device_additional_state_action_with_variable(mocker: MockerFixture):
-    variable_manager = mocker.Mock()
-
+async def test_device_additional_state_action_with_variable(powerpi_variable_manager):
     device = DeviceImpl()
 
-    variable_manager.get_device = lambda _: device
+    powerpi_variable_manager.get_device = lambda _: device
 
     patch = [
         {
@@ -90,7 +85,7 @@ async def test_device_additional_state_action_with_variable(mocker: MockerFixtur
         },
     ]
 
-    func = device_additional_state_action(patch, variable_manager)
+    func = device_additional_state_action(patch, powerpi_variable_manager)
 
     assert device.additional_state['brightness'] is None
     assert device.additional_state['other'] == 'untouched'
