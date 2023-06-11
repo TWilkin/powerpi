@@ -1,12 +1,12 @@
-from typing import List
+from typing import Any, Callable, Dict, List, Union
 
 import pytest
+
 from powerpi_common.condition import (ConditionParser,
                                       InvalidArgumentException,
                                       InvalidIdentifierException,
                                       UnexpectedTokenException)
 from powerpi_common.variable import SensorValue
-from pytest_mock import MockerFixture
 
 
 class DeviceVariableImpl:
@@ -20,15 +20,10 @@ class SensorVariableImpl:
         self.value = SensorValue(f'{name}/{action}', f'{action}/{name}')
 
 
+SubjectBuilder = Callable[[Union[Dict[str, Any], None]], ConditionParser]
+
+
 class TestConditionParser:
-    def create_subject(self, mocker: MockerFixture, message=None):
-        # pylint: disable=attribute-defined-outside-init
-        self.variable_manager = mocker.Mock()
-
-        self.variable_manager.get_device = DeviceVariableImpl
-        self.variable_manager.get_sensor = SensorVariableImpl
-
-        return ConditionParser(self.variable_manager, message)
 
     @pytest.mark.parametrize('constant', [
         'strING',
@@ -37,16 +32,12 @@ class TestConditionParser:
         True,
         None
     ])
-    def test_constant_success(self, mocker: MockerFixture, constant: str):
-        subject = self.create_subject(mocker)
-
+    def test_constant_success(self, subject: ConditionParser, constant: str):
         result = subject.constant(constant)
 
         assert result == constant
 
-    def test_constant_invalid(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    def test_constant_invalid(self, subject: ConditionParser):
         with pytest.raises(UnexpectedTokenException):
             subject.constant({'too-complex': True})
 
@@ -58,10 +49,15 @@ class TestConditionParser:
         ('message.timestamp', 1337),
         ('message.whatever', None),
     ])
-    def test_identifier_success(self, mocker: MockerFixture, identifier: str, expected: str):
+    def test_identifier_success(
+        self,
+        subject_builder: SubjectBuilder,
+        identifier: str,
+        expected: str
+    ):
         message = {'timestamp': 1337}
 
-        subject = self.create_subject(mocker, message)
+        subject = subject_builder(message)
 
         result = subject.identifier({'var': identifier})
 
@@ -79,9 +75,7 @@ class TestConditionParser:
         'message',
         'message.timestamp'
     ])
-    def test_identifier_invalid(self, mocker: MockerFixture, identifier: str):
-        subject = self.create_subject(mocker)
-
+    def test_identifier_invalid(self, subject: ConditionParser, identifier: str):
         with pytest.raises(InvalidIdentifierException):
             subject.identifier({'var': identifier})
 
@@ -90,20 +84,21 @@ class TestConditionParser:
         'sensor.office.temperature.value',
         'sensor.office.temperature.unit'
     ])
-    def test_sensor_identifier_invalid(self, mocker: MockerFixture, identifier: str):
-        subject = self.create_subject(mocker)
-
+    def test_sensor_identifier_invalid(
+        self,
+        subject: ConditionParser,
+        powerpi_variable_manager,
+        identifier: str
+    ):
         class NoValueSensor:
             pass
 
-        self.variable_manager.get_sensor = lambda _, __: NoValueSensor
+        powerpi_variable_manager.get_sensor = lambda _, __: NoValueSensor
 
         with pytest.raises(InvalidIdentifierException):
             subject.identifier({'var': identifier})
 
-    def test_identifier_fail(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    def test_identifier_fail(self, subject: ConditionParser):
         with pytest.raises(InvalidArgumentException):
             subject.identifier({'var': ['message.timestamp', 'message.state']})
 
@@ -114,16 +109,12 @@ class TestConditionParser:
         (0, True),
         ({'!': True}, True)
     ])
-    def test_unary_expression_success(self, mocker: MockerFixture, operand, expected: bool):
-        subject = self.create_subject(mocker)
-
+    def test_unary_expression_success(self, subject: ConditionParser, operand, expected: bool):
         result = subject.unary_expression({'not': operand})
 
         assert result is expected
 
-    def test_unary_expression_fail(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    def test_unary_expression_fail(self, subject: ConditionParser):
         with pytest.raises(InvalidArgumentException):
             subject.unary_expression({'not': [1, 2]})
 
@@ -138,10 +129,8 @@ class TestConditionParser:
         ('less_than_equal', [3, 2], False),
     ])
     def test_relational_expression_success(
-        self, mocker: MockerFixture, operator: str, values: List, expected: bool
+        self, subject: ConditionParser, operator: str, values: List, expected: bool
     ):
-        subject = self.create_subject(mocker)
-
         result = subject.relational_expression({operator: values})
 
         assert result is expected
@@ -151,9 +140,9 @@ class TestConditionParser:
         'not a list',
         [1, 2, 3]
     ])
-    def test_relational_expression_fail(self, mocker: MockerFixture, operator: str, values: List):
-        subject = self.create_subject(mocker)
-
+    def test_relational_expression_fail(
+        self, subject: ConditionParser, operator: str, values: List
+    ):
         with pytest.raises(InvalidArgumentException):
             subject.relational_expression({operator: values})
 
@@ -168,16 +157,12 @@ class TestConditionParser:
         ([{'not': False}, True], True),
         ([{'=': [1, 1.0]}, 1], True)
     ])
-    def test_equality_expression_success(self, mocker: MockerFixture, values: List, expected: bool):
-        subject = self.create_subject(mocker)
-
+    def test_equality_expression_success(self, subject: ConditionParser, values: List, expected: bool):
         result = subject.equality_expression({'equals': values})
 
         assert result is expected
 
-    def test_equality_expression_fail(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    def test_equality_expression_fail(self, subject: ConditionParser,):
         with pytest.raises(InvalidArgumentException):
             subject.equality_expression({'equals': 'not a list'})
 
@@ -190,17 +175,13 @@ class TestConditionParser:
         ([True, {'either': [False, True]}], True)
     ])
     def test_logical_and_expression_success(
-        self, mocker: MockerFixture, values: List, expected: bool
+        self, subject: ConditionParser, values: List, expected: bool
     ):
-        subject = self.create_subject(mocker)
-
         result = subject.logical_and_expression({'and': values})
 
         assert result is expected
 
-    def test_logical_and_expression_fail(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    def test_logical_and_expression_fail(self, subject: ConditionParser):
         with pytest.raises(InvalidArgumentException):
             subject.logical_and_expression({'and': 'not a list'})
 
@@ -213,16 +194,26 @@ class TestConditionParser:
         ([{'not': True}, False], False)
     ])
     def test_logical_or_expression_success(
-        self, mocker: MockerFixture, values: List, expected: bool
+        self, subject: ConditionParser, values: List, expected: bool
     ):
-        subject = self.create_subject(mocker)
-
         result = subject.logical_or_expression({'or': values})
 
         assert result is expected
 
-    def test_logical_or_expression_fail(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    def test_logical_or_expression_fail(self, subject: ConditionParser):
         with pytest.raises(InvalidArgumentException):
             subject.logical_or_expression({'or': 'not a list'})
+
+    @pytest.fixture
+    def subject_builder(self, powerpi_variable_manager):
+        def build(message: Union[Dict[str, Any], None] = None):
+            powerpi_variable_manager.get_device = DeviceVariableImpl
+            powerpi_variable_manager.get_sensor = SensorVariableImpl
+
+            return ConditionParser(powerpi_variable_manager, message)
+
+        return build
+
+    @pytest.fixture
+    def subject(self, subject_builder: SubjectBuilder):
+        return subject_builder()
