@@ -3,6 +3,7 @@ from asyncio import (CancelledError, ensure_future, get_event_loop,
 from signal import SIGINT, SIGTERM
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.health import HealthService
 from powerpi_common.logger import Logger, LogMixin
@@ -72,7 +73,7 @@ class Application(LogMixin):
             await self._app_start()
 
             # start the health check
-            self.__health.start()
+            await self.__health.start()
 
             # loop forever
             await get_running_loop().create_future()

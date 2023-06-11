@@ -2,6 +2,7 @@ from pathlib import Path
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.mqtt import MQTTClient
@@ -25,8 +26,11 @@ class HealthService(LogMixin):
         self.__mqtt_client = mqtt_client
         self.__scheduler = scheduler
 
-    def start(self):
+    async def start(self):
         self.log_info('Scheduling health checks')
+
+        # run it now before the schedule
+        await self.run()
 
         interval = IntervalTrigger(seconds=10)
 
