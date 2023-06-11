@@ -1,10 +1,10 @@
 import os
 
-from powerpi_common.config import Config as CommonConfig
+from powerpi_common.config import ControllerConfig
 from powerpi_common.config.config import as_int
 
 
-class NodeConfig(CommonConfig):
+class NodeConfig(ControllerConfig):
     @property
     def device_fatal(self):
         value = os.getenv('DEVICE_FATAL')
