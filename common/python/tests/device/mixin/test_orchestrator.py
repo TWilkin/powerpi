@@ -1,12 +1,12 @@
 from typing import Dict, List, Union
 
 import pytest
+from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBaseNew
+
 from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import DeviceOrchestratorMixin
 from powerpi_common.mqtt.consumer import MQTTConsumer
 from powerpi_common.util.data import Range
-from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBaseNew
-from pytest_mock import MockerFixture
 
 
 class DeviceImpl(Device, DeviceOrchestratorMixin):
@@ -76,7 +76,7 @@ class TestDeviceOrchestratorMixin(DeviceOrchestratorMixinTestBaseNew):
         temperature: Union[Range, bool],
         colour: bool
     ):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
 
         assert subject.supports_brightness is False
         assert subject.supports_colour_temperature is False
@@ -220,12 +220,10 @@ class TestDeviceOrchestratorMixin(DeviceOrchestratorMixinTestBaseNew):
         return [f'device{i}' for i in range(0, 4)]
 
     @pytest.fixture
-    def device_manager(self, mocker: MockerFixture):
-        manager = mocker.Mock()
-
+    def device_manager(self, powerpi_device_manager):
         def get_device(device_name: str):
             return DummyDevice(device_name)
 
-        manager.get_device = get_device
+        powerpi_device_manager.get_device = get_device
 
-        return manager
+        return powerpi_device_manager
