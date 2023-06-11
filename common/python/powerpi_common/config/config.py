@@ -13,7 +13,7 @@ class ConfigFileType(str, Enum):
 
 class Config(ABC):
     '''
-    Extend to define a service's configuration paramters.
+    Extend to define a service's configuration parameters.
     '''
 
     __configs: Dict[ConfigFileType, Dict[str, Any]]
