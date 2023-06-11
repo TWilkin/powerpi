@@ -2,8 +2,8 @@ apiVersion: v2
 name: powerpi
 description: A Helm chart for deploying the PowerPi home automation stack
 type: application
-version: 0.2.2
-appVersion: 0.2.2
+version: 0.2.3
+appVersion: 0.2.3
 dependencies:
   # services
   - name: config-server
@@ -26,7 +26,7 @@ dependencies:
     version: 0.1.2
     condition: global.persistence
   - name: scheduler
-    version: 0.2.3
+    version: 0.2.4
     condition: global.scheduler
   - name: smarter-device-manager
     version: 0.1.1
