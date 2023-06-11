@@ -34,20 +34,46 @@ while IFS= read -r file
 do
     echo $file
 
+    # updating API requires testing everything using it
+    if [[ $file == common/node/api/* ]]
+    then
+        include_project "ui" "node"
+        include_project "voice-assistant" "node"
+    fi
+
+    # updating node common requires testing everything using it
+    if [[ $file == common/node/common/* ]]
+    then
+        include_project "node_common" "node"
+
+        include_project "config-server" "node"
+        include_project "persistence" "node"
+        include_project "voice-assistant" "node"
+    fi
+
+    # updating node common-test requires testing everything using it
+    if [[ $file == common/node/common-test/* ]]
+    then
+        include_project "config-server" "node"
+        include_project "persistence" "node"
+        include_project "ui" "node"
+        include_project "voice-assistant" "node"
+    fi
+
     # updating common python/pytest requires retesting everything using python
     if [[ $file == common/python/* || $file == common/pytest/* ]]
     then
-        include_project "python"_common "python"
+        include_project "python_common" "python"
 
-        include_project energenie_controller "python"
-        include_project harmony_controller "python"
-        include_project lifx_controller "python"
-        include_project macro_controller "python"
-        include_project network_controller "python"
-        include_project node_controller "python"
-        include_project zigbee_controller "python"
+        include_project "energenie_controller" "python"
+        include_project "harmony_controller" "python"
+        include_project "lifx_controller" "python"
+        include_project "macro_controller" "python"
+        include_project "network_controller" "python"
+        include_project "node_controller" "python"
+        include_project "zigbee_controller" "python"
 
-        include_project scheduler "python"
+        include_project "scheduler" "python"
     fi
 
     # check the controllers

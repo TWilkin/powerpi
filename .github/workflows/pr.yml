@@ -30,7 +30,9 @@ jobs:
       # install node dependencies
       - name: Install Node.js dependencies
         if: steps.check_modified.outputs.node
-        run: yarn install
+        run: |
+          yarn install
+          yarn build:lib
 
       # setup python
       - name: Install Python
@@ -50,10 +52,15 @@ jobs:
           installer-parallel: true
 
       # test the common libraries
+      - name: Test PowerPi Node Common
+        if: steps.check_modified.outputs.node_common
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh common"
+
       - name: Test PowerPi Python Common
         if: steps.check_modified.outputs.python_common
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh common/python"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh python_common"
         working-directory: common/python
 
       # test the controllers
