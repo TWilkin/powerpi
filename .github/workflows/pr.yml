@@ -1,0 +1,134 @@
+name: Test PowerPi
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check modified projects
+        id: check_modified
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/check_modified.sh"
+
+      # setup node
+      - name: Install Node.js
+        if: steps.check_modified.outputs.node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      # install node dependencies
+      - name: Install Node.js dependencies
+        if: steps.check_modified.outputs.node
+        run: |
+          yarn install
+          yarn build:lib
+
+      # setup python
+      - name: Install Python
+        if: steps.check_modified.outputs.python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      # setup poetry
+      - name: Install Poetry
+        if: steps.check_modified.outputs.python
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.4.2
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+
+      # test the common libraries
+      - name: Test PowerPi Node Common
+        if: steps.check_modified.outputs.node_common
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh common"
+
+      - name: Test PowerPi Python Common
+        if: steps.check_modified.outputs.python_common
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh python_common"
+        working-directory: common/python
+
+      # test the controllers
+      - name: Test Energenie Controller
+        if: steps.check_modified.outputs.energenie_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh energenie"
+        working-directory: controllers/energenie
+
+      - name: Test Harmony Controller
+        if: steps.check_modified.outputs.harmony_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh harmony"
+        working-directory: controllers/harmony
+
+      - name: Test LIFX Controller
+        if: steps.check_modified.outputs.lifx_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh lifx"
+        working-directory: controllers/lifx
+
+      - name: Test Macro Controller
+        if: steps.check_modified.outputs.macro_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh macro"
+        working-directory: controllers/macro
+
+      - name: Test Network Controller
+        if: steps.check_modified.outputs.network_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh network"
+        working-directory: controllers/network
+
+      - name: Test Node Controller
+        if: steps.check_modified.outputs.node_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh node"
+        working-directory: controllers/node
+
+      - name: Test ZigBee Controller
+        if: steps.check_modified.outputs.zigbee_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh zigbee"
+        working-directory: controllers/zigbee
+
+      # test the services
+      - name: Test Config Server
+        if: steps.check_modified.outputs.config_server
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh config-server"
+
+      - name: Test Persistence
+        if: steps.check_modified.outputs.persistence
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh persistence"
+
+      - name: Test Scheduler
+        if: steps.check_modified.outputs.scheduler
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh scheduler"
+        working-directory: services/scheduler
+
+      - name: Test UI
+        if: steps.check_modified.outputs.ui
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh ui"
+
+      - name: Test Voice Assistant
+        if: steps.check_modified.outputs.voice_assistant
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh voice-assistant"
