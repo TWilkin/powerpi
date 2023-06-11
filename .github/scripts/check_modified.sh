@@ -1,7 +1,7 @@
 #!/bin/bash
 
 include_project() {
-    local $project=$1
+    local project=$1
 
     echo "$project=true" >> $GITHUB_OUTPUT
     echo "python=true" >> $GITHUB_OUTPUT
