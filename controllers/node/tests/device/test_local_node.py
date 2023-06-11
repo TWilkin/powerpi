@@ -4,10 +4,10 @@ from unittest.mock import PropertyMock, call
 
 import pytest
 from powerpi_common.device import DeviceStatus
-from powerpi_common_test.device import DeviceTestBaseNew
-from powerpi_common_test.device.mixin import (InitialisableMixinTestBaseNew,
-                                              PollableMixinTestBaseNew)
-from powerpi_common_test.sensor.mixin import BatteryMixinTestBaseNew
+from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import (InitialisableMixinTestBase,
+                                              PollableMixinTestBase)
+from powerpi_common_test.sensor.mixin import BatteryMixinTestBase
 from pytest_mock import MockerFixture
 
 from node_controller.device.local_node import LocalNodeDevice
@@ -19,10 +19,10 @@ SubjectBuilder = Callable[
 
 
 class TestLocalNode(
-    DeviceTestBaseNew,
-    InitialisableMixinTestBaseNew,
-    PollableMixinTestBaseNew,
-    BatteryMixinTestBaseNew
+    DeviceTestBase,
+    InitialisableMixinTestBase,
+    PollableMixinTestBase,
+    BatteryMixinTestBase
 ):
 
     @pytest.mark.asyncio

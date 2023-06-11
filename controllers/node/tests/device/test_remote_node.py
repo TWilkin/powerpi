@@ -3,14 +3,14 @@ from unittest.mock import PropertyMock
 
 import pytest
 from powerpi_common.device import DeviceStatus
-from powerpi_common_test.device import DeviceTestBaseNew
-from powerpi_common_test.device.mixin import PollableMixinTestBaseNew
+from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import PollableMixinTestBase
 from pytest_mock import MockerFixture
 
 from node_controller.device.remote_node import RemoteNodeDevice
 
 
-class TestRemoteNodeDevice(DeviceTestBaseNew, PollableMixinTestBaseNew):
+class TestRemoteNodeDevice(DeviceTestBase, PollableMixinTestBase):
     @pytest.mark.asyncio
     async def test_poll_implemented(self, subject: RemoteNodeDevice, mocker: MockerFixture):
         # pylint: disable=arguments-differ
@@ -72,15 +72,11 @@ class TestRemoteNodeDevice(DeviceTestBaseNew, PollableMixinTestBaseNew):
     async def test_change_message(
         self,
         subject: RemoteNodeDevice,
-        powerpi_config,
-        mocker: MockerFixture,
         times: int
     ):
         # pylint: disable=arguments-differ
 
         assert subject.state == DeviceStatus.UNKNOWN
-
-        mocker.patch.object(powerpi_config, 'message_age_cutoff', 120)
 
         message = {
             'state': 'on',
