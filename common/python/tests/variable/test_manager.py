@@ -1,9 +1,7 @@
 import pytest
-from pytest_mock import MockerFixture
 
 from powerpi_common.device import DeviceConfigType, DeviceNotFoundException
 from powerpi_common.variable import VariableManager, VariableType
-from powerpi_common_test.base import BaseTest
 
 
 class DeviceVariableImpl:
@@ -19,25 +17,23 @@ class SensorVariableImpl:
         self.variable_type = VariableType.SENSOR
 
 
-class TestVariableManager(BaseTest):
-    def create_subject(self, mocker: MockerFixture):
-        self.logger = mocker.Mock()
-        self.device_manager = mocker.Mock()
-        self.service_provider = mocker.Mock()
-
-        return VariableManager(self.logger, self.device_manager, self.service_provider)
+class TestVariableManager:
 
     @pytest.mark.parametrize('variable_type', [VariableType.DEVICE, VariableType.SENSOR])
-    def test_get_x_adds(self, mocker: MockerFixture, variable_type: VariableType):
-        subject = self.create_subject(mocker)
-
+    def test_get_x_adds(
+        self,
+        subject: VariableManager,
+        powerpi_device_manager,
+        powerpi_service_provider,
+        variable_type: VariableType
+    ):
         def not_found(name: str):
             raise DeviceNotFoundException(DeviceConfigType.DEVICE, name)
-        self.device_manager.get_device = not_found
-        self.device_manager.get_sensor = not_found
+        powerpi_device_manager.get_device = not_found
+        powerpi_device_manager.get_sensor = not_found
 
-        self.service_provider.device_variable = DeviceVariableImpl
-        self.service_provider.sensor_variable = SensorVariableImpl
+        powerpi_service_provider.device_variable = DeviceVariableImpl
+        powerpi_service_provider.sensor_variable = SensorVariableImpl
 
         name = 'new_variable'
 
@@ -49,11 +45,15 @@ class TestVariableManager(BaseTest):
         assert result.variable_type == variable_type
 
     @pytest.mark.parametrize('variable_type', [VariableType.DEVICE, VariableType.SENSOR])
-    def test_get_x_from_manager(self, mocker: MockerFixture, variable_type: VariableType):
-        subject = self.create_subject(mocker)
-
-        self.device_manager.get_device = DeviceVariableImpl
-        self.device_manager.get_sensor = lambda name: SensorVariableImpl(
+    def test_get_x_from_manager(
+        self,
+        subject: VariableManager,
+        powerpi_device_manager,
+        powerpi_service_provider,
+        variable_type: VariableType
+    ):
+        powerpi_device_manager.get_device = DeviceVariableImpl
+        powerpi_device_manager.get_sensor = lambda name: SensorVariableImpl(
             name, 'action'
         )
 
@@ -66,13 +66,17 @@ class TestVariableManager(BaseTest):
         assert result.name == name
         assert result.variable_type == variable_type
 
-        self.service_provider.device_variable.assert_not_called()
-        self.service_provider.sensor_variable.assert_not_called()
+        powerpi_service_provider.device_variable.assert_not_called()
+        powerpi_service_provider.sensor_variable.assert_not_called()
 
     @pytest.mark.parametrize('variable_type', [VariableType.DEVICE, VariableType.SENSOR])
-    def test_get_x_exists(self, mocker: MockerFixture, variable_type: VariableType):
-        subject = self.create_subject(mocker)
-
+    def test_get_x_exists(
+        self,
+        subject: VariableManager,
+        powerpi_device_manager,
+        powerpi_service_provider,
+        variable_type: VariableType
+    ):
         name = 'found_variable'
 
         variable = DeviceVariableImpl(name) if variable_type == VariableType.DEVICE \
@@ -87,8 +91,12 @@ class TestVariableManager(BaseTest):
         assert result is not None
         assert result == variable
 
-        self.device_manager.get_device.assert_not_called()
-        self.device_manager.get_sensor.assert_not_called()
+        powerpi_device_manager.get_device.assert_not_called()
+        powerpi_device_manager.get_sensor.assert_not_called()
 
-        self.service_provider.device_variable.assert_not_called()
-        self.service_provider.sensor_variable.assert_not_called()
+        powerpi_service_provider.device_variable.assert_not_called()
+        powerpi_service_provider.sensor_variable.assert_not_called()
+
+    @pytest.fixture
+    def subject(self, powerpi_logger, powerpi_device_manager, powerpi_service_provider):
+        return VariableManager(powerpi_logger, powerpi_device_manager, powerpi_service_provider)

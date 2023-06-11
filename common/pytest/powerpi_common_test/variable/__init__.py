@@ -1,1 +1,1 @@
-from .variable import VariableTestBase
+from .variable import VariableTestBase, VariableTestBaseNew

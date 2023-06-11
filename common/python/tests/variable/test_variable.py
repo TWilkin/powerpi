@@ -1,8 +1,8 @@
-from pytest_mock import MockerFixture
+import pytest
+from powerpi_common_test.variable import VariableTestBaseNew
 
 from powerpi_common.variable.types import VariableType
 from powerpi_common.variable.variable import Variable
-from powerpi_common_test.variable import VariableTestBase
 
 
 class VariableImpl(Variable):
@@ -19,6 +19,8 @@ class VariableImpl(Variable):
         return self._name
 
 
-class TestVariable(VariableTestBase):
-    def create_subject(self, _: MockerFixture):
+class TestVariable(VariableTestBaseNew):
+
+    @pytest.fixture
+    def subject(self):
         return VariableImpl('TestVariable')

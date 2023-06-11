@@ -1,32 +1,16 @@
 import pytest
-from pytest_mock import MockerFixture
+from powerpi_common_test.variable.variable import VariableTestBaseNew
 
 from powerpi_common.variable.sensor import SensorVariable
-from powerpi_common_test.variable.variable import VariableTestBase
 
 
-class TestSensorVariable(VariableTestBase):
-    pytestmark = pytest.mark.asyncio
+class TestSensorVariable(VariableTestBaseNew):
 
-    def create_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
-
-        return SensorVariable(
-            self.config, self.logger, self.mqtt_client,
-            name='TestSensor',
-            action='detect'
-        )
-
-    def test_topic(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    def test_topic(self, subject: SensorVariable):
         assert subject.topic == 'event/TestSensor/detect'
 
-    async def test_on_message_updates(self, mocker: MockerFixture):
-        subject = self.create_subject(mocker)
-
+    @pytest.mark.asyncio
+    async def test_on_message_updates(self, subject: SensorVariable):
         message = {'value': 12.34, 'unit': 'doughnuts'}
 
         assert subject.value == (None, None)
@@ -35,10 +19,9 @@ class TestSensorVariable(VariableTestBase):
 
         assert subject.value == (12.34, 'doughnuts')
 
+    @pytest.mark.asyncio
     @pytest.mark.parametrize('which', ['value', 'unit'])
-    async def test_on_message_ignores(self, mocker: MockerFixture, which: str):
-        subject = self.create_subject(mocker)
-
+    async def test_on_message_ignores(self, subject: SensorVariable, which: str):
         message = {'value': 12.34, 'unit': 'doughnuts'}
         message[which] = None
 
@@ -47,3 +30,11 @@ class TestSensorVariable(VariableTestBase):
         await subject.on_message(message, 'TestSensor', 'detect')
 
         assert subject.value == (None, None)
+
+    @pytest.fixture
+    def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
+        return SensorVariable(
+            powerpi_config, powerpi_logger, powerpi_mqtt_client,
+            name='TestSensor',
+            action='detect'
+        )

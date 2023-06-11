@@ -1,13 +1,16 @@
-from pytest_mock import MockerFixture
+import pytest
+from powerpi_common_test.variable import VariableTestBaseNew
 
 from powerpi_common.variable.device import DeviceVariable
-from powerpi_common_test.variable.variable import VariableTestBase
 
 
-class TestDeviceVariable(VariableTestBase):
-    def create_subject(self, mocker: MockerFixture):
-        self.config = mocker.Mock()
-        self.logger = mocker.Mock()
-        self.mqtt_client = mocker.Mock()
+class TestDeviceVariable(VariableTestBaseNew):
 
-        return DeviceVariable(self.config, self.logger, self.mqtt_client, name='TestVariable')
+    @pytest.fixture
+    def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
+        return DeviceVariable(
+            powerpi_config,
+            powerpi_logger,
+            powerpi_mqtt_client,
+            name='TestVariable'
+        )
