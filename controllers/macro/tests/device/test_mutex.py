@@ -3,17 +3,18 @@ from typing import List, Tuple
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
-from macro_controller.device import MutexDevice
-from powerpi_common_test.device import DeviceTestBaseNew
-from powerpi_common_test.device.mixin import (
-    DeviceOrchestratorMixinTestBaseNew, PollableMixinTestBaseNew)
+from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import (DeviceOrchestratorMixinTestBase,
+                                              PollableMixinTestBase)
 from pytest_mock import MockerFixture
+
+from macro_controller.device import MutexDevice
 
 
 class TestMutexDevice(
-    DeviceTestBaseNew,
-    DeviceOrchestratorMixinTestBaseNew,
-    PollableMixinTestBaseNew
+    DeviceTestBase,
+    DeviceOrchestratorMixinTestBase,
+    PollableMixinTestBase
 ):
     @pytest.mark.asyncio
     async def test_all_on(self, subject: MutexDevice, devices: List[MagicMock]):
