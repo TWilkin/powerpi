@@ -48,7 +48,7 @@ dependencies:
   - name: macro-controller
     version: 0.1.3
   - name: network-controller
-    version: 0.1.1
+    version: 0.1.2
     condition: global.network
   - name: node-controller
     version: 0.1.3

@@ -461,7 +461,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "powerpi-common"
-version = "0.3.3"
+version = "0.4.0"
 description = "PowerPi Common Python Library"
 category = "dev"
 optional = false
