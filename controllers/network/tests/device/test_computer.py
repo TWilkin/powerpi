@@ -3,14 +3,14 @@ from unittest.mock import PropertyMock, call, patch
 
 import pytest
 from powerpi_common.device import DeviceStatus
-from powerpi_common_test.device import DeviceTestBaseNew
-from powerpi_common_test.device.mixin import PollableMixinTestBaseNew
+from powerpi_common_test.device import DeviceTestBase
+from powerpi_common_test.device.mixin import PollableMixinTestBase
 from pytest_mock import MockerFixture
 
 from network_controller.device.computer import ComputerDevice
 
 
-class TestComputer(DeviceTestBaseNew, PollableMixinTestBaseNew):
+class TestComputer(DeviceTestBase, PollableMixinTestBase):
     def test_setup(self, subject: ComputerDevice):
         assert subject.mac_address == '00:00:00:00:00'
         assert subject.network_address == 'mycomputer.home'
@@ -104,14 +104,11 @@ class TestComputer(DeviceTestBaseNew, PollableMixinTestBaseNew):
     async def test_change_message(
         self,
         subject: ComputerDevice,
-        powerpi_config,
         mocker: MockerFixture
     ):
-        # pylint: disable=arguments-differ
+        # pylint: disable=arguments-renamed
 
         assert subject.state == DeviceStatus.UNKNOWN
-
-        mocker.patch.object(powerpi_config, 'message_age_cutoff', 120)
 
         host = mocker.Mock()
         type(host).is_alive = PropertyMock(return_value=True)
