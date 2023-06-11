@@ -1,5 +1,3 @@
-from .initialisable import (InitialisableMixinTestBase,
-                            InitialisableMixinTestBaseNew)
-from .orchestrator import (DeviceOrchestratorMixinTestBase,
-                           DeviceOrchestratorMixinTestBaseNew)
-from .pollable import PollableMixinTestBase, PollableMixinTestBaseNew
+from .initialisable import InitialisableMixinTestBase
+from .orchestrator import DeviceOrchestratorMixinTestBase
+from .pollable import PollableMixinTestBase

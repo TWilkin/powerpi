@@ -1,1 +1,1 @@
-from .sensor import SensorTestBase, SensorTestBaseNew
+from .sensor import SensorTestBase

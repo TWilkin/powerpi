@@ -1,1 +1,1 @@
-from .battery import BatteryMixinTestBase, BatteryMixinTestBaseNew
+from .battery import BatteryMixinTestBase
