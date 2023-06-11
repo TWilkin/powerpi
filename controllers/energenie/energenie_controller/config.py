@@ -1,13 +1,9 @@
 import os
 
-from powerpi_common.config import Config as CommonConfig
-from powerpi_common.config import ConfigFileType
+from powerpi_common.config import ControllerConfig
 
 
-class EnergenieConfig(CommonConfig):
-    @property
-    def used_config(self):
-        return [ConfigFileType.DEVICES, ConfigFileType.EVENTS]
+class EnergenieConfig(ControllerConfig):
 
     @property
     def device_fatal(self):
