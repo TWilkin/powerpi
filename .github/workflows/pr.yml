@@ -60,68 +60,68 @@ jobs:
       - name: Test Energenie Controller
         if: steps.check_modified.outputs.energenie_controller
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/energenie"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh energenie"
         working-directory: controllers/energenie
 
       - name: Test Harmony Controller
         if: steps.check_modified.outputs.harmony_controller
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/harmony"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh harmony"
         working-directory: controllers/harmony
 
       - name: Test LIFX Controller
         if: steps.check_modified.outputs.lifx_controller
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/lifx"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh lifx"
         working-directory: controllers/lifx
 
       - name: Test Macro Controller
         if: steps.check_modified.outputs.macro_controller
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/macro"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh macro"
         working-directory: controllers/macro
 
       - name: Test Network Controller
         if: steps.check_modified.outputs.network_controller
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/network"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh network"
         working-directory: controllers/network
 
       - name: Test Node Controller
         if: steps.check_modified.outputs.node_controller
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/node"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh node"
         working-directory: controllers/node
 
       - name: Test ZigBee Controller
         if: steps.check_modified.outputs.zigbee_controller
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh controllers/zigbee"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh zigbee"
         working-directory: controllers/zigbee
 
       # test the services
       - name: Test Config Server
         if: steps.check_modified.outputs.config_server
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh services/config-server"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh config-server"
 
       - name: Test Persistence
         if: steps.check_modified.outputs.persistence
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh services/persistence"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh persistence"
 
       - name: Test Scheduler
         if: steps.check_modified.outputs.scheduler
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh services/scheduler"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh scheduler"
         working-directory: services/scheduler
 
       - name: Test UI
         if: steps.check_modified.outputs.ui
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh services/ui"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh ui"
 
       - name: Test Voice Assistant
         if: steps.check_modified.outputs.voice_assistant
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh services/voice-assistant"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh voice-assistant"
