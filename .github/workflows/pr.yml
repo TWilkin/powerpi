@@ -20,6 +20,13 @@ jobs:
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/check_modified.sh"
 
+      # setup python
+      - name: Install python
+        if: steps.check_modified.outputs.python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
       # setup poetry
       - name: Install Poetry
         if: steps.check_modified.outputs.python
