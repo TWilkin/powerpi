@@ -7,7 +7,10 @@ include_project() {
     echo "Enabling tests for $project"
     echo "$project=true" >> $GITHUB_OUTPUT
 
-    if [[ $type -eq "python" ]]
+    if [[ $type -eq "node" ]]
+    then
+        echo "node=true" >> $GITHUB_OUTPUT
+    elif [[ $type -eq "python" ]]
     then
         echo "python=true" >> $GITHUB_OUTPUT
     fi
@@ -48,7 +51,7 @@ do
     fi
 
     # for now just make it happen
-    check_file $file ".github" "lifx_controller" "python"
+    check_file $file ".github" "ui" "node"
 
     # check the controllers
     check_file $file "controllers/energenie" "energenie_controller" "python"
@@ -60,5 +63,9 @@ do
     check_file $file "controllers/zigbee" "zigbee_controller" "python"
 
     # check the services
+    check_file $file "services/config-server" "config_server" "node"
+    check_file $file "services/persistence" "persistence" "node"
     check_file $file "services/scheduler" "scheduler" "python"
+    check_file $file "services/ui" "ui" "node"
+    check_file $file "services/voice-assistant" "voice_assistant" "node"
 done < files.txt

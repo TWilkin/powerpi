@@ -20,6 +20,18 @@ jobs:
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/check_modified.sh"
 
+      # setup node
+      - name: Install Node.js
+        if: steps.check_modified.outputs.node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      # install node dependencies
+      - name: Install node dependencies
+        if: steps.check_modified.outputs.node
+        run: yarn install
+
       # setup python
       - name: Install python
         if: steps.check_modified.outputs.python
@@ -88,8 +100,28 @@ jobs:
         working-directory: controllers/zigbee
 
       # test the services
+      - name: Test Config Server
+        if: steps.check_modified.outputs.config_server
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh services/config-server"
+
+      - name: Test Persistence
+        if: steps.check_modified.outputs.persistence
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh services/persistence"
+
       - name: Test Scheduler
         if: steps.check_modified.outputs.scheduler
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh services/scheduler"
         working-directory: services/scheduler
+
+      - name: Test UI
+        if: steps.check_modified.outputs.ui
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh services/ui"
+
+      - name: Test Voice Assistant
+        if: steps.check_modified.outputs.voice_assistant
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh services/voice-assistant"
