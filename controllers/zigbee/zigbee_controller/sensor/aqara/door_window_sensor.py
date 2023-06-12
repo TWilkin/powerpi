@@ -4,13 +4,14 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from powerpi_common.sensor.mixin.battery import BatteryMixin
+from zigpy.zcl.clusters.general import Basic
+from zigpy.zcl.clusters.general import OnOff as OnOffCluster
+from zigpy.zcl.foundation import Attribute, TypeValue
+
 from zigbee_controller.device import ZigbeeController
 from zigbee_controller.zigbee import (ClusterAttributeListener,
                                       ClusterGeneralCommandListener, OnOff,
                                       OpenClose, ZigbeeMixin)
-from zigpy.zcl.clusters.general import Basic
-from zigpy.zcl.clusters.general import OnOff as OnOffCluster
-from zigpy.zcl.foundation import Attribute, TypeValue
 
 
 class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
@@ -65,7 +66,7 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
 
             self._broadcast('change', message)
 
-    def on_attribute_updated(self, attribute_id: int, value: Any):
+    def on_attribute_updated(self, attribute_id: int, value: Any, _):
         if attribute_id == self.AQARA_ATTRIBUTE:
             additional_attributes: Dict[int, TypeValue] = {}
 

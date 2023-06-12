@@ -6,14 +6,15 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from powerpi_common.sensor.mixin import BatteryMixin
-from zigbee_controller.device import ZigbeeController
-from zigbee_controller.zigbee import (ClusterAttributeListener,
-                                      ClusterCommandListener, ZigbeeMixin)
 from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 from zigpy.zcl.clusters.general import \
     PowerConfiguration as PowerConfigurationCluster
 from zigpy.zcl.clusters.lighting import Color as ColorCluster
+
+from zigbee_controller.device import ZigbeeController
+from zigbee_controller.zigbee import (ClusterAttributeListener,
+                                      ClusterCommandListener, ZigbeeMixin)
 
 
 class ButtonEndpoint(int, Enum):
@@ -70,7 +71,7 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin, BatteryMixin):
     # the maximum expected voltage in mV
     MAX_VOLTAGE = 3100
 
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         logger: Logger,
@@ -171,7 +172,7 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin, BatteryMixin):
             ClusterAttributeListener(self.on_attribute_updated)
         )
 
-    def on_attribute_updated(self, attribute_id: int, value: Any):
+    def on_attribute_updated(self, attribute_id: int, value: Any, _):
         device = self._zigbee_device
         cluster: PowerConfigurationCluster = device[1] \
             .in_clusters[PowerConfigurationCluster.cluster_id]
