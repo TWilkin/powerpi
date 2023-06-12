@@ -38,7 +38,7 @@ do
     if [[ $file == common/node/api/* || $file == yarn.lock ]]
     then
         include_project "ui" "nodejs"
-        include_project "voice-assistant" "nodejs"
+        include_project "voice_assistant" "nodejs"
     fi
 
     # updating node common requires testing everything using it
@@ -46,18 +46,18 @@ do
     then
         include_project "node_common" "nodejs"
 
-        include_project "config-server" "nodejs"
+        include_project "config_server" "nodejs"
         include_project "persistence" "nodejs"
-        include_project "voice-assistant" "nodejs"
+        include_project "voice_assistant" "nodejs"
     fi
 
     # updating node common-test requires testing everything using it
     if [[ $file == common/node/common-test/* || $file == yarn.lock ]]
     then
-        include_project "config-server" "nodejs"
+        include_project "config_server" "nodejs"
         include_project "persistence" "nodejs"
         include_project "ui" "nodejs"
-        include_project "voice-assistant" "nodejs"
+        include_project "voice_assistant" "nodejs"
     fi
 
     # updating common python/pytest requires retesting everything using python
