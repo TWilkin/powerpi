@@ -28,6 +28,12 @@ do
     echo .
     echo $file
 
+    # skip over any README files
+    if [[ $file == */README.md ]]
+    then
+        continue
+    fi
+
     # updating API requires testing everything using it
     if [[ $file == common/node/api/* || $file == yarn.lock ]]
     then
