@@ -1,9 +1,10 @@
 import os
 
-from powerpi_common.config import Config as CommonConfig
+from powerpi_common.config import ControllerConfig
 
 
-class EnergenieConfig(CommonConfig):
+class EnergenieConfig(ControllerConfig):
+
     @property
     def device_fatal(self):
         value = os.getenv('DEVICE_FATAL')

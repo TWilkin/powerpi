@@ -1,4 +1,5 @@
 from asyncio import Future
+from datetime import datetime
 from typing import List, Tuple
 from unittest.mock import MagicMock, PropertyMock
 
@@ -93,7 +94,7 @@ class TestOsramSwitchMiniSensor(SensorTestBase, InitialisableMixinTestBase, Batt
         type(attribute).id = PropertyMock(return_value=0x0020)
         zigbee_in_cluster.find_attribute.return_value = attribute
 
-        subject.on_attribute_updated(0x0020, data)
+        subject.on_attribute_updated(0x0020, data, datetime.utcnow())
 
         topic = 'event/test/battery'
         message = {'value': percent, 'unit': '%'}
@@ -111,7 +112,7 @@ class TestOsramSwitchMiniSensor(SensorTestBase, InitialisableMixinTestBase, Batt
         type(attribute).id = PropertyMock(return_value=0x0021)
         zigbee_in_cluster.find_attribute.return_value = attribute
 
-        subject.on_attribute_updated(0x0020, 29)
+        subject.on_attribute_updated(0x0020, 29, datetime.utcnow())
 
         powerpi_mqtt_producer.assert_not_called()
 

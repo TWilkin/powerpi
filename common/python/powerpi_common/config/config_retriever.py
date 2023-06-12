@@ -3,10 +3,15 @@ import os
 
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, MQTTConsumer, MQTTMessage
+
 from .config import Config
 
 
 class ConfigRetriever:
+    '''
+    Service to retrieve configuration files from the message queue.
+    '''
+
     def __init__(self, config: Config, logger: Logger, mqtt_client: MQTTClient):
         self.__config = config
         self.__logger = logger
@@ -45,6 +50,10 @@ class ConfigRetriever:
 
 
 class ConfigConsumer(MQTTConsumer):
+    '''
+    MQTT consumer for configuration files in the message queue.
+    '''
+
     def __init__(self, topic: str, config: Config, logger: Logger):
         MQTTConsumer.__init__(
             self, topic, config, logger
@@ -61,7 +70,7 @@ class ConfigConsumer(MQTTConsumer):
                 f'Restarting service due to changed {entity} config'
             )
 
-            #pylint: disable=protected-access
+            # pylint: disable=protected-access
             os._exit(0)
         else:
             # this is a new or unused config, so just set it

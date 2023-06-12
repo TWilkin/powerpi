@@ -14,14 +14,15 @@ class ApplicationContainer(containers.DeclarativeContainer):
         __self__
     )
 
+    config = providers.Singleton(
+        NodeConfig
+    )
+
     common = providers.Container(
         CommonContainer,
         app_name=__app_name__,
-        version=__version__
-    )
-
-    config = providers.Singleton(
-        NodeConfig
+        version=__version__,
+        config=config
     )
 
     shutdown = providers.Singleton(

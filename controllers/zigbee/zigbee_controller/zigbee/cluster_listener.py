@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any, Callable, List
 
 from zigpy.zcl.foundation import Attribute, ZCLHeader
@@ -6,11 +7,11 @@ from .zigbee_listener import ZigBeeListener
 
 
 class ClusterAttributeListener(ZigBeeListener):
-    def __init__(self, method: Callable[[int, Any], None]):
+    def __init__(self, method: Callable[[int, Any, datetime], None]):
         ZigBeeListener.__init__(self, method)
 
-    def attribute_updated(self, attribute_id: int, value: Any):
-        self._listener(attribute_id, value)
+    def attribute_updated(self, attribute_id: int, value: Any, date: datetime):
+        self._listener(attribute_id, value, date)
 
 
 class ClusterCommandListener(ZigBeeListener):

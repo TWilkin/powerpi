@@ -4,14 +4,22 @@ from unittest.mock import PropertyMock, patch
 import pytest
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from pytest_mock import MockerFixture
+
 from powerpi_common.health import HealthService
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
-from pytest_mock import MockerFixture
 
 
 class TestHealthService:
-    def test_start(self, subject: HealthService, powerpi_scheduler: AsyncIOScheduler):
+
+    @pytest.mark.asyncio
+    async def test_start(
+        self,
+        subject: HealthService,
+        powerpi_scheduler: AsyncIOScheduler,
+        mocker: MockerFixture
+    ):
         methods = []
         timers = []
 
@@ -21,7 +29,11 @@ class TestHealthService:
 
         powerpi_scheduler.add_job = add_job
 
-        subject.start()
+        with patch('powerpi_common.health.health.Path') as path:
+            instance = mocker.MagicMock()
+            path.return_value = instance
+
+            await subject.start()
 
         assert len(methods) == 1
         assert len(timers) == 1
