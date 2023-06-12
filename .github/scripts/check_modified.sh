@@ -29,14 +29,14 @@ do
     echo $file
 
     # updating API requires testing everything using it
-    if [[ $file == common/node/api/* ]]
+    if [[ $file == common/node/api/* || $file == yarn.lock ]]
     then
         include_project "ui" "nodejs"
         include_project "voice-assistant" "nodejs"
     fi
 
     # updating node common requires testing everything using it
-    if [[ $file == common/node/common/* ]]
+    if [[ $file == common/node/common/* || $file == yarn.lock ]]
     then
         include_project "node_common" "nodejs"
 
@@ -46,7 +46,7 @@ do
     fi
 
     # updating node common-test requires testing everything using it
-    if [[ $file == common/node/common-test/* ]]
+    if [[ $file == common/node/common-test/* || $file == yarn.lock ]]
     then
         include_project "config-server" "nodejs"
         include_project "persistence" "nodejs"
