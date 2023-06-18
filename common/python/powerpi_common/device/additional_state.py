@@ -1,4 +1,6 @@
 from powerpi_common.config import Config
+from powerpi_common.device.consumers.scene_event_consumer import \
+    SceneEventConsumer
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
@@ -24,11 +26,16 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
+        listener=True,
         **kwargs
     ):
         self.__additional_state = SceneState()
 
-        Device.__init__(self, config, logger, mqtt_client, **kwargs)
+        Device.__init__(self, config, logger, mqtt_client, listener, **kwargs)
+
+        if listener:
+            # add listener for scene changes
+            mqtt_client.add_consumer(SceneEventConsumer(self, config, logger))
 
     @property
     def additional_state(self):
@@ -80,6 +87,16 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
             self.update_state_no_broadcast(new_state)
 
         self._broadcast_state_change()
+
+    async def change_scene(self, new_scene: str):
+        '''
+        Switch this device from the current scene to this new one, and apply any state changes.
+        '''
+        if not self.__additional_state.is_current_scene(new_scene):
+            self.__additional_state.scene = new_scene
+
+            new_additional_state = self.__additional_state.state
+            await self.change_power_and_additional_state(new_additional_state=new_additional_state)
 
     def _format_state(self):
         result = Device._format_state(self)

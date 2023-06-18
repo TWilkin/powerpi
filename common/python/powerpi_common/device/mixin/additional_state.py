@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from powerpi_common.device.types import DeviceStatus
 
@@ -14,8 +14,8 @@ class AdditionalStateMixin(ABC):
     '''
     async def change_power_and_additional_state(
         self,
-        new_state: DeviceStatus,
-        new_additional_state: AdditionalState
+        new_state: Optional[DeviceStatus] = None,
+        new_additional_state: Optional[AdditionalState] = None
     ):
         '''
         Turn this device on or off, depending on the value of new_state
