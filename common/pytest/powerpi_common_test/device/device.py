@@ -1,10 +1,9 @@
 from datetime import datetime
-from typing import Union
+from typing import Dict
 
-from powerpi_common.config.config import Config
+from powerpi_common.config import Config
 from powerpi_common.device import Device
-from powerpi_common.mqtt.client import MQTTClient
-from powerpi_common.mqtt.consumer import MQTTConsumer
+from powerpi_common.mqtt import MQTTClient, MQTTConsumer
 from pytest_mock import MockerFixture
 
 import pytest
@@ -12,7 +11,11 @@ from powerpi_common_test.device.base import BaseDeviceTestBase
 
 
 class DeviceTestBase(BaseDeviceTestBase):
-    _initial_state_consumer: Union[MQTTConsumer, None] = None
+    _mqtt_consumers: Dict[str, MQTTConsumer] = {}
+
+    @property
+    def _initial_state_consumer(self):
+        return self._mqtt_consumers['status']
 
     @pytest.mark.asyncio
     async def test_turn_on(self, subject: Device):
@@ -111,9 +114,9 @@ class DeviceTestBase(BaseDeviceTestBase):
         mocker.patch.object(powerpi_config, 'message_age_cutoff', 120)
 
     @pytest.fixture(autouse=True)
-    def powerpi_mqtt_initial_state(self, powerpi_mqtt_client: MQTTClient, mocker: MockerFixture):
+    def powerpi_mqtt_consumers(self, powerpi_mqtt_client: MQTTClient, mocker: MockerFixture):
         def add_consumer(consumer: MQTTConsumer):
-            if consumer.topic.endswith('status'):
-                self._initial_state_consumer = consumer
+            split = consumer.topic.split('/')
+            self._mqtt_consumers[split[-1]] = consumer
 
         mocker.patch.object(powerpi_mqtt_client, 'add_consumer', add_consumer)

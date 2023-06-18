@@ -98,3 +98,42 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         await self._initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
         assert subject.additional_state.get(key, None) == 1
+
+    @pytest.mark.asyncio
+    async def test_scene_event_message(self, subject: AdditionalStateDevice):
+        scene_event_consumer = self._mqtt_consumers['scene']
+
+        # pylint: disable=protected-access
+        key = subject._additional_state_keys()[0]
+
+        message = {
+            'scene': 'other'
+        }
+
+        assert subject.scene == 'default'
+        assert subject.state == 'unknown'
+
+        # should change the scene
+        await scene_event_consumer.on_message(message, subject.name, 'scene')
+        assert subject.scene == 'other'
+
+        # now send additional state to the default scene
+        message = {
+            'scene': 'default',
+        }
+        message[key] = 2
+        await subject.on_message(message, subject.name, 'change')
+
+        assert subject.scene == 'other'
+        assert subject.state == 'unknown'
+        assert subject.additional_state.get(key, None) is None
+
+        # now switching back to default should activate the scene's additional state
+        message = {
+            'scene': 'default'
+        }
+        await scene_event_consumer.on_message(message, subject.name, 'scene')
+
+        assert subject.scene == 'default'
+        assert subject.state == 'unknown'
+        assert subject.additional_state.get(key, None) == 2
