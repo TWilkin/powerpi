@@ -52,11 +52,7 @@ class SceneState:
         Returns the current additional state for the device.
         '''
         _, current_state = self.get_scene_state()
-
-        if current_state:
-            return current_state
-
-        return {}
+        return current_state
 
     @state.setter
     def state(self, new_state: AdditionalState):
@@ -80,13 +76,17 @@ class SceneState:
         Return the actual name of the scene and the state for the specified scene. 
         If None or 'current' is provided, return the name and state for the current scene.
         '''
+        state = None
+
         if self.is_current_scene(scene):
             scene = self.__scene
 
         if scene in self.__state:
-            return scene, self.__state[scene]
+            state = self.__state[scene]
+            if state is None:
+                state = {}
 
-        return scene, None
+        return scene, state
 
     def update_scene_state(
         self,
@@ -125,4 +125,4 @@ class SceneState:
         return result
 
     def __str__(self):
-        return f'[{", ".join([self.format_scene_state(scene) for scene in self.scenes])}]'
+        return f'[{", ".join([f"{self.format_scene_state(scene)}" for scene in self.scenes])}]'

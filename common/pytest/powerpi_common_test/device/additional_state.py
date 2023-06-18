@@ -75,6 +75,27 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         assert all(key in message for message in messages)
 
     @pytest.mark.asyncio
+    async def test_change_scene(self, subject: AdditionalStateDevice):
+        assert subject.scene == 'default'
+
+        await subject.change_scene('other')
+        assert subject.scene == 'other'
+
+        # pylint: disable=protected-access
+        key = subject._additional_state_keys()[0]
+        additional_state = {}
+        additional_state[key] = 10
+        subject.additional_state = additional_state
+
+        await subject.change_scene('current')
+        assert subject.scene == 'other'
+        assert subject.additional_state.get(key, None) == 10
+
+        await subject.change_scene('default')
+        assert subject.scene == 'default'
+        assert subject.additional_state.get(key, None) is None
+
+    @pytest.mark.asyncio
     async def test_initial_additional_state_message(self, subject: AdditionalStateDevice):
         # pylint: disable=protected-access
         key = subject._additional_state_keys()[0]
