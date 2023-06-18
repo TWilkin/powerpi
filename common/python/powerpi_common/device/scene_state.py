@@ -103,7 +103,7 @@ class SceneState:
 
     def format_scene_state(self, scene: Optional[str] = ReservedScenes.CURRENT):
         '''
-        Return a JSON formatted string for the specified scene.
+        Return an object representation for the specified scene.
         '''
         scene, state = self.get_scene_state(scene)
 
@@ -122,7 +122,7 @@ class SceneState:
                 else:
                     result[key] = state[key]
 
-        return f'{result}'
+        return result
 
     def __str__(self):
         return f'[{", ".join([self.format_scene_state(scene) for scene in self.scenes])}]'

@@ -1,12 +1,16 @@
 from powerpi_common.config import Config
+from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+
 from .device import Device
 from .mixin import AdditionalState, AdditionalStateMixin
-from .types import DeviceStatus
+from .scene_state import SceneState
 
 
 class AdditionalStateDevice(Device, AdditionalStateMixin):
+    # pylint: disable=too-many-ancestors
+
     '''
     Device implementation of AdditionalStateMixin to provide additional
     state functionality. 
@@ -22,7 +26,7 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         mqtt_client: MQTTClient,
         **kwargs
     ):
-        self.__additional_state = None
+        self.__additional_state = SceneState()
 
         Device.__init__(self, config, logger, mqtt_client, **kwargs)
 
@@ -31,10 +35,7 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         '''
         Returns the current additional state of this device.
         '''
-        if self.__additional_state:
-            return self.__additional_state
-
-        return {}
+        return self.__additional_state.state
 
     @additional_state.setter
     def additional_state(self, new_additional_state: AdditionalState):
@@ -45,7 +46,7 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         new_additional_state = self._filter_keys(new_additional_state)
 
         if len(new_additional_state) > 0:
-            self.__additional_state = new_additional_state
+            self.__additional_state.state = new_additional_state
 
             self._broadcast_state_change()
 
@@ -59,7 +60,7 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         to new_additional_state but do not broadcast to the message queue.
         '''
         self.update_state_no_broadcast(new_state)
-        self.__additional_state = self._filter_keys(new_additional_state)
+        self.__additional_state.state = self._filter_keys(new_additional_state)
 
     def set_state_and_additional(
         self,
@@ -73,7 +74,7 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         new_additional_state = self._filter_keys(new_additional_state)
 
         if len(new_additional_state) > 0:
-            self.__additional_state = new_additional_state
+            self.__additional_state.state = new_additional_state
 
         if new_state is not None:
             self.update_state_no_broadcast(new_state)
@@ -83,15 +84,7 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
     def _format_state(self):
         result = Device._format_state(self)
 
-        if self.__additional_state:
-            for key in self.__additional_state:
-                to_json = getattr(
-                    self.__additional_state[key], 'to_json', None
-                )
-
-                if callable(to_json):
-                    result[key] = to_json()
-                else:
-                    result[key] = self.__additional_state[key]
+        if self.__additional_state.state:
+            result = {**result, **self.__additional_state.format_scene_state()}
 
         return result
