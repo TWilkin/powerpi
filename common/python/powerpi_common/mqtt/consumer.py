@@ -3,11 +3,11 @@ from datetime import datetime
 from typing import Union
 
 from powerpi_common.config import Config
-from powerpi_common.logger import Logger
-from .types import MQTTMessage
+from powerpi_common.logger import Logger, LogMixin
+from powerpi_common.mqtt.types import MQTTMessage
 
 
-class MQTTConsumer(ABC):
+class MQTTConsumer(ABC, LogMixin):
     def __init__(self, topic: str, config: Config, logger: Logger):
         self._topic = topic
         self._config = config

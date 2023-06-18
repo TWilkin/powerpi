@@ -33,7 +33,7 @@ class AdditionalStateMixin(ABC):
                     )
                 else:
                     # update just the additional state for that scene
-                    self._set_scene_additional_state(
+                    self.set_scene_additional_state(
                         scene, new_additional_state
                     )
 
@@ -74,7 +74,7 @@ class AdditionalStateMixin(ABC):
         '''
         raise NotImplementedError
 
-    def _set_scene_additional_state(
+    def set_scene_additional_state(
         self,
         scene: Optional[str],
         new_additional_state: AdditionalState

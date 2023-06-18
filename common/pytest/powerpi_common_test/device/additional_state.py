@@ -101,9 +101,14 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         key = subject._additional_state_keys()[0]
         message = {
             'state': 'on',
+            'scene': 'other',
             'timestamp': 0,
+            'scenes': {
+                'another': {}
+            }
         }
-        message[key] = 1
+        message[key] = 10
+        message['scenes']['another'][key] = 20
 
         assert subject.state == 'unknown'
         assert subject.additional_state == {}
@@ -111,14 +116,19 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         # first message should set the state
         await self._initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
-        assert subject.additional_state.get(key, None) == 1
+        assert subject.scene == 'other'
+        assert subject.additional_state.get(key, None) == 10
+
+        # should also populate the scenes
+        await subject.change_scene('another')
+        assert subject.additional_state.get(key, None) == 20
 
         # subsequent messages should be ignored
         message['state'] = 'off'
         message['something'] = 'more'
         await self._initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
-        assert subject.additional_state.get(key, None) == 1
+        assert subject.additional_state.get(key, None) == 20
 
     @pytest.mark.asyncio
     async def test_scene_event_message(self, subject: AdditionalStateDevice):
