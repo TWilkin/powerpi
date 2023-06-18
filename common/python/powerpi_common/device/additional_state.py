@@ -122,6 +122,19 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         if self.__additional_state.state:
             result = {**result, **self.__additional_state.format_scene_state()}
 
+        # only include scenes if we have > just the current and they have additional state
+        scenes = list(filter(
+            lambda scene:
+                not self.__additional_state.is_current_scene(scene)
+                and len(self.__additional_state.get_scene_state(scene)) >= 1,
+            self.__additional_state.scenes
+        ))
+        if len(scenes) >= 1:
+            result['scenes'] = {
+                scene: self.__additional_state.format_scene_state(scene)
+                for scene in scenes
+            }
+
         return result
 
     def _is_current_scene(self, scene: Optional[str]):
