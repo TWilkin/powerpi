@@ -1,6 +1,7 @@
+from typing import Optional
+
 from powerpi_common.config import Config
-from powerpi_common.device.consumers.scene_event_consumer import \
-    SceneEventConsumer
+from powerpi_common.device.consumers import SceneEventConsumer
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
@@ -36,6 +37,13 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         if listener:
             # add listener for scene changes
             mqtt_client.add_consumer(SceneEventConsumer(self, config, logger))
+
+    @property
+    def scene(self):
+        '''
+        Returns the current scene of this device.
+        '''
+        return self.__additional_state.scene
 
     @property
     def additional_state(self):
@@ -88,6 +96,16 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
 
         self._broadcast_state_change()
 
+    def _set_scene_additional_state(
+        self,
+        scene: Optional[str],
+        new_additional_state: AdditionalState
+    ):
+        '''
+        Update the additional state for the specified scene.
+        '''
+        self.__additional_state.update_scene_state(scene, new_additional_state)
+
     async def change_scene(self, new_scene: str):
         '''
         Switch this device from the current scene to this new one, and apply any state changes.
@@ -105,3 +123,9 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
             result = {**result, **self.__additional_state.format_scene_state()}
 
         return result
+
+    def _is_current_scene(self, scene: Optional[str]):
+        '''
+        Returns whether the specified scene is the current scene or not.
+        '''
+        return self.__additional_state.is_current_scene(scene)

@@ -14,6 +14,7 @@ class AdditionalStateMixin(ABC):
     '''
     async def change_power_and_additional_state(
         self,
+        scene: Optional[str] = None,
         new_state: Optional[DeviceStatus] = None,
         new_additional_state: Optional[AdditionalState] = None
     ):
@@ -26,9 +27,15 @@ class AdditionalStateMixin(ABC):
         try:
             # update additional state first
             if len(new_additional_state) > 0:
-                new_additional_state = await self.on_additional_state_change(
-                    new_additional_state
-                )
+                if self._is_current_scene(scene):
+                    new_additional_state = await self.on_additional_state_change(
+                        new_additional_state
+                    )
+                else:
+                    # update just the additional state for that scene
+                    self._set_scene_additional_state(
+                        scene, new_additional_state
+                    )
 
             # then update state
             if new_state is not None:
@@ -39,7 +46,11 @@ class AdditionalStateMixin(ABC):
 
             new_additional_state = self._filter_keys(new_additional_state)
 
-            self.set_state_and_additional(new_state, new_additional_state)
+            # hide the additional state change if it's for another scene
+            update_additional_state = new_additional_state if self._is_current_scene(scene) \
+                else None
+
+            self.set_state_and_additional(new_state, update_additional_state)
         except Exception as ex:
             self.log_exception(ex)
             return
@@ -63,6 +74,15 @@ class AdditionalStateMixin(ABC):
         '''
         raise NotImplementedError
 
+    def _set_scene_additional_state(
+        self,
+        scene: Optional[str],
+        new_additional_state: AdditionalState
+    ):
+        '''
+        Update the additional state for the specified scene.
+        '''
+
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
         '''
         Handler for when the additional state changes, allowing the extending device to
@@ -85,3 +105,9 @@ class AdditionalStateMixin(ABC):
         Returns the list of additional state keys this device supports.
         '''
         raise NotImplementedError
+
+    def _is_current_scene(self, scene: Optional[str]):
+        '''
+        Returns whether the specified scene is the current scene or not.
+        '''
+        return True
