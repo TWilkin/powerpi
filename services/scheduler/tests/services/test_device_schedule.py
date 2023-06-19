@@ -1,6 +1,4 @@
-
-
-from collections import namedtuple
+from dataclasses import dataclass
 from datetime import datetime
 from types import MethodType
 from typing import Any, Callable, Dict, List, Tuple, Union
@@ -11,9 +9,15 @@ import pytz
 from apscheduler.triggers.interval import IntervalTrigger
 from powerpi_common.condition import ConditionParser, Expression
 from pytest_mock import MockerFixture
+
 from scheduler.services import DeviceSchedule
 
-ExpectedTime = namedtuple('ExpectedTime', 'day hour minute')
+
+@dataclass
+class ExpectedTime:
+    day: int
+    hour: int
+    minute: int
 
 
 class TestDeviceSchedule:
@@ -128,10 +132,12 @@ class TestDeviceSchedule:
         (
             {
                 'power': False,
+                'scene': 'other',
                 'brightness': [0, 100],
                 'temperature': [2000, 4000]
             },
             {
+                'scene': 'other',
                 'brightness': 62,
                 'temperature': 3240,
                 'state': 'off'
