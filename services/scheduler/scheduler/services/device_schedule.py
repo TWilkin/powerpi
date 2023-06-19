@@ -1,7 +1,7 @@
-from collections import namedtuple
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum, IntEnum
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional
 
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -13,6 +13,7 @@ from powerpi_common.device import DeviceStatus
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import VariableManager
+
 from scheduler.config import SchedulerConfig
 
 
@@ -33,7 +34,11 @@ class DayOfWeek(IntEnum):
     SUNDAY = 6
 
 
-DeltaRange = namedtuple('DeltaRange', 'type start end')
+@dataclass
+class DeltaRange:
+    type: DeltaType
+    start: float
+    end: float
 
 
 class DeviceSchedule(LogMixin):
@@ -98,6 +103,9 @@ class DeviceSchedule(LogMixin):
 
         message = {}
 
+        if self.__scene:
+            message['scene'] = self.__scene
+
         for _, delta_range in self.__delta.items():
             new_value = self.__calculate_new_value(start_date, delta_range)
 
@@ -149,9 +157,11 @@ class DeviceSchedule(LogMixin):
         self.__power = bool(device_schedule['power']) if 'power' in device_schedule \
             else None
 
-        self.__condition: Union[Expression, None] = device_schedule['condition'] \
+        self.__condition: Optional[Expression] = device_schedule['condition'] \
             if 'condition' in device_schedule \
             else None
+
+        self.__scene = device_schedule['scene'] if 'scene' in device_schedule else None
 
     def __check_condition(self):
         if self.__condition is not None:
@@ -160,7 +170,7 @@ class DeviceSchedule(LogMixin):
 
         return True
 
-    def __start_schedule(self, start: Union[datetime, None] = None):
+    def __start_schedule(self, start: Optional[datetime] = None):
         '''Schedule the next run.'''
         (start_date, end_date) = self.__calculate_dates(start)
 
@@ -184,7 +194,7 @@ class DeviceSchedule(LogMixin):
             self.execute, trigger, (start_date, end_date), name=job_name
         )
 
-    def __calculate_dates(self, start: Union[datetime, None] = None):
+    def __calculate_dates(self, start: Optional[datetime] = None):
         start_time = [int(part) for part in self.__between[0].split(':', 3)]
         end_time = [int(part) for part in self.__between[1].split(':', 3)]
 
@@ -290,6 +300,9 @@ class DeviceSchedule(LogMixin):
             builder += ', if the condition is true,'
 
         builder += f' adjust {self.__device}'
+
+        if self.__scene:
+            builder += f' for scene {self.__scene}'
 
         for device_type, delta in self.__delta.items():
             builder += f' {device_type} between {delta.start} and {delta.end}'
