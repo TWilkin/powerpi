@@ -153,6 +153,7 @@ class TestLIFXLightDevice(
 
         topic = 'device/light/status'
         message = {
+            'scene': 'default',
             'state': 'off',
             'brightness': 100
         }
