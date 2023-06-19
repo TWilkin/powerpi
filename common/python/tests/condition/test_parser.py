@@ -13,6 +13,7 @@ class DeviceVariableImpl:
     def __init__(self, name: str):
         self.state = name
         self.additional_state = {'brightness': name}
+        self.scene = 'movie'
 
 
 class SensorVariableImpl:
@@ -43,6 +44,7 @@ class TestConditionParser:
 
     @pytest.mark.parametrize('identifier,expected', [
         ('device.socket.state', 'socket'),
+        ('device.light.scene', 'movie'),
         ('device.light.brightness', 'light'),
         ('sensor.office.temperature.value', 'office/temperature'),
         ('sensor.office.temperature.unit', 'temperature/office'),
