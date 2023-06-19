@@ -74,6 +74,7 @@ class AdditionalStateMixin(ABC):
         '''
         raise NotImplementedError
 
+    @abstractmethod
     def set_scene_additional_state(
         self,
         scene: Optional[str],
@@ -82,6 +83,7 @@ class AdditionalStateMixin(ABC):
         '''
         Update the additional state for the specified scene.
         '''
+        raise NotImplementedError
 
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
         '''
@@ -106,8 +108,9 @@ class AdditionalStateMixin(ABC):
         '''
         raise NotImplementedError
 
+    @abstractmethod
     def _is_current_scene(self, scene: Optional[str]):
         '''
         Returns whether the specified scene is the current scene or not.
         '''
-        return True
+        raise NotImplementedError
