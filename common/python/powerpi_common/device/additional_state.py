@@ -117,7 +117,10 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
             self.__additional_state.scene = new_scene
 
             new_additional_state = self.__additional_state.state
-            await self.change_power_and_additional_state(new_additional_state=new_additional_state)
+            await self.change_power_and_additional_state(
+                scene=new_scene,
+                new_additional_state=new_additional_state
+            )
 
     def _format_state(self):
         result = Device._format_state(self)

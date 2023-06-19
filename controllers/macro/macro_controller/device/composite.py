@@ -1,17 +1,19 @@
-from typing import List
+from typing import List, Optional
 
 from powerpi_common.config import Config
-from powerpi_common.device import AdditionalStateDevice, DeviceManager, DeviceStatus
-from powerpi_common.device.mixin import AdditionalState, AdditionalStateMixin, \
-    DeviceOrchestratorMixin, PollableMixin
+from powerpi_common.device import (AdditionalStateDevice, DeviceManager,
+                                   DeviceStatus)
+from powerpi_common.device.mixin import (AdditionalState, AdditionalStateMixin,
+                                         DeviceOrchestratorMixin,
+                                         PollableMixin)
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util import ismixin
 
 
-#pylint: disable=too-many-ancestors
+# pylint: disable=too-many-ancestors
 class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMixin):
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         config: Config,
@@ -34,8 +36,9 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
 
     async def change_power_and_additional_state(
         self,
-        new_state: DeviceStatus,
-        new_additional_state: AdditionalState
+        scene: Optional[str] = None,
+        new_state: Optional[DeviceStatus] = None,
+        new_additional_state: Optional[AdditionalState] = None
     ):
         if new_state is not None or new_additional_state is not None:
             # we need to run them in reverse order for off
@@ -44,7 +47,11 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
 
             for device in ordered_devices:
                 if ismixin(device, AdditionalStateMixin):
-                    await device.change_power_and_additional_state(new_state, new_additional_state)
+                    await device.change_power_and_additional_state(
+                        scene,
+                        new_state,
+                        new_additional_state
+                    )
                 else:
                     if new_state is not None:
                         func = device.turn_on if new_state == DeviceStatus.ON else device.turn_off
@@ -52,7 +59,7 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
 
             self.set_state_and_additional(new_state, new_additional_state)
 
-    async def on_additional_state_change(self, new_additional_state: AdditionalState) -> AdditionalState:
+    async def on_additional_state_change(self, new_additional_state: AdditionalState):
         # we are doing everything in change_power_and_additional_state
         return new_additional_state
 
