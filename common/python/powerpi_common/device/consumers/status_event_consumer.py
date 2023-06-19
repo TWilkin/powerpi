@@ -37,4 +37,4 @@ class DeviceStatusEventConsumer(DeviceEventConsumer):
                     new_scene, new_power_state, new_additional_state
                 )
             else:
-                self._device.state = new_power_state
+                self._device.update_state_no_broadcast(new_power_state)
