@@ -1,6 +1,6 @@
 from asyncio import Event, wait_for
 from asyncio.exceptions import TimeoutError as AsyncTimeoutError
-from typing import Union
+from typing import Optional
 
 from powerpi_common.config import Config
 from powerpi_common.device import DeviceStatus
@@ -11,7 +11,8 @@ from powerpi_common.variable import DeviceVariable
 
 
 class RemoteDevice(DeviceVariable):
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-ancestors
+
     def __init__(
         self,
         config: Config,
@@ -20,6 +21,8 @@ class RemoteDevice(DeviceVariable):
         timeout: float = 12.5,
         **kwargs
     ):
+        # pylint: disable=too-many-arguments
+
         self.__logger = logger
         self.__timeout = timeout
 
@@ -40,10 +43,11 @@ class RemoteDevice(DeviceVariable):
 
     async def change_power_and_additional_state(
         self,
-        new_state: DeviceStatus,
-        new_additional_state: AdditionalState
+        scene: Optional[str] = None,
+        new_state: Optional[DeviceStatus] = None,
+        new_additional_state: Optional[AdditionalState] = None
     ):
-        await self.__send_message(new_state, new_additional_state)
+        await self.__send_message(scene, new_state, new_additional_state)
 
     def set_state_and_additional(
         self,
@@ -55,9 +59,7 @@ class RemoteDevice(DeviceVariable):
         )
         self.__waiting.set()
 
-    async def on_additional_state_change(
-        self, new_additional_state: AdditionalState
-    ) -> AdditionalState:
+    async def on_additional_state_change(self, new_additional_state: AdditionalState):
         # we are doing everything in change_power_and_additional_state
         return new_additional_state
 
@@ -66,21 +68,25 @@ class RemoteDevice(DeviceVariable):
         return new_additional_state
 
     async def turn_on(self):
-        await self.__send_message(DeviceStatus.ON)
+        await self.__send_message(state=DeviceStatus.ON)
 
     async def turn_off(self):
-        await self.__send_message(DeviceStatus.OFF)
+        await self.__send_message(state=DeviceStatus.OFF)
 
     async def __send_message(
         self,
-        state: Union[DeviceStatus, None],
-        additional_state: Union[AdditionalState, None] = None
+        scene: Optional[str] = None,
+        state: Optional[DeviceStatus] = None,
+        additional_state: Optional[AdditionalState] = None
     ):
         topic = f'device/{self.name}/change'
         message = {}
 
         if additional_state is not None:
             message = {**additional_state}
+
+        if scene is not None:
+            message['scene'] = scene
 
         if state is not None:
             message['state'] = state
