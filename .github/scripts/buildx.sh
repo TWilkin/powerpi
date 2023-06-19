@@ -66,6 +66,11 @@ echo "Pulling previous image"
 docker pull twilkin/$name:$oldVersion
 echo
 
+# attempt to retrieve the new image, in case it's an update
+echo "Pulling current image"
+docker pull $repo/$name:$version
+echo
+
 # build the image
 echo "Building image $name:$version"
 docker buildx build --load --platform $platform -t $repo/$name:$version -t twilkin/$name:$version -f $powerpiPath/$path/Dockerfile $powerpiPath
