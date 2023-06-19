@@ -98,6 +98,27 @@ class TestCompositeDevice(
         assert order == expected_order
 
     @pytest.mark.asyncio
+    async def test_all_change_power_and_additional_state_scene(
+        self,
+        subject: CompositeDevice,
+        devices: Dict[str, MagicMock]
+    ):
+        with patch('macro_controller.device.composite.ismixin') as ismixin:
+            ismixin.return_value = True
+
+            await subject.change_power_and_additional_state(
+                scene='other',
+                new_additional_state={'something': 'else'}
+            )
+
+        for device in devices.values():
+            device.change_power_and_additional_state.assert_called_once_with(
+                'other',
+                None,
+                {'something': 'else'}
+            )
+
+    @pytest.mark.asyncio
     async def test_all_change_power_and_additional_state_unsupported(
         self,
         subject: CompositeDevice,
