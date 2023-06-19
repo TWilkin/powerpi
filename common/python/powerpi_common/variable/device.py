@@ -40,6 +40,10 @@ class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
         self.__state = new_state
 
     @property
+    def scene(self):
+        return self.__additional_state.scene
+
+    @property
     def additional_state(self):
         return self.__additional_state.state
 

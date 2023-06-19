@@ -57,6 +57,14 @@ class AdditionalStateMixin(ABC):
 
     @property
     @abstractmethod
+    def scene(self):
+        '''
+        Returns the current scene of this device.
+        '''
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
     def additional_state(self):
         '''
         Implement this method to support returning additional state.
