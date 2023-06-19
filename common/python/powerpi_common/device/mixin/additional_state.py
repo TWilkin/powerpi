@@ -72,6 +72,20 @@ class AdditionalStateMixin(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def update_state_and_additional_no_broadcast(
+        self,
+        new_scene: str,
+        new_state: DeviceStatus,
+        new_additional_state: AdditionalState
+    ):
+        '''
+        Update the scene of this device to new_scene, the state to new_state, 
+        update the additional state to new_additional_state but do not broadcast 
+        to the message queue.
+        '''
+        raise NotImplementedError
+
+    @abstractmethod
     def set_state_and_additional(
         self,
         new_state: DeviceStatus,

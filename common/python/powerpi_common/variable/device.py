@@ -51,6 +51,16 @@ class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
     def additional_state(self, new_additional_state: AdditionalState):
         self.__additional_state.state = new_additional_state
 
+    def update_state_and_additional_no_broadcast(
+        self,
+        new_scene: str,
+        new_state: DeviceStatus,
+        new_additional_state: AdditionalState
+    ):
+        self.__additional_state.scene = new_scene
+        self.__state = new_state
+        self.__additional_state.state = new_additional_state
+
     def set_state_and_additional(
         self,
         new_state: DeviceStatus,
