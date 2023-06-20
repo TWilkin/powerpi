@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from jsonpatch import JsonPatch
 
@@ -16,7 +16,11 @@ async def device_off_action(device: Device):
     await device.turn_off()
 
 
-def device_additional_state_action(patch: Dict[str, Any], variable_manager: VariableManager):
+def device_additional_state_action(
+    scene: Optional[str],
+    patch: Dict[str, Any],
+    variable_manager: VariableManager
+):
     json_patch = JsonPatch(patch)
 
     async def wrapper(device: AdditionalStateMixin):
@@ -31,6 +35,10 @@ def device_additional_state_action(patch: Dict[str, Any], variable_manager: Vari
             )
 
         patched = json_patch.apply(current_state)
-        await device.change_power_and_additional_state(new_additional_state=patched)
+
+        await device.change_power_and_additional_state(
+            scene=scene,
+            new_additional_state=patched
+        )
 
     return wrapper

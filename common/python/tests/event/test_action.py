@@ -3,12 +3,14 @@ from typing import Optional
 import pytest
 
 from powerpi_common.device.mixin import AdditionalState
+from powerpi_common.device.scene_state import ReservedScenes
 from powerpi_common.event.action import (device_additional_state_action,
                                          device_off_action, device_on_action)
 
 
 class DeviceImpl:
     def __init__(self):
+        self.scene = ReservedScenes.DEFAULT
         self.state = None
         self.additional_state = {
             'brightness': None,
@@ -23,10 +25,11 @@ class DeviceImpl:
 
     async def change_power_and_additional_state(
         self,
+        scene: Optional[str] = None,
         _: Optional[str] = None,
-        __: Optional[str] = None,
         new_additional_state: Optional[AdditionalState] = None
     ):
+        self.scene = scene
         self.additional_state = new_additional_state
 
 
@@ -53,7 +56,8 @@ async def test_device_off_action():
 
 
 @pytest.mark.asyncio
-async def test_device_additional_state_action(powerpi_variable_manager):
+@pytest.mark.parametrize('scene', [None, 'default', 'other'])
+async def test_device_additional_state_action(powerpi_variable_manager, scene: Optional[str]):
     device = DeviceImpl()
 
     patch = [
@@ -69,13 +73,17 @@ async def test_device_additional_state_action(powerpi_variable_manager):
         }
     ]
 
-    func = device_additional_state_action(patch, powerpi_variable_manager)
+    func = device_additional_state_action(
+        scene, patch, powerpi_variable_manager
+    )
 
+    assert device.scene == ReservedScenes.DEFAULT
     assert device.additional_state['brightness'] is None
     assert device.additional_state['other'] == 'untouched'
 
     await func(device)
 
+    assert device.scene == scene
     assert device.additional_state['brightness'] == 5000
     assert device.additional_state['something'] == 'boom'
     assert device.additional_state['other'] == 'untouched'
@@ -95,7 +103,9 @@ async def test_device_additional_state_action_with_variable(powerpi_variable_man
         },
     ]
 
-    func = device_additional_state_action(patch, powerpi_variable_manager)
+    func = device_additional_state_action(
+        None, patch, powerpi_variable_manager
+    )
 
     assert device.additional_state['brightness'] is None
     assert device.additional_state['other'] == 'untouched'

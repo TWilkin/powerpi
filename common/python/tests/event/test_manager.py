@@ -89,7 +89,7 @@ class TestEventManager:
         assert subject.consumers[0].events[1].device == 'Device2'
         assert subject.consumers[0].events[1].condition == 'condition2'
 
-        # we're expecting the second consumer to have 1 events
+        # we're expecting the second consumer to have 1 event
         assert len(subject.consumers[1].events) == 1
         assert subject.consumers[1].topic == 'event/Something/Else'
 
