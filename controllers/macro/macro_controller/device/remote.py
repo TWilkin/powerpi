@@ -49,6 +49,17 @@ class RemoteDevice(DeviceVariable):
     ):
         await self.__send_message(scene, new_state, new_additional_state)
 
+    def update_state_and_additional_no_broadcast(
+        self,
+        new_scene: str,
+        new_state: DeviceStatus,
+        new_additional_state: AdditionalState
+    ):
+        DeviceVariable.update_state_and_additional_no_broadcast(
+            self, new_scene, new_state, new_additional_state
+        )
+        self.__waiting.set()
+
     def set_state_and_additional(
         self,
         new_state: DeviceStatus,
