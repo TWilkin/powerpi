@@ -3,8 +3,7 @@ from typing import Any, Dict, Optional
 from jsonpatch import JsonPatch
 
 from powerpi_common.condition import ConditionParser
-from powerpi_common.device import Device
-from powerpi_common.device.mixin import AdditionalStateMixin
+from powerpi_common.device import AdditionalStateDevice, Device
 from powerpi_common.variable import VariableManager
 
 
@@ -23,7 +22,7 @@ def device_additional_state_action(
 ):
     json_patch = JsonPatch(patch)
 
-    async def wrapper(device: AdditionalStateMixin):
+    async def wrapper(device: AdditionalStateDevice):
         current_state = device.additional_state
 
         parser = ConditionParser(variable_manager)
@@ -40,5 +39,12 @@ def device_additional_state_action(
             scene=scene,
             new_additional_state=patched
         )
+
+    return wrapper
+
+
+def device_scene_action(scene: Optional[str]):
+    async def wrapper(device: AdditionalStateDevice):
+        await device.change_scene(scene)
 
     return wrapper

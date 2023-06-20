@@ -5,7 +5,8 @@ import pytest
 from powerpi_common.device.mixin import AdditionalState
 from powerpi_common.device.scene_state import ReservedScenes
 from powerpi_common.event.action import (device_additional_state_action,
-                                         device_off_action, device_on_action)
+                                         device_off_action, device_on_action,
+                                         device_scene_action)
 
 
 class DeviceImpl:
@@ -31,6 +32,9 @@ class DeviceImpl:
     ):
         self.scene = scene
         self.additional_state = new_additional_state
+
+    async def change_scene(self, scene: Optional[str]):
+        self.scene = scene
 
 
 @pytest.mark.asyncio
@@ -114,3 +118,17 @@ async def test_device_additional_state_action_with_variable(powerpi_variable_man
 
     assert device.additional_state['brightness'] == 'untouched'
     assert device.additional_state['other'] == 'untouched'
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('scene', [None, 'default', 'other'])
+async def test_device_change_scene(scene: Optional[str]):
+    device = DeviceImpl()
+
+    func = device_scene_action(scene)
+
+    assert device.scene == ReservedScenes.DEFAULT
+
+    await func(device)
+
+    assert device.scene == scene
