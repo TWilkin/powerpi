@@ -38,6 +38,10 @@
                                             "description": "Whether to turn the device on or off",
                                             "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/DeviceState.schema.json"
                                         },
+                                        "scene": {
+                                            "description": "The scene to switch to, or apply the patch to",
+                                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
+                                        },
                                         "patch": {
                                             "description": "The JSON patch operation(s) to apply to the device",
                                             "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/JsonPatch.schema.json"
@@ -45,7 +49,11 @@
                                     },
                                     "required": ["device"],
                                     "additionalProperties": false,
-                                    "anyOf": [{ "required": ["state"] }, { "required": ["patch"] }]
+                                    "anyOf": [
+                                        { "required": ["state"] },
+                                        { "required": ["scene"] },
+                                        { "required": ["patch"] }
+                                    ]
                                 },
                                 "condition": {
                                     "description": "The condition to test if this action should be taken",
