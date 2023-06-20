@@ -96,6 +96,10 @@
                             "maximum": 6500
                         }
                     },
+                    "scene": {
+                        "description": "The scene to apply the additional state changes to",
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
+                    },
                     "power": {
                         "description": "Whether to turn the device on when the schedule starts",
                         "type": "boolean"
