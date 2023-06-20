@@ -12,6 +12,7 @@ class AdditionalStateMixin(ABC):
     are received alternate state update methods are called from this mixin
     to allow an implementing device to set additional as well as power state.
     '''
+
     async def change_power_and_additional_state(
         self,
         scene: Optional[str] = None,
@@ -26,7 +27,7 @@ class AdditionalStateMixin(ABC):
         # pylint: disable=broad-except
         try:
             # update additional state first
-            if len(new_additional_state) > 0:
+            if new_additional_state is not None and len(new_additional_state) > 0:
                 if self._is_current_scene(scene):
                     new_additional_state = await self.on_additional_state_change(
                         new_additional_state

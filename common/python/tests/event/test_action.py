@@ -1,5 +1,8 @@
+from typing import Optional
+
 import pytest
 
+from powerpi_common.device.mixin import AdditionalState
 from powerpi_common.event.action import (device_additional_state_action,
                                          device_off_action, device_on_action)
 
@@ -18,7 +21,12 @@ class DeviceImpl:
     async def turn_off(self):
         self.state = 'off'
 
-    async def change_power_and_additional_state(self, _, new_additional_state: dict):
+    async def change_power_and_additional_state(
+        self,
+        _: Optional[str] = None,
+        __: Optional[str] = None,
+        new_additional_state: Optional[AdditionalState] = None
+    ):
         self.additional_state = new_additional_state
 
 
