@@ -7,7 +7,7 @@ appVersion: 0.2.3
 dependencies:
   # services
   - name: config-server
-    version: 0.1.8
+    version: 0.1.9
     condition: global.config
   - name: database
     version: 0.1.3
