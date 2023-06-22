@@ -47,6 +47,7 @@ describe("Schedules", () => {
                     },
                     brightness: [0, 100],
                     temperature: [2000, 4000],
+                    scene: "movie",
                 },
             ],
         }));

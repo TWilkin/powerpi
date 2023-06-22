@@ -48,6 +48,15 @@ describe("Events", () => {
                                 ],
                             },
                         },
+                        {
+                            action: {
+                                device: "OfficeLight",
+                                scene: "movie",
+                            },
+                            condition: {
+                                when: [{ equals: [{ var: "device.TV.state" }, "on"] }],
+                            },
+                        },
                     ],
                 },
                 {
@@ -214,7 +223,7 @@ describe("Events", () => {
                 ],
             }));
 
-        test("No state or patch", () =>
+        test("No state, scene or patch", () =>
             testInvalid({
                 listeners: [
                     {
