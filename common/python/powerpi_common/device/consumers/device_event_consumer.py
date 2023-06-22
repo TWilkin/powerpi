@@ -45,5 +45,6 @@ class DeviceEventConsumer(MQTTConsumer):
 
         result.pop('state', None)
         result.pop('timestamp', None)
+        result.pop('scene', None)
 
         return result

@@ -1,8 +1,9 @@
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from unittest.mock import MagicMock
 
 from powerpi_common.device import AdditionalStateDevice
+from powerpi_common.device.scene_state import ReservedScenes
 
 import pytest
 
@@ -23,7 +24,12 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         assert len(keys) > 0
 
     @pytest.mark.asyncio
-    async def test_change_additional_state_message(self, subject: AdditionalStateDevice):
+    @pytest.mark.parametrize('scene', [None, 'default'])
+    async def test_change_additional_state_message(
+        self,
+        subject: AdditionalStateDevice,
+        scene: Optional[str]
+    ):
         # pylint: disable=protected-access
         key = subject._additional_state_keys()[0]
         message = {
@@ -32,6 +38,10 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         }
         message[key] = 1
 
+        if scene is not None:
+            message['scene'] = scene
+
+        assert subject.scene == ReservedScenes.DEFAULT
         assert subject.state == 'unknown'
         assert subject.additional_state == {}
 
