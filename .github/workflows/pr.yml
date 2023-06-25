@@ -82,12 +82,6 @@ jobs:
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh lifx"
         working-directory: controllers/lifx
 
-      - name: Test Macro Controller
-        if: steps.check_modified.outputs.macro_controller
-        shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh macro"
-        working-directory: controllers/macro
-
       - name: Test Network Controller
         if: steps.check_modified.outputs.network_controller
         shell: bash
@@ -99,6 +93,12 @@ jobs:
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh node"
         working-directory: controllers/node
+
+      - name: Test Virtual Controller
+        if: steps.check_modified.outputs.virtual_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh virtual"
+        working-directory: controllers/virtual
 
       - name: Test ZigBee Controller
         if: steps.check_modified.outputs.zigbee_controller

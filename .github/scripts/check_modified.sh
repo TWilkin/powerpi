@@ -68,9 +68,9 @@ do
         include_project "energenie_controller" "python"
         include_project "harmony_controller" "python"
         include_project "lifx_controller" "python"
-        include_project "macro_controller" "python"
         include_project "network_controller" "python"
         include_project "node_controller" "python"
+        include_project "virtual_controller" "python"
         include_project "zigbee_controller" "python"
 
         include_project "scheduler" "python"
@@ -80,9 +80,9 @@ do
     check_file $file "controllers/energenie" "energenie_controller" "python"
     check_file $file "controllers/harmony" "harmony_controller" "python"
     check_file $file "controllers/lifx" "lifx_controller" "python"
-    check_file $file "controllers/macro" "macro_controller" "python"
     check_file $file "controllers/network" "network_controller" "python"
     check_file $file "controllers/node" "node_controller" "python"
+    check_file $file "controllers/virtual" "virtual_controller" "python"
     check_file $file "controllers/zigbee" "zigbee_controller" "python"
 
     # check the services
