@@ -45,14 +45,14 @@ dependencies:
   - name: lifx-controller
     version: 0.1.5
     condition: global.lifx
-  - name: macro-controller
-    version: 0.1.4
   - name: network-controller
     version: 0.1.3
     condition: global.network
   - name: node-controller
     version: 0.1.5
     condition: global.node
+  - name: virtual-controller
+    version: 0.2.0
   - name: zigbee-controller
     version: 0.1.5
     condition: global.zigbee
