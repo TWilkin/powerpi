@@ -110,7 +110,7 @@ class DeviceSchedule(LogMixin):
             new_value = self.__calculate_new_value(start_date, delta_range)
 
             self.log_info(
-                'Setting %s %s to %d',
+                'Setting %s %s to %0.2f',
                 delta_range.type,
                 self.__device,
                 new_value
