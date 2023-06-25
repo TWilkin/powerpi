@@ -2,8 +2,8 @@ from dependency_injector import containers, providers
 from powerpi_common.config import ControllerConfig
 from powerpi_common.container import Container as CommonContainer
 
-from macro_controller.__version__ import __app_name__, __version__
-from macro_controller.device.container import DeviceContainer
+from virtual_controller.__version__ import __app_name__, __version__
+from virtual_controller.device.container import DeviceContainer
 
 
 class ApplicationContainer(containers.DeclarativeContainer):

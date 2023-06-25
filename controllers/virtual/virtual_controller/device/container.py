@@ -1,12 +1,13 @@
 from dependency_injector import containers, providers
-from macro_controller.device.composite import CompositeDevice
-from macro_controller.device.condition import ConditionDevice
-from macro_controller.device.delay import DelayDevice
-from macro_controller.device.factory import RemoteDeviceFactory
-from macro_controller.device.log import LogDevice
-from macro_controller.device.mutex import MutexDevice
-from macro_controller.device.remote import RemoteDevice
-from macro_controller.device.variable import VariableDevice
+
+from virtual_controller.device.composite import CompositeDevice
+from virtual_controller.device.condition import ConditionDevice
+from virtual_controller.device.delay import DelayDevice
+from virtual_controller.device.factory import RemoteDeviceFactory
+from virtual_controller.device.log import LogDevice
+from virtual_controller.device.mutex import MutexDevice
+from virtual_controller.device.remote import RemoteDevice
+from virtual_controller.device.variable import VariableDevice
 
 
 class DeviceContainer(containers.DeclarativeContainer):

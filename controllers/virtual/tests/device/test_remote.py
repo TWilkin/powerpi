@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import pytest
 from powerpi_common.device.mixin import AdditionalState
 
-from macro_controller.device.remote import RemoteDevice
+from virtual_controller.device.remote import RemoteDevice
 
 
 class TestRemoteDevice:

@@ -1,8 +1,7 @@
 import sys
 
-from macro_controller.container import ApplicationContainer
-from macro_controller.device.container import add_devices
-
+from virtual_controller.container import ApplicationContainer
+from virtual_controller.device.container import add_devices
 
 if __name__ == '__main__':
     # initialise DI
