@@ -72,7 +72,7 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         new_additional_state: AdditionalState
     ):
         '''
-        Update the scene of this device to new_scene, the state to new_state, 
+        Update the scene of this device to new_scene, the state to new_state and
         update the additional state to new_additional_state but do not broadcast 
         to the message queue.
         '''
