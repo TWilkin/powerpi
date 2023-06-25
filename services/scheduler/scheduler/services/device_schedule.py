@@ -257,10 +257,13 @@ class DeviceSchedule(LogMixin):
         intervals = seconds / self.__interval
 
         # work out how many more intervals need to be acted on
-        elapsed_seconds = datetime.now(
-            pytz.UTC).timestamp() - start_date.timestamp()
+        elapsed_seconds = datetime.now(pytz.UTC).timestamp() \
+            - start_date.timestamp()
         remaining_intervals = intervals - \
             (elapsed_seconds / self.__interval) + 1
+
+        if remaining_intervals <= 0:
+            remaining_intervals = 1
 
         # do we want to overwrite start with the current value from the device
         device = self.__variable_manager.get_device(self.__device)
