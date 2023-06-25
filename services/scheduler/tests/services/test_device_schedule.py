@@ -12,6 +12,8 @@ from pytest_mock import MockerFixture
 
 from scheduler.services import DeviceSchedule
 
+SubjectBuilder = Callable[[Dict[str, Any]], DeviceSchedule]
+
 
 @dataclass
 class ExpectedTime:
@@ -50,7 +52,7 @@ class TestDeviceSchedule:
     @pytest.mark.parametrize('interval', [1, 60])
     def test_start(
         self,
-        subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
+        subject_builder: SubjectBuilder,
         add_job,
         start_time: str,
         end_time: str,
@@ -100,7 +102,7 @@ class TestDeviceSchedule:
     ])
     def test_start_condition(
         self,
-        subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
+        subject_builder: SubjectBuilder,
         add_job,
         condition: Optional[Expression],
         expected: bool
@@ -146,7 +148,7 @@ class TestDeviceSchedule:
     ])
     async def test_execute(
         self,
-        subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
+        subject_builder: SubjectBuilder,
         add_job,
         powerpi_mqtt_producer: MagicMock,
         config: Dict[str, Any],
@@ -189,7 +191,7 @@ class TestDeviceSchedule:
     # ])
     # async def test_execute_round(
     #     self,
-    #     subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
+    #     subject_builder: SubjectBuilder,
     #     powerpi_mqtt_producer: MagicMock,
     #     brightness: List[int],
     #     hour: int,
@@ -225,7 +227,7 @@ class TestDeviceSchedule:
     @pytest.mark.asyncio
     async def test_execute_schedule_next(
         self,
-        subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
+        subject_builder: SubjectBuilder,
         add_job,
     ):
         with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
@@ -277,7 +279,7 @@ class TestDeviceSchedule:
     ])
     async def test_execute_current_value(
         self,
-        subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
+        subject_builder: SubjectBuilder,
         powerpi_mqtt_producer: MagicMock,
         powerpi_variable_manager: MagicMock,
         mocker: MockerFixture,
@@ -333,7 +335,7 @@ class TestDeviceSchedule:
     ])
     async def test_execute_condition(
         self,
-        subject_builder: Callable[[Dict[str, Any]], DeviceSchedule],
+        subject_builder: SubjectBuilder,
         powerpi_mqtt_producer: MagicMock,
         powerpi_variable_manager: MagicMock,
         mocker: MockerFixture,
@@ -383,7 +385,7 @@ class TestDeviceSchedule:
         powerpi_scheduler,
         powerpi_variable_manager,
         condition_parser_factory
-    ):
+    ) -> SubjectBuilder:
         # pylint: disable=too-many-arguments
 
         type(scheduler_config).timezone = PropertyMock(
