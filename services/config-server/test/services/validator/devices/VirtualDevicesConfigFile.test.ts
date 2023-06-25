@@ -1,6 +1,6 @@
 import commonDeviceTests from "./commonDeviceTests";
 
-describe("Macro Devices", () => {
+describe("Virtual Devices", () => {
     describe("Composite", () => {
         const { testInvalid } = commonDeviceTests({
             devices: [{ type: "composite", name: "Composite", devices: ["Device1", "Device2"] }],

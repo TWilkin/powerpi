@@ -32,28 +32,28 @@
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/lifx/LIFXLight.schema.json"
                     },
                     {
-                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Composite.schema.json"
-                    },
-                    {
-                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Condition.schema.json"
-                    },
-                    {
-                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Delay.schema.json"
-                    },
-                    {
-                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Log.schema.json"
-                    },
-                    {
-                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Mutex.schema.json"
-                    },
-                    {
-                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/macro/Variable.schema.json"
-                    },
-                    {
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/network/Computer.schema.json"
                     },
                     {
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/node/Node.schema.json"
+                    },
+                    {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/virtual/Composite.schema.json"
+                    },
+                    {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/virtual/Condition.schema.json"
+                    },
+                    {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/virtual/Delay.schema.json"
+                    },
+                    {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/virtual/Log.schema.json"
+                    },
+                    {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/virtual/Mutex.schema.json"
+                    },
+                    {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/virtual/Variable.schema.json"
                     },
                     {
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeeLight.schema.json"
