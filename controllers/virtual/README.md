@@ -1,4 +1,4 @@
-# PowerPi - Macro Controller
+# PowerPi - Virtual Controller
 
 PowerPi service which controls virtual devices, which are used to combine real devices provided by the other controllers.
 
@@ -41,7 +41,7 @@ This service requires two configuration files, both of which are described on th
 This service can be tested by executing the following commands.
 
 ```bash
-# From the controllers/macro directory in your PowerPi checkout
+# From the controllers/virtual directory in your PowerPi checkout
 # Download the dependencies
 poetry install
 
@@ -54,10 +54,10 @@ poetry run pytest
 The service can be started locally with the following commands.
 
 ```bash
-# From the controllers/macro directory in your PowerPi checkout
+# From the controllers/virtual directory in your PowerPi checkout
 # Download the dependencies
 poetry install
 
 # Run the service locally
-poetry run python -m macro_controller
+poetry run python -m virtual_controller
 ```
