@@ -305,7 +305,7 @@ class DeviceSchedule(LogMixin):
             builder += f' for scene {self.__scene}'
 
         for device_type, delta in self.__delta.items():
-            builder += f' {device_type} between {delta.start} and {delta.end}'
+            builder += f', {device_type} between {delta.start} and {delta.end}'
 
         if self.__power:
             builder += ' and turn it on'
