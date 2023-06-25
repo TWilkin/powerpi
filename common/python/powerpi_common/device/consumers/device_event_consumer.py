@@ -28,11 +28,11 @@ class DeviceEventConsumer(MQTTConsumer):
             valid = True
 
         if state is not None and state != DeviceStatus.ON and state != DeviceStatus.OFF:
-            self._logger.error(f'Unrecognisable state {state}')
+            self.log_error('Unrecognisable state %s', state)
             valid = False
 
         if device_name is None or device_name.strip() == '':
-            self._logger.error('Device is a required field')
+            self.log_error('Device is a required field')
             valid = False
         else:
             valid &= device_name == self._device.name
@@ -45,5 +45,6 @@ class DeviceEventConsumer(MQTTConsumer):
 
         result.pop('state', None)
         result.pop('timestamp', None)
+        result.pop('scene', None)
 
         return result

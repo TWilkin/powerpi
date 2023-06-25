@@ -1,8 +1,9 @@
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from unittest.mock import MagicMock
 
 from powerpi_common.device import AdditionalStateDevice
+from powerpi_common.device.scene_state import ReservedScenes
 
 import pytest
 
@@ -23,7 +24,12 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         assert len(keys) > 0
 
     @pytest.mark.asyncio
-    async def test_change_additional_state_message(self, subject: AdditionalStateDevice):
+    @pytest.mark.parametrize('scene', [None, 'default'])
+    async def test_change_additional_state_message(
+        self,
+        subject: AdditionalStateDevice,
+        scene: Optional[str]
+    ):
         # pylint: disable=protected-access
         key = subject._additional_state_keys()[0]
         message = {
@@ -32,6 +38,10 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         }
         message[key] = 1
 
+        if scene is not None:
+            message['scene'] = scene
+
+        assert subject.scene == ReservedScenes.DEFAULT
         assert subject.state == 'unknown'
         assert subject.additional_state == {}
 
@@ -75,14 +85,40 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         assert all(key in message for message in messages)
 
     @pytest.mark.asyncio
+    async def test_change_scene(self, subject: AdditionalStateDevice):
+        assert subject.scene == 'default'
+
+        await subject.change_scene('other')
+        assert subject.scene == 'other'
+
+        # pylint: disable=protected-access
+        key = subject._additional_state_keys()[0]
+        additional_state = {}
+        additional_state[key] = 10
+        subject.additional_state = additional_state
+
+        await subject.change_scene('current')
+        assert subject.scene == 'other'
+        assert subject.additional_state.get(key, None) == 10
+
+        await subject.change_scene('default')
+        assert subject.scene == 'default'
+        assert subject.additional_state.get(key, None) is None
+
+    @pytest.mark.asyncio
     async def test_initial_additional_state_message(self, subject: AdditionalStateDevice):
         # pylint: disable=protected-access
         key = subject._additional_state_keys()[0]
         message = {
             'state': 'on',
+            'scene': 'other',
             'timestamp': 0,
+            'scenes': {
+                'another': {}
+            }
         }
-        message[key] = 1
+        message[key] = 10
+        message['scenes']['another'][key] = 20
 
         assert subject.state == 'unknown'
         assert subject.additional_state == {}
@@ -90,11 +126,55 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         # first message should set the state
         await self._initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
-        assert subject.additional_state.get(key, None) == 1
+        assert subject.scene == 'other'
+        assert subject.additional_state.get(key, None) == 10
+
+        # should also populate the scenes
+        await subject.change_scene('another')
+        assert subject.additional_state.get(key, None) == 20
 
         # subsequent messages should be ignored
         message['state'] = 'off'
         message['something'] = 'more'
         await self._initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
-        assert subject.additional_state.get(key, None) == 1
+        assert subject.additional_state.get(key, None) == 20
+
+    @pytest.mark.asyncio
+    async def test_scene_event_message(self, subject: AdditionalStateDevice):
+        scene_event_consumer = self._mqtt_consumers['scene']
+
+        # pylint: disable=protected-access
+        key = subject._additional_state_keys()[0]
+
+        message = {
+            'scene': 'other'
+        }
+
+        assert subject.scene == 'default'
+        assert subject.state == 'unknown'
+
+        # should change the scene
+        await scene_event_consumer.on_message(message, subject.name, 'scene')
+        assert subject.scene == 'other'
+
+        # now send additional state to the default scene
+        message = {
+            'scene': 'default',
+        }
+        message[key] = 2
+        await subject.on_message(message, subject.name, 'change')
+
+        assert subject.scene == 'other'
+        assert subject.state == 'unknown'
+        assert subject.additional_state.get(key, None) is None
+
+        # now switching back to default should activate the scene's additional state
+        message = {
+            'scene': 'default'
+        }
+        await scene_event_consumer.on_message(message, subject.name, 'scene')
+
+        assert subject.scene == 'default'
+        assert subject.state == 'unknown'
+        assert subject.additional_state.get(key, None) == 2

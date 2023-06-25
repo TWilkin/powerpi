@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "energenie_controller"
-version = "0.2.2"
-description = "PowerPi Engergenie Controller"
+version = "0.2.3"
+description = "PowerPi Energenie Controller"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
 repository = "https://github.com/TWilkin/powerpi.git"

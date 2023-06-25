@@ -1,12 +1,19 @@
+from typing import Optional
+
 from powerpi_common.config import Config
+from powerpi_common.device.consumers import SceneEventConsumer
+from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+
 from .device import Device
 from .mixin import AdditionalState, AdditionalStateMixin
-from .types import DeviceStatus
+from .scene_state import SceneState
 
 
 class AdditionalStateDevice(Device, AdditionalStateMixin):
+    # pylint: disable=too-many-ancestors
+
     '''
     Device implementation of AdditionalStateMixin to provide additional
     state functionality. 
@@ -20,21 +27,30 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
+        listener=True,
         **kwargs
     ):
-        self.__additional_state = None
+        self.__additional_state = SceneState()
 
-        Device.__init__(self, config, logger, mqtt_client, **kwargs)
+        Device.__init__(self, config, logger, mqtt_client, listener, **kwargs)
+
+        if listener:
+            # add listener for scene changes
+            mqtt_client.add_consumer(SceneEventConsumer(self, config, logger))
+
+    @property
+    def scene(self):
+        '''
+        Returns the current scene of this device.
+        '''
+        return self.__additional_state.scene
 
     @property
     def additional_state(self):
         '''
         Returns the current additional state of this device.
         '''
-        if self.__additional_state:
-            return self.__additional_state
-
-        return {}
+        return self.__additional_state.state
 
     @additional_state.setter
     def additional_state(self, new_additional_state: AdditionalState):
@@ -45,21 +61,24 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         new_additional_state = self._filter_keys(new_additional_state)
 
         if len(new_additional_state) > 0:
-            self.__additional_state = new_additional_state
+            self.__additional_state.state = new_additional_state
 
             self._broadcast_state_change()
 
     def update_state_and_additional_no_broadcast(
         self,
+        new_scene: str,
         new_state: DeviceStatus,
         new_additional_state: AdditionalState
     ):
         '''
-        Update the state of this device to new_state, update the additional state
-        to new_additional_state but do not broadcast to the message queue.
+        Update the scene of this device to new_scene, the state to new_state and
+        update the additional state to new_additional_state but do not broadcast 
+        to the message queue.
         '''
         self.update_state_no_broadcast(new_state)
-        self.__additional_state = self._filter_keys(new_additional_state)
+        self.__additional_state.scene = new_scene
+        self.__additional_state.state = self._filter_keys(new_additional_state)
 
     def set_state_and_additional(
         self,
@@ -73,25 +92,59 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         new_additional_state = self._filter_keys(new_additional_state)
 
         if len(new_additional_state) > 0:
-            self.__additional_state = new_additional_state
+            self.__additional_state.state = new_additional_state
 
         if new_state is not None:
             self.update_state_no_broadcast(new_state)
 
         self._broadcast_state_change()
 
+    def set_scene_additional_state(
+        self,
+        scene: Optional[str],
+        new_additional_state: AdditionalState
+    ):
+        '''
+        Update the additional state for the specified scene.
+        '''
+        self.__additional_state.update_scene_state(scene, new_additional_state)
+
+    async def change_scene(self, new_scene: str):
+        '''
+        Switch this device from the current scene to this new one, and apply any state changes.
+        '''
+        if not self.__additional_state.is_current_scene(new_scene):
+            self.__additional_state.scene = new_scene
+
+            new_additional_state = self.__additional_state.state
+            await self.change_power_and_additional_state(
+                scene=new_scene,
+                new_additional_state=new_additional_state
+            )
+
     def _format_state(self):
         result = Device._format_state(self)
 
-        if self.__additional_state:
-            for key in self.__additional_state:
-                to_json = getattr(
-                    self.__additional_state[key], 'to_json', None
-                )
+        if self.__additional_state.state:
+            result = {**result, **self.__additional_state.format_scene_state()}
 
-                if callable(to_json):
-                    result[key] = to_json()
-                else:
-                    result[key] = self.__additional_state[key]
+        # only include scenes if we have > just the current and they have additional state
+        scenes = list(filter(
+            lambda scene:
+                not self.__additional_state.is_current_scene(scene)
+                and len(self.__additional_state.get_scene_state(scene)) >= 1,
+            self.__additional_state.scenes
+        ))
+        if len(scenes) >= 1:
+            result['scenes'] = {
+                scene: self.__additional_state.format_scene_state(scene)
+                for scene in scenes
+            }
 
         return result
+
+    def _is_current_scene(self, scene: Optional[str]):
+        '''
+        Returns whether the specified scene is the current scene or not.
+        '''
+        return self.__additional_state.is_current_scene(scene)

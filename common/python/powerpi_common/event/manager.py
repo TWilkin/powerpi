@@ -1,9 +1,11 @@
-from typing import List
+from typing import Any, Dict, List
 
 from powerpi_common.config import Config
-from powerpi_common.device import Device, DeviceManager, DeviceNotFoundException, DeviceStatus
-from powerpi_common.event.action import device_additional_state_action, device_off_action, \
-    device_on_action
+from powerpi_common.device import (Device, DeviceManager,
+                                   DeviceNotFoundException, DeviceStatus)
+from powerpi_common.event.action import (device_additional_state_action,
+                                         device_off_action, device_on_action,
+                                         device_scene_action)
 from powerpi_common.event.consumer import EventConsumer
 from powerpi_common.event.handler import EventHandler
 from powerpi_common.logger import Logger
@@ -20,7 +22,7 @@ class EventManager:
         device_manager: DeviceManager,
         variable_manager: VariableManager
     ):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
         self.__config = config
         self.__logger = logger
         self.__mqtt_client = mqtt_client
@@ -93,7 +95,7 @@ class EventManager:
             f'Found {len(self.__consumers)} matching listener(s)'
         )
 
-    def __get_action(self, action: dict):
+    def __get_action(self, action: Dict[str, Any]):
         try:
             state = action['state']
 
@@ -105,7 +107,16 @@ class EventManager:
             pass
 
         try:
-            return device_additional_state_action(action['patch'], self.__variable_manager)
+            scene = action.get('scene', None)
+
+            return device_additional_state_action(scene, action['patch'], self.__variable_manager)
+        except KeyError:
+            pass
+
+        try:
+            scene = action['scene']
+
+            return device_scene_action(scene)
         except KeyError:
             pass
 

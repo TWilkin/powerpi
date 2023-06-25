@@ -1,5 +1,5 @@
 from asyncio import Future
-from typing import Dict, List, Tuple
+from typing import Dict, List
 from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
@@ -62,7 +62,7 @@ class TestCompositeDevice(
         assert order == ['device3', 'device2', 'device1', 'device0']
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize('states', [
+    @pytest.mark.parametrize('new_state,expected_order', [
         ('on', ['device0', 'device1', 'device2', 'device3']),
         ('off', ['device3', 'device2', 'device1', 'device0'])
     ])
@@ -70,15 +70,14 @@ class TestCompositeDevice(
         self,
         subject: CompositeDevice,
         devices: Dict[str, MagicMock],
-        states: Tuple[str, List[str]]
+        new_state: str,
+        expected_order: List[str]
     ):
-        (new_state, expected_order) = states
-
         # store the order they were called
         order = []
 
         def mock(name: str):
-            async def change_power_and_additional_state(_: str, __: dict):
+            async def change_power_and_additional_state(_: str, __: str, ___: dict):
                 order.append(name)
             return change_power_and_additional_state
 
@@ -90,10 +89,34 @@ class TestCompositeDevice(
         with patch('macro_controller.device.composite.ismixin') as ismixin:
             ismixin.return_value = True
 
-            await subject.change_power_and_additional_state(new_state, new_additional_state)
+            await subject.change_power_and_additional_state(
+                new_state=new_state,
+                new_additional_state=new_additional_state
+            )
 
         # ensure they were called in the correct order
         assert order == expected_order
+
+    @pytest.mark.asyncio
+    async def test_all_change_power_and_additional_state_scene(
+        self,
+        subject: CompositeDevice,
+        devices: Dict[str, MagicMock]
+    ):
+        with patch('macro_controller.device.composite.ismixin') as ismixin:
+            ismixin.return_value = True
+
+            await subject.change_power_and_additional_state(
+                scene='other',
+                new_additional_state={'something': 'else'}
+            )
+
+        for device in devices.values():
+            device.change_power_and_additional_state.assert_called_once_with(
+                'other',
+                None,
+                {'something': 'else'}
+            )
 
     @pytest.mark.asyncio
     async def test_all_change_power_and_additional_state_unsupported(
@@ -107,13 +130,16 @@ class TestCompositeDevice(
         with patch('macro_controller.device.composite.ismixin') as ismixin:
             ismixin.return_value = False
 
-            await subject.change_power_and_additional_state(new_state, new_additional_state)
+            await subject.change_power_and_additional_state(
+                new_state=new_state,
+                new_additional_state=new_additional_state
+            )
 
         for device in devices.values():
             device.turn_on.assert_called_once()
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize('states', [
+    @pytest.mark.parametrize('initial_state,update_state,expected_states', [
         ('unknown', 'on', ['unknown', 'unknown', 'unknown', 'on']),
         ('unknown', 'off', ['unknown', 'unknown', 'unknown', 'off']),
         ('unknown', 'unknown', ['unknown', 'unknown', 'unknown', 'unknown']),
@@ -128,9 +154,11 @@ class TestCompositeDevice(
         self,
         subject: CompositeDevice,
         devices: Dict[str, MagicMock],
-        states: Tuple[str, str, List[str]]
+        initial_state: str,
+        update_state: str,
+        expected_states: List[str]
     ):
-        (initial_state, update_state, expected_states) = states
+        # pylint: disable=too-many-arguments
 
         assert subject.state == 'unknown'
 
@@ -145,6 +173,23 @@ class TestCompositeDevice(
             assert subject.state == expected
 
         assert subject.state == update_state
+
+    @pytest.mark.asyncio
+    async def test_scene_event_message(self, subject: CompositeDevice):
+        scene_event_consumer = self._mqtt_consumers['scene']
+
+        message = {
+            'scene': 'other'
+        }
+
+        assert subject.scene == 'default'
+        assert subject.state == 'unknown'
+
+        # should change the scene
+        await scene_event_consumer.on_message(message, subject.name, 'scene')
+        assert subject.scene == 'other'
+
+        # additional state will always be applied to the composite regardless of scene
 
     @pytest.fixture
     def subject(

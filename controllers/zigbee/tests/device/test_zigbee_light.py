@@ -77,6 +77,7 @@ class TestZigbeeeLight(
 
         topic = 'device/Light/status'
         message = {
+            'scene': 'default',
             'state': 'on' if state else 'off',
             **expected
         }

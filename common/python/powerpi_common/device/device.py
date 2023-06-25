@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from asyncio import Lock
-from typing import Awaitable, Callable, Union
+from typing import Awaitable, Callable
 
 from powerpi_common.config import Config
 from powerpi_common.device.types import DeviceStatus
@@ -121,8 +121,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
         self._logger.info(f'Device "{self._name}" now has state {message}')
 
-        topic = f'device/{self._name}/status'
-        self._producer(topic, message)
+        self._broadcast('status', message)
 
     def _format_state(self):
         return {'state': self.state}
@@ -134,7 +133,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
     async def __change_power_handler(
         self,
-        func: Union[Awaitable[None], Callable[[], None]],
+        func: Callable[[], Awaitable[bool]],
         new_status: DeviceStatus
     ):
         # pylint: disable=broad-except

@@ -1,11 +1,11 @@
 from typing import Callable, Dict, List, Union
 
-from powerpi_common.condition.errors import InvalidArgumentException, InvalidIdentifierException, \
-    UnexpectedTokenException
+from powerpi_common.condition.errors import (InvalidArgumentException,
+                                             InvalidIdentifierException,
+                                             UnexpectedTokenException)
 from powerpi_common.condition.lexeme import Lexeme
 from powerpi_common.mqtt import MQTTMessage
 from powerpi_common.variable import VariableManager, VariableType
-
 
 Expression = Union[Dict, List, str, float, bool]
 
@@ -108,6 +108,8 @@ class ConditionParser:
 
         if prop == 'state':
             return variable.state
+        if prop == 'scene':
+            return variable.scene
 
         try:
             return variable.additional_state[prop]

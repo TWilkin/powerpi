@@ -43,7 +43,7 @@ class Config(ABC):
 
     @property
     def health_check_file(self):
-        health_file = os.getenv("HEALTH_CHECK_FILE")
+        health_file = os.getenv('HEALTH_CHECK_FILE')
         return health_file if health_file is not None else '/usr/src/app/powerpi_health'
 
     @property
@@ -67,8 +67,8 @@ class Config(ABC):
 
     @property
     def use_config_file(self):
-        use = os.getenv("USE_CONFIG_FILE")
-        return use.upper() == "TRUE" if use is not None else False
+        use = os.getenv('USE_CONFIG_FILE')
+        return use.upper() == 'TRUE' if use is not None else False
 
     @property
     def devices(self):

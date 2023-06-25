@@ -1,8 +1,10 @@
 import asyncio
-from typing import Union
+from typing import Optional
 from unittest.mock import MagicMock
 
 import pytest
+from powerpi_common.device.mixin import AdditionalState
+
 from macro_controller.device.remote import RemoteDevice
 
 
@@ -17,7 +19,7 @@ class TestRemoteDevice:
     ):
         assert subject.state == 'unknown'
 
-        self.__schedule_state_change(subject, state)
+        self.__schedule_state_change(subject, state=state)
 
         func = subject.turn_on if state == 'on' else subject.turn_off
         await func()
@@ -40,7 +42,7 @@ class TestRemoteDevice:
     ):
         assert subject.state == 'unknown'
 
-        self.__schedule_state_change(subject, state, sleep=0.3)
+        self.__schedule_state_change(subject, state=state, sleep=0.3)
 
         func = subject.turn_on if state == 'on' else subject.turn_off
         await func()
@@ -54,27 +56,38 @@ class TestRemoteDevice:
         assert subject.state == 'unknown'
 
     @pytest.mark.asyncio
+    @pytest.mark.parametrize('scene', [None, 'default', 'other'])
     @pytest.mark.parametrize('state', [None, 'on', 'off'])
     @pytest.mark.parametrize('use_additional_state', [True, False])
     async def test_change_power_and_additional_state(
         self,
         subject: RemoteDevice,
         powerpi_mqtt_producer: MagicMock,
-        state: Union[str, None],
+        scene: Optional[str],
+        state: Optional[str],
         use_additional_state: bool
     ):
+        # pylint: disable=too-many-arguments
+
+        assert subject.scene == 'default'
         assert subject.state == 'unknown'
         assert subject.additional_state == {}
 
         additional_state = {'something': 'else'} if use_additional_state \
             else None
 
-        self.__schedule_state_change(subject, state, additional_state)
+        self.__schedule_state_change(subject, scene, state, additional_state)
 
-        await subject.change_power_and_additional_state(state, additional_state)
+        await subject.change_power_and_additional_state(
+            scene=scene,
+            new_state=state,
+            new_additional_state=additional_state
+        )
 
         topic = 'device/remote/change'
         message = {}
+        if scene is not None:
+            message['scene'] = scene
         if state is not None:
             message['state'] = state
         if use_additional_state:
@@ -82,6 +95,7 @@ class TestRemoteDevice:
 
         powerpi_mqtt_producer.assert_any_call(topic, message)
 
+        assert subject.scene == scene if scene is not None else 'default'
         assert subject.state == state if state is not None else 'unknown'
 
         if use_additional_state:
@@ -102,7 +116,10 @@ class TestRemoteDevice:
             sleep=0.3
         )
 
-        await subject.change_power_and_additional_state('on', {'something': 'else'})
+        await subject.change_power_and_additional_state(
+            new_state='on',
+            new_additional_state={'something': 'else'}
+        )
 
         topic = 'device/remote/change'
         message = {
@@ -130,8 +147,9 @@ class TestRemoteDevice:
     def __schedule_state_change(
         self,
         subject: RemoteDevice,
-        state: str = None,
-        additional_state=None,
+        scene: Optional[str] = None,
+        state: Optional[str] = None,
+        additional_state: Optional[AdditionalState] = None,
         sleep=0.1
     ):
         if additional_state is None:
@@ -139,7 +157,16 @@ class TestRemoteDevice:
 
         async def update():
             await asyncio.sleep(sleep)
-            subject.set_state_and_additional(state, additional_state)
+
+            message = {}
+            if additional_state is not None:
+                message = {**additional_state}
+            if scene is not None:
+                message['scene'] = scene
+            if state is not None:
+                message['state'] = state
+
+            await subject.on_message(message, subject.name, 'status')
 
         loop = asyncio.get_event_loop()
         loop.create_task(update())

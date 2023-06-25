@@ -1,4 +1,5 @@
 from .capability_event_consumer import CapabilityEventConsumer
 from .change_event_consumer import DeviceChangeEventConsumer
 from .initial_status_event_consumer import DeviceInitialStatusEventConsumer
+from .scene_event_consumer import SceneEventConsumer
 from .status_event_consumer import DeviceStatusEventConsumer
