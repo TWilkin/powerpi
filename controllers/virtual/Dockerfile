@@ -18,9 +18,9 @@ RUN poetry build \
 
 # re-use the venv and install the controller's dependencies
 FROM build-base-image AS build-image
-WORKDIR /opt/powerpi/controllers/macro
+WORKDIR /opt/powerpi/controllers/virtual
 COPY --from=build-common-image /opt/powerpi/common ./../../common
-COPY controllers/macro/poetry.lock controllers/macro/pyproject.toml ./
+COPY controllers/virtual/poetry.lock controllers/virtual/pyproject.toml ./
 RUN ln -s ../../common/python/.venv .venv \
     && poetry source add --default piwheels https://www.piwheels.org/simple/ \
     && poetry lock --no-update \
@@ -28,7 +28,7 @@ RUN ln -s ../../common/python/.venv .venv \
 
 # use multi-stage build to remove compile dependencies
 FROM python:3.9.16-alpine3.17 AS run-image
-LABEL description="PowerPi Macro Controller"
+LABEL description="PowerPi Virtual Controller"
 
 RUN apk add --no-cache libc6-compat
 
@@ -39,11 +39,11 @@ RUN adduser --disabled-password powerpi
 USER powerpi
 
 WORKDIR /usr/src/app
-COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/macro/.venv ./venv
+COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/virtual/.venv ./venv
 
 # add the application
-COPY --chown=powerpi controllers/macro/pyproject.toml LICENSE ./
-COPY --chown=powerpi controllers/macro/macro_controller ./macro_controller/
+COPY --chown=powerpi controllers/virtual/pyproject.toml LICENSE ./
+COPY --chown=powerpi controllers/virtual/virtual_controller ./virtual_controller/
 
 # start the application once the container is ready
-CMD python -m macro_controller
+CMD python -m virtual_controller
