@@ -2,11 +2,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Macro Controller",
+            "name": "Virtual Controller",
             "type": "python",
             "request": "launch",
             "python": "${workspaceFolder}/.venv/bin/python",
-            "module": "macro_controller",
+            "module": "virtual_controller",
             "presentation": {
                 "group": "Controllers"
             }

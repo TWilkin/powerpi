@@ -5,7 +5,7 @@ import * as Log from "./Log.schema.json";
 import * as Mutex from "./Mutex.schema.json";
 import * as Variable from "./Variable.schema.json";
 
-export default function loadMacroSchema() {
+export default function loadVirtualSchema() {
     return {
         Composite,
         ConditionDevice,

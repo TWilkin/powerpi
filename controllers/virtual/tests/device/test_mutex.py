@@ -8,7 +8,7 @@ from powerpi_common_test.device.mixin import (DeviceOrchestratorMixinTestBase,
                                               PollableMixinTestBase)
 from pytest_mock import MockerFixture
 
-from macro_controller.device import MutexDevice
+from virtual_controller.device import MutexDevice
 
 
 class TestMutexDevice(

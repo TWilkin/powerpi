@@ -1,10 +1,10 @@
 import pytest
 from powerpi_common_test.device import DeviceTestBase
 
-from macro_controller.device import LogDevice
+from virtual_controller.device import VariableDevice
 
 
-class TestLogDevice(DeviceTestBase):
+class TestVariableDevice(DeviceTestBase):
     @pytest.fixture
     def subject(
         self,
@@ -12,8 +12,7 @@ class TestLogDevice(DeviceTestBase):
         powerpi_logger,
         powerpi_mqtt_client
     ):
-        return LogDevice(
+        return VariableDevice(
             powerpi_config, powerpi_logger, powerpi_mqtt_client,
-            name='log',
-            message='test message'
+            name='variable'
         )

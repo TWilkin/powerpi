@@ -28,9 +28,9 @@ The project is split into the following services, each of which have their own _
     -   [**energenie**](controllers/energenie/README.md) - Allows control of [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories) devices using the ENER314 or ENER314-RT Pi module.
     -   [**harmony**](controllers/harmony/README.md) - Allows control of [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html) Smart Hub devices.
     -   [**lifx**](controllers/lifx/README.md) - Allows control of [LIFX](https://www.lifx.com/) light devices.
-    -   [**macro**](controllers/macro/README.md) - Allows control of other devices with macros, delays, mutexes etc.
     -   [**network**](controllers/network/README.md) - Allows control of LAN (Local Area Network) devices.
     -   [**node**](controllers/node/README.md) - Allows monitoring of the cluster (Kubernetes) nodes and support for UPS using a [PiJuice](https://www.pijuice.com).
+    -   [**virtual**](controllers/virtual/README.md) - Allows control of other devices by using virtual devices such as groups, delays, mutexes etc.
     -   [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
 -   [**deep-thought**](services/deep-thought/README.md) - API
 -   [**energy-monitor**](services/energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).

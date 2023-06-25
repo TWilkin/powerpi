@@ -1,0 +1,6 @@
+apiVersion: v2
+name: virtual-controller
+description: A Helm chart for the PowerPi virtual device controller
+type: application
+version: 0.2.0
+appVersion: 2.0.0

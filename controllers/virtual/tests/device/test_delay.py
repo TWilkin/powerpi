@@ -1,10 +1,10 @@
 import pytest
 from powerpi_common_test.device import DeviceTestBase
 
-from macro_controller.device import VariableDevice
+from virtual_controller.device import DelayDevice
 
 
-class TestVariableDevice(DeviceTestBase):
+class TestDelayDevice(DeviceTestBase):
     @pytest.fixture
     def subject(
         self,
@@ -12,7 +12,9 @@ class TestVariableDevice(DeviceTestBase):
         powerpi_logger,
         powerpi_mqtt_client
     ):
-        return VariableDevice(
+        return DelayDevice(
             powerpi_config, powerpi_logger, powerpi_mqtt_client,
-            name='variable'
+            start=0.1,
+            end=0.1,
+            name='delay'
         )

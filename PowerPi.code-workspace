@@ -79,16 +79,16 @@
             "path": "controllers/lifx"
         },
         {
-            "name": "Macro Controller",
-            "path": "controllers/macro"
-        },
-        {
             "name": "Network Controller",
             "path": "controllers/network"
         },
         {
             "name": "Node Controller",
             "path": "controllers/node"
+        },
+        {
+            "name": "Virtual Controller",
+            "path": "controllers/virtual"
         },
         {
             "name": "ZigBee Controller",

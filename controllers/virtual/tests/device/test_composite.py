@@ -8,7 +8,7 @@ from powerpi_common_test.device.mixin import (DeviceOrchestratorMixinTestBase,
                                               PollableMixinTestBase)
 from pytest_mock import MockerFixture
 
-from macro_controller.device import CompositeDevice
+from virtual_controller.device import CompositeDevice
 
 
 class TestCompositeDevice(
@@ -86,7 +86,7 @@ class TestCompositeDevice(
 
         new_additional_state = {'something': 'else'}
 
-        with patch('macro_controller.device.composite.ismixin') as ismixin:
+        with patch('virtual_controller.device.composite.ismixin') as ismixin:
             ismixin.return_value = True
 
             await subject.change_power_and_additional_state(
@@ -103,7 +103,7 @@ class TestCompositeDevice(
         subject: CompositeDevice,
         devices: Dict[str, MagicMock]
     ):
-        with patch('macro_controller.device.composite.ismixin') as ismixin:
+        with patch('virtual_controller.device.composite.ismixin') as ismixin:
             ismixin.return_value = True
 
             await subject.change_power_and_additional_state(
@@ -127,7 +127,7 @@ class TestCompositeDevice(
         new_state = 'on'
         new_additional_state = {'something': 'else'}
 
-        with patch('macro_controller.device.composite.ismixin') as ismixin:
+        with patch('virtual_controller.device.composite.ismixin') as ismixin:
             ismixin.return_value = False
 
             await subject.change_power_and_additional_state(
