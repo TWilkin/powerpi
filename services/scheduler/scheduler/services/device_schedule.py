@@ -247,14 +247,20 @@ class DeviceSchedule(LogMixin):
 
         return (start_date, end_date)
 
-    def __calculate_delta(self, delta_range: DeltaRange):
-        (start_date, end_date) = self.__calculate_dates()
+    def __calculate_delta(self, start_date: datetime, delta_range: DeltaRange):
+        (schedule_start_date, end_date) = self.__calculate_dates()
 
         # how many seconds between the dates
-        seconds = end_date.timestamp() - start_date.timestamp()
+        seconds = end_date.timestamp() - schedule_start_date.timestamp()
 
         # how many intervals will there be
         intervals = seconds / self.__interval
+
+        # work out how many more intervals need to be acted on
+        elapsed_seconds = datetime.now(
+            pytz.UTC).timestamp() - start_date.timestamp()
+        remaining_intervals = intervals - \
+            (elapsed_seconds / self.__interval) + 1
 
         # do we want to overwrite start with the current value from the device
         device = self.__variable_manager.get_device(self.__device)
@@ -264,20 +270,14 @@ class DeviceSchedule(LogMixin):
             start = delta_range.start
 
         # what is the delta
-        delta = (delta_range.end - start) / intervals
+        delta = (delta_range.end - start) / remaining_intervals
 
         return (DeltaRange(delta_range.type, start, delta_range.end), delta)
 
     def __calculate_new_value(self, start_date: datetime, delta_range: DeltaRange):
-        (delta_range, delta) = self.__calculate_delta(delta_range)
+        (delta_range, delta) = self.__calculate_delta(start_date, delta_range)
 
-        # calculate how much time has elapsed
-        diff = datetime.now(pytz.UTC).timestamp() - start_date.timestamp()
-
-        # how many intervals is that
-        intervals = diff / self.__interval
-
-        new_value = delta_range.start + delta * intervals
+        new_value = delta_range.start + delta
 
         new_value = round_for_type(delta_range.type, new_value)
         if delta > 0:
