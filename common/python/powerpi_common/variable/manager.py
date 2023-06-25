@@ -1,7 +1,7 @@
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 
 from powerpi_common.device import DeviceManager, DeviceNotFoundException
-from powerpi_common.logger import Logger
+from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.typing import DeviceType, SensorType
 from powerpi_common.variable.device import DeviceVariable
 from powerpi_common.variable.sensor import SensorVariable
@@ -9,7 +9,7 @@ from powerpi_common.variable.types import VariableType
 from powerpi_common.variable.variable import Variable
 
 
-class VariableManager:
+class VariableManager(LogMixin):
     '''
     Class to retrieve a variable, or if it's a local device/sensor, the actual device
     from DeviceManager, which has the live state.
@@ -21,7 +21,7 @@ class VariableManager:
         device_manager: DeviceManager,
         service_provider
     ):
-        self.__logger = logger
+        self._logger = logger
         self.__device_manager = device_manager
         self.__service_provider = service_provider
 
@@ -58,17 +58,17 @@ class VariableManager:
 
         self.__variables[variable_type][key] = variable
 
-        self.__logger.info(f'Adding variable {variable}')
+        self.log_info(f'Adding variable {variable}')
         return True
 
-    def __create(self, variable_type: VariableType, name: str, action: Union[str, None]):
+    def __create(self, variable_type: VariableType, name: str, action: Optional[str]):
         variable_attribute = f'{variable_type}_variable'
 
         factory = getattr(self.__service_provider, variable_attribute, None)
 
         if factory is None:
-            self.__logger.debug(
-                f'Could not find variable type "{variable_type}'
+            self.log_debug(
+                f'Could not find variable type "{variable_type}"'
             )
             return None
 
@@ -82,7 +82,7 @@ class VariableManager:
 
         return instance
 
-    def __get(self, variable_type: VariableType, name: str, action: Union[str, None] = None):
+    def __get(self, variable_type: VariableType, name: str, action: Optional[str] = None):
         key = self.__key(variable_type, name, action)
 
         variable = self.__variables[variable_type].get(key)
@@ -103,7 +103,7 @@ class VariableManager:
         return self.__create(variable_type, name, action)
 
     @classmethod
-    def __key(cls, variable_type: VariableType, name: str, action: Union[str, None] = None):
+    def __key(cls, variable_type: VariableType, name: str, action: Optional[str] = None):
         if variable_type == VariableType.DEVICE:
             return name
         if variable_type == VariableType.SENSOR and action is not None:
