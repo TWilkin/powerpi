@@ -1,23 +1,61 @@
 #!/bin/bash
 
 scriptPath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+helmPath="$scriptPath/../../kubernetes/Chart.yaml"
 
 help() {
     echo "PowerPi version script"
-    echo "expects 'bash version.sh service part"
-    echo "  service: one of the PowerPi services"
-    echo "  part: major|minor|macro"
+    echo ""
+    echo "  -h|--help                            Show this help document."
+    echo "  -s|--service service                 The name of the service to version."
+    echo "  -v|--version major|minor|patch       The part of the service version to increase, default patch."
+    echo "  -k|--chart-version major|minor|patch The part of the chart version to increase."
+    echo "  -r|--release                         Whether to perform a release."
+    echo "                                       -k will be the Helm chart version and -v will be the PowerPi version."
+    echo "  -c|--commit                          Whether to commit the version change."
     exit
+}
+
+update_release() {
+    local versionPart=$1
+    local chartPart=$2
+    local commit=$3
+
+    # find the helm version
+    get_version $helmPath
+    powerpiVersion=$appVersion
+    helmVersion=$chartVersion
+    echo "Found v$powerpiVersion of PowerPi"
+    echo "Found v$helmVersion of helm chart"
+
+    # increase PowerPi version
+    increase_version $powerpiVersion $versionPart
+    powerpiVersion=$newVersion
+    echo "Increasing PowerPi to v$powerpiVersion"
+
+    # increase the chart version
+    increase_version $helmVersion $chartPart
+    helmVersion=$newVersion
+    echo "Increasing helm chart to v$helmVersion"
+    set_chart_version $helmPath $powerpiVersion $helmVersion
+
+    # commit the change if enabled
+    if $commit
+    then
+        echo "Committing version changes"
+        git commit -m "Bump PowerPi to v$powerpiVersion"
+    fi
 }
 
 update_version() {
     local service=$1
     local versionPart=$2
+    local chartPart=$3
+    local commit=$4
 
     local appPath="$scriptPath/../../services/$service"
     local subchartPath="$scriptPath/../../kubernetes/charts/$service/Chart.yaml"
-    echo $appPath
-    echo $subchartPath
+
     if [ ! -d $appPath ]
     then
         echo "Service $service is a controller"
@@ -32,14 +70,6 @@ update_version() {
         help
     fi
 
-    # find the helm version
-    helmPath="$scriptPath/../../kubernetes/Chart.yaml"
-    get_version $helmPath
-    powerpiVersion=$appVersion
-    helmVersion=$chartVersion
-    echo "Found v$powerpiVersion of PowerPi"
-    echo "Found v$helmVersion of helm chart"
-
     # find the service version
     get_version $subchartPath
     subchartVersion=$chartVersion
@@ -53,25 +83,18 @@ update_version() {
     update_service_version $appPath $appVersion
 
     # increase the subchart version
-    increase_version $subchartVersion "macro"
+    increase_version $subchartVersion $chartPart
     subchartVersion=$newVersion
     echo "Increasing helm subchart $service to v$subchartVersion"
     set_chart_version $subchartPath $appVersion $subchartVersion
+    set_chart_dependency_version $helmPath $service $subchartVersion
 
-    # increase PowerPi version
-    increase_version $powerpiVersion "macro"
-    powerpiVersion=$newVersion
-    echo "Increasing PowerPi to v$powerpiVersion"
-
-    # increase the chart version
-    increase_version $helmVersion "macro"
-    helmVersion=$newVersion
-    echo "Increasing helm chart to v$helmVersion"
-    set_chart_version $helmPath $powerpiVersion $helmVersion $service $subchartVersion
-
-    # commit the change
-    echo "Committing version changes"
-    git commit -m "Bump $service to v$appVersion"
+    # commit the change if enabled
+    if $commit
+    then
+        echo "Committing version changes"
+        git commit -m "Bump $service to v$appVersion"
+    fi
 }
 
 get_version() {
@@ -85,20 +108,22 @@ set_chart_version() {
     local path=$1
     local appVersion=$2
     local chartVersion=$3
-    local service=$4
-    local subchartVersion=$5
 
     yq e -i ".appVersion = \"$appVersion\"" $path
     yq e -i ".version = \"$chartVersion\"" $path
 
-    if [ ! -z $subchartVersion ]
-    then
-        yq e -i "(.dependencies[] | select(.name == \"$service\").version) = \"$subchartVersion\"" $path
-    fi
-
     git add $path
 }
 
+set_chart_dependency_version() {
+    local path=$1
+    local service=$2
+    local subchartVersion=$3
+
+    yq e -i "(.dependencies[] | select(.name == \"$service\").version) = \"$subchartVersion\"" $path
+
+    git add $path
+}
 
 increase_version() {
     local version=$1
@@ -107,22 +132,22 @@ increase_version() {
     IFS="." read -r -a array <<< "$version"
     major="${array[0]}"
     minor="${array[1]}"
-    macro="${array[2]}"
+    patch="${array[2]}"
 
     if [ $versionPart = "major" ]
     then
         major=$(($major+1))
         minor=0
-        macro=0
+        patch=0
     elif [ $versionPart = "minor" ]
     then
         minor=$(($minor+1))
-        macro=0
+        patch=0
     else
-        macro=$(($macro+1))
+        patch=$(($patch+1))
     fi
 
-    newVersion="$major.$minor.$macro"
+    newVersion="$major.$minor.$patch"
 }
 
 update_service_version() {
@@ -151,18 +176,69 @@ update_service_version() {
     help
 }
 
-if [ $# -ne 2 ]
+validate_version_part() {
+    local service=$1
+    local versionPart=$2
+
+    case $versionPart in
+        major|minor|patch) echo "Attempting to increase $versionPart version of $service" ;;
+        *) echo "Unrecognised version part '$versionPart'" ; help ;;
+    esac
+}
+
+# the default values
+service=powerpi
+versionPart=patch
+release=false
+commit=false
+
+# extract the command line arguments
+while [[ $# -gt 0 ]]
+do
+    case $1 in
+        -s|--service)
+            service="$2"
+            shift
+            shift
+            ;;
+        
+        -v|--version)
+            versionPart="$2"
+            validate_version_part $service $versionPart
+            shift
+            shift
+            ;;
+        
+        -k|--chart-version)
+            chartVersionPart="$2"
+            validate_version_part "$service chart" $chartVersionPart
+            shift
+            shift
+            ;;
+
+        -r|--release)
+            release=true
+            shift
+            ;;
+        
+        -c|--commit)
+            commit=true
+            shift
+            ;;
+        
+        -h|--help)
+            help
+            ;;
+        
+        -*|--*)
+            help
+            ;;
+    esac
+done
+
+if $release
 then
-    help
+    update_release $versionPart $chartVersionPart $commit
+else
+    update_version $service $versionPart $chartVersionPart $commit
 fi
-
-service=$1
-versionPart=$2 # major, minor, macro
-
-# validate the version part
-case $versionPart in
-    major|minor|macro) echo "Attempting to increase $versionPart version of service $service" ;;
-    *) echo "Unrecognised version part $versionPart" ; help ;;
-esac
-
-update_version $service $versionPart
