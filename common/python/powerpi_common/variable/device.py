@@ -2,16 +2,39 @@ from typing import List, Optional
 
 from powerpi_common.config import Config
 from powerpi_common.device import DeviceStatus
-from powerpi_common.device.consumers import DeviceStatusEventConsumer
+from powerpi_common.device.consumers import (DeviceStatusEventConsumer,
+                                             SceneEventConsumer)
 from powerpi_common.device.mixin import AdditionalState, AdditionalStateMixin
 from powerpi_common.device.scene_state import SceneState
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
+from powerpi_common.mqtt import MQTTClient, MQTTMessage
 from powerpi_common.variable.types import VariableType
 from powerpi_common.variable.variable import Variable
 
 
 class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
+
+    class ReferencedSceneEventConsumer(SceneEventConsumer):
+        def __init__(
+            self,
+            device: AdditionalStateMixin,
+            variable: 'DeviceVariable',
+            config: Config,
+            logger: Logger
+        ):
+            SceneEventConsumer.__init__(
+                self, device, config, logger
+            )
+
+            self.__device = device
+            self.__variable = variable
+
+        async def on_message(self, message: MQTTMessage, entity: str, __: str):
+            if entity == self.__device.name:
+                scene = message.pop('scene', None)
+
+                self.__variable.on_referenced_device_scene(scene)
+
     def __init__(
         self,
         config: Config,
@@ -26,6 +49,9 @@ class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
         self.__additional_state = SceneState()
 
         mqtt_client.add_consumer(self)
+        mqtt_client.add_consumer(self.ReferencedSceneEventConsumer(
+            self, self, config, logger
+        ))
 
     @property
     def variable_type(self):
@@ -42,6 +68,10 @@ class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
     @property
     def scene(self):
         return self.__additional_state.scene
+
+    @scene.setter
+    def scene(self, new_scene: str):
+        self.__additional_state.scene = new_scene
 
     @property
     def additional_state(self):
@@ -75,6 +105,12 @@ class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
         new_additional_state: AdditionalState
     ):
         self.__additional_state.update_scene_state(scene, new_additional_state)
+
+    def on_referenced_device_scene(self, scene: str):
+        '''
+        Capture when the current scene changes.
+        '''
+        self.scene = scene
 
     @property
     def json(self):

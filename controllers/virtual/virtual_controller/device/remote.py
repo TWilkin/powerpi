@@ -36,6 +36,11 @@ class RemoteDevice(DeviceVariable):
         DeviceVariable.state.fset(self, new_state)
         self.__waiting.set()
 
+    @DeviceVariable.scene.setter
+    def scene(self, new_scene: str):
+        DeviceVariable.scene.fset(self, new_scene)
+        self.__waiting.set()
+
     @DeviceVariable.additional_state.setter
     def additional_state(self, new_additional_state: AdditionalState):
         DeviceVariable.additional_state.fset(self, new_additional_state)

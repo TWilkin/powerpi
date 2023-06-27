@@ -1,7 +1,7 @@
 from typing import Awaitable, Callable, List, Optional
 
 from powerpi_common.config import Config
-from powerpi_common.device import Device, DeviceManager, DeviceStatus
+from powerpi_common.device import Device, DeviceManager
 from powerpi_common.device.mixin import (AdditionalState, AdditionalStateMixin,
                                          DeviceOrchestratorMixin)
 from powerpi_common.device.scene_state import ReservedScenes
