@@ -6,7 +6,7 @@ help() {
     echo "PowerPi version script"
     echo "expects 'bash version.sh service part"
     echo "  service: one of the PowerPi services"
-    echo "  part: major|minor|macro"
+    echo "  part: major|minor|patch"
     exit
 }
 
@@ -53,18 +53,18 @@ update_version() {
     update_service_version $appPath $appVersion
 
     # increase the subchart version
-    increase_version $subchartVersion "macro"
+    increase_version $subchartVersion "patch"
     subchartVersion=$newVersion
     echo "Increasing helm subchart $service to v$subchartVersion"
     set_chart_version $subchartPath $appVersion $subchartVersion
 
     # increase PowerPi version
-    increase_version $powerpiVersion "macro"
+    increase_version $powerpiVersion "patch"
     powerpiVersion=$newVersion
     echo "Increasing PowerPi to v$powerpiVersion"
 
     # increase the chart version
-    increase_version $helmVersion "macro"
+    increase_version $helmVersion "patch"
     helmVersion=$newVersion
     echo "Increasing helm chart to v$helmVersion"
     set_chart_version $helmPath $powerpiVersion $helmVersion $service $subchartVersion
@@ -107,22 +107,22 @@ increase_version() {
     IFS="." read -r -a array <<< "$version"
     major="${array[0]}"
     minor="${array[1]}"
-    macro="${array[2]}"
+    patch="${array[2]}"
 
     if [ $versionPart = "major" ]
     then
         major=$(($major+1))
         minor=0
-        macro=0
+        patch=0
     elif [ $versionPart = "minor" ]
     then
         minor=$(($minor+1))
-        macro=0
+        patch=0
     else
-        macro=$(($macro+1))
+        patch=$(($patch+1))
     fi
 
-    newVersion="$major.$minor.$macro"
+    newVersion="$major.$minor.$patch"
 }
 
 update_service_version() {
@@ -157,11 +157,11 @@ then
 fi
 
 service=$1
-versionPart=$2 # major, minor, macro
+versionPart=$2 # major, minor, patch
 
 # validate the version part
 case $versionPart in
-    major|minor|macro) echo "Attempting to increase $versionPart version of service $service" ;;
+    major|minor|patch) echo "Attempting to increase $versionPart version of service $service" ;;
     *) echo "Unrecognised version part $versionPart" ; help ;;
 esac
 
