@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/voice-assistant",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "PowerPi home automation voice assistant service",
     "private": true,
     "license": "GPL-3.0-only",
