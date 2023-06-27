@@ -89,13 +89,17 @@ class RemoteDevice(DeviceVariable):
     async def turn_off(self):
         await self.__send_message(state=DeviceStatus.OFF)
 
+    async def change_scene(self, scene: str):
+        await self.__send_message(scene=scene, action='scene')
+
     async def __send_message(
         self,
         scene: Optional[str] = None,
         state: Optional[DeviceStatus] = None,
-        additional_state: Optional[AdditionalState] = None
+        additional_state: Optional[AdditionalState] = None,
+        action: Optional[str] = 'change'
     ):
-        topic = f'device/{self.name}/change'
+        topic = f'device/{self.name}/{action}'
         message = {}
 
         if additional_state is not None:
