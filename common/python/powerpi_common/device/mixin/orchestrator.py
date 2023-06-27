@@ -1,6 +1,6 @@
 import sys
 from abc import abstractmethod
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 from powerpi_common.config import Config
 from powerpi_common.device.consumers.capability_event_consumer import \
@@ -65,7 +65,6 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
                 capability
             )
 
-    # pylint: disable=too-many-arguments, invalid-overridden-method
     def __init__(
         self,
         config: Config,
@@ -73,14 +72,17 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
         mqtt_client: MQTTClient,
         device_manager: DeviceManagerType,
         devices: List[str],
-        **_
+        capability: Optional[bool] = True,
+        ** _
     ):
+        # pylint: disable=too-many-arguments
         self.__config = config
         self.__logger = logger
         self.__mqtt_client = mqtt_client
         self.__device_manager = device_manager
         self.__devices = devices
         self.__capabilities: Dict[str, Capability] = {}
+        self.__capability_enabled = capability
 
     @property
     def devices(self) -> List[DeviceType]:
@@ -91,6 +93,7 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
 
     @CapabilityMixin.supports_brightness.getter
     def supports_brightness(self):
+        # pylint: disable=invalid-overridden-method
         return any(
             device[DataType.BRIGHTNESS] if DataType.BRIGHTNESS in device else False
             for device in self.__capabilities.values()
@@ -98,6 +101,7 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
 
     @CapabilityMixin.supports_colour_hue_and_saturation.getter
     def supports_colour_hue_and_saturation(self):
+        # pylint: disable=invalid-overridden-method
         return any(
             device['colour'][DataType.HUE]
             if 'colour' in device and DataType.HUE in device['colour']
@@ -110,6 +114,8 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
 
     @CapabilityMixin.supports_colour_temperature.getter
     def supports_colour_temperature(self):
+        # pylint: disable=invalid-overridden-method
+
         min_temp = sys.maxsize
         max_temp = -sys.maxsize
         supports_temp = False
@@ -161,8 +167,9 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
 
             self.__mqtt_client.add_consumer(state_listener)
 
-            capability_listener = self.ReferencedCapabilityEventListener(
-                self, device, self.__config, self.__logger
-            )
+            if self.__capability_enabled:
+                capability_listener = self.ReferencedCapabilityEventListener(
+                    self, device, self.__config, self.__logger
+                )
 
-            self.__mqtt_client.add_consumer(capability_listener)
+                self.__mqtt_client.add_consumer(capability_listener)

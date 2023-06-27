@@ -33,7 +33,8 @@ class SceneDevice(Device, DeviceOrchestratorMixin):
             self, config, logger, mqtt_client, **kwargs
         )
         DeviceOrchestratorMixin.__init__(
-            self, config, logger, mqtt_client, device_manager, devices
+            self, config, logger, mqtt_client, device_manager, devices,
+            capability=False
         )
 
         self.__state = state
@@ -46,7 +47,7 @@ class SceneDevice(Device, DeviceOrchestratorMixin):
         '''
         return self.__scene if self.__scene is not None else self._name
 
-    async def on_referenced_device_status(self, _: str, __: DeviceStatus):
+    async def on_referenced_device_status(self, _, __):
         # we don't care if the device is on or off
         pass
 
