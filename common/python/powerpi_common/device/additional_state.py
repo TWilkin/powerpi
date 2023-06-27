@@ -89,10 +89,11 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         Update the state of this device to new_state, update the additional state
         to new_additional_state and broadcast the changes to the message queue.
         '''
-        new_additional_state = self._filter_keys(new_additional_state)
+        if new_additional_state is not None:
+            new_additional_state = self._filter_keys(new_additional_state)
 
-        if len(new_additional_state) > 0:
-            self.__additional_state.state = new_additional_state
+            if len(new_additional_state) > 0:
+                self.__additional_state.state = new_additional_state
 
         if new_state is not None:
             self.update_state_no_broadcast(new_state)
@@ -137,7 +138,11 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         ))
         if len(scenes) >= 1:
             result['scenes'] = {
-                scene: self.__additional_state.format_scene_state(scene)
+                scene: {
+                    key: value
+                    for key, value in self.__additional_state.format_scene_state(scene).items()
+                    if key not in 'scene'
+                }
                 for scene in scenes
             }
 
