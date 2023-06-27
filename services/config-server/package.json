@@ -29,7 +29,7 @@
         "underscore": "^1.13.4"
     },
     "devDependencies": {
-        "@powerpi/common-test": "^0.0.6",
+        "@powerpi/common-test": "^0.0.7",
         "@types/node": "^20.2.5",
         "@types/underscore": "^1.11.5",
         "ts-node": "^10.8.2",
