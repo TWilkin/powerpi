@@ -7,6 +7,7 @@ from virtual_controller.device.factory import RemoteDeviceFactory
 from virtual_controller.device.log import LogDevice
 from virtual_controller.device.mutex import MutexDevice
 from virtual_controller.device.remote import RemoteDevice
+from virtual_controller.device.scene import SceneDevice
 from virtual_controller.device.variable import VariableDevice
 
 
@@ -97,6 +98,18 @@ def add_devices(container):
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client
+        )
+    )
+
+    setattr(
+        device_container,
+        'scene_device',
+        providers.Factory(
+            SceneDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client,
+            device_manager=container.common.device.device_manager
         )
     )
 
