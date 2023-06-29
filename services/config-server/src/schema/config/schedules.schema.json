@@ -62,9 +62,7 @@
                         "minItems": 2,
                         "maxItems": 2,
                         "items": {
-                            "type": "integer",
-                            "minimum": 0,
-                            "maximum": 360
+                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Hue.schema.json"
                         }
                     },
                     "saturation": {
@@ -91,9 +89,7 @@
                         "minItems": 2,
                         "maxItems": 2,
                         "items": {
-                            "type": "integer",
-                            "minimum": 1500,
-                            "maximum": 6500
+                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/ColourTemperature.schema.json"
                         }
                     },
                     "scene": {
