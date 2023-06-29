@@ -60,6 +60,13 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
         self._broadcast_state_change()
 
+    @property
+    def executing(self):
+        '''
+        Returns whether the device is currently activating the on/off methods.
+        '''
+        return self.__lock.locked()
+
     def update_state_no_broadcast(self, new_state: DeviceStatus):
         '''
         Update this devices' state but do not broadcast to the message queue.

@@ -73,6 +73,9 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
         return ['a']
 
     async def poll(self):
+        if self.executing:
+            return
+
         # are any unknown
         if any((device.state == DeviceStatus.UNKNOWN for device in self.devices)):
             await self.set_new_state(DeviceStatus.UNKNOWN)

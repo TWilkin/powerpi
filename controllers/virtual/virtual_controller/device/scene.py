@@ -53,6 +53,9 @@ class SceneDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         await self.poll()
 
     async def poll(self):
+        if self.executing:
+            return
+
         if all(device.scene == self.scene for device in self.devices):
             await self.set_new_state(DeviceStatus.ON)
         else:
