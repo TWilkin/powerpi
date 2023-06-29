@@ -13,6 +13,8 @@ This controller provides the following virtual devices:
 -   **Delay** - Wait for the specified interval for turn on or turn off. Used if a device takes a few seconds to start-up, and we don't want the next step to happen before it's ready.
 -   **Log** - A device used for testing, will simply output the specified log message when turned on or off.
 -   **Mutex** - A device that will ensure all the devices in the off device specification are off before attempting to turn the devices in the on device specification, akin to a mutually exclusive lock, the on devices cannot be on if the off devices are on.
+-   **Scene** - A device that will send additional state (brightness, colour temperature, hue or saturation) to another device when switched on. The other device will remember its previous state which it will revert to when the scene is turned off.
+-   **Variable** - A device that provides an on/off switch, which can be used in conditions for events, and the `Condition` device. An example would be to only switch a light on, if the variable is true, allowing automations to be disabled.
 
 ## Building
 
