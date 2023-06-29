@@ -1,0 +1,9 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Hue.schema.json",
+    "title": "Hue",
+    "description": "A hue value between 0 and 360 degress",
+    "type": "integer",
+    "minimum": 0,
+    "maximum": 360
+}
