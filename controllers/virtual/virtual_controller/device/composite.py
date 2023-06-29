@@ -5,14 +5,14 @@ from powerpi_common.device import (AdditionalStateDevice, DeviceManager,
                                    DeviceStatus)
 from powerpi_common.device.mixin import (AdditionalState, AdditionalStateMixin,
                                          DeviceOrchestratorMixin,
-                                         PollableMixin)
+                                         NewPollableMixin)
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util import ismixin
 
 
 # pylint: disable=too-many-ancestors
-class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMixin):
+class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, NewPollableMixin):
     # pylint: disable=too-many-arguments
     def __init__(
         self,
@@ -29,7 +29,7 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
         DeviceOrchestratorMixin.__init__(
             self, config, logger, mqtt_client, device_manager, devices
         )
-        PollableMixin.__init__(self, config, **kwargs)
+        NewPollableMixin.__init__(self, config, **kwargs)
 
     async def on_referenced_device_status(self, _: str, __: DeviceStatus):
         await self.poll()
@@ -72,10 +72,7 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, PollableMi
         # but the test expect at least one
         return ['a']
 
-    async def poll(self):
-        if self.executing:
-            return
-
+    async def _poll(self):
         # are any unknown
         if any((device.state == DeviceStatus.UNKNOWN for device in self.devices)):
             await self.set_new_state(DeviceStatus.UNKNOWN)

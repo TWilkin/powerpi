@@ -4,14 +4,14 @@ from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceManager, DeviceStatus
 from powerpi_common.device.mixin import (AdditionalState, AdditionalStateMixin,
                                          DeviceOrchestratorMixin,
-                                         PollableMixin)
+                                         NewPollableMixin)
 from powerpi_common.device.scene_state import ReservedScenes
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util import ismixin
 
 
-class SceneDevice(Device, DeviceOrchestratorMixin, PollableMixin):
+class SceneDevice(Device, DeviceOrchestratorMixin, NewPollableMixin):
     # pylint: disable=too-many-ancestors
     '''
     A device for applying a scene, and additional state to the supplied device.
@@ -37,7 +37,7 @@ class SceneDevice(Device, DeviceOrchestratorMixin, PollableMixin):
             self, config, logger, mqtt_client, device_manager, devices,
             capability=False
         )
-        PollableMixin.__init__(self, config, **kwargs)
+        NewPollableMixin.__init__(self, config, **kwargs)
 
         self.__state = state
         self.__scene = scene
@@ -52,10 +52,7 @@ class SceneDevice(Device, DeviceOrchestratorMixin, PollableMixin):
     async def on_referenced_device_status(self, _, __):
         await self.poll()
 
-    async def poll(self):
-        if self.executing:
-            return
-
+    async def _poll(self):
         if all(device.scene == self.scene for device in self.devices):
             await self.set_new_state(DeviceStatus.ON)
         else:
