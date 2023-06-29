@@ -22,7 +22,7 @@
             "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Percentage.schema.json"
         }
     },
-    "oneOf": [
+    "anyOf": [
         { "required": ["brightness"] },
         { "required": ["temperature"] },
         { "required": ["hue"] },
