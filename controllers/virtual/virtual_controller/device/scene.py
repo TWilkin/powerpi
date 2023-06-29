@@ -50,8 +50,7 @@ class SceneDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         return self.__scene if self.__scene is not None else self._name
 
     async def on_referenced_device_status(self, _, __):
-        # we don't care if the device is on or off
-        pass
+        await self.poll()
 
     async def poll(self):
         if all(device.scene == self.scene for device in self.devices):
