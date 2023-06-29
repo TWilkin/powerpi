@@ -5,6 +5,7 @@ import {
     faLayerGroup,
     faLightbulb,
     faLock,
+    faPanorama,
     faPlug,
     faQuestion,
     faStopwatch,
@@ -62,6 +63,9 @@ function getDeviceTypeIcon(type: string) {
 
                 case "pairing":
                     return faTowerBroadcast;
+
+                case "scene":
+                    return faPanorama;
 
                 case "socket":
                 case "socket_group":
