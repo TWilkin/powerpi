@@ -14,7 +14,7 @@ from powerpi_common.util import ismixin
 class SceneDevice(Device, DeviceOrchestratorMixin, NewPollableMixin):
     # pylint: disable=too-many-ancestors
     '''
-    A device for applying a scene, and additional state to the supplied device.
+    A device for applying a scene, and additional state to the supplied device(s).
     '''
 
     def __init__(
@@ -71,7 +71,7 @@ class SceneDevice(Device, DeviceOrchestratorMixin, NewPollableMixin):
 
     async def __start_scene(self, device: AdditionalStateMixin):
         '''
-        Change the supplied device state for the scene and switch to that scene.
+        Change the supplied device(s) additional state for the scene and switch to that scene.
         '''
         await device.change_power_and_additional_state(
             scene=self.scene,
@@ -82,6 +82,6 @@ class SceneDevice(Device, DeviceOrchestratorMixin, NewPollableMixin):
 
     async def __revert_scene(self, device: AdditionalStateMixin):
         '''
-        Revert the supplied device back to the default scene.
+        Revert the supplied device(s) back to the default scene.
         '''
         await device.change_scene(ReservedScenes.DEFAULT)
