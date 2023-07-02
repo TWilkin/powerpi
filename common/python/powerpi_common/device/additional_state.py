@@ -115,9 +115,17 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         Switch this device from the current scene to this new one, and apply any state changes.
         '''
         if not self._is_current_scene(new_scene):
+            old_scene_additional_state = {**self.__additional_state.state}
+
             self.__additional_state.scene = new_scene
 
-            new_additional_state = self.__additional_state.state
+            # join the old scene's state with the updated keys from the new, to ensure states
+            # that don't change with the scene are not changed
+            new_additional_state = {
+                **old_scene_additional_state,
+                **self.__additional_state.state
+            }
+
             await self.change_power_and_additional_state(
                 scene=new_scene,
                 new_additional_state=new_additional_state
