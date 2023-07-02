@@ -266,10 +266,12 @@ class DeviceSchedule(LogMixin):
         if remaining_intervals <= 0:
             remaining_intervals = 1
 
-        # do we want to overwrite start with the current value from the device
         device: AdditionalStateMixin = self.__variable_manager.get_device(
-            self.__device)
+            self.__device
+        )
         additional_state = device.get_additional_state_for_scene(self.__scene)
+
+        # do we want to overwrite start with the current value from the device
         if delta_range.type in additional_state:
             start = additional_state[delta_range.type]
         else:
