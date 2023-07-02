@@ -43,7 +43,7 @@ class SceneDevice(Device, DeviceOrchestratorMixin, NewPollableMixin):
         self.__scene = scene
 
     @property
-    def scene(self):
+    def scene(self) -> str:
         '''
         Return the name of the scene this device controls.
         '''

@@ -58,7 +58,7 @@ class AdditionalStateMixin(ABC):
 
     @property
     @abstractmethod
-    def scene(self):
+    def scene(self) -> str:
         '''
         Returns the current scene of this device.
         '''
@@ -105,6 +105,13 @@ class AdditionalStateMixin(ABC):
     ):
         '''
         Update the additional state for the specified scene.
+        '''
+        raise NotImplementedError
+
+    @abstractmethod
+    async def change_scene(self, new_scene: str):
+        '''
+        Switch this device from the current scene to this new one, and apply any state changes.
         '''
         raise NotImplementedError
 

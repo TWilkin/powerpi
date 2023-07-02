@@ -114,7 +114,7 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         '''
         Switch this device from the current scene to this new one, and apply any state changes.
         '''
-        if not self.__additional_state.is_current_scene(new_scene):
+        if not self._is_current_scene(new_scene):
             self.__additional_state.scene = new_scene
 
             new_additional_state = self.__additional_state.state

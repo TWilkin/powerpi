@@ -89,8 +89,8 @@ class RemoteDevice(DeviceVariable):
     async def turn_off(self):
         await self.__send_message(state=DeviceStatus.OFF)
 
-    async def change_scene(self, scene: str):
-        await self.__send_message(scene=scene, action='scene')
+    async def change_scene(self, new_scene: str):
+        await self.__send_message(scene=new_scene, action='scene')
 
     async def __send_message(
         self,

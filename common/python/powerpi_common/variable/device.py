@@ -66,6 +66,10 @@ class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
         self.__state = new_state
         self.__additional_state.state = new_additional_state
 
+    async def change_scene(self, _: str):
+        # ignore as we'll wait for a status message
+        pass
+
     def set_state_and_additional(
         self,
         new_state: DeviceStatus,
