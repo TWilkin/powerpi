@@ -12,6 +12,7 @@ from powerpi_common.variable.variable import Variable
 
 
 class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
+
     def __init__(
         self,
         config: Config,
@@ -43,6 +44,10 @@ class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
     def scene(self):
         return self.__additional_state.scene
 
+    @scene.setter
+    def scene(self, new_scene: str):
+        self.__additional_state.scene = new_scene
+
     @property
     def additional_state(self):
         return self.__additional_state.state
@@ -60,6 +65,10 @@ class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
         self.__additional_state.scene = new_scene
         self.__state = new_state
         self.__additional_state.state = new_additional_state
+
+    async def change_scene(self, _: str):
+        # ignore as we'll wait for a status message
+        pass
 
     def set_state_and_additional(
         self,

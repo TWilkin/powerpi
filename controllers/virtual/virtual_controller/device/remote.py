@@ -36,6 +36,11 @@ class RemoteDevice(DeviceVariable):
         DeviceVariable.state.fset(self, new_state)
         self.__waiting.set()
 
+    @DeviceVariable.scene.setter
+    def scene(self, new_scene: str):
+        DeviceVariable.scene.fset(self, new_scene)
+        self.__waiting.set()
+
     @DeviceVariable.additional_state.setter
     def additional_state(self, new_additional_state: AdditionalState):
         DeviceVariable.additional_state.fset(self, new_additional_state)
@@ -84,13 +89,17 @@ class RemoteDevice(DeviceVariable):
     async def turn_off(self):
         await self.__send_message(state=DeviceStatus.OFF)
 
+    async def change_scene(self, new_scene: str):
+        await self.__send_message(scene=new_scene, action='scene')
+
     async def __send_message(
         self,
         scene: Optional[str] = None,
         state: Optional[DeviceStatus] = None,
-        additional_state: Optional[AdditionalState] = None
+        additional_state: Optional[AdditionalState] = None,
+        action: Optional[str] = 'change'
     ):
-        topic = f'device/{self.name}/change'
+        topic = f'device/{self.name}/{action}'
         message = {}
 
         if additional_state is not None:

@@ -89,10 +89,11 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         Update the state of this device to new_state, update the additional state
         to new_additional_state and broadcast the changes to the message queue.
         '''
-        new_additional_state = self._filter_keys(new_additional_state)
+        if new_additional_state is not None:
+            new_additional_state = self._filter_keys(new_additional_state)
 
-        if len(new_additional_state) > 0:
-            self.__additional_state.state = new_additional_state
+            if len(new_additional_state) > 0:
+                self.__additional_state.state = new_additional_state
 
         if new_state is not None:
             self.update_state_no_broadcast(new_state)
@@ -113,10 +114,18 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         '''
         Switch this device from the current scene to this new one, and apply any state changes.
         '''
-        if not self.__additional_state.is_current_scene(new_scene):
+        if not self._is_current_scene(new_scene):
+            old_scene_additional_state = {**self.__additional_state.state}
+
             self.__additional_state.scene = new_scene
 
-            new_additional_state = self.__additional_state.state
+            # join the old scene's state with the updated keys from the new, to ensure states
+            # that don't change with the scene are not changed
+            new_additional_state = {
+                **old_scene_additional_state,
+                **self.__additional_state.state
+            }
+
             await self.change_power_and_additional_state(
                 scene=new_scene,
                 new_additional_state=new_additional_state
@@ -137,7 +146,11 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         ))
         if len(scenes) >= 1:
             result['scenes'] = {
-                scene: self.__additional_state.format_scene_state(scene)
+                scene: {
+                    key: value
+                    for key, value in self.__additional_state.format_scene_state(scene).items()
+                    if key not in 'scene'
+                }
                 for scene in scenes
             }
 

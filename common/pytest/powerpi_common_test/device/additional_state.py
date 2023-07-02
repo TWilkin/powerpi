@@ -86,24 +86,38 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
 
     @pytest.mark.asyncio
     async def test_change_scene(self, subject: AdditionalStateDevice):
+        # pylint: disable=protected-access
+        key = subject._additional_state_keys()[0]
+
         assert subject.scene == 'default'
+        assert subject.additional_state.get(key, None) is None
 
         await subject.change_scene('other')
         assert subject.scene == 'other'
+        assert subject.additional_state.get(key, None) is None
 
-        # pylint: disable=protected-access
-        key = subject._additional_state_keys()[0]
         additional_state = {}
         additional_state[key] = 10
-        subject.additional_state = additional_state
+        subject.additional_state = {**additional_state}
 
         await subject.change_scene('current')
         assert subject.scene == 'other'
         assert subject.additional_state.get(key, None) == 10
 
+        # keep the current state if the scene has none
         await subject.change_scene('default')
         assert subject.scene == 'default'
-        assert subject.additional_state.get(key, None) is None
+        assert subject.additional_state.get(key, None) == 10
+
+        additional_state[key] = 30
+        subject.additional_state = {**additional_state}
+        assert subject.scene == 'default'
+        assert subject.additional_state.get(key, None) == 30
+
+        # reverting back to another scene after a state change will return the scene's state
+        await subject.change_scene('other')
+        assert subject.scene == 'other'
+        assert subject.additional_state.get(key, None) == 10
 
     @pytest.mark.asyncio
     async def test_initial_additional_state_message(self, subject: AdditionalStateDevice):

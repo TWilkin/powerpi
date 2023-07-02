@@ -1,7 +1,7 @@
-from abc import ABC
-from typing import Union
+from abc import ABC, abstractmethod
+from typing import Optional
 
-from powerpi_common.config.config import Config
+from powerpi_common.config import Config
 
 
 class PollableMixin(ABC):
@@ -14,7 +14,7 @@ class PollableMixin(ABC):
     def __init__(
         self,
         config: Config,
-        poll_frequency: Union[int, None] = None,
+        poll_frequency: Optional[int] = None,
         **_
     ):
         if poll_frequency is None:
@@ -41,6 +41,38 @@ class PollableMixin(ABC):
         return self.__poll_frequency
 
     async def poll(self):
+        '''
+        Implement this method to support polling in a concrete device implementation.
+        Must be async.
+        '''
+        raise NotImplementedError
+
+
+class NewPollableMixin(PollableMixin):
+    '''
+    Mixin to add polling functionality. The "poll" method is called periodically
+    by the "DeviceStatusChecker" to update the state of a device that implements
+    this mixin if the state of said device has been externally modified.
+    '''
+
+    def __init__(
+        self,
+        config: Config,
+        poll_frequency: Optional[int] = None,
+        **kwargs
+    ):
+        PollableMixin.__init__(self, config, poll_frequency, **kwargs)
+
+    async def poll(self):
+        if self.executing:
+            # we only want to actually poll if the device isn't already executing
+            self.log_debug('Skipping poll as device already executing')
+            return
+
+        await self._poll()
+
+    @abstractmethod
+    async def _poll(self):
         '''
         Implement this method to support polling in a concrete device implementation.
         Must be async.

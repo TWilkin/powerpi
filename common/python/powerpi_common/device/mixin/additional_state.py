@@ -28,11 +28,19 @@ class AdditionalStateMixin(ABC):
         try:
             # update additional state first
             if new_additional_state is not None and len(new_additional_state) > 0:
+                new_additional_state = self._filter_keys(new_additional_state)
+
                 if self._is_current_scene(scene):
                     new_additional_state = await self.on_additional_state_change(
                         new_additional_state
                     )
                 else:
+                    # capture any current additional state not included by the scene
+                    new_additional_state = {
+                        **self.additional_state,
+                        **new_additional_state
+                    }
+
                     # update just the additional state for that scene
                     self.set_scene_additional_state(
                         scene, new_additional_state
@@ -45,8 +53,6 @@ class AdditionalStateMixin(ABC):
                 func = self._turn_on if new_state == DeviceStatus.ON else self._turn_off
                 await func()
 
-            new_additional_state = self._filter_keys(new_additional_state)
-
             # hide the additional state change if it's for another scene
             update_additional_state = new_additional_state if self._is_current_scene(scene) \
                 else None
@@ -58,7 +64,7 @@ class AdditionalStateMixin(ABC):
 
     @property
     @abstractmethod
-    def scene(self):
+    def scene(self) -> str:
         '''
         Returns the current scene of this device.
         '''
@@ -105,6 +111,13 @@ class AdditionalStateMixin(ABC):
     ):
         '''
         Update the additional state for the specified scene.
+        '''
+        raise NotImplementedError
+
+    @abstractmethod
+    async def change_scene(self, new_scene: str):
+        '''
+        Switch this device from the current scene to this new one, and apply any state changes.
         '''
         raise NotImplementedError
 
