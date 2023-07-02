@@ -59,6 +59,13 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, NewPollabl
 
             self.set_state_and_additional(new_state, new_additional_state)
 
+    async def change_scene(self, new_scene: str):
+        for device in self.devices:
+            if ismixin(device, AdditionalStateMixin):
+                await device.change_scene(new_scene)
+
+        await AdditionalStateDevice.change_scene(self, new_scene)
+
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
         # we are doing everything in change_power_and_additional_state
         return new_additional_state
@@ -69,15 +76,17 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, NewPollabl
 
     def _additional_state_keys(self) -> List[str]:
         # we don't know what the actual implementation supports, so we're not setting keys
-        # but the test expect at least one
+        # but the tests expect at least one
         return ['a']
 
     async def _poll(self):
+        devices = self.devices
+
         # are any unknown
-        if any((device.state == DeviceStatus.UNKNOWN for device in self.devices)):
+        if any((device.state == DeviceStatus.UNKNOWN for device in devices)):
             await self.set_new_state(DeviceStatus.UNKNOWN)
         # are all devices on
-        elif all((device.state == DeviceStatus.ON for device in self.devices)):
+        elif all((device.state == DeviceStatus.ON for device in devices)):
             await self.set_new_state(DeviceStatus.ON)
         else:
             await self.set_new_state(DeviceStatus.OFF)
