@@ -202,9 +202,9 @@ class TestDeviceSchedule:
         variable = mocker.MagicMock()
         powerpi_variable_manager.get_device = lambda _: variable
 
-        type(variable).additional_state = PropertyMock(
-            return_value={'brightness': current}
-        )
+        variable.get_additional_state_for_scene = lambda _: {
+            'brightness': current
+        }
 
         with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
             mock_datetime.now.return_value = datetime(
@@ -250,9 +250,9 @@ class TestDeviceSchedule:
         variable = mocker.MagicMock()
         powerpi_variable_manager.get_device = lambda _: variable
 
-        type(variable).additional_state = PropertyMock(
-            return_value={'hue': current}
-        )
+        variable.get_additional_state_for_scene = lambda _: {
+            'hue': current
+        }
 
         with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
             mock_datetime.now.return_value = datetime(
@@ -355,9 +355,9 @@ class TestDeviceSchedule:
         })
 
         async def execute(minutes: float, current: float, expected: float):
-            type(variable).additional_state = PropertyMock(
-                return_value={'brightness': current}
-            )
+            variable.get_additional_state_for_scene = lambda _: {
+                'brightness': current
+            }
 
             with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
                 mock_datetime.now.return_value = datetime(
