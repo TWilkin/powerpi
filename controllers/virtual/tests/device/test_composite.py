@@ -10,6 +10,8 @@ from pytest_mock import MockerFixture
 
 from virtual_controller.device import CompositeDevice
 
+DeviceList = Dict[str, MagicMock]
+
 
 class TestCompositeDevice(
     AdditionalStateDeviceTestBase,
@@ -21,7 +23,7 @@ class TestCompositeDevice(
     async def test_all_on(
         self,
         subject: CompositeDevice,
-        devices: Dict[str, MagicMock]
+        devices: DeviceList
     ):
         # store the order they were called
         order = []
@@ -43,7 +45,7 @@ class TestCompositeDevice(
     async def test_all_off(
         self,
         subject: CompositeDevice,
-        devices: Dict[str, MagicMock]
+        devices: DeviceList
     ):
         # store the order they were called
         order = []
@@ -69,7 +71,7 @@ class TestCompositeDevice(
     async def test_all_change_power_and_additional_state(
         self,
         subject: CompositeDevice,
-        devices: Dict[str, MagicMock],
+        devices: DeviceList,
         new_state: str,
         expected_order: List[str]
     ):
@@ -101,7 +103,7 @@ class TestCompositeDevice(
     async def test_all_change_power_and_additional_state_scene(
         self,
         subject: CompositeDevice,
-        devices: Dict[str, MagicMock]
+        devices: DeviceList
     ):
         with patch('virtual_controller.device.composite.ismixin') as ismixin:
             ismixin.return_value = True
@@ -122,7 +124,7 @@ class TestCompositeDevice(
     async def test_all_change_power_and_additional_state_unsupported(
         self,
         subject: CompositeDevice,
-        devices: Dict[str, MagicMock]
+        devices: DeviceList
     ):
         new_state = 'on'
         new_additional_state = {'something': 'else'}
@@ -137,6 +139,20 @@ class TestCompositeDevice(
 
         for device in devices.values():
             device.turn_on.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_all_change_scene(
+        self,
+        subject: CompositeDevice,
+        devices: DeviceList
+    ):
+        with patch('virtual_controller.device.composite.ismixin') as ismixin:
+            ismixin.return_value = True
+
+            await subject.change_scene('other')
+
+        for device in devices.values():
+            device.change_scene.assert_called_once_with('other')
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('initial_state,update_state,expected_states', [
@@ -212,7 +228,7 @@ class TestCompositeDevice(
 
         future = Future()
         future.set_result(True)
-        for method in ['turn_on', 'turn_off', 'change_power_and_additional_state']:
+        for method in ['turn_on', 'turn_off', 'change_power_and_additional_state', 'change_scene']:
             for device in devices.values():
                 mocker.patch.object(
                     device,

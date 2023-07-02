@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 
 import pytest
 from powerpi_common.device.mixin import AdditionalState
+from powerpi_common.device.scene_state import ReservedScenes
 
 from virtual_controller.device.remote import RemoteDevice
 
@@ -131,6 +132,26 @@ class TestRemoteDevice:
         assert subject.state == 'unknown'
         assert subject.additional_state == {}
 
+    @pytest.mark.asyncio
+    async def test_change_scene(
+        self,
+        subject: RemoteDevice,
+        powerpi_mqtt_producer: MagicMock
+    ):
+        assert subject.scene == ReservedScenes.DEFAULT
+
+        self.__schedule_state_change(subject, scene='other')
+
+        await subject.change_scene('other')
+
+        topic = 'device/remote/scene'
+        message = {
+            'scene': 'other'
+        }
+        powerpi_mqtt_producer.assert_any_call(topic, message)
+
+        assert subject.scene == 'other'
+
     @pytest.fixture
     def subject(
         self,
@@ -152,6 +173,8 @@ class TestRemoteDevice:
         additional_state: Optional[AdditionalState] = None,
         sleep=0.1
     ):
+        # pylint: disable=too-many-arguments
+
         if additional_state is None:
             additional_state = {}
 
