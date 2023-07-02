@@ -154,6 +154,93 @@ describe("Virtual Devices", () => {
         );
     });
 
+    describe("Scene", () => {
+        const { testValid, testInvalid } = commonDeviceTests({
+            devices: [
+                {
+                    type: "scene",
+                    name: "Scene",
+                    devices: ["Device1", "Device2"],
+                    scene: "movie",
+                    state: { brightness: 50, temperature: 9999, hue: 120, saturation: 100 },
+                },
+            ],
+        });
+
+        [[], undefined, [1]].forEach((devices) =>
+            test(`Bad devices ${devices}`, () =>
+                testInvalid({
+                    devices: [{ type: "scene", name: "Scene", devices, state: { brightness: 50 } }],
+                }))
+        );
+
+        describe("State", () => {
+            test("Missing", () =>
+                testInvalid({
+                    devices: [
+                        {
+                            type: "scene",
+                            name: "Scene",
+                            devices: ["Device1", "Device2"],
+                        },
+                    ],
+                }));
+
+            test("Unknown state", () =>
+                testInvalid({
+                    devices: [
+                        {
+                            type: "scene",
+                            name: "Scene",
+                            devices: ["Device1", "Device2"],
+                            state: { something: "else" },
+                        },
+                    ],
+                }));
+
+            [
+                { state: "brightness", goodValues: [0, 20.23, 100], badValues: [-1, 101, "e"] },
+                {
+                    state: "temperature",
+                    goodValues: [1500, 6000, 10000],
+                    badValues: [-1, 6000.1, 10001, "e"],
+                },
+                { state: "hue", goodValues: [0, 240, 360], badValues: [-1, 23.23, 361, "e"] },
+                { state: "saturation", goodValues: [0, 20.23, 100], badValues: [-1, 101, "e"] },
+            ].forEach(({ state, goodValues, badValues }) =>
+                describe(state, () => {
+                    goodValues.forEach((value) =>
+                        test(`Good data ${value}`, () =>
+                            testValid({
+                                devices: [
+                                    {
+                                        type: "scene",
+                                        name: "Scene",
+                                        devices: ["Device1"],
+                                        state: { [state]: value },
+                                    },
+                                ],
+                            }))
+                    );
+
+                    badValues.forEach((value) =>
+                        test(`Bad data ${value}`, () =>
+                            testInvalid({
+                                devices: [
+                                    {
+                                        type: "scene",
+                                        name: "Scene",
+                                        devices: ["Device1"],
+                                        state: { [state]: value },
+                                    },
+                                ],
+                            }))
+                    );
+                })
+            );
+        });
+    });
+
     describe("Variable", () => {
         commonDeviceTests({
             devices: [{ type: "variable", name: "Variable" }],

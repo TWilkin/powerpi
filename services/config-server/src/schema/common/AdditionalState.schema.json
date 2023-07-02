@@ -1,0 +1,32 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/AdditionalState.schema.json",
+    "title": "AdditionalState",
+    "description": "The possible device additional state in PowerPi",
+    "type": "object",
+    "properties": {
+        "brightness": {
+            "description": "The additional state brightness value",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Percentage.schema.json"
+        },
+        "temperature": {
+            "description": "The additional state colour temperature value",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/ColourTemperature.schema.json"
+        },
+        "hue": {
+            "description": "The additional state hue value",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Hue.schema.json"
+        },
+        "saturation": {
+            "description": "The additional state saturation value",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Percentage.schema.json"
+        }
+    },
+    "anyOf": [
+        { "required": ["brightness"] },
+        { "required": ["temperature"] },
+        { "required": ["hue"] },
+        { "required": ["saturation"] }
+    ],
+    "additionalProperties": false
+}

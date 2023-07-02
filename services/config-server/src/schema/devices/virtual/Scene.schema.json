@@ -1,0 +1,37 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/virtual/Scene.schema.json",
+    "title": "Scene",
+    "description": "The Scene device",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PollableDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "scene"
+        },
+        "devices": {
+            "description": "The list of devices that will have the scene activated in sequence",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
+            }
+        },
+        "state": {
+            "description": "The additional state to apply to the devices when they are turned on",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/AdditionalState.schema.json"
+        },
+        "scene": {
+            "description": "The name of the scene to activate, by default will be the device name",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
+        }
+    },
+    "required": ["devices", "state"]
+}

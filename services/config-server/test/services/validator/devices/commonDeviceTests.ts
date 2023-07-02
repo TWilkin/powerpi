@@ -1,9 +1,9 @@
 import { ConfigFileType, IDeviceConfigFile } from "@powerpi/common";
 import ValidatorService from "../../../../src/services/ValidatorService";
 import {
-    setupValidator,
     testInvalid as _testInvalid,
     testValid as _testValid,
+    setupValidator,
 } from "../setupValidator";
 
 export default function commonDeviceTests(validFile: object) {

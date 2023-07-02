@@ -1,0 +1,9 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/ColourTemperature.schema.json",
+    "title": "ColourTemperature",
+    "description": "A colour temperature value between 1500 and 10000 kelvin",
+    "type": "integer",
+    "minimum": 1500,
+    "maximum": 10000
+}
