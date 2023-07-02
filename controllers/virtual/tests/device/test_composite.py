@@ -223,9 +223,7 @@ class TestCompositeDevice(
         return devices
 
     @pytest.fixture
-    def device_manager(self, devices: Dict[str, MagicMock], mocker: MockerFixture):
-        manager = mocker.MagicMock()
+    def device_manager(self, devices: Dict[str, MagicMock], powerpi_device_manager):
+        powerpi_device_manager.get_device = lambda name: devices[name]
 
-        manager.get_device = lambda name: devices[name]
-
-        return manager
+        return powerpi_device_manager
