@@ -5,12 +5,6 @@ global:
   # the environment to deploy for "production" or "dev"
   env: production
 
-  # the external host name to use when requesting certificates and to configure for ingress
-  externalHostName: example.com
-
-  # the email address to use for HTTPS certificate renewal
-  certificateEmail: user@example.com
-
   # whether to use SSL for the UI, API and voice integration
   useSSL: false
 
