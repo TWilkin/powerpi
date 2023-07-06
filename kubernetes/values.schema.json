@@ -267,7 +267,7 @@
         },
 
         "mosquitto": {
-            "description": "The configuration for the PowerPi Mosquitto MQTT service Helm chart",
+            "description": "The configuration for the Mosquitto MQTT service Helm chart",
             "type": "object",
             "allOf": [
                 { "$ref": "#/$defs/service" }
@@ -400,7 +400,7 @@
                     "type": "string"
                 },
                 "imageTag": {
-                    "description": "The image tag to use instead of the imaget tag from the Helm chart",
+                    "description": "The image tag to use instead of the image tag from the Helm chart",
                     "type": "string"
                 }
             },
