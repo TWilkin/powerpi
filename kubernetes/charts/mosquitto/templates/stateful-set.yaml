@@ -22,8 +22,7 @@
   "Config" (list
     (dict
       "Name" "mosquitto-config"
-      "Path" "/mosquitto/config/mosquitto.conf"
-      "SubPath" "mosquitto.conf"
+      "Path" "/mosquitto/config"
     )
   )
   "Probe" (dict
