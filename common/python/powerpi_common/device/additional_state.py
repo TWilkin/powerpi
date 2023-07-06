@@ -84,7 +84,8 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         '''
         Return the additional state for the specified scene.
         '''
-        return self.__additional_state.get_scene_state(scene)
+        _, additional_state = self.__additional_state.get_scene_state(scene)
+        return additional_state
 
     def set_state_and_additional(
         self,
