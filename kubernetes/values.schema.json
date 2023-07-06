@@ -117,6 +117,19 @@
                 }
             },
             "required": ["externalHostName"],
+            "anyOf": [
+                {
+                    "properties": {
+                        "useSSL": { "const": true }
+                    },
+                    "required": ["certificateEmail"]
+                },
+                { 
+                    "properties": {
+                        "useSSL": { "const": false }
+                    }
+                }
+            ],
             "unevaluatedProperties": false
         },
 
