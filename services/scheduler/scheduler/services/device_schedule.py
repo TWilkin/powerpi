@@ -10,7 +10,6 @@ from dependency_injector import providers
 from powerpi_common.condition import (ConditionParser, Expression,
                                       ParseException)
 from powerpi_common.device import DeviceStatus
-from powerpi_common.device.mixin import AdditionalStateMixin
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import VariableManager
@@ -266,7 +265,7 @@ class DeviceSchedule(LogMixin):
         if remaining_intervals <= 0:
             remaining_intervals = 1
 
-        device: AdditionalStateMixin = self.__variable_manager.get_device(
+        device = self.__variable_manager.get_device(
             self.__device
         )
         additional_state = device.get_additional_state_for_scene(self.__scene)
