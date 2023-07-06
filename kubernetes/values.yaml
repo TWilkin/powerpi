@@ -5,19 +5,13 @@ global:
   # the environment to deploy for "production" or "dev"
   env: production
 
-  # the external host name to use when requesting certificates and to configure for ingress
-  externalHostName: example.com
-
-  # the email address to use for HTTPS certificate renewal
-  certificateEmail: user@example.com
-
-  # whether to use SSL or not
+  # whether to use SSL for the UI, API and voice integration
   useSSL: false
 
-  # whether PowerPi is deployed in a kubernetes cluster (true) or on a single node (false)
+  # whether PowerPi is deployed in a kubernetes cluster (i.e. has more than 1 node)
   useCluster: false
 
-  # whether to allow access to the message queue from outside of kubernetes (to support sensors publishing events)
+  # whether to allow access to the message queue from outside of kubernetes (to support external sensors publishing events)
   useSensors: false
 
   # whether to use FreeDNS or not

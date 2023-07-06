@@ -1,0 +1,428 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/kubernetes/values.schema.json",
+    "title": "PowerPi Helm Chart",
+    "description": "The configuration for the PowerPi Helm deployment",
+    "type": "object",
+    "properties": {
+        "component": {
+            "const": "powerpi"
+        },
+
+        "global": {
+            "description": "The global configuration options",
+            "type": "object",
+            "properties": {
+                "env": {
+                    "description": "The environment to deploy for 'production' or 'dev'",
+                    "type": "string",
+                    "enum": ["dev", "production"]
+                },
+
+                "externalHostName": {
+                    "description": "The external host name to use when requesting certificates and to configure for ingress",
+                    "type": "string",
+                    "pattern": "^\\w+(\\.\\w+)+$"
+                },
+
+                "certificateEmail": {
+                    "description": "The email address to use for HTTPS certificate renewal",
+                    "type": "string",
+                    "format": "email"
+                },
+
+                "useSSL": {
+                    "description": "Whether to use SSL for the UI, API and voice integration",
+                    "type": "boolean"
+                },
+
+                "useCluster": {
+                    "description": "Whether PowerPi is deployed in a kubernetes cluster (i.e. has more than 1 node)",
+                    "type": "boolean"
+                },
+
+                "useSensors": {
+                    "description": "Whether to allow access to the message queue from outside of kubernetes (to support external sensors publishing events)",
+                    "type": "boolean"
+                },
+
+                "freeDNS": {
+                    "description": "Whether to deploy the FreeDNS service",
+                    "type": "boolean"
+                },
+
+                "config": {
+                    "description": "Whether to include the config-server service to get configuration from GitHub",
+                    "type": "boolean"
+                },
+
+                "persistence": {
+                    "description": "Whether to include the persistence service to store messages in a database",
+                    "type": "boolean"
+                },
+
+                "scheduler": {
+                    "description": "Whether to include the scheduler service to update devices on a schedule",
+                    "type": "boolean"
+                },
+
+                "voiceAssistant": {
+                    "description": "Whether to include the voice assistant service for Alexa integration",
+                    "type": "boolean"
+                },
+
+                "energenie": {
+                    "description": "Whether to include Energenie support",
+                    "type": "boolean"
+                },
+
+                "harmony": {
+                    "description": "Whether to include Logitech Harmony support",
+                    "type": "boolean"
+                },
+
+                "lifx": {
+                    "description": "Whether to include LIFX support",
+                    "type": "boolean"
+                },
+
+                "zigbee": {
+                    "description": "Whether to include ZigBee support",
+                    "type": "boolean"
+                },
+
+                "network": {
+                    "description": "Whether to include control of networked devices (i.e. computers)",
+                    "type": "boolean"
+                },
+
+                "node": {
+                    "description": "Whether to include node monitoring support",
+                    "type": "boolean"
+                },
+
+                "pijuice": {
+                    "description": "Whether to include PiJuice support",
+                    "type": "boolean"
+                },
+
+                "pwm": {
+                    "description": "Whether to include node PWM fan control",
+                    "type": "boolean"
+                },
+
+                "energy-monitor": {
+                    "description": "Whether to include N3rgy energy monitoring support",
+                    "type": "boolean"
+                }
+            },
+            "required": ["externalHostName"],
+            "anyOf": [
+                {
+                    "properties": {
+                        "useSSL": { "const": true }
+                    },
+                    "required": ["certificateEmail"]
+                },
+                { 
+                    "properties": {
+                        "useSSL": { "const": false }
+                    }
+                }
+            ],
+            "unevaluatedProperties": false
+        },
+
+        "config-server": {
+            "description": "The configuration for the PowerPi Config Server Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/service" }
+            ],
+            "properties": {
+                "component": {
+                    "const": "config"
+                },
+                "schedule": {
+                    "description": "The cron schedule for when the Config Server should run",
+                    "type": "string"
+                },
+                "path": {
+                    "description": "The path in the GitHub repository to the configuration files",
+                    "type": "string"
+                },
+                "branch": {
+                    "description": "The branch in the GitHub repository to get the configuration files",
+                    "type": "string"
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "database": {
+            "description": "The configuration for the PowerPi Database Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/service" }
+            ],
+            "properties": {
+                "component": {
+                    "const": "database"
+                },
+                "backupSchedule": {
+                    "description": "The cron schedule for when the database backup should run",
+                    "type": "string"
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "deep-thought": {
+            "description": "The configuration for the PowerPi API service Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/service" }
+            ],
+            "properties": {
+                "component": {
+                    "const": "api"
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "energenie-controller": {
+            "description": "The configuration for the PowerPi Energenie controller Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/controller" }
+            ],
+            "properties": {
+                "type": {
+                    "description": "The Energenie device type to use, either ENER314-RT or ENER314",
+                    "enum": ["ENER314-RT", "ENER314"]
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "energy-monitor": {
+            "description": "The configuration for the PowerPi Energy Monitor service Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/service" }
+            ],
+            "properties": {
+                "component": {
+                    "const": "energy-monitor"
+                },
+                "schedule": {
+                    "description": "The cron schedule for when the Energy Monitor service should run",
+                    "type": "string"
+                },
+                "history": {
+                    "description": "How many days to collect data for",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 720
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "freedns": {
+            "description": "The configuration for the PowerPi FreeDNS service Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/service" }
+            ],
+            "properties": {
+                "component": {
+                    "const": "dns"
+                },
+                "schedule": {
+                    "description": "The cron schedule for when the FreeDNSr service should run",
+                    "type": "string"
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "harmony-controller": {
+            "description": "The configuration for the PowerPi Harmony controller Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/controller" }
+            ],
+            "unevaluatedProperties": false
+        },
+
+        "lifx-controller": {
+            "description": "The configuration for the PowerPi LIFX controller Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/controller" }
+            ],
+            "unevaluatedProperties": false
+        },
+
+        "mosquitto": {
+            "description": "The configuration for the Mosquitto MQTT service Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/service" }
+            ],
+            "properties": {
+                "component": {
+                    "const": "message-queue"
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "network-controller": {
+            "description": "The configuration for the PowerPi Network controller Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/controller" }
+            ],
+            "unevaluatedProperties": false
+        },
+
+        "node-controller": {
+            "description": "The configuration for the PowerPi Node controller Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/controller" }
+            ],
+            "unevaluatedProperties": false
+        },
+
+        "persistence": {
+            "description": "The configuration for the PowerPi Persistence service Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/service" }
+            ],
+            "properties": {
+                "component": {
+                    "const": "database"
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "scheduler": {
+            "description": "The configuration for the PowerPi Scheduler service Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/service" }
+            ],
+            "properties": {
+                "component": {
+                    "const": "scheduler"
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "smarter-device-manager": {
+            "description": "The configuration for the Smarter Device Manager Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/service" }
+            ],
+            "properties": {
+                "component": {
+                    "const": "device-manager"
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "ui": {
+            "description": "The configuration for the PowerPi UI service Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/service" }
+            ],
+            "properties": {
+                "component": {
+                    "const": "ui"
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "virtual-controller": {
+            "description": "The configuration for the PowerPi Virtual controller Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/controller" }
+            ],
+            "unevaluatedProperties": false
+        },
+
+        "voice-assistant": {
+            "description": "The configuration for the PowerPi Voice Assistant service Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/service" }
+            ],
+            "properties": {
+                "component": {
+                    "const": "voice-assistant"
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "zigbee-controller": {
+            "description": "The configuration for the PowerPi ZigBee controller Helm chart",
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/controller" }
+            ],
+            "unevaluatedProperties": false
+        }
+    },
+    "additionalProperties": false,
+
+    "$defs": {
+        "service": {
+            "type": "object",
+            "properties": {
+                "global": {
+                    "type": "object"
+                },
+                "image": {
+                    "description": "The image to use instead of the default image from DockerHub",
+                    "type": "string"
+                },
+                "imageTag": {
+                    "description": "The image tag to use instead of the image tag from the Helm chart",
+                    "type": "string"
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "controller": {
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/service" }
+            ],
+            "properties": {
+                "component": {
+                    "const": "controller"
+                },
+                "pollFrequency": {
+                    "description": "The frequency in seconds at which to poll for external changes to the devices",
+                    "type": "integer",
+                    "minimum": 10
+                }
+            },
+            "unevaluatedProperties": false
+        }
+    }
+}
