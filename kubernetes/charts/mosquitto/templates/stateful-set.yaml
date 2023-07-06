@@ -25,6 +25,11 @@
       "Path" "/mosquitto/config"
     )
   )
+  "Secret" (list
+    (dict
+      "Name" "mosquitto-password-secret"
+    )
+  )
   "Probe" (dict
     "Tcp" true
     "ReadinessInitialDelay" 5
