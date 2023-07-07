@@ -118,13 +118,13 @@ class Config(ABC):
             return json.load(json_file)
 
     @classmethod
-    async def __secret(cls, prefix: str):
+    def __secret(cls, prefix: str):
         file = os.getenv(f'{prefix}_SECRET_FILE')
 
         with open(file, 'r', encoding='utf8') as secret_file:
             return secret_file.read()
 
-    async def __file_or_config(self, key: str, file_type: ConfigFileType):
+    def __file_or_config(self, key: str, file_type: ConfigFileType):
         if self.use_config_file:
             path = os.getenv(key)
 

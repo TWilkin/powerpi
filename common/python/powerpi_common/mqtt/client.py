@@ -56,7 +56,7 @@ class MQTTClient:
 
         if new_topic:
             topic = f'{self.__config.topic_base}/{key}'
-            self.__logger.info('Subscribing to topic "{topic}"', topic)
+            self.__logger.info('Subscribing to topic "%s"', topic)
             self.__client.subscribe(topic)
 
     def remove_consumer(self, consumer: MQTTConsumer):
@@ -67,7 +67,7 @@ class MQTTClient:
 
         if len(self.__consumers.get(key, [])) == 0:
             topic = f'{self.__config.topic_base}/{key}'
-            self.__logger.info('Unsubscribing from topic "{topic}"', topic)
+            self.__logger.info('Unsubscribing from topic "%s"', topic)
             self.__client.unsubscribe(topic)
 
     def add_producer(self):
@@ -89,7 +89,7 @@ class MQTTClient:
         client_id = self.client_id
 
         self.__logger.info(
-            'Connecting to MQTT at "{address}" as "{user}"',
+            'Connecting to MQTT at "%s" as "%s"',
             self.__config.mqtt_address,
             self.__config.mqtt_user if self.__config.mqtt_user is not None else 'anonymous'
         )
@@ -120,10 +120,10 @@ class MQTTClient:
     def __on_connect(self, _, __, result_code: int, ___):
         if result_code == 0:
             self.__connected = True
-            self.__logger.info('MQTT connected as {id}', self.client_id)
+            self.__logger.info('MQTT connected as %s', self.client_id)
         else:
             self.__logger.error(
-                'MQTT connection failed with code {code}',
+                'MQTT connection failed with code %d',
                 result_code
             )
             return
@@ -136,11 +136,7 @@ class MQTTClient:
     async def __on_message(self, _, topic: str, payload: Dict, __, ___):
         # read the JSON
         message: MQTTMessage = json.loads(payload)
-        self.__logger.debug(
-            'Received: {topic}:{message}',
-            topic,
-            json.dumps(message)
-        )
+        self.__logger.debug('Received: %s:%s', topic, json.dumps(message))
 
         # split the topic
         _, message_type, entity, action = topic.split('/', 3)
@@ -165,7 +161,7 @@ class MQTTClient:
         self.__wait_for_connection()
 
         message = json.dumps(payload)
-        self.__logger.info('Publishing {topic}:{message}', topic, message)
+        self.__logger.info('Publishing %s:%s', topic, message)
         self.__client.publish(topic, message, qos=2, retain=True)
 
     def __wait_for_connection(self):
