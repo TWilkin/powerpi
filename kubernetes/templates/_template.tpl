@@ -10,7 +10,7 @@
       "Key" "username"
     )
     (dict
-      "Name" "MQTT_PASSWORD_FILE"
+      "Name" "MQTT_SECRET_FILE"
       "SubPath" "password"
     )
   )
