@@ -8,5 +8,3 @@ data:
 {{ .Files.Get "mosquitto.conf" | indent 4 }}
   acl.conf: |- 
 {{ .Files.Get "acl.conf" | indent 4 }}
-  entry-point.sh: |-
-{{ .Files.Get "entry-point.sh" | indent 4 }}

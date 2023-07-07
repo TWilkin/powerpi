@@ -10,10 +10,9 @@
   "Kind" "StatefulSet"
   "Image" "eclipse-mosquitto"
   "PriorityClassName" "powerpi-critical"
-  "Command" (list "/bin/sh")
+  "Command" (list "/bin/sh" "-c")
   "Args" (list
-    "-c"
-    "/mosquitto/config/entry-point.sh"
+    "cp /var/run/secrets/mosquitto-password-secret/passwords /mosquitto/passwords && mosquitto_passwd -U /mosquitto/passwords && exec /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf"
   )
   "Ports" (list (dict
     "Name" "mqtt"
