@@ -32,6 +32,17 @@ class Config(ABC):
         return address if address is not None else 'mqtt://mosquitto:1883'
 
     @property
+    def mqtt_user(self):
+        return os.getenv('MQTT_USER')
+
+    @property
+    def mqtt_password(self):
+        if self.mqtt_user is not None:
+            return self.__secret('MQTT')
+
+        return None
+
+    @property
     def mqtt_connect_timeout(self):
         timeout = as_int(os.getenv('MQTT_CONNECT_TIMEOUT'))
         return timeout if timeout is not None else 10
@@ -106,7 +117,14 @@ class Config(ABC):
         with open(file, 'r', encoding='utf8') as json_file:
             return json.load(json_file)
 
-    def __file_or_config(self, key: str, file_type: ConfigFileType):
+    @classmethod
+    async def __secret(cls, prefix: str):
+        file = os.getenv(f'{prefix}_SECRET_FILE')
+
+        with open(file, 'r', encoding='utf8') as secret_file:
+            return secret_file.read()
+
+    async def __file_or_config(self, key: str, file_type: ConfigFileType):
         if self.use_config_file:
             path = os.getenv(key)
 

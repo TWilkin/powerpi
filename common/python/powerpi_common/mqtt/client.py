@@ -89,13 +89,19 @@ class MQTTClient:
         client_id = self.client_id
 
         self.__logger.info(
-            'Connecting to MQTT at "{address}" as "{client_id}"',
+            'Connecting to MQTT at "{address}" as "{user}"',
             self.__config.mqtt_address,
-            client_id
+            self.__config.mqtt_user if self.__config.mqtt_user is not None else 'anonymous'
         )
 
         url = urlparse(self.__config.mqtt_address)
         self.__client = Client(client_id)
+
+        if self.__config.mqtt_user:
+            self.__client.set_auth_credentials(
+                self.__config.mqtt_user,
+                self.__config.mqtt_password
+            )
 
         self.__client.set_config({
             'reconnect_retries': 0
@@ -104,6 +110,7 @@ class MQTTClient:
         self.__client.on_connect = self.__on_connect
         self.__client.on_disconnect = self.__on_disconnect
         self.__client.on_message = self.__on_message
+
         await self.__client.connect(url.hostname, url.port, version=gmqtt.constants.MQTTv311)
 
     async def disconnect(self):
