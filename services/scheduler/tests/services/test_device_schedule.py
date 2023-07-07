@@ -8,6 +8,7 @@ import pytest
 import pytz
 from apscheduler.triggers.interval import IntervalTrigger
 from powerpi_common.condition import ConditionParser, Expression
+from powerpi_common.device import ReservedScenes
 from pytest_mock import MockerFixture
 
 from scheduler.services import DeviceSchedule
@@ -202,9 +203,9 @@ class TestDeviceSchedule:
         variable = mocker.MagicMock()
         powerpi_variable_manager.get_device = lambda _: variable
 
-        type(variable).additional_state = PropertyMock(
-            return_value={'brightness': current}
-        )
+        variable.get_additional_state_for_scene = lambda _: {
+            'brightness': current
+        }
 
         with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
             mock_datetime.now.return_value = datetime(
@@ -250,9 +251,9 @@ class TestDeviceSchedule:
         variable = mocker.MagicMock()
         powerpi_variable_manager.get_device = lambda _: variable
 
-        type(variable).additional_state = PropertyMock(
-            return_value={'hue': current}
-        )
+        variable.get_additional_state_for_scene = lambda _: {
+            'hue': current
+        }
 
         with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
             mock_datetime.now.return_value = datetime(
@@ -355,9 +356,9 @@ class TestDeviceSchedule:
         })
 
         async def execute(minutes: float, current: float, expected: float):
-            type(variable).additional_state = PropertyMock(
-                return_value={'brightness': current}
-            )
+            variable.get_additional_state_for_scene = lambda _: {
+                'brightness': current
+            }
 
             with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
                 mock_datetime.now.return_value = datetime(
@@ -380,6 +381,53 @@ class TestDeviceSchedule:
         powerpi_mqtt_producer.reset_mock()
 
         await execute(32, expected, next_expected)
+
+    @pytest.mark.asyncio
+    async def test_execute_current_value_scenes(
+        self,
+        subject_builder: SubjectBuilder,
+        powerpi_mqtt_producer: MagicMock,
+        powerpi_variable_manager: MagicMock,
+        mocker: MockerFixture
+    ):
+        variable = mocker.MagicMock()
+        powerpi_variable_manager.get_device = lambda _: variable
+
+        variable.get_additional_state_for_scene = lambda scene: \
+            {'brightness': 75} if scene == 'other' else {'brightness': 100}
+
+        subject = subject_builder({
+            'device': 'SomeDevice',
+            'scene': 'other',
+            'between': ['09:00:00', '09:50:00'],
+            'interval': 60,
+            'brightness': [0, 100],
+        })
+
+        async def execute(scene: str, expected: float):
+            powerpi_mqtt_producer.reset_mock()
+
+            type(variable).scene = PropertyMock(return_value=scene)
+
+            with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+                mock_datetime.now.return_value = datetime(
+                    2023, 3, 1, 9, 26
+                ).astimezone(pytz.UTC)
+
+                start_date = datetime(2023, 3, 1, 9, 0).astimezone(pytz.UTC)
+                end_date = datetime(2023, 3, 1, 9, 50).astimezone(pytz.UTC)
+
+                await subject.execute(start_date, end_date)
+
+            topic = 'device/SomeDevice/change'
+            message = {'brightness': expected, 'scene': 'other'}
+            powerpi_mqtt_producer.assert_called_once_with(topic, message)
+
+        # when we're in the wrong scene it pulls the value from correct scene anyway
+        await execute(ReservedScenes.DEFAULT, 75 + 1)
+
+        # still works when we're in the correct scene
+        await execute('other', 75 + 1)
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('set_condition,current_state,expected', [
