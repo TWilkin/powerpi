@@ -7,6 +7,7 @@
     "start:prd"
     (print "--history=" (.Values.history | default 30))
   )
+  "MqttSecret" "mosquitto-sensor-secret"
   "Secret" (list
     (dict
       "Name" "ihd-secret"

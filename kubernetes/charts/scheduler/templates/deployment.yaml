@@ -2,6 +2,7 @@
   "UseConfig" true
   "UseDevicesFile" true
   "UseSchedulesFile" true
+  "MqttSecret" "mosquitto-controller-secret"
   "Probe" (dict
     "Command" (list
       "/bin/sh"

@@ -7,6 +7,7 @@
     "start:prd"
   )
   "PriorityClassName" "powerpi-critical"
+  "MqttSecret" "mosquitto-config-secret"
   "Secret" (list
     (dict
       "Name" "github-secret"
