@@ -4,12 +4,17 @@
       "Value" "true"
     )
   ) (list) .Values.global.useCluster 
-}}
+-}}
 
 {{- $data := dict
   "Kind" "StatefulSet"
   "Image" "eclipse-mosquitto"
   "PriorityClassName" "powerpi-critical"
+  "Command" (list "/bin/sh")
+  "Args" (list
+    "-c"
+    "/mosquitto/config/entry-point.sh"
+  )
   "Ports" (list (dict
     "Name" "mqtt"
     "Port" 1883
@@ -35,6 +40,6 @@
     "ReadinessInitialDelay" 5
     "LivenessInitialDelay" 10
   )
-}}
+-}}
 
-{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . ) -}}
