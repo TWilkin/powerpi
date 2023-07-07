@@ -66,7 +66,11 @@ export class ConfigService {
     }
 
     get mqttPassword() {
-        return this.getSecret("MQTT_PASSWORD_FILE").then((password) => password);
+        if (this.mqttUser) {
+            return this.getSecret("MQTT").then((password) => password);
+        }
+
+        return undefined;
     }
 
     get topicNameBase() {
