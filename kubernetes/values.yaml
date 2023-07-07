@@ -54,7 +54,7 @@ global:
   pwm: false
 
   # whether to include N3rgy energy monitoring support
-  energy-monitor: false
+  energyMonitor: false
 
 config-server:
   # the path to the config files in the GitHub repo
