@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 
 import gmqtt
 from gmqtt import Client
+
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 
@@ -36,6 +37,10 @@ class MQTTClient:
         self.__client = Union[Client, None]
 
     @property
+    def client_id(self):
+        return f'{self.__app_name}-{socket.gethostname()}'.lower()
+
+    @property
     def connected(self):
         return self.__connected
 
@@ -51,7 +56,7 @@ class MQTTClient:
 
         if new_topic:
             topic = f'{self.__config.topic_base}/{key}'
-            self.__logger.info(f'Subcribing to topic "{topic}"')
+            self.__logger.info('Subscribing to topic "{topic}"', topic)
             self.__client.subscribe(topic)
 
     def remove_consumer(self, consumer: MQTTConsumer):
@@ -62,7 +67,7 @@ class MQTTClient:
 
         if len(self.__consumers.get(key, [])) == 0:
             topic = f'{self.__config.topic_base}/{key}'
-            self.__logger.info(f'Unsubcribing from topic "{topic}"')
+            self.__logger.info('Unsubscribing from topic "{topic}"', topic)
             self.__client.unsubscribe(topic)
 
     def add_producer(self):
@@ -81,10 +86,12 @@ class MQTTClient:
             self.__logger.error(error)
             raise EnvironmentError(error)
 
-        client_id = f'{self.__app_name}-{socket.gethostname()}'.lower()
+        client_id = self.client_id
 
         self.__logger.info(
-            f'Connecting to MQTT at "{self.__config.mqtt_address}" as "{client_id}"'
+            'Connecting to MQTT at "{address}" as "{client_id}"',
+            self.__config.mqtt_address,
+            client_id
         )
 
         url = urlparse(self.__config.mqtt_address)
@@ -106,10 +113,11 @@ class MQTTClient:
     def __on_connect(self, _, __, result_code: int, ___):
         if result_code == 0:
             self.__connected = True
-            self.__logger.info('MQTT connected')
+            self.__logger.info('MQTT connected as {id}', self.client_id)
         else:
             self.__logger.error(
-                f'MQTT connection failed with code {result_code}'
+                'MQTT connection failed with code {code}',
+                result_code
             )
             return
 
@@ -121,7 +129,11 @@ class MQTTClient:
     async def __on_message(self, _, topic: str, payload: Dict, __, ___):
         # read the JSON
         message: MQTTMessage = json.loads(payload)
-        self.__logger.debug(f'Received: {topic}:{json.dumps(message)}')
+        self.__logger.debug(
+            'Received: {topic}:{message}',
+            topic,
+            json.dumps(message)
+        )
 
         # split the topic
         _, message_type, entity, action = topic.split('/', 3)
@@ -146,7 +158,7 @@ class MQTTClient:
         self.__wait_for_connection()
 
         message = json.dumps(payload)
-        self.__logger.info(f'Publishing {topic}:{message}')
+        self.__logger.info('Publishing {topic}:{message}', topic, message)
         self.__client.publish(topic, message, qos=2, retain=True)
 
     def __wait_for_connection(self):
