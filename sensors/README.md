@@ -31,11 +31,20 @@ PATH=$PATH:/path/to/arduino-ide
 autoconf
 ```
 
+If MQTT uses authentication (this is the default behaviour), we need to capture the password for the `sensor` user so we can pass it when compiling the sensor firmware.
+
+```bash
+# Retrieve the sensor password from Kubernetes
+kubectl get secrets -n powerpi mosquitto-sensor-secret --template={{.data.password}} | base64 --decode
+```
+
 Next, we need to configure the compiler with the options we wish to include, we also must set the following options in the form `name=value`.
 
 -   **location** - Where this sensor will be deployed, e.g. _Bedroom_, _Office_, _Hallway_ etc.
 -   **mqtt_server** - The IP address/hostname of the Docker stack that contains PowerPi.
 -   **mqtt_port** - _optional_ - The port number for MQTT, default is _1883_.
+-   **mqtt_user** - _optional_ - The username for MQTT, default is _sensor_.
+-   **mqtt_password** - _optional_ - The password for MQTT, default is disabled. (This is the password retrieved from Kubernetes in the previous step)
 -   **wifi_ssid** - The WiFi SSID the sensor should connect to.
 -   **wifi_password** - The password for the aforementioned WiFi SSID.
 -   **serial_baud** - _optional_ - The baud rate to use when connecting to the serial monitor on the sensor, default is 115200.
