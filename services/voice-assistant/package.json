@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/voice-assistant",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "PowerPi home automation voice assistant service",
     "private": true,
     "license": "GPL-3.0-only",
@@ -27,7 +27,7 @@
         "@jovotech/platform-core": "^4.2.22",
         "@jovotech/server-express": "^4.0.0",
         "@powerpi/api": "^0.0.17",
-        "@powerpi/common": "^0.0.14",
+        "@powerpi/common": "0.1.0",
         "source-map-support": "^0.5.19"
     },
     "devDependencies": {

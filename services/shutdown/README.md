@@ -39,13 +39,20 @@ make TARGET_ARCH=arm64
 # Copy the compiled binary to the computer
 scp ./bin/powerpi_shutdown_linux_arm64 HOST:~/
 
-# Edit the file powerpi-shutdown.service to set the --host parameter to your MQTT hostname
+# Edit the file powerpi-shutdown.service to set the --host parameter to your MQTT hostname, and --password parameter to the path on the host computer where the password file will be e.g. /root/.powerpi-password
 scp ./powerpi-shutdown.service HOST:~/
 
 # Now SSH into the computer to perform the install
 # Copy the powerpi_shutdown binary you built earlier to the right place and make it executable
 sudo mv ~/powerpi_shutdown_linux_arm64 /usr/local/powerpi_shutdown
 sudo chmod +x /usr/local/powerpi_shutdown
+
+# Get the password from kubernetes and set the permissions on the file 
+# Replace /root/.powerpi-password with the path you set in the previous step
+kubectl get secrets -n powerpi mosquitto-device-secret --template={{.data.password}} | base64 --decode # note down this password
+# Add the password from the previous step to this file
+nano /root/.powerpi-password
+chmod 600 /root/.powerpi-password
 
 # Now we'll install the service
 sudo mv ~/powerpi-shutdown.service /lib/systemd/system/
@@ -64,16 +71,20 @@ journalctl -t powerpi_shutdown
 The service takes the following command line arguments:
 
 ```
+  -allowQuickShutdown
+    	If true allow a message within 2 minutes of service starting to initiate a shutdown
   -host string
     	The hostname of the MQTT broker (default "localhost")
   -mock
     	Whether to actually shutdown or not
+  -password string
+    	The path to the password file (default "undefined")
   -port int
     	The port number for the MQTT broker (default 1883)
   -topic string
     	The topic base for the MQTT broker (default "powerpi")
-  -allowQuickShutdown
-      If true allow a message within 2 minutes of service starting to initiate a shutdown (default false)
+  -user string
+    	The username for the MQTT broker (default "device")
 ```
 
 ## Testing

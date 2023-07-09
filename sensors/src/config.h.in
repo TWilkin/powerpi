@@ -14,6 +14,12 @@
 #define MQTT_SERVER "@mqtt_server@"
 #define MQTT_PORT @mqtt_port@
 
+// the MQTT credentials, if defined
+#if @enable_mqtt_credentials@
+    #define MQTT_USER "@mqtt_user@"
+    #define MQTT_PASSWORD "@mqtt_password@"
+#endif
+
 // the WiFI connection details
 #define WIFI_SSID "@wifi_ssid@"
 #define WIFI_PASSWORD "@wifi_password@"

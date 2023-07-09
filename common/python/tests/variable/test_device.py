@@ -25,6 +25,15 @@ class TestDeviceVariable(VariableTestBase):
         assert subject.state == DeviceStatus.ON
         assert subject.additional_state.get('brightness', None) == 33
 
+    def test_get_additional_state_for_scene(self, subject: DeviceVariable):
+        subject.additional_state = {'brightness': 20}
+
+        result = subject.get_additional_state_for_scene(ReservedScenes.DEFAULT)
+        assert result.get('brightness', None) == 20
+
+        result = subject.get_additional_state_for_scene('other')
+        assert result is None
+
     @pytest.fixture
     def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
         return DeviceVariable(

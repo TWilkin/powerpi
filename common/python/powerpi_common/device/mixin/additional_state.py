@@ -93,6 +93,13 @@ class AdditionalStateMixin(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def get_additional_state_for_scene(self, scene: Optional[str]):
+        '''
+        Return the additional state for the specified scene.
+        '''
+        raise NotImplementedError
+
+    @abstractmethod
     def set_state_and_additional(
         self,
         new_state: DeviceStatus,

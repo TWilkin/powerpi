@@ -62,6 +62,21 @@ class TestAdditionalStateDevice(AdditionalStateDeviceTestBase):
 
         assert subject.additional_state == {'a': 1, 'b': 2, 'c': 3}
 
+    def test_get_additional_state_for_scene(self, subject: AdditionalStateDevice):
+        subject.set_scene_additional_state(
+            ReservedScenes.DEFAULT, {'brightness': 20}
+        )
+
+        subject.set_scene_additional_state(
+            'other', {'brightness': 55}
+        )
+
+        result = subject.get_additional_state_for_scene(ReservedScenes.DEFAULT)
+        assert result.get('brightness', None) == 20
+
+        result = subject.get_additional_state_for_scene('other')
+        assert result.get('brightness', None) == 55
+
     @pytest.fixture
     def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
         return DeviceImpl(powerpi_config, powerpi_logger, powerpi_mqtt_client)

@@ -61,6 +61,18 @@ export class ConfigService {
         return process.env["MQTT_ADDRESS"] ?? "mqtt://mosquitto:1883";
     }
 
+    get mqttUser() {
+        return process.env["MQTT_USER"];
+    }
+
+    get mqttPassword() {
+        if (this.mqttUser) {
+            return this.getSecret("MQTT").then((password) => password);
+        }
+
+        return undefined;
+    }
+
     get topicNameBase() {
         return process.env["TOPIC_BASE"] ?? "powerpi";
     }

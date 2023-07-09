@@ -80,6 +80,13 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         self.__additional_state.scene = new_scene
         self.__additional_state.state = self._filter_keys(new_additional_state)
 
+    def get_additional_state_for_scene(self, scene: Optional[str]):
+        '''
+        Return the additional state for the specified scene.
+        '''
+        _, additional_state = self.__additional_state.get_scene_state(scene)
+        return additional_state
+
     def set_state_and_additional(
         self,
         new_state: DeviceStatus,

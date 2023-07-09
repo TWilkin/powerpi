@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/config-server",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "PowerPi config retrieval from GitHub pushing to message queue",
     "private": true,
     "license": "GPL-3.0-only",
@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "@octokit/rest": "^19.0.11",
-        "@powerpi/common": "^0.0.14",
+        "@powerpi/common": "0.1.0",
         "ajv": "^8.11.0",
         "ajv-formats": "2.1.1",
         "ts-command-line-args": "^2.5.1",
