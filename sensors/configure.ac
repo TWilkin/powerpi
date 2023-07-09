@@ -1,16 +1,27 @@
-AC_INIT([powerpi-sensor], [0.3.0])
+AC_INIT([powerpi-sensor], [0.3.1])
 
 dnl The arguments the user can override
 AC_ARG_VAR([location], [The location of this sensor])
 AC_ARG_VAR([mqtt_server], [The MQTT server address])
+AC_ARG_VAR([mqtt_user], [The MQTT user])
+AC_ARG_VAR([mqtt_password], [The MQTT password])
 AC_ARG_VAR([mqtt_port], [The MQTT server port])
 AC_ARG_VAR([wifi_ssid], [The SSID of the WiFi connection to use])
 AC_ARG_VAR([wifi_password], [The password of the WiFi connection to use])
 AC_ARG_VAR([serial_baud], [The baud rate for the serial connection])
 
 dnl The default value for any of those arguments
+test "$mqtt_user" = "" && mqtt_user="sensor"
 test "$mqtt_port" = "" && mqtt_port=1883
 test "$serial_baud" = "" && serial_baud=115200
+
+dnl Identify whether MQTT credentials are provided
+if test "$mqtt_password" = ""
+then
+    AC_SUBST([enable_mqtt_credentials], [0])
+else
+    AC_SUBST([enable_mqtt_credentials], [1])
+fi
 
 dnl Ensure the required arguments are set
 m4_foreach_w(
@@ -68,7 +79,7 @@ AC_ARG_ENABLE(
 )
 AC_SUBST([enable_button])
 
-dnl Find the arduino IDE
+dnl Find the Arduino IDE
 AC_CHECK_PROG([ARDUINO], [arduino], $(whereis arduino -b | cut -d':' -f 2), [no])
 if test "$ARDUINO" == "no"
 then
@@ -78,7 +89,7 @@ else
     AC_SUBST([ARDUINO_PATH])
 fi
 
-dnl Check for the arduino builder tool
+dnl Check for the Arduino builder tool
 AC_CHECK_PROG([ARDUINO_BUILDER], [arduino-builder], [yes], [no])
 if test "$ARDUINO_BUILDER" == "no"
 then
