@@ -33,7 +33,7 @@ func New(hostname string, topicBase string, action MqttMessageAction) MqttClient
 	return client
 }
 
-func (client MqttClient) Connect(host string, port int) {
+func (client MqttClient) Connect(host string, port int, user *string, password *string) {
 	address := fmt.Sprintf("tcp://%s:%d", host, port)
 	clientId := fmt.Sprintf("shutdown-%s", client.hostname)
 
@@ -42,11 +42,22 @@ func (client MqttClient) Connect(host string, port int) {
 	options.SetClientID(clientId)
 	options.SetCleanSession(true)
 
+	if user != nil && password != nil {
+		options.SetUsername(*user)
+		options.SetPassword(*password)
+	} else {
+		user = nil
+	}
+
 	options.OnConnect = func(_ MQTT.Client) {
 		client.onConnect()
 	}
 
-	fmt.Printf("Connecting to MQTT at %s as %s\n", address, clientId)
+	logUser := "anonymous"
+	if user != nil {
+		logUser = *user
+	}
+	fmt.Printf("Connecting to MQTT at %s as %s\n", address, logUser)
 	client.client = MQTT.NewClient(options)
 
 	if token := client.client.Connect(); token.Wait() && token.Error() != nil {

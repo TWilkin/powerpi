@@ -7,7 +7,7 @@ TARGET_OS?=linux
 TARGET_ARCH?=arm64
 
 # the version of the shutdown service
-VERSION=0.0.3
+VERSION=0.0.4
 
 all: compile
 

@@ -21,6 +21,8 @@ func main() {
 	// use command line args
 	host := flag.String("host", "localhost", "The hostname of the MQTT broker")
 	port := flag.Int("port", 1883, "The port number for the MQTT broker")
+	user := flag.String("user", "device", "The username for the MQTT broker")
+	passwordFile := flag.String("password", "undefined", "The path to the password file")
 	topicBase := flag.String("topic", "powerpi", "The topic base for the MQTT broker")
 	mock := flag.Bool("mock", false, "Whether to actually shutdown or not")
 	allowQuickShutdown := flag.Bool("allowQuickShutdown", false, "If true allow a message within 2 minutes of service starting to initiate a shutdown")
@@ -37,6 +39,19 @@ func main() {
 		panic(err)
 	}
 
+	// read the password from the file (if set)
+	var password *string
+	password = nil
+	if passwordFile != nil && *passwordFile != "undefined" {
+		data, err := os.ReadFile(*passwordFile)
+		if err != nil {
+			panic(err)
+		}
+
+		str := string(data)
+		password = &str
+	}
+
 	// make the channel
 	channel := make(chan os.Signal, 1)
 	signal.Notify(channel, os.Interrupt, syscall.SIGTERM)
@@ -46,7 +61,7 @@ func main() {
 		shutdown(client, state, *mock, startTime)
 	} 
 	client := mqtt.New(hostname, *topicBase, callback)
-	client.Connect(*host, *port)
+	client.Connect(*host, *port, user, password)
 
 	// join the channel
 	<-channel
