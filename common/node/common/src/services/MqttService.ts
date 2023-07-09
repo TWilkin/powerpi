@@ -39,9 +39,16 @@ export class MqttService {
     public async connect() {
         const options = {
             clientId: this.clientId,
+            username: this.config.mqttUser,
+            password: await this.config.mqttPassword
         };
 
-        this.logger.info("MQTT connecting to", this.config.mqttAddress);
+        this.logger.info(
+            "MQTT connecting to", 
+            this.config.mqttAddress, 
+            "as user", 
+            this.config.mqttUser ?? "anonymous"
+        );
         this.client = await connectAsync(this.config.mqttAddress, options);
         this.logger.info("MQTT client", options.clientId, "connected.");
 

@@ -28,6 +28,6 @@
         "typescript": "^4.7.4"
     },
     "dependencies": {
-        "@powerpi/common": "^0.0.14"
+        "@powerpi/common": "0.1.0"
     }
 }
