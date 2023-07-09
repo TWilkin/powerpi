@@ -6,7 +6,7 @@
   "UseConfig" true
   "UseDevicesFile" true
   "Probe" (dict
-    "Http" "/api/health"
+    "Http" "/health"
     "ReadinessInitialDelay" 10
     "LivenessInitialDelay" 20
   )
