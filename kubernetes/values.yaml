@@ -11,7 +11,7 @@ global:
   # whether PowerPi is deployed in a kubernetes cluster (i.e. has more than 1 node)
   useCluster: false
 
-  # whether to allow access to the message queue from outside of kubernetes (to support external sensors publishing events)
+  # whether to allow access to the message queue from outside of kubernetes (to support external sensors publishing events or computer devices using the shutdown service)
   useSensors: false
 
   # whether to use FreeDNS or not
