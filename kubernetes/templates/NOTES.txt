@@ -61,6 +61,21 @@ Your release is named "{{ .Release.Name }}":
         --from-file=ihd=./__SECRET_NAME__
 {{- end }}
 
+{{- if .Values.global.useSensors }}
+
+--- 🖥️  CONFIGURE 🖥️  ---
+
+❗ Remember to extract any secrets if you're using devices that communicate with PowerPi outside of the cluster (i.e. computers with the shutdown service, custom sensors):
+
+- For computers using the shutdown service, they need the password for the MQTT device user, this password can be extracted with the following command:
+    $ kubectl get secrets --namespace powerpi mosquitto-device-secret --template={{ "{{.data.password}}" }} \
+        | base64 --decode
+
+- For custom sensors to access PowerPi, they need the password for the MQTT sensor user, this password can be extracted with the following command:
+    $ kubectl get secrets --namespace powerpi mosquitto-sensor-secret --template={{ "{{.data.password}" }}} \
+        | base64 --decode
+{{- end }}
+
 To learn more about the release, try:
 
   $ helm status {{ .Release.Name }}

@@ -4,7 +4,7 @@ After=time-sync.target
 StartLimitBurst=20
 
 [Service]
-ExecStart=/usr/local/powerpi_shutdown --host [YOUR_HOSTNAME_HERE]
+ExecStart=/usr/local/powerpi_shutdown --host [YOUR_HOSTNAME_HERE] --password [PATH_TO_PASSWORD_HERE]
 User=root
 Restart=always
 RestartSec=30

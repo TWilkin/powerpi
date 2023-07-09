@@ -6,13 +6,26 @@ void setupMQTT() {
     Serial.print("Using MQTT: ");
     Serial.print(MQTT_SERVER);
     Serial.print(":");
-    Serial.println(MQTT_PORT);
+    Serial.print(MQTT_PORT);
+
+    #ifdef MQTT_USER
+        Serial.print(" as ");
+        Serial.print(MQTT_USER);
+    #endif
+
+    Serial.println();
 }
 
 void connectMQTT(bool waitForNTP) {
     // wait until it's connected
     while(!mqttClient.connected()) {
-        if(!mqttClient.connect(HOSTNAME)) {
+        #ifdef MQTT_USER
+            bool connected = mqttClient.connect(HOSTNAME, MQTT_USER, MQTT_PASSWORD);
+        #else
+            bool connected = mqttClient.connect(HOSTNAME);
+        #endif
+
+        if(!connected) {
             Serial.print("MQTT connection failed ");
             Serial.println(mqttClient.state());
             
