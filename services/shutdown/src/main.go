@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -102,6 +103,7 @@ func getPassword(passwordFile *string) *string {
 		}
 
 		str := string(data)
+		str = strings.TrimSpace(str)
 		password = &str
 	}
 
