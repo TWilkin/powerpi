@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -40,17 +41,7 @@ func main() {
 	}
 
 	// read the password from the file (if set)
-	var password *string
-	password = nil
-	if passwordFile != nil && *passwordFile != "undefined" {
-		data, err := os.ReadFile(*passwordFile)
-		if err != nil {
-			panic(err)
-		}
-
-		str := string(data)
-		password = &str
-	}
+	password := getPassword(passwordFile)
 
 	// make the channel
 	channel := make(chan os.Signal, 1)
@@ -87,4 +78,32 @@ func shutdown(client mqtt.MqttClient, state mqtt.DeviceState, mock bool, startTi
 			fmt.Println("Failed to shutdown:", err)
 		}
 	}
+}
+
+func getPassword(passwordFile *string) *string {
+	var password *string
+	password = nil
+
+	if passwordFile != nil && *passwordFile != "undefined" {
+		// check the password file permissions
+		info, err := os.Stat(*passwordFile)
+		if err != nil {
+			panic(err)
+		}
+
+		permissions := info.Mode().Perm()
+		if permissions != 0o600 {
+			log.Fatalf("Incorrect permissions (0%o), must be 0600 on '%s'", permissions, *passwordFile)
+		}
+
+		data, err := os.ReadFile(*passwordFile)
+		if err != nil {
+			panic(err)
+		}
+
+		str := string(data)
+		password = &str
+	}
+
+	return password
 }
