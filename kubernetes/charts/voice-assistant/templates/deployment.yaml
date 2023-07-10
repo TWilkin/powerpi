@@ -6,5 +6,10 @@
   "UseConfig" true
   "UseDevicesFile" true
   "MqttSecret" "mosquitto-voice-secret"
+  "Probe" (dict
+    "Http" "/health"
+    "ReadinessInitialDelay" 10
+    "LivenessInitialDelay" 20
+  )
 -}}
 {{- include "powerpi.deployment" (merge (dict "Params" $data) . ) -}}
