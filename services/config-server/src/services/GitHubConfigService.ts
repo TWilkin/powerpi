@@ -80,23 +80,25 @@ export default class GitHubConfigService {
     private async *listFiles() {
         this.logger.info(
             "Listing contents from",
-            `github://${this.config.gitHubUser}/${this.config.repo}/${this.config.branch}`,
+            `github://${this.config.gitHubUser}/${this.config.repo}/${this.config.branch}/${this.config.path}`,
         );
 
         try {
             const data = await this.octokit.getContent(this.config.path);
             const files = (data as { name: string }[]).map((file) => file.name);
 
-            for (const fileType of this.config.configFileTypes) {
+            fileTypeLoop: for (const fileType of this.config.configFileTypes) {
                 for (const extension of this.supportedFormats) {
                     const fileName = `${fileType}.${extension}`;
 
                     if (files.indexOf(fileName) !== -1) {
                         this.logger.info("Found", fileName, "for type", fileType);
                         yield { fileType, fileName };
-                        break;
+                        continue fileTypeLoop;
                     }
                 }
+
+                this.logger.warn("No file found for", fileType);
             }
         } catch (ex) {
             this.logger.error(ex);
