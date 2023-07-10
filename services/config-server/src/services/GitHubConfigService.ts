@@ -1,6 +1,7 @@
 import { ConfigFileType, LoggerService } from "@powerpi/common";
 import path from "path";
 import { Service } from "typedi";
+import yaml from "yaml";
 import ConfigPublishService from "./ConfigPublishService";
 import ConfigService from "./ConfigService";
 import ConfigServiceArgumentService from "./ConfigServiceArgumentService";
@@ -120,7 +121,7 @@ export default class GitHubConfigService {
             const buffer = Buffer.from(content, "base64");
 
             return {
-                content: JSON.parse(buffer.toString()),
+                content: this.parseFile(fileName, buffer.toString()),
                 checksum: sha,
             };
         } catch (ex) {
@@ -129,6 +130,15 @@ export default class GitHubConfigService {
         }
 
         return undefined;
+    }
+
+    private parseFile(fileName: string, content: string) {
+        if (fileName.endsWith("json")) {
+            return JSON.parse(content);
+        }
+
+        // otherwise it must be YAML
+        return yaml.parse(content);
     }
 
     private async validate(type: ConfigFileType, content: object) {
