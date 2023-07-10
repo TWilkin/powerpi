@@ -4,12 +4,16 @@
       "Value" "true"
     )
   ) (list) .Values.global.useCluster 
-}}
+-}}
 
 {{- $data := dict
   "Kind" "StatefulSet"
   "Image" "eclipse-mosquitto"
   "PriorityClassName" "powerpi-critical"
+  "Command" (list "/bin/sh" "-c")
+  "Args" (list
+    "cp /var/run/secrets/mosquitto-passwords-secret/passwords /mosquitto/passwords && mosquitto_passwd -U /mosquitto/passwords && exec /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf"
+  )
   "Ports" (list (dict
     "Name" "mqtt"
     "Port" 1883
@@ -22,8 +26,12 @@
   "Config" (list
     (dict
       "Name" "mosquitto-config"
-      "Path" "/mosquitto/config/mosquitto.conf"
-      "SubPath" "mosquitto.conf"
+      "Path" "/mosquitto/config"
+    )
+  )
+  "Secret" (list
+    (dict
+      "Name" "mosquitto-passwords-secret"
     )
   )
   "Probe" (dict
@@ -31,6 +39,6 @@
     "ReadinessInitialDelay" 5
     "LivenessInitialDelay" 10
   )
-}}
+-}}
 
-{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . ) -}}

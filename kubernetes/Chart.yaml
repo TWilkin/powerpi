@@ -2,8 +2,8 @@ apiVersion: v2
 name: powerpi
 description: A Helm chart for deploying the PowerPi home automation stack
 type: application
-version: 0.3.0
-appVersion: 0.3.0
+version: 0.4.0
+appVersion: 0.4.0
 dependencies:
   # services
   - name: config-server
@@ -16,12 +16,12 @@ dependencies:
     version: 0.1.6
   - name: energy-monitor
     version: 0.1.3
-    condition: global.energy-monitor
+    condition: global.energyMonitor
   - name: freedns
     version: 0.1.2
     condition: global.freeDNS
   - name: mosquitto
-    version: 0.1.2
+    version: 0.2.0
   - name: persistence
     version: 0.1.5
     condition: global.persistence

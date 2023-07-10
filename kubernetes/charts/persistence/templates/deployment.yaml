@@ -1,4 +1,5 @@
 {{- $data := dict
+  "MqttSecret" "mosquitto-persistence-secret"
   "Secret" (list
     (dict
       "Name" "database-secret"

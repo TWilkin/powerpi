@@ -86,6 +86,7 @@
   "UseUsersFile" true
   "RequestMemory" "150Mi"
   "LimitMemory" "300Mi"
+  "MqttSecret" "mosquitto-api-secret"
   "Env" (list
     (dict
       "Name" "EXTERNAL_HOST_NAME"

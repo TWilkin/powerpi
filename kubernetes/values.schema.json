@@ -42,7 +42,7 @@
                 },
 
                 "useSensors": {
-                    "description": "Whether to allow access to the message queue from outside of kubernetes (to support external sensors publishing events)",
+                    "description": "Whether to allow access to the message queue from outside of kubernetes (to support external sensors publishing events or computer devices using the shutdown service)",
                     "type": "boolean"
                 },
 
@@ -111,7 +111,7 @@
                     "type": "boolean"
                 },
 
-                "energy-monitor": {
+                "energyMonitor": {
                     "description": "Whether to include N3rgy energy monitoring support",
                     "type": "boolean"
                 }

@@ -1,11 +1,28 @@
 {{- define "powerpi.template" }}
 
+{{- $secrets := ternary .Params.Secret list (eq (empty .Params.Secret) false) -}}
+{{- if eq (empty .Params.MqttSecret) false -}}
+{{- $secrets = append $secrets (dict
+  "Name" .Params.MqttSecret
+  "Env" (list
+    (dict
+      "Name" "MQTT_USER"
+      "Key" "username"
+    )
+    (dict
+      "Name" "MQTT_SECRET_FILE"
+      "SubPath" "password"
+    )
+  )
+) -}}
+{{- end -}}
+
 {{- $name := .Params.Name | default .Chart.Name }}
 {{- $config := and .Params.UseConfig (not .Values.global.config) }}
 {{- $hasVolumeClaim := eq (empty .Params.PersistentVolumeClaim) false }}
 {{- $hasVolumeClaimEnv := and $hasVolumeClaim (eq (empty .Params.PersistentVolumeClaim.EnvName) false) }}
 {{- $hasConfig := eq (empty .Params.Config) false }}
-{{- $hasSecret := eq (empty .Params.Secret) false }}
+{{- $hasSecret := eq (empty $secrets) false }}
 {{- $hasAnnotations := eq (empty .Params.Annotations) false }}
 
 template:
@@ -91,7 +108,7 @@ template:
       {{- end }}
 
       {{- if $hasSecret }}
-      {{- range $element := .Params.Secret }}
+      {{- range $element := $secrets }}
       {{- if eq (empty $element.Env) false }}
       {{- range $env := $element.Env }}
       - name: {{ $env.Name }}
@@ -220,7 +237,7 @@ template:
       {{- end }}
 
       {{- if $hasSecret }}
-      {{- range $element := .Params.Secret }}
+      {{- range $element := $secrets }}
       - name: {{ $element.Name }}
         mountPath: {{ printf "/var/run/secrets/%s" $element.Name }}
         readOnly: true
@@ -260,7 +277,7 @@ template:
     {{- end }}
 
     {{- if $hasSecret }}
-    {{- range $element := .Params.Secret }}
+    {{- range $element := $secrets }}
     - name: {{ $element.Name }}
       secret:
         secretName: {{ $element.Name }}

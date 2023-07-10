@@ -4,5 +4,7 @@ metadata:
   name: mosquitto-config
   {{- include "powerpi.labels.no-version" . }}
 data:
-  mosquitto.conf: |-
-    {{- .Files.Get "mosquitto.conf" | indent 4 }}
+  mosquitto.conf: |- 
+{{ .Files.Get "mosquitto.conf" | indent 4 }}
+  acl.conf: |- 
+{{ .Files.Get "acl.conf" | indent 4 }}
