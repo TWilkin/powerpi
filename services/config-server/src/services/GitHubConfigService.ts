@@ -76,31 +76,31 @@ export default class GitHubConfigService {
         }
     }
 
-    private async validate(type: ConfigFileType, content: object) {
-        this.logger.info("Validating file", type);
-
-        let valid = false;
+    private async *listFiles() {
+        this.logger.info(
+            "Listing contents from",
+            `github://${this.config.gitHubUser}/${this.config.repo}/${this.config.branch}`,
+        );
 
         try {
-            valid = await this.validator.validate(type, content);
+            const data = await this.octokit.getContent(this.config.path);
+            const files = (data as { name: string }[]).map((file) => file.name);
 
-            if (!valid) {
-                throw new ValidationException(type, undefined);
+            for (const fileType of this.config.configFileTypes) {
+                for (const extension of this.supportedFormats) {
+                    const fileName = `${fileType}.${extension}`;
+
+                    if (files.indexOf(fileName) !== -1) {
+                        this.logger.info("Found", fileName, "for type", fileType);
+                        yield { fileType, fileName };
+                        break;
+                    }
+                }
             }
         } catch (ex) {
             this.logger.error(ex);
-
-            if (ex instanceof ValidationException) {
-                this.publishService.publishConfigError(type, ex.message, ex.errors);
-            }
-
-            valid = false;
+            this.logger.error("Could not retrieve directory listing from GitHub");
         }
-
-        // the file is validated, so don't do it again
-        this.validated[type] = true;
-
-        return valid;
     }
 
     private async getFile(fileType: ConfigFileType, fileName: string) {
@@ -131,30 +131,30 @@ export default class GitHubConfigService {
         return undefined;
     }
 
-    private async *listFiles() {
-        this.logger.info(
-            "Listing contents from",
-            `github://${this.config.gitHubUser}/${this.config.repo}/${this.config.branch}`,
-        );
+    private async validate(type: ConfigFileType, content: object) {
+        this.logger.info("Validating file", type);
+
+        let valid = false;
 
         try {
-            const data = await this.octokit.getContent(this.config.path);
-            const files = (data as { name: string }[]).map((file) => file.name);
+            valid = await this.validator.validate(type, content);
 
-            for (const fileType of this.config.configFileTypes) {
-                for (const extension of this.supportedFormats) {
-                    const fileName = `${fileType}.${extension}`;
-
-                    if (files.indexOf(fileName) !== -1) {
-                        this.logger.info("Found", fileName, "for type", fileType);
-                        yield { fileType, fileName };
-                        break;
-                    }
-                }
+            if (!valid) {
+                throw new ValidationException(type, undefined);
             }
         } catch (ex) {
             this.logger.error(ex);
-            this.logger.error("Could not retrieve directory listing from GitHub");
+
+            if (ex instanceof ValidationException) {
+                this.publishService.publishConfigError(type, ex.message, ex.errors);
+            }
+
+            valid = false;
         }
+
+        // the file is validated, so don't do it again
+        this.validated[type] = true;
+
+        return valid;
     }
 }
