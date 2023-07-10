@@ -1,5 +1,4 @@
 import { ConfigFileType, LoggerService } from "@powerpi/common";
-import path from "path";
 import { Service } from "typedi";
 import yaml from "yaml";
 import ConfigPublishService from "./ConfigPublishService";
@@ -78,13 +77,10 @@ export default class GitHubConfigService {
     }
 
     private async *listFiles() {
-        this.logger.info(
-            "Listing contents from",
-            `github://${this.config.gitHubUser}/${this.config.repo}/${this.config.branch}/${this.config.path}`,
-        );
+        this.logger.info("Listing contents of", this.octokit.getUrl());
 
         try {
-            const data = await this.octokit.getContent(this.config.path);
+            const data = await this.octokit.getContent();
             const files = (data as { name: string }[]).map((file) => file.name);
 
             fileTypeLoop: for (const fileType of this.config.configFileTypes) {
@@ -107,17 +103,15 @@ export default class GitHubConfigService {
     }
 
     private async getFile(fileType: ConfigFileType, fileName: string) {
-        const filePath = path.join(this.config.path, fileName);
-
         this.logger.info(
             "Attempting to retrieve",
             fileType,
             "file from",
-            `github://${this.config.gitHubUser}/${this.config.repo}/${this.config.branch}/${filePath}`,
+            this.octokit.getUrl(fileName),
         );
 
         try {
-            const data = await this.octokit.getContent(filePath);
+            const data = await this.octokit.getContent(fileName);
 
             const { content, sha } = data as { content: string; sha: string };
             const buffer = Buffer.from(content, "base64");
