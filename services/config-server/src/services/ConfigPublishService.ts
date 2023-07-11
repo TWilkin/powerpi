@@ -16,33 +16,41 @@ export default class ConfigPublishService {
         this.logger = Container.get(LoggerService);
     }
 
-    public publishConfigChange(fileType: ConfigFileType | string, file: object, checksum: string) {
+    public async publishConfigChange(
+        fileType: ConfigFileType | string,
+        file: object,
+        checksum: string,
+    ) {
         const message = {
             payload: file,
             checksum,
         };
 
-        this.mqtt.publish(
+        await this.mqtt.publish(
             ConfigPublishService.topicType,
             fileType,
             ConfigPublishService.topicAction,
-            message
+            message,
         );
 
         this.logger.info("Published updated", fileType, "config");
     }
 
-    public publishConfigError(fileType: ConfigFileType, text: string, errors: string | undefined) {
+    public async publishConfigError(
+        fileType: ConfigFileType,
+        text: string,
+        errors: string | undefined,
+    ) {
         const message = {
             message: text,
             errors,
         };
 
-        this.mqtt.publish(
+        await this.mqtt.publish(
             ConfigPublishService.topicType,
             fileType,
             ConfigPublishService.topicErrorAction,
-            message
+            message,
         );
     }
 }

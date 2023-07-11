@@ -67,7 +67,11 @@ export default class GitHubConfigService {
                     continue;
                 }
 
-                this.publishService.publishConfigChange(fileType, file.content, file.checksum);
+                await this.publishService.publishConfigChange(
+                    fileType,
+                    file.content,
+                    file.checksum,
+                );
 
                 // pass to a handler for additional processing (if any)
                 const handler = this.handlerFactory.build(fileType);
@@ -152,7 +156,7 @@ export default class GitHubConfigService {
             this.logger.error(ex);
 
             if (ex instanceof ValidationException) {
-                this.publishService.publishConfigError(type, ex.message, ex.errors);
+                await this.publishService.publishConfigError(type, ex.message, ex.errors);
             }
 
             valid = false;
