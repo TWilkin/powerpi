@@ -75,7 +75,7 @@ export default class GitHubConfigService {
 
                 // pass to a handler for additional processing (if any)
                 const handler = this.handlerFactory.build(fileType);
-                handler?.handle(file.content);
+                await handler?.handle(file.content);
             }
         }
     }
