@@ -1,20 +1,16 @@
 import { ConfigFileType, LoggerService, MqttService } from "@powerpi/common";
 import { Service } from "typedi";
-import Container from "../container";
 
 @Service()
 export default class ConfigPublishService {
-    private mqtt: MqttService;
-    private logger: LoggerService;
-
     private static readonly topicType = "config";
     private static readonly topicAction = "change";
     private static readonly topicErrorAction = "error";
 
-    constructor() {
-        this.mqtt = Container.get(MqttService);
-        this.logger = Container.get(LoggerService);
-    }
+    constructor(
+        private readonly mqtt: MqttService,
+        private readonly logger: LoggerService,
+    ) {}
 
     public async publishConfigChange(
         fileType: ConfigFileType | string,
