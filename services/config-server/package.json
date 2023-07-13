@@ -15,6 +15,7 @@
     "scripts": {
         "build": "tsc",
         "clean": "rm -rf dist",
+        "coverage": "jest --coverage",
         "start:dev": "ts-node src/index.ts",
         "start:prd": "node dist/src/index.js",
         "test": "jest"
@@ -35,5 +36,18 @@
         "@types/underscore": "^1.11.5",
         "ts-node": "^10.8.2",
         "typescript": "^5.1.6"
+    },
+    "jest": {
+        "preset": "ts-jest",
+        "testEnvironment": "node",
+        "collectCoverage": false,
+        "collectCoverageFrom": [
+            "src/**/*.ts",
+            "!**/node_modules/**",
+            "!tests/**"
+        ],
+        "coverageReporters": [
+            "text"
+        ]
     }
 }
