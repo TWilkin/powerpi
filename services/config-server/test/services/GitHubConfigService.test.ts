@@ -1,4 +1,4 @@
-import { LogParameter, LoggerService } from "@powerpi/common";
+import { LoggerService } from "@powerpi/common";
 import ConfigPublishService from "../../src/services/ConfigPublishService";
 import ConfigService from "../../src/services/ConfigService";
 import ConfigServiceArgumentService from "../../src/services/ConfigServiceArgumentService";
@@ -47,13 +47,13 @@ describe("GitHubConfigService", () => {
                 // doesn't throw
                 await subject.start();
 
-                expectLogMessage(info.mock.calls, "Listing contents of github://");
-                expectLogMessage(info.mock.calls, "Scheduling to run every 300 seconds");
+                expect(info.mock.calls).toContainLogMessage("Listing contents of github://");
+                expect(info.mock.calls).toContainLogMessage("Scheduling to run every 300 seconds");
                 info.mockClear();
 
                 await jest.advanceTimersByTimeAsync(300 * 1000 + 10);
 
-                expectLogMessage(info.mock.calls, "Listing contents of github://");
+                expect(info.mock.calls).toContainLogMessage("Listing contents of github://");
             });
 
             test("off", async () => {
@@ -100,12 +100,4 @@ function createSubject(daemon: boolean) {
         new ConfigServiceArgumentServiceMock(),
         new LoggerServiceMock(),
     );
-}
-
-function expectLogMessage(messages: LogParameter[][], expected: LogParameter) {
-    const asStrings = messages.map((message) =>
-        (message.reduce((str, part) => `${str} ${part}`, "") as string).trim(),
-    );
-
-    expect(asStrings.findIndex((message) => message === expected)).not.toBe(-1);
 }

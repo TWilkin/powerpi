@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/common-test",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "PowerPi Common Typescript Testing library",
     "private": true,
     "license": "GPL-3.0-only",
