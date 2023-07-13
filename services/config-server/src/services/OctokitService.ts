@@ -14,7 +14,7 @@ export default class OctokitService {
 
         const user = this.config.gitHubUser;
         if (!user) {
-            throw NoUserError;
+            throw new NoUserError();
         }
 
         const filePath = fileName
@@ -62,7 +62,7 @@ export default class OctokitService {
     }
 }
 
-class NoUserError extends Error {
+export class NoUserError extends Error {
     constructor() {
         super("No GitHub user set");
     }
