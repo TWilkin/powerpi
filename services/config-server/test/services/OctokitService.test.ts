@@ -1,8 +1,8 @@
 import octokit, { Octokit } from "@octokit/rest";
+import { instance, mock, when } from "ts-mockito";
 import ConfigService from "../../src/services/ConfigService";
 import OctokitService, { NoUserError } from "../../src/services/OctokitService";
 
-jest.mock("../../src/services/ConfigService");
 jest.mock("@octokit/rest", () => {
     return {
         Octokit: jest.fn().mockImplementation(() => ({
@@ -17,26 +17,35 @@ jest.mock("@octokit/rest", () => {
     };
 });
 
-const ConfigServiceMock = <jest.Mock<ConfigService>>ConfigService;
+const mockedConfigService = mock<ConfigService>();
 
 describe("OctokitService", () => {
+    let subject: OctokitService | undefined;
+
     beforeEach(() => {
         jest.mocked(Octokit).mockClear();
+
+        when(mockedConfigService.gitHubUser).thenReturn("user");
+        when(mockedConfigService.repo).thenReturn("repo");
+        when(mockedConfigService.branch).thenReturn("branch");
+        when(mockedConfigService.path).thenReturn("path/to");
+        when(mockedConfigService.gitHubToken).thenResolve("token");
+
+        subject = new OctokitService(instance(mockedConfigService));
     });
 
     describe("getContent", () => {
         test("no user", () => {
-            const subject = createSubject(undefined);
+            when(mockedConfigService.gitHubUser).thenReturn(undefined);
 
-            const action = () => subject.getContent();
+            const action = () => subject?.getContent();
 
             expect(action).rejects.toThrow(NoUserError);
         });
 
         [undefined, "devices.json"].forEach((fileName) =>
             test(`gets content '${fileName}'`, async () => {
-                const subject = createSubject("user");
-                const result = await subject.getContent(fileName);
+                const result = await subject?.getContent(fileName);
 
                 expect(octokit.Octokit).toHaveBeenCalledTimes(1);
 
@@ -46,10 +55,8 @@ describe("OctokitService", () => {
         );
 
         test("no second login", async () => {
-            const subject = createSubject("user");
-
-            await subject.getContent("devices.json");
-            await subject.getContent("devices.json");
+            await subject?.getContent("devices.json");
+            await subject?.getContent("devices.json");
 
             expect(octokit.Octokit).toHaveBeenCalledTimes(1);
         });
@@ -57,38 +64,17 @@ describe("OctokitService", () => {
 
     describe("getUrl", () => {
         test("no user", () => {
-            const subject = createSubject(undefined);
+            when(mockedConfigService.gitHubUser).thenReturn(undefined);
 
             expect(subject?.getUrl()).toBe("github://unknown/repo/branch/path/to");
         });
 
-        test("with fileName", () => {
-            const subject = createSubject("user");
-
-            expect(subject.getUrl("devices.json")).toBe(
+        test("with fileName", () =>
+            expect(subject?.getUrl("devices.json")).toBe(
                 "github://user/repo/branch/path/to/devices.json",
-            );
-        });
+            ));
 
-        test("without fileName", () => {
-            const subject = createSubject("user");
-
-            expect(subject.getUrl()).toBe("github://user/repo/branch/path/to");
-        });
+        test("without fileName", () =>
+            expect(subject?.getUrl()).toBe("github://user/repo/branch/path/to"));
     });
 });
-
-function createSubject(user: string | undefined) {
-    ConfigServiceMock.mockImplementation(
-        () =>
-            ({
-                gitHubUser: user,
-                repo: "repo",
-                branch: "branch",
-                path: "path/to",
-                gitHubToken: Promise.resolve("token"),
-            }) as ConfigService,
-    );
-
-    return new OctokitService(new ConfigServiceMock());
-}

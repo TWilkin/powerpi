@@ -1,4 +1,5 @@
 import { LoggerService } from "@powerpi/common";
+import { capture, instance, mock, resetCalls, when } from "ts-mockito";
 import ConfigPublishService from "../../src/services/ConfigPublishService";
 import ConfigService from "../../src/services/ConfigService";
 import ConfigServiceArgumentService from "../../src/services/ConfigServiceArgumentService";
@@ -7,29 +8,35 @@ import OctokitService from "../../src/services/OctokitService";
 import ValidatorService from "../../src/services/ValidatorService";
 import HandlerFactory from "../../src/services/handlers/HandlerFactory";
 
-jest.mock("../../src/services/ConfigPublishService");
-jest.mock("../../src/services/handlers/HandlerFactory");
-jest.mock("../../src/services/ValidatorService");
-jest.mock("../../src/services/OctokitService");
-jest.mock("../../src/services/ConfigService");
-jest.mock("../../src/services/ConfigServiceArgumentService");
-jest.mock("@powerpi/common");
-
-const ConfigPublishServiceMock = ConfigPublishService as unknown as jest.Mock<ConfigPublishService>;
-const HandlerFactoryMock = <jest.Mock<HandlerFactory>>HandlerFactory;
-const ValidatorServiceMock = <jest.Mock<ValidatorService>>ValidatorService;
-const OctokitServiceMock = <jest.Mock<OctokitService>>OctokitService;
-const ConfigServiceMock = <jest.Mock<ConfigService>>ConfigService;
-const ConfigServiceArgumentServiceMock = <jest.Mock<ConfigServiceArgumentService>>(
-    ConfigServiceArgumentService
-);
-const LoggerServiceMock = LoggerService as unknown as jest.Mock<LoggerService>;
+const mockedConfigPublishService = mock<ConfigPublishService>();
+const mockedHandlerFactory = mock<HandlerFactory>();
+const mockedValidatorService = mock<ValidatorService>();
+const mockedOctokitService = mock<OctokitService>();
+const mockedConfigService = mock<ConfigService>();
+const mockedConfigServiceArgumentService = mock<ConfigServiceArgumentService>();
+const mockedLoggerService = mock<LoggerService>();
 
 describe("GitHubConfigService", () => {
+    let subject: GitHubConfigService | undefined;
+
     beforeEach(() => {
         jest.spyOn(process, "exit").mockImplementation(() => {
             throw new Error("terminated");
         });
+
+        when(mockedConfigServiceArgumentService.options).thenReturn({ daemon: false });
+        when(mockedConfigService.pollFrequency).thenReturn(300);
+        when(mockedOctokitService.getUrl()).thenReturn("github://");
+
+        subject = new GitHubConfigService(
+            instance(mockedConfigPublishService),
+            instance(mockedHandlerFactory),
+            instance(mockedValidatorService),
+            instance(mockedOctokitService),
+            instance(mockedConfigService),
+            instance(mockedConfigServiceArgumentService),
+            instance(mockedLoggerService),
+        );
     });
 
     describe("start", () => {
@@ -37,67 +44,29 @@ describe("GitHubConfigService", () => {
             test("on", async () => {
                 jest.useFakeTimers();
 
-                const subject = createSubject(true);
-
-                const logger = jest.mocked(LoggerService).mock.instances[0];
-                const info = jest.mocked(logger.info);
-
-                expect(info.mock.calls).toHaveLength(0);
+                when(mockedConfigServiceArgumentService.options).thenReturn({ daemon: true });
 
                 // doesn't throw
-                await subject.start();
+                await subject?.start();
 
-                expect(info.mock.calls).toContainLogMessage("Listing contents of github://");
-                expect(info.mock.calls).toContainLogMessage("Scheduling to run every 300 seconds");
-                info.mockClear();
+                let logs = capture(mockedLoggerService.info);
+
+                expect(logs.first()).toContainLogMessage("Listing contents of github://");
+                expect(logs.last()).toContainLogMessage("Scheduling to run every 300 seconds");
+                resetCalls(mockedLoggerService);
 
                 await jest.advanceTimersByTimeAsync(300 * 1000 + 10);
 
-                expect(info.mock.calls).toContainLogMessage("Listing contents of github://");
+                logs = capture(mockedLoggerService.info);
+
+                expect(logs.last()).toContainLogMessage("Listing contents of github://");
             });
 
             test("off", async () => {
-                const subject = createSubject(false);
-
-                const action = subject.start();
+                const action = subject?.start();
 
                 await expect(action).rejects.toThrow(Error);
             });
         });
     });
 });
-
-function createSubject(daemon: boolean) {
-    ConfigServiceArgumentServiceMock.mockImplementation(
-        () =>
-            ({
-                options: {
-                    daemon,
-                },
-            }) as ConfigServiceArgumentService,
-    );
-
-    ConfigServiceMock.mockImplementation(
-        () =>
-            ({
-                pollFrequency: 300,
-            }) as ConfigService,
-    );
-
-    OctokitServiceMock.mockImplementation(
-        () =>
-            ({
-                getUrl: () => "github://",
-            }) as OctokitService,
-    );
-
-    return new GitHubConfigService(
-        new ConfigPublishServiceMock(),
-        new HandlerFactoryMock(),
-        new ValidatorServiceMock(),
-        new OctokitServiceMock(),
-        new ConfigServiceMock(),
-        new ConfigServiceArgumentServiceMock(),
-        new LoggerServiceMock(),
-    );
-}
