@@ -6,7 +6,7 @@ export default function toContainLogMessage(received: LogParameter[], expected: 
     const pass = message === expected;
 
     return {
-        message: () => `expected ["${message}"] to contain log message "${expected}"`,
+        message: () => `expected "${message}" to contain log message "${expected}"`,
         pass,
     };
 }
