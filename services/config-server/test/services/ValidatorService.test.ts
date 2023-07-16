@@ -9,6 +9,6 @@ describe("ValidatorService", () => {
 
     // common tests
     Object.values(ConfigFileType).forEach((fileType) => {
-        test(`${fileType} empty`, async () => testInvalid(subject, fileType as ConfigFileType, {}));
+        test(`${fileType} empty`, () => testInvalid(subject, fileType as ConfigFileType, {}));
     });
 });

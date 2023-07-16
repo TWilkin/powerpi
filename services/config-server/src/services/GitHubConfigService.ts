@@ -1,24 +1,27 @@
-import { Octokit } from "@octokit/rest";
 import { ConfigFileType, LoggerService } from "@powerpi/common";
-import path from "path";
 import { Service } from "typedi";
+import yaml from "yaml";
 import ConfigPublishService from "./ConfigPublishService";
 import ConfigService from "./ConfigService";
 import ConfigServiceArgumentService from "./ConfigServiceArgumentService";
+import OctokitService from "./OctokitService";
 import ValidatorService, { ValidationException } from "./ValidatorService";
 import HandlerFactory from "./handlers/HandlerFactory";
 
 @Service()
 export default class GitHubConfigService {
+    private readonly supportedFormats = ["yaml", "yml", "json"];
+
     private validated: { [key: string]: boolean };
 
     constructor(
         private readonly publishService: ConfigPublishService,
         private readonly handlerFactory: HandlerFactory,
         private readonly validator: ValidatorService,
+        private readonly octokit: OctokitService,
         private readonly config: ConfigService,
         private readonly args: ConfigServiceArgumentService,
-        private readonly logger: LoggerService
+        private readonly logger: LoggerService,
     ) {
         this.validated = {};
     }
@@ -37,42 +40,105 @@ export default class GitHubConfigService {
     }
 
     private async checkForChanges() {
-        const octokit = await this.login();
+        for await (const { fileType, fileName } of this.listFiles()) {
+            const typeConfig = this.config.getConfig(fileType);
 
-        for (const type of this.config.configFileTypes) {
-            const typeConfig = this.config.getConfig(type);
-
-            const file = await this.getFile(octokit, type);
+            const file = await this.getFile(fileType, fileName);
 
             if (file) {
                 // check if this file has changed
                 if (typeConfig?.checksum === file.checksum) {
-                    this.logger.info("File", type, "is unchanged");
+                    this.logger.info("File", fileType, "is unchanged");
 
                     // should we re-validate it?
-                    if (!this.validated[type]) {
-                        await this.validate(type, file.content);
+                    if (!this.validated[fileType]) {
+                        await this.validate(fileType, file.content);
                     }
 
                     continue;
                 } else {
                     // it's a new file so it's unvalidated
-                    this.validated[type] = false;
+                    this.validated[fileType] = false;
                 }
 
                 // validate the new file, and don't publish if it's not okay
-                const valid = await this.validate(type, file.content);
+                const valid = await this.validate(fileType, file.content);
                 if (!valid) {
                     continue;
                 }
 
-                this.publishService.publishConfigChange(type, file.content, file.checksum);
+                await this.publishService.publishConfigChange(
+                    fileType,
+                    file.content,
+                    file.checksum,
+                );
 
                 // pass to a handler for additional processing (if any)
-                const handler = this.handlerFactory.build(type);
-                handler?.handle(file.content);
+                const handler = this.handlerFactory.build(fileType);
+                await handler?.handle(file.content);
             }
         }
+    }
+
+    private async *listFiles() {
+        this.logger.info("Listing contents of", this.octokit.getUrl());
+
+        try {
+            const data = await this.octokit.getContent();
+            const files = (data as { name: string }[]).map((file) => file.name);
+
+            fileTypeLoop: for (const fileType of this.config.configFileTypes) {
+                for (const extension of this.supportedFormats) {
+                    const fileName = `${fileType}.${extension}`;
+
+                    if (files.indexOf(fileName) !== -1) {
+                        this.logger.info("Found", fileName, "for type", fileType);
+                        yield { fileType, fileName };
+                        continue fileTypeLoop;
+                    }
+                }
+
+                this.logger.warn("No file found for", fileType);
+            }
+        } catch (ex) {
+            this.logger.error(ex);
+            this.logger.error("Could not retrieve directory listing from GitHub");
+        }
+    }
+
+    private async getFile(fileType: ConfigFileType, fileName: string) {
+        this.logger.info(
+            "Attempting to retrieve",
+            fileType,
+            "file from",
+            this.octokit.getUrl(fileName),
+        );
+
+        try {
+            const data = await this.octokit.getContent(fileName);
+
+            const { content, sha } = data as { content: string; sha: string };
+            const buffer = Buffer.from(content, "base64");
+
+            return {
+                content: this.parseFile(fileName, buffer.toString()),
+                checksum: sha,
+            };
+        } catch (ex) {
+            this.logger.error(ex);
+            this.logger.error("Could not retrieve", fileName, "from GitHub");
+        }
+
+        return undefined;
+    }
+
+    private parseFile(fileName: string, content: string) {
+        if (fileName.endsWith("json")) {
+            return JSON.parse(content);
+        }
+
+        // otherwise it must be YAML
+        return yaml.parse(content);
     }
 
     private async validate(type: ConfigFileType, content: object) {
@@ -90,7 +156,7 @@ export default class GitHubConfigService {
             this.logger.error(ex);
 
             if (ex instanceof ValidationException) {
-                this.publishService.publishConfigError(type, ex.message, ex.errors);
+                await this.publishService.publishConfigError(type, ex.message, ex.errors);
             }
 
             valid = false;
@@ -100,54 +166,5 @@ export default class GitHubConfigService {
         this.validated[type] = true;
 
         return valid;
-    }
-
-    private async login() {
-        const token = await this.config.gitHubToken;
-
-        return new Octokit({
-            auth: token,
-        });
-    }
-
-    private async getFile(
-        octokit: Octokit,
-        fileType: ConfigFileType
-    ): Promise<{ content: object; checksum: string } | undefined> {
-        const filePath = path.join(this.config.path, `${fileType}.json`);
-
-        this.logger.info(
-            "Attempting to retrieve",
-            fileType,
-            "file from",
-            `github://${this.config.gitHubUser}/${this.config.repo}/${this.config.branch}/${filePath}`
-        );
-
-        try {
-            const user = this.config.gitHubUser;
-            if (!user) {
-                this.logger.error("No GitHub user set.");
-                return undefined;
-            }
-
-            const { data } = await octokit.rest.repos.getContent({
-                owner: user,
-                repo: this.config.repo,
-                ref: this.config.branch,
-                path: filePath,
-            });
-
-            const { content, sha } = data as { content: string; sha: string };
-            const buffer = Buffer.from(content, "base64");
-
-            return {
-                content: JSON.parse(buffer.toString()),
-                checksum: sha,
-            };
-        } catch {
-            this.logger.error("Could not retrieve", fileType, "file from GitHub");
-        }
-
-        return undefined;
     }
 }
