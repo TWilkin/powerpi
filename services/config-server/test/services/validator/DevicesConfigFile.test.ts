@@ -22,7 +22,7 @@ describe("Devices", () => {
                 "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/devices.schema.json",
             devices: [
                 { type: "log", name: "Logger", message: "Test" },
-                { type: "delay", name: "Delay", start: 10, stop: 5 },
+                { type: "delay", name: "Delay", start: 10, end: 5 },
             ],
             sensors: [
                 { type: "temperature", name: "Temp", location: "Garden", entity: "Garden" },
