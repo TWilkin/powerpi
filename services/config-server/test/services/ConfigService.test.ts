@@ -7,7 +7,7 @@ const mockedFileService = mock<FileService>();
 describe("ConfigService", () => {
     const oldEnv = process.env;
 
-    let subject: ConfigService | undefined = undefined;
+    let subject: ConfigService | undefined;
 
     beforeEach(() => {
         jest.resetModules();
