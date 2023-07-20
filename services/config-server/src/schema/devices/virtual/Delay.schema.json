@@ -24,5 +24,6 @@
             "minimum": 0
         }
     },
-    "anyOf": [{ "required": ["start"] }, { "required": ["end"] }]
+    "anyOf": [{ "required": ["start"] }, { "required": ["end"] }],
+    "unevaluatedProperties": false
 }

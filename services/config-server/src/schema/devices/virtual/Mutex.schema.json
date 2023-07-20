@@ -33,5 +33,6 @@
             }
         }
     },
-    "required": ["on_devices", "off_devices"]
+    "required": ["on_devices", "off_devices"],
+    "unevaluatedProperties": false
 }

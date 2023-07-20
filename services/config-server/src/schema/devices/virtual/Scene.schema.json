@@ -33,5 +33,6 @@
             "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
         }
     },
-    "required": ["devices", "state"]
+    "required": ["devices", "state"],
+    "unevaluatedProperties": false
 }

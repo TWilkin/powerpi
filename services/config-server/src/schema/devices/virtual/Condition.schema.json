@@ -40,5 +40,6 @@
         }
     },
     "required": ["device"],
-    "anyOf": [{ "required": ["on_condition"] }, { "required": ["off_condition"] }]
+    "anyOf": [{ "required": ["on_condition"] }, { "required": ["off_condition"] }],
+    "unevaluatedProperties": false
 }

@@ -23,5 +23,6 @@
             }
         }
     },
-    "required": ["home_id", "devices"]
+    "required": ["home_id", "devices"],
+    "unevaluatedProperties": false
 }
