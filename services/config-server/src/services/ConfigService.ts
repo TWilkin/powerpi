@@ -1,4 +1,4 @@
-import { ConfigService as CommonConfigService } from "@powerpi/common";
+import { ConfigService as CommonConfigService, ConfigFileType } from "@powerpi/common";
 import { Service } from "typedi";
 import app from "../../package.json";
 import Container from "../container";
@@ -48,6 +48,17 @@ export default class ConfigService extends CommonConfigService {
         }
 
         return 5 * 60;
+    }
+
+    get configFileTypes() {
+        return super.configFileTypes.filter(
+            (fileType) => this.schedulerEnabled || fileType !== ConfigFileType.Schedules,
+        );
+    }
+
+    get schedulerEnabled() {
+        const enabled = process.env["SCHEDULER_ENABLED"] ?? "true";
+        return enabled.toLowerCase() === "true";
     }
 }
 

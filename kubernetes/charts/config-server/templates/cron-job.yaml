@@ -32,6 +32,10 @@
       "Name" "BRANCH"
       "Value" .Values.branch
     )
+    (dict
+      "Name" "SCHEDULER_ENABLED"
+      "Value" (.Values.global.scheduler | quote)
+    )
   )
 -}}
 {{- include "powerpi.cron-job" (merge (dict "Params" $data) . ) -}}
