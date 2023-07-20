@@ -2,20 +2,15 @@ import { IDeviceConfigFile, ISensor } from "@powerpi/common";
 import { createHash } from "crypto";
 import { Service } from "typedi";
 import { chain as _ } from "underscore";
-import Container from "../../container";
 import ConfigPublishService from "../ConfigPublishService";
 import IHandler from "./IHandler";
 
 @Service()
 export default class DeviceHandler implements IHandler<IDeviceConfigFile> {
-    private publishService: ConfigPublishService;
-
-    constructor() {
-        this.publishService = Container.get(ConfigPublishService);
-    }
+    constructor(private readonly publishService: ConfigPublishService) {}
 
     public async handle(config: IDeviceConfigFile) {
-        const sensors = config?.sensors?.filter((sensor) => sensor.type === "esp8266");
+        const sensors = config.sensors?.filter((sensor) => sensor.type === "esp8266");
 
         if (sensors) {
             for (const sensor of sensors) {
