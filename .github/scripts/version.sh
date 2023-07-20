@@ -55,12 +55,15 @@ update_version() {
 
     local appPath="$scriptPath/../../services/$service"
     local subchartPath="$scriptPath/../../kubernetes/charts/$service/Chart.yaml"
+    
+    local serviceName=$service
 
     if [ ! -d $appPath ]
     then
         echo "Service $service is a controller"
+        serviceName="$service-controller"
         appPath="$scriptPath/../../controllers/$service"
-        subchartPath="$scriptPath/../../kubernetes/charts/$service-controller/Chart.yaml"
+        subchartPath="$scriptPath/../../kubernetes/charts/$serviceName/Chart.yaml"
     fi
 
     # check the service exists
@@ -87,7 +90,7 @@ update_version() {
     subchartVersion=$newVersion
     echo "Increasing helm subchart $service to v$subchartVersion"
     set_chart_version $subchartPath $appVersion $subchartVersion
-    set_chart_dependency_version $helmPath $service $subchartVersion
+    set_chart_dependency_version $helmPath $serviceName $subchartVersion
 
     # commit the change if enabled
     if $commit
