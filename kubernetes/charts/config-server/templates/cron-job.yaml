@@ -34,7 +34,7 @@
     )
     (dict
       "Name" "SCHEDULER_ENABLED"
-      "Value" .Values.global.scheduler
+      "Value" (.Values.global.scheduler | quote)
     )
   )
 -}}
