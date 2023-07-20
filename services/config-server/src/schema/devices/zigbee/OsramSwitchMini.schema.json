@@ -19,5 +19,6 @@
         "type": {
             "const": "osram_switch_mini"
         }
-    }
+    },
+    "unevaluatedProperties": false
 }

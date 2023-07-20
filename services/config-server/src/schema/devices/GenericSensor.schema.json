@@ -19,5 +19,6 @@
         { "properties": { "type": { "const": "motion" } } },
         { "properties": { "type": { "const": "temperature" } } }
     ],
-    "required": ["location", "entity"]
+    "required": ["location", "entity"],
+    "unevaluatedProperties": false
 }
