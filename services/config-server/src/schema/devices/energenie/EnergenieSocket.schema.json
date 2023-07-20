@@ -19,5 +19,6 @@
             "minimum": 0,
             "maximum": 4
         }
-    }
+    },
+    "unevaluatedProperties": false
 }

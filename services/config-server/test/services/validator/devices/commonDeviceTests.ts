@@ -56,6 +56,13 @@ export default function commonDeviceTests(validFile: object) {
         });
     });
 
+    test("No extras", () => {
+        let device = getDevice(validFile);
+        device = { ...device, extraProperty: "not allowed" };
+
+        testInvalid({ sensors: [], ...validFile, devices: [device] });
+    });
+
     return {
         getDevice,
         testValid,

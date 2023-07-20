@@ -52,5 +52,6 @@
             },
             "additionalProperties": false
         }
-    }
+    },
+    "unevaluatedProperties": false
 }

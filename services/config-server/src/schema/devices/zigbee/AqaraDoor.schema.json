@@ -19,5 +19,6 @@
         "type": {
             "oneOf": [{ "const": "aqara_door" }, { "const": "aqara_window" }]
         }
-    }
+    },
+    "unevaluatedProperties": false
 }

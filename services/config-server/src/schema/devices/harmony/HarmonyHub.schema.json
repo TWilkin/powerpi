@@ -27,5 +27,6 @@
             "format": "ipv4"
         }
     },
-    "oneOf": [{ "required": ["hostname"] }, { "required": ["ip"] }]
+    "oneOf": [{ "required": ["hostname"] }, { "required": ["ip"] }],
+    "unevaluatedProperties": false
 }

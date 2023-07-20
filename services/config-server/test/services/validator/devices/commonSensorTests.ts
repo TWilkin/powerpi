@@ -1,9 +1,9 @@
 import { ConfigFileType, IDeviceConfigFile } from "@powerpi/common";
 import ValidatorService from "../../../../src/services/ValidatorService";
 import {
-    setupValidator,
     testInvalid as _testInvalid,
     testValid as _testValid,
+    setupValidator,
 } from "../setupValidator";
 
 export default function commonSensorTests(validFile: object) {
@@ -54,6 +54,13 @@ export default function commonSensorTests(validFile: object) {
             ...validFile,
             sensors: [{ ...sensor, categories: ["TV", "Music"] }],
         });
+    });
+
+    test("No extras", () => {
+        let sensor = getSensor(validFile);
+        sensor = { ...sensor, extraProperty: "not allowed" };
+
+        testInvalid({ devices: [], ...validFile, sensors: [sensor] });
     });
 
     return {

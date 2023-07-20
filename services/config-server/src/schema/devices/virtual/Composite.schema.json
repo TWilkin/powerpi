@@ -25,5 +25,6 @@
             }
         }
     },
-    "required": ["devices"]
+    "required": ["devices"],
+    "unevaluatedProperties": false
 }

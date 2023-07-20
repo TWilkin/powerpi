@@ -18,5 +18,6 @@
             "type": "string"
         }
     },
-    "required": ["message"]
+    "required": ["message"],
+    "unevaluatedProperties": false
 }

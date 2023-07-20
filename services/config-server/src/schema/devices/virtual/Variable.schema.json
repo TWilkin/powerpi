@@ -13,5 +13,6 @@
         "type": {
             "const": "variable"
         }
-    }
+    },
+    "unevaluatedProperties": false
 }
