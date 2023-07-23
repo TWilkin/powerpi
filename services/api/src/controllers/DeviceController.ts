@@ -1,6 +1,6 @@
 import { Controller, Get } from "@tsed/common";
-import Authorize from "../middleware/auth";
-import DeviceStateService from "../services/deviceState";
+import Authorize from "../middleware/AuthorizeMiddleware";
+import DeviceStateService from "../services/DeviceStateService";
 
 @Controller("/device")
 export default class DeviceController {

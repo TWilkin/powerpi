@@ -1,6 +1,6 @@
 import { Message, MqttConsumer } from "@powerpi/common";
 import { AdditionalState, DeviceState } from "@powerpi/common-api";
-import MqttService from "../mqtt";
+import MqttService from "../MqttService";
 import BatteryStateListener, { BatteryMessage } from "./BatteryStateListener";
 import CapabilityStateListener, { CapabilityMessage } from "./CapabilityStateListener";
 

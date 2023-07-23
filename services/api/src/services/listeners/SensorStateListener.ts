@@ -1,6 +1,6 @@
 import { ISensor, Message, MqttConsumer } from "@powerpi/common";
 import { Sensor } from "@powerpi/common-api";
-import MqttService from "../mqtt";
+import MqttService from "../MqttService";
 import BatteryStateListener, { BatteryMessage } from "./BatteryStateListener";
 
 interface EventMessage extends Message {

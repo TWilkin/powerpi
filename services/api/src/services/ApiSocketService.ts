@@ -3,11 +3,11 @@ import { AdditionalState, Capability, DeviceState, SocketIONamespace } from "@po
 import { $log } from "@tsed/common";
 import { Nsp, SocketService } from "@tsed/socketio";
 import { Namespace } from "socket.io";
-import ConfigService from "./config";
+import ConfigService from "./ConfigService";
+import MqttService from "./MqttService";
 import { CapabilityMessage } from "./listeners/CapabilityStateListener";
 import DeviceStateListener from "./listeners/DeviceStateListener";
 import SensorStateListener from "./listeners/SensorStateListener";
-import MqttService from "./mqtt";
 
 @SocketService("/api")
 export default class ApiSocketService {

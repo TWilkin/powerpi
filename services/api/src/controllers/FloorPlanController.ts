@@ -1,14 +1,14 @@
 import { Controller, Get } from "@tsed/common";
-import Authorize from "../middleware/auth";
-import ConfigService from "../services/config";
+import Authorize from "../middleware/AuthorizeMiddleware";
+import ConfigService from "../services/ConfigService";
 
-@Controller("/floorplan")
-export default class FloorplanController {
+@Controller("/floorPlan")
+export default class FloorPlanController {
     constructor(private readonly configService: ConfigService) {}
 
     @Get("/")
     @Authorize()
-    getFloorplan() {
+    getFloorPlan() {
         return this.configService.floorplan?.floorplan;
     }
 }

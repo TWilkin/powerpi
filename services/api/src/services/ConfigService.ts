@@ -1,9 +1,9 @@
-import { ConfigFileType, ConfigService as CommonConfigService } from "@powerpi/common";
+import { ConfigService as CommonConfigService, ConfigFileType } from "@powerpi/common";
 import { Injectable, ProviderScope, ProviderType } from "@tsed/common";
 import { Service } from "typedi";
 import app from "../../package.json";
-import Container from "../container";
-import AuthConfig from "../models/auth";
+import Container from "../Container";
+import AuthConfig from "../models/AuthConfig";
 
 @Service()
 @Injectable({
@@ -55,7 +55,7 @@ export default class ConfigService extends CommonConfigService {
                     clientId: process.env[`${envPrefix}_CLIENT_ID`],
                     clientSecret: secret,
                 } as AuthConfig;
-            })
+            }),
         );
     }
 

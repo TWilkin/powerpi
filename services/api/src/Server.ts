@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import session from "express-session";
 import "reflect-metadata";
-import Config from "./services/config";
+import Config from "./services/ConfigService";
 
 const rootDir = __dirname;
 
@@ -22,7 +22,10 @@ const rootDir = __dirname;
     acceptMimes: ["application/json"],
 })
 export default class Server {
-    constructor(private config: Config, private app: PlatformApplication) {}
+    constructor(
+        private config: Config,
+        private app: PlatformApplication,
+    ) {}
 
     public async $beforeRoutesInit() {
         $log.level = this.config.logLevel;
@@ -38,7 +41,7 @@ export default class Server {
                     origin: true,
                     methods: ["GET", "POST"],
                     allowedHeaders: ["Content-Type"],
-                })
+                }),
             )
             .use(bodyParser.json())
             .use(bodyParser.urlencoded({ extended: true }))
@@ -50,7 +53,7 @@ export default class Server {
                     cookie: {
                         secure: this.config.usesHttps,
                     },
-                })
+                }),
             );
     }
 }

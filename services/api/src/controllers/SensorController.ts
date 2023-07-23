@@ -1,6 +1,6 @@
 import { Controller, Get } from "@tsed/common";
-import Authorize from "../middleware/auth";
-import SensorStateService from "../services/sensorState";
+import Authorize from "../middleware/AuthorizeMiddleware";
+import SensorStateService from "../services/SensorStateService";
 
 @Controller("/sensor")
 export default class SensorController {

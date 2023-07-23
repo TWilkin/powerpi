@@ -1,7 +1,7 @@
 import { $log, Controller, Get, QueryParams, Res, Response } from "@tsed/common";
 import HttpStatus from "http-status-codes";
-import Authorize from "../middleware/auth";
-import DatabaseService from "../services/db";
+import Authorize from "../middleware/AuthorizeMiddleware";
+import DatabaseService from "../services/DatabaseService";
 
 type QueryFunction<TResult> = () => Promise<TResult | undefined>;
 
@@ -14,7 +14,7 @@ export default class HistoryController {
     async getTypes(@Res() response: Response) {
         return await this.query(
             response,
-            async () => (await this.databaseService.getHistoryTypes())?.rows
+            async () => (await this.databaseService.getHistoryTypes())?.rows,
         );
     }
 
@@ -23,7 +23,7 @@ export default class HistoryController {
     async getEntities(@Res() response: Response, @QueryParams("type") type?: string) {
         return await this.query(
             response,
-            async () => (await this.databaseService.getHistoryEntities(type))?.rows
+            async () => (await this.databaseService.getHistoryEntities(type))?.rows,
         );
     }
 
@@ -32,7 +32,7 @@ export default class HistoryController {
     async getActions(@Res() response: Response, @QueryParams("type") type?: string) {
         return await this.query(
             response,
-            async () => (await this.databaseService.getHistoryActions(type))?.rows
+            async () => (await this.databaseService.getHistoryActions(type))?.rows,
         );
     }
 
@@ -44,7 +44,7 @@ export default class HistoryController {
         @QueryParams("end") end?: Date,
         @QueryParams("type") type?: string,
         @QueryParams("entity") entity?: string,
-        @QueryParams("action") action?: string
+        @QueryParams("action") action?: string,
     ) {
         return await this.query(response, async () => {
             const data = await this.databaseService.getHistoryRange(
@@ -52,7 +52,7 @@ export default class HistoryController {
                 end,
                 type,
                 entity,
-                action
+                action,
             );
 
             return data?.rows.map((row) => {
@@ -73,7 +73,7 @@ export default class HistoryController {
         @QueryParams("end") end?: Date,
         @QueryParams("type") type?: string,
         @QueryParams("entity") entity?: string,
-        @QueryParams("action") action?: string
+        @QueryParams("action") action?: string,
     ) {
         return await this.query(response, async () => {
             const data = await this.databaseService.getHistory(
@@ -82,7 +82,7 @@ export default class HistoryController {
                 end,
                 type,
                 entity,
-                action
+                action,
             );
 
             // if we only have an end, it's paging so don't change the count
@@ -92,7 +92,7 @@ export default class HistoryController {
                       undefined,
                       type,
                       entity,
-                      action
+                      action,
                   )
                 : await this.databaseService.getHistoryCount(start, end, type, entity, action);
 

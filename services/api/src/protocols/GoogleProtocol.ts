@@ -1,8 +1,8 @@
 import { $log } from "@tsed/logger";
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { Strategy, StrategyOptions } from "passport-google-oauth20";
-import ConfigService from "../services/config";
-import UserService from "../services/user";
+import ConfigService from "../services/ConfigService";
+import UserService from "../services/UserService";
 
 interface GoogleStrategy {
     _oauth2: {
@@ -29,7 +29,7 @@ interface Profile {
 export default class GoogleProtocol implements OnVerify, OnInstall {
     constructor(
         private readonly config: ConfigService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
     ) {}
 
     async $onVerify(@Arg(0) accessToken: string, @Arg(2) profile: Profile) {
@@ -38,7 +38,7 @@ export default class GoogleProtocol implements OnVerify, OnInstall {
             .map((entry) => entry.value);
 
         const user = this.userService.users.find((registeredUser) =>
-            userEmails.find((email) => email === registeredUser.email)
+            userEmails.find((email) => email === registeredUser.email),
         );
 
         if (!user) {
@@ -55,7 +55,7 @@ export default class GoogleProtocol implements OnVerify, OnInstall {
         const googleStrategy = strategy as unknown as GoogleStrategy;
 
         const config = (await this.config.getAuthConfig()).find(
-            (authConfig) => authConfig.name === "google"
+            (authConfig) => authConfig.name === "google",
         );
 
         if (config) {

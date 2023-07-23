@@ -3,9 +3,9 @@ import { Req } from "@tsed/common";
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { Request } from "express";
 import { ExtractJwt, Strategy, StrategyOptions } from "passport-jwt";
-import ConfigService from "../services/config";
-import JwtService from "../services/jwt";
-import UserService from "../services/user";
+import ConfigService from "../services/ConfigService";
+import JwtService from "../services/JwtService";
+import UserService from "../services/UserService";
 
 interface JWT {
     sub: string;
@@ -31,12 +31,12 @@ interface JwtStrategy {
 export default class JwtProtocol implements OnVerify, OnInstall {
     constructor(
         private readonly jwtService: JwtService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
     ) {}
 
     async $onVerify(@Arg(0) jwt: JWT) {
         const user = this.userService.users.find(
-            (registeredUser) => registeredUser.email === jwt.email
+            (registeredUser) => registeredUser.email === jwt.email,
         );
 
         if (user) {
@@ -57,7 +57,7 @@ export default class JwtProtocol implements OnVerify, OnInstall {
 async function getSecret(
     _: Request,
     __: string,
-    done: (err: string | null | unknown, secret?: string) => void
+    done: (err: string | null | unknown, secret?: string) => void,
 ) {
     try {
         const secret = await new ConfigService(new FileService()).getJWTSecret();

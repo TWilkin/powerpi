@@ -1,7 +1,7 @@
 import { $log, Service } from "@tsed/common";
 import { Pool, PoolClient, QueryResultRow } from "pg";
-import Message from "../models/message";
-import ConfigService from "./config";
+import Message from "../models/Message";
+import ConfigService from "./ConfigService";
 
 enum DatabaseOperator {
     Equal = "=",
@@ -39,7 +39,7 @@ export default class DatabaseService {
         end?: Date,
         type?: string,
         entity?: string,
-        action?: string
+        action?: string,
     ) {
         const params = optionalParameterList(start, end, type, entity, action);
 
@@ -55,9 +55,9 @@ export default class DatabaseService {
                 "SELECT * FROM mqtt",
                 "ORDER BY timestamp DESC, type, entity, action",
                 dbQueryParams,
-                limit
+                limit,
             ),
-            params
+            params,
         );
     }
 
@@ -66,7 +66,7 @@ export default class DatabaseService {
         end?: Date,
         type?: string,
         entity?: string,
-        action?: string
+        action?: string,
     ) {
         const params = optionalParameterList(start, end, type, entity, action);
 
@@ -79,7 +79,7 @@ export default class DatabaseService {
 
         return await this.query<Message>(
             this.generateQuery("SELECT * FROM mqtt", "ORDER BY timestamp ASC", dbQueryParams),
-            params
+            params,
         );
     }
 
@@ -88,7 +88,7 @@ export default class DatabaseService {
         end?: Date,
         type?: string,
         entity?: string,
-        action?: string
+        action?: string,
     ) {
         const params = optionalParameterList(start, end, type, entity, action);
 
@@ -101,7 +101,7 @@ export default class DatabaseService {
 
         return await this.query<{ count: number }>(
             this.generateQuery("SELECT COUNT(*) FROM mqtt", "", dbQueryParams),
-            params
+            params,
         );
     }
 
@@ -116,9 +116,9 @@ export default class DatabaseService {
             this.generateQuery(
                 "SELECT DISTINCT entity FROM mqtt",
                 "ORDER BY entity ASC",
-                dbQueryParams
+                dbQueryParams,
             ),
-            params
+            params,
         );
     }
 
@@ -130,9 +130,9 @@ export default class DatabaseService {
             this.generateQuery(
                 "SELECT DISTINCT action FROM mqtt",
                 "ORDER BY action ASC",
-                dbQueryParams
+                dbQueryParams,
             ),
-            params
+            params,
         );
     }
 
@@ -163,7 +163,7 @@ export default class DatabaseService {
         end = "",
         params: DatabaseQueryParam[],
         limit?: number,
-        skip?: number
+        skip?: number,
     ) {
         const generator = optionalArgumentGenerator(params);
 

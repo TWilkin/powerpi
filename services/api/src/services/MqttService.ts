@@ -1,6 +1,6 @@
 import { MqttService as CommonMqttService } from "@powerpi/common";
 import { Injectable, ProviderScope, ProviderType } from "@tsed/common";
-import Container from "../container";
+import Container from "../Container";
 
 @Injectable({
     type: ProviderType.VALUE,

@@ -5,8 +5,8 @@ import { Required } from "@tsed/schema";
 import { Response } from "express";
 import HttpStatus from "http-status-codes";
 import _ from "underscore";
-import Authorize from "../middleware/auth";
-import MqttService from "../services/mqtt";
+import Authorize from "../middleware/AuthorizeMiddleware";
+import MqttService from "../services/MqttService";
 
 @Controller("/topic")
 export default class TopicController {

@@ -1,9 +1,9 @@
 import { AdditionalState, Device, DeviceState } from "@powerpi/common-api";
 import { Service } from "@tsed/common";
-import ConfigService from "./config";
+import ConfigService from "./ConfigService";
+import MqttService from "./MqttService";
 import { CapabilityMessage } from "./listeners/CapabilityStateListener";
 import DeviceStateListener from "./listeners/DeviceStateListener";
-import MqttService from "./mqtt";
 
 @Service()
 export default class DeviceStateService extends DeviceStateListener {

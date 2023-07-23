@@ -2,16 +2,16 @@ import { Controller, Get, Res } from "@tsed/common";
 import { Response } from "express";
 import HttpStatus from "http-status-codes";
 import _ from "underscore";
-import ConfigService from "../services/config";
-import DatabaseService from "../services/db";
-import MqttService from "../services/mqtt";
+import ConfigService from "../services/ConfigService";
+import DatabaseService from "../services/DatabaseService";
+import MqttService from "../services/MqttService";
 
 @Controller("/health")
 export default class HealthController {
     constructor(
         private readonly configService: ConfigService,
         private readonly dbService: DatabaseService,
-        private readonly mqttService: MqttService
+        private readonly mqttService: MqttService,
     ) {}
 
     @Get("/")
@@ -34,7 +34,7 @@ export default class HealthController {
             .status(
                 status.database === false || !status.mqtt
                     ? HttpStatus.INTERNAL_SERVER_ERROR
-                    : HttpStatus.OK
+                    : HttpStatus.OK,
             )
             .send(status);
     }

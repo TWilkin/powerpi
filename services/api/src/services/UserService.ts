@@ -1,6 +1,6 @@
 import { Service } from "@tsed/common";
-import User from "../models/user";
-import ConfigService from "./config";
+import User from "../models/User";
+import ConfigService from "./ConfigService";
 
 @Service()
 export default class UserService {

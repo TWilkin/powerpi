@@ -15,9 +15,9 @@ import crypto from "crypto";
 import { Session as ExpressSession } from "express-session";
 import HttpStatus from "http-status-codes";
 import passport from "passport";
-import ConfigService from "../services/config";
-import JwtService from "../services/jwt";
-import UserService from "../services/user";
+import ConfigService from "../services/ConfigService";
+import JwtService from "../services/JwtService";
+import UserService from "../services/UserService";
 
 interface AuthSession extends ExpressSession {
     redirectUri: string;
@@ -29,7 +29,7 @@ export default class AuthController {
     constructor(
         private readonly config: ConfigService,
         private readonly jwtService: JwtService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
     ) {}
 
     @Get("/google")
@@ -39,7 +39,7 @@ export default class AuthController {
         @QueryParams("response_type") responseType: string,
         @QueryParams("state") state: string,
         @QueryParams("client_id") clientId: string,
-        @Res() response: Res
+        @Res() response: Res,
     ) {
         if (redirectUri) {
             session.redirectUri = state ? `${redirectUri}?state=${state}` : redirectUri;
@@ -51,7 +51,7 @@ export default class AuthController {
 
         if (clientId) {
             const credentials = (await this.config.getAuthConfig()).find(
-                (authConfig) => authConfig.name === "oauth"
+                (authConfig) => authConfig.name === "oauth",
             );
 
             if (credentials?.clientId !== clientId) {
@@ -72,7 +72,7 @@ export default class AuthController {
         @Req("user") user: IUser,
         @Session("redirectUri") redirectUri: string,
         @Session("useCode") useCode: boolean,
-        @Res() response: Res
+        @Res() response: Res,
     ) {
         if (useCode) {
             const code = crypto.randomBytes(64).toString("hex");
