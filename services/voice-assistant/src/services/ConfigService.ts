@@ -31,7 +31,11 @@ export default class ConfigService extends CommonConfigService {
 
         if (!address) {
             const host = process.env["API_HOST"] ?? "api";
-            const port = process.env["API_PORT"] ?? 80;
+
+            let port = parseInt(process.env["API_PORT"] ?? "");
+            if (isNaN(port)) {
+                port = 80;
+            }
 
             address = `http://${host}:${port}/api`;
         }
