@@ -3,6 +3,7 @@
     "Name" "http"
     "Port" 3000
   ))
+  "Replicas" 2
   "UseConfig" true
   "UseDevicesFile" true
   "MqttSecret" "mosquitto-voice-secret"
