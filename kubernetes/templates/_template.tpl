@@ -57,7 +57,7 @@ template:
     {{- end }}
     {{- end }}
 
-    {{- if and .Values.global.useCluster (gt .Params.Replicas 1) }}
+    {{- if and .Values.global.useCluster (gt (.Params.Replicas | default 1) 1) }}
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
