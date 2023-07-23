@@ -1,4 +1,9 @@
+@import "../../styles/colours.scss";
+
 .tooltip {
+    @include colour("background-color", "menu");
+    @include colour("color", "text");
+
     h3,
     p {
         margin: 0;

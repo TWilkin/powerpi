@@ -1,10 +1,8 @@
 import { Sensor } from "@powerpi/common-api";
 import classNames from "classnames";
 import { Fragment, useCallback, useMemo } from "react";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import _ from "underscore";
-import useColourMode from "../../hooks/colour";
-import scss from "../../styles/exports.module.scss";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import BatteryIcon from "../Components/BatteryIcon";
 import FormattedValue from "../Components/FormattedValue";
@@ -19,8 +17,6 @@ interface TooltipProps {
 }
 
 const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
-    const { isDark } = useColourMode();
-
     const getType = useCallback((sensor: Sensor) => {
         const split = sensor.type.split("_");
 
@@ -30,20 +26,6 @@ const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
 
         return split.at(-2);
     }, []);
-
-    const { backgroundColour, textColour } = useMemo(() => {
-        if (isDark) {
-            return {
-                backgroundColour: scss.darkMenu,
-                textColour: scss.darkText,
-            };
-        }
-
-        return {
-            backgroundColour: scss.lightMenu,
-            textColour: scss.lightText,
-        };
-    }, [isDark]);
 
     const hasBattery = useMemo(
         () => _(sensors).any((sensor) => sensor.batterySince !== undefined),
@@ -55,21 +37,19 @@ const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
             id={`${floor}${location}`}
             className={styles.tooltip}
             clickable
-            backgroundColor={backgroundColour}
-            textColor={textColour}
             place="top"
-            overridePosition={({ left, top }, _, __, tooltipElement) => {
-                return {
-                    top,
-                    left:
-                        left < 0
-                            ? Math.max(left, 0)
-                            : Math.min(
-                                  left,
-                                  window.innerWidth - (tooltipElement?.offsetWidth ?? 0),
-                              ),
-                };
-            }}
+            // overridePosition={({ left, top }, _, __, tooltipElement) => {
+            //     return {
+            //         top,
+            //         left:
+            //             left < 0
+            //                 ? Math.max(left, 0)
+            //                 : Math.min(
+            //                       left,
+            //                       window.innerWidth - (tooltipElement?.offsetWidth ?? 0),
+            //                   ),
+            //     };
+            // }}
         >
             <h3>{title}</h3>
 
