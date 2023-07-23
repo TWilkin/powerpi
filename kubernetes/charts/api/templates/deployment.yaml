@@ -47,9 +47,9 @@
       )
     )
   )
-}}
+-}}
 
-{{- if .Values.global.persistence }}
+{{- if .Values.global.persistence -}}
 {{- $secrets = append $secrets
   (dict
     "Name" "database-secret"
@@ -72,14 +72,15 @@
       )
     )
   )
-}}
-{{- end }}
+-}}
+{{- end -}}
 
 {{- $data := dict
   "Ports" (list (dict
     "Name" "http"
     "Port" 3000
   ))
+  "Replicas" 3
   "UseConfig" true
   "UseDevicesFile" true
   "UseFloorplanFile" true
@@ -103,5 +104,5 @@
     "ReadinessInitialDelay" 10
     "LivenessInitialDelay" 20
   )
-}}
-{{- include "powerpi.deployment" (merge (dict "Params" $data) . ) }}
+-}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . ) -}}

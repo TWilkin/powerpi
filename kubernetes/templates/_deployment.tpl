@@ -1,13 +1,15 @@
-{{- define "powerpi.deployment" }}
+{{- define "powerpi.deployment" -}}
 
-{{- $name := .Params.Name | default .Chart.Name }}
+{{- $name := .Params.Name | default .Chart.Name -}}
+{{- $replicas := .Params.Replicas | default 1 -}}
 
 {{- $data := (merge
   (dict
     "Name" $name
+    "Replicas" $replicas
   )
   .Params
-) }}
+) -}}
 
 apiVersion: apps/v1
 kind: {{ .Params.Kind | default "Deployment" }}
@@ -23,6 +25,10 @@ spec:
     matchLabels:
     {{- include "powerpi.selector" . | indent 4 }}
   
-  {{- include "powerpi.template" (merge (dict "Params" $data) . ) | indent 2 }}
+  {{- if and .Values.global.useCluster (gt $replicas 1) }}
+  replicas: {{ .Params.Replicas | default 1 }}
+  {{- end -}}
+  
+  {{- include "powerpi.template" (merge (dict "Params" $data) . ) | indent 2 -}}
 
-{{- end }}
+{{- end -}}
