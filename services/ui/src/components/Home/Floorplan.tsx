@@ -106,14 +106,13 @@ const Room = ({ room, floor }: RoomProps) => {
                 y={room.y}
                 width={room.width}
                 height={room.height}
-                data-tip
-                data-for={id}
+                data-tooltip-id={id}
             />
         );
     } else if (isPolygon(room)) {
         const points = room.points?.map((point) => `${point.x},${point.y}`).join(" ");
 
-        return <polygon id={id} points={points} data-tip data-for={id} />;
+        return <polygon id={id} points={points} data-tooltip-id={id} />;
     }
 
     return <></>;
