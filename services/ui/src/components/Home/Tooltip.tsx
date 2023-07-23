@@ -33,24 +33,7 @@ const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
     );
 
     return (
-        <ReactTooltip
-            id={`${floor}${location}`}
-            className={styles.tooltip}
-            clickable
-            place="top"
-            // overridePosition={({ left, top }, _, __, tooltipElement) => {
-            //     return {
-            //         top,
-            //         left:
-            //             left < 0
-            //                 ? Math.max(left, 0)
-            //                 : Math.min(
-            //                       left,
-            //                       window.innerWidth - (tooltipElement?.offsetWidth ?? 0),
-            //                   ),
-            //     };
-            // }}
-        >
+        <ReactTooltip id={`${floor}${location}`} className={styles.tooltip} clickable place="top">
             <h3>{title}</h3>
 
             <div className={classNames(styles.sensors, { [styles.battery]: hasBattery })}>

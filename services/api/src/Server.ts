@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import session from "express-session";
 import "reflect-metadata";
-import Config from "./services/ConfigService";
+import ConfigService from "./services/ConfigService";
 
 const rootDir = __dirname;
 
@@ -23,7 +23,7 @@ const rootDir = __dirname;
 })
 export default class Server {
     constructor(
-        private config: Config,
+        private config: ConfigService,
         private app: PlatformApplication,
     ) {}
 
