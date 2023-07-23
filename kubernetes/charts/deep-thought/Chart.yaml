@@ -1,6 +1,0 @@
-apiVersion: v2
-name: deep-thought
-description: A Helm chart for the PowerPi deep-thought API service
-type: application
-version: 0.1.6
-appVersion: 0.6.5

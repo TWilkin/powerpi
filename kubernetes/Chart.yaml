@@ -6,14 +6,14 @@ version: 0.4.1
 appVersion: 0.4.1
 dependencies:
   # services
+  - name: api
+    version: 0.1.6
   - name: config-server
     version: 0.1.11
     condition: global.config
   - name: database
     version: 0.1.3
     condition: global.persistence
-  - name: deep-thought
-    version: 0.1.6
   - name: energy-monitor
     version: 0.1.3
     condition: global.energyMonitor
