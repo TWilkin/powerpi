@@ -5,6 +5,7 @@
     "Name" "http"
     "Port" 8080
   ))
+  "Replicas" 2
   "Config" (list
     (dict
       "Name" "nginx-config"
@@ -17,5 +18,5 @@
     "ReadinessInitialDelay" 5
     "LivenessInitialDelay" 10
   )
-}}
-{{- include "powerpi.deployment" (merge (dict "Params" $data) . )}}
+-}}
+{{- include "powerpi.deployment" (merge (dict "Params" $data) . ) -}}
