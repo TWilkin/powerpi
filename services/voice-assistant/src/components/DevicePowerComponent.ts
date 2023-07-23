@@ -1,5 +1,5 @@
 import { BaseComponent, Component, Intents } from "@jovotech/framework";
-import { DeviceState } from "@powerpi/api";
+import { DeviceState } from "@powerpi/common-api";
 import Container from "../container";
 import ApiService from "../services/ApiService";
 import DeviceService from "../services/DeviceService";
@@ -45,7 +45,7 @@ export default class DevicePowerComponent extends BaseComponent {
 
             const success = await apiService.makeRequest(
                 this.$alexa?.$user.accessToken,
-                async (api) => api.postMessage(device.name, status as DeviceState)
+                async (api) => api.postMessage(device.name, status as DeviceState),
             );
 
             if (!success) {
