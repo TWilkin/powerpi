@@ -119,8 +119,8 @@ tag_service "controllers/zigbee" "zigbee-controller"
 
 tag_service "sensors" "powerpi-sensor"
 
+tag_service "services/api" "api"
 tag_service "services/config-server" "config-server"
-tag_service "services/deep-thought" "deep-thought"
 tag_service "services/energy-monitor" "energy-monitor"
 tag_service "services/freedns" "freedns"
 tag_service "services/persistence" "persistence"
