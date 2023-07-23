@@ -30,7 +30,7 @@
         // Services
         {
             "name": "API",
-            "path": "services/deep-thought"
+            "path": "services/api"
         },
         {
             "name": "Config Server",
