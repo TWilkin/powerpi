@@ -9,8 +9,8 @@
     },
     "workspaces": {
         "packages": [
-            "common/node/api",
             "common/node/common",
+            "common/node/common-api",
             "common/node/common-test",
             "services/config-server",
             "services/deep-thought",
@@ -26,14 +26,14 @@
         ]
     },
     "scripts": {
-        "build:api": "yarn workspace @powerpi/api build",
         "build:common": "yarn workspace @powerpi/common build",
+        "build:common-api": "yarn workspace @powerpi/common-api build",
         "build:common-test": "yarn workspace @powerpi/common-test build",
         "build:config-server": "yarn workspace @powerpi/config-server build",
         "build:deep-thought": "yarn workspace @powerpi/deep-thought build",
         "build:energy-monitor": "yarn workspace @powerpi/energy-monitor build",
         "build:freedns": "yarn workspace @powerpi/freedns build",
-        "build:lib": "yarn build:api; yarn build:common; yarn build:common-test",
+        "build:lib": "yarn build:common; yarn build:common-api; yarn build:common-test",
         "build:persistence": "yarn workspace @powerpi/persistence build",
         "build:ui": "yarn workspace @powerpi/ui build",
         "build:voice-assistant": "yarn workspace @powerpi/voice-assistant build",

@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/deep-thought",
-    "version": "0.6.5",
+    "version": "1.0.0",
     "description": "PowerPi API",
     "private": true,
     "license": "GPL-3.0-only",
@@ -19,7 +19,7 @@
         "start:prd": "node dist/src/app.js"
     },
     "dependencies": {
-        "@powerpi/api": "^0.0.17",
+        "@powerpi/common-api": "^0.1.0",
         "@powerpi/common": "0.1.0",
         "@tsed/common": "^6.115.0",
         "@tsed/core": "^6.115.0",

@@ -1,7 +1,7 @@
 {
-    "name": "@powerpi/api",
-    "version": "0.0.17",
-    "description": "PowerPi API Common Typescript library",
+    "name": "@powerpi/common-api",
+    "version": "0.1.0",
+    "description": "PowerPi Common API Typescript library",
     "private": true,
     "license": "GPL-3.0-only",
     "author": "TWilkin",
