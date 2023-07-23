@@ -6,6 +6,7 @@
 {{- $data := (merge
   (dict
     "Name" $name
+    "Replicas" $replicas
   )
   .Params
 ) -}}
@@ -24,7 +25,7 @@ spec:
     matchLabels:
     {{- include "powerpi.selector" . | indent 4 }}
   
-  {{- if and (gt $replicas 1) .Values.global.useCluster }}
+  {{- if and .Values.global.useCluster (gt $replicas 1) }}
   replicas: {{ .Params.Replicas | default 1 }}
   {{- end -}}
   

@@ -57,6 +57,19 @@ template:
     {{- end }}
     {{- end }}
 
+    {{- if and .Values.global.useCluster (gt .Params.Replicas 1) }}
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+              - {{ .Chart.Name }}
+          topologyKey: kubenertes.io/hostname
+    {{- end -}}
+
     {{- if eq (empty .Params.PriorityClassName) false }}
     priorityClassName: {{ .Params.PriorityClassName }}
     {{- end }}
