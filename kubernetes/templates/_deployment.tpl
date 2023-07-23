@@ -1,6 +1,7 @@
 {{- define "powerpi.deployment" -}}
 
 {{- $name := .Params.Name | default .Chart.Name -}}
+{{- $replicas := .Params.Replicas | default 1 -}}
 
 {{- $data := (merge
   (dict
@@ -23,7 +24,9 @@ spec:
     matchLabels:
     {{- include "powerpi.selector" . | indent 4 }}
   
+  {{- if and (gt $replicas 1) .Values.global.useCluster }}
   replicas: {{ .Params.Replicas | default 1 }}
+  {{- end -}}
   
   {{- include "powerpi.template" (merge (dict "Params" $data) . ) | indent 2 -}}
 
