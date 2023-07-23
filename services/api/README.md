@@ -1,10 +1,10 @@
-# PowerPi - Deep Thought (API)
+# PowerPi - API
 
 PowerPi service which provides the API for communicating with the MQTT message queue, and the _persistence_ database to both the UI and _voice-assistant_ services.
 
 Authentication is handled utilising Google social login.
 
-The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) and a common API library [_@powerpi/api_](../../common/node/api/README.md), both of which need to be compiled before use.
+The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) and a common API library [_@powerpi/common-api_](../../common/node/common-api/README.md), both of which need to be compiled before use.
 
 ## Building
 
@@ -56,9 +56,9 @@ The service can be started locally with the following commands.
 yarn
 
 # Build the api and common library
-yarn build:api
 yarn build:common
+yarn build:common-api
 
 # Run the service locally
-yarn start:deep-thought
+yarn start:api
 ```

@@ -23,6 +23,7 @@ This project was devised to utilise open, reverse engineered or free home automa
 
 The project is split into the following services, each of which have their own _README_ describing the configuration interface they support as well as how to modify and test them.
 
+-   [**api**](services/api/README.md) - API
 -   [**config-server**](services/config-server/README.md) - Retrieve configuration files from GitHub.
 -   **controllers**:
     -   [**energenie**](controllers/energenie/README.md) - Allows control of [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories) devices using the ENER314 or ENER314-RT Pi module.
@@ -32,7 +33,6 @@ The project is split into the following services, each of which have their own _
     -   [**node**](controllers/node/README.md) - Allows monitoring of the cluster (Kubernetes) nodes and support for UPS using a [PiJuice](https://www.pijuice.com).
     -   [**virtual**](controllers/virtual/README.md) - Allows control of other devices by using virtual devices such as groups, delays, mutexes etc.
     -   [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
--   [**deep-thought**](services/deep-thought/README.md) - API
 -   [**energy-monitor**](services/energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
 -   [**freedns**](services/freedns/README.md) - Overcome changing public IP addresses of consumer ISPs by pointing a free hostname at the current public IP via [FreeDNS](https://freedns.afraid.org/)
 -   [**persistence**](services/persistence/README.md) - Service for writing all the messages that appear in the MQTT message queue to a database.

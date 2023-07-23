@@ -1,6 +1,6 @@
-# PowerPi - `@powerpi/api` - Typescript Library
+# PowerPi - `@powerpi/common-api` - Typescript Library
 
-PowerPi Common API Typescript library provides all the shared code utilised by typescript services that call the _deep_thought_ API in PowerPi.
+PowerPi Common API Typescript library provides all the shared code utilised by typescript services that call the _API_ in PowerPi.
 
 The library is built using typescript, with dependencies using yarn workspaces.
 
@@ -14,7 +14,7 @@ The library can be built by executing the following commands.
 yarn
 
 # Build the common API library
-yarn build:api
+yarn build:common-api
 ```
 
 ## Testing
