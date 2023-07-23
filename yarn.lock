@@ -932,7 +932,7 @@
     uuid "^8.3.1"
     which "^2.0.2"
 
-"@jovotech/common@^4.0.0", "@jovotech/common@^4.5.8":
+"@jovotech/common@^4.0.0":
   version "4.5.8"
   resolved "https://registry.yarnpkg.com/@jovotech/common/-/common-4.5.8.tgz#4abb5d7ebca1603db611be6c0e44e6d655807b5b"
   integrity sha512-m7U4jKXE0JLegrTGQyDdlSeuKoHLydnJHBkkHOuK8mfUDC4FUFZPs/bLHXH7+SZ1nHA0GgZV+6E1NhM2p9TlAw==
@@ -942,10 +942,20 @@
     ts-toolbelt "9.5.13"
     type-fest "^2.5.1"
 
-"@jovotech/db-filedb@^4.0.0":
-  version "4.5.8"
-  resolved "https://registry.yarnpkg.com/@jovotech/db-filedb/-/db-filedb-4.5.8.tgz#dd1756b468cdef3b7be2bc766737e42c0730aeb6"
-  integrity sha512-dr/g96mS7uzm/A47tTQkNuskfjOvObNixj44+Pre5owpZgUAsu6u0c3GizMwYUYG2lbSJc62mVEBPZrQkwefDQ==
+"@jovotech/common@^4.5.11":
+  version "4.5.11"
+  resolved "https://registry.yarnpkg.com/@jovotech/common/-/common-4.5.11.tgz#69ee8fd9c0ef887591300265fdca2e6751d578a0"
+  integrity sha512-kE8PorMHMRESCUiEzFQ5PwgGSUiGkn2mHdiklLrZWGs95e5eCoYQH2Hi0D7pgqeaTPC4Z4Y8WS2wttdAnJPhAw==
+  dependencies:
+    lodash.mergewith "^4.6.2"
+    loglevel "^1.8.0"
+    ts-toolbelt "9.5.13"
+    type-fest "^2.5.1"
+
+"@jovotech/db-filedb@^4.5.11":
+  version "4.5.11"
+  resolved "https://registry.yarnpkg.com/@jovotech/db-filedb/-/db-filedb-4.5.11.tgz#4fa4bddf28284936134252b9cd90620ad3ce29a0"
+  integrity sha512-G1WNuocM0t9QH0TKfM++K/PzEcc+daIITmTfi9G5wf16s7d36kk9SaOJ+npemEprGHxTliey8muUQ6vuXvf1Fg==
 
 "@jovotech/filebuilder@^0.0.1":
   version "0.0.1"
@@ -956,13 +966,13 @@
     lodash.set "^4.3.2"
     yaml "^1.10.2"
 
-"@jovotech/framework@^4.0.0":
-  version "4.5.8"
-  resolved "https://registry.yarnpkg.com/@jovotech/framework/-/framework-4.5.8.tgz#99d71ba46fb57525b5f917a1cb0876852d572f62"
-  integrity sha512-eTNz7Jc4wt63UbyEaB/k0cyIBZAN4uaNOYWQWujhIZBBjPW+YIYhihVnrdIGer/fNgEqd/RwCiLQMgvf4v4e2g==
+"@jovotech/framework@^4.5.11":
+  version "4.5.11"
+  resolved "https://registry.yarnpkg.com/@jovotech/framework/-/framework-4.5.11.tgz#a618b19f1e27f2f167630bed68c81d9460b6a039"
+  integrity sha512-sNM3g8+6J2HxHHKXMd+RelTgdNcAZqavGIghlqN563zMCUtwMcqJCJufPuuwfnyclLD483ZUBBIgJ5ELtIJE+w==
   dependencies:
-    "@jovotech/common" "^4.5.8"
-    "@jovotech/output" "^4.5.8"
+    "@jovotech/common" "^4.5.11"
+    "@jovotech/output" "^4.5.11"
     axios "^0.21.1"
     chalk "^4.1.0"
     i18next "^21.8.11"
@@ -998,12 +1008,12 @@
   dependencies:
     lodash.has "^4.5.2"
 
-"@jovotech/output@^4.5.8":
-  version "4.5.8"
-  resolved "https://registry.yarnpkg.com/@jovotech/output/-/output-4.5.8.tgz#72833da125e8bdf4e1d75fff2aaf67466b6a6c4d"
-  integrity sha512-hAFBwTJuS33w6rdjWOWyENTLpfFLGdAVwFfxiLbtQDpPBWt8A1dc1DNeAIJSVaBmxKeFEY2FJSrGX6vIVZYyjA==
+"@jovotech/output@^4.5.11":
+  version "4.5.11"
+  resolved "https://registry.yarnpkg.com/@jovotech/output/-/output-4.5.11.tgz#2a022a66108071e617f84a4e82724af184ecb880"
+  integrity sha512-uhVeBAIoCuvZrSJ53djfH9MueaC+cJYSM/Sj7vrETshwC606mKjd8EbqL5hKEjXhYQWzFDcT5L0d4bFIPhC+7Q==
   dependencies:
-    "@jovotech/common" "^4.5.8"
+    "@jovotech/common" "^4.5.11"
     class-transformer "^0.4.0"
     class-validator "^0.14.0"
     lodash.merge "^4.6.2"
@@ -1013,10 +1023,10 @@
     ts-toolbelt "9.5.13"
     type-fest "^2.5.1"
 
-"@jovotech/platform-alexa@^4.2.22":
-  version "4.5.8"
-  resolved "https://registry.yarnpkg.com/@jovotech/platform-alexa/-/platform-alexa-4.5.8.tgz#13a33b4dc2d99aa213dba289a7e3fb7f519ec893"
-  integrity sha512-uVZb7V95wCQD4nrTFKapwhBsmm7NU3RfTS4oeEi7LSPcXczn2u082Szpfve6JL+Tod5lZ5ZQvh0mU3ocTe29TA==
+"@jovotech/platform-alexa@^4.5.11":
+  version "4.5.11"
+  resolved "https://registry.yarnpkg.com/@jovotech/platform-alexa/-/platform-alexa-4.5.11.tgz#348b02d561edb5b905aceb53b58694577498e097"
+  integrity sha512-JO8GCzbEfh8tujsUcByP91VDEVeWZW01dg49e74CjXTdiN5CErP8dVBT7QV4LRWei3qVeREpBdO96ZXr2vZEhw==
   dependencies:
     "@alexa/acdl" "^0.1.3"
     "@jovotech/model" "^4.0.0"
@@ -1030,17 +1040,17 @@
     lodash.mergewith "^4.6.2"
     lodash.set "^4.3.2"
 
-"@jovotech/platform-core@^4.2.22":
-  version "4.5.8"
-  resolved "https://registry.yarnpkg.com/@jovotech/platform-core/-/platform-core-4.5.8.tgz#cc70c281f37c47b184e56caede9b4b476fb24299"
-  integrity sha512-wyEdZkkOcZkb0bsDAgxUchjWODvjzeaTCXVMWeC68/TW5zhH0fuz3+UtSSfvqfDHJWgBfGLNdzY2GpLKARlyzQ==
+"@jovotech/platform-core@^4.5.11":
+  version "4.5.11"
+  resolved "https://registry.yarnpkg.com/@jovotech/platform-core/-/platform-core-4.5.11.tgz#052df51ab2c99db8632913cd43592d08faaad100"
+  integrity sha512-6hRnT2LTFZf69W27E0GMz/6pB52v7dBZBBVpsAbLYV5rr+ZgE+apvbPOQfFcTkJKYm69cXYStCimtPl/xEBWLw==
   dependencies:
     lodash.merge "^4.6.2"
 
-"@jovotech/server-express@^4.0.0":
-  version "4.5.8"
-  resolved "https://registry.yarnpkg.com/@jovotech/server-express/-/server-express-4.5.8.tgz#ade7e06de10a599ccac03170c64ee7a1706c05b5"
-  integrity sha512-h8wxrOZwMluIb93ZtWSY+FUQwXd8UffKAxsopqibxjv8KN+Vr2HtuyIo4U7cA3A2ooaga1mBnYssrcMJNl6/yg==
+"@jovotech/server-express@^4.5.11":
+  version "4.5.11"
+  resolved "https://registry.yarnpkg.com/@jovotech/server-express/-/server-express-4.5.11.tgz#cc093b7fb4d242e18785ac03e5971dd899f89034"
+  integrity sha512-dmnIuw1RPiwxp1L80Ld3VpBUnYjKMDh993L8rQC9cMo/VIAqyjAAGVnWmhaK0XucRVsgGhlXKVRFSBeQdY05IA==
   dependencies:
     express "^4.17.1"
 
@@ -2091,13 +2101,6 @@
   version "4.1.3"
   resolved "https://registry.npmjs.org/@types/react-timeago/-/react-timeago-4.1.3.tgz"
   integrity sha512-XaaMBzuXLw7lxPPDs/fenlohcf3NDqM5qP4oOL/Meu+Hb1QChW4Igw/SruS1llEqch18RQB3wDTIwvqq4nivvw==
-  dependencies:
-    "@types/react" "*"
-
-"@types/react-tooltip@^3.4.2":
-  version "3.11.0"
-  resolved "https://registry.yarnpkg.com/@types/react-tooltip/-/react-tooltip-3.11.0.tgz#e7e7e9c67629f2b6f75ea67752922c9de0b64468"
-  integrity sha512-TkXMgkZ5aAKkFE9Wvt8OlOiPtF9ufgBOL9xWlRSzLBaoL12qSOBiyMcU4/8TyED1fuWkm5VTVarScwOPLSArYw==
   dependencies:
     "@types/react" "*"
 
@@ -8592,10 +8595,10 @@ streamsearch@^1.1.0:
   resolved "https://registry.yarnpkg.com/streamsearch/-/streamsearch-1.1.0.tgz#404dd1e2247ca94af554e841a8ef0eaa238da764"
   integrity sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==
 
-string-argv@^0.1.1:
-  version "0.1.2"
-  resolved "https://registry.npmjs.org/string-argv/-/string-argv-0.1.2.tgz"
-  integrity sha512-mBqPGEOMNJKXRo7z0keX0wlAhbBAjilUdPW13nN0PecVryZxdHIeM7TqbsSUA7VYuS00HGC6mojP7DlQzfa9ZA==
+string-argv@^0.3.1:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/string-argv/-/string-argv-0.3.2.tgz#2b6d0ef24b656274d957d54e0a4bbf6153dc02b6"
+  integrity sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==
 
 string-format@^2.0.0:
   version "2.0.0"
@@ -8995,16 +8998,15 @@ ts-toolbelt@9.5.13:
   resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-9.5.13.tgz#259b21bbbaf82661ea37a75b1ea0b5b427c89a97"
   integrity sha512-zbU5tKowXAWmvFHuiNi517BXC6TlR0ly8AhdBU9ZMEZeOyNffyza+NZEDyrSDm5oIPs/JqZLHF9r3o1zb6ZwEQ==
 
-tsc-watch@^4.2.9:
-  version "4.6.2"
-  resolved "https://registry.npmjs.org/tsc-watch/-/tsc-watch-4.6.2.tgz"
-  integrity sha512-eHWzZGkPmzXVGQKbqQgf3BFpGiZZw1jQ29ZOJeaSe8JfyUvphbd221NfXmmsJUGGPGA/nnaSS01tXipUcyxAxg==
+tsc-watch@^6.0.4:
+  version "6.0.4"
+  resolved "https://registry.yarnpkg.com/tsc-watch/-/tsc-watch-6.0.4.tgz#af15229f03cd53086771a97b10653db063bc6c59"
+  integrity sha512-cHvbvhjO86w2aGlaHgSCeQRl+Aqw6X6XN4sQMPZKF88GoP30O+oTuh5lRIJr5pgFWrRpF1AgXnJJ2DoFEIPHyg==
   dependencies:
     cross-spawn "^7.0.3"
     node-cleanup "^2.1.2"
     ps-tree "^1.2.0"
-    string-argv "^0.1.1"
-    strip-ansi "^6.0.0"
+    string-argv "^0.3.1"
 
 tslib@2.3.1:
   version "2.3.1"
