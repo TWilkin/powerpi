@@ -1,4 +1,4 @@
-import { History } from "@powerpi/api";
+import { History } from "@powerpi/common-api";
 import { useEffect, useMemo } from "react";
 import { chain as _ } from "underscore";
 import {
@@ -31,7 +31,7 @@ const HistoryList = () => {
         filters.end ?? undefined,
         filters.type !== "" ? filters.type : undefined,
         filters.entity !== "" ? filters.entity : undefined,
-        filters.action !== "" ? filters.action : undefined
+        filters.action !== "" ? filters.action : undefined,
     );
 
     const historyCache = useMemo(
@@ -39,7 +39,7 @@ const HistoryList = () => {
             _(history?.pages?.reduce((acc, page) => acc.concat(page?.data ?? []), [] as History[]))
                 .uniq((record) => JSON.stringify(record))
                 .value(),
-        [history?.pages]
+        [history?.pages],
     );
 
     // when the filters change invalidate the history we have loaded

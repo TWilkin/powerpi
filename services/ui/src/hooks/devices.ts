@@ -1,21 +1,21 @@
 import {
     AdditionalState,
+    BatteryStatusMessage,
     CapabilityStatusMessage,
     Device,
     DeviceState,
     DeviceStatusMessage,
-} from "@powerpi/api";
-import { BatteryStatusMessage } from "@powerpi/api/dist/src/BatteryStatus";
+} from "@powerpi/common-api";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import useAPI from "./api";
 import QueryKeyFactory from "./QueryKeyFactory";
+import useAPI from "./api";
 
 export function useGetDevices() {
     const api = useAPI();
     const [devices, setDevices] = useState<Device[] | undefined>();
     const { isLoading, isError, data } = useQuery(QueryKeyFactory.devices(), () =>
-        api.getDevices()
+        api.getDevices(),
     );
 
     // handle react-query updates
@@ -113,7 +113,7 @@ export function useSetDeviceState(device: Device) {
         },
         {
             onError: () => setChangeState(DeviceState.Unknown),
-        }
+        },
     );
 
     return {
@@ -139,7 +139,7 @@ export function useSetDeviceAdditionalState(device: Device) {
         },
         {
             onError: () => setChangeAdditionalState({}),
-        }
+        },
     );
 
     return {

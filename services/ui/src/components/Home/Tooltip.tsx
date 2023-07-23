@@ -1,4 +1,4 @@
-import { Sensor } from "@powerpi/api";
+import { Sensor } from "@powerpi/common-api";
 import classNames from "classnames";
 import { Fragment, useCallback, useMemo } from "react";
 import ReactTooltip from "react-tooltip";
@@ -47,7 +47,7 @@ const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
 
     const hasBattery = useMemo(
         () => _(sensors).any((sensor) => sensor.batterySince !== undefined),
-        [sensors]
+        [sensors],
     );
 
     return (
@@ -66,7 +66,7 @@ const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
                             ? Math.max(left, 0)
                             : Math.min(
                                   left,
-                                  window.innerWidth - (tooltipElement?.offsetWidth ?? 0)
+                                  window.innerWidth - (tooltipElement?.offsetWidth ?? 0),
                               ),
                 };
             }}

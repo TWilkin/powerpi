@@ -1,4 +1,4 @@
-import { Battery } from "@powerpi/api";
+import { Battery } from "@powerpi/common-api";
 import classNames from "classnames";
 import { useMemo } from "react";
 import styles from "./BatteryIcon.module.scss";
@@ -61,7 +61,7 @@ const BatteryIcon = ({ sensor, className }: BatteryIconProps) => {
                             [styles.outdated]: outdated,
                             [styles.charging]: sensor.charging,
                         },
-                        warningStyle
+                        warningStyle,
                     )}
                 />
             )}

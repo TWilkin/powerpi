@@ -1,4 +1,4 @@
-import { Device } from "@powerpi/api";
+import { Device } from "@powerpi/common-api";
 import { ChangeEvent, useCallback, useMemo } from "react";
 import { ParamKeyValuePair } from "react-router-dom";
 import { chain as _ } from "underscore";
@@ -30,7 +30,7 @@ export default function useDeviceFilter(devices?: Device[]) {
                 .sortBy((device) => device.type)
                 .map((device) => ({ key: device.type, value: device.type.replaceAll("_", " ") }))
                 .value(),
-        [devices]
+        [devices],
     );
 
     // use the floorplan to get the room display names
@@ -40,7 +40,7 @@ export default function useDeviceFilter(devices?: Device[]) {
     const getDeviceLocation = useCallback((device: Device) => device.location ?? "unspecified", []);
     const getDeviceCategories = useCallback(
         (device: Device) => device.categories ?? ["unspecified"],
-        []
+        [],
     );
 
     const locations = useMemo(
@@ -66,7 +66,7 @@ export default function useDeviceFilter(devices?: Device[]) {
                 })
                 .sortBy((filter) => filter.value)
                 .value(),
-        [devices, floorplan?.floors, getDeviceLocation]
+        [devices, floorplan?.floors, getDeviceLocation],
     );
 
     const categories = useMemo(
@@ -78,7 +78,7 @@ export default function useDeviceFilter(devices?: Device[]) {
                 .map((category) => ({ key: category, value: category }))
                 .sortBy((filter) => filter.value)
                 .value(),
-        [devices, getDeviceCategories]
+        [devices, getDeviceCategories],
     );
 
     const naturalDefaults = useMemo(
@@ -88,7 +88,7 @@ export default function useDeviceFilter(devices?: Device[]) {
             categories: categories.map((category) => category.key),
             visible: true,
         }),
-        [categories, locations, types]
+        [categories, locations, types],
     );
 
     // apply the filtering criteria
@@ -132,7 +132,7 @@ export default function useDeviceFilter(devices?: Device[]) {
 
             return result;
         },
-        [getDeviceCategories, getDeviceLocation]
+        [getDeviceCategories, getDeviceLocation],
     );
 
     const { filters, setFilters, filtered, onClear, totalCount, filteredCount } = useFilter(
@@ -141,7 +141,7 @@ export default function useDeviceFilter(devices?: Device[]) {
         naturalDefaults,
         filter,
         parseQuery,
-        toQuery
+        toQuery,
     );
 
     const onTypeChange = useCallback(
@@ -158,7 +158,7 @@ export default function useDeviceFilter(devices?: Device[]) {
 
             setFilters((currentFilter) => ({ ...currentFilter, types: filterTypes }));
         },
-        [filters.types, setFilters, types]
+        [filters.types, setFilters, types],
     );
 
     const onLocationChange = useCallback(
@@ -173,13 +173,13 @@ export default function useDeviceFilter(devices?: Device[]) {
                 filterLocations.push(event.target.value);
             } else {
                 filterLocations = filterLocations.filter(
-                    (location) => location !== event.target.value
+                    (location) => location !== event.target.value,
                 );
             }
 
             setFilters((currentFilter) => ({ ...currentFilter, locations: filterLocations }));
         },
-        [filters.locations, locations, setFilters]
+        [filters.locations, locations, setFilters],
     );
 
     const onCategoryChange = useCallback(
@@ -194,24 +194,24 @@ export default function useDeviceFilter(devices?: Device[]) {
                 filterCategories.push(event.target.value);
             } else {
                 filterCategories = filterCategories.filter(
-                    (category) => category !== event.target.value
+                    (category) => category !== event.target.value,
                 );
             }
 
             setFilters((currentFilter) => ({ ...currentFilter, categories: filterCategories }));
         },
-        [categories, filters.categories, setFilters]
+        [categories, filters.categories, setFilters],
     );
 
     const onVisibleChange = useCallback(
         () =>
             setFilters((currentFilter) => ({ ...currentFilter, visible: !currentFilter.visible })),
-        [setFilters]
+        [setFilters],
     );
 
     const onSearchChange = useCallback(
         (search: string) => setFilters((currentFilter) => ({ ...currentFilter, search })),
-        [setFilters]
+        [setFilters],
     );
 
     return {
