@@ -3,7 +3,7 @@ import Authorize from "../middleware/AuthorizeMiddleware";
 import ConfigService from "../services/ConfigService";
 
 @Controller("/config")
-export default class DeviceController {
+export default class ConfigController {
     constructor(private readonly configService: ConfigService) {}
 
     @Get("/")

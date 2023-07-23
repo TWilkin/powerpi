@@ -6,16 +6,10 @@ import session from "express-session";
 import "reflect-metadata";
 import ConfigService from "./services/ConfigService";
 
-const rootDir = __dirname;
-
 @Configuration({
-    rootDir,
+    rootDir: __dirname,
     httpPort: 3000,
     httpsPort: false,
-    mount: {
-        "/api": [`${rootDir}/controllers/*.ts`],
-    },
-    componentsScan: [`${rootDir}/services/*.ts`, `${rootDir}/protocols/*.ts`],
     socketIO: {
         path: "/api/socket.io",
     },

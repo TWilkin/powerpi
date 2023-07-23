@@ -22,6 +22,7 @@
         "@powerpi/common": "0.1.0",
         "@powerpi/common-api": "^0.1.0",
         "@tsed/common": "^7.34.0",
+        "@tsed/components-scan": "^7.34.0",
         "@tsed/core": "^7.34.0",
         "@tsed/di": "^7.34.0",
         "@tsed/engines": "^7.34.0",
