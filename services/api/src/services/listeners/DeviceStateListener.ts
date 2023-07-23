@@ -1,5 +1,5 @@
-import { AdditionalState, DeviceState } from "@powerpi/api";
 import { Message, MqttConsumer } from "@powerpi/common";
+import { AdditionalState, DeviceState } from "@powerpi/common-api";
 import MqttService from "../mqtt";
 import BatteryStateListener, { BatteryMessage } from "./BatteryStateListener";
 import CapabilityStateListener, { CapabilityMessage } from "./CapabilityStateListener";
@@ -34,7 +34,7 @@ export default abstract class DeviceStateListener
         _: string,
         entity: string,
         __: string,
-        { state, timestamp, ...additionalState }: StateMessage
+        { state, timestamp, ...additionalState }: StateMessage,
     ): void {
         this.onDeviceStateMessage(entity, state, timestamp, additionalState);
     }
@@ -45,20 +45,20 @@ export default abstract class DeviceStateListener
         entity: string,
         value: number,
         timestamp?: number,
-        charging?: boolean
+        charging?: boolean,
     ) => this.onDeviceBatteryMessage(entity, value, timestamp, charging);
 
     protected abstract onDeviceStateMessage(
         deviceName: string,
         state: DeviceState,
         timestamp?: number,
-        additionalState?: AdditionalState
+        additionalState?: AdditionalState,
     ): void;
 
     protected abstract onDeviceBatteryMessage(
         deviceName: string,
         value: number,
         timestamp?: number,
-        charging?: boolean
+        charging?: boolean,
     ): void;
 }

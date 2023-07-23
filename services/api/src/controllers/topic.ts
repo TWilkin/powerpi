@@ -1,5 +1,5 @@
-import { DeviceChangeMessage } from "@powerpi/api";
 import { OutgoingMessage } from "@powerpi/common";
+import { DeviceChangeMessage } from "@powerpi/common-api";
 import { BodyParams, Controller, PathParams, Post, Res } from "@tsed/common";
 import { Required } from "@tsed/schema";
 import { Response } from "express";
@@ -27,7 +27,7 @@ export default class TopicController {
         @PathParams("entity") entity: string,
         @PathParams("action") action: string,
         @Required() @BodyParams() body: DeviceChangeMessage,
-        @Res() response: Response
+        @Res() response: Response,
     ) {
         // fail if there is no message or it contains disallowed keys
         if (!body || _(Object.keys(body)).difference(TopicController.allowedKeys).length > 0) {

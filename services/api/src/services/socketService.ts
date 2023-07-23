@@ -1,5 +1,5 @@
-import { AdditionalState, Capability, DeviceState, SocketIONamespace } from "@powerpi/api";
 import { ISensor } from "@powerpi/common";
+import { AdditionalState, Capability, DeviceState, SocketIONamespace } from "@powerpi/common-api";
 import { $log } from "@tsed/common";
 import { Nsp, SocketService } from "@tsed/socketio";
 import { Namespace } from "socket.io";
@@ -22,7 +22,7 @@ export default class ApiSocketService {
 
         this.device = new DeviceListener(mqttService, this);
         this.sensors = configService.sensors.map(
-            (sensor) => new SensorListener(mqttService, sensor, this)
+            (sensor) => new SensorListener(mqttService, sensor, this),
         );
     }
 
@@ -42,7 +42,7 @@ export default class ApiSocketService {
         deviceName: string,
         state: DeviceState,
         timestamp?: number,
-        additionalState?: AdditionalState
+        additionalState?: AdditionalState,
     ) {
         this.namespace?.emit(SocketIONamespace.Device, {
             device: deviceName,
@@ -57,7 +57,7 @@ export default class ApiSocketService {
         state?: string,
         value?: number,
         unit?: string,
-        timestamp?: number
+        timestamp?: number,
     ) {
         this.namespace?.emit(SocketIONamespace.Sensor, {
             sensor: sensorName,
@@ -73,7 +73,7 @@ export default class ApiSocketService {
         name: string,
         battery: number,
         charging?: boolean,
-        timestamp?: number
+        timestamp?: number,
     ) {
         this.namespace?.emit(SocketIONamespace.Battery, {
             device: type === "device" ? name : undefined,
@@ -102,7 +102,10 @@ export default class ApiSocketService {
 }
 
 class DeviceListener extends DeviceStateListener {
-    constructor(mqttService: MqttService, private readonly socketService: ApiSocketService) {
+    constructor(
+        mqttService: MqttService,
+        private readonly socketService: ApiSocketService,
+    ) {
         super(mqttService);
     }
 
@@ -110,7 +113,7 @@ class DeviceListener extends DeviceStateListener {
         deviceName: string,
         state: DeviceState,
         timestamp?: number,
-        additionalState?: AdditionalState
+        additionalState?: AdditionalState,
     ): void {
         this.socketService.onDeviceStateMessage(deviceName, state, timestamp, additionalState);
     }
@@ -119,7 +122,7 @@ class DeviceListener extends DeviceStateListener {
         deviceName: string,
         value: number,
         timestamp?: number | undefined,
-        charging?: boolean | undefined
+        charging?: boolean | undefined,
     ): void {
         this.socketService.onBatteryMessage("device", deviceName, value, charging, timestamp);
     }
@@ -135,7 +138,7 @@ class SensorListener extends SensorStateListener {
     constructor(
         mqttService: MqttService,
         sensor: ISensor,
-        private readonly socketService: ApiSocketService
+        private readonly socketService: ApiSocketService,
     ) {
         super(mqttService, sensor);
     }
@@ -148,7 +151,7 @@ class SensorListener extends SensorStateListener {
         sensorName: string,
         value: number,
         unit: string,
-        timestamp?: number
+        timestamp?: number,
     ): void {
         this.socketService.onEventMessage(sensorName, undefined, value, unit, timestamp);
     }
@@ -157,7 +160,7 @@ class SensorListener extends SensorStateListener {
         sensorName: string,
         value: number,
         timestamp?: number,
-        charging?: boolean
+        charging?: boolean,
     ): void {
         this.socketService.onBatteryMessage("sensor", sensorName, value, charging, timestamp);
     }

@@ -1,5 +1,5 @@
-import { Capability } from "@powerpi/api";
 import { Message } from "@powerpi/common";
+import { Capability } from "@powerpi/common-api";
 
 export interface CapabilityMessage extends Capability, Message {}
 

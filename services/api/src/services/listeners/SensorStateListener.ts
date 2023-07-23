@@ -1,5 +1,5 @@
-import { Sensor } from "@powerpi/api";
 import { ISensor, Message, MqttConsumer } from "@powerpi/common";
+import { Sensor } from "@powerpi/common-api";
 import MqttService from "../mqtt";
 import BatteryStateListener, { BatteryMessage } from "./BatteryStateListener";
 
@@ -15,7 +15,10 @@ export default abstract class SensorStateListener
 {
     private readonly _sensor: Sensor;
 
-    constructor(private readonly mqttService: MqttService, sensor: ISensor) {
+    constructor(
+        private readonly mqttService: MqttService,
+        sensor: ISensor,
+    ) {
         super();
 
         this._sensor = {
@@ -65,7 +68,7 @@ export default abstract class SensorStateListener
                 this._sensor.name,
                 message.value,
                 message.unit,
-                message.timestamp
+                message.timestamp,
             );
         }
     }
@@ -81,20 +84,20 @@ export default abstract class SensorStateListener
     protected abstract onSensorStateMessage(
         sensorName: string,
         state: string,
-        timestamp?: number
+        timestamp?: number,
     ): void;
 
     protected abstract onSensorDataMessage(
         sensorName: string,
         value: number,
         unit: string,
-        timestamp?: number
+        timestamp?: number,
     ): void;
 
     protected abstract onSensorBatteryMessage(
         sensorName: string,
         value: number,
         timestamp?: number,
-        charging?: boolean
+        charging?: boolean,
     ): void;
 }

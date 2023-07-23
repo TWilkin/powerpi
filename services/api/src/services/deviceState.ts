@@ -1,4 +1,4 @@
-import { AdditionalState, Device, DeviceState } from "@powerpi/api";
+import { AdditionalState, Device, DeviceState } from "@powerpi/common-api";
 import { Service } from "@tsed/common";
 import ConfigService from "./config";
 import { CapabilityMessage } from "./listeners/CapabilityStateListener";
@@ -9,7 +9,10 @@ import MqttService from "./mqtt";
 export default class DeviceStateService extends DeviceStateListener {
     private _devices: Device[] | undefined;
 
-    constructor(private readonly config: ConfigService, mqttService: MqttService) {
+    constructor(
+        private readonly config: ConfigService,
+        mqttService: MqttService,
+    ) {
         super(mqttService);
 
         this._devices = undefined;
@@ -31,7 +34,7 @@ export default class DeviceStateService extends DeviceStateListener {
         deviceName: string,
         state: DeviceState,
         timestamp?: number,
-        additionalState?: AdditionalState
+        additionalState?: AdditionalState,
     ) {
         const device = this.getDevice(deviceName);
 
@@ -46,7 +49,7 @@ export default class DeviceStateService extends DeviceStateListener {
         deviceName: string,
         value: number,
         timestamp?: number,
-        charging?: boolean
+        charging?: boolean,
     ) {
         const device = this.getDevice(deviceName);
 
