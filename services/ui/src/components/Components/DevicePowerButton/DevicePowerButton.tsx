@@ -19,6 +19,7 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
     // handle a click on the slider to toggle
     const handleSliderClick = async (event: MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
+        event.stopPropagation();
 
         let newState = DeviceState.On;
         if (isDeviceStateLoading && changeState !== DeviceState.Unknown) {
@@ -40,6 +41,7 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
         newState: DeviceState,
     ) => {
         event.preventDefault();
+        event.stopPropagation();
 
         await updateDeviceState(newState);
 
@@ -54,7 +56,7 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
     // show the power toggle control
     if (toggle) {
         return (
-            <div className={styles.slider} onClick={handleSliderClick} {...longPress}>
+            <div className={styles.slider} onClick={handleSliderClick} {...longPress()}>
                 <span
                     className={classNames(
                         styles.bar,
