@@ -1,4 +1,13 @@
+@use "sass:map";
+@import "../../styles/colours.scss";
+@import "../../styles/vars.scss";
+
 .tooltip {
+    @include colour("background-color", "menu");
+    @include colour("color", "text");
+    @include colour("box-shadow", "shadow", 3px 3px 3px 3px);
+    z-index: map.get($z-index, "tooltip");
+
     h3,
     p {
         margin: 0;

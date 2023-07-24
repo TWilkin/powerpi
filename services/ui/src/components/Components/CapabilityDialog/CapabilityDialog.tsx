@@ -1,6 +1,6 @@
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Device } from "@powerpi/api";
+import { Device } from "@powerpi/common-api";
 import classNames from "classnames";
 import { useMemo } from "react";
 import _ from "underscore";
@@ -23,7 +23,7 @@ const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
     const { capabilities, temperatureRange } = useMemo(() => getCapabilities(device), [device]);
     const hasCapability = useMemo(
         () => _(capabilities).any((capability) => capability),
-        [capabilities]
+        [capabilities],
     );
 
     const { updateDeviceAdditionalState, isDeviceAdditionalStateLoading } =

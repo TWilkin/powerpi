@@ -2,7 +2,7 @@
 
 PowerPi service which provides [Amazon Alexa](https://developer.amazon.com/en-GB/alexa/devices) voice support to PowerPi. Amazon can access this service via the Kubernetes ingress rules when a port forwarding rule is applied on your router, as well as an SSL certificate using Let's Encrypt.
 
-The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md), a common API library [_@powerpi/api_](../../common/node/api/README.md) and a common testing library [_@powerpi/common-test_](../../common/node/common-test/README.md), all of which need to be compiled before use.
+The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md), a common API library [_@powerpi/common-api_](../../common/node/common-api/README.md) and a common testing library [_@powerpi/common-test_](../../common/node/common-test/README.md), all of which need to be compiled before use.
 
 An example to turn the device "BedroomLight" on would be:
 
@@ -60,7 +60,7 @@ yarn build:voice-assistant:alexa
 
 This service expects the following environment variables to be set before it will start successfully. When using kubernetes these are already configured in the helm chart, however when running locally for testing we need to define these:
 
--   **API_ADDRESS** - The URI to the _deep-thought_ instance to use, (default _http://deep-thought:3000/api_)
+-   **API_ADDRESS** - The URI to the _API_ instance to use, (default _http://api:3000/api_)
 -   **JOVO_PORT** - The port the service runs on (default _3000_).
 -   **MQTT_ADDRESS** - The URI to the MQTT instance to use, (default _mqtt://POWERPI_URL:1883_)
 

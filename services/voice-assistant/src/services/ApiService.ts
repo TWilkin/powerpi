@@ -1,4 +1,4 @@
-import { PowerPiApi } from "@powerpi/api";
+import { PowerPiApi } from "@powerpi/common-api";
 import { Service } from "typedi";
 import ConfigService from "./ConfigService";
 

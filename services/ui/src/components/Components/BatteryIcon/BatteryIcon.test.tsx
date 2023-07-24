@@ -1,4 +1,4 @@
-import { Sensor } from "@powerpi/api";
+import { Sensor } from "@powerpi/common-api";
 import { render, screen } from "@testing-library/react";
 import BatteryIcon from "./BatteryIcon";
 
@@ -29,7 +29,7 @@ test("No Sensor", () => {
             <BatteryIcon
                 sensor={{ battery: percentage, batterySince: new Date().getTime() } as Sensor}
                 className="test"
-            />
+            />,
         );
 
         const svg = screen.getByRole("img", { hidden: true });

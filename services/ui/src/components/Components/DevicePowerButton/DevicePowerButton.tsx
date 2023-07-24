@@ -1,5 +1,5 @@
 import { faLock, faLockOpen, faPowerOff } from "@fortawesome/free-solid-svg-icons";
-import { Device, DeviceState } from "@powerpi/api";
+import { Device, DeviceState } from "@powerpi/common-api";
 import classNames from "classnames";
 import { MouseEvent, useMemo, useState } from "react";
 import { useLongPress } from "use-long-press";
@@ -19,6 +19,7 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
     // handle a click on the slider to toggle
     const handleSliderClick = async (event: MouseEvent<HTMLDivElement>) => {
         event.preventDefault();
+        event.stopPropagation();
 
         let newState = DeviceState.On;
         if (isDeviceStateLoading && changeState !== DeviceState.Unknown) {
@@ -37,9 +38,10 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
     // handle a click on a button
     const handleButtonClick = async (
         event: MouseEvent<HTMLButtonElement>,
-        newState: DeviceState
+        newState: DeviceState,
     ) => {
         event.preventDefault();
+        event.stopPropagation();
 
         await updateDeviceState(newState);
 
@@ -54,7 +56,7 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
     // show the power toggle control
     if (toggle) {
         return (
-            <div className={styles.slider} onClick={handleSliderClick} {...longPress}>
+            <div className={styles.slider} onClick={handleSliderClick} {...longPress()}>
                 <span
                     className={classNames(
                         styles.bar,
@@ -62,7 +64,7 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
                         { [styles.on]: device.state === DeviceState.On },
                         { [styles.off]: device.state === DeviceState.Off },
                         { [styles.unknown]: device.state === DeviceState.Unknown },
-                        { [styles.loading]: isDeviceStateLoading }
+                        { [styles.loading]: isDeviceStateLoading },
                     )}
                 />
             </div>

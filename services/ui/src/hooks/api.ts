@@ -1,4 +1,4 @@
-import { PowerPiApi } from "@powerpi/api";
+import { PowerPiApi } from "@powerpi/common-api";
 import HttpStatusCodes from "http-status-codes";
 import { useEffect, useMemo } from "react";
 
@@ -16,7 +16,7 @@ export default function useAPI() {
                     window.location.pathname = "/login";
                 }
             }),
-        [api]
+        [api],
     );
 
     return api;

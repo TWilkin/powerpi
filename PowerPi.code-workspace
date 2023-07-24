@@ -8,7 +8,7 @@
         // Common
         {
             "name": "Common API",
-            "path": "common/node/api"
+            "path": "common/node/common-api"
         },
         {
             "name": "Common Node",
@@ -30,7 +30,7 @@
         // Services
         {
             "name": "API",
-            "path": "services/deep-thought"
+            "path": "services/api"
         },
         {
             "name": "Config Server",

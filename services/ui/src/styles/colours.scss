@@ -60,10 +60,10 @@ $dark-colours: (
     ),
 );
 
-@mixin colour($property, $colour) {
-    #{$property}: map.get($light-colours, $colour);
+@mixin colour($property, $colour, $prefix: null) {
+    #{$property}: $prefix map.get($light-colours, $colour);
 
     @media (prefers-color-scheme: dark) {
-        #{$property}: map.get($dark-colours, $colour);
+        #{$property}: $prefix map.get($dark-colours, $colour);
     }
 }

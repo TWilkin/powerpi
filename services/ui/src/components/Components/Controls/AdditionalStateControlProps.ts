@@ -1,4 +1,4 @@
-import { AdditionalState } from "@powerpi/api";
+import { AdditionalState } from "@powerpi/common-api";
 
 type AdditionalStateControlsProps = {
     disabled: boolean;

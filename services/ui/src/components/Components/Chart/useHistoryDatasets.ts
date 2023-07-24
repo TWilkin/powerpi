@@ -18,7 +18,7 @@ export default function useHistoryDatasets(
     start?: Date,
     end?: Date,
     entity?: string,
-    action?: string
+    action?: string,
 ) {
     const { isHistoryLoading, history } = useGetHistoryRange(start, end, "event", entity, action);
 
@@ -34,7 +34,7 @@ export default function useHistoryDatasets(
                         (dataset) =>
                             dataset.entity.toLowerCase() === record.entity.toLowerCase() &&
                             dataset.action.toLowerCase() === record.action.toLowerCase() &&
-                            dataset.unit == message.unit
+                            dataset.unit == message.unit,
                     );
 
                     if (!dataset) {
@@ -53,7 +53,7 @@ export default function useHistoryDatasets(
                     if (record.message && record.timestamp) {
                         dataset.data.push({
                             value: message.value,
-                            timestamp: record.timestamp,
+                            timestamp: new Date(record.timestamp),
                         });
                     }
                 }
@@ -63,7 +63,7 @@ export default function useHistoryDatasets(
                     .sortBy((dataset) => dataset.action)
                     .value();
             }, []),
-        [history]
+        [history],
     );
 
     return {

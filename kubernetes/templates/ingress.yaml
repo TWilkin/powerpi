@@ -23,7 +23,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: deep-thought
+            name: api
             port:
               number: 80
       {{- if eq .Values.global.voiceAssistant true }}

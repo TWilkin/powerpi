@@ -1,15 +1,14 @@
-import { Sensor, SensorStatusMessage } from "@powerpi/api";
-import { BatteryStatusMessage } from "@powerpi/api/dist/src/BatteryStatus";
+import { BatteryStatusMessage, Sensor, SensorStatusMessage } from "@powerpi/common-api";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import useAPI from "./api";
 import QueryKeyFactory from "./QueryKeyFactory";
+import useAPI from "./api";
 
 export default function useGetSensors() {
     const api = useAPI();
     const [sensors, setSensors] = useState<Sensor[] | undefined>();
     const { isLoading, isError, data } = useQuery(QueryKeyFactory.sensors(), () =>
-        api.getSensors()
+        api.getSensors(),
     );
 
     // handle react-query updates

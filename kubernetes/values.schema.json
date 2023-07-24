@@ -124,7 +124,7 @@
                     },
                     "required": ["certificateEmail"]
                 },
-                { 
+                {
                     "properties": {
                         "useSSL": { "const": false }
                     }
@@ -133,12 +133,22 @@
             "unevaluatedProperties": false
         },
 
+        "api": {
+            "description": "The configuration for the PowerPi API service Helm chart",
+            "type": "object",
+            "allOf": [{ "$ref": "#/$defs/service" }],
+            "properties": {
+                "component": {
+                    "const": "api"
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
         "config-server": {
             "description": "The configuration for the PowerPi Config Server Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/service" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/service" }],
             "properties": {
                 "component": {
                     "const": "config"
@@ -162,9 +172,7 @@
         "database": {
             "description": "The configuration for the PowerPi Database Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/service" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/service" }],
             "properties": {
                 "component": {
                     "const": "database"
@@ -177,26 +185,10 @@
             "unevaluatedProperties": false
         },
 
-        "deep-thought": {
-            "description": "The configuration for the PowerPi API service Helm chart",
-            "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/service" }
-            ],
-            "properties": {
-                "component": {
-                    "const": "api"
-                }
-            },
-            "unevaluatedProperties": false
-        },
-
         "energenie-controller": {
             "description": "The configuration for the PowerPi Energenie controller Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/controller" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/controller" }],
             "properties": {
                 "type": {
                     "description": "The Energenie device type to use, either ENER314-RT or ENER314",
@@ -209,9 +201,7 @@
         "energy-monitor": {
             "description": "The configuration for the PowerPi Energy Monitor service Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/service" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/service" }],
             "properties": {
                 "component": {
                     "const": "energy-monitor"
@@ -233,9 +223,7 @@
         "freedns": {
             "description": "The configuration for the PowerPi FreeDNS service Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/service" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/service" }],
             "properties": {
                 "component": {
                     "const": "dns"
@@ -251,27 +239,21 @@
         "harmony-controller": {
             "description": "The configuration for the PowerPi Harmony controller Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/controller" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/controller" }],
             "unevaluatedProperties": false
         },
 
         "lifx-controller": {
             "description": "The configuration for the PowerPi LIFX controller Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/controller" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/controller" }],
             "unevaluatedProperties": false
         },
 
         "mosquitto": {
             "description": "The configuration for the Mosquitto MQTT service Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/service" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/service" }],
             "properties": {
                 "component": {
                     "const": "message-queue"
@@ -283,27 +265,21 @@
         "network-controller": {
             "description": "The configuration for the PowerPi Network controller Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/controller" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/controller" }],
             "unevaluatedProperties": false
         },
 
         "node-controller": {
             "description": "The configuration for the PowerPi Node controller Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/controller" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/controller" }],
             "unevaluatedProperties": false
         },
 
         "persistence": {
             "description": "The configuration for the PowerPi Persistence service Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/service" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/service" }],
             "properties": {
                 "component": {
                     "const": "database"
@@ -315,9 +291,7 @@
         "scheduler": {
             "description": "The configuration for the PowerPi Scheduler service Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/service" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/service" }],
             "properties": {
                 "component": {
                     "const": "scheduler"
@@ -329,9 +303,7 @@
         "smarter-device-manager": {
             "description": "The configuration for the Smarter Device Manager Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/service" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/service" }],
             "properties": {
                 "component": {
                     "const": "device-manager"
@@ -343,9 +315,7 @@
         "ui": {
             "description": "The configuration for the PowerPi UI service Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/service" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/service" }],
             "properties": {
                 "component": {
                     "const": "ui"
@@ -357,18 +327,14 @@
         "virtual-controller": {
             "description": "The configuration for the PowerPi Virtual controller Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/controller" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/controller" }],
             "unevaluatedProperties": false
         },
 
         "voice-assistant": {
             "description": "The configuration for the PowerPi Voice Assistant service Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/service" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/service" }],
             "properties": {
                 "component": {
                     "const": "voice-assistant"
@@ -380,9 +346,7 @@
         "zigbee-controller": {
             "description": "The configuration for the PowerPi ZigBee controller Helm chart",
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/controller" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/controller" }],
             "unevaluatedProperties": false
         }
     },
@@ -409,9 +373,7 @@
 
         "controller": {
             "type": "object",
-            "allOf": [
-                { "$ref": "#/$defs/service" }
-            ],
+            "allOf": [{ "$ref": "#/$defs/service" }],
             "properties": {
                 "component": {
                     "const": "controller"

@@ -1,9 +1,9 @@
 import {
-    Floorplan as IFloorplan,
     Floor as IFloor,
-    Room as IRoom,
+    Floorplan as IFloorplan,
     Point as IPoint,
-} from "@powerpi/api";
+    Room as IRoom,
+} from "@powerpi/common-api";
 import classNames from "classnames";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
@@ -24,7 +24,7 @@ const Floorplan = ({ floorplan }: FloorplanProps) => {
 
     const rotate = useMemo(
         () => (isWide && isPortrait) || (!isWide && isLandscape),
-        [isWide, isLandscape, isPortrait]
+        [isWide, isLandscape, isPortrait],
     );
 
     return (
@@ -106,14 +106,13 @@ const Room = ({ room, floor }: RoomProps) => {
                 y={room.y}
                 width={room.width}
                 height={room.height}
-                data-tip
-                data-for={id}
+                data-tooltip-id={id}
             />
         );
     } else if (isPolygon(room)) {
         const points = room.points?.map((point) => `${point.x},${point.y}`).join(" ");
 
-        return <polygon id={id} points={points} data-tip data-for={id} />;
+        return <polygon id={id} points={points} data-tooltip-id={id} />;
     }
 
     return <></>;
@@ -191,7 +190,7 @@ function viewBoxByRoom(room: IRoom) {
     // now get the min/max values
     const viewBox = points.reduce(
         (viewBox, point) => viewBox.update(point.x, point.y),
-        new ViewBox()
+        new ViewBox(),
     );
 
     return viewBox;

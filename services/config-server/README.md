@@ -173,7 +173,7 @@ The _schedules.json_ file contains the scheduled events that _scheduler_ uses to
 
 #### users.json
 
-The _users.json_ file contains the users who are authorised to use the _deep-thought_ API, and therefore the UI and _voice-assistant_ services. The file takes the following format using the [users JSON schema](./src/schema/config/users.schema.json):
+The _users.json_ file contains the users who are authorised to use the _API_, and therefore the UI and _voice-assistant_ services. The file takes the following format using the [users JSON schema](./src/schema/config/users.schema.json):
 
 ```json
 {

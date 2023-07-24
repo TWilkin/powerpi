@@ -1,4 +1,4 @@
-import { Floorplan as IFloorplan, Sensor } from "@powerpi/api";
+import { Floorplan as IFloorplan, Sensor } from "@powerpi/common-api";
 import { useMemo } from "react";
 import useGetSensors from "../../hooks/sensors";
 import Loading from "../Components/Loading";
@@ -15,22 +15,25 @@ const Home = ({ floorplan }: HomeProps) => {
 
     const locations = useMemo(
         () =>
-            floorplan?.floors.reduce((locations, floor) => {
-                locations.push(
-                    ...floor.rooms.map((room) => ({
-                        title: room.display_name ?? room.name,
-                        location: room.name,
-                        floor: floor.name,
-                        sensors:
-                            sensors?.filter(
-                                (sensor) => sensor.visible && sensor.location === room.name
-                            ) ?? [],
-                    }))
-                );
+            floorplan?.floors.reduce(
+                (locations, floor) => {
+                    locations.push(
+                        ...floor.rooms.map((room) => ({
+                            title: room.display_name ?? room.name,
+                            location: room.name,
+                            floor: floor.name,
+                            sensors:
+                                sensors?.filter(
+                                    (sensor) => sensor.visible && sensor.location === room.name,
+                                ) ?? [],
+                        })),
+                    );
 
-                return locations;
-            }, [] as { title: string; location: string; floor: string; sensors: Sensor[] }[]),
-        [floorplan, sensors]
+                    return locations;
+                },
+                [] as { title: string; location: string; floor: string; sensors: Sensor[] }[],
+            ),
+        [floorplan, sensors],
     );
 
     return (

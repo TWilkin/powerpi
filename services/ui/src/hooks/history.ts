@@ -1,22 +1,21 @@
-import { History } from "@powerpi/api";
-import PaginationResponse from "@powerpi/api/dist/src/Pagination";
+import { History, PaginationResponse } from "@powerpi/common-api";
 import { useCallback, useEffect } from "react";
-import { useInfiniteQuery, useQuery, useQueryClient, UseQueryResult } from "react-query";
+import { UseQueryResult, useInfiniteQuery, useQuery, useQueryClient } from "react-query";
 import { chain as _ } from "underscore";
-import useAPI from "./api";
 import { HistoryQueryKeyFactory } from "./QueryKeyFactory";
+import useAPI from "./api";
 
 export function useGetHistoryFilters(type?: string) {
     const api = useAPI();
     const actions = useGetHistoryFilter(
         HistoryQueryKeyFactory.actions(),
         api.getHistoryActions,
-        type
+        type,
     );
     const entities = useGetHistoryFilter(
         HistoryQueryKeyFactory.entities(),
         api.getHistoryEntities,
-        type
+        type,
     );
     const types = useGetHistoryFilter(HistoryQueryKeyFactory.types(), (_) => api.getHistoryTypes());
 
@@ -30,7 +29,7 @@ export function useGetHistoryFilters(type?: string) {
 function useGetHistoryFilter<TFilter>(
     key: string[],
     method: (type?: string) => Promise<TFilter[]>,
-    type?: string
+    type?: string,
 ) {
     return useQuery(key, () => method(type));
 }
@@ -49,7 +48,7 @@ export function useInvalidateHistory() {
 
     return useCallback(
         async () => await queryClient.invalidateQueries(HistoryQueryKeyFactory.base()),
-        [queryClient]
+        [queryClient],
     );
 }
 
@@ -59,7 +58,7 @@ export function useGetHistory(
     end?: Date,
     type?: string,
     entity?: string,
-    action?: string
+    action?: string,
 ) {
     const api = useAPI();
 
@@ -72,16 +71,20 @@ export function useGetHistory(
 
             return undefined;
         },
-        [action, api, end, entity, records, start, type]
+        [action, api, end, entity, records, start, type],
     );
 
     const getNextPageParam = useCallback(
         (
             lastPage: PaginationResponse<History> | undefined,
-            allPages: (PaginationResponse<History> | undefined)[]
+            allPages: (PaginationResponse<History> | undefined)[],
         ) => {
-            const previousTimestamp = _(allPages.at(-2)?.data).last().value()?.timestamp;
-            const lastTimestamp = _(lastPage?.data).last().value()?.timestamp;
+            const previousTimestamp = _(allPages.at(-2)?.data)
+                .last()
+                .value()?.timestamp;
+            const lastTimestamp = _(lastPage?.data)
+                .last()
+                .value()?.timestamp;
 
             if (!lastTimestamp || !previousTimestamp || lastTimestamp < previousTimestamp) {
                 // we still have some pages so return the date to query to
@@ -90,7 +93,7 @@ export function useGetHistory(
 
             return false;
         },
-        []
+        [],
     );
 
     const { isLoading, isError, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, data } =
@@ -114,12 +117,12 @@ export function useGetHistoryRange(
     end?: Date,
     type?: string,
     entity?: string,
-    action?: string
+    action?: string,
 ) {
     const api = useAPI();
     const { isLoading, isError, data } = useQuery(
         ["history/range", start, end, type, entity, action],
-        () => api.getHistoryRange(start, end, type, entity, action)
+        () => api.getHistoryRange(start, end, type, entity, action),
     );
 
     return {

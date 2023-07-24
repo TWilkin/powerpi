@@ -16,7 +16,7 @@ type DatasetChartScale = {
 };
 
 const dateFormats = [
-    "milisecond",
+    "millisecond",
     "second",
     "minute",
     "hour",
@@ -95,7 +95,7 @@ export default function useChart(datasets?: Dataset[]) {
                                 ...acc,
                                 [format]: `x '${format}'`,
                             }),
-                            {}
+                            {},
                         ),
                     },
                     reverse: !isLandscape,
@@ -168,7 +168,7 @@ export default function useChart(datasets?: Dataset[]) {
                 }, {} as DatasetChartScale),
             },
         }),
-        [datasets, isLandscape, lineColour, textColour, timeTickGenerator, tooltipColour]
+        [datasets, isLandscape, lineColour, textColour, timeTickGenerator, tooltipColour],
     );
 
     // extract the data points
@@ -193,7 +193,7 @@ export default function useChart(datasets?: Dataset[]) {
                     pointRadius: 2,
                 })) ?? [],
         }),
-        [datasets, isLandscape, lineColours]
+        [datasets, isLandscape, lineColours],
     );
 
     return { options, data };
@@ -237,7 +237,7 @@ function useTimeTick() {
                 getCheckValue: (value: DateTime) => value.year,
             },
         }),
-        []
+        [],
     );
 
     const maxTicks = useMemo(() => {
@@ -275,7 +275,7 @@ function useTimeTick() {
                 ? decodeTick(ticks[previousIndex].value).date
                 : undefined;
         },
-        [isLandscape]
+        [isLandscape],
     );
 
     return useCallback(
@@ -306,6 +306,6 @@ function useTimeTick() {
 
             return date.toISO();
         },
-        [formats, getPreviousTickDate, maxTicks]
+        [formats, getPreviousTickDate, maxTicks],
     );
 }
