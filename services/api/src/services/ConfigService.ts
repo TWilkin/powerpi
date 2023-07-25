@@ -33,7 +33,7 @@ export default class ConfigService extends CommonConfigService {
     }
 
     get usesHttps() {
-        return process.env.USE_HTTP !== "true";
+        return process.env.USE_HTTP === "false";
     }
 
     get externalUrlBase() {
