@@ -8,6 +8,12 @@ metadata:
     cert-manager.io/issuer: letsencrypt
     {{- end }}
     kubernetes.io/ingress.class: public
+    {{- if eq .Values.global.useCluster true }}
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+    {{- end }}
 spec:
   {{- if eq .Values.global.useSSL true }}
   tls:
