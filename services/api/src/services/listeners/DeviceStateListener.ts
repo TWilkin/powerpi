@@ -4,7 +4,7 @@ import MqttService from "../MqttService";
 import BatteryStateListener, { BatteryMessage } from "./BatteryStateListener";
 import CapabilityStateListener, { CapabilityMessage } from "./CapabilityStateListener";
 
-interface StateMessage extends Message, AdditionalState {
+export interface StateMessage extends Message, AdditionalState {
     state: DeviceState;
 }
 
