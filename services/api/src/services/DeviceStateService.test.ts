@@ -16,8 +16,12 @@ describe("DeviceStateService", () => {
     function getConsumer<TConsumer extends Message>(action: string) {
         const subscriptions = capture(mockedMqttService.subscribe);
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; ; i++) {
             const subscription = subscriptions.byCallIndex(i);
+            if (!subscription) {
+                break;
+            }
+
             if (subscription[2] === action) {
                 return subscription[3] as MqttConsumer<TConsumer>;
             }

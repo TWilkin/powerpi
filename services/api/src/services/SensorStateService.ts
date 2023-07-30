@@ -22,7 +22,11 @@ export default class SensorStateService {
     public async $onInit() {
         this.initialise();
 
-        await Promise.all(this._sensors?.map((sensor) => sensor.$onInit()) ?? []);
+        const promises = this._sensors!.map((sensor) => sensor.$onInit());
+
+        if (promises) {
+            await Promise.all(promises);
+        }
     }
 
     private initialise() {
