@@ -11,7 +11,7 @@ describe("ClientCredentialsProtocol", () => {
         subject = new ClientCredentialsProtocol(instance(mockedConfigService));
     });
 
-    describe("onVerify", () => {
+    describe("$onVerify", () => {
         [
             { clientId: "match", clientSecret: "secretly", expected: true },
             { clientId: "nope", clientSecret: "secretly", expected: false },

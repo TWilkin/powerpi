@@ -1,8 +1,8 @@
-import { FileService } from "@powerpi/common";
 import { Req } from "@tsed/common";
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { Request } from "express";
 import { ExtractJwt, Strategy, StrategyOptions } from "passport-jwt";
+import Container from "../Container";
 import ConfigService from "../services/ConfigService";
 import JwtService from "../services/JwtService";
 import UserService from "../services/UserService";
@@ -54,20 +54,21 @@ export default class JwtProtocol implements OnVerify, OnInstall {
     }
 }
 
-async function getSecret(
+export async function getSecret(
     _: Request,
     __: string,
     done: (err: string | null | unknown, secret?: string) => void,
 ) {
     try {
-        const secret = await new ConfigService(new FileService()).getJWTSecret();
+        const config = Container.get(ConfigService);
+        const secret = await config.getJWTSecret();
         done(null, secret);
     } catch (error) {
         done(error);
     }
 }
 
-function getToken(request: Req): string | null {
+export function getToken(request: Req): string | null {
     // read from the authorization header
     let token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
 
