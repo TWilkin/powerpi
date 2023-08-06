@@ -42,7 +42,7 @@ export default class GoogleProtocol implements OnVerify, OnInstall {
         );
 
         if (!user) {
-            $log.info(`User '${profile.emails[0]}' not found`);
+            $log.info(`User '${profile.emails[0]?.value}' not found`);
             return false;
         }
 
