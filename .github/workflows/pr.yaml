@@ -108,7 +108,7 @@ jobs:
 
       # test the services
       - name: Test API
-        if: steps.check_modified.outputs.config_server
+        if: steps.check_modified.outputs.api
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh api"
 
