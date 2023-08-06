@@ -44,7 +44,19 @@ This service requires two configuration files, both of which are described on th
 
 ## Testing
 
-There are currently no automated tests for this service.
+This service can be tested by executing the following commands.
+
+```bash
+# From the root of your PowerPi checkout
+# Download the dependencies
+yarn
+
+# Build the common libraries
+yarn build:lib
+
+# Run the service locally
+yarn test:api
+```
 
 ## Local Execution
 
@@ -55,9 +67,8 @@ The service can be started locally with the following commands.
 # Download the dependencies
 yarn
 
-# Build the api and common library
-yarn build:common
-yarn build:common-api
+# Build the common libraries
+yarn build:lib
 
 # Run the service locally
 yarn start:api
