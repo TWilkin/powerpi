@@ -19,7 +19,7 @@ import ConfigService from "../services/ConfigService";
 import JwtService from "../services/JwtService";
 import UserService from "../services/UserService";
 
-interface AuthSession extends ExpressSession {
+export interface AuthSession extends ExpressSession {
     redirectUri: string;
     useCode: boolean;
 }
