@@ -49,6 +49,7 @@
         "start:ui": "yarn workspace @powerpi/ui start",
         "start:voice-assistant": "yarn workspace @powerpi/voice-assistant start:debug",
         "test:common": "yarn workspace @powerpi/common test",
+        "test:api": "yarn workspace @powerpi/api test",
         "test:config-server": "yarn workspace @powerpi/config-server test",
         "test:persistence": "yarn workspace @powerpi/persistence test",
         "test:ui": "yarn workspace @powerpi/ui test",
