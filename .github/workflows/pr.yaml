@@ -107,6 +107,11 @@ jobs:
         working-directory: controllers/zigbee
 
       # test the services
+      - name: Test API
+        if: steps.check_modified.outputs.config_server
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh api"
+
       - name: Test Config Server
         if: steps.check_modified.outputs.config_server
         shell: bash
