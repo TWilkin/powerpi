@@ -14,6 +14,10 @@ export default class ClientCredentialsProtocol implements OnVerify {
             (authConfig) => authConfig.name === "oauth",
         );
 
-        return clientId === credentials?.clientId && clientSecret === credentials?.clientSecret;
+        if (credentials) {
+            return clientId === credentials.clientId && clientSecret === credentials.clientSecret;
+        }
+
+        return false;
     }
 }
