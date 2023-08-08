@@ -8,12 +8,14 @@
 **/kubernetes/
 **/node_modules/
 **/platforms/
+**/tests/
 **/venv/
 **/.converage
 **/\*.dev.js
 **/_.dev.ts
 \*\*/_.test.ts
 **/\*.test.tsx
+**/\test_*.py
 **/_.pyc
 \*\*/_.log
 **/.eslintignore
