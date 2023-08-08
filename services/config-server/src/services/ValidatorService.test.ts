@@ -1,6 +1,6 @@
 import { ConfigFileType } from "@powerpi/common";
-import ValidatorService from "../../src/services/ValidatorService";
-import { setupValidator, testInvalid } from "./validator/setupValidator";
+import ValidatorService from "./ValidatorService";
+import { setupValidator, testInvalid } from "./tests/setupValidator";
 
 describe("ValidatorService", () => {
     let subject: ValidatorService | undefined;

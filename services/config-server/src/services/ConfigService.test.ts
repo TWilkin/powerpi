@@ -1,6 +1,6 @@
 import { ConfigFileType, FileService } from "@powerpi/common";
 import { instance, mock, when } from "ts-mockito";
-import ConfigService from "../../src/services/ConfigService";
+import ConfigService from "./ConfigService";
 
 const mockedFileService = mock<FileService>();
 
