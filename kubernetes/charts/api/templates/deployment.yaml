@@ -90,6 +90,10 @@
   "MqttSecret" "mosquitto-api-secret"
   "Env" (list
     (dict
+      "Name" "USE_HTTP"
+      "Value" (not .Values.global.useSSL | quote)
+    )
+    (dict
       "Name" "EXTERNAL_HOST_NAME"
       "Value" .Values.global.externalHostName
     )

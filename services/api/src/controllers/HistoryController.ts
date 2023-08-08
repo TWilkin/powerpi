@@ -69,7 +69,7 @@ export default class HistoryController {
     async getHistory(
         @Res() response: Response,
         @QueryParams("records") records = 30,
-        @QueryParams("start") start: Date,
+        @QueryParams("start") start?: Date,
         @QueryParams("end") end?: Date,
         @QueryParams("type") type?: string,
         @QueryParams("entity") entity?: string,

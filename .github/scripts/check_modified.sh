@@ -37,6 +37,7 @@ do
     # updating API requires testing everything using it
     if [[ $file == common/node/api/* || $file == yarn.lock ]]
     then
+        include_project "api" "nodejs"
         include_project "ui" "nodejs"
         include_project "voice_assistant" "nodejs"
     fi
@@ -46,6 +47,7 @@ do
     then
         include_project "node_common" "nodejs"
 
+        include_project "api" "nodejs"
         include_project "config_server" "nodejs"
         include_project "persistence" "nodejs"
         include_project "voice_assistant" "nodejs"
@@ -54,6 +56,7 @@ do
     # updating node common-test requires testing everything using it
     if [[ $file == common/node/common-test/* || $file == yarn.lock ]]
     then
+        include_project "api" "nodejs"
         include_project "config_server" "nodejs"
         include_project "persistence" "nodejs"
         include_project "ui" "nodejs"
@@ -86,6 +89,7 @@ do
     check_file $file "controllers/zigbee" "zigbee_controller" "python"
 
     # check the services
+    check_file $file "services/api" "api" "nodejs"
     check_file $file "services/config-server" "config_server" "nodejs"
     check_file $file "services/persistence" "persistence" "nodejs"
     check_file $file "services/scheduler" "scheduler" "python"

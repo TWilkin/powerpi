@@ -1,4 +1,5 @@
 import { Controller, Get } from "@tsed/common";
+import _ from "underscore";
 import Authorize from "../middleware/AuthorizeMiddleware";
 import SensorStateService from "../services/SensorStateService";
 
@@ -9,11 +10,8 @@ export default class SensorController {
     @Get("/")
     @Authorize()
     getAllSensors() {
-        return this.sensorService.sensors.sort((a, b) => {
-            const str1 = (a.display_name ?? a.name).toUpperCase();
-            const str2 = (b.display_name ?? b.name).toUpperCase();
-
-            return str1 < str2 ? -1 : str1 > str2 ? 1 : 0;
-        });
+        return _(this.sensorService.sensors).sortBy((sensor) =>
+            (sensor.display_name ?? sensor.name).toLocaleLowerCase(),
+        );
     }
 }

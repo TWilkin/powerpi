@@ -3,7 +3,7 @@ import { Sensor } from "@powerpi/common-api";
 import MqttService from "../MqttService";
 import BatteryStateListener, { BatteryMessage } from "./BatteryStateListener";
 
-interface EventMessage extends Message {
+export interface EventMessage extends Message {
     state?: string;
     value?: number;
     unit?: string;

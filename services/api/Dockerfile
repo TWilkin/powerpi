@@ -20,6 +20,19 @@ RUN yarn workspace @powerpi/common install --frozen-lockfile
 COPY common/node/common ./common/node/common/
 RUN yarn workspace @powerpi/common build
 
+# build the common test library
+FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-common-test-image
+LABEL description="Node.js builder for common-test library"
+WORKDIR /home/node/app
+COPY --from=build-common-image /home/node/app/common/node/common/package.json ./common/node/common/
+COPY --from=build-common-image /home/node/app/common/node/common/dist/ ./common/node/common/dist/
+RUN mkdir -p /home/node/app/common/node/common-test
+COPY package.json yarn.lock tsconfig.json ./
+COPY common/node/common-test/package.json ./common/node/common-test/
+RUN yarn workspace @powerpi/common-test install --frozen-lockfile
+COPY common/node/common-test ./common/node/common-test/
+RUN yarn workspace @powerpi/common-test build
+
 # build the service
 FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-service-image
 LABEL description="Node.js builder for the API service"
@@ -28,6 +41,8 @@ COPY --from=build-api-image /home/node/app/common/node/common-api/package.json .
 COPY --from=build-api-image /home/node/app/common/node/common-api/dist/ ./common/node/common-api/dist/
 COPY --from=build-common-image /home/node/app/common/node/common/package.json ./common/node/common/
 COPY --from=build-common-image /home/node/app/common/node/common/dist/ ./common/node/common/dist/
+COPY --from=build-common-test-image /home/node/app/common/node/common-test/package.json ./common/node/common-test/
+COPY --from=build-common-test-image /home/node/app/common/node/common-test/dist/ ./common/node/common-test/dist/
 RUN mkdir -p /home/node/app/services/api
 COPY package.json yarn.lock tsconfig.json ./
 COPY services/api/package.json ./services/api/
