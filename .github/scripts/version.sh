@@ -43,7 +43,7 @@ update_release() {
     if $commit
     then
         echo "Committing version changes"
-        git commit -m "Bump PowerPi to v$powerpiVersion"
+        git commit -m "chore: Bump PowerPi to v$powerpiVersion"
     fi
 }
 
@@ -96,7 +96,7 @@ update_version() {
     if $commit
     then
         echo "Committing version changes"
-        git commit -m "Bump $service to v$appVersion"
+        git commit -m "chore: Bump $service to v$appVersion"
     fi
 }
 
