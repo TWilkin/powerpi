@@ -1,5 +1,5 @@
 import { ConfigFileType } from "@powerpi/common";
-import ValidatorService from "../../../src/services/ValidatorService";
+import ValidatorService from "../ValidatorService";
 import {
     testInvalid as _testInvalid,
     testValid as _testValid,

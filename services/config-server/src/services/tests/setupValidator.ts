@@ -1,6 +1,6 @@
 import { ConfigFileType, LoggerService } from "@powerpi/common";
 import { MockLoggerService } from "@powerpi/common-test";
-import ValidatorService, { ValidationException } from "../../../src/services/ValidatorService";
+import ValidatorService, { ValidationException } from "../ValidatorService";
 
 export function setupValidator() {
     const logger = new MockLoggerService() as unknown as LoggerService;
@@ -15,7 +15,7 @@ export function setupValidator() {
 export async function testValid(
     subject: ValidatorService | undefined,
     fileType: ConfigFileType,
-    file: object
+    file: object,
 ) {
     const result = await subject?.validate(fileType, file);
 
@@ -25,7 +25,7 @@ export async function testValid(
 export async function testInvalid(
     subject: ValidatorService | undefined,
     fileType: ConfigFileType,
-    file: object
+    file: object,
 ) {
     const action = () => subject?.validate(fileType, file);
 

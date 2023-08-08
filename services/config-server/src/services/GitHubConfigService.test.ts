@@ -1,13 +1,13 @@
 import { ConfigFileType, IDeviceConfigFile, LoggerService } from "@powerpi/common";
 import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
-import ConfigPublishService from "../../src/services/ConfigPublishService";
-import ConfigService from "../../src/services/ConfigService";
-import ConfigServiceArgumentService from "../../src/services/ConfigServiceArgumentService";
-import GitHubConfigService from "../../src/services/GitHubConfigService";
-import OctokitService from "../../src/services/OctokitService";
-import ValidatorService from "../../src/services/ValidatorService";
-import HandlerFactory from "../../src/services/handlers/HandlerFactory";
-import IHandler from "../../src/services/handlers/IHandler";
+import ConfigPublishService from "./ConfigPublishService";
+import ConfigService from "./ConfigService";
+import ConfigServiceArgumentService from "./ConfigServiceArgumentService";
+import GitHubConfigService from "./GitHubConfigService";
+import OctokitService from "./OctokitService";
+import ValidatorService from "./ValidatorService";
+import HandlerFactory from "./handlers/HandlerFactory";
+import IHandler from "./handlers/IHandler";
 
 type OctokitContent = Awaited<ReturnType<OctokitService["getContent"]>>;
 
