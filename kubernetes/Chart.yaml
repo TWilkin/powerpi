@@ -15,7 +15,7 @@ dependencies:
     version: 0.1.3
     condition: global.persistence
   - name: energy-monitor
-    version: 0.1.3
+    version: 0.1.4
     condition: global.energyMonitor
   - name: freedns
     version: 0.1.2
