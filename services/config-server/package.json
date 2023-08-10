@@ -47,7 +47,7 @@
         "collectCoverageFrom": [
             "src/**/*.ts",
             "!**/node_modules/**",
-            "!test/**",
+            "!**/test/**",
             "!**/*.test.ts"
         ],
         "coverageReporters": [
