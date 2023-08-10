@@ -32,7 +32,7 @@
     "devDependencies": {
         "@powerpi/common-test": "^0.0.10",
         "@types/bluebird": "^3.5.36",
-        "@types/node": "^18.7.2",
+        "@types/node": "^20.4.9",
         "@types/underscore": "^1.11.4",
         "@types/validator": "^13.7.5",
         "ts-node": "^10.9.1",
