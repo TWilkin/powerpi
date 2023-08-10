@@ -25,7 +25,7 @@ jobs:
         if: steps.check_modified.outputs.nodejs
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 20.x
 
       # install node.js dependencies
       - name: Install Node.js dependencies
