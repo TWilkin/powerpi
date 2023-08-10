@@ -182,6 +182,9 @@
         "[helm]": {
             "editor.defaultFormatter": "redhat.vscode-yaml"
         },
+        "[python]": {
+            "editor.defaultFormatter": "ms-python.autopep8"
+        },
         "editor.formatOnSave": true,
         "jest.disabledWorkspaceFolders": [
             "PowerPi",
@@ -215,6 +218,8 @@
             "esbenp.prettier-vscode",
             "Orta.vscode-jest",
             "ms-python.python",
+            "ms-python.pylint",
+            "ms-python.autopep8",
             "redhat.vscode-yaml"
         ]
     }
