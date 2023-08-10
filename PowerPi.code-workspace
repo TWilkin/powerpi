@@ -183,7 +183,6 @@
             "editor.defaultFormatter": "redhat.vscode-yaml"
         },
         "editor.formatOnSave": true,
-        "eslint.packageManager": "yarn",
         "jest.disabledWorkspaceFolders": [
             "PowerPi",
             "Common API",
@@ -204,9 +203,7 @@
             "Sensors",
             "Kubernetes"
         ],
-        "python.linting.pylintEnabled": true,
-        "python.linting.enabled": true,
-        "python.linting.pylintArgs": ["--rcfile=${workspaceFolder}/../../.pylintrc"],
+        "pylint.args": ["--rcfile=${workspaceFolder}/../../.pylintrc"],
         "python.testing.unittestEnabled": false,
         "python.testing.pytestEnabled": true
     },
