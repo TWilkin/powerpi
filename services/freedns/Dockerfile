@@ -1,5 +1,5 @@
 # build the service
-FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-service-image
+FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 as build-service-image
 LABEL description="Node.js builder for freedns service"
 WORKDIR /home/node/app
 RUN mkdir -p /home/node/app/services/freedns
@@ -10,7 +10,7 @@ COPY services/freedns ./services/freedns/
 RUN yarn workspace @powerpi/freedns build
 
 # service image
-FROM node:16.16.0-alpine3.16 as run-image
+FROM node:20.5.0-alpine3.18 as run-image
 LABEL description="PowerPi FreeDNS Dynamic DNS service"
 
 # use non-root account
