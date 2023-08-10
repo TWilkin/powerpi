@@ -18,10 +18,6 @@ smbus = "^1.1.post2"
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}
 
-[tool.poetry.group.dev.dependencies]
-autopep8 = "~=2.0.2"
-pylint = "~=2.17.4"
-
 [tool.poetry.group.test.dependencies]
 powerpi-common-test = {path = "../../common/pytest", develop = true}
 
