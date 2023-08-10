@@ -22,7 +22,7 @@
     },
     "dependencies": {
         "@octokit/rest": "^19.0.13",
-        "@powerpi/common": "0.1.0",
+        "@powerpi/common": "^0.1.1",
         "ajv": "^8.11.0",
         "ajv-formats": "2.1.1",
         "ts-command-line-args": "^2.5.1",

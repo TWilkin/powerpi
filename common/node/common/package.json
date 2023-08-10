@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/common",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "PowerPi Common Typescript library",
     "private": true,
     "license": "GPL-3.0-only",
@@ -22,14 +22,14 @@
     ],
     "devDependencies": {
         "@types/dateformat": "^5.0.0",
-        "@types/node": "^18.0.0",
-        "typescript": "^4.3.5"
+        "@types/node": "^20.4.9",
+        "typescript": "^5.1.6"
     },
     "dependencies": {
         "async-mqtt": "^2.6.1",
-        "dateformat": "^4.6.2",
+        "dateformat": "^5.0.3",
         "loglevel": "^1.7.1",
-        "mqtt": "^4.2.8",
+        "mqtt": "^5.0.2",
         "reflect-metadata": "^0.1.13",
         "typedi": "^0.10.0"
     }
