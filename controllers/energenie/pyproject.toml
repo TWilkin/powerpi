@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "energenie_controller"
-version = "0.2.4"
+version = "0.2.5"
 description = "PowerPi Energenie Controller"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
@@ -10,7 +10,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 energenie = "~=1.0.1"
-pyenergenie = {git = "https://github.com/whaleygeek/pyenergenie.git", rev = "eec562c140dd34027b3184d81f549c9d4a65f5db"}
+pyenergenie = {git = "https://github.com/whaleygeek/pyenergenie.git", rev = "c9cae74e27e7997af566ee4ee783e2529e25c580"}
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}

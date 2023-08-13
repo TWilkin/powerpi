@@ -1,7 +1,11 @@
+# create a common base image with updated setuptools
+FROM python:3.9.17-alpine3.18 AS base-image
+RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary setuptools==68.0.0
+
 # create a base image for building
-FROM python:3.9.16-alpine3.17 AS build-base-image
+FROM base-image AS build-base-image
+RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.5.1
 RUN apk add --no-cache gcc git musl-dev
-RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.4.1
 RUN poetry config virtualenvs.in-project true
 ENV CFLAGS=-fcommon
 
@@ -10,7 +14,7 @@ FROM build-base-image AS build-common-image
 WORKDIR /opt/powerpi/common/python
 COPY common/pytest/poetry.lock common/pytest/pyproject.toml ./../pytest/
 COPY common/python/poetry.lock common/python/pyproject.toml ./
-RUN poetry source add --default piwheels https://www.piwheels.org/simple/ \
+RUN poetry source add --priority=default piwheels https://www.piwheels.org/simple/ \
     && poetry lock --no-update \
     && poetry install --only main --no-root --no-interaction --no-ansi
 COPY common/python/powerpi_common ./powerpi_common
@@ -23,7 +27,7 @@ WORKDIR /opt/powerpi/controllers/energenie
 COPY --from=build-common-image /opt/powerpi/common ./../../common
 COPY controllers/energenie/poetry.lock controllers/energenie/pyproject.toml ./
 RUN ln -s ../../common/python/.venv .venv \
-    && poetry source add --default piwheels https://www.piwheels.org/simple/ \
+    && poetry source add --priority=default piwheels https://www.piwheels.org/simple/ \
     && poetry lock --no-update \
     && poetry install --only main --no-root --no-interaction --no-ansi
 
@@ -33,7 +37,7 @@ RUN rm radio_rpi.so \
     && gcc -Wall -shared -o radio_rpi.so -fPIC radio.c hrfm69.c spis.c gpio_rpi.c delay_posix.c
 
 # use multi-stage build to remove compile dependencies
-FROM python:3.9.16-alpine3.17 AS run-image
+FROM base-image AS run-image
 LABEL description="PowerPi Energenie Controller"
 
 RUN apk add --no-cache libc6-compat
