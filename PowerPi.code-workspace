@@ -131,8 +131,17 @@
                 }
             },
             {
-                "label": "Version",
-                "command": "bash ${workspaceFolder}/.github/scripts/version.sh ${input:service} ${input:versionPart}",
+                "label": "Version service",
+                "command": "bash ${workspaceFolder}/.github/scripts/version.sh --service ${input:service} --version ${input:versionPart} --chart-version ${input:chartVersionPart} --commit",
+                "type": "shell",
+                "presentation": {
+                    "reveal": "always"
+                },
+                "problemMatcher": []
+            },
+            {
+                "label": "Version release",
+                "command": "bash ${workspaceFolder}/.github/scripts/version.sh --release --version ${input:versionPart} --chart-version ${input:chartVersionPart} --commit",
                 "type": "shell",
                 "presentation": {
                     "reveal": "always"
@@ -148,7 +157,13 @@
             },
             {
                 "id": "versionPart",
-                "description": "The part of the version to increase, either major, minor or macro",
+                "description": "The part of the service/release version to increase, either major, minor or patch",
+                "default": "minor",
+                "type": "promptString"
+            },
+            {
+                "id": "chartVersionPart",
+                "description": "The part of the Kubernetes chart version to increase, either major, minor or patch",
                 "default": "minor",
                 "type": "promptString"
             }
