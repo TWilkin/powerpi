@@ -15,6 +15,9 @@ gmqtt = "~=0.6.12"
 jsonpatch = "~=1.33"
 toml = "~=0.10.2"
 
+[tool.poetry.group.powerpi.dependencies]
+optional = true
+
 [tool.poetry.group.test.dependencies]
 powerpi-common-test = {path = "../pytest", develop = true}
 
