@@ -52,7 +52,7 @@ dependencies:
     version: 0.1.6
     condition: global.node
   - name: virtual-controller
-    version: 0.2.1
+    version: 0.2.2
   - name: zigbee-controller
     version: 0.1.7
     condition: global.zigbee
