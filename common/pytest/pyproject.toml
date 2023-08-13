@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "powerpi-common-test"
-version = "0.5.0"
+version = "0.5.1"
 description = "PowerPi Common Python Test Library"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
@@ -8,10 +8,10 @@ repository = "https://github.com/TWilkin/powerpi.git"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pytest = "~=7.3.1"
-pytest-asyncio = "~=0.21.0"
+pytest = "~=7.4.0"
+pytest-asyncio = "~=0.21.1"
 pytest-cov = "~=4.1.0"
-pytest-mock = "~=3.10.0"
+pytest-mock = "~=3.11.1"
 
 [build-system]
 requires = ["poetry-core>=1.1.0"]
