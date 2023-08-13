@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "powerpi-common"
-version = "0.6.0"
+version = "0.6.1"
 description = "PowerPi Common Python Library"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
@@ -12,7 +12,7 @@ python = "^3.9"
 apscheduler = "~=3.10.1"
 dependency-injector = "~=4.41.0"
 gmqtt = "~=0.6.12"
-jsonpatch = "~=1.32"
+jsonpatch = "~=1.33"
 toml = "~=0.10.2"
 
 [tool.poetry.group.test.dependencies]
