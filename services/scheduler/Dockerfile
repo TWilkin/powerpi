@@ -1,6 +1,10 @@
+# create a common base image with updated setuptools
+FROM python:3.9.17-alpine3.18 AS base-image
+RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary setuptools==68.0.0
+
 # create a base image for building
-FROM python:3.9.16-alpine3.17 AS build-base-image
-RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.4.1
+FROM base-image AS build-base-image
+RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.5.1
 RUN poetry config virtualenvs.in-project true
 ENV CFLAGS=-fcommon
 
@@ -27,7 +31,7 @@ RUN ln -s ../../common/python/.venv .venv \
     && poetry install --only main --no-root --no-interaction --no-ansi
 
 # use multi-stage build to remove compile dependencies
-FROM python:3.9.16-alpine3.17 AS run-image
+FROM base-image AS run-image
 LABEL description="PowerPi Scheduler Service"
 
 RUN apk add --no-cache libc6-compat
