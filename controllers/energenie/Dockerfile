@@ -14,7 +14,7 @@ FROM build-base-image AS build-common-image
 WORKDIR /opt/powerpi/common/python
 COPY common/pytest/poetry.lock common/pytest/pyproject.toml ./../pytest/
 COPY common/python/poetry.lock common/python/pyproject.toml ./
-RUN poetry source add --default piwheels https://www.piwheels.org/simple/ \
+RUN poetry source add --priority=default piwheels https://www.piwheels.org/simple/ \
     && poetry lock --no-update \
     && poetry install --only main --no-root --no-interaction --no-ansi
 COPY common/python/powerpi_common ./powerpi_common
@@ -27,7 +27,7 @@ WORKDIR /opt/powerpi/controllers/energenie
 COPY --from=build-common-image /opt/powerpi/common ./../../common
 COPY controllers/energenie/poetry.lock controllers/energenie/pyproject.toml ./
 RUN ln -s ../../common/python/.venv .venv \
-    && poetry source add --default piwheels https://www.piwheels.org/simple/ \
+    && poetry source add --priority=default piwheels https://www.piwheels.org/simple/ \
     && poetry lock --no-update \
     && poetry install --only main --no-root --no-interaction --no-ansi
 
