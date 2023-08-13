@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-api-image
+FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 as build-api-image
 LABEL description="Node.js builder for API library"
 
 # install the API library
@@ -10,7 +10,7 @@ RUN yarn workspace @powerpi/common-api install --frozen-lockfile
 COPY common/node/common-api ./common/node/common-api/
 RUN yarn workspace @powerpi/common-api build
 
-FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-ui-image
+FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 as build-ui-image
 LABEL description="Node.js builder for UI"
 
 # install the UI
@@ -25,7 +25,7 @@ COPY services/ui ./services/ui/
 RUN yarn workspace @powerpi/ui build
 RUN rm -rf /home/node/app/services/ui/dist/src
 
-FROM nginx:1.23.3-alpine-slim AS run-image
+FROM nginx:1.25.1-alpine3.17-slim AS run-image
 LABEL description="PowerPi UI"
 
 # use non-root user

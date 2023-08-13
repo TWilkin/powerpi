@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/config-server",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "PowerPi config retrieval from GitHub pushing to message queue",
     "private": true,
     "license": "GPL-3.0-only",
@@ -21,8 +21,8 @@
         "test": "jest"
     },
     "dependencies": {
-        "@octokit/rest": "^19.0.13",
-        "@powerpi/common": "0.1.0",
+        "@octokit/rest": "^20.0.1",
+        "@powerpi/common": "^0.1.1",
         "ajv": "^8.11.0",
         "ajv-formats": "2.1.1",
         "ts-command-line-args": "^2.5.1",
@@ -31,9 +31,9 @@
         "yaml": "^2.3.1"
     },
     "devDependencies": {
-        "@powerpi/common-test": "^0.0.9",
-        "@types/node": "^20.2.5",
-        "@types/underscore": "^1.11.5",
+        "@powerpi/common-test": "^0.0.10",
+        "@types/node": "^20.4.9",
+        "@types/underscore": "^1.11.6",
         "ts-node": "^10.8.2",
         "typescript": "^5.1.6"
     },
@@ -47,7 +47,7 @@
         "collectCoverageFrom": [
             "src/**/*.ts",
             "!**/node_modules/**",
-            "!test/**",
+            "!**/test/**",
             "!**/*.test.ts"
         ],
         "coverageReporters": [

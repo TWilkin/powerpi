@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/voice-assistant",
-    "version": "2.0.3",
+    "version": "2.0.4",
     "description": "PowerPi home automation voice assistant service",
     "private": true,
     "license": "GPL-3.0-only",
@@ -22,20 +22,20 @@
         "start:prd": "node dist/src/index.js"
     },
     "dependencies": {
-        "@jovotech/framework": "^4.5.11",
-        "@jovotech/platform-alexa": "^4.5.11",
-        "@jovotech/platform-core": "^4.5.11",
-        "@jovotech/server-express": "^4.5.11",
-        "@powerpi/common": "0.1.0",
-        "@powerpi/common-api": "^0.1.0",
+        "@jovotech/framework": "^4.5.15",
+        "@jovotech/platform-alexa": "^4.5.15",
+        "@jovotech/platform-core": "^4.5.15",
+        "@jovotech/server-express": "^4.5.15",
+        "@powerpi/common": "^0.1.1",
+        "@powerpi/common-api": "^0.1.1",
         "http-status-codes": "^2.2.0",
         "source-map-support": "^0.5.19"
     },
     "devDependencies": {
-        "@jovotech/cli-core": "^4.0.0",
-        "@jovotech/db-filedb": "^4.5.11",
-        "@jovotech/filebuilder": "^0.0.1",
-        "@powerpi/common-test": "^0.0.9",
+        "@jovotech/cli-core": "^4.1.10",
+        "@jovotech/db-filedb": "^4.5.15",
+        "@jovotech/filebuilder": "^0.0.4",
+        "@powerpi/common-test": "^0.0.10",
         "@types/express": "^4.17.11",
         "ts-node": "^10.9.1",
         "tsc-watch": "^6.0.4"

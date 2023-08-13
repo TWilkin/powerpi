@@ -1,5 +1,5 @@
 # build the common library
-FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-common-image
+FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 as build-common-image
 LABEL description="Node.js builder for common library"
 WORKDIR /home/node/app
 RUN mkdir -p /home/node/app/common/node/common
@@ -10,7 +10,7 @@ COPY common/node/common ./common/node/common/
 RUN yarn workspace @powerpi/common build
 
 # build the service
-FROM --platform=$BUILDPLATFORM node:16.16.0-alpine3.16 as build-service-image
+FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 as build-service-image
 LABEL description="Node.js builder for energy-monitor service"
 WORKDIR /home/node/app
 COPY --from=build-common-image /home/node/app/common/node/common/package.json ./common/node/common/
@@ -23,7 +23,7 @@ COPY services/energy-monitor ./services/energy-monitor/
 RUN yarn workspace @powerpi/energy-monitor build
 
 # service image
-FROM node:16.16.0-alpine3.16 as run-image
+FROM node:20.5.0-alpine3.18 as run-image
 LABEL description="PowerPi energy-monitor N3rgy usage retrieval service"
 
 # use non-root account
