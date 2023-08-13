@@ -15,7 +15,7 @@ gmqtt = "~=0.6.12"
 jsonpatch = "~=1.33"
 toml = "~=0.10.2"
 
-[tool.poetry.group.powerpi.dependencies]
+[tool.poetry.group.powerpi]
 optional = true
 
 [tool.poetry.group.test.dependencies]
