@@ -36,8 +36,9 @@ LABEL description="PowerPi ZigBee Controller"
 
 RUN apk add --no-cache libc6-compat
 
-# zigpy requires SQLite
-RUN apk add --no-cache sqlite-libs
+# zigpy requires libffi, libssl and SQLite
+RUN apk add --no-cache libffi libssl1.1 sqlite-libs \
+    && ln -s /usr/lib/libffi.so.8 /usr/lib/libffi.so.7
 
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
