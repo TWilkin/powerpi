@@ -1,7 +1,5 @@
-from typing import TypedDict, Union
+from typing import TypedDict
 
-from lifx_controller.device.lifx_client import LIFXClient
-from lifx_controller.device.lifx_colour import LIFXColour
 from powerpi_common.config import Config
 from powerpi_common.device import AdditionalStateDevice, DeviceStatus
 from powerpi_common.device.mixin import (CapabilityMixin, InitialisableMixin,
@@ -9,6 +7,9 @@ from powerpi_common.device.mixin import (CapabilityMixin, InitialisableMixin,
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util.data import DataType
+
+from lifx_controller.device.lifx_client import LIFXClient
+from lifx_controller.device.lifx_colour import LIFXColour
 
 
 class AdditionalState(TypedDict):
@@ -78,8 +79,8 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin, InitialisableMixin, 
             pass
 
     async def poll(self):
-        is_powered: Union[int, None] = None
-        colour: Union[LIFXColour, None] = None
+        is_powered: int | None = None
+        colour: LIFXColour | None = None
 
         (is_powered, colour) = await self.__light.get_state()
 

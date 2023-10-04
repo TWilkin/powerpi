@@ -1,5 +1,4 @@
 from copy import deepcopy
-from typing import Union
 
 from powerpi_common.config import Config
 from powerpi_common.device.types import DeviceStatus
@@ -12,7 +11,7 @@ class DeviceEventConsumer(MQTTConsumer):
     def __init__(
         self,
         topic: str,
-        device: Union[DeviceType, AdditionalStateDeviceType],
+        device: 'DeviceType | AdditionalStateDeviceType',
         config: Config,
         logger: Logger
     ):

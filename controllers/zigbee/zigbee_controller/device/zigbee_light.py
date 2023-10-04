@@ -1,6 +1,6 @@
 import math
 from asyncio import ensure_future
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 from powerpi_common.config import Config
 from powerpi_common.device import AdditionalStateDevice, DeviceStatus
@@ -9,8 +9,6 @@ from powerpi_common.device.mixin import (AdditionalState, CapabilityMixin,
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util.data import DataType, Range, Ranges, Standardiser
-from zigbee_controller.device.zigbee_controller import ZigbeeController
-from zigbee_controller.zigbee import DeviceAnnounceListener, ZigbeeMixin
 from zigpy.exceptions import DeliveryError
 from zigpy.types import bitmap8
 from zigpy.typing import DeviceType
@@ -18,6 +16,9 @@ from zigpy.zcl import Cluster
 from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 from zigpy.zcl.clusters.lighting import Color as ColorCluster
+
+from zigbee_controller.device.zigbee_controller import ZigbeeController
+from zigbee_controller.zigbee import DeviceAnnounceListener, ZigbeeMixin
 
 
 # pylint: disable=too-many-ancestors
@@ -79,9 +80,9 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
         self.__duration = duration
 
         self.__options_set = False
-        self.__supports_temperature: Union[bool, None] = None
-        self.__supports_colour: Union[bool, None] = None
-        self.__colour_temp_range: Union[Range, None] = None
+        self.__supports_temperature: bool | None = None
+        self.__supports_colour: bool | None = None
+        self.__colour_temp_range: Range | None = None
 
     @property
     def duration(self):

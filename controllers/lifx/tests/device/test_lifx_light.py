@@ -1,5 +1,5 @@
 from asyncio import Future
-from typing import Tuple, Union
+from typing import Tuple
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
@@ -182,8 +182,8 @@ class TestLIFXLightDevice(
     def __mock_supports(
         self,
         lifx_client: LIFXClient,
-        colour: Union[bool, None],
-        temperature: Union[bool, None]
+        colour: bool | None,
+        temperature: bool | None
     ):
         type(lifx_client).supports_colour = PropertyMock(
             return_value=colour

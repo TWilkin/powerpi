@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Union
+from typing import Dict, Optional
 
 from powerpi_common.device import DeviceManager, DeviceNotFoundException
 from powerpi_common.logger import Logger, LogMixin
@@ -27,19 +27,19 @@ class VariableManager(LogMixin):
 
         self.__variables: Dict[
             VariableType,
-            Dict[str, Union[DeviceVariable, SensorVariable]]
+            Dict[str, DeviceVariable | SensorVariable]
         ] = {}
 
         for variable_type in VariableType:
             self.__variables[variable_type] = {}
 
-    def get_device(self, name: str) -> Union[DeviceVariable, DeviceType]:
+    def get_device(self, name: str) -> 'DeviceVariable | DeviceType':
         '''
         Returns the device variable if it exists, or the actual device if that exists.
         '''
         return self.__get(VariableType.DEVICE, name)
 
-    def get_sensor(self, name: str, action: str) -> Union[SensorVariable, SensorType]:
+    def get_sensor(self, name: str, action: str) -> 'SensorVariable | SensorType':
         '''
         Returns the sensor variable if it exists, or the actual sensor if that exists.
         '''

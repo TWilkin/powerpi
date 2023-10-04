@@ -1,6 +1,5 @@
 from abc import ABC
 from collections import namedtuple
-from typing import Union
 
 from powerpi_common.util.data import DataType, Range
 
@@ -23,7 +22,7 @@ class CapabilityMixin(ABC):
         return False
 
     @property
-    def supports_colour_temperature(self) -> Union[Range, bool]:
+    def supports_colour_temperature(self) -> Range | bool:
         '''
         Override to indicate this device supports colour temperature or not.
         '''

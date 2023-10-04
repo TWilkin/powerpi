@@ -1,18 +1,18 @@
 from abc import ABC, abstractmethod
-from asyncio import Task, get_event_loop, wait_for, sleep
-from asyncio.exceptions import CancelledError, TimeoutError as AsyncTimeoutError
+from asyncio import Task, get_event_loop, sleep, wait_for
+from asyncio.exceptions import CancelledError
+from asyncio.exceptions import TimeoutError as AsyncTimeoutError
 from contextlib import suppress
 from threading import Lock
-from typing import Union
 
 
 class EnergenieInterface(ABC):
     __device_lock = Lock()
 
     def __init__(self):
-        self._home_id: Union[int, None] = None
-        self._device_id: Union[int, None] = None
-        self.__pair_task: Union[Task, None] = None
+        self._home_id: int | None = None
+        self._device_id: int | None = None
+        self.__pair_task: Task | None = None
 
     def set_ids(self, home_id: int, device_id: int):
         self._home_id = home_id

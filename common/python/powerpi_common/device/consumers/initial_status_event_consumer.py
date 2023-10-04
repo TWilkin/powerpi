@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Dict, Tuple, Union
+from typing import Dict, Tuple
 
 import powerpi_common
 from powerpi_common.config import Config
@@ -17,7 +17,7 @@ from .status_event_consumer import DeviceStatusEventConsumer
 class DeviceInitialStatusEventConsumer(DeviceStatusEventConsumer):
     def __init__(
         self,
-        device: Union[DeviceType, AdditionalStateDeviceType],
+        device: 'DeviceType | AdditionalStateDeviceType',
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient

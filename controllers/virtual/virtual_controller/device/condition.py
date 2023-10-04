@@ -2,7 +2,6 @@ from asyncio import get_event_loop, sleep, wait_for
 from asyncio.exceptions import CancelledError as AsyncCancelledError
 from asyncio.exceptions import TimeoutError as AsyncTimeoutError
 from contextlib import suppress
-from typing import Union
 
 from powerpi_common.condition import (ConditionParser, Expression,
                                       ParseException)
@@ -14,9 +13,9 @@ from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import VariableManager
 
 
-#pylint: disable=too-many-ancestors
+# pylint: disable=too-many-ancestors
 class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         config: Config,
@@ -25,8 +24,8 @@ class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         device_manager: DeviceManager,
         variable_manager: VariableManager,
         device: str,
-        on_condition: Union[Expression, None] = None,
-        off_condition: Union[Expression, None] = None,
+        on_condition: Expression | None = None,
+        off_condition: Expression | None = None,
         timeout=30,
         interval=1,
         **kwargs

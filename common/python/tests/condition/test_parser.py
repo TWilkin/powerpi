@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List
 
 import pytest
 
@@ -21,7 +21,7 @@ class SensorVariableImpl:
         self.value = SensorValue(f'{name}/{action}', f'{action}/{name}')
 
 
-SubjectBuilder = Callable[[Union[Dict[str, Any], None]], ConditionParser]
+SubjectBuilder = Callable[[Dict[str, Any] | None], ConditionParser]
 
 
 class TestConditionParser:
@@ -208,7 +208,7 @@ class TestConditionParser:
 
     @pytest.fixture
     def subject_builder(self, powerpi_variable_manager):
-        def build(message: Union[Dict[str, Any], None] = None):
+        def build(message: Dict[str, Any] | None = None):
             powerpi_variable_manager.get_device = DeviceVariableImpl
             powerpi_variable_manager.get_sensor = SensorVariableImpl
 

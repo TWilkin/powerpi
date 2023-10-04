@@ -1,5 +1,3 @@
-from typing import Union
-
 from powerpi_common.config import Config
 from powerpi_common.device.mixin import AdditionalStateMixin
 from powerpi_common.logger import Logger
@@ -13,7 +11,7 @@ from .device_event_consumer import DeviceEventConsumer
 class DeviceChangeEventConsumer(DeviceEventConsumer):
     def __init__(
         self,
-        device: Union[DeviceType, AdditionalStateDeviceType],
+        device: 'DeviceType | AdditionalStateDeviceType',
         config: Config,
         logger: Logger
     ):

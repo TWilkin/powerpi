@@ -1,4 +1,4 @@
-from typing import Callable, Union
+from typing import Callable
 
 import pytest
 from powerpi_common_test.device.base import BaseDeviceTestBase
@@ -10,7 +10,7 @@ class DeviceImpl(BaseDevice):
     pass
 
 
-SubjectBuilder = Callable[[Union[str, None]], BaseDevice]
+SubjectBuilder = Callable[[str | None], BaseDevice]
 
 
 class TestBaseDevice(BaseDeviceTestBase):
@@ -31,7 +31,7 @@ class TestBaseDevice(BaseDeviceTestBase):
 
     @pytest.fixture
     def subject_builder(self):
-        def build(display_name: Union[str, None] = None):
+        def build(display_name: str | None = None):
             return DeviceImpl('TestDevice', display_name)
 
         return build

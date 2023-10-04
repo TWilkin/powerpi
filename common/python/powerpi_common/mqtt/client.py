@@ -4,7 +4,7 @@ import socket
 import sys
 import time
 from datetime import datetime
-from typing import Dict, List, Union
+from typing import Dict, List
 from urllib.parse import urlparse
 
 import gmqtt
@@ -34,7 +34,7 @@ class MQTTClient:
 
         self.__logger.set_logger_level(gmqtt.__name__, logging.WARNING)
 
-        self.__client = Union[Client, None]
+        self.__client = Client | None
 
     @property
     def client_id(self):

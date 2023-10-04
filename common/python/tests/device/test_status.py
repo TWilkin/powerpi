@@ -1,5 +1,4 @@
 from types import MethodType
-from typing import Union
 from unittest.mock import PropertyMock
 
 import pytest
@@ -12,7 +11,7 @@ from powerpi_common.device.status import DeviceStatusChecker
 
 
 class PollableDeviceImpl(PollableMixin):
-    def __init__(self, config: Config, name: str, poll_frequency: Union[int, None]):
+    def __init__(self, config: Config, name: str, poll_frequency: int | None):
         PollableMixin.__init__(self, config, poll_frequency)
         self.name = name
         self.count = 0
