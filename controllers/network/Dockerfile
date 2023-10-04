@@ -1,10 +1,10 @@
 # create a common base image with updated setuptools
-FROM python:3.9.17-alpine3.18 AS base-image
-RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary setuptools==68.0.0
+FROM python:3.11.6-alpine3.18 AS base-image
+RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary setuptools==68.2.2
 
 # create a base image for building
 FROM base-image AS build-base-image
-RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.5.1
+RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.6.1
 RUN poetry config virtualenvs.in-project true
 ENV CFLAGS=-fcommon
 
@@ -40,7 +40,7 @@ ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
 
 # ensure the controller can run ping
-RUN setcap cap_net_raw+ep /usr/local/bin/python3.9
+RUN setcap cap_net_raw+ep /usr/local/bin/python3.11
 
 RUN adduser --disabled-password powerpi
 USER powerpi
