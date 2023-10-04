@@ -1,5 +1,3 @@
-from typing import Optional
-
 import pytest
 
 from powerpi_common.device.mixin import AdditionalState
@@ -26,14 +24,14 @@ class DeviceImpl:
 
     async def change_power_and_additional_state(
         self,
-        scene: Optional[str] = None,
-        _: Optional[str] = None,
-        new_additional_state: Optional[AdditionalState] = None
+        scene: str | None = None,
+        _: str | None = None,
+        new_additional_state: AdditionalState | None = None
     ):
         self.scene = scene
         self.additional_state = new_additional_state
 
-    async def change_scene(self, scene: Optional[str]):
+    async def change_scene(self, scene: str | None):
         self.scene = scene
 
 
@@ -61,7 +59,7 @@ async def test_device_off_action():
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize('scene', [None, 'default', 'other'])
-async def test_device_additional_state_action(powerpi_variable_manager, scene: Optional[str]):
+async def test_device_additional_state_action(powerpi_variable_manager, scene: str | None):
     device = DeviceImpl()
 
     patch = [
@@ -122,7 +120,7 @@ async def test_device_additional_state_action_with_variable(powerpi_variable_man
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize('scene', [None, 'default', 'other'])
-async def test_device_change_scene(scene: Optional[str]):
+async def test_device_change_scene(scene: str | None):
     device = DeviceImpl()
 
     func = device_scene_action(scene)

@@ -1,6 +1,6 @@
 import sys
 from abc import abstractmethod
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 from powerpi_common.config import Config
 from powerpi_common.device.consumers.capability_event_consumer import \
@@ -72,7 +72,7 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
         mqtt_client: MQTTClient,
         device_manager: DeviceManagerType,
         devices: List[str],
-        capability: Optional[bool] = True,
+        capability: bool | None = True,
         ** _
     ):
         # pylint: disable=too-many-arguments

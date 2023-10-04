@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from powerpi_common.device.types import DeviceStatus
 
@@ -15,9 +15,9 @@ class AdditionalStateMixin(ABC):
 
     async def change_power_and_additional_state(
         self,
-        scene: Optional[str] = None,
-        new_state: Optional[DeviceStatus] = None,
-        new_additional_state: Optional[AdditionalState] = None
+        scene: str | None = None,
+        new_state: DeviceStatus | None = None,
+        new_additional_state: AdditionalState | None = None
     ):
         '''
         Turn this device on or off, depending on the value of new_state
@@ -93,7 +93,7 @@ class AdditionalStateMixin(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_additional_state_for_scene(self, scene: Optional[str]):
+    def get_additional_state_for_scene(self, scene: str | None):
         '''
         Return the additional state for the specified scene.
         '''
@@ -113,7 +113,7 @@ class AdditionalStateMixin(ABC):
     @abstractmethod
     def set_scene_additional_state(
         self,
-        scene: Optional[str],
+        scene: str | None,
         new_additional_state: AdditionalState
     ):
         '''
@@ -152,7 +152,7 @@ class AdditionalStateMixin(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _is_current_scene(self, scene: Optional[str]):
+    def _is_current_scene(self, scene: str | None):
         '''
         Returns whether the specified scene is the current scene or not.
         '''

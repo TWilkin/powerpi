@@ -1,6 +1,5 @@
 from asyncio import Event, wait_for
 from asyncio.exceptions import TimeoutError as AsyncTimeoutError
-from typing import Optional
 
 from powerpi_common.config import Config
 from powerpi_common.device import DeviceStatus
@@ -48,9 +47,9 @@ class RemoteDevice(DeviceVariable):
 
     async def change_power_and_additional_state(
         self,
-        scene: Optional[str] = None,
-        new_state: Optional[DeviceStatus] = None,
-        new_additional_state: Optional[AdditionalState] = None
+        scene: str | None = None,
+        new_state: DeviceStatus | None = None,
+        new_additional_state: AdditionalState | None = None
     ):
         await self.__send_message(scene, new_state, new_additional_state)
 
@@ -94,10 +93,10 @@ class RemoteDevice(DeviceVariable):
 
     async def __send_message(
         self,
-        scene: Optional[str] = None,
-        state: Optional[DeviceStatus] = None,
-        additional_state: Optional[AdditionalState] = None,
-        action: Optional[str] = 'change'
+        scene: str | None = None,
+        state: DeviceStatus | None = None,
+        additional_state: AdditionalState | None = None,
+        action: str | None = 'change'
     ):
         topic = f'device/{self.name}/{action}'
         message = {}

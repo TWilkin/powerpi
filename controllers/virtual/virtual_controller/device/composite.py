@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from powerpi_common.config import Config
 from powerpi_common.device import (AdditionalStateDevice, DeviceManager,
@@ -36,9 +36,9 @@ class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, NewPollabl
 
     async def change_power_and_additional_state(
         self,
-        scene: Optional[str] = None,
-        new_state: Optional[DeviceStatus] = None,
-        new_additional_state: Optional[AdditionalState] = None
+        scene: str | None = None,
+        new_state: DeviceStatus | None = None,
+        new_additional_state: AdditionalState | None = None
     ):
         if new_state is not None or new_additional_state is not None:
             # we need to run them in reverse order for off

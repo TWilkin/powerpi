@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict
 
 from powerpi_common.device import DeviceManager, DeviceNotFoundException
 from powerpi_common.logger import Logger, LogMixin
@@ -61,7 +61,7 @@ class VariableManager(LogMixin):
         self.log_info(f'Adding variable {variable}')
         return True
 
-    def __create(self, variable_type: VariableType, name: str, action: Optional[str]):
+    def __create(self, variable_type: VariableType, name: str, action: str | None):
         variable_attribute = f'{variable_type}_variable'
 
         factory = getattr(self.__service_provider, variable_attribute, None)
@@ -82,7 +82,7 @@ class VariableManager(LogMixin):
 
         return instance
 
-    def __get(self, variable_type: VariableType, name: str, action: Optional[str] = None):
+    def __get(self, variable_type: VariableType, name: str, action: str | None = None):
         key = self.__key(variable_type, name, action)
 
         variable = self.__variables[variable_type].get(key)
@@ -103,7 +103,7 @@ class VariableManager(LogMixin):
         return self.__create(variable_type, name, action)
 
     @classmethod
-    def __key(cls, variable_type: VariableType, name: str, action: Optional[str] = None):
+    def __key(cls, variable_type: VariableType, name: str, action: str | None = None):
         if variable_type == VariableType.DEVICE:
             return name
         if variable_type == VariableType.SENSOR and action is not None:

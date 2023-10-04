@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from powerpi_common.config import Config
 
@@ -14,7 +13,7 @@ class PollableMixin(ABC):
     def __init__(
         self,
         config: Config,
-        poll_frequency: Optional[int] = None,
+        poll_frequency: int | None = None,
         **_
     ):
         if poll_frequency is None:
@@ -58,7 +57,7 @@ class NewPollableMixin(PollableMixin):
     def __init__(
         self,
         config: Config,
-        poll_frequency: Optional[int] = None,
+        poll_frequency: int | None = None,
         **kwargs
     ):
         PollableMixin.__init__(self, config, poll_frequency, **kwargs)

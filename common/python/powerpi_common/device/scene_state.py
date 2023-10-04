@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Dict, Optional
+from typing import Dict
 
 from .mixin import AdditionalState
 
@@ -21,7 +21,7 @@ class SceneState:
     def __init__(self):
         self.__scene = ReservedScenes.DEFAULT
 
-        self.__state: Dict[str, Optional[AdditionalState]] = {
+        self.__state: Dict[str, AdditionalState | None] = {
             ReservedScenes.DEFAULT: None
         }
 
@@ -61,7 +61,7 @@ class SceneState:
         '''
         self.__state[self.__scene] = new_state
 
-    def is_current_scene(self, scene: Optional[str] = ReservedScenes.CURRENT):
+    def is_current_scene(self, scene: str | None = ReservedScenes.CURRENT):
         '''
         Returns whether the supplier scene is the current scene.
         None and 'current' are synonyms for whatever the current scene is.
@@ -71,7 +71,7 @@ class SceneState:
 
         return scene == self.__scene
 
-    def get_scene_state(self, scene: Optional[str] = ReservedScenes.CURRENT):
+    def get_scene_state(self, scene: str | None = ReservedScenes.CURRENT):
         '''
         Return the actual name of the scene and the state for the specified scene. 
         If None or 'current' is provided, return the name and state for the current scene.
@@ -90,8 +90,8 @@ class SceneState:
 
     def update_scene_state(
         self,
-        scene: Optional[str] = ReservedScenes.CURRENT,
-        new_state: Optional[AdditionalState] = None
+        scene: str | None = ReservedScenes.CURRENT,
+        new_state: AdditionalState | None = None
     ):
         '''
         Update the state of the specified scene.
@@ -101,7 +101,7 @@ class SceneState:
 
         self.__state[scene] = new_state
 
-    def format_scene_state(self, scene: Optional[str] = ReservedScenes.CURRENT):
+    def format_scene_state(self, scene: str | None = ReservedScenes.CURRENT):
         '''
         Return an object representation for the specified scene.
         '''

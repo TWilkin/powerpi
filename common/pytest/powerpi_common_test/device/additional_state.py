@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 from unittest.mock import MagicMock
 
 from powerpi_common.device import AdditionalStateDevice
@@ -28,7 +28,7 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
     async def test_change_additional_state_message(
         self,
         subject: AdditionalStateDevice,
-        scene: Optional[str]
+        scene: str | None
     ):
         # pylint: disable=protected-access
         key = subject._additional_state_keys()[0]

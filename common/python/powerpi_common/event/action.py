@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from jsonpatch import JsonPatch
 
@@ -16,7 +16,7 @@ async def device_off_action(device: Device):
 
 
 def device_additional_state_action(
-    scene: Optional[str],
+    scene: str | None,
     patch: Dict[str, Any],
     variable_manager: VariableManager
 ):
@@ -43,7 +43,7 @@ def device_additional_state_action(
     return wrapper
 
 
-def device_scene_action(scene: Optional[str]):
+def device_scene_action(scene: str | None):
     async def wrapper(device: AdditionalStateDevice):
         await device.change_scene(scene)
 

@@ -1,5 +1,4 @@
 import asyncio
-from typing import Optional
 from unittest.mock import MagicMock
 
 import pytest
@@ -64,8 +63,8 @@ class TestRemoteDevice:
         self,
         subject: RemoteDevice,
         powerpi_mqtt_producer: MagicMock,
-        scene: Optional[str],
-        state: Optional[str],
+        scene: str | None,
+        state: str | None,
         use_additional_state: bool
     ):
         # pylint: disable=too-many-arguments
@@ -168,9 +167,9 @@ class TestRemoteDevice:
     def __schedule_state_change(
         self,
         subject: RemoteDevice,
-        scene: Optional[str] = None,
-        state: Optional[str] = None,
-        additional_state: Optional[AdditionalState] = None,
+        scene: str | None = None,
+        state: str | None = None,
+        additional_state: AdditionalState | None = None,
         sleep=0.1
     ):
         # pylint: disable=too-many-arguments
