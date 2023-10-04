@@ -8,7 +8,7 @@ repository = "https://github.com/TWilkin/powerpi.git"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 energenie = "~=1.0.1"
 pyenergenie = {git = "https://github.com/whaleygeek/pyenergenie.git", rev = "c9cae74e27e7997af566ee4ee783e2529e25c580"}
 

@@ -1,10 +1,10 @@
 # create a common base image with updated setuptools
-FROM python:3.9.17-alpine3.18 AS base-image
-RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary setuptools==68.0.0
+FROM python:3.11.6-alpine3.18 AS base-image
+RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary setuptools==68.2.2
 
 # create a base image for building
 FROM base-image AS build-base-image
-RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.5.1
+RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.6.1
 RUN apk add --no-cache gcc git musl-dev
 RUN poetry config virtualenvs.in-project true
 ENV CFLAGS=-fcommon
@@ -32,7 +32,7 @@ RUN ln -s ../../common/python/.venv .venv \
     && poetry install --only main --no-root --no-interaction --no-ansi
 
 # re-compile the binary
-WORKDIR /opt/powerpi/controllers/energenie/.venv/lib/python3.9/site-packages/pyenergenie/energenie/drv
+WORKDIR /opt/powerpi/controllers/energenie/.venv/lib/python3.11/site-packages/pyenergenie/energenie/drv
 RUN rm radio_rpi.so \
     && gcc -Wall -shared -o radio_rpi.so -fPIC radio.c hrfm69.c spis.c gpio_rpi.c delay_posix.c
 
