@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from enum import Enum, IntEnum
+from enum import IntEnum, StrEnum
 from typing import Any, Dict, List, Optional
 
 import pytz
@@ -17,7 +17,7 @@ from powerpi_common.variable import VariableManager
 from scheduler.config import SchedulerConfig
 
 
-class DeltaType(str, Enum):
+class DeltaType(StrEnum):
     BRIGHTNESS = 'brightness'
     HUE = 'hue'
     SATURATION = 'saturation'
