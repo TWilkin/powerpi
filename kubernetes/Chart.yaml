@@ -46,7 +46,7 @@ dependencies:
     version: 0.1.8
     condition: global.lifx
   - name: network-controller
-    version: 0.1.5
+    version: 0.1.6
     condition: global.network
   - name: node-controller
     version: 0.1.6
