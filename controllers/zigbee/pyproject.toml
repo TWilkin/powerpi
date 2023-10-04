@@ -8,7 +8,7 @@ repository = "https://github.com/TWilkin/powerpi.git"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 zigpy = "~=0.56.4"
 zigpy-znp = "~=0.11.4"
 
