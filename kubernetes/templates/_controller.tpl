@@ -21,7 +21,7 @@
     "Probe" (dict
       "Command" (list
         "/bin/sh"
-        "/usr/src/app/venv/lib/python3.9/site-packages/powerpi_common/health.sh"
+        "/usr/src/app/venv/lib/python3.11/site-packages/powerpi_common/health.sh"
       )
       "ReadinessInitialDelay" 10
       "LivenessInitialDelay" 30
