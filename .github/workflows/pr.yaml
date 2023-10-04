@@ -39,14 +39,14 @@ jobs:
         if: steps.check_modified.outputs.python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.9"
+          python-version: "3.11"
 
       # setup poetry
       - name: Install Poetry
         if: steps.check_modified.outputs.python
         uses: snok/install-poetry@v1
         with:
-          version: 1.5.1
+          version: 1.6.1
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
