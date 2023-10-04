@@ -1,11 +1,12 @@
 # create a common base image with updated setuptools
-FROM python:3.11.6-alpine3.18 AS base-image
-RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary setuptools==68.2.2
+FROM python:3.11.6-slim-bookworm AS base-image
+RUN pip3 install --prefer-binary setuptools==68.2.2
 
 # create a base image for building
 FROM base-image AS build-base-image
-RUN pip3 install -i https://www.piwheels.org/simple/ --extra-index-url https://pypi.org/simple/ --prefer-binary poetry==1.6.1
-RUN apk add --no-cache gcc git musl-dev
+RUN pip3 install --prefer-binary poetry==1.6.1
+RUN apt-get update \
+    && apt-get install -y gcc git
 RUN poetry config virtualenvs.in-project true
 ENV CFLAGS=-fcommon
 
@@ -14,9 +15,7 @@ FROM build-base-image AS build-common-image
 WORKDIR /opt/powerpi/common/python
 COPY common/pytest/poetry.lock common/pytest/pyproject.toml ./../pytest/
 COPY common/python/poetry.lock common/python/pyproject.toml ./
-RUN poetry source add --priority=default piwheels https://www.piwheels.org/simple/ \
-    && poetry lock --no-update \
-    && poetry install --only main --no-root --no-interaction --no-ansi
+RUN poetry install --only main --no-root --no-interaction --no-ansi
 COPY common/python/powerpi_common ./powerpi_common
 RUN poetry build \
     && .venv/bin/pip install ./dist/*.whl
@@ -27,8 +26,6 @@ WORKDIR /opt/powerpi/controllers/energenie
 COPY --from=build-common-image /opt/powerpi/common ./../../common
 COPY controllers/energenie/poetry.lock controllers/energenie/pyproject.toml ./
 RUN ln -s ../../common/python/.venv .venv \
-    && poetry source add --priority=default piwheels https://www.piwheels.org/simple/ \
-    && poetry lock --no-update \
     && poetry install --only main --no-root --no-interaction --no-ansi
 
 # re-compile the binary
@@ -40,14 +37,12 @@ RUN rm radio_rpi.so \
 FROM base-image AS run-image
 LABEL description="PowerPi Energenie Controller"
 
-RUN apk add --no-cache libc6-compat
-
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
 
-RUN addgroup -g 997 -S gpio \
+RUN addgroup --gid 997 gpio \
     && adduser --disabled-password powerpi \
-    && addgroup powerpi gpio
+    && usermod -a -G gpio powerpi
 USER powerpi
 
 WORKDIR /usr/src/app
