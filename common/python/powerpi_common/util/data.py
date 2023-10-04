@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import StrEnum
 from typing import Callable, Dict, Tuple
 
 
@@ -24,7 +24,7 @@ class Ranges:
     UINT16 = Range(0, 2 ** 16 - 1)
 
 
-class DataType(str, Enum):
+class DataType(StrEnum):
     BRIGHTNESS = 'brightness'
     DURATION = 'duration'
     HUE = 'hue'

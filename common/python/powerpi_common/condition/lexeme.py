@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class Lexeme(str, Enum):
+class Lexeme(StrEnum):
     AND = 'and'
     EITHER = 'either'
     EQUALS = 'equals'

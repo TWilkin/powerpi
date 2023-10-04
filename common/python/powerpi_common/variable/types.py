@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class VariableType(str, Enum):
+class VariableType(StrEnum):
     DEVICE = 'device'
     SENSOR = 'sensor'

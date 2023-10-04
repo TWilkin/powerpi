@@ -1,10 +1,10 @@
-from enum import Enum
+from enum import IntEnum, StrEnum
 
 from powerpi_common.device.types import DeviceStatus
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 
 
-class OnOff(int, Enum):
+class OnOff(IntEnum):
     OFF = OnOffCluster.commands_by_name['off'].id
     ON = OnOffCluster.commands_by_name['on'].id
 
@@ -15,6 +15,6 @@ class OnOff(int, Enum):
             else None
 
 
-class OpenClose(str, Enum):
+class OpenClose(StrEnum):
     CLOSE = 'close'
     OPEN = 'open'
