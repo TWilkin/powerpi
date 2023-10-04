@@ -31,7 +31,7 @@ class DeviceManager(InitialisableMixin):
             self.__devices[device_type] = {}
 
     @property
-    def devices_and_sensors(self) -> List["DeviceType | SensorType"]:
+    def devices_and_sensors(self) -> List['DeviceType | SensorType']:
         return list(self.devices.values()) + list(self.sensors.values())
 
     @property
