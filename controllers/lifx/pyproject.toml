@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lifx_controller"
-version = "0.5.2"
+version = "0.6.0"
 description = "PowerPi LIFX Controller"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
@@ -8,7 +8,7 @@ repository = "https://github.com/TWilkin/powerpi.git"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 aiolifx = "~=0.9.0"
 
 [tool.poetry.group.powerpi.dependencies]

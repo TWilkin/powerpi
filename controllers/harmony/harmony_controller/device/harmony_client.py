@@ -1,5 +1,5 @@
 import asyncio
-from typing import Awaitable, Union
+from typing import Awaitable
 
 import aioharmony
 import asyncio_atexit
@@ -12,7 +12,7 @@ class HarmonyClient:
         self.__logger = logger
         self.__logger.add_logger(aioharmony.harmonyapi.__name__)
 
-        self.__client: Union[HarmonyAPI, None] = None
+        self.__client: HarmonyAPI | None = None
 
     @property
     def is_connected(self):

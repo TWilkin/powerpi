@@ -1,6 +1,5 @@
 from abc import ABC
 from datetime import datetime
-from typing import Union
 
 
 class BatteryMixin(ABC):
@@ -11,7 +10,7 @@ class BatteryMixin(ABC):
     def __init__(self):
         self.__battery = {}
 
-    def on_battery_change(self, level: int, charging: Union[bool, None] = None):
+    def on_battery_change(self, level: int, charging: bool | None = None):
         '''
         Call this method to broadcast a new battery level, and whether it's charging for this
         device/sensor, but only if it's changed or the last message is too old.

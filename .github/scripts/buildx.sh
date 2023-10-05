@@ -53,13 +53,8 @@ then
     split=(${service//-/ })
 
     path=controllers/${split[0]}
-    platform=linux/arm/v7
 fi
 
-if [[ $service == "scheduler" ]]
-then
-    platform=linux/arm/v7
-fi
 
 # retrieve the previous image
 echo "Pulling previous image"

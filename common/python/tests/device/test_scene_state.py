@@ -1,5 +1,3 @@
-from typing import Optional
-
 import pytest
 
 from powerpi_common.device.mixin import AdditionalState
@@ -41,7 +39,7 @@ class TestSceneState:
     ])
     def test_update_scene_state(
         self,
-        additional_state: Optional[AdditionalState],
+        additional_state: AdditionalState | None,
         expected_additional_state: AdditionalState
     ):
         subject = SceneState()
@@ -90,7 +88,7 @@ class TestSceneState:
             "[{'scene': <ReservedScenes.DEFAULT: 'default'>, 'brightness': 10, 'temperature': 4000}]"],
         [None, "[{'scene': <ReservedScenes.DEFAULT: 'default'>}]"]
     ])
-    def test_str(self, additional_state: Optional[AdditionalState], expected: str):
+    def test_str(self, additional_state: AdditionalState | None, expected: str):
         subject = SceneState()
 
         subject.update_scene_state(new_state=additional_state)

@@ -1,4 +1,4 @@
-from typing import Awaitable, Callable, List, Optional
+from typing import Awaitable, Callable, List
 
 from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceManager, DeviceStatus
@@ -25,7 +25,7 @@ class SceneDevice(Device, DeviceOrchestratorMixin, NewPollableMixin):
         device_manager: DeviceManager,
         devices: List[str],
         state: AdditionalState,
-        scene: Optional[str] = None,
+        scene: str | None = None,
         **kwargs
     ):
         # pylint: disable=too-many-arguments

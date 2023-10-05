@@ -1,12 +1,12 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class DeviceConfigType(str, Enum):
+class DeviceConfigType(StrEnum):
     DEVICE = 'device'
     SENSOR = 'sensor'
 
 
-class DeviceStatus(str, Enum):
+class DeviceStatus(StrEnum):
     ON = 'on'
     OFF = 'off'
     UNKNOWN = 'unknown'

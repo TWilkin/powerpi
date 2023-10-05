@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "network_controller"
-version = "0.1.5"
+version = "0.2.0"
 description = "PowerPi Network Controller"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
@@ -8,7 +8,7 @@ repository = "https://github.com/TWilkin/powerpi.git"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 icmplib = "^3.0.3"
 wakeonlan = "^3.0.0"
 

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from types import MethodType
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
@@ -57,7 +57,7 @@ class TestDeviceSchedule:
         add_job,
         start_time: str,
         end_time: str,
-        days: Optional[List[str]],
+        days: List[str] | None,
         expected_start: ExpectedTime,
         expected_end: ExpectedTime,
         interval: List[int]
@@ -105,7 +105,7 @@ class TestDeviceSchedule:
         self,
         subject_builder: SubjectBuilder,
         add_job,
-        condition: Optional[Expression],
+        condition: Expression | None,
         expected: bool
     ):
         subject = subject_builder({

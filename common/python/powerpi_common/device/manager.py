@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 from powerpi_common.config import Config
 from powerpi_common.device.types import DeviceConfigType
@@ -24,14 +24,14 @@ class DeviceManager(InitialisableMixin):
 
         self.__devices: Dict[
             DeviceConfigType,
-            Dict[str, Union[DeviceType, SensorType]]
+            Dict[str, 'DeviceType | SensorType']
         ] = {}
 
         for device_type in DeviceConfigType:
             self.__devices[device_type] = {}
 
     @property
-    def devices_and_sensors(self) -> List[Union[DeviceType, SensorType]]:
+    def devices_and_sensors(self) -> List['DeviceType | SensorType']:
         return list(self.devices.values()) + list(self.sensors.values())
 
     @property

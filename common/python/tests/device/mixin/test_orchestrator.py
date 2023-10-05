@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Dict, List
 
 import pytest
 from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase
@@ -73,7 +73,7 @@ class TestDeviceOrchestratorMixin(DeviceOrchestratorMixinTestBase):
         subject: DeviceImpl,
         devices: List[str],
         brightness: bool,
-        temperature: Union[Range, bool],
+        temperature: Range | bool,
         colour: bool
     ):
         # pylint: disable=too-many-arguments

@@ -1,14 +1,11 @@
 import os
 
-from typing import Union
-
 import zigpy
-
+from powerpi_common.logger import Logger
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 from zigpy_znp.zigbee.application import ControllerApplication
 
-from powerpi_common.logger import Logger
 from zigbee_controller.config import ZigbeeConfig
 
 
@@ -19,7 +16,7 @@ class ZigbeeController:
 
         self.__logger.add_logger(zigpy.__name__)
 
-        self.__controller: Union[ControllerApplication, None] = None
+        self.__controller: ControllerApplication | None = None
 
     def get_device(self, ieee: EUI64, nwk: int) -> DeviceType:
         return self.__controller.get_device(ieee, nwk)

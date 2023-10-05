@@ -1,7 +1,7 @@
-from typing import Union
 from unittest.mock import MagicMock
 
 import pytest
+
 from powerpi_common.config import Config
 from powerpi_common.device import Device
 from powerpi_common.device.mixin import CapabilityMixin
@@ -37,7 +37,7 @@ class DeviceImpl(Device, CapabilityMixin):
     def supports_colour_temperature(self):
         return self.__temperature
 
-    def set_capability(self, brightness: bool, temperature: Union[Range, bool], colour: bool):
+    def set_capability(self, brightness: bool, temperature: Range | bool, colour: bool):
         self.__brightness = brightness
         self.__temperature = temperature
         self.__colour = colour
@@ -52,7 +52,7 @@ class TestCapabilityMixin:
         subject: DeviceImpl,
         powerpi_mqtt_producer: MagicMock,
         brightness: bool,
-        temperature: Union[Range, bool],
+        temperature: Range | bool,
         colour: bool
     ):
         # pylint: disable=too-many-arguments

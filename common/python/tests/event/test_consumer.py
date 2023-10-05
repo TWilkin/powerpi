@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Union
 from unittest.mock import patch
 
 import pytest
@@ -34,7 +33,7 @@ class TestEventConsumer:
     async def test_on_message(
         self,
         subject: EventConsumer,
-        timestamp: Union[int, None],
+        timestamp: int | None,
         expected: bool
     ):
         message = {}

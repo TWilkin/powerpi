@@ -1,5 +1,3 @@
-from typing import Optional
-
 from powerpi_common.config import Config
 from powerpi_common.device.consumers import SceneEventConsumer
 from powerpi_common.device.types import DeviceStatus
@@ -80,7 +78,7 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
         self.__additional_state.scene = new_scene
         self.__additional_state.state = self._filter_keys(new_additional_state)
 
-    def get_additional_state_for_scene(self, scene: Optional[str]):
+    def get_additional_state_for_scene(self, scene: str | None):
         '''
         Return the additional state for the specified scene.
         '''
@@ -109,7 +107,7 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
 
     def set_scene_additional_state(
         self,
-        scene: Optional[str],
+        scene: str | None,
         new_additional_state: AdditionalState
     ):
         '''
@@ -163,7 +161,7 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
 
         return result
 
-    def _is_current_scene(self, scene: Optional[str]):
+    def _is_current_scene(self, scene: str | None):
         '''
         Returns whether the specified scene is the current scene or not.
         '''

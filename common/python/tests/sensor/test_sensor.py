@@ -1,5 +1,3 @@
-from typing import Union
-
 import pytest
 from powerpi_common_test.sensor import SensorTestBase
 
@@ -11,8 +9,8 @@ class SensorImpl(Sensor):
     def __init__(
         self,
         mqtt_client: MQTTClient,
-        entity: Union[str, None],
-        action: Union[str, None],
+        entity: str | None,
+        action: str | None,
         **kwargs
     ):
         Sensor.__init__(self, mqtt_client, entity, action, **kwargs)
@@ -52,9 +50,9 @@ class TestSensor(SensorTestBase):
         subject_builder,
         powerpi_mqtt_producer,
         topic: str,
-        entity: Union[str, None] = None,
-        action: Union[str, None] = None,
-        action_param: Union[str, None] = None
+        entity: str | None = None,
+        action: str | None = None,
+        action_param: str | None = None
     ):
         # pylint: disable=too-many-arguments
         subject = subject_builder(entity, action)
@@ -68,7 +66,7 @@ class TestSensor(SensorTestBase):
 
     @pytest.fixture
     def subject_builder(self, powerpi_mqtt_client):
-        def build(entity: Union[str, None] = None, action: Union[str, None] = None):
+        def build(entity: str | None = None, action: str | None = None):
             return SensorImpl(
                 powerpi_mqtt_client, entity, action,
                 name='TestSensor'

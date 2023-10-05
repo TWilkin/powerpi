@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from enum import Enum, IntEnum
-from typing import Any, Dict, List, Optional
+from enum import IntEnum, StrEnum
+from typing import Any, Dict, List
 
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -17,7 +17,7 @@ from powerpi_common.variable import VariableManager
 from scheduler.config import SchedulerConfig
 
 
-class DeltaType(str, Enum):
+class DeltaType(StrEnum):
     BRIGHTNESS = 'brightness'
     HUE = 'hue'
     SATURATION = 'saturation'
@@ -157,7 +157,7 @@ class DeviceSchedule(LogMixin):
         self.__power = bool(device_schedule['power']) if 'power' in device_schedule \
             else None
 
-        self.__condition: Optional[Expression] = device_schedule['condition'] \
+        self.__condition: Expression | None = device_schedule['condition'] \
             if 'condition' in device_schedule \
             else None
 
@@ -170,7 +170,7 @@ class DeviceSchedule(LogMixin):
 
         return True
 
-    def __start_schedule(self, start: Optional[datetime] = None):
+    def __start_schedule(self, start: datetime | None = None):
         '''Schedule the next run.'''
         (start_date, end_date) = self.__calculate_dates(start)
 
@@ -194,7 +194,7 @@ class DeviceSchedule(LogMixin):
             self.execute, trigger, (start_date, end_date), name=job_name
         )
 
-    def __calculate_dates(self, start: Optional[datetime] = None):
+    def __calculate_dates(self, start: datetime | None = None):
         start_time = [int(part) for part in self.__between[0].split(':', 3)]
         end_time = [int(part) for part in self.__between[1].split(':', 3)]
 

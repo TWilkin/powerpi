@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple, Union
+from typing import Tuple
 from unittest.mock import MagicMock
 
 import pytest
@@ -19,7 +19,7 @@ class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, Batt
         self,
         subject: AqaraDoorWindowSensor,
         powerpi_mqtt_producer: MagicMock,
-        values: Tuple[Union[int, bool], str]
+        values: Tuple[int | bool, str]
     ):
         (arg, state) = values
 
@@ -32,7 +32,7 @@ class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, Batt
         self,
         subject: AqaraDoorWindowSensor,
         powerpi_mqtt_producer: MagicMock,
-        arg: Union[int, None]
+        arg: int | None
     ):
         subject.open_close_handler(arg)
 

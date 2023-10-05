@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from powerpi_common.config import Config
 from powerpi_common.device import DeviceStatus
@@ -56,7 +56,7 @@ class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
     def additional_state(self, new_additional_state: AdditionalState):
         self.__additional_state.state = new_additional_state
 
-    def get_additional_state_for_scene(self, scene: Optional[str]):
+    def get_additional_state_for_scene(self, scene: str | None):
         _, additional_state = self.__additional_state.get_scene_state(scene)
         return additional_state
 
@@ -84,7 +84,7 @@ class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
 
     def set_scene_additional_state(
         self,
-        scene: Optional[str],
+        scene: str | None,
         new_additional_state: AdditionalState
     ):
         self.__additional_state.update_scene_state(scene, new_additional_state)
@@ -101,5 +101,5 @@ class DeviceVariable(Variable, DeviceStatusEventConsumer, AdditionalStateMixin):
         # we don't know what the actual implementation supports, so we're not setting keys
         return []
 
-    def _is_current_scene(self, scene: Optional[str]):
+    def _is_current_scene(self, scene: str | None):
         return self.__additional_state.is_current_scene(scene)

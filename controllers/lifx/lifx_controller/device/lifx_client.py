@@ -1,13 +1,14 @@
 from asyncio import get_running_loop
 from socket import AF_INET, SOCK_STREAM, socket
-from typing import Callable, Tuple, Union
+from typing import Callable, Tuple
 
 from aiolifx.aiolifx import Light
 from aiolifx.msgtypes import LightState, StateVersion
 from aiolifx.products import features_map
-from lifx_controller.device.lifx_colour import LIFXColour
 from powerpi_common.logger import Logger
 from powerpi_common.util.data import Range
+
+from lifx_controller.device.lifx_colour import LIFXColour
 
 
 class LIFXClient:
@@ -21,12 +22,12 @@ class LIFXClient:
 
         self.__light = None
 
-        self.__feature_listener: Union[Callable, None] = None
+        self.__feature_listener: Callable | None = None
 
-        self.__supports_colour: Union[bool, None] = None
-        self.__supports_temperature: Union[bool, None] = None
+        self.__supports_colour: bool | None = None
+        self.__supports_temperature: bool | None = None
 
-        self.__kelvin_range: Union[Range, None] = None
+        self.__kelvin_range: Range | None = None
 
     @property
     def address(self):
@@ -80,10 +81,10 @@ class LIFXClient:
         if self.__supports_colour is None or self.__supports_temperature is None:
             await self.__set_features()
 
-    async def get_state(self) -> Tuple[Union[bool, None], Union[LIFXColour, None]]:
+    async def get_state(self) -> Tuple[bool | None, LIFXColour | None]:
         await self.connect()
 
-        response: Union[LightState, None] = await self.__use_callback(self.__light.get_color)
+        response: LightState | None = await self.__use_callback(self.__light.get_color)
 
         if response is not None:
             powered = response.power_level > 0
@@ -126,7 +127,7 @@ class LIFXClient:
         await self.__use_callback(self.__light.set_color, value=colour.list, duration=duration)
 
     async def __set_features(self):
-        version: Union[StateVersion, None] = await self.__use_callback(self.__light.get_version)
+        version: StateVersion | None = await self.__use_callback(self.__light.get_version)
 
         if version is not None:
             features = features_map[version.product]

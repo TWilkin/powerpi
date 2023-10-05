@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Union
+from typing import Callable, Dict, List
 
 from powerpi_common.condition.errors import (InvalidArgumentException,
                                              InvalidIdentifierException,
@@ -7,7 +7,7 @@ from powerpi_common.condition.lexeme import Lexeme
 from powerpi_common.mqtt import MQTTMessage
 from powerpi_common.variable import VariableManager, VariableType
 
-Expression = Union[Dict, List, str, float, bool]
+Expression = dict | list | str | float | bool
 
 
 class ConditionParser:
@@ -44,7 +44,7 @@ class ConditionParser:
     def __init__(
         self,
         variable_manager: VariableManager,
-        message: Union[MQTTMessage, None] = None
+        message: MQTTMessage | None = None
     ):
         self.__variable_manager = variable_manager
         self.__message = message
