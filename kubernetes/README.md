@@ -103,7 +103,6 @@ Several of the services use node labels to identify which node in the cluster ha
 microk8s kubectl label node NODE_NAME powerpi-storage=true
 ```
 
-The following services also utilise labels, if you wish to use any of these apply their labels as well:
+The following service also utilises labels, if you wish to use this apply their labels as well:
 
 -   [energenie-controller](../controllers/energenie/README.md#kubernetes) - ENER314/ENER314-RT Pi controller
--   [node-controller](../controllers/node/README.md#kubernetes)- PiJuice/PWM fan controller

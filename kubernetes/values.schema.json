@@ -96,21 +96,6 @@
                     "type": "boolean"
                 },
 
-                "node": {
-                    "description": "Whether to include node monitoring support",
-                    "type": "boolean"
-                },
-
-                "pijuice": {
-                    "description": "Whether to include PiJuice support",
-                    "type": "boolean"
-                },
-
-                "pwm": {
-                    "description": "Whether to include node PWM fan control",
-                    "type": "boolean"
-                },
-
                 "energyMonitor": {
                     "description": "Whether to include N3rgy energy monitoring support",
                     "type": "boolean"
@@ -264,13 +249,6 @@
 
         "network-controller": {
             "description": "The configuration for the PowerPi Network controller Helm chart",
-            "type": "object",
-            "allOf": [{ "$ref": "#/$defs/controller" }],
-            "unevaluatedProperties": false
-        },
-
-        "node-controller": {
-            "description": "The configuration for the PowerPi Node controller Helm chart",
             "type": "object",
             "allOf": [{ "$ref": "#/$defs/controller" }],
             "unevaluatedProperties": false

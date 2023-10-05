@@ -83,10 +83,6 @@
             "path": "controllers/network"
         },
         {
-            "name": "Node Controller",
-            "path": "controllers/node"
-        },
-        {
             "name": "Virtual Controller",
             "path": "controllers/virtual"
         },
@@ -215,7 +211,6 @@
             "Harmony Controller",
             "LIFX Controller",
             "Network Controller",
-            "Node Controller",
             "Virtual Controller",
             "ZigBee Controller",
             "Sensors",

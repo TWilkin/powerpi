@@ -113,7 +113,6 @@ tag_service "controllers/energenie" "energenie-controller"
 tag_service "controllers/harmony" "harmony-controller"
 tag_service "controllers/lifx" "lifx-controller"
 tag_service "controllers/network" "network-controller"
-tag_service "controllers/node" "node-controller"
 tag_service "controllers/virtual" "virtual-controller"
 tag_service "controllers/zigbee" "zigbee-controller"
 

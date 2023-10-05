@@ -1,6 +1,6 @@
 # PowerPi - Shutdown Service
 
-PowerPi shutdown service runs on a computer which you would like PowerPi to be able to control, (like those in [_node_controller_](../../controllers/node/README.md)).
+PowerPi shutdown service runs on a computer which you would like PowerPi to be able to control, (like those that can be started with wake-on-LAN using the [_network_controller_](../../controllers/network/README.md)).
 
 The service is built using Go.
 
@@ -47,7 +47,7 @@ scp ./powerpi-shutdown.service HOST:~/
 sudo mv ~/powerpi_shutdown_linux_arm64 /usr/local/powerpi_shutdown
 sudo chmod +x /usr/local/powerpi_shutdown
 
-# Get the password from kubernetes and set the permissions on the file 
+# Get the password from kubernetes and set the permissions on the file
 # Replace /root/.powerpi-password with the path you set in the previous step
 kubectl get secrets -n powerpi mosquitto-device-secret --template={{.data.password}} | base64 --decode # note down this password
 # Add the password from the previous step to this file

@@ -49,7 +49,6 @@ function getDeviceTypeIcon(type: string) {
                     return faGreaterThanEqual;
 
                 case "computer":
-                case "node":
                     return faComputer;
 
                 case "delay":

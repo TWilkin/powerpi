@@ -1,6 +1,4 @@
 - devicematch: ^gpiomem$
   nummaxdevices: 40
-- devicematch: ^i2c-[0-9]*$
-  nummaxdevices: 1
 - devicematch: ^ttyACM[0-9]*$
   nummaxdevices: 1
