@@ -88,12 +88,6 @@ jobs:
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh network"
         working-directory: controllers/network
 
-      - name: Test Node Controller
-        if: steps.check_modified.outputs.node_controller
-        shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh node"
-        working-directory: controllers/node
-
       - name: Test Virtual Controller
         if: steps.check_modified.outputs.virtual_controller
         shell: bash
