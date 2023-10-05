@@ -1,4 +1,4 @@
-{{- if or (eq .Values.global.energenie true) (eq .Values.global.pijuice true) (eq .Values.global.pwm true) (eq .Values.global.zigbee true) }}
+{{- if or (eq .Values.global.energenie true) (eq .Values.global.zigbee true) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

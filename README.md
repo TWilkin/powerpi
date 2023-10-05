@@ -46,7 +46,7 @@ The project also includes sensor NodeMCU code in the [_sensors_](sensors/README.
 
 The latest image for each service can be found on [Docker Hub](https://hub.docker.com/u/twilkin), if you've made local changes (or want to try out a service locally) you can build it from scratch with the following instructions.
 
-The images can be built with Docker's [_buildx_](https://docs.docker.com/buildx/working-with-buildx/) tool which supports cross-compilation of images, allowing us to build ARM images for deployment on a Raspberry Pi on an x86_64 architecture. Although, if you're not using Energenie, or PiJuice and therefore don't need the Pi module you can build and run the stack on other architectures supported by the base images.
+The images can be built with Docker's [_buildx_](https://docs.docker.com/buildx/working-with-buildx/) tool which supports cross-compilation of images, allowing us to build ARM images for deployment on a Raspberry Pi on an x86_64 architecture. Although, if you're not using Energenie and therefore don't need the Pi module you can build and run the stack on other architectures supported by the base images.
 
 ```bash
 # From the root of your checkout of PowerPi

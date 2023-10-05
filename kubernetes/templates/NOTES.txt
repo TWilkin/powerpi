@@ -2,7 +2,7 @@
 
 Your release is named "{{ .Release.Name }}":
 
-{{- if or .Values.global.useCluster .Values.global.pijuice .Values.global.pwm }}
+{{- if .Values.global.useCluster }}
 
 --- 🏷️  LABELS 🏷️  ---
 
@@ -17,18 +17,6 @@ Your release is named "{{ .Release.Name }}":
 
 - For the node hosting the Energenie ENER314-RT/ENER314:
     $ microk8s kubectl label node __NODE_NAME__ powerpi-energenie=true
-{{- end }}
-{{- if .Values.global.node }}
-{{- if .Values.global.pijuice }}
-
-- For the node(s) hosting the PiJuice:
-    $ microk8s kubectl label node __NODE_NAME__ powerpi-pijuice=true
-{{- end }}
-{{- if .Values.global.pwm }}
-
-- For the node(s) hosting the PWM fan:
-    $ microk8s kubectl label node __NODE_NAME__ powerpi-pwm=true
-{{- end }}
 {{- end }}
 {{- end }}
 
