@@ -44,15 +44,6 @@ global:
   # whether to include control of networked devices (i.e. computers)
   network: false
 
-  # whether to include node monitoring support
-  node: false
-
-  # whether to include PiJuice support
-  pijuice: false
-
-  # whether to include node PWM fan control
-  pwm: false
-
   # whether to include N3rgy energy monitoring support
   energyMonitor: false
 

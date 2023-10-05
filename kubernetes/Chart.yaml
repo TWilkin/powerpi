@@ -48,9 +48,6 @@ dependencies:
   - name: network-controller
     version: 0.1.6
     condition: global.network
-  - name: node-controller
-    version: 0.1.6
-    condition: global.node
   - name: virtual-controller
     version: 0.2.3
   - name: zigbee-controller

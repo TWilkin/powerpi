@@ -1,6 +1,0 @@
-apiVersion: v2
-name: node-controller
-description: A Helm chart for the PowerPi cluster node monitoring controller
-type: application
-version: 0.1.6
-appVersion: 0.1.5
