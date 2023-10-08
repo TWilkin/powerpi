@@ -1334,13 +1334,13 @@ multidict = ">=4.0"
 
 [[package]]
 name = "zigpy"
-version = "0.56.4"
+version = "0.57.2"
 description = "Library implementing a Zigbee stack"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "zigpy-0.56.4-py3-none-any.whl", hash = "sha256:82d8d8abdb3ce731dcbf03533c9be40ae5eef72432a66a9156d4b94014672621"},
-    {file = "zigpy-0.56.4.tar.gz", hash = "sha256:b809afe8e2a6aeb8e909a67073da14177b481a7ea1101384b4ef3cd25e8d34b4"},
+    {file = "zigpy-0.57.2-py3-none-any.whl", hash = "sha256:49cbddf13cba7104b136e0c0571aa8de1044e1ea801a0b63b584177cc3a38f11"},
+    {file = "zigpy-0.57.2.tar.gz", hash = "sha256:dfa2b3048a96e32749b66d9e8520ccd19f0ac3d67d4a90d59673cf0209be0af6"},
 ]
 
 [package.dependencies]
@@ -1362,13 +1362,13 @@ testing = ["asynctest", "coverage[toml]", "coveralls", "freezegun", "pysqlite3-b
 
 [[package]]
 name = "zigpy-znp"
-version = "0.11.4"
+version = "0.11.5"
 description = "A library for zigpy which communicates with TI ZNP radios"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "zigpy-znp-0.11.4.tar.gz", hash = "sha256:240048ebd31c67b967319116d4f42f52ec62f5e35ec45f950108fb30f6ade1c6"},
-    {file = "zigpy_znp-0.11.4-py3-none-any.whl", hash = "sha256:c2e9aabf0c08f39c1f2a01073fb543fded6d8d0d3ec199985d8938ddbb8f2e37"},
+    {file = "zigpy-znp-0.11.5.tar.gz", hash = "sha256:a20733d36b2e6a1794e2379ad0a6f3a212a63c6f4eee89c4394a4295ed6becc4"},
+    {file = "zigpy_znp-0.11.5-py3-none-any.whl", hash = "sha256:132238457a7da72fcb4549869ebb7d301c96f86f2f8363b1ac9b3ca6e60f938c"},
 ]
 
 [package.dependencies]
@@ -1384,4 +1384,4 @@ testing = ["pytest (>=7.3.1)", "pytest-asyncio (>=0.21.0)", "pytest-cov (>=4.1.0
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d6858bf8e4ffc99ff3d0a1713757bb3628003001f35f7fb2e4d1287d916a8715"
+content-hash = "1f4bc88eb1e1c8d00559b21438dcb9667965e58a6b48a0f18a0779a1fc73d5b5"
