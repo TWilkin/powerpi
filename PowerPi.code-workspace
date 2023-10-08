@@ -230,7 +230,8 @@
             "ms-python.python",
             "ms-python.pylint",
             "ms-python.autopep8",
-            "redhat.vscode-yaml"
+            "redhat.vscode-yaml",
+            "SonarSource.sonarlint-vscode"
         ]
     }
 }
