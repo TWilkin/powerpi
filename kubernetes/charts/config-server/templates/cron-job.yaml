@@ -25,6 +25,10 @@
   )
   "Env" (list
     (dict
+      "Name" "REPO"
+      "Value" .Values.repo
+    )
+    (dict
       "Name" "FILE_PATH"
       "Value" .Values.path
     )

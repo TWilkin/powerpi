@@ -149,6 +149,10 @@
                 "branch": {
                     "description": "The branch in the GitHub repository to get the configuration files",
                     "type": "string"
+                },
+                "repo": {
+                    "description": "The GitHub repository to get the configuration files",
+                    "type": "string"
                 }
             },
             "unevaluatedProperties": false
