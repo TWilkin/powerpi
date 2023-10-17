@@ -1,6 +1,8 @@
 from jsonrpc_websocket import Server
 from powerpi_common.logger import Logger, LogMixin
 
+from snapcast_controller.device.typing import StatusResponse
+
 
 class SnapcastAPI(LogMixin):
     '''
@@ -33,3 +35,6 @@ class SnapcastAPI(LogMixin):
         await self.__server.close()
 
         self.log_info(f'Disconnected from {self.uri}')
+
+    async def get_status(self):
+        return StatusResponse.from_dict(await self.__server.Server.GetStatus())

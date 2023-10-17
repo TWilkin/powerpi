@@ -9,6 +9,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+dacite = "^1.8.1"
 jsonrpc-websocket = "^3.1.4"
 
 [tool.poetry.group.powerpi.dependencies]

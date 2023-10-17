@@ -4,10 +4,12 @@ from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
-from .snapcast_api import SnapcastAPI
+from snapcast_controller.device.snapcast_api import SnapcastAPI
 
 
 class SnapcastServerDevice(Device, InitialisableMixin):
+    # pylint: disable=too-many-ancestors
+
     '''
     Device for getting and sending data from the snapcast server.
     '''
@@ -31,12 +33,6 @@ class SnapcastServerDevice(Device, InitialisableMixin):
         self.__network_address = ip if ip is not None else hostname
         self.__port = port
 
-    async def initialise(self):
-        await self.__api.connect(self.network_address, self.port)
-
-    async def deinitialise(self):
-        await self.__api.disconnect()
-
     @property
     def network_address(self):
         return self.__network_address
@@ -44,6 +40,14 @@ class SnapcastServerDevice(Device, InitialisableMixin):
     @property
     def port(self):
         return self.__port
+
+    async def initialise(self):
+        await self.__api.connect(self.network_address, self.port)
+
+        print(await self.__api.get_status())
+
+    async def deinitialise(self):
+        await self.__api.disconnect()
 
     async def _turn_on(self):
         # this device doesn't support on/off
