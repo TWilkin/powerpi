@@ -1,0 +1,3 @@
+from .snapcast_client_listener import SnapcastClientListener
+
+SnapcastListener = SnapcastClientListener

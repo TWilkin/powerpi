@@ -1,7 +1,7 @@
 from dependency_injector import providers
 
-from .snapcast_api import SnapcastAPI
-from .snapcast_server import SnapcastServerDevice
+from snapcast_controller.device.snapcast_server import SnapcastServerDevice
+from snapcast_controller.snapcast.snapcast_api import SnapcastAPI
 
 
 def add_devices(container):
