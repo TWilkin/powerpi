@@ -83,6 +83,10 @@
             "path": "controllers/network"
         },
         {
+            "name": "Snapcast Controller",
+            "path": "controllers/snapcast"
+        },
+        {
             "name": "Virtual Controller",
             "path": "controllers/virtual"
         },
@@ -211,6 +215,7 @@
             "Harmony Controller",
             "LIFX Controller",
             "Network Controller",
+            "Snapcast Controller",
             "Virtual Controller",
             "ZigBee Controller",
             "Sensors",
