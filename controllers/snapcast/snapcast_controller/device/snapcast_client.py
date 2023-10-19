@@ -3,10 +3,11 @@ from typing import TypedDict
 from powerpi_common.config import Config
 from powerpi_common.device import (AdditionalStateDevice, DeviceManager,
                                    DeviceStatus)
-from powerpi_common.device.mixin import CapabilityMixin, InitialisableMixin
+from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
+from snapcast_controller.device.mixin import StreamCapabilityMixin
 from snapcast_controller.device.snapcast_server import SnapcastServerDevice
 from snapcast_controller.snapcast.listener import (SnapcastClientListener,
                                                    SnapcastGroupListener)
@@ -20,7 +21,7 @@ class AdditionalState(TypedDict):
 class SnapcastClientDevice(
     AdditionalStateDevice,
     InitialisableMixin,
-    CapabilityMixin,
+    StreamCapabilityMixin,
     SnapcastClientListener,
     SnapcastGroupListener
 ):
@@ -46,6 +47,7 @@ class SnapcastClientDevice(
         AdditionalStateDevice.__init__(
             self, config, logger, mqtt_client, **kwargs
         )
+        StreamCapabilityMixin.__init__(self)
 
         self.__device_manager = device_manager
         self.__server_name = server

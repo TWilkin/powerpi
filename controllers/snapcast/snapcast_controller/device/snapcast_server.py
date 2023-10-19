@@ -2,11 +2,11 @@ from typing import List, Set
 
 from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceManager, DeviceStatus
-from powerpi_common.device.mixin import (CapabilityMixin, InitialisableMixin,
-                                         NewPollableMixin)
+from powerpi_common.device.mixin import InitialisableMixin, NewPollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
+from snapcast_controller.device.mixin import StreamCapabilityMixin
 from snapcast_controller.snapcast.listener import SnapcastServerListener
 from snapcast_controller.snapcast.snapcast_api import SnapcastAPI
 from snapcast_controller.snapcast.typing import Server
@@ -57,7 +57,7 @@ class SnapcastServerDevice(Device, InitialisableMixin, NewPollableMixin, Snapcas
         return self.__api
 
     @property
-    def clients(self) -> List[CapabilityMixin]:
+    def clients(self) -> List[StreamCapabilityMixin]:
         return list(filter(
             lambda device: getattr(device, 'server_name', None) == self.name,
             self.__device_manager.devices.values()
@@ -83,7 +83,7 @@ class SnapcastServerDevice(Device, InitialisableMixin, NewPollableMixin, Snapcas
             as_list = list(new_streams)
 
             for client in self.clients:
-                client.on_capability_change({'streams': as_list})
+                client.streams = as_list
 
     async def _poll(self):
         response = await self.__api.get_status()

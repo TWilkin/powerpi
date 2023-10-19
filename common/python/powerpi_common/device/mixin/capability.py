@@ -36,12 +36,22 @@ class CapabilityMixin(ABC):
         '''
         return False
 
-    def on_capability_change(self, capability: Dict[str, Any] | None = None):
+    @property
+    def supports_other_capabilities(self) -> Dict[str, Any]:
+        '''
+        Override to provide additional capabilities beyond what's provided here.
+        Example: {
+            'streams': ['Radio', 'Music']
+        }
+        '''
+        return {}
+
+    def on_capability_change(self):
         '''
         Call this method to broadcast the capabilities supported by this device,
         when that information becomes available.
         '''
-        message = {} if capability is None else capability
+        message = {**self.supports_other_capabilities}
 
         if self.supports_brightness:
             message['brightness'] = True
