@@ -7,7 +7,7 @@ appVersion: 0.4.5
 dependencies:
   # services
   - name: api
-    version: 0.2.1
+    version: 0.2.2
   - name: config-server
     version: 0.1.15
     condition: global.config
