@@ -78,7 +78,7 @@ class SnapcastClientDevice(
         self.__server().api.remove_listener(self)
 
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
-        if new_additional_state is not None:
+        if self.client_id and new_additional_state is not None:
             stream = new_additional_state['stream']
 
             # get the current status
@@ -113,7 +113,7 @@ class SnapcastClientDevice(
                     return new_additional_state
 
         # if it was unsuccessful don't update additional state
-        return []
+        return {}
 
     async def on_client_connect(self, client: Client):
         if client.host.mac == self.mac or client.host.name == self.host_id:
