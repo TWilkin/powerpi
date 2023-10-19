@@ -5,6 +5,7 @@ from jsonrpc_websocket import Server
 from powerpi_common.logger import Logger, LogMixin
 
 from snapcast_controller.snapcast.listener import (SnapcastClientListener,
+                                                   SnapcastGroupListener,
                                                    SnapcastListener)
 from snapcast_controller.snapcast.typing import Client, StatusResponse
 
@@ -46,6 +47,10 @@ class SnapcastAPI(LogMixin):
         )
         self.__server.Client.OnDisconnect = lambda id, client: self.__broadcast(
             SnapcastClientListener, 'on_client_disconnect', client=Client.from_dict(client)
+        )
+
+        self.__server.Group.OnStreamChanged = lambda id, stream_id: self.__broadcast(
+            SnapcastGroupListener, 'on_group_stream_changed', stream_id=stream_id
         )
 
     async def disconnect(self):

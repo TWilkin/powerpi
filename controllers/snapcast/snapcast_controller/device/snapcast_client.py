@@ -8,7 +8,8 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
 from snapcast_controller.device.snapcast_server import SnapcastServerDevice
-from snapcast_controller.snapcast.listener import SnapcastClientListener
+from snapcast_controller.snapcast.listener import (SnapcastClientListener,
+                                                   SnapcastGroupListener)
 from snapcast_controller.snapcast.typing import Client
 
 
@@ -16,7 +17,7 @@ class AdditionalState(TypedDict):
     stream: str
 
 
-class SnapcastClientDevice(AdditionalStateDevice, InitialisableMixin, SnapcastClientListener):
+class SnapcastClientDevice(AdditionalStateDevice, InitialisableMixin, SnapcastClientListener, SnapcastGroupListener):
     # pylint: disable=too-many-ancestors
 
     '''
@@ -123,6 +124,10 @@ class SnapcastClientDevice(AdditionalStateDevice, InitialisableMixin, SnapcastCl
     async def on_client_disconnect(self, client: Client):
         if client.host.mac == self.mac or client.host.name == self.host_id:
             self.state = DeviceStatus.OFF
+
+    async def on_group_stream_changed(self, stream_id: str):
+        if self.additional_state['stream'] != stream_id:
+            self.additional_state = {'stream': stream_id}
 
     def __server(self) -> SnapcastServerDevice:
         return self.__device_manager.get_device(self.__server_name)

@@ -1,3 +1,4 @@
 from .snapcast_client_listener import SnapcastClientListener
+from .snapcast_group_listener import SnapcastGroupListener
 
-SnapcastListener = SnapcastClientListener
+SnapcastListener = SnapcastClientListener | SnapcastGroupListener
