@@ -70,7 +70,6 @@ class SnapcastClientDevice(AdditionalStateDevice, InitialisableMixin, SnapcastCl
 
             # get the current status
             status = await self.__server().api.get_status()
-            print(status)
 
             # find the stream
             if stream in [stream.id for stream in status.server.streams]:
@@ -85,6 +84,18 @@ class SnapcastClientDevice(AdditionalStateDevice, InitialisableMixin, SnapcastCl
                     clients.append(self.client_id)
 
                     await self.__server().api.set_group_clients(group.id, clients)
+
+                    return new_additional_state
+
+                # otherwise set this stream for the group this client belongs to
+                group = next(
+                    (group for group in status.server.groups
+                     if self.client_id in [client.id for client in group.clients]),
+                    None
+                )
+
+                if group is not None:
+                    await self.__server().api.set_group_stream(group.id, stream)
 
                     return new_additional_state
 
