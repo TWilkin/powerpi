@@ -92,6 +92,21 @@ class TestCapabilityMixin:
         else:
             powerpi_mqtt_producer.assert_not_called()
 
+    def test_on_capability_change_value(
+            self, subject: DeviceImpl, powerpi_mqtt_producer: MagicMock
+    ):
+        subject.set_capability(True, False, False)
+
+        subject.on_capability_change({'something': 'else'})
+
+        topic = 'device/CapabilityDevice/capability'
+        message = {
+            'something': 'else',
+            'brightness': True
+        }
+
+        powerpi_mqtt_producer.assert_called_once_with(topic, message)
+
     @pytest.fixture
     def subject(
         self,

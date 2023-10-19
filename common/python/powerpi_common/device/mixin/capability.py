@@ -1,5 +1,6 @@
 from abc import ABC
 from collections import namedtuple
+from typing import Any, Dict
 
 from powerpi_common.util.data import DataType, Range
 
@@ -35,12 +36,12 @@ class CapabilityMixin(ABC):
         '''
         return False
 
-    def on_capability_change(self):
+    def on_capability_change(self, capability: Dict[str, Any] | None = None):
         '''
         Call this method to broadcast the capabilities supported by this device,
         when that information becomes available.
         '''
-        message = {}
+        message = {} if capability is None else capability
 
         if self.supports_brightness:
             message['brightness'] = True
