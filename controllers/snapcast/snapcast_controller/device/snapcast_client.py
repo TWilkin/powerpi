@@ -1,5 +1,6 @@
 from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceManager, DeviceStatus
+from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
@@ -8,7 +9,7 @@ from snapcast_controller.snapcast.listener import SnapcastClientListener
 from snapcast_controller.snapcast.typing import Client
 
 
-class SnapcastClientDevice(Device, SnapcastClientListener):
+class SnapcastClientDevice(Device, InitialisableMixin, SnapcastClientListener):
     # pylint: disable=too-many-ancestors
 
     '''
@@ -42,6 +43,12 @@ class SnapcastClientDevice(Device, SnapcastClientListener):
     @property
     def client_id(self):
         return self.__client_id if self.__client_id else self._name
+
+    async def initialise(self):
+        self.__server().add_listener(self)
+
+    async def deinitialise(self):
+        self.__server().remove_listener(self)
 
     async def _turn_on(self):
         # this device doesn't support on/off

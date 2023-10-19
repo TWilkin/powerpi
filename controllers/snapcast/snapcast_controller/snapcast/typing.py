@@ -17,6 +17,10 @@ class Client:
     connected: bool
     host: Host
 
+    @classmethod
+    def from_dict(cls, data: Dict):
+        return from_dict(Client, data)
+
 
 @dataclass
 class Group:

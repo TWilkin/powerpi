@@ -5,7 +5,7 @@ from powerpi_common.logger import Logger, LogMixin
 
 from snapcast_controller.snapcast.listener import (SnapcastClientListener,
                                                    SnapcastListener)
-from snapcast_controller.snapcast.typing import StatusResponse
+from snapcast_controller.snapcast.typing import Client, StatusResponse
 
 
 class SnapcastAPI(LogMixin):
@@ -41,10 +41,10 @@ class SnapcastAPI(LogMixin):
         self.log_info(f'Connected to {self.uri}')
 
         self.__server.Client.OnConnect = lambda id, client: self.__broadcast(
-            SnapcastClientListener, 'on_client_connect', client=client
+            SnapcastClientListener, 'on_client_connect', client=Client.from_dict(client)
         )
         self.__server.Client.OnDisconnect = lambda id, client: self.__broadcast(
-            SnapcastClientListener, 'on_client_disconnect', client=client
+            SnapcastClientListener, 'on_client_disconnect', client=Client.from_dict(client)
         )
 
     async def disconnect(self):
