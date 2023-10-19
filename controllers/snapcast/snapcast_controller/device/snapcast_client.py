@@ -1,5 +1,8 @@
+from typing import TypedDict
+
 from powerpi_common.config import Config
-from powerpi_common.device import Device, DeviceManager, DeviceStatus
+from powerpi_common.device import (AdditionalStateDevice, DeviceManager,
+                                   DeviceStatus)
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
@@ -9,7 +12,11 @@ from snapcast_controller.snapcast.listener import SnapcastClientListener
 from snapcast_controller.snapcast.typing import Client
 
 
-class SnapcastClientDevice(Device, InitialisableMixin, SnapcastClientListener):
+class AdditionalState(TypedDict):
+    stream: str
+
+
+class SnapcastClientDevice(AdditionalStateDevice, InitialisableMixin, SnapcastClientListener):
     # pylint: disable=too-many-ancestors
 
     '''
@@ -29,7 +36,9 @@ class SnapcastClientDevice(Device, InitialisableMixin, SnapcastClientListener):
         **kwargs
     ):
         # pylint: disable=too-many-arguments
-        Device.__init__(self, config, logger, mqtt_client, **kwargs)
+        AdditionalStateDevice.__init__(
+            self, config, logger, mqtt_client, **kwargs
+        )
 
         self.__device_manager = device_manager
         self.__server_name = server
@@ -54,6 +63,36 @@ class SnapcastClientDevice(Device, InitialisableMixin, SnapcastClientListener):
 
     async def deinitialise(self):
         self.__server().api.remove_listener(self)
+
+    async def on_additional_state_change(self, new_additional_state: AdditionalState):
+        if new_additional_state is not None:
+            stream = new_additional_state['stream']
+
+            # get the current status
+            status = await self.__server().api.get_status()
+            print(status)
+
+            # find the stream
+            if stream in [stream.id for stream in status.server.streams]:
+                # find a group playing this stream
+                group = next(
+                    (group for group in status.server.groups if group.stream_id == stream),
+                    None
+                )
+
+                if group is not None:
+                    clients = [client.id for client in group.clients]
+                    clients.append(self.client_id)
+
+                    await self.__server().api.set_group_clients(group.id, clients)
+
+                    return new_additional_state
+
+        # if it was unsuccessful don't update additional state
+        return []
+
+    def _additional_state_keys(self):
+        return ['stream']
 
     async def _turn_on(self):
         # this device doesn't support on/off

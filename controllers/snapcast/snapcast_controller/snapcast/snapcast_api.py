@@ -65,6 +65,9 @@ class SnapcastAPI(LogMixin):
     async def set_client_name(self, client_id: str, name: str):
         await self.__server.Client.SetName(id=client_id, name=name)
 
+    async def set_group_clients(self, group_id: str, clients: List[str]):
+        await self.__server.Group.SetClients(id=group_id, clients=clients)
+
     def __broadcast(self, listener_type: Type[SnapcastListener], func_name: str, **kwargs):
         for listener in self.__listeners:
             if isinstance(listener, listener_type):
