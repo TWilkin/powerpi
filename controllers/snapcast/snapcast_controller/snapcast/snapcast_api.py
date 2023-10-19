@@ -70,13 +70,7 @@ class SnapcastAPI(LogMixin):
         self.__listeners.remove(listener)
 
     async def get_status(self):
-        response = StatusResponse.from_dict(await self.__server.Server.GetStatus())
-
-        self.__broadcast(
-            SnapcastServerListener, 'on_server_update', server=response.server
-        )
-
-        return response
+        return StatusResponse.from_dict(await self.__server.Server.GetStatus())
 
     async def set_client_name(self, client_id: str, name: str):
         await self.__server.Client.SetName(id=client_id, name=name)

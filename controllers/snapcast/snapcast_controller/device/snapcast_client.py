@@ -1,4 +1,4 @@
-from typing import Set, TypedDict
+from typing import TypedDict
 
 from powerpi_common.config import Config
 from powerpi_common.device import (AdditionalStateDevice, DeviceManager,
@@ -9,9 +9,8 @@ from powerpi_common.mqtt import MQTTClient
 
 from snapcast_controller.device.snapcast_server import SnapcastServerDevice
 from snapcast_controller.snapcast.listener import (SnapcastClientListener,
-                                                   SnapcastGroupListener,
-                                                   SnapcastServerListener)
-from snapcast_controller.snapcast.typing import Client, Server
+                                                   SnapcastGroupListener)
+from snapcast_controller.snapcast.typing import Client
 
 
 class AdditionalState(TypedDict):
@@ -23,8 +22,7 @@ class SnapcastClientDevice(
     InitialisableMixin,
     CapabilityMixin,
     SnapcastClientListener,
-    SnapcastGroupListener,
-    SnapcastServerListener
+    SnapcastGroupListener
 ):
     # pylint: disable=too-many-ancestors, too-many-instance-attributes
 
@@ -55,7 +53,9 @@ class SnapcastClientDevice(
         self.__host_id = host_id
         self.__client_id: str | None = None
 
-        self.__streams: Set[str] = set()
+    @property
+    def server_name(self):
+        return self.__server_name
 
     @property
     def mac(self):
@@ -113,9 +113,6 @@ class SnapcastClientDevice(
         # if it was unsuccessful don't update additional state
         return []
 
-    def on_capability_change(self):
-        self._broadcast('capability', {'streams': list(self.__streams)})
-
     async def on_client_connect(self, client: Client):
         if client.host.mac == self.mac or client.host.name == self.host_id:
             self.state = DeviceStatus.ON
@@ -130,15 +127,6 @@ class SnapcastClientDevice(
     async def on_group_stream_changed(self, stream_id: str):
         if self.additional_state['stream'] != stream_id:
             self.additional_state = {'stream': stream_id}
-
-    async def on_server_update(self, server: Server):
-        new_streams = {stream.id for stream in server.streams}
-
-        if self.__streams != new_streams:
-            # the streams have changed
-            self.__streams = new_streams
-
-            self.on_capability_change()
 
     def _additional_state_keys(self):
         return ['stream']
