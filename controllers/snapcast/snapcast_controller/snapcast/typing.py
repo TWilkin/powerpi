@@ -8,6 +8,7 @@ from dacite import from_dict
 class Host:
     ip: str
     name: str
+    mac: str
 
 
 @dataclass

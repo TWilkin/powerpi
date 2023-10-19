@@ -1,5 +1,6 @@
 from dependency_injector import providers
 
+from snapcast_controller.device.snapcast_client import SnapcastClientDevice
 from snapcast_controller.device.snapcast_server import SnapcastServerDevice
 from snapcast_controller.snapcast.snapcast_api import SnapcastAPI
 
@@ -26,5 +27,17 @@ def add_devices(container):
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
             snapcast_api=container.common.device.snapcast_api
+        )
+    )
+
+    setattr(
+        device_container,
+        'snapcast_client_device',
+        providers.Factory(
+            SnapcastClientDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client,
+            device_manager=container.common.device.device_manager
         )
     )
