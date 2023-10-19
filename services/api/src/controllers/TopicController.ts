@@ -16,6 +16,7 @@ export default class TopicController {
         "temperature",
         "hue",
         "saturation",
+        "stream",
     ];
 
     constructor(private readonly mqttService: MqttService) {}
