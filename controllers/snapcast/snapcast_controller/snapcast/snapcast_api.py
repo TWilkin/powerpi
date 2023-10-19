@@ -26,6 +26,10 @@ class SnapcastAPI(LogMixin):
     def uri(self):
         return f'ws://{self.__host}:{self.__port}/jsonrpc'
 
+    @property
+    def connected(self):
+        return self.__server.connected
+
     async def connect(self, host: str, port: int):
         self.__host = host
         self.__port = port
@@ -59,6 +63,6 @@ class SnapcastAPI(LogMixin):
 
     def __broadcast(self, listener_type: Type[SnapcastListener], func_name: str, **kwargs):
         for listener in self.__listeners:
-            if (isinstance(listener, listener_type)):
+            if isinstance(listener, listener_type):
                 func = getattr(listener, func_name)
                 func(**kwargs)

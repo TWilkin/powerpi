@@ -1,19 +1,18 @@
 from powerpi_common.config import Config
-from powerpi_common.device import Device
+from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
-from snapcast_controller.snapcast.listener import SnapcastClientListener
 from snapcast_controller.snapcast.snapcast_api import SnapcastAPI
-from snapcast_controller.snapcast.typing import Client
 
 
-class SnapcastServerDevice(Device, InitialisableMixin, SnapcastClientListener):
+class SnapcastServerDevice(Device, InitialisableMixin):
     # pylint: disable=too-many-ancestors
 
     '''
-    Device for getting and sending data from the snapcast server.
+    Device for configuring a Snapcast server, providing the mechanism for a client to be configured
+    with the stream the user wishes to play.
     '''
 
     def __init__(
@@ -48,19 +47,15 @@ class SnapcastServerDevice(Device, InitialisableMixin, SnapcastClientListener):
 
         self.__api.add_listener(self)
 
+        self.state = DeviceStatus.ON if self.__api.connected else DeviceStatus.OFF
+
     async def deinitialise(self):
         await self.__api.disconnect()
 
     async def _turn_on(self):
         # this device doesn't support on/off
-        pass
+        return self.__api.connected
 
     async def _turn_off(self):
         # this device doesn't support on/off
-        pass
-
-    def on_client_connect(self, client: Client):
-        self.log_info(client)
-
-    def on_client_disconnect(self, client: Client):
-        self.log_info(client)
+        return self.__api.connected
