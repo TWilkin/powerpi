@@ -1,24 +1,32 @@
-from typing import TypedDict
+from typing import Set, TypedDict
 
 from powerpi_common.config import Config
 from powerpi_common.device import (AdditionalStateDevice, DeviceManager,
                                    DeviceStatus)
-from powerpi_common.device.mixin import InitialisableMixin
+from powerpi_common.device.mixin import CapabilityMixin, InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
 from snapcast_controller.device.snapcast_server import SnapcastServerDevice
 from snapcast_controller.snapcast.listener import (SnapcastClientListener,
-                                                   SnapcastGroupListener)
-from snapcast_controller.snapcast.typing import Client
+                                                   SnapcastGroupListener,
+                                                   SnapcastServerListener)
+from snapcast_controller.snapcast.typing import Client, Server
 
 
 class AdditionalState(TypedDict):
     stream: str
 
 
-class SnapcastClientDevice(AdditionalStateDevice, InitialisableMixin, SnapcastClientListener, SnapcastGroupListener):
-    # pylint: disable=too-many-ancestors
+class SnapcastClientDevice(
+    AdditionalStateDevice,
+    InitialisableMixin,
+    CapabilityMixin,
+    SnapcastClientListener,
+    SnapcastGroupListener,
+    SnapcastServerListener
+):
+    # pylint: disable=too-many-ancestors, too-many-instance-attributes
 
     '''
     Device for configuring a Snapcast client, which can receive additional state indicating which
@@ -46,6 +54,8 @@ class SnapcastClientDevice(AdditionalStateDevice, InitialisableMixin, SnapcastCl
         self.__mac = mac
         self.__host_id = host_id
         self.__client_id: str | None = None
+
+        self.__streams: Set[str] = set()
 
     @property
     def mac(self):
@@ -103,16 +113,8 @@ class SnapcastClientDevice(AdditionalStateDevice, InitialisableMixin, SnapcastCl
         # if it was unsuccessful don't update additional state
         return []
 
-    def _additional_state_keys(self):
-        return ['stream']
-
-    async def _turn_on(self):
-        # this device doesn't support on/off
-        pass
-
-    async def _turn_off(self):
-        # this device doesn't support on/off
-        pass
+    def on_capability_change(self):
+        self._broadcast('capability', {'streams': list(self.__streams)})
 
     async def on_client_connect(self, client: Client):
         if client.host.mac == self.mac or client.host.name == self.host_id:
@@ -128,6 +130,26 @@ class SnapcastClientDevice(AdditionalStateDevice, InitialisableMixin, SnapcastCl
     async def on_group_stream_changed(self, stream_id: str):
         if self.additional_state['stream'] != stream_id:
             self.additional_state = {'stream': stream_id}
+
+    async def on_server_update(self, server: Server):
+        new_streams = {stream.id for stream in server.streams}
+
+        if self.__streams != new_streams:
+            # the streams have changed
+            self.__streams = new_streams
+
+            self.on_capability_change()
+
+    def _additional_state_keys(self):
+        return ['stream']
+
+    async def _turn_on(self):
+        # this device doesn't support on/off
+        pass
+
+    async def _turn_off(self):
+        # this device doesn't support on/off
+        pass
 
     def __server(self) -> SnapcastServerDevice:
         return self.__device_manager.get_device(self.__server_name)

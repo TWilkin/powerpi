@@ -1,13 +1,13 @@
 from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceStatus
-from powerpi_common.device.mixin import InitialisableMixin
+from powerpi_common.device.mixin import InitialisableMixin, NewPollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
 from snapcast_controller.snapcast.snapcast_api import SnapcastAPI
 
 
-class SnapcastServerDevice(Device, InitialisableMixin):
+class SnapcastServerDevice(Device, InitialisableMixin, NewPollableMixin):
     # pylint: disable=too-many-ancestors
 
     '''
@@ -28,6 +28,7 @@ class SnapcastServerDevice(Device, InitialisableMixin):
     ):
         # pylint: disable=too-many-arguments
         Device.__init__(self, config, logger, mqtt_client, **kwargs)
+        NewPollableMixin.__init__(self, config, **kwargs)
 
         self.__api = snapcast_api
 
@@ -55,6 +56,9 @@ class SnapcastServerDevice(Device, InitialisableMixin):
 
     async def deinitialise(self):
         await self.__api.disconnect()
+
+    async def _poll(self):
+        await self.__api.get_status()
 
     async def _turn_on(self):
         # this device doesn't support on/off

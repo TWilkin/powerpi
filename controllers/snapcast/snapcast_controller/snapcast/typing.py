@@ -42,6 +42,10 @@ class Server:
     groups: List[Group]
     streams: List[Stream]
 
+    @classmethod
+    def from_dict(cls, data: Dict):
+        return from_dict(Server, data)
+
 
 @dataclass
 class StatusResponse:

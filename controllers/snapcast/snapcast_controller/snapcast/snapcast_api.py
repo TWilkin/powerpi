@@ -1,13 +1,14 @@
 from asyncio import create_task
 from typing import List, Type
 
-from jsonrpc_websocket import Server
+from jsonrpc_websocket import Server as WebSocket
 from powerpi_common.logger import Logger, LogMixin
 
 from snapcast_controller.snapcast.listener import (SnapcastClientListener,
                                                    SnapcastGroupListener,
-                                                   SnapcastListener)
-from snapcast_controller.snapcast.typing import Client, StatusResponse
+                                                   SnapcastListener,
+                                                   SnapcastServerListener)
+from snapcast_controller.snapcast.typing import Client, Server, StatusResponse
 
 
 class SnapcastAPI(LogMixin):
@@ -22,7 +23,7 @@ class SnapcastAPI(LogMixin):
         self.__port: int | None = None
 
         self.__listeners: List[SnapcastListener] = []
-        self.__server: Server | None = None
+        self.__server: WebSocket | None = None
 
     @property
     def uri(self):
@@ -36,7 +37,7 @@ class SnapcastAPI(LogMixin):
         self.__host = host
         self.__port = port
 
-        self.__server = Server(self.uri)
+        self.__server = WebSocket(self.uri)
 
         await self.__server.ws_connect()
 
@@ -53,6 +54,10 @@ class SnapcastAPI(LogMixin):
             SnapcastGroupListener, 'on_group_stream_changed', stream_id=stream_id
         )
 
+        self.__server.Server.OnUpdate = lambda server: self.__broadcast(
+            SnapcastServerListener, 'on_server_update', server=Server.from_dict(server)
+        )
+
     async def disconnect(self):
         await self.__server.close()
 
@@ -65,7 +70,13 @@ class SnapcastAPI(LogMixin):
         self.__listeners.remove(listener)
 
     async def get_status(self):
-        return StatusResponse.from_dict(await self.__server.Server.GetStatus())
+        response = StatusResponse.from_dict(await self.__server.Server.GetStatus())
+
+        self.__broadcast(
+            SnapcastServerListener, 'on_server_update', server=response.server
+        )
+
+        return response
 
     async def set_client_name(self, client_id: str, name: str):
         await self.__server.Client.SetName(id=client_id, name=name)
