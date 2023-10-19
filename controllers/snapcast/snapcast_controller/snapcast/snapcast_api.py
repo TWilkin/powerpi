@@ -1,3 +1,4 @@
+from asyncio import create_task
 from typing import List, Type
 
 from jsonrpc_websocket import Server
@@ -61,8 +62,11 @@ class SnapcastAPI(LogMixin):
     async def get_status(self):
         return StatusResponse.from_dict(await self.__server.Server.GetStatus())
 
+    async def set_client_name(self, client_id: str, name: str):
+        await self.__server.Client.SetName(id=client_id, name=name)
+
     def __broadcast(self, listener_type: Type[SnapcastListener], func_name: str, **kwargs):
         for listener in self.__listeners:
             if isinstance(listener, listener_type):
                 func = getattr(listener, func_name)
-                func(**kwargs)
+                create_task(func(**kwargs))

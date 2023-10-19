@@ -25,7 +25,7 @@ class SnapcastClientDevice(Device, InitialisableMixin, SnapcastClientListener):
         device_manager: DeviceManager,
         server: str,
         mac: str | None = None,
-        client_id: str | None = None,
+        host_id: str | None = None,
         **kwargs
     ):
         # pylint: disable=too-many-arguments
@@ -34,21 +34,26 @@ class SnapcastClientDevice(Device, InitialisableMixin, SnapcastClientListener):
         self.__device_manager = device_manager
         self.__server_name = server
         self.__mac = mac
-        self.__client_id = client_id
+        self.__host_id = host_id
+        self.__client_id: str | None = None
 
     @property
     def mac(self):
         return self.__mac
 
     @property
+    def host_id(self):
+        return self.__host_id if self.__host_id else self._name
+
+    @property
     def client_id(self):
-        return self.__client_id if self.__client_id else self._name
+        return self.__client_id
 
     async def initialise(self):
-        self.__server().add_listener(self)
+        self.__server().api.add_listener(self)
 
     async def deinitialise(self):
-        self.__server().remove_listener(self)
+        self.__server().api.remove_listener(self)
 
     async def _turn_on(self):
         # this device doesn't support on/off
@@ -58,12 +63,15 @@ class SnapcastClientDevice(Device, InitialisableMixin, SnapcastClientListener):
         # this device doesn't support on/off
         pass
 
-    def on_client_connect(self, client: Client):
-        if client.host.mac == self.mac or client.host.name == self.client_id:
+    async def on_client_connect(self, client: Client):
+        if client.host.mac == self.mac or client.host.name == self.host_id:
             self.state = DeviceStatus.ON
+            self.__client_id = client.id
 
-    def on_client_disconnect(self, client: Client):
-        if client.host.mac == self.mac or client.host.name == self.client_id:
+            await self.__server().api.set_client_name(client.id, self.display_name)
+
+    async def on_client_disconnect(self, client: Client):
+        if client.host.mac == self.mac or client.host.name == self.host_id:
             self.state = DeviceStatus.OFF
 
     def __server(self) -> SnapcastServerDevice:
