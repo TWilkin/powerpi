@@ -44,6 +44,9 @@ global:
   # whether to include control of networked devices (i.e. computers)
   network: false
 
+  # whether to include control on Snapcast clients
+  snapcast: false
+
   # whether to include N3rgy energy monitoring support
   energyMonitor: false
 
