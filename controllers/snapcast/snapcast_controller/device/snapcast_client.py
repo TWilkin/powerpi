@@ -1,5 +1,6 @@
 from typing import TypedDict
 
+from lazy import lazy
 from powerpi_common.config import Config
 from powerpi_common.device import (AdditionalStateDevice, DeviceManager,
                                    DeviceStatus)
@@ -72,17 +73,17 @@ class SnapcastClientDevice(
         return self.__client_id
 
     async def initialise(self):
-        self.__server().api.add_listener(self)
+        self.__server.api.add_listener(self)
 
     async def deinitialise(self):
-        self.__server().api.remove_listener(self)
+        self.__server.api.remove_listener(self)
 
     async def on_additional_state_change(self, new_additional_state: AdditionalState):
         if self.client_id and new_additional_state is not None:
             stream = new_additional_state['stream']
 
             # get the current status
-            status = await self.__server().api.get_status()
+            status = await self.__server.api.get_status()
 
             # find the stream
             if stream in [stream.id for stream in status.server.streams]:
@@ -96,7 +97,7 @@ class SnapcastClientDevice(
                     clients = [client.id for client in group.clients]
                     clients.append(self.client_id)
 
-                    await self.__server().api.set_group_clients(group.id, clients)
+                    await self.__server.api.set_group_clients(group.id, clients)
 
                     return new_additional_state
 
@@ -108,7 +109,7 @@ class SnapcastClientDevice(
                 )
 
                 if group is not None:
-                    await self.__server().api.set_group_stream(group.id, stream)
+                    await self.__server.api.set_group_stream(group.id, stream)
 
                     return new_additional_state
 
@@ -120,7 +121,7 @@ class SnapcastClientDevice(
             self.state = DeviceStatus.ON
             self.__client_id = client.id
 
-            await self.__server().api.set_client_name(client.id, self.display_name)
+            await self.__server.api.set_client_name(client.id, self.display_name)
 
     async def on_client_disconnect(self, client: Client):
         if client.host.mac == self.mac or client.host.name == self.host_id:
@@ -141,5 +142,6 @@ class SnapcastClientDevice(
         # this device doesn't support on/off
         pass
 
+    @lazy
     def __server(self) -> SnapcastServerDevice:
         return self.__device_manager.get_device(self.__server_name)
