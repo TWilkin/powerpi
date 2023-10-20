@@ -96,4 +96,4 @@ class SnapcastServerDevice(Device, InitialisableMixin, NewPollableMixin, Snapcas
 
     async def _turn_off(self):
         # this device doesn't support on/off
-        return self.__api.connected
+        return not self.__api.connected

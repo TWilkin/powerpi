@@ -126,6 +126,7 @@ class SnapcastClientDevice(
     async def on_client_disconnect(self, client: Client):
         if client.host.mac == self.mac or client.host.name == self.host_id:
             self.state = DeviceStatus.OFF
+            self.__client_id = None
 
     async def on_group_stream_changed(self, stream_id: str):
         if self.additional_state['stream'] != stream_id:
@@ -136,11 +137,11 @@ class SnapcastClientDevice(
 
     async def _turn_on(self):
         # this device doesn't support on/off
-        pass
+        return self.__client_id is not None
 
     async def _turn_off(self):
         # this device doesn't support on/off
-        pass
+        return self.__client_id is None
 
     @lazy
     def __server(self) -> SnapcastServerDevice:
