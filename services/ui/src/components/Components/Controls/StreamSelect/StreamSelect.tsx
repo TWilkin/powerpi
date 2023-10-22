@@ -3,26 +3,26 @@ import AdditionalStateControlsProps from "../AdditionalStateControlProps";
 
 type StreamSelectProps = {
     streams: string[];
-    selected: string | undefined;
+    stream: string | undefined;
 } & AdditionalStateControlsProps;
 
-const StreamSelect = ({ streams, selected, disabled, onChange }: StreamSelectProps) => {
-    const [currentValue, setCurrentValue] = useState(selected);
+const StreamSelect = ({ streams, stream, disabled, onChange }: StreamSelectProps) => {
+    const [currentValue, setCurrentValue] = useState(stream);
 
     const onValueChange = useCallback(
         (event: ChangeEvent<HTMLSelectElement>) => {
             event.preventDefault();
 
             const newValue = event.target.value;
-            if (newValue !== selected) {
+            if (newValue !== stream) {
                 const message = { stream: newValue };
                 onChange(message);
             }
         },
-        [onChange, selected],
+        [onChange, stream],
     );
 
-    useEffect(() => setCurrentValue(selected), [selected]);
+    useEffect(() => setCurrentValue(stream), [stream]);
 
     return (
         <div title="Select the stream for this device to play">

@@ -8,6 +8,7 @@ import { useSetDeviceAdditionalState } from "../../../hooks/devices";
 import BrightnessSlider from "../Controls/BrightnessSlider";
 import ColourSlider from "../Controls/ColourSlider";
 import ColourTemperatureSlider from "../Controls/ColourTemperatureSlider";
+import StreamSelect from "../Controls/StreamSelect";
 import DeviceIcon from "../DeviceIcon";
 import DevicePowerButton from "../DevicePowerButton";
 import Dialog, { useDialog } from "../Dialog";
@@ -20,7 +21,10 @@ type CapabilityDialogProps = {
 const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
     const { showDialog, closeDialog, toggleDialog } = useDialog();
 
-    const { capabilities, temperatureRange } = useMemo(() => getCapabilities(device), [device]);
+    const { capabilities, temperatureRange, streams } = useMemo(
+        () => getCapabilities(device),
+        [device],
+    );
     const hasCapability = useMemo(
         () => _(capabilities).any((capability) => capability),
         [capabilities],
@@ -81,6 +85,15 @@ const CapabilityDialog = ({ device }: CapabilityDialogProps) => {
                                 onChange={updateDeviceAdditionalState}
                             />
                         )}
+
+                        {capabilities.streams && (
+                            <StreamSelect
+                                streams={streams!}
+                                stream={device.additionalState?.stream}
+                                disabled={isDeviceAdditionalStateLoading}
+                                onChange={updateDeviceAdditionalState}
+                            />
+                        )}
                     </div>
                 </Dialog>
             )}
@@ -96,8 +109,11 @@ function getCapabilities(device: Device) {
         colour:
             (device.capability?.colour?.hue ?? false) &&
             (device.capability?.colour?.saturation ?? false),
+        streams: device.capability?.streams !== undefined,
     };
+
     let temperatureRange = { min: 0, max: 0 };
+    const streams = device.capability?.streams;
 
     if (device.capability?.colour?.temperature) {
         capabilities.temperature = true;
@@ -110,5 +126,6 @@ function getCapabilities(device: Device) {
     return {
         capabilities,
         temperatureRange,
+        streams,
     };
 }
