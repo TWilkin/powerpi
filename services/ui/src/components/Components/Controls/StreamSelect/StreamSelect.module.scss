@@ -1,6 +1,9 @@
 @import "../../../../styles/colours.scss";
+@import "../../../../styles/vars.scss";
 
 .container {
+    $border-width: 1px;
+
     display: flex;
     align-items: center;
 
@@ -9,14 +12,11 @@
     }
 
     .select {
-        $width: 20ch;
-        $border-width: 1px;
-
-        width: calc(#{$width} + 2 * #{$border-width});
+        width: calc(#{$capability-slider-width} + 2 * #{$border-width});
 
         .control {
             @include colour("background-color", "input-background");
-            outline: none;
+            outline: 0;
 
             &:hover {
                 @include colour("border-color", "dialog-border");
@@ -37,7 +37,7 @@
             border: $border-width solid;
 
             .option {
-                width: $width;
+                width: $capability-slider-width;
                 @include colour("background-color", "input-background");
                 @include colour("color", "text");
 
