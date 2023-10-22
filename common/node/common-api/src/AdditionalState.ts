@@ -3,4 +3,5 @@ export default interface AdditionalState {
     temperature?: number;
     hue?: number;
     saturation?: number;
+    stream?: string;
 }
