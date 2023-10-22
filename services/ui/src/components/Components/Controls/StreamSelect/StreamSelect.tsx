@@ -3,23 +3,20 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Select, { SingleValue } from "react-select";
 import _ from "underscore";
 import AdditionalStateControlsProps from "../AdditionalStateControlProps";
+import StreamOption from "./StreamOption";
 import styles from "./StreamSelect.module.scss";
+import { StreamOptionType } from "./types";
 
 type StreamSelectProps = {
     streams: string[];
     stream: string | undefined;
 } & AdditionalStateControlsProps;
 
-type Option = {
-    label: string;
-    value: string;
-};
-
 const StreamSelect = ({ streams, stream, disabled, onChange }: StreamSelectProps) => {
-    const [currentValue, setCurrentValue] = useState<Option>();
+    const [currentValue, setCurrentValue] = useState<StreamOptionType>();
 
     const onValueChange = useCallback(
-        (newValue: SingleValue<Option>) => {
+        (newValue: SingleValue<StreamOptionType>) => {
             if (newValue && newValue.value !== stream) {
                 const message = { stream: newValue.value };
                 onChange(message);
@@ -28,7 +25,7 @@ const StreamSelect = ({ streams, stream, disabled, onChange }: StreamSelectProps
         [onChange, stream],
     );
 
-    const options: Option[] = useMemo(
+    const options: StreamOptionType[] = useMemo(
         () =>
             _(streams)
                 .sortBy((stream) => stream)
@@ -49,9 +46,13 @@ const StreamSelect = ({ streams, stream, disabled, onChange }: StreamSelectProps
             <Select
                 isDisabled={disabled}
                 isSearchable
+                isMulti={false}
                 options={options}
                 onChange={onValueChange}
                 value={currentValue}
+                components={{
+                    Option: StreamOption,
+                }}
                 classNames={{
                     container: () => styles.container,
                     control: () => styles.control,
