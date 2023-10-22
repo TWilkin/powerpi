@@ -1,3 +1,5 @@
+import { faMusic } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Select, { SingleValue } from "react-select";
@@ -42,7 +44,9 @@ const StreamSelect = ({ streams, stream, disabled, onChange }: StreamSelectProps
     );
 
     return (
-        <div title="Select the stream for this device to play">
+        <div className={styles.container} title="Select the stream for this device to play">
+            <FontAwesomeIcon icon={faMusic} className={styles.icon} />
+
             <Select
                 isDisabled={disabled}
                 isSearchable
@@ -54,7 +58,7 @@ const StreamSelect = ({ streams, stream, disabled, onChange }: StreamSelectProps
                     Option: StreamOption,
                 }}
                 classNames={{
-                    container: () => styles.container,
+                    container: () => styles.select,
                     control: () => styles.control,
                     input: () => styles.input,
                     singleValue: () => styles.value,
