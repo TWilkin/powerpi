@@ -2,8 +2,9 @@
 
 .container {
     $width: 20ch;
+    $border-width: 1px;
 
-    width: calc(#{$width} + 2 * 1px);
+    width: calc(#{$width} + 2 * #{$border-width});
 
     .control {
         @include colour("background-color", "input-background");
@@ -14,24 +15,23 @@
         }
 
         .value {
-            @include colour("color", "input-foreground");
+            @include colour("color", "text");
         }
 
         .input {
-            @include colour("color", "input-foreground");
+            @include colour("color", "text");
         }
     }
 
     .menu {
         @include colour("background-color", "input-background");
         @include colour("border-color", "dialog-border");
-        border: 1px solid;
+        border: $border-width solid;
 
         .option {
             width: $width;
             @include colour("background-color", "input-background");
-            @include colour("color", "input-foreground");
-            white-space: nowrap;
+            @include colour("color", "text");
 
             &.focus {
                 @include colour("background-color", "input-highlight");
