@@ -1,4 +1,5 @@
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import _ from "underscore";
 import AdditionalStateControlsProps from "../AdditionalStateControlProps";
 
 type StreamSelectProps = {
@@ -24,10 +25,12 @@ const StreamSelect = ({ streams, stream, disabled, onChange }: StreamSelectProps
 
     useEffect(() => setCurrentValue(stream), [stream]);
 
+    const sortedStreams = useMemo(() => _(streams).sortBy((stream) => stream), [streams]);
+
     return (
         <div title="Select the stream for this device to play">
             <select disabled={disabled} onChange={onValueChange}>
-                {streams.map((stream) => (
+                {sortedStreams.map((stream) => (
                     <option key={stream} selected={currentValue === stream}>
                         {stream}
                     </option>
