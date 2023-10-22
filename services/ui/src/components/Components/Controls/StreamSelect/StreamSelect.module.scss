@@ -1,0 +1,41 @@
+@import "../../../../styles/colours.scss";
+
+.container {
+    $width: 20ch;
+
+    width: calc(#{$width} + 2 * 1px);
+
+    .control {
+        @include colour("background-color", "input-background");
+        outline: none;
+
+        &:hover {
+            @include colour("border-color", "dialog-border");
+        }
+
+        .value {
+            @include colour("color", "input-foreground");
+        }
+
+        .input {
+            @include colour("color", "input-foreground");
+        }
+    }
+
+    .menu {
+        @include colour("background-color", "input-background");
+        @include colour("border-color", "dialog-border");
+        border: 1px solid;
+
+        .option {
+            width: $width;
+            @include colour("background-color", "input-background");
+            @include colour("color", "input-foreground");
+            white-space: nowrap;
+
+            &.focus {
+                @include colour("background-color", "input-highlight");
+            }
+        }
+    }
+}
