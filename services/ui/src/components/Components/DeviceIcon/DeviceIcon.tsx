@@ -5,9 +5,11 @@ import {
     faLayerGroup,
     faLightbulb,
     faLock,
+    faMusic,
     faPanorama,
     faPlug,
     faQuestion,
+    faServer,
     faStopwatch,
     faTowerBroadcast,
     faTv,
@@ -40,41 +42,49 @@ function getDeviceTypeIcon(type: string) {
         case "harmony":
             return faTv;
 
-        default:
-            switch (deviceType) {
-                case "composite":
-                    return faLayerGroup;
-
-                case "condition":
-                    return faGreaterThanEqual;
-
-                case "computer":
-                    return faComputer;
-
-                case "delay":
-                    return faStopwatch;
-
-                case "light":
-                    return faLightbulb;
-
-                case "mutex":
-                    return faLock;
-
-                case "pairing":
-                    return faTowerBroadcast;
-
-                case "scene":
-                    return faPanorama;
-
-                case "socket":
-                case "socket_group":
-                    return faPlug;
-
-                case "variable":
-                    return faCode;
-
-                default:
-                    return faQuestion;
+        case "snapcast":
+            if (deviceType === "client") {
+                return faMusic;
             }
+            break;
+    }
+
+    switch (deviceType) {
+        case "composite":
+            return faLayerGroup;
+
+        case "condition":
+            return faGreaterThanEqual;
+
+        case "computer":
+            return faComputer;
+
+        case "delay":
+            return faStopwatch;
+
+        case "light":
+            return faLightbulb;
+
+        case "mutex":
+            return faLock;
+
+        case "pairing":
+            return faTowerBroadcast;
+
+        case "scene":
+            return faPanorama;
+
+        case "server":
+            return faServer;
+
+        case "socket":
+        case "socket_group":
+            return faPlug;
+
+        case "variable":
+            return faCode;
+
+        default:
+            return faQuestion;
     }
 }
