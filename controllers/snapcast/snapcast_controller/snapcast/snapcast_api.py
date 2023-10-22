@@ -3,7 +3,6 @@ from typing import List, Type
 
 from jsonrpc_websocket import Server as WebSocket
 from powerpi_common.logger import Logger, LogMixin
-
 from snapcast_controller.snapcast.listener import (SnapcastClientListener,
                                                    SnapcastGroupListener,
                                                    SnapcastListener,

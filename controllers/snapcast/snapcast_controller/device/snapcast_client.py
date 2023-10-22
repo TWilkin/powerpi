@@ -7,7 +7,6 @@ from powerpi_common.device import (AdditionalStateDevice, DeviceManager,
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
-
 from snapcast_controller.device.mixin import StreamCapabilityMixin
 from snapcast_controller.device.snapcast_server import SnapcastServerDevice
 from snapcast_controller.snapcast.listener import (SnapcastClientListener,
@@ -117,14 +116,14 @@ class SnapcastClientDevice(
         return {}
 
     async def on_client_connect(self, client: Client):
-        if client.host.mac == self.mac or client.host.name == self.host_id:
+        if self.__match_client(client):
             self.state = DeviceStatus.ON
             self.__client_id = client.id
 
             await self.__server.api.set_client_name(client.id, self.display_name)
 
     async def on_client_disconnect(self, client: Client):
-        if client.host.mac == self.mac or client.host.name == self.host_id:
+        if self.__match_client(client):
             self.state = DeviceStatus.OFF
             self.__client_id = None
 
@@ -142,6 +141,12 @@ class SnapcastClientDevice(
     async def _turn_off(self):
         # this device doesn't support on/off
         return self.__client_id is None
+
+    def __match_client(self, client: Client):
+        if self.mac is not None and client.host.mac.lower() == self.mac.lower():
+            return True
+
+        return self.host_id is not None and client.host.name.lower() == self.host_id.lower()
 
     @lazy
     def __server(self) -> SnapcastServerDevice:
