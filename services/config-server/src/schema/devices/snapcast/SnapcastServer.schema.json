@@ -1,0 +1,33 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/snapcast/SnapcastServer.schema.json",
+    "title": "SnapcastServer",
+    "description": "The Snapcast device allowing connection to a Snapcast music streaming service",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "snapcast_server"
+        },
+        "hostname": {
+            "description": "The hostname where the Snapcast server can be found",
+            "type": "string",
+            "format": "hostname"
+        },
+        "ip": {
+            "description": "The IP address where the Snapcast server can be found",
+            "type": "string",
+            "format": "ipv4"
+        },
+        "port": {
+            "description": "The port where the Snapcast server can be found, defaults to 1780",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Port.schema.json"
+        }
+    },
+    "oneOf": [{ "required": ["hostname"] }, { "required": ["ip"] }],
+    "unevaluatedProperties": false
+}

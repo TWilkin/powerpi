@@ -1,0 +1,9 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Port.schema.json",
+    "title": "Port",
+    "description": "A computer port to connect to",
+    "type": "number",
+    "minimum": 1,
+    "maximum": 65535
+}
