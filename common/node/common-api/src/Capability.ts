@@ -10,4 +10,5 @@ export default interface Capability {
         hue?: boolean;
         saturation?: boolean;
     };
+    streams?: string[];
 }

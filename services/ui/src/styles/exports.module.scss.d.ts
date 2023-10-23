@@ -14,6 +14,7 @@ interface CssExports {
   'darkInfo': string;
   'darkInputBackground': string;
   'darkInputForeground': string;
+  'darkInputHighlight': string;
   'darkMenu': string;
   'darkMenuBorder': string;
   'darkModalBackdrop': string;
@@ -34,6 +35,7 @@ interface CssExports {
   'lightInfo': string;
   'lightInputBackground': string;
   'lightInputForeground': string;
+  'lightInputHighlight': string;
   'lightMenu': string;
   'lightMenuBorder': string;
   'lightModalBackdrop': string;
