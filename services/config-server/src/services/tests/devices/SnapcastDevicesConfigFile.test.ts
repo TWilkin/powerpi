@@ -20,7 +20,7 @@ describe("Snapcast Devices", () => {
                         type: "snapcast_client",
                         name: "Client",
                         server: "Snapcast",
-                        host_id: "computer.example.com",
+                        host_id: "client.example.com",
                     },
                 ],
             }));
@@ -57,6 +57,67 @@ describe("Snapcast Devices", () => {
                             server: "Snapcast",
                             mac,
                             host_id: "client.home",
+                        },
+                    ],
+                })),
+        );
+    });
+
+    describe("Server", () => {
+        const { testValid, testInvalid } = commonDeviceTests({
+            devices: [
+                {
+                    type: "snapcast_server",
+                    name: "Server",
+                    hostname: "snapcast.example.com",
+                    port: 1337,
+                },
+            ],
+        });
+
+        test("Good IP", () =>
+            testValid({
+                devices: [
+                    {
+                        type: "snapcast_server",
+                        name: "Server",
+                        ip: "192.168.1.200",
+                    },
+                ],
+            }));
+
+        test("No hostname or IP", () =>
+            testInvalid({
+                devices: [
+                    {
+                        type: "snapcast_server",
+                        name: "Server",
+                    },
+                ],
+            }));
+
+        ["test", "192.168.1.256"].forEach((ip) =>
+            test(`Bad IP ${ip}`, () =>
+                testInvalid({
+                    devices: [
+                        {
+                            type: "snapcast_server",
+                            name: "Server",
+                            ip,
+                        },
+                    ],
+                })),
+        );
+
+        ["test", "0", "65536"].forEach((port) =>
+            test(`Bad port ${port}`, () =>
+                testInvalid({
+                    devices: [
+                        {
+                            type: "snapcast_server",
+                            name: "Server",
+                            ip: "192.168.1.200",
+                            port,
                         },
                     ],
                 })),
