@@ -15,7 +15,8 @@
         "build": "webpack --config webpack.prod.js --mode production",
         "clean": "rm -r dist",
         "start": "webpack serve --config webpack.dev.js",
-        "test": "jest"
+        "test": "jest",
+        "coverage": "jest --coverage"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.4.2",
