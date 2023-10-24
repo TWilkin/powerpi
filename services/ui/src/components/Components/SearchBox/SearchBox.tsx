@@ -20,7 +20,7 @@ const SearchBox = ({ placeholder, value, onChange }: SearchBoxProps) => {
 
     const onSearch = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => onChange(event.currentTarget.value),
-        [onChange]
+        [onChange],
     );
 
     return (
@@ -30,6 +30,8 @@ const SearchBox = ({ placeholder, value, onChange }: SearchBoxProps) => {
                 placeholder={placeholder}
                 onChange={onSearch}
                 value={value}
+                autoComplete="off"
+                data-lpignore={true} // tell LastPass to ignore this input
                 ref={inputRef}
             />
         </div>
