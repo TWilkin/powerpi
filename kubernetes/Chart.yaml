@@ -18,7 +18,7 @@ dependencies:
     version: 0.1.5
     condition: global.energyMonitor
   - name: freedns
-    version: 0.1.3
+    version: 0.1.4
     condition: global.freeDNS
   - name: mosquitto
     version: 0.2.0
