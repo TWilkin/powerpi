@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/energy-monitor",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "PowerPi n3rgy energy usage retrieval service",
     "private": true,
     "license": "GPL-3.0-only",
@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@powerpi/common": "^0.1.1",
-        "axios": "^1.4.0",
+        "axios": "^1.6.0",
         "dateformat": "^4.6.3",
         "ts-command-line-args": "2.5.1",
         "typedi": "^0.10.0"
