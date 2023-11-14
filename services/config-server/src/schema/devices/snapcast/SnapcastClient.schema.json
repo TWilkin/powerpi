@@ -1,0 +1,33 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/snapcast/SnapcastClient.schema.json",
+    "title": "SnapcastClient",
+    "description": "The Snapcast client device allowing setting a stream to play from a Snapcast server",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "snapcast_client"
+        },
+        "server": {
+            "description": "The name of the Snapcast Server this client is configured to connect to",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
+        },
+        "mac": {
+            "description": "The MAC address of the client, used as a unique identifier",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/MACAddress.schema.json"
+        },
+        "host_id": {
+            "description": "The host_id of the client, as configured in the Snapcast client",
+            "type": "string",
+            "format": "hostname"
+        }
+    },
+    "required": ["server"],
+    "oneOf": [{ "required": ["mac"] }, { "required": ["host_id"] }],
+    "unevaluatedProperties": false
+}

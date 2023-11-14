@@ -2,6 +2,7 @@
 **/.pytest_cache/
 **/__pycache__/
 **/bin/
+**/coverage/
 **/db/
 **/dist/
 **/node_modules/

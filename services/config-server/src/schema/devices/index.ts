@@ -7,6 +7,7 @@ import loadNetworkSchema from "./network";
 import * as PollableDevice from "./PollableDevice.schema.json";
 import * as PowerPiSensor from "./PowerPiSensor.schema.json";
 import * as Sensor from "./Sensor.schema.json";
+import loadSnapcastSchema from "./snapcast";
 import loadVirtualSchema from "./virtual";
 import loadZigBeeSchema from "./zigbee";
 
@@ -30,6 +31,9 @@ export default function loadDevicesSchema() {
 
         // the network controller devices
         ...loadNetworkSchema(),
+
+        // the snapcast controller devices
+        ...loadSnapcastSchema(),
 
         // the virtual controller devices
         ...loadVirtualSchema(),

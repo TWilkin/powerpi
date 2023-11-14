@@ -9,16 +9,16 @@ dependencies:
   - name: api
     version: 0.2.2
   - name: config-server
-    version: 0.1.13
+    version: 0.1.15
     condition: global.config
   - name: database
     version: 0.1.3
     condition: global.persistence
   - name: energy-monitor
-    version: 0.1.4
+    version: 0.1.5
     condition: global.energyMonitor
   - name: freedns
-    version: 0.1.3
+    version: 0.1.4
     condition: global.freeDNS
   - name: mosquitto
     version: 0.2.0
@@ -31,13 +31,13 @@ dependencies:
   - name: smarter-device-manager
     version: 0.1.2
   - name: ui
-    version: 0.2.2
+    version: 0.2.3
   - name: voice-assistant
-    version: 0.2.1
+    version: 0.2.2
     condition: global.voiceAssistant
   # controllers
   - name: energenie-controller
-    version: 0.1.7
+    version: 0.1.8
     condition: global.energenie
   - name: harmony-controller
     version: 0.1.9

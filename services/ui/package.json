@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/ui",
-    "version": "1.5.4",
+    "version": "1.6.0",
     "description": "PowerPi UI",
     "private": true,
     "license": "GPL-3.0-only",
@@ -15,14 +15,16 @@
         "build": "webpack --config webpack.prod.js --mode production",
         "clean": "rm -r dist",
         "start": "webpack serve --config webpack.dev.js",
-        "test": "jest"
+        "test": "jest",
+        "coverage": "jest --coverage"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.4.2",
         "@fortawesome/fontawesome-svg-core": "^6.4.2",
+        "@fortawesome/free-brands-svg-icons": "^6.4.2",
         "@fortawesome/free-solid-svg-icons": "^6.4.2",
         "@fortawesome/react-fontawesome": "^0.2.0",
-        "@powerpi/common-api": "^0.1.1",
+        "@powerpi/common-api": "0.1.3",
         "chart.js": "^3.9.1",
         "chartjs-adapter-luxon": "^1.3.1",
         "classnames": "^2.3.1",
@@ -39,6 +41,7 @@
         "react-infinite-scroller": "^1.2.6",
         "react-query": "^3.34.19",
         "react-router-dom": "^6.15.0",
+        "react-select": "^5.7.7",
         "react-timeago": "^7.1.0",
         "react-tooltip": "^5.20.0",
         "socket.io-client": "^4.7.2",
