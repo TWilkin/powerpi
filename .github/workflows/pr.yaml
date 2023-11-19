@@ -88,6 +88,12 @@ jobs:
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh network"
         working-directory: controllers/network
 
+      - name: Test Snapcast Controller
+        if: steps.check_modified.outputs.snapcast_controller
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh snapcast"
+        working-directory: controllers/snapcast
+
       - name: Test Virtual Controller
         if: steps.check_modified.outputs.virtual_controller
         shell: bash
