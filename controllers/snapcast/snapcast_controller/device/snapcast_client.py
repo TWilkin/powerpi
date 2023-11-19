@@ -7,6 +7,7 @@ from powerpi_common.device import (AdditionalStateDevice, DeviceManager,
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+
 from snapcast_controller.device.mixin import StreamCapabilityMixin
 from snapcast_controller.device.snapcast_server import SnapcastServerDevice
 from snapcast_controller.snapcast.listener import (SnapcastClientListener,
@@ -128,7 +129,7 @@ class SnapcastClientDevice(
             self.__client_id = None
 
     async def on_group_stream_changed(self, stream_id: str):
-        if self.additional_state['stream'] != stream_id:
+        if self.additional_state.get('stream') != stream_id:
             self.additional_state = {'stream': stream_id}
 
     def _additional_state_keys(self):
