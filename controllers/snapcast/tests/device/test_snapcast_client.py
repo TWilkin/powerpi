@@ -316,8 +316,7 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
-        powerpi_device_manager,
-        snapcast_server  # pylint: disable=unused-argument
+        powerpi_device_manager
     ):
         # pylint: disable=too-many-arguments
         return SnapcastClientDevice(
@@ -332,8 +331,7 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
-        powerpi_device_manager,
-        snapcast_server  # pylint: disable=unused-argument
+        powerpi_device_manager
     ):
         # pylint: disable=too-many-arguments
         return SnapcastClientDevice(
@@ -342,7 +340,7 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
             name='MyClient'
         )
 
-    @pytest.fixture
+    @pytest.fixture(autouse=True)
     def snapcast_server(
         self,
         powerpi_device_manager,

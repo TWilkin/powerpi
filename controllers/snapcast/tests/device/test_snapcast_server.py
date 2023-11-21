@@ -114,8 +114,7 @@ class TestSnapcastServerDevice(DeviceTestBase, InitialisableMixinTestBase, Polla
         powerpi_logger,
         powerpi_mqtt_client,
         powerpi_device_manager,
-        snapcast_api,
-        snapcast_status  # pylint: disable=unused-argument
+        snapcast_api
     ):
         # pylint: disable=too-many-arguments
         return SnapcastServerDevice(
@@ -135,8 +134,7 @@ class TestSnapcastServerDevice(DeviceTestBase, InitialisableMixinTestBase, Polla
         powerpi_logger,
         powerpi_mqtt_client,
         powerpi_device_manager,
-        snapcast_api,
-        snapcast_status  # pylint: disable=unused-argument
+        snapcast_api
     ):
         # pylint: disable=too-many-arguments
         return SnapcastServerDevice(
@@ -150,7 +148,7 @@ class TestSnapcastServerDevice(DeviceTestBase, InitialisableMixinTestBase, Polla
             name='SnapcastServer', poll_frequency=10
         )
 
-    @pytest.fixture
+    @pytest.fixture(autouse=True)
     def snapcast_status(
         self,
         snapcast_api: MagicMock,
