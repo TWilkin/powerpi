@@ -29,7 +29,7 @@ class SnapcastServerDevice(Device, InitialisableMixin, NewPollableMixin, Snapcas
         snapcast_api: SnapcastAPI,
         ip: str | None = None,
         hostname: str | None = None,
-        port: int | None = 1780,
+        port: int | None = None,
         **kwargs
     ):
         # pylint: disable=too-many-arguments
@@ -40,7 +40,7 @@ class SnapcastServerDevice(Device, InitialisableMixin, NewPollableMixin, Snapcas
         self.__api = snapcast_api
 
         self.__network_address = ip if ip is not None else hostname
-        self.__port = port
+        self.__port = port if port is not None else 1780
 
         self.__streams: Set[str] = set()
 

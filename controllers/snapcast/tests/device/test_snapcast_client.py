@@ -31,14 +31,13 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
     def test_mac(self, subject: SnapcastClientDevice):
         assert subject.mac == '00:00:00:00:00'
 
+    @pytest.mark.parametrize('subject', [None], indirect=['subject'])
     def test_host_id_unset(self, subject: SnapcastClientDevice):
         assert subject.host_id == 'MyClient'
 
-    def test_host_id_set(
-        self,
-        subject_with_host_id: SnapcastClientDevice
-    ):
-        assert subject_with_host_id.host_id == 'Client.home'
+    @pytest.mark.parametrize('subject', ['Client.home'], indirect=['subject'])
+    def test_host_id_set(self, subject: SnapcastClientDevice):
+        assert subject.host_id == 'Client.home'
 
     @pytest.mark.asyncio
     async def test_initialise_add_listener(
@@ -245,18 +244,21 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
             snapcast_api.set_client_name.assert_not_called()
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize('host_id,success', [('Nope.home', False), ('Client.home', True)])
+    @pytest.mark.parametrize(
+        'subject,host_id,success',
+        [('Client.home', 'Nope.home', False),
+         ('Client.home', 'Client.home', True)],
+        indirect=['subject']
+    )
     async def test_on_client_connect_by_host_id(
         self,
-        subject_with_host_id: SnapcastClientDevice,
+        subject: SnapcastClientDevice,
         snapcast_api: MagicMock,
         snapcast_client: Tuple[MagicMock, MagicMock],
         host_id: str,
         success: bool
     ):
         # pylint: disable=too-many-arguments
-        subject = subject_with_host_id
-
         client, host = snapcast_client
         type(host).name = host_id
 
@@ -310,33 +312,21 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
         await subject.on_group_stream_changed('MyStream')
         assert subject.additional_state.get('stream') == 'MyStream'
 
-    @pytest.fixture
+    @pytest.fixture(scope='function')
     def subject(
         self,
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
-        powerpi_device_manager
+        powerpi_device_manager,
+        request
     ):
         # pylint: disable=too-many-arguments
         return SnapcastClientDevice(
             powerpi_config, powerpi_logger, powerpi_mqtt_client, powerpi_device_manager,
-            server='MyServer', mac='00:00:00:00:00',
-            name='MyClient'
-        )
-
-    @pytest.fixture
-    def subject_with_host_id(
-        self,
-        powerpi_config,
-        powerpi_logger,
-        powerpi_mqtt_client,
-        powerpi_device_manager
-    ):
-        # pylint: disable=too-many-arguments
-        return SnapcastClientDevice(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client, powerpi_device_manager,
-            server='MyServer', host_id='Client.home',
+            server='MyServer',
+            mac='00:00:00:00:00' if not hasattr(request, 'param') else None,
+            host_id=request.param if hasattr(request, 'param') else None,
             name='MyClient'
         )
 

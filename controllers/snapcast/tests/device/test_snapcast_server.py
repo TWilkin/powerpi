@@ -1,5 +1,5 @@
 from asyncio import Future
-from typing import List
+from typing import List, Tuple
 from unittest.mock import MagicMock, PropertyMock
 
 import pytest
@@ -25,14 +25,16 @@ class TestSnapcastServerDevice(DeviceTestBase, InitialisableMixinTestBase, Polla
     def test_network_address_ip(self, subject: SnapcastServerDevice):
         assert subject.network_address == '127.0.0.1'
 
-    def test_network_address_hostname(self, subject_with_hostname: SnapcastServerDevice):
-        assert subject_with_hostname.network_address == 'Server.home'
+    @pytest.mark.parametrize('subject', [('Server.home', None)], indirect=['subject'])
+    def test_network_address_hostname(self, subject: SnapcastServerDevice):
+        assert subject.network_address == 'Server.home'
 
     def test_port_defaults(self, subject: SnapcastServerDevice):
         assert subject.port == 1780
 
-    def test_port_set(self, subject_with_hostname: SnapcastServerDevice):
-        assert subject_with_hostname.port == 1234
+    @pytest.mark.parametrize('subject', [(None, 1234)], indirect=['subject'])
+    def test_port_set(self, subject: SnapcastServerDevice):
+        assert subject.port == 1234
 
     def test_api(self, subject: SnapcastServerDevice, snapcast_api):
         assert subject.api == snapcast_api
@@ -107,14 +109,15 @@ class TestSnapcastServerDevice(DeviceTestBase, InitialisableMixinTestBase, Polla
 
         has_streams(['Another Stream', 'Stream 1'])
 
-    @pytest.fixture
+    @pytest.fixture(scope='function')
     def subject(
         self,
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
         powerpi_device_manager,
-        snapcast_api
+        snapcast_api,
+        request: Tuple[str | None, int | None]
     ):
         # pylint: disable=too-many-arguments
         return SnapcastServerDevice(
@@ -123,28 +126,11 @@ class TestSnapcastServerDevice(DeviceTestBase, InitialisableMixinTestBase, Polla
             powerpi_mqtt_client,
             powerpi_device_manager,
             snapcast_api,
-            ip='127.0.0.1',
-            name='SnapcastServer', poll_frequency=10
-        )
-
-    @pytest.fixture
-    def subject_with_hostname(
-        self,
-        powerpi_config,
-        powerpi_logger,
-        powerpi_mqtt_client,
-        powerpi_device_manager,
-        snapcast_api
-    ):
-        # pylint: disable=too-many-arguments
-        return SnapcastServerDevice(
-            powerpi_config,
-            powerpi_logger,
-            powerpi_mqtt_client,
-            powerpi_device_manager,
-            snapcast_api,
-            hostname='Server.home',
-            port=1234,
+            ip='127.0.0.1'
+            if not hasattr(request, 'param') or request.param[0] is None
+            else None,
+            hostname=request.param[0] if hasattr(request, 'param') else None,
+            port=request.param[1] if hasattr(request, 'param') else None,
             name='SnapcastServer', poll_frequency=10
         )
 
