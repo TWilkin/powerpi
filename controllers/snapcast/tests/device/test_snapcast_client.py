@@ -343,22 +343,20 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
         )
 
     @pytest.fixture
-    def snapcast_server(self, powerpi_device_manager, mocker: MockerFixture):
+    def snapcast_server(
+        self,
+        powerpi_device_manager,
+        snapcast_api: MagicMock,
+        mocker: MockerFixture
+    ):
         server = mocker.MagicMock()
 
         type(server).name = PropertyMock(return_value='MyServer')
+        type(server).api = PropertyMock(return_value=snapcast_api)
 
         powerpi_device_manager.get_device = lambda name: server if name == 'MyServer' else None
 
         return server
-
-    @pytest.fixture
-    def snapcast_api(self, snapcast_server: MagicMock, mocker: MockerFixture):
-        api = mocker.MagicMock()
-
-        type(snapcast_server).api = PropertyMock(return_value=api)
-
-        return api
 
     @pytest.fixture
     def snapcast_client(self, snapcast_api: MagicMock, mocker: MockerFixture):
