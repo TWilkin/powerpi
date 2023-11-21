@@ -32,7 +32,7 @@ class SnapcastAPI(LogMixin):
 
     @property
     def connected(self):
-        return self.__server.connected
+        return self.__server is not None and self.__server.connected
 
     async def connect(self, host: str, port: int):
         self.__host = host
