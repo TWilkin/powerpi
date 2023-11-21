@@ -14,6 +14,8 @@ from snapcast_controller.device.snapcast_client import SnapcastClientDevice
 class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
     # pylint: disable=too-many-public-methods
 
+    __client_id = 'The Client Id'
+
     @pytest.mark.asyncio
     async def test_turn_on(self, subject: SnapcastClientDevice):
         # override as this device doesn't support on
@@ -156,7 +158,7 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
         assert result == {'stream': 'MyStream'}
 
         snapcast_api.set_group_clients.assert_called_once_with(
-            'Group2', ['Existing Client Id', 'The Client Id']
+            'Group2', ['Existing Client Id', self.__client_id]
         )
         snapcast_api.set_group_stream.assert_not_called()
 
@@ -181,7 +183,7 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
         type(group2).id = 'Group2'
         type(group2).stream_id = 'OtherStream'
         group_client = mocker.MagicMock()
-        type(group_client).id = 'The Client Id'
+        type(group_client).id = self.__client_id
         type(group2).clients = [group_client]
 
         stream1 = mocker.MagicMock()
@@ -237,7 +239,7 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
 
         if success:
             snapcast_api.set_client_name.assert_called_once_with(
-                'The Client Id', 'MyClient'
+                self.__client_id, 'MyClient'
             )
         else:
             snapcast_api.set_client_name.assert_not_called()
@@ -270,7 +272,7 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
 
         if success:
             snapcast_api.set_client_name.assert_called_once_with(
-                'The Client Id', 'MyClient'
+                self.__client_id, 'MyClient'
             )
         else:
             snapcast_api.set_client_name.assert_not_called()
@@ -361,7 +363,7 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
     @pytest.fixture
     def snapcast_client(self, snapcast_api: MagicMock, mocker: MockerFixture):
         client = mocker.MagicMock()
-        client_id = 'The Client Id'
+        client_id = self.__client_id
         host = mocker.MagicMock()
 
         type(client).host = PropertyMock(return_value=host)
