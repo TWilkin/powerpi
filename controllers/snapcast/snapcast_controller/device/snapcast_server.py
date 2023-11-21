@@ -73,6 +73,8 @@ class SnapcastServerDevice(Device, InitialisableMixin, NewPollableMixin, Snapcas
     async def deinitialise(self):
         await self.__api.disconnect()
 
+        self.__api.remove_listener(self)
+
     async def on_server_update(self, server: Server):
         new_streams = {stream.id for stream in server.streams}
 
@@ -81,6 +83,7 @@ class SnapcastServerDevice(Device, InitialisableMixin, NewPollableMixin, Snapcas
             self.__streams = new_streams
 
             as_list = list(new_streams)
+            as_list.sort()
 
             for client in self.clients:
                 client.streams = as_list
