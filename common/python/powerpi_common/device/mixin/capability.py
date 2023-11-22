@@ -1,5 +1,6 @@
 from abc import ABC
 from collections import namedtuple
+from typing import Any, Dict
 
 from powerpi_common.util.data import DataType, Range
 
@@ -35,12 +36,22 @@ class CapabilityMixin(ABC):
         '''
         return False
 
+    @property
+    def supports_other_capabilities(self) -> Dict[str, Any]:
+        '''
+        Override to provide additional capabilities beyond what's provided here.
+        Example: {
+            'streams': ['Radio', 'Music']
+        }
+        '''
+        return {}
+
     def on_capability_change(self):
         '''
         Call this method to broadcast the capabilities supported by this device,
         when that information becomes available.
         '''
-        message = {}
+        message = {**self.supports_other_capabilities}
 
         if self.supports_brightness:
             message['brightness'] = True

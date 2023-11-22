@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from unittest.mock import MagicMock
 
 import pytest
@@ -18,6 +19,7 @@ class DeviceImpl(Device, CapabilityMixin):
         self.__brightness = False
         self.__temperature = False
         self.__colour = False
+        self.__other = {}
 
     async def _turn_on(self):
         pass
@@ -37,10 +39,21 @@ class DeviceImpl(Device, CapabilityMixin):
     def supports_colour_temperature(self):
         return self.__temperature
 
-    def set_capability(self, brightness: bool, temperature: Range | bool, colour: bool):
+    @CapabilityMixin.supports_other_capabilities.getter
+    def supports_other_capabilities(self):
+        return self.__other
+
+    def set_capability(
+        self,
+        brightness: bool,
+        temperature: Range | bool,
+        colour: bool,
+        other: Dict[str, Any] | None = None
+    ):
         self.__brightness = brightness
         self.__temperature = temperature
         self.__colour = colour
+        self.__other = {} if other is None else other
 
 
 class TestCapabilityMixin:
@@ -91,6 +104,21 @@ class TestCapabilityMixin:
             powerpi_mqtt_producer.assert_called_once_with(topic, message)
         else:
             powerpi_mqtt_producer.assert_not_called()
+
+    def test_supports_other_capabilities(
+            self, subject: DeviceImpl, powerpi_mqtt_producer: MagicMock
+    ):
+        subject.set_capability(True, False, False, {'something': 'else'})
+
+        subject.on_capability_change()
+
+        topic = 'device/CapabilityDevice/capability'
+        message = {
+            'something': 'else',
+            'brightness': True
+        }
+
+        powerpi_mqtt_producer.assert_called_once_with(topic, message)
 
     @pytest.fixture
     def subject(

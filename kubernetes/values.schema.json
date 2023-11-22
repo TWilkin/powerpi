@@ -96,6 +96,11 @@
                     "type": "boolean"
                 },
 
+                "snapcast": {
+                    "description": "Whether to include control of Snapcast client devices",
+                    "type": "boolean"
+                },
+
                 "energyMonitor": {
                     "description": "Whether to include N3rgy energy monitoring support",
                     "type": "boolean"
@@ -253,6 +258,13 @@
 
         "network-controller": {
             "description": "The configuration for the PowerPi Network controller Helm chart",
+            "type": "object",
+            "allOf": [{ "$ref": "#/$defs/controller" }],
+            "unevaluatedProperties": false
+        },
+
+        "snapcast-controller": {
+            "description": "The configuration for the PowerPi Snapcast controller Helm chart",
             "type": "object",
             "allOf": [{ "$ref": "#/$defs/controller" }],
             "unevaluatedProperties": false
