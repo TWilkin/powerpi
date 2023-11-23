@@ -17,6 +17,7 @@ This project was devised to utilise open, reverse engineered or free home automa
 
 -   [FreeDNS](https://freedns.afraid.org/)
 -   [N3rgy](http://www.n3rgy.com/)
+-   [Snapcast](https://github.com/badaix/snapcast)
 
 ## Getting Started
 
@@ -29,6 +30,7 @@ The project is split into the following services, each of which have their own _
     -   [**harmony**](controllers/harmony/README.md) - Allows control of [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html) Smart Hub devices.
     -   [**lifx**](controllers/lifx/README.md) - Allows control of [LIFX](https://www.lifx.com/) light devices.
     -   [**network**](controllers/network/README.md) - Allows control of LAN (Local Area Network) devices.
+    -   [**snapcast**](controllers/snapcast/README.md) - Allows control of [Snapcast](https://github.com/badaix/snapcast) clients and servers.
     -   [**virtual**](controllers/virtual/README.md) - Allows control of other devices by using virtual devices such as groups, delays, mutexes etc.
     -   [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
 -   [**energy-monitor**](services/energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
