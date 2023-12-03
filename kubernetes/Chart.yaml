@@ -23,7 +23,7 @@ dependencies:
   - name: mosquitto
     version: 0.2.0
   - name: persistence
-    version: 0.1.6
+    version: 0.1.7
     condition: global.persistence
   - name: scheduler
     version: 0.2.8
