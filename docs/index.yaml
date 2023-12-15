@@ -2,6 +2,84 @@ apiVersion: v1
 entries:
   powerpi:
   - apiVersion: v2
+    appVersion: 0.5.1
+    created: "2023-12-15T19:12:07.223734723Z"
+    dependencies:
+    - name: api
+      repository: ""
+      version: 0.2.2
+    - condition: global.config
+      name: config-server
+      repository: ""
+      version: 0.1.15
+    - condition: global.persistence
+      name: database
+      repository: ""
+      version: 0.1.3
+    - condition: global.energyMonitor
+      name: energy-monitor
+      repository: ""
+      version: 0.1.5
+    - condition: global.freeDNS
+      name: freedns
+      repository: ""
+      version: 0.1.4
+    - name: mosquitto
+      repository: ""
+      version: 0.2.0
+    - condition: global.persistence
+      name: persistence
+      repository: ""
+      version: 0.1.7
+    - condition: global.scheduler
+      name: scheduler
+      repository: ""
+      version: 0.2.8
+    - name: smarter-device-manager
+      repository: ""
+      version: 0.1.2
+    - name: ui
+      repository: ""
+      version: 0.2.3
+    - condition: global.voiceAssistant
+      name: voice-assistant
+      repository: ""
+      version: 0.2.3
+    - condition: global.energenie
+      name: energenie-controller
+      repository: ""
+      version: 0.1.8
+    - condition: global.harmony
+      name: harmony-controller
+      repository: ""
+      version: 0.1.11
+    - condition: global.lifx
+      name: lifx-controller
+      repository: ""
+      version: 0.1.8
+    - condition: global.network
+      name: network-controller
+      repository: ""
+      version: 0.1.6
+    - condition: global.snapcast
+      name: snapcast-controller
+      repository: ""
+      version: 0.0.2
+    - name: virtual-controller
+      repository: ""
+      version: 0.2.3
+    - condition: global.zigbee
+      name: zigbee-controller
+      repository: ""
+      version: 0.1.12
+    description: A Helm chart for deploying the PowerPi home automation stack
+    digest: b71d753d35b70efd279a77cc4323a48ace6a58d70bc34945db76aead145e2653
+    name: powerpi
+    type: application
+    urls:
+    - https://github.com/TWilkin/powerpi/releases/download/v0.5.1/powerpi-0.5.1.tgz
+    version: 0.5.1
+  - apiVersion: v2
     appVersion: 0.5.0
     created: "2023-11-23T18:06:21.504734409Z"
     dependencies:
@@ -1969,4 +2047,4 @@ entries:
     urls:
     - https://github.com/TWilkin/powerpi/releases/download/v0.1.5/powerpi-0.1.5.tgz
     version: 0.1.5
-generated: "2023-11-23T18:06:21.504872737Z"
+generated: "2023-12-15T19:12:07.22403812Z"
