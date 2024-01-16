@@ -33,7 +33,7 @@ dependencies:
   - name: ui
     version: 0.2.4
   - name: voice-assistant
-    version: 0.2.3
+    version: 0.2.4
     condition: global.voiceAssistant
   # controllers
   - name: energenie-controller
