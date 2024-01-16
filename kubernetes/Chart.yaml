@@ -31,7 +31,7 @@ dependencies:
   - name: smarter-device-manager
     version: 0.1.2
   - name: ui
-    version: 0.2.3
+    version: 0.2.4
   - name: voice-assistant
     version: 0.2.3
     condition: global.voiceAssistant
