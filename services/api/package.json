@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/api",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "PowerPi API",
     "private": true,
     "license": "GPL-3.0-only",
@@ -22,7 +22,7 @@
     },
     "dependencies": {
         "@powerpi/common": "^0.1.1",
-        "@powerpi/common-api": "0.1.3",
+        "@powerpi/common-api": "0.1.4",
         "@tsed/common": "^7.34.2",
         "@tsed/core": "^7.34.2",
         "@tsed/di": "^7.34.2",
