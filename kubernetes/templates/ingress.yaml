@@ -3,10 +3,10 @@ kind: Ingress
 metadata:
   name: ingress
   {{- include "powerpi.labels" . }}
+  {{- if and .Values.global.useSSL (eq .Values.global.clusterIssuer nil) }}
   annotations:
-    {{- if eq .Values.global.useSSL true }}
-    cert-manager.io/issuer: {{ ternary "letsencrypt" .Values.global.clusterIssuer (eq .Values.global.clusterIssuer nil) }}
-    {{- end }}
+    cert-manager.io/issuer: "letsencrypt"
+  {{- end }}
 spec:
   ingressClassName: public
   {{- if eq .Values.global.useSSL true }}
@@ -51,7 +51,7 @@ metadata:
   name: ingress-ha
   {{- include "powerpi.labels" . }}
   annotations:
-    {{- if eq .Values.global.useSSL true }}
+    {{- if and .Values.global.useSSL (eq .Values.global.clusterIssuer nil) }}
     cert-manager.io/issuer: {{ ternary "letsencrypt" .Values.global.clusterIssuer (eq .Values.global.clusterIssuer nil) }}
     {{- end }}
     {{- if eq .Values.global.useCluster true }}

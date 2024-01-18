@@ -1,4 +1,4 @@
-{{- define "powerpi.certificate" }}
+{{- define "powerpi.certificate" -}}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -11,4 +11,4 @@ spec:
     kind: ClusterIssuer
   dnsNames:
   - {{ .Params.HostName }}
-{{- end }}
+{{- end -}}
