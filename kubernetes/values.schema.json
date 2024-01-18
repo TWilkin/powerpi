@@ -48,7 +48,7 @@
 
                 "clusterIssuer": {
                     "description": "the name of a ClusterIssuer to use to request certificates",
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
 
                 "freeDNS": {
