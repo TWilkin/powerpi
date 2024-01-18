@@ -67,7 +67,9 @@ describe("DeviceController", () => {
                     instance(mockedResponse),
                 );
 
-                verify(mockedMqttService.publish("device", "thing", "change", anything())).never();
+                verify(
+                    mockedMqttService.publish(anything(), anything(), anything(), anything()),
+                ).never();
 
                 verify(mockedResponse.sendStatus(400)).once();
             }),
@@ -80,7 +82,9 @@ describe("DeviceController", () => {
 
             await subject?.change("other", message, instance(mockedResponse));
 
-            verify(mockedMqttService.publish("device", "other", "change", anything())).never();
+            verify(
+                mockedMqttService.publish(anything(), anything(), anything(), anything()),
+            ).never();
 
             verify(mockedResponse.sendStatus(404)).once();
         });
