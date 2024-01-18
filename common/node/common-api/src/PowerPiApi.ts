@@ -57,7 +57,7 @@ export default class PowerPiApi {
         action?: string,
         start?: Date,
         end?: Date,
-        records?: number
+        records?: number,
     ) =>
         this.get<PaginationResponse<History>>("history", {
             type,
@@ -73,7 +73,7 @@ export default class PowerPiApi {
         end?: Date,
         type?: string,
         entity?: string,
-        action?: string
+        action?: string,
     ) => this.get<History[]>("history/range", { start, end, type, entity, action });
 
     public getHistoryTypes = () => this.get<{ type: string }[]>("history/types");
@@ -84,7 +84,11 @@ export default class PowerPiApi {
     public getHistoryActions = (type?: string) =>
         this.get<{ action: string }[]>("history/actions", { type });
 
-    public postMessage(device: string, state?: DeviceState, additionalState?: AdditionalState) {
+    public postDeviceChange(
+        device: string,
+        state?: DeviceState,
+        additionalState?: AdditionalState,
+    ) {
         let message: DeviceChangeMessage = {};
 
         if (state) {
@@ -95,7 +99,7 @@ export default class PowerPiApi {
             message = { ...message, ...additionalState };
         }
 
-        this.post(`topic/device/${device}/change`, message);
+        this.post(`device/${device}`, message);
     }
 
     public addDeviceListener(callback: DeviceStatusCallback) {
@@ -132,7 +136,7 @@ export default class PowerPiApi {
 
     public removeCapabilityListener(callback: CapabilityStatusCallback) {
         this.listeners.capability = this.listeners.capability.filter(
-            (listener) => listener === callback
+            (listener) => listener === callback,
         );
     }
 
@@ -174,7 +178,7 @@ export default class PowerPiApi {
         const result = await this.instance.post<string, { data: TResult }>(
             path,
             JSON.stringify(message),
-            config
+            config,
         );
         return result?.data;
     }

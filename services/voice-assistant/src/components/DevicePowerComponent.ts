@@ -45,7 +45,7 @@ export default class DevicePowerComponent extends BaseComponent {
 
             const success = await apiService.makeRequest(
                 this.$alexa?.$user.accessToken,
-                async (api) => api.postMessage(device.name, status as DeviceState),
+                async (api) => api.postDeviceChange(device.name, status as DeviceState),
             );
 
             if (!success) {
