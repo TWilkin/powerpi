@@ -6,6 +6,23 @@
   ) (list) .Values.global.useCluster 
 -}}
 
+{{- $ports := list (dict
+  "Name" "mqtt"
+  "Port" 1883
+)
+-}}
+{{- if and 
+    (eq .Values.global.useSSL true) 
+    (eq .Values.global.useSensors true) 
+    (not (eq .Values.global.clusterIssuer nil)) 
+    (not (eq .Values.hostName nil)) 
+-}}
+{{- $ports = append $ports (dict
+  "Name" "mqtts"
+  "Port" 8883
+) -}}
+{{- end -}}
+
 {{- $data := dict
   "Kind" "StatefulSet"
   "Image" "eclipse-mosquitto"
@@ -14,10 +31,7 @@
   "Args" (list
     "cp /var/run/secrets/mosquitto-passwords-secret/passwords /mosquitto/passwords && mosquitto_passwd -U /mosquitto/passwords && exec /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf"
   )
-  "Ports" (list (dict
-    "Name" "mqtt"
-    "Port" 1883
-  ))
+  "Ports" $ports
   "NodeSelector" $nodeSelector
   "PersistentVolumeClaim" (dict
     "Name" "mosquitto-data"
