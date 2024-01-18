@@ -21,7 +21,7 @@ dependencies:
     version: 0.1.4
     condition: global.freeDNS
   - name: mosquitto
-    version: 0.2.0
+    version: 0.3.0
   - name: persistence
     version: 0.1.7
     condition: global.persistence
