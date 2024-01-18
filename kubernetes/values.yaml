@@ -14,9 +14,6 @@ global:
   # whether to allow access to the message queue from outside of kubernetes (to support external sensors publishing events or computer devices using the shutdown service)
   useSensors: false
 
-  # the name of a ClusterIssuer to use to request certificates
-  clusterIssuer: null
-
   # whether to use FreeDNS or not
   freeDNS: false
 

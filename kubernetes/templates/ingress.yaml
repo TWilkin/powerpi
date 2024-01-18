@@ -5,7 +5,7 @@ metadata:
   {{- include "powerpi.labels" . }}
   annotations:
     {{- if eq .Values.global.useSSL true }}
-    cert-manager.io/issuer: letsencrypt
+    cert-manager.io/issuer: {{ ternary "letsencrypt" .Values.global.clusterIssuer (eq .Values.global.clusterIssuer nil) }}
     {{- end }}
 spec:
   ingressClassName: public
@@ -52,7 +52,7 @@ metadata:
   {{- include "powerpi.labels" . }}
   annotations:
     {{- if eq .Values.global.useSSL true }}
-    cert-manager.io/issuer: letsencrypt
+    cert-manager.io/issuer: {{ ternary "letsencrypt" .Values.global.clusterIssuer (eq .Values.global.clusterIssuer nil) }}
     {{- end }}
     {{- if eq .Values.global.useCluster true }}
     nginx.ingress.kubernetes.io/affinity: "cookie"
