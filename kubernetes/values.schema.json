@@ -256,6 +256,11 @@
             "properties": {
                 "component": {
                     "const": "message-queue"
+                },
+                "hostName": {
+                    "description": "The external host name to use for mosquitto when using sensors and a ClusterIssuer",
+                    "type": "string",
+                    "pattern": "^\\w+(\\.\\w+)+$"
                 }
             },
             "unevaluatedProperties": false
