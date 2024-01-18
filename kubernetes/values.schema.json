@@ -46,6 +46,11 @@
                     "type": "boolean"
                 },
 
+                "clusterIssuer": {
+                    "description": "the name of a ClusterIssuer to use to request certificates",
+                    "type": "string"
+                },
+
                 "freeDNS": {
                     "description": "Whether to deploy the FreeDNS service",
                     "type": "boolean"
