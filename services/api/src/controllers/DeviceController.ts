@@ -34,7 +34,7 @@ export default class DeviceController {
 
     @Post("/:device")
     @Authorize()
-    change(
+    async change(
         @PathParams("device") device: string,
         @Required() @BodyParams() body: DeviceChangeMessage,
         @Res() response: Response,
@@ -54,7 +54,7 @@ export default class DeviceController {
         };
 
         // publish to MQTT
-        this.mqttService.publish("device", device, "change", message);
+        await this.mqttService.publish("device", device, "change", message);
 
         response.sendStatus(HttpStatus.CREATED);
     }

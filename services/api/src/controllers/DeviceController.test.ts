@@ -40,13 +40,13 @@ describe("DeviceController", () => {
 
     describe("change", () => {
         [DeviceState.Off, DeviceState.On].forEach((state) =>
-            test(`success: ${state}`, () => {
+            test(`success: ${state}`, async () => {
                 const message = {
                     state,
                     brightness: 100,
                 };
 
-                subject?.change("thing", message, instance(mockedResponse));
+                await subject?.change("thing", message, instance(mockedResponse));
 
                 verify(mockedMqttService.publish("device", "thing", "change", anything())).once();
 
@@ -58,8 +58,12 @@ describe("DeviceController", () => {
         );
 
         [undefined, { nope: true, state: DeviceState.Off }].forEach((data) =>
-            test(`bad data: ${data}`, () => {
-                subject?.change("thing", data as DeviceChangeMessage, instance(mockedResponse));
+            test(`bad data: ${data}`, async () => {
+                await subject?.change(
+                    "thing",
+                    data as DeviceChangeMessage,
+                    instance(mockedResponse),
+                );
 
                 verify(mockedMqttService.publish("device", "thing", "change", anything())).never();
 
