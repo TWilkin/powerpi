@@ -41,6 +41,8 @@ describe("DeviceController", () => {
     describe("change", () => {
         [DeviceState.Off, DeviceState.On].forEach((state) =>
             test(`success: ${state}`, async () => {
+                when(mockedDeviceStateService.devices).thenReturn([{ name: "thing" }] as Device[]);
+
                 const message = {
                     state,
                     brightness: 100,
@@ -70,5 +72,17 @@ describe("DeviceController", () => {
                 verify(mockedResponse.sendStatus(400)).once();
             }),
         );
+
+        test("missing device", async () => {
+            when(mockedDeviceStateService.devices).thenReturn([{ name: "thing" }] as Device[]);
+
+            const message = { state: DeviceState.On };
+
+            await subject?.change("other", message, instance(mockedResponse));
+
+            verify(mockedMqttService.publish("device", "other", "change", anything())).never();
+
+            verify(mockedResponse.sendStatus(404)).once();
+        });
     });
 });

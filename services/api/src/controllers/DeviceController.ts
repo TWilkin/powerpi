@@ -48,6 +48,12 @@ export default class DeviceController {
             return;
         }
 
+        // check if the device exists
+        if (!this.deviceService.devices.find((d) => d.name === device)) {
+            response.sendStatus(HttpStatus.NOT_FOUND);
+            return;
+        }
+
         // generate the message
         const message: OutgoingMessage = {
             ...body,
