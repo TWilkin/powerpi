@@ -1,8 +1,8 @@
-import { MqttService } from "@powerpi/common";
 import { Device, DeviceChangeMessage, DeviceState } from "@powerpi/common-api";
 import { Response } from "express";
 import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
 import { DeviceStateService } from "../services";
+import MqttService from "../services/MqttService";
 import DeviceController from "./DeviceController";
 
 const mockedDeviceStateService = mock<DeviceStateService>();
