@@ -109,7 +109,7 @@ export function useSetDeviceState(device: Device) {
     const mutation = useMutation(
         async (newState: DeviceState) => {
             setLoading(true);
-            api.postMessage(device.name, newState);
+            api.postDeviceChange(device.name, newState);
         },
         {
             onError: () => setChangeState(DeviceState.Unknown),
@@ -135,7 +135,7 @@ export function useSetDeviceAdditionalState(device: Device) {
     const mutation = useMutation(
         async (newAdditionalState: AdditionalState) => {
             setLoading(true);
-            api.postMessage(device.name, undefined, newAdditionalState);
+            api.postDeviceChange(device.name, undefined, newAdditionalState);
         },
         {
             onError: () => setChangeAdditionalState({}),

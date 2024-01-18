@@ -84,7 +84,11 @@ export default class PowerPiApi {
     public getHistoryActions = (type?: string) =>
         this.get<{ action: string }[]>("history/actions", { type });
 
-    public postMessage(device: string, state?: DeviceState, additionalState?: AdditionalState) {
+    public postDeviceChange(
+        device: string,
+        state?: DeviceState,
+        additionalState?: AdditionalState,
+    ) {
         let message: DeviceChangeMessage = {};
 
         if (state) {
