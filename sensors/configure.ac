@@ -23,6 +23,14 @@ else
     AC_SUBST([enable_mqtt_credentials], [1])
 fi
 
+dnl Identify whether MQTT is using SSL
+if test "$mqtt_port" = "8883"
+then
+    AC_SUBST([enable_mqtt_ssl], [1])
+else
+    AC_SUBST([enable_mqtt_ssl], [0])
+fi
+
 dnl Ensure the required arguments are set
 m4_foreach_w(
     [var],
