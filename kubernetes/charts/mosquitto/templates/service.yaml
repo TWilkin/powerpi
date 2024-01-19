@@ -5,7 +5,7 @@
   (not (eq .Values.hostName nil))
 -}}
 
-{{- $type := ternary "LoadBalancer" "NodePort" (and .Values.global.useSensors (not $ssl)) -}}
+{{- $type := ternary "LoadBalancer" "ClusterIP" (and .Values.global.useSensors (not $ssl)) -}}
 
 {{- $data := dict
   "Type" $type
