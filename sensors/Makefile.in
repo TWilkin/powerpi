@@ -61,8 +61,18 @@ $(LIB_DIR)/Adafruit_Sensor-$(ADAFRUIT_SENSOR_VERSION):
 $(LIB_DIR)/DHT-sensor-library-$(DHT_SENSOR_VERSION):
 	$(call download_lib,DHT-sensor-library,$(DHT_SENSOR_VERSION),adafruit)
 
+# Download certificate
+$(LIB_DIR)/cert.pem:
+	wget -O $@ https://letsencrypt.org/certs/lets-encrypt-r3.pem
+
+# Generate certificate header
+src/cert.h: $(LIB_DIR)/cert.pem
+	cp $< .
+	xxd -i cert.pem $@ 
+	rm cert.pem
+
 # compile the sketch
-$(TARGET_DIR)/$(SKETCH).bin: src/$(SKETCH) common_libraries dht22_libaries
+$(TARGET_DIR)/$(SKETCH).bin: src/$(SKETCH) common_libraries dht22_libaries src/cert.h
 	mkdir -p $(TARGET_DIR)
 	$(ARDUINO_PATH)/arduino-builder \
 		-compile \
