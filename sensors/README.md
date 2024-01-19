@@ -41,8 +41,8 @@ kubectl get secrets -n powerpi mosquitto-sensor-secret --template={{.data.passwo
 Next, we need to configure the compiler with the options we wish to include, we also must set the following options in the form `name=value`.
 
 -   **location** - Where this sensor will be deployed, e.g. _Bedroom_, _Office_, _Hallway_ etc.
--   **mqtt_server** - The IP address/hostname of the Docker stack that contains PowerPi.
--   **mqtt_port** - _optional_ - The port number for MQTT, default is _1883_.
+-   **mqtt_server** - The IP address/hostname of the Docker stack that contains PowerPi. If using SSL for MQTT make sure to use a hostname which is the same as in the certificate.
+-   **mqtt_port** - _optional_ - The port number for MQTT, default is _1883_. If using SSL for MQTT set this to port _8883_ and the `MakeFile` will automatically download the Let's Encrypt root certificate to be included in the binary.
 -   **mqtt_user** - _optional_ - The username for MQTT, default is _sensor_.
 -   **mqtt_password** - _optional_ - The password for MQTT, default is disabled. (This is the password retrieved from Kubernetes in the previous step)
 -   **wifi_ssid** - The WiFi SSID the sensor should connect to.
