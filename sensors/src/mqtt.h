@@ -4,8 +4,10 @@
 #include <ArduinoJson.h>
 #include <NTPClient.h>
 #include <PubSubClient.h>
+#include <WiFiClientSecure.h>
 #include <WiFiUdp.h>
 
+#include "cert.h"
 #include "wifi.h"
 
 // the maximum length of the topic
@@ -30,7 +32,10 @@ WiFiUDP espUdp;
 NTPClient timeClient(espUdp);
 
 // the WiFiClient for connecting to MQTT
-WiFiClient espClient;
+WiFiClientSecure espClient;
+
+// the root CA
+X509List cert(cert_LetsEncrypt_R3);
 
 // the MQTT client
 PubSubClient mqttClient(espClient);
