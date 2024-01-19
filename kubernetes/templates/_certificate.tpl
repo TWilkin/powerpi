@@ -7,8 +7,8 @@ metadata:
 spec:
   secretName: {{ .Params.Name }}
   issuerRef:
-    name: {{ .Values.global.clusterIssuer }}
-    kind: ClusterIssuer
+    name: {{ ternary "letsencrypt" .Values.global.clusterIssuer (eq .Values.global.clusterIssuer nil) }}
+    kind: {{ ternary "Issuer" "ClusterIssuer" (eq .Values.global.clusterIssuer nil) }}
   dnsNames:
   - {{ .Params.HostName }}
 {{- end -}}

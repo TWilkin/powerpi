@@ -1,4 +1,4 @@
-{{- if and (eq .Values.global.useSSL true) (not (eq .Values.global.clusterIssuer nil)) -}}
+{{- if eq .Values.global.useSSL true -}}
 
 {{- $data := dict
   "Name" "main-cert"

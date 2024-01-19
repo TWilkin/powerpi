@@ -3,17 +3,13 @@ kind: Ingress
 metadata:
   name: ingress
   {{- include "powerpi.labels" . }}
-  {{- if and .Values.global.useSSL (eq .Values.global.clusterIssuer nil) }}
-  annotations:
-    cert-manager.io/issuer: "letsencrypt"
-  {{- end }}
 spec:
   ingressClassName: public
   {{- if eq .Values.global.useSSL true }}
   tls:
   - hosts:
     - {{ .Values.global.externalHostName }}
-    secretName: {{ ternary "letsencrypt" "main-cert" (eq .Values.global.clusterIssuer nil) }}
+    secretName: main-cert
   {{- end }}
   rules:
   - host: {{ .Values.global.externalHostName }}
@@ -51,9 +47,6 @@ metadata:
   name: ingress-ha
   {{- include "powerpi.labels" . }}
   annotations:
-    {{- if and .Values.global.useSSL (eq .Values.global.clusterIssuer nil) }}
-    cert-manager.io/issuer: {{ ternary "letsencrypt" .Values.global.clusterIssuer (eq .Values.global.clusterIssuer nil) }}
-    {{- end }}
     {{- if eq .Values.global.useCluster true }}
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-name: "route"
@@ -66,7 +59,7 @@ spec:
   tls:
   - hosts:
     - {{ .Values.global.externalHostName }}
-    secretName: {{ ternary "letsencrypt" "main-cert" (eq .Values.global.clusterIssuer nil) }}
+    secretName: main-cert
   {{- end }}
   rules:
   - host: {{ .Values.global.externalHostName }}
