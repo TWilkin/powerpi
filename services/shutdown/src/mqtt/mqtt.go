@@ -34,7 +34,12 @@ func New(hostname string, topicBase string, action MqttMessageAction) MqttClient
 }
 
 func (client MqttClient) Connect(host string, port int, user *string, password *string) {
-	address := fmt.Sprintf("tcp://%s:%d", host, port)
+	protocol := "tcp"
+	if port == 8883 {
+		protocol = "tcps"
+	}
+
+	address := fmt.Sprintf("%s://%s:%d", protocol, host, port)
 	clientId := fmt.Sprintf("shutdown-%s", client.hostname)
 
 	options := MQTT.NewClientOptions()
