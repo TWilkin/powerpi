@@ -206,13 +206,13 @@ files = [
 
 [[package]]
 name = "gmqtt"
-version = "0.6.12"
+version = "0.6.13"
 description = "Client for MQTT protocol"
 optional = false
 python-versions = ">=3.5"
 files = [
-    {file = "gmqtt-0.6.12-py3-none-any.whl", hash = "sha256:e8acad561d52734ae622c543042836fe7a9bd20a3894378794ec763be4901a39"},
-    {file = "gmqtt-0.6.12.tar.gz", hash = "sha256:7df03792343089ae62dc7cd6f8be356861c4fc68768cefa22f3d8de5e7e5be48"},
+    {file = "gmqtt-0.6.13-py3-none-any.whl", hash = "sha256:c67d4a646cc375a3e4623653a0ef3f2c84a7a8cfb029b5cdb58d20dc155c32fd"},
+    {file = "gmqtt-0.6.13.tar.gz", hash = "sha256:b4623d3e32ba266e96c04b0871bb057d05414371c1d279550648b390e6ba7577"},
 ]
 
 [package.extras]
@@ -293,7 +293,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "powerpi-common"
-version = "0.7.0"
+version = "0.7.2"
 description = "PowerPi Common Python Library"
 optional = false
 python-versions = "^3.11"
@@ -303,7 +303,7 @@ develop = true
 [package.dependencies]
 apscheduler = "==3.10.4"
 dependency-injector = "~=4.41.0"
-gmqtt = "~=0.6.12"
+gmqtt = "~=0.6.13"
 jsonpatch = "~=1.33"
 toml = "~=0.10.2"
 
