@@ -414,13 +414,13 @@ files = [
 
 [[package]]
 name = "gmqtt"
-version = "0.6.12"
+version = "0.6.13"
 description = "Client for MQTT protocol"
 optional = false
 python-versions = ">=3.5"
 files = [
-    {file = "gmqtt-0.6.12-py3-none-any.whl", hash = "sha256:e8acad561d52734ae622c543042836fe7a9bd20a3894378794ec763be4901a39"},
-    {file = "gmqtt-0.6.12.tar.gz", hash = "sha256:7df03792343089ae62dc7cd6f8be356861c4fc68768cefa22f3d8de5e7e5be48"},
+    {file = "gmqtt-0.6.13-py3-none-any.whl", hash = "sha256:c67d4a646cc375a3e4623653a0ef3f2c84a7a8cfb029b5cdb58d20dc155c32fd"},
+    {file = "gmqtt-0.6.13.tar.gz", hash = "sha256:b4623d3e32ba266e96c04b0871bb057d05414371c1d279550648b390e6ba7577"},
 ]
 
 [package.extras]
@@ -485,16 +485,17 @@ files = [
 
 [[package]]
 name = "jsonrpc-websocket"
-version = "3.1.4"
+version = "3.1.5"
 description = "A JSON-RPC websocket client library for asyncio"
 optional = false
 python-versions = "*"
 files = [
-    {file = "jsonrpc-websocket-3.1.4.tar.gz", hash = "sha256:dde364d9be3e97bb3fd0324eadab2f793d1ec86c37d91b5b3edf82701ae37950"},
+    {file = "jsonrpc-websocket-3.1.5.tar.gz", hash = "sha256:2942de1046f3ae3f9453a88f73fc091d91dc9aca3d7c75433f681e5124381aeb"},
 ]
 
 [package.dependencies]
 aiohttp = ">=3.0.0"
+async-timeout = ">=4.0.0"
 jsonrpc-base = ">=2.1.0"
 
 [[package]]
@@ -623,7 +624,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "powerpi-common"
-version = "0.7.1"
+version = "0.7.2"
 description = "PowerPi Common Python Library"
 optional = false
 python-versions = "^3.11"
@@ -633,7 +634,7 @@ develop = true
 [package.dependencies]
 apscheduler = "==3.10.4"
 dependency-injector = "~=4.41.0"
-gmqtt = "~=0.6.12"
+gmqtt = "~=0.6.13"
 jsonpatch = "~=1.33"
 toml = "~=0.10.2"
 
@@ -884,4 +885,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "722819f8c50551e43541b1eabbe1ee18e441cc03968d3f0a195c0f18cf6fb7c7"
+content-hash = "3e27690d55fb78dfeb89c56cd578602a5e1048d50192cdf09b6f1faeee530c7c"

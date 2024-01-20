@@ -11,7 +11,7 @@ readme = "README.md"
 python = "^3.11"
 async_timeout = "^4.0.3"
 dacite = "^1.8.1"
-jsonrpc-websocket = "^3.1.4"
+jsonrpc-websocket = "^3.1.5"
 lazy = "^1.6"
 
 [tool.poetry.group.powerpi.dependencies]
