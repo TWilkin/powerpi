@@ -4,7 +4,11 @@
 #include <ArduinoJson.h>
 #include <NTPClient.h>
 #include <PubSubClient.h>
+
+#ifdef MQTT_SSL
 #include <WiFiClientSecure.h>
+#endif
+
 #include <WiFiUdp.h>
 
 #include "cert.h"
