@@ -9,8 +9,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-icmplib = "^3.0.3"
-wakeonlan = "^3.0.0"
+icmplib = "^3.0.4"
+wakeonlan = "^3.1.0"
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}
