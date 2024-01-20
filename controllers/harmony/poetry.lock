@@ -531,13 +531,13 @@ files = [
 
 [[package]]
 name = "gmqtt"
-version = "0.6.12"
+version = "0.6.13"
 description = "Client for MQTT protocol"
 optional = false
 python-versions = ">=3.5"
 files = [
-    {file = "gmqtt-0.6.12-py3-none-any.whl", hash = "sha256:e8acad561d52734ae622c543042836fe7a9bd20a3894378794ec763be4901a39"},
-    {file = "gmqtt-0.6.12.tar.gz", hash = "sha256:7df03792343089ae62dc7cd6f8be356861c4fc68768cefa22f3d8de5e7e5be48"},
+    {file = "gmqtt-0.6.13-py3-none-any.whl", hash = "sha256:c67d4a646cc375a3e4623653a0ef3f2c84a7a8cfb029b5cdb58d20dc155c32fd"},
+    {file = "gmqtt-0.6.13.tar.gz", hash = "sha256:b4623d3e32ba266e96c04b0871bb057d05414371c1d279550648b390e6ba7577"},
 ]
 
 [package.extras]
@@ -592,17 +592,18 @@ files = [
 
 [[package]]
 name = "lazy"
-version = "1.5"
+version = "1.6"
 description = "Lazy attributes for Python objects"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
 files = [
-    {file = "lazy-1.5-py2.py3-none-any.whl", hash = "sha256:7b8bc7e0136f96722bf9e41eec7472495059526bfa1195db61d43e8da6bbe604"},
-    {file = "lazy-1.5.tar.gz", hash = "sha256:cb3d8612aa895a48afe8f08860573ba8ef5ee4fdbe1b3cd606c5f50a16152186"},
+    {file = "lazy-1.6-py2.py3-none-any.whl", hash = "sha256:449375c125c7acac6b7a93f71b8e7ccb06546c37b161613f92d2d3981f793244"},
+    {file = "lazy-1.6.tar.gz", hash = "sha256:7127324ec709e8324f08cb4611c1abe01776bda53bb9ce68dc5dfa46ca0ed3e9"},
 ]
 
 [package.extras]
-docs = ["sphinx", "sphinx-rtd-theme"]
+docs = ["sphinx (==5.3.0)", "sphinx-rtd-theme (==1.0.0)"]
+mypy = ["mypy"]
 
 [[package]]
 name = "multidict"
@@ -715,7 +716,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "powerpi-common"
-version = "0.7.0"
+version = "0.7.2"
 description = "PowerPi Common Python Library"
 optional = false
 python-versions = "^3.11"
@@ -725,7 +726,7 @@ develop = true
 [package.dependencies]
 apscheduler = "==3.10.4"
 dependency-injector = "~=4.41.0"
-gmqtt = "~=0.6.12"
+gmqtt = "~=0.6.13"
 jsonpatch = "~=1.33"
 toml = "~=0.10.2"
 
@@ -1100,4 +1101,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "ad2ea23a3f2dad6dc78540e57ff1a68c2499084adc169474fd6b58185759db0c"
+content-hash = "ddc1cec322d20a2ff619ee412bb3a2f5c4991180de1479a8b4df9d802fd7855f"

@@ -12,7 +12,7 @@ python = "^3.11"
 aioharmony = "~=0.2.10"
 async-cache = "~=1.1.1"
 asyncio-atexit = "~=1.0.1"
-lazy = "~=1.5"
+lazy = "~=1.6"
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}
