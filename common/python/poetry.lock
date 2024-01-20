@@ -193,13 +193,13 @@ yaml = ["pyyaml"]
 
 [[package]]
 name = "gmqtt"
-version = "0.6.12"
+version = "0.6.13"
 description = "Client for MQTT protocol"
 optional = false
 python-versions = ">=3.5"
 files = [
-    {file = "gmqtt-0.6.12-py3-none-any.whl", hash = "sha256:e8acad561d52734ae622c543042836fe7a9bd20a3894378794ec763be4901a39"},
-    {file = "gmqtt-0.6.12.tar.gz", hash = "sha256:7df03792343089ae62dc7cd6f8be356861c4fc68768cefa22f3d8de5e7e5be48"},
+    {file = "gmqtt-0.6.13-py3-none-any.whl", hash = "sha256:c67d4a646cc375a3e4623653a0ef3f2c84a7a8cfb029b5cdb58d20dc155c32fd"},
+    {file = "gmqtt-0.6.13.tar.gz", hash = "sha256:b4623d3e32ba266e96c04b0871bb057d05414371c1d279550648b390e6ba7577"},
 ]
 
 [package.extras]
@@ -423,4 +423,4 @@ devenv = ["black", "check-manifest", "flake8", "pyroma", "pytest (>=4.3)", "pyte
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1d5caa998860fa6751c96990e7439d349e836e3cff1f0abef8ab69b1092fb4aa"
+content-hash = "9922d4d7b8ababe20d0e80cc6a626555fbc332d4ba8ca16b22b7be9e7840aed9"
