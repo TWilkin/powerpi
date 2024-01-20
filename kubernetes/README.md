@@ -36,6 +36,22 @@ When deploying the stack, you'll want to customise some of the options to config
 
 Have a look at the options in [values.yaml](./values.yaml) as these are the options that can be overridden in your own file and provided using the `-f my-override.yaml` file when deploying the stack.
 
+Some of the options are outlined below:
+Options in a sublist should be represented in YAML as such:
+
+```yaml
+global:
+    clusterIssuer: letsencrypt
+
+mosquitto:
+    hostName: powerpi.mydomain.com
+```
+
+-   **global**:
+    -   **clusterIssuer** - The name of a [`ClusterIssuer`](https://cert-manager.io/docs/concepts/issuer/) deployed in Kubernetes that should be used for retrieving SSL certificates, default is _null_.
+-   **mosquitto**:
+    - **hostName** - The hostname to utilise in SSL certificates for outside (i.e. sensors/`shutdown` service) cluster connections to MQTT. Requires the global `clusterIssuer` option to be set. Default is _null_.
+
 ## Deploying
 
 Finally once the plugins are enabled, the stack can be deployed by adding the Helm repository and deploying the stack (where _OVERRIDE_ is the path to your overriding YAML configuration file):
