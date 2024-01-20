@@ -111,7 +111,12 @@ class MQTTClient:
         self.__client.on_disconnect = self.__on_disconnect
         self.__client.on_message = self.__on_message
 
-        await self.__client.connect(url.hostname, url.port, version=gmqtt.constants.MQTTv311)
+        await self.__client.connect(
+            url.hostname, 
+            url.port,
+            ssl=True if url.scheme == 'mqtts' else False,
+            version=gmqtt.constants.MQTTv311
+        )
 
     async def disconnect(self):
         self.__logger.info('Disconnecting from MQTT')
