@@ -20,6 +20,11 @@
     #define MQTT_PASSWORD "@mqtt_password@"
 #endif
 
+// whether MQTT is using SSL
+#if @enable_mqtt_ssl@
+    #define MQTT_SSL
+#endif
+
 // the WiFI connection details
 #define WIFI_SSID "@wifi_ssid@"
 #define WIFI_PASSWORD "@wifi_password@"

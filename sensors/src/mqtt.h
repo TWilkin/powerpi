@@ -4,8 +4,14 @@
 #include <ArduinoJson.h>
 #include <NTPClient.h>
 #include <PubSubClient.h>
+
+#ifdef MQTT_SSL
+#include <WiFiClientSecure.h>
+#endif
+
 #include <WiFiUdp.h>
 
+#include "cert.h"
 #include "wifi.h"
 
 // the maximum length of the topic
@@ -30,7 +36,16 @@ WiFiUDP espUdp;
 NTPClient timeClient(espUdp);
 
 // the WiFiClient for connecting to MQTT
+#ifdef MQTT_SSL
+WiFiClientSecure espClient;
+#else
 WiFiClient espClient;
+#endif
+
+#ifdef MQTT_SSL
+// the root CA
+X509List cert(cert_LetsEncrypt_R3);
+#endif
 
 // the MQTT client
 PubSubClient mqttClient(espClient);

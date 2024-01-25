@@ -1,0 +1,10 @@
+#ifndef __INCLUDED_CERT_H
+#define __INCLUDED_CERT_H
+
+#ifdef MQTT_SSL
+const char cert_LetsEncrypt_R3 [] PROGMEM = R"CERT(
+@CERT@
+)CERT";
+#endif
+
+#endif

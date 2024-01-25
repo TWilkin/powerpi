@@ -5,6 +5,7 @@ autom4te.cache/
 args.sh
 config.status
 configure
+cert.h
 config.h
 Makefile
 *~

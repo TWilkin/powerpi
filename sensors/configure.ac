@@ -1,4 +1,4 @@
-AC_INIT([powerpi-sensor], [0.3.1])
+AC_INIT([powerpi-sensor], [0.4.0])
 
 dnl The arguments the user can override
 AC_ARG_VAR([location], [The location of this sensor])
@@ -21,6 +21,14 @@ then
     AC_SUBST([enable_mqtt_credentials], [0])
 else
     AC_SUBST([enable_mqtt_credentials], [1])
+fi
+
+dnl Identify whether MQTT is using SSL
+if test "$mqtt_port" = "8883"
+then
+    AC_SUBST([enable_mqtt_ssl], [1])
+else
+    AC_SUBST([enable_mqtt_ssl], [0])
 fi
 
 dnl Ensure the required arguments are set

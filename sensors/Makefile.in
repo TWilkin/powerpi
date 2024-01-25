@@ -9,9 +9,9 @@ ARDUINO_PATH=@ARDUINO_PATH@
 SERIAL_PORT?=/dev/ttyUSB0
 
 # versions of libraries
-ADAFRUIT_SENSOR_VERSION=1.1.10
-ARDUINO_JSON_VERSION=v6.21.2
-DHT_SENSOR_VERSION=1.4.5
+ADAFRUIT_SENSOR_VERSION=1.1.14
+ARDUINO_JSON_VERSION=v7.0.2
+DHT_SENSOR_VERSION=1.4.6
 EASY_BUTTON_VERSION=v2.0.3
 NTPCLIENT_VERSION=3.2.1
 PUBSUBCLIENT_VERSION=v2.8
@@ -61,8 +61,17 @@ $(LIB_DIR)/Adafruit_Sensor-$(ADAFRUIT_SENSOR_VERSION):
 $(LIB_DIR)/DHT-sensor-library-$(DHT_SENSOR_VERSION):
 	$(call download_lib,DHT-sensor-library,$(DHT_SENSOR_VERSION),adafruit)
 
+# Download certificate
+$(LIB_DIR)/cert.pem:
+	wget -O $@ https://letsencrypt.org/certs/lets-encrypt-r3.pem
+
+# Generate certificate header
+src/cert.h: $(LIB_DIR)/cert.pem
+	cp src/cert.h.in $@
+	sed -i -e '/@CERT@/{r $<' -e 'd}' $@
+
 # compile the sketch
-$(TARGET_DIR)/$(SKETCH).bin: src/$(SKETCH) common_libraries dht22_libaries
+$(TARGET_DIR)/$(SKETCH).bin: src/$(SKETCH) common_libraries dht22_libaries src/cert.h
 	mkdir -p $(TARGET_DIR)
 	$(ARDUINO_PATH)/arduino-builder \
 		-compile \
