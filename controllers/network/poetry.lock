@@ -193,13 +193,13 @@ yaml = ["pyyaml"]
 
 [[package]]
 name = "gmqtt"
-version = "0.6.12"
+version = "0.6.13"
 description = "Client for MQTT protocol"
 optional = false
 python-versions = ">=3.5"
 files = [
-    {file = "gmqtt-0.6.12-py3-none-any.whl", hash = "sha256:e8acad561d52734ae622c543042836fe7a9bd20a3894378794ec763be4901a39"},
-    {file = "gmqtt-0.6.12.tar.gz", hash = "sha256:7df03792343089ae62dc7cd6f8be356861c4fc68768cefa22f3d8de5e7e5be48"},
+    {file = "gmqtt-0.6.13-py3-none-any.whl", hash = "sha256:c67d4a646cc375a3e4623653a0ef3f2c84a7a8cfb029b5cdb58d20dc155c32fd"},
+    {file = "gmqtt-0.6.13.tar.gz", hash = "sha256:b4623d3e32ba266e96c04b0871bb057d05414371c1d279550648b390e6ba7577"},
 ]
 
 [package.extras]
@@ -207,13 +207,13 @@ test = ["atomicwrites (>=1.3.0)", "attrs (>=19.1.0)", "codecov (>=2.0.15)", "cov
 
 [[package]]
 name = "icmplib"
-version = "3.0.3"
-description = "The power to forge ICMP packets and do ping and traceroute."
+version = "3.0.4"
+description = "Easily forge ICMP packets and make your own ping and traceroute."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "icmplib-3.0.3-py3-none-any.whl", hash = "sha256:607cf7bbd02b161f0bfcf205c288c7b5e22f1d99ee1d95184326ac85eefefe8b"},
-    {file = "icmplib-3.0.3.tar.gz", hash = "sha256:e4fbda6ab3e0ffa5c2eedc7ffe4134b4abd4c3e3873ce576e58c56af57805afb"},
+    {file = "icmplib-3.0.4-py3-none-any.whl", hash = "sha256:336b75c6c23c5ce99ddec33f718fab09661f6ad698e35b6f1fc7cc0ecf809398"},
+    {file = "icmplib-3.0.4.tar.gz", hash = "sha256:57868f2cdb011418c0e1d5586b16d1fabd206569fe9652654c27b6b2d6a316de"},
 ]
 
 [[package]]
@@ -280,7 +280,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "powerpi-common"
-version = "0.7.0"
+version = "0.7.2"
 description = "PowerPi Common Python Library"
 optional = false
 python-versions = "^3.11"
@@ -290,7 +290,7 @@ develop = true
 [package.dependencies]
 apscheduler = "==3.10.4"
 dependency-injector = "~=4.41.0"
-gmqtt = "~=0.6.12"
+gmqtt = "~=0.6.13"
 jsonpatch = "~=1.33"
 toml = "~=0.10.2"
 
@@ -453,16 +453,16 @@ devenv = ["black", "check-manifest", "flake8", "pyroma", "pytest (>=4.3)", "pyte
 
 [[package]]
 name = "wakeonlan"
-version = "3.0.0"
+version = "3.1.0"
 description = "A small python module for wake on lan."
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "wakeonlan-3.0.0-py3-none-any.whl", hash = "sha256:2b0b362e3fca2055ff9804885cb29ea0c1b13408ad31eb0836c0d19a16a5aa7e"},
-    {file = "wakeonlan-3.0.0.tar.gz", hash = "sha256:9a2a7cede51e2d4777330592190ea6e8ba391513d74e6f91d3197669cac7c754"},
+    {file = "wakeonlan-3.1.0-py3-none-any.whl", hash = "sha256:9414da87f48e5dc8a1bb0fa15aba5a0079cfd014231c4cc8e6f2477a0d078c7e"},
+    {file = "wakeonlan-3.1.0.tar.gz", hash = "sha256:aa12edc2587353528a89ad58a54c63212dc2a12226c186b7fcc02caa162cd962"},
 ]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "77ba8b9328cd2e2eb3f0df9216c918f21256fa8cf0e0b273938d9fc85224b649"
+content-hash = "5634a15ab37be79f2a858e0b61b474484d97891e98110ce82e2ce3f965607891"

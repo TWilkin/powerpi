@@ -2,13 +2,13 @@
 
 [[package]]
 name = "aiolifx"
-version = "0.9.0"
+version = "1.0.1"
 description = "API for local communication with LIFX devices over a LAN with asyncio."
 optional = false
 python-versions = ">=3.4"
 files = [
-    {file = "aiolifx-0.9.0-py3-none-any.whl", hash = "sha256:4e3c4a4dc651d8a0728a2de2dee0e47665ac329b40ae1e510d7040e0bef9041b"},
-    {file = "aiolifx-0.9.0.tar.gz", hash = "sha256:a0af0887ad84170bb75f93cd5452c7f9471ee9906cec83177ade7f0c7c5f7793"},
+    {file = "aiolifx-1.0.1-py3-none-any.whl", hash = "sha256:29629a1a98baf636728862af69afece4ad97844573e9770dc272d9b1940fef13"},
+    {file = "aiolifx-1.0.1.tar.gz", hash = "sha256:af8d8cedaa8a28b746811682ca6e383359efbb4bd318aeeb89c069fc0b1b1519"},
 ]
 
 [package.dependencies]
@@ -247,13 +247,13 @@ yaml = ["pyyaml"]
 
 [[package]]
 name = "gmqtt"
-version = "0.6.12"
+version = "0.6.13"
 description = "Client for MQTT protocol"
 optional = false
 python-versions = ">=3.5"
 files = [
-    {file = "gmqtt-0.6.12-py3-none-any.whl", hash = "sha256:e8acad561d52734ae622c543042836fe7a9bd20a3894378794ec763be4901a39"},
-    {file = "gmqtt-0.6.12.tar.gz", hash = "sha256:7df03792343089ae62dc7cd6f8be356861c4fc68768cefa22f3d8de5e7e5be48"},
+    {file = "gmqtt-0.6.13-py3-none-any.whl", hash = "sha256:c67d4a646cc375a3e4623653a0ef3f2c84a7a8cfb029b5cdb58d20dc155c32fd"},
+    {file = "gmqtt-0.6.13.tar.gz", hash = "sha256:b4623d3e32ba266e96c04b0871bb057d05414371c1d279550648b390e6ba7577"},
 ]
 
 [package.extras]
@@ -366,7 +366,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "powerpi-common"
-version = "0.7.0"
+version = "0.7.2"
 description = "PowerPi Common Python Library"
 optional = false
 python-versions = "^3.11"
@@ -376,7 +376,7 @@ develop = true
 [package.dependencies]
 apscheduler = "==3.10.4"
 dependency-injector = "~=4.41.0"
-gmqtt = "~=0.6.12"
+gmqtt = "~=0.6.13"
 jsonpatch = "~=1.33"
 toml = "~=0.10.2"
 
@@ -565,4 +565,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "ad58ecf95d512f3d4f0b188708f5264c7a56d1d1b1050ec350c06a914a465aa9"
+content-hash = "a94801e0a07115727c25014833f85e1db7e772211e5f0634168ddaf3640bad67"

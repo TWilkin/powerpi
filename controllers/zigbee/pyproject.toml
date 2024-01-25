@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "zigbee_controller"
-version = "0.5.2"
+version = "0.5.3"
 description = "PowerPi ZigBee Controller"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
@@ -9,8 +9,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-zigpy = "~=0.57.2"
-zigpy-znp = "~=0.11.5"
+zigpy = "~=0.60.6"
+zigpy-znp = "~=0.12.1"
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}

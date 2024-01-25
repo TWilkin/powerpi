@@ -26,7 +26,7 @@ dependencies:
     version: 0.1.7
     condition: global.persistence
   - name: scheduler
-    version: 0.2.8
+    version: 0.2.9
     condition: global.scheduler
   - name: smarter-device-manager
     version: 0.1.2
@@ -37,22 +37,22 @@ dependencies:
     condition: global.voiceAssistant
   # controllers
   - name: energenie-controller
-    version: 0.1.8
+    version: 0.1.9
     condition: global.energenie
   - name: harmony-controller
-    version: 0.1.11
+    version: 0.1.12
     condition: global.harmony
   - name: lifx-controller
-    version: 0.1.8
+    version: 0.1.9
     condition: global.lifx
   - name: network-controller
-    version: 0.1.6
+    version: 0.1.7
     condition: global.network
   - name: snapcast-controller
-    version: 0.0.2
+    version: 0.0.3
     condition: global.snapcast
   - name: virtual-controller
-    version: 0.2.3
+    version: 0.2.4
   - name: zigbee-controller
-    version: 0.1.12
+    version: 0.1.13
     condition: global.zigbee

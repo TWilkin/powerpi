@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "virtual_controller"
-version = "2.1.0"
+version = "2.1.1"
 description = "PowerPi Virtual Controller"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
