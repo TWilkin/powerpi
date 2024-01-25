@@ -46,6 +46,11 @@
                     "type": "boolean"
                 },
 
+                "clusterIssuer": {
+                    "description": "the name of a ClusterIssuer to use to request certificates",
+                    "type": ["string", "null"]
+                },
+
                 "freeDNS": {
                     "description": "Whether to deploy the FreeDNS service",
                     "type": "boolean"
@@ -251,6 +256,11 @@
             "properties": {
                 "component": {
                     "const": "message-queue"
+                },
+                "hostName": {
+                    "description": "The external host name to use for mosquitto when using sensors and a ClusterIssuer",
+                    "type": "string",
+                    "pattern": "^\\w+(\\.\\w+)+$"
                 }
             },
             "unevaluatedProperties": false

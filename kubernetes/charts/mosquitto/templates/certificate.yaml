@@ -1,0 +1,15 @@
+{{- if and 
+    (eq .Values.global.useSSL true) 
+    (eq .Values.global.useSensors true) 
+    (not (eq .Values.global.clusterIssuer nil)) 
+    (not (eq .Values.hostName nil)) 
+-}}
+
+{{- $data := dict
+  "Name" "mosquitto-cert"
+  "HostName" .Values.hostName
+-}}
+
+{{- include "powerpi.certificate" (merge (dict "Params" $data) . ) -}}
+
+{{- end -}}

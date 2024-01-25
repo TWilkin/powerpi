@@ -1,0 +1,10 @@
+{{- if eq .Values.global.useSSL true -}}
+
+{{- $data := dict
+  "Name" "main-cert"
+  "HostName" .Values.global.externalHostName
+-}}
+
+{{- include "powerpi.certificate" (merge (dict "Params" $data) . ) -}}
+
+{{- end -}}

@@ -1,9 +1,29 @@
-{{- $type := ternary "LoadBalancer" "NodePort" .Values.global.useSensors }}
+{{- $ssl := and 
+  (eq .Values.global.useSSL true) 
+  (eq .Values.global.useSensors true) 
+  (not (eq .Values.global.clusterIssuer nil)) 
+  (not (eq .Values.hostName nil))
+-}}
+
+{{- $type := ternary "LoadBalancer" "ClusterIP" (and .Values.global.useSensors (not $ssl)) -}}
 
 {{- $data := dict
   "Type" $type
   "PortName" "mqtt"
   "Port" 1883
-}}
+-}}
 
-{{- include "powerpi.service" (merge (dict "Params" $data) . )}}
+{{- include "powerpi.service" (merge (dict "Params" $data) .) }}
+---
+{{- if $ssl -}}
+
+{{- $data = dict
+  "Name" "mosquitto-ssl"
+  "Type" "LoadBalancer"
+  "PortName" "mqtts"
+  "Port" 8883
+-}}
+
+{{- include "powerpi.service" (merge (dict "Params" $data) .) -}}
+
+{{- end -}}

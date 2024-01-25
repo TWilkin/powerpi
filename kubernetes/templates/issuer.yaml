@@ -1,4 +1,4 @@
-{{- if eq .Values.global.useSSL true }}
+{{- if and (eq .Values.global.useSSL true) (eq .Values.global.clusterIssuer nil) }}
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
