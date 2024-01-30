@@ -40,7 +40,7 @@ dependencies:
     version: 0.1.9
     condition: global.energenie
   - name: harmony-controller
-    version: 0.1.12
+    version: 0.1.13
     condition: global.harmony
   - name: lifx-controller
     version: 0.1.9
