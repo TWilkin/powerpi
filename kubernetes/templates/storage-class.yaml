@@ -1,3 +1,4 @@
+{{- if eq (empty .Values.global.storageClass) true -}}
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
@@ -8,3 +9,4 @@ reclaimPolicy: Retain
 parameters:
   pvDir: /srv/k8s-volumes
 volumeBindingMode: WaitForFirstConsumer
+{{- end -}}
