@@ -275,10 +275,14 @@ template:
         path: {{ $element.HostPath | default $element.Path }}
     {{- end }}
 
-    {{- if $hasVolumeClaim }}
+    {{- if $hasVolumeClaim -}}
+    {{- $claim := dict
+      "Name" (.Params.PersistentVolumeClaim.Claim | default (printf "%s-volume-claim" .Chart.Name))
+    -}}
+    {{- $claim = include "powerpi.persistent-volume-claim-name" (merge (dict "Params" $claim) .) | fromYaml }}
     - name: {{ .Params.PersistentVolumeClaim.Name }}
       persistentVolumeClaim:
-        claimName: {{ .Params.PersistentVolumeClaim.Claim | default (printf "%s-volume-claim" .Chart.Name) }}
+        claimName: {{ $claim.ClaimName }}
     {{- end }}
 
     {{- if $hasConfig }}
