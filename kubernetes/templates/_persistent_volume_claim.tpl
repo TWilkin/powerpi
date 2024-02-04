@@ -7,7 +7,7 @@
 {{- $name = printf "%s-%s" $name $storageClassName -}}
 {{- end -}}
 
-StorageClass: {{ $storageClassName }}
+StorageClass: {{ $storageClassName | default "powerpi-storage" }}
 ClaimName: {{ $name }}
 
 {{- end -}}
@@ -27,5 +27,5 @@ spec:
   resources:
     requests:
       storage: {{ .Params.Size }} 
-  storageClassName: {{ $claim.StorageClass | default "powerpi-storage" }}
+  storageClassName: {{ $claim.StorageClass }}
 {{- end }}
