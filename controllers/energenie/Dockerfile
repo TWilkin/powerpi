@@ -40,7 +40,7 @@ LABEL description="PowerPi Energenie Controller"
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
 
-RUN addgroup --gid 997 gpio \
+RUN addgroup --gid 993 gpio \
     && adduser --disabled-password powerpi \
     && usermod -a -G gpio powerpi
 USER powerpi
