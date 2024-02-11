@@ -6,7 +6,6 @@ RUN pip3 install --prefer-binary setuptools==69.0.3
 FROM base-image AS build-base-image
 RUN pip3 install --prefer-binary poetry==1.7.1
 RUN poetry config virtualenvs.in-project true
-ENV CFLAGS=-fcommon
 
 FROM build-base-image AS build-base-image-gcc
 RUN apt-get update \
