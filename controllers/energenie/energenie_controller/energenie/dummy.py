@@ -2,8 +2,8 @@ from .energenie import EnergenieInterface
 
 
 class DummyEnergenieInterface(EnergenieInterface):
-    async def _turn_on(self):
-        pass
+    def _turn_on(self):
+        """The DummyEnergenieInterface does not support turning on."""
 
-    async def _turn_off(self):
-        pass
+    def _turn_off(self):
+        """The DummyEnergenieInterface does not support turning off."""

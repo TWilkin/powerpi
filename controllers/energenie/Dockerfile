@@ -28,10 +28,14 @@ COPY controllers/energenie/poetry.lock controllers/energenie/pyproject.toml ./
 RUN ln -s ../../common/python/.venv .venv \
     && poetry install --only main --no-root --no-interaction --no-ansi
 
+# Ugly fix for #479 where RPi.GPIO isn't working on Bookworm hosts 
+RUN sed -i 's/from . import cleanup_GPIO//g' /opt/powerpi/controllers/energenie/.venv/lib/python3.11/site-packages/pyenergenie/__init__.py
+
 # re-compile the binary
 WORKDIR /opt/powerpi/controllers/energenie/.venv/lib/python3.11/site-packages/pyenergenie/energenie/drv
 RUN rm radio_rpi.so \
-    && gcc -Wall -shared -o radio_rpi.so -fPIC radio.c hrfm69.c spis.c gpio_rpi.c delay_posix.c
+    && gcc -Wall -shared -o radio_rpi.so -fPIC radio.c hrfm69.c spis.c gpio_rpi.c delay_posix.c \
+    && rm build* -- *.h *.c
 
 # use multi-stage build to remove compile dependencies
 FROM base-image AS run-image
@@ -40,7 +44,7 @@ LABEL description="PowerPi Energenie Controller"
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
 
-RUN addgroup --gid 997 gpio \
+RUN addgroup --gid 993 gpio \
     && adduser --disabled-password powerpi \
     && usermod -a -G gpio powerpi
 USER powerpi

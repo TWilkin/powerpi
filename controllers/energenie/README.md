@@ -4,6 +4,8 @@ PowerPi service which controls [Energenie MiHome](https://energenie4u.co.uk/cata
 
 The service is built using python, with dependencies using [poetry](https://python-poetry.org/). It is also dependant on a local common library [_powerpi_common_](../../common/python/README.md), and testing library [_powerpi_common_test_](../../common/pytest/README.md).
 
+Unfortunately at this time this service is not compatible with a Pi 5 host due to changes in the way GPIO is accessed. If/when the underlying library is updated to support it, this will be rectified.
+
 ## Supported Devices
 
 This controller requires one of the following Raspberry Pi modules to wirelessly communicate with the other Energenie devices:
