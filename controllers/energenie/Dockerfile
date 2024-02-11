@@ -5,11 +5,13 @@ RUN pip3 install --prefer-binary setuptools==69.0.3
 # create a base image for building
 FROM base-image AS build-base-image
 RUN pip3 install --prefer-binary poetry==1.7.1
+RUN poetry config virtualenvs.in-project true
+ENV CFLAGS=-fcommon
+
+FROM build-base-image AS build-base-image-gcc
 RUN apt-get update \
     && apt-get install -y gcc git \
     && apt-get clean -y
-RUN poetry config virtualenvs.in-project true
-ENV CFLAGS=-fcommon
 
 # build the common library
 FROM build-base-image AS build-common-image
@@ -20,7 +22,7 @@ COPY common/python/powerpi_common ./powerpi_common
 RUN poetry build
 
 # install the controller's dependencies
-FROM build-base-image AS build-image
+FROM build-base-image-gcc AS build-image
 WORKDIR /opt/powerpi/controllers/energenie
 COPY controllers/energenie/poetry.lock controllers/energenie/pyproject.toml ./
 RUN poetry install --compile --only main --no-root --no-directory --no-interaction --no-ansi
