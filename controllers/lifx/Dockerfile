@@ -1,5 +1,5 @@
 # create a common base image with updated setuptools
-FROM python:3.11.6-slim-bookworm AS base-image
+FROM python:3.11.8-slim-bookworm AS base-image
 RUN pip3 install --prefer-binary setuptools==68.2.2
 
 # create a base image for building
