@@ -11,7 +11,6 @@ RUN poetry config virtualenvs.in-project true
 FROM build-base-image AS build-common-image
 WORKDIR /opt/powerpi/common/python
 COPY common/python/poetry.lock common/python/pyproject.toml ./
-RUN poetry install --only main --no-root --no-directory --no-interaction --no-ansi
 COPY common/python/powerpi_common ./powerpi_common
 RUN poetry build
 
