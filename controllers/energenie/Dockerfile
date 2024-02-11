@@ -28,6 +28,9 @@ COPY controllers/energenie/poetry.lock controllers/energenie/pyproject.toml ./
 RUN ln -s ../../common/python/.venv .venv \
     && poetry install --only main --no-root --no-interaction --no-ansi
 
+# Ugly fix for #479 where RPi.GPIO isn't working on Bookworm hosts 
+RUN sed -i 's/from . import cleanup_GPIO//g' /opt/powerpi/controllers/energenie/.venv/lib/python3.11/site-packages/pyenergenie/__init__.py
+
 # re-compile the binary
 WORKDIR /opt/powerpi/controllers/energenie/.venv/lib/python3.11/site-packages/pyenergenie/energenie/drv
 RUN rm radio_rpi.so \
