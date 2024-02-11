@@ -13,7 +13,7 @@ FROM build-base-image AS build-common-image
 WORKDIR /opt/powerpi/common/python
 COPY common/pytest/poetry.lock common/pytest/pyproject.toml ./../pytest/
 COPY common/python/poetry.lock common/python/pyproject.toml ./
-RUN poetry install --only main --no-root --no-interaction --no-ansi
+RUN poetry install --compile --only main --no-root --no-interaction --no-ansi
 COPY common/python/powerpi_common ./powerpi_common
 RUN poetry build \
     && .venv/bin/pip install ./dist/*.whl
@@ -24,7 +24,7 @@ WORKDIR /opt/powerpi/controllers/lifx
 COPY --from=build-common-image /opt/powerpi/common ./../../common
 COPY controllers/lifx/poetry.lock controllers/lifx/pyproject.toml ./
 RUN ln -s ../../common/python/.venv .venv \
-    && poetry install --only main --no-root --no-interaction --no-ansi
+    && poetry install --compile --only main --no-root --no-interaction --no-ansi
 
 # use multi-stage build to remove compile dependencies
 FROM base-image AS run-image

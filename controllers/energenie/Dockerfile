@@ -16,7 +16,7 @@ FROM build-base-image AS build-common-image
 WORKDIR /opt/powerpi/common/python
 COPY common/pytest/poetry.lock common/pytest/pyproject.toml ./../pytest/
 COPY common/python/poetry.lock common/python/pyproject.toml ./
-RUN poetry install --only main --no-root --no-interaction --no-ansi
+RUN poetry install --compile --only main --no-root --no-interaction --no-ansi
 COPY common/python/powerpi_common ./powerpi_common
 RUN poetry build \
     && .venv/bin/pip install ./dist/*.whl
@@ -27,7 +27,7 @@ WORKDIR /opt/powerpi/controllers/energenie
 COPY --from=build-common-image /opt/powerpi/common ./../../common
 COPY controllers/energenie/poetry.lock controllers/energenie/pyproject.toml ./
 RUN ln -s ../../common/python/.venv .venv \
-    && poetry install --only main --no-root --no-interaction --no-ansi
+    && poetry install --compile --only main --no-root --no-interaction --no-ansi
 
 # Ugly fix for #479 where RPi.GPIO isn't working on Bookworm hosts 
 RUN sed -i 's/from . import cleanup_GPIO//g' /opt/powerpi/controllers/energenie/.venv/lib/python3.11/site-packages/pyenergenie/__init__.py
