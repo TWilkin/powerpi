@@ -1,35 +1,37 @@
 # create a common base image with updated setuptools
-FROM python:3.11.6-slim-bookworm AS base-image
-RUN pip3 install --prefer-binary setuptools==68.2.2
+FROM python:3.11.8-slim-bookworm AS base-image
+RUN pip3 install --prefer-binary setuptools==69.0.3
 
 # create a base image for building
 FROM base-image AS build-base-image
-RUN pip3 install --prefer-binary poetry==1.6.1
-RUN apt-get update \
-    && apt-get install -y gcc git
+RUN pip3 install --prefer-binary poetry==1.7.1
 RUN poetry config virtualenvs.in-project true
-ENV CFLAGS=-fcommon
 
-# create a venv with the common library
+FROM build-base-image AS build-base-image-gcc
+RUN apt-get update \
+    && apt-get install -y gcc git \
+    && apt-get clean -y
+
+# build the common library
 FROM build-base-image AS build-common-image
 WORKDIR /opt/powerpi/common/python
-COPY common/pytest/poetry.lock common/pytest/pyproject.toml ./../pytest/
 COPY common/python/poetry.lock common/python/pyproject.toml ./
-RUN poetry install --only main --no-root --no-interaction --no-ansi
 COPY common/python/powerpi_common ./powerpi_common
-RUN poetry build \
-    && .venv/bin/pip install ./dist/*.whl
+RUN poetry build
 
-# re-use the venv and install the controller's dependencies
-FROM build-base-image AS build-image
+# install the controller's dependencies
+FROM build-base-image-gcc AS build-image
 WORKDIR /opt/powerpi/controllers/energenie
-COPY --from=build-common-image /opt/powerpi/common ./../../common
 COPY controllers/energenie/poetry.lock controllers/energenie/pyproject.toml ./
-RUN ln -s ../../common/python/.venv .venv \
-    && poetry install --only main --no-root --no-interaction --no-ansi
+RUN poetry install --compile --only main --no-root --no-directory --no-interaction --no-ansi
 
 # Ugly fix for #479 where RPi.GPIO isn't working on Bookworm hosts 
 RUN sed -i 's/from . import cleanup_GPIO//g' /opt/powerpi/controllers/energenie/.venv/lib/python3.11/site-packages/pyenergenie/__init__.py
+
+# install the common library
+COPY --from=build-common-image /opt/powerpi/common/python/dist/*.whl .
+RUN .venv/bin/pip install ./*.whl \
+    && rm -- *.whl
 
 # re-compile the binary
 WORKDIR /opt/powerpi/controllers/energenie/.venv/lib/python3.11/site-packages/pyenergenie/energenie/drv
