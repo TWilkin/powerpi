@@ -368,9 +368,9 @@ pip = "*"
 
 [package.source]
 type = "git"
-url = "https://github.com/whaleygeek/pyenergenie.git"
-reference = "c9cae74e27e7997af566ee4ee783e2529e25c580"
-resolved_reference = "c9cae74e27e7997af566ee4ee783e2529e25c580"
+url = "https://github.com/TWilkin/pyenergenie.git"
+reference = "0418bcf53e563fe372ce34d4708102b33d275dd7"
+resolved_reference = "0418bcf53e563fe372ce34d4708102b33d275dd7"
 
 [[package]]
 name = "pytest"
@@ -540,4 +540,4 @@ devenv = ["black", "check-manifest", "flake8", "pyroma", "pytest (>=4.3)", "pyte
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "874916d676295229a2d0a952fa3ad388da1e1ced11fd90141acae9b9bd4cdd29"
+content-hash = "a646de61e33cd25301e010d5bc3cd38bea450f4647ca56dfd21e73bf7528f604"
