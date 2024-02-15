@@ -1,4 +1,4 @@
-from energenie import switch_on, switch_off
+from gpiozero import Energenie
 
 from .energenie import EnergenieInterface
 
@@ -7,8 +7,10 @@ class EnergenieInterfaceImpl(EnergenieInterface):
     def __init__(self):
         EnergenieInterface.__init__(self)
 
+        self.__device = Energenie(self._device_id, initial_value=None)
+
     def _turn_on(self):
-        switch_on(self._device_id)
+        self.__device.on()
 
     def _turn_off(self):
-        switch_off(self._device_id)
+        self.__device.off()
