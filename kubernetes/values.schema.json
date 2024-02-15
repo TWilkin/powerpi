@@ -109,6 +109,11 @@
                 "energyMonitor": {
                     "description": "Whether to include N3rgy energy monitoring support",
                     "type": "boolean"
+                },
+
+                "storageClass": {
+                    "description": "When defined will use the specified StorageClass instead of using local storage",
+                    "type": "string"
                 }
             },
             "required": ["externalHostName"],
@@ -178,6 +183,10 @@
                 },
                 "backupSchedule": {
                     "description": "The cron schedule for when the database backup should run",
+                    "type": "string"
+                },
+                "storageClass": {
+                    "description": "When defined will use the specified StorageClass instead of using local storage",
                     "type": "string"
                 }
             },
@@ -261,6 +270,10 @@
                     "description": "The external host name to use for mosquitto when using sensors and a ClusterIssuer",
                     "type": "string",
                     "pattern": "^\\w+(\\.\\w+)+$"
+                },
+                "storageClass": {
+                    "description": "When defined will use the specified StorageClass instead of using local storage",
+                    "type": "string"
                 }
             },
             "unevaluatedProperties": false
@@ -351,6 +364,12 @@
             "description": "The configuration for the PowerPi ZigBee controller Helm chart",
             "type": "object",
             "allOf": [{ "$ref": "#/$defs/controller" }],
+            "properties": {
+                "storageClass": {
+                    "description": "When defined will use the specified StorageClass instead of using local storage",
+                    "type": "string"
+                }
+            },
             "unevaluatedProperties": false
         }
     },

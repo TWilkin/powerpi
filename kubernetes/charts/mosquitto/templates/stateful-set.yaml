@@ -5,12 +5,13 @@
   (not (eq .Values.hostName nil))
 -}}
 
+{{- $needsNodeSelector := include "powerpi.persistent-volume-node-selector" . -}}
 {{- $nodeSelector := ternary (list
-    (dict
-      "Name" "powerpi-storage"
-      "Value" "true"
-    )
-  ) (list) .Values.global.useCluster 
+  (dict
+    "Name" $needsNodeSelector
+    "Value" "true"
+  )
+) (list) (not (empty $needsNodeSelector))
 -}}
 
 {{- $ports := list (dict
@@ -42,6 +43,12 @@
   "Command" (list "/bin/sh" "-c")
   "Args" (list
     "cp /var/run/secrets/mosquitto-passwords-secret/passwords /mosquitto/passwords && mosquitto_passwd -U /mosquitto/passwords && exec /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf"
+  ) 
+  "Annotations" (list
+    (dict
+      "Name" "checksum/mosquitto-passwords-secret"
+      "Value" (include (print $.Template.BasePath "/secret.yaml") $ | sha256sum)
+    )
   )
   "Ports" $ports
   "NodeSelector" $nodeSelector

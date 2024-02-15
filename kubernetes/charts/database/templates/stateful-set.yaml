@@ -1,10 +1,11 @@
+{{- $needsNodeSelector := include "powerpi.persistent-volume-node-selector" . -}}
 {{- $nodeSelector := ternary (list
-    (dict
-      "Name" "powerpi-storage"
-      "Value" "true"
-    )
-  ) (list) .Values.global.useCluster 
-}}
+  (dict
+    "Name" $needsNodeSelector
+    "Value" "true"
+  )
+) (list) (not (empty $needsNodeSelector))
+-}}
 
 {{- $data := dict
   "Kind" "StatefulSet"

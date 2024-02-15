@@ -1,8 +1,25 @@
-{{- define "powerpi.persistent-volume-claim" }}
+{{- define "powerpi.persistent-volume-claim-name" -}}
+{{- $storageClassName := .Values.storageClass | default .Values.global.storageClass -}}
+
+{{- $name := .Params.Name | default (printf "%s-volume-claim" .Chart.Name) -}}
+
+{{- if eq (empty $storageClassName) false -}}
+{{- $name = printf "%s-%s" $name $storageClassName -}}
+{{- end -}}
+
+StorageClass: {{ $storageClassName | default "powerpi-storage" }}
+ClaimName: {{ $name }}
+
+{{- end -}}
+
+{{- define "powerpi.persistent-volume-claim" -}}
+
+{{- $claim := include "powerpi.persistent-volume-claim-name" . | fromYaml -}}
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Params.Name | default (printf "%s-volume-claim" .Chart.Name) }}
+  name: {{ $claim.ClaimName }}
   {{- include "powerpi.labels" . }}
 spec:
   accessModes:
@@ -10,5 +27,5 @@ spec:
   resources:
     requests:
       storage: {{ .Params.Size }} 
-  storageClassName: {{ .Values.storageClass | default "powerpi-storage" }}
+  storageClassName: {{ $claim.StorageClass }}
 {{- end }}

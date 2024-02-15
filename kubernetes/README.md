@@ -49,8 +49,9 @@ mosquitto:
 
 -   **global**:
     -   **clusterIssuer** - The name of a [`ClusterIssuer`](https://cert-manager.io/docs/concepts/issuer/) deployed in Kubernetes that should be used for retrieving SSL certificates, default is _null_.
+    -   **storageClass** - The name of a [`StorageClass`](https://kubernetes.io/docs/concepts/storage/storage-classes/) deployed in Kuberenetes that should be used when creating persistent storage for services that require this, default is _null_ which will use a custom hostpath class. Can be defined per service instead of globally if different classes are required per service. Effective for `mosquitto`, `database` and [`zigbee-controller`](../controllers/zigbee/README.md) services.
 -   **mosquitto**:
-    - **hostName** - The hostname to utilise in SSL certificates for outside (i.e. sensors/`shutdown` service) cluster connections to MQTT. Requires the global `clusterIssuer` option to be set. Default is _null_.
+    -   **hostName** - The hostname to utilise in SSL certificates for outside (i.e. sensors/`shutdown` service) cluster connections to MQTT. Requires the global `clusterIssuer` option to be set. Default is _null_.
 
 ## Deploying
 
@@ -84,7 +85,7 @@ The deployment expects the following secrets to already exist, they are describe
 
 ```bash
 microk8s kubectl create secret generic freedns-secret --namespace powerpi \
-    --from-literal username=__USERNAME__ \
+    --from-literal=username=__USERNAME__ \
     --from-file=password=./__SECRET_NAME__
 ```
 
@@ -92,7 +93,7 @@ microk8s kubectl create secret generic freedns-secret --namespace powerpi \
 
 ```bash
 microk8s kubectl create secret generic google-auth-secret --namespace powerpi \
-    --from-literal client_id=__CLIENT_ID__ \
+    --from-literal=client_id=__CLIENT_ID__ \
     --from-file=secret=./__SECRET_NAME__
 ```
 
@@ -107,7 +108,7 @@ microk8s kubectl create secret generic ihd-secret --namespace powerpi \
 
 ```bash
 microk8s kubectl create secret generic github-secret --namespace powerpi \
-    --from-literal username=__USERNAME__ \
+    --from-literal=username=__USERNAME__ \
     --from-file=password=./__SECRET_NAME__
 ```
 
@@ -121,4 +122,4 @@ microk8s kubectl label node NODE_NAME powerpi-storage=true
 
 The following service also utilises labels, if you wish to use this apply their labels as well:
 
--   [energenie-controller](../controllers/energenie/README.md#kubernetes) - ENER314/ENER314-RT Pi controller
+-   [`energenie-controller`](../controllers/energenie/README.md#kubernetes) - ENER314/ENER314-RT Pi controller
