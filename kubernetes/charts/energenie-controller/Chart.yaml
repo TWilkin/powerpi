@@ -3,4 +3,4 @@ name: energenie-controller
 description: A Helm chart for the PowerPi Energenie device controller
 type: application
 version: 0.1.10
-appVersion: 0.3.3
+appVersion: 0.4.0
