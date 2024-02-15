@@ -25,9 +25,6 @@ WORKDIR /opt/powerpi/controllers/energenie
 COPY controllers/energenie/poetry.lock controllers/energenie/pyproject.toml ./
 RUN poetry install --compile --only main --no-root --no-directory --no-interaction --no-ansi
 
-# Ugly fix for #479 where RPi.GPIO isn't working on Bookworm hosts 
-RUN sed -i 's/from . import cleanup_GPIO//g' /opt/powerpi/controllers/energenie/.venv/lib/python3.11/site-packages/pyenergenie/__init__.py
-
 # install the common library
 COPY --from=build-common-image /opt/powerpi/common/python/dist/*.whl .
 RUN .venv/bin/pip install ./*.whl \
