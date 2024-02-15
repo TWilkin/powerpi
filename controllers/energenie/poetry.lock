@@ -289,17 +289,6 @@ files = [
 ]
 
 [[package]]
-name = "pip"
-version = "24.0"
-description = "The PyPA recommended tool for installing Python packages."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "pip-24.0-py3-none-any.whl", hash = "sha256:ba0d021a166865d2265246961bec0152ff124de910c5cc39f1156ce3fa7c69dc"},
-    {file = "pip-24.0.tar.gz", hash = "sha256:ea9bd1a847e8c5774a5777bb398c19e80bcd4e2aa16a4b301b718fe6f593aba2"},
-]
-
-[[package]]
 name = "pluggy"
 version = "1.2.0"
 description = "plugin and hook calling mechanisms for python"
@@ -364,13 +353,12 @@ develop = false
 
 [package.dependencies]
 gpiozero = "*"
-pip = "*"
 
 [package.source]
 type = "git"
 url = "https://github.com/TWilkin/pyenergenie.git"
-reference = "9f0c048699f08719db08695e7dc2e51b33e6ad0f"
-resolved_reference = "9f0c048699f08719db08695e7dc2e51b33e6ad0f"
+reference = "906376e9193c99fc6755f90fd81d8911d7f5bfcf"
+resolved_reference = "906376e9193c99fc6755f90fd81d8911d7f5bfcf"
 
 [[package]]
 name = "pytest"
@@ -525,4 +513,4 @@ devenv = ["black", "check-manifest", "flake8", "pyroma", "pytest (>=4.3)", "pyte
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "3d914831b82fb16a583bef0c16adf79644debb664f8553c3bac1112d6a7c7c9d"
+content-hash = "58c8ac7fa1c2582a38a0b6bb8c8727aa8a67d480172914a3d006b543ec92cd81"

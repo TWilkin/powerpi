@@ -25,7 +25,14 @@ WORKDIR /opt/powerpi/controllers/energenie
 COPY controllers/energenie/poetry.lock controllers/energenie/pyproject.toml ./
 RUN poetry install --compile --only main --no-root --no-directory --no-interaction --no-ansi
 
+# re-compile the binary
+WORKDIR /opt/powerpi/controllers/energenie/.venv/lib/python3.11/site-packages/pyenergenie/energenie/drv
+RUN rm radio_rpi.so \
+    && gcc -Wall -shared -o radio_rpi.so -fPIC radio.c hrfm69.c spis.c gpio_rpi.c delay_posix.c \
+    && rm build* -- *.h *.c
+
 # install the common library
+WORKDIR /opt/powerpi/controllers/energenie
 COPY --from=build-common-image /opt/powerpi/common/python/dist/*.whl .
 RUN .venv/bin/pip install ./*.whl \
     && rm -- *.whl
