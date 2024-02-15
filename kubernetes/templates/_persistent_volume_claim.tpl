@@ -9,8 +9,24 @@
 
 StorageClass: {{ $storageClassName | default "powerpi-storage" }}
 ClaimName: {{ $name }}
+IsDefault: {{ empty $storageClassName }}
 
 {{- end -}}
+
+
+{{- define "powerpi.persistent-volume-node-selector" -}}
+{{- $claim := dict
+  "Name" (printf "%s-volume-claim" .Chart.Name)
+-}}
+
+{{- $claim = include "powerpi.persistent-volume-claim-name" (merge (dict "Params" $claim) .) | fromYaml }}
+
+{{- if and .Values.global.useCluster $claim.IsDefault -}}
+"powerpi-storage"
+{{- end -}}
+
+{{- end -}}
+
 
 {{- define "powerpi.persistent-volume-claim" -}}
 
