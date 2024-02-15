@@ -33,12 +33,6 @@ COPY --from=build-common-image /opt/powerpi/common/python/dist/*.whl .
 RUN .venv/bin/pip install ./*.whl \
     && rm -- *.whl
 
-# re-compile the binary
-WORKDIR /opt/powerpi/controllers/energenie/.venv/lib/python3.11/site-packages/pyenergenie/energenie/drv
-RUN rm radio_rpi.so \
-    && gcc -Wall -shared -o radio_rpi.so -fPIC radio.c hrfm69.c spis.c gpio_rpi.c delay_posix.c \
-    && rm build* -- *.h *.c
-
 # use multi-stage build to remove compile dependencies
 FROM base-image AS run-image
 LABEL description="PowerPi Energenie Controller"
