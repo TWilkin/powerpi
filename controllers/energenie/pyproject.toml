@@ -10,7 +10,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 gpiozero = "~=2.0.1"
-pyenergenie = {git = "https://github.com/TWilkin/pyenergenie.git", branch = "gpiozero", rev = "9c037117674dd886f56f3534c42261ecd66caf68"}
+pyenergenie = {git = "https://github.com/TWilkin/pyenergenie.git", branch = "gpiozero", rev = "9f0c048699f08719db08695e7dc2e51b33e6ad0f"}
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}
