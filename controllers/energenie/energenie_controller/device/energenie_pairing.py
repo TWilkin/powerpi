@@ -1,16 +1,16 @@
 import asyncio
-
 from typing import Any, Dict, List
 
-from energenie_controller.config import EnergenieConfig
-from energenie_controller.energenie import EnergenieInterface
 from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
+from energenie_controller.config import EnergenieConfig
+from energenie_controller.energenie import EnergenieInterface
+
 
 class EnergeniePairingDevice(Device):
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         config: EnergenieConfig,
@@ -38,7 +38,12 @@ class EnergeniePairingDevice(Device):
         home_id = self.find_free_home_id()
 
         if home_id is not None:
-            self.__energenie.set_ids(home_id, 0)
+            device_id = 0  # for ENER314-RT this is "all"
+            if not self.__config.is_ener314_rt:
+                # ENER314 only supports device_id 1-4
+                device_id = 1
+
+            self.__energenie.set_ids(home_id, device_id)
 
             # publish the message now as we have no idea when it'll pair
             topic = f'device/{self.name}/join'
