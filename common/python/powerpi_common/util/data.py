@@ -1,4 +1,4 @@
-from enum import StrEnum
+from enum import StrEnum, unique
 from typing import Callable, Dict, Tuple
 
 
@@ -24,6 +24,7 @@ class Ranges:
     UINT16 = Range(0, 2 ** 16 - 1)
 
 
+@unique
 class DataType(StrEnum):
     BRIGHTNESS = 'brightness'
     DURATION = 'duration'
