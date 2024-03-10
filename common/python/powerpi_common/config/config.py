@@ -1,10 +1,11 @@
 import json
 import os
 from abc import ABC, abstractmethod
-from enum import StrEnum
+from enum import StrEnum, unique
 from typing import Any, Dict, List
 
 
+@unique
 class ConfigFileType(StrEnum):
     DEVICES = 'devices'
     EVENTS = 'events'

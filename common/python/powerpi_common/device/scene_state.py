@@ -1,9 +1,10 @@
-from enum import StrEnum
+from enum import StrEnum, unique
 from typing import Dict
 
 from .mixin import AdditionalState
 
 
+@unique
 class ReservedScenes(StrEnum):
     DEFAULT = 'default'
     CURRENT = 'current'
