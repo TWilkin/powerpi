@@ -11,9 +11,13 @@ class OnOff(IntEnum):
 
     @classmethod
     def get(cls, state: DeviceStatus):
-        return OnOff.OFF if state == DeviceStatus.OFF \
-            else OnOff.ON if state == DeviceStatus.ON \
-            else None
+        if state == DeviceStatus.OFF:
+            return OnOff.OFF
+
+        if state == DeviceStatus.ON:
+            return OnOff.ON
+
+        return None
 
 
 @unique
