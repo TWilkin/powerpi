@@ -280,7 +280,6 @@ develop = true
 apscheduler = "==3.10.4"
 dependency-injector = "~=4.41.0"
 gmqtt = "~=0.6.13"
-jsonpatch = "~=1.33"
 toml = "~=0.10.2"
 
 [package.source]
@@ -443,4 +442,4 @@ devenv = ["check-manifest", "pytest (>=4.3)", "pytest-cov", "pytest-mock (>=3.3)
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "c4f4c9410029f74763e3225462fa4525badcae3e125a466869cca8ccf0b3c862"
+content-hash = "92281681c193f970c2f7df0e6b03577f451925a6ff979c59464c520be7138c66"

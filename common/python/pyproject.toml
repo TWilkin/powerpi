@@ -12,7 +12,6 @@ python = "^3.11"
 apscheduler = "==3.10.4"
 dependency-injector = "~=4.41.0"
 gmqtt = "~=0.6.13"
-jsonpatch = "~=1.33"
 toml = "~=0.10.2"
 
 [tool.poetry.group.test.dependencies]
