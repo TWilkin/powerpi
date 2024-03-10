@@ -17,6 +17,8 @@ dependencies:
   - name: energy-monitor
     version: 0.1.5
     condition: global.energyMonitor
+  - name: event
+    version: 0.0.1
   - name: freedns
     version: 0.1.4
     condition: global.freeDNS
