@@ -105,9 +105,7 @@ class TestDeviceSchedule:
 
         with patch_datetime(
             now if now is not None
-            else datetime(
-                2023, 3, 1, 18, 23, 1
-            ).astimezone(pytz.UTC)
+            else datetime(2023, 3, 1, 18, 23, 1, tzinfo=pytz.UTC)
         ):
             subject.start()
 
@@ -241,9 +239,7 @@ class TestDeviceSchedule:
             'brightness': current
         }
 
-        with patch_datetime(datetime(
-            2023, 3, 1, 9, 1
-        ).astimezone(pytz.UTC)):
+        with patch_datetime(datetime(2023, 3, 1, 9, 1, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
                 'between': ['09:10:00', '10:00:00'],
@@ -252,7 +248,7 @@ class TestDeviceSchedule:
             })
 
             start_date = datetime(2023, 3, 1, 9, 10)
-            end_date = datetime(2023, 3, 1, 10, 0).astimezone(pytz.UTC)
+            end_date = datetime(2023, 3, 1, 10, 0, tzinfo=pytz.UTC)
 
             await subject.execute(start_date, end_date)
 
@@ -288,9 +284,7 @@ class TestDeviceSchedule:
             'hue': current
         }
 
-        with patch_datetime(datetime(
-            2023, 3, 1, 9, 1
-        ).astimezone(pytz.UTC)):
+        with patch_datetime(datetime(2023, 3, 1, 9, 1, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
                 'between': ['09:10:00', '10:00:00'],
@@ -299,7 +293,7 @@ class TestDeviceSchedule:
             })
 
             start_date = datetime(2023, 3, 1, 9, 10)
-            end_date = datetime(2023, 3, 1, 10, 0).astimezone(pytz.UTC)
+            end_date = datetime(2023, 3, 1, 10, 0, tzinfo=pytz.UTC)
 
             await subject.execute(start_date, end_date)
 
@@ -317,9 +311,7 @@ class TestDeviceSchedule:
         subject_builder: SubjectBuilder,
         add_job: AddJobType,
     ):
-        with patch_datetime(datetime(
-            2023, 3, 1, 9, 30, 1
-        ).astimezone(pytz.UTC)):
+        with patch_datetime(datetime(2023, 3, 1, 9, 30, 1, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
                 'between': ['09:00:00', '09:30:00'],
@@ -327,7 +319,7 @@ class TestDeviceSchedule:
             })
 
             start_date = datetime(2023, 3, 1, 9, 00)
-            end_date = datetime(2023, 3, 1, 9, 30).astimezone(pytz.UTC)
+            end_date = datetime(2023, 3, 1, 9, 30, tzinfo=pytz.UTC)
 
             await subject.execute(start_date, end_date)
 
@@ -392,11 +384,9 @@ class TestDeviceSchedule:
                 'brightness': current
             }
 
-            with patch_datetime(datetime(
-                2023, 3, 1, 9, minutes
-            ).astimezone(pytz.UTC)):
+            with patch_datetime(datetime(2023, 3, 1, 9, minutes, tzinfo=pytz.UTC)):
                 start_date = datetime(2023, 3, 1, 9, 10)
-                end_date = datetime(2023, 3, 1, 10, 0).astimezone(pytz.UTC)
+                end_date = datetime(2023, 3, 1, 10, 0, tzinfo=pytz.UTC)
 
                 await subject.execute(start_date, end_date)
 
@@ -440,11 +430,9 @@ class TestDeviceSchedule:
 
             type(variable).scene = PropertyMock(return_value=scene)
 
-            with patch_datetime(datetime(
-                2023, 3, 1, 9, 26
-            ).astimezone(pytz.UTC)):
-                start_date = datetime(2023, 3, 1, 9, 0).astimezone(pytz.UTC)
-                end_date = datetime(2023, 3, 1, 9, 50).astimezone(pytz.UTC)
+            with patch_datetime(datetime(2023, 3, 1, 9, 26, tzinfo=pytz.UTC)):
+                start_date = datetime(2023, 3, 1, 9, 0, tzinfo=pytz.UTC)
+                end_date = datetime(2023, 3, 1, 9, 50, tzinfo=pytz.UTC)
 
                 await subject.execute(start_date, end_date)
 
@@ -484,9 +472,7 @@ class TestDeviceSchedule:
             return_value=current_state
         )
 
-        with patch_datetime(datetime(
-            2023, 3, 1, 9, 31
-        ).astimezone(pytz.UTC)):
+        with patch_datetime(datetime(2023, 3, 1, 9, 31, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
                 'between': ['09:10:00', '10:00:00'],
@@ -497,7 +483,7 @@ class TestDeviceSchedule:
             })
 
             start_date = datetime(2023, 3, 1, 9, 10)
-            end_date = datetime(2023, 3, 1, 10, 0).astimezone(pytz.UTC)
+            end_date = datetime(2023, 3, 1, 10, 0, tzinfo=pytz.UTC)
 
             await subject.execute(start_date, end_date)
 
