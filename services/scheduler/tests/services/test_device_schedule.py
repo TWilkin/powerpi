@@ -103,14 +103,12 @@ class TestDeviceSchedule:
             'interval': interval
         })
 
-        with patch_datetime() as mock_datetime:
-            if now is not None:
-                mock_datetime.now.return_value = now
-            else:
-                mock_datetime.now.return_value = datetime(
-                    2023, 3, 1, 18, 23, 1
-                ).astimezone(pytz.UTC)
-
+        with patch_datetime(
+            now if now is not None
+            else datetime(
+                2023, 3, 1, 18, 23, 1
+            ).astimezone(pytz.UTC)
+        ):
             subject.start()
 
         assert len(add_job) == 1
@@ -153,10 +151,9 @@ class TestDeviceSchedule:
             'condition': condition
         })
 
-        with patch_datetime() as mock_datetime:
-            mock_datetime.now.return_value = datetime(
-                2023, 3, 1, 18, 23, 1
-            )
+        with patch_datetime(datetime(
+            2023, 3, 1, 18, 23, 1
+        )):
             subject.start()
 
         # if the condition is valid we expected it to schedule
@@ -195,11 +192,9 @@ class TestDeviceSchedule:
     ):
         # pylint: disable=too-many-arguments
 
-        with patch_datetime() as mock_datetime:
-            mock_datetime.now.return_value = datetime(
-                2023, 3, 1, 9, 1
-            )
-
+        with patch_datetime(datetime(
+            2023, 3, 1, 9, 1
+        )):
             subject = subject_builder({
                 'device': 'SomeDevice',
                 'between': ['09:00:00', '09:50:00'],
@@ -207,8 +202,8 @@ class TestDeviceSchedule:
                 **config
             })
 
-            start_date = datetime(2023, 3, 1, 9, 00)
-            end_date = datetime(2023, 3, 1, 9, 50)
+            start_date = datetime(2023, 3, 1, 9, 00, tzinfo=pytz.UTC)
+            end_date = datetime(2023, 3, 1, 9, 50, tzinfo=pytz.UTC)
 
             await subject.execute(start_date, end_date)
 
@@ -246,11 +241,9 @@ class TestDeviceSchedule:
             'brightness': current
         }
 
-        with patch_datetime() as mock_datetime:
-            mock_datetime.now.return_value = datetime(
-                2023, 3, 1, 9, 1
-            ).astimezone(pytz.UTC)
-
+        with patch_datetime(datetime(
+            2023, 3, 1, 9, 1
+        ).astimezone(pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
                 'between': ['09:10:00', '10:00:00'],
@@ -295,11 +288,9 @@ class TestDeviceSchedule:
             'hue': current
         }
 
-        with patch_datetime() as mock_datetime:
-            mock_datetime.now.return_value = datetime(
-                2023, 3, 1, 9, 1
-            ).astimezone(pytz.UTC)
-
+        with patch_datetime(datetime(
+            2023, 3, 1, 9, 1
+        ).astimezone(pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
                 'between': ['09:10:00', '10:00:00'],
@@ -326,11 +317,9 @@ class TestDeviceSchedule:
         subject_builder: SubjectBuilder,
         add_job: AddJobType,
     ):
-        with patch_datetime() as mock_datetime:
-            mock_datetime.now.return_value = datetime(
-                2023, 3, 1, 9, 30, 1
-            ).astimezone(pytz.UTC)
-
+        with patch_datetime(datetime(
+            2023, 3, 1, 9, 30, 1
+        ).astimezone(pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
                 'between': ['09:00:00', '09:30:00'],
@@ -403,11 +392,9 @@ class TestDeviceSchedule:
                 'brightness': current
             }
 
-            with patch_datetime() as mock_datetime:
-                mock_datetime.now.return_value = datetime(
-                    2023, 3, 1, 9, minutes
-                ).astimezone(pytz.UTC)
-
+            with patch_datetime(datetime(
+                2023, 3, 1, 9, minutes
+            ).astimezone(pytz.UTC)):
                 start_date = datetime(2023, 3, 1, 9, 10)
                 end_date = datetime(2023, 3, 1, 10, 0).astimezone(pytz.UTC)
 
@@ -453,11 +440,9 @@ class TestDeviceSchedule:
 
             type(variable).scene = PropertyMock(return_value=scene)
 
-            with patch_datetime() as mock_datetime:
-                mock_datetime.now.return_value = datetime(
-                    2023, 3, 1, 9, 26
-                ).astimezone(pytz.UTC)
-
+            with patch_datetime(datetime(
+                2023, 3, 1, 9, 26
+            ).astimezone(pytz.UTC)):
                 start_date = datetime(2023, 3, 1, 9, 0).astimezone(pytz.UTC)
                 end_date = datetime(2023, 3, 1, 9, 50).astimezone(pytz.UTC)
 
@@ -499,11 +484,9 @@ class TestDeviceSchedule:
             return_value=current_state
         )
 
-        with patch_datetime() as mock_datetime:
-            mock_datetime.now.return_value = datetime(
-                2023, 3, 1, 9, 31
-            ).astimezone(pytz.UTC)
-
+        with patch_datetime(datetime(
+            2023, 3, 1, 9, 31
+        ).astimezone(pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
                 'between': ['09:10:00', '10:00:00'],
@@ -578,6 +561,10 @@ class TestDeviceSchedule:
 
 
 @contextmanager
-def patch_datetime():
+def patch_datetime(now: datetime):
     with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+        mock_datetime.now = lambda timezone=None: \
+            now if timezone is not None and timezone != pytz.UTC \
+            else now.astimezone(pytz.UTC)
+
         yield mock_datetime
