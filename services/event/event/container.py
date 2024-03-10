@@ -31,7 +31,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
         config=config,
         logger=common.logger,
         mqtt_client=common.mqtt_client,
-        variable_manager=common.variable_manager
+        device_manager=common.device.device_manager,
+        variable_manager=common.variable.variable_manager
     )
 
     application = providers.Singleton(
@@ -40,5 +41,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
         config_retriever=common.config_retriever,
         mqtt_client=common.mqtt_client,
         scheduler=common.scheduler,
-        health=common.health
+        health=common.health,
+        event_manager=event_manager
     )
