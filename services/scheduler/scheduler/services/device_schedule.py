@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 from enum import IntEnum, StrEnum, unique
 from typing import Any, Dict, List
 
@@ -203,19 +203,15 @@ class DeviceSchedule(LogMixin):
         timezone = pytz.timezone(self.__config.timezone)
 
         def make_dates(start: datetime):
-            start_date = start.replace(
-                hour=start_time[0],
-                minute=start_time[1],
-                second=start_time[2],
-                microsecond=0
-            )
+            start_date = timezone.localize(datetime.combine(
+                start.date(),
+                time(start_time[0], start_time[1], start_time[2], 0)
+            ))
 
-            end_date = start_date.replace(
-                hour=end_time[0],
-                minute=end_time[1],
-                second=end_time[2],
-                microsecond=0
-            )
+            end_date = timezone.localize(datetime.combine(
+                start.date(),
+                time(end_time[0], end_time[1], end_time[2], 0)
+            ))
 
             # handle end_time on the next day
             if end_date <= start_date:
