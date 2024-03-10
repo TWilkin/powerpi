@@ -1,15 +1,12 @@
-from typing import Any, Dict, List
+from typing import List
 
 from powerpi_common.config import Config
-from powerpi_common.device import (Device, DeviceConfigType,
-                                   DeviceNotFoundException, DeviceStatus)
+from powerpi_common.device import DeviceConfigType, DeviceNotFoundException
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import VariableManager
 
-from event.services.action import (device_additional_state_action,
-                                   device_off_action, device_on_action,
-                                   device_scene_action)
+from event.services.action import ActionFactory
 from event.services.consumer import EventConsumer
 from event.services.handler import EventHandler
 
@@ -20,13 +17,15 @@ class EventManager(LogMixin):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        variable_manager: VariableManager
+        variable_manager: VariableManager,
+        action_factory: ActionFactory,
     ):
         # pylint: disable=too-many-arguments
         self.__config = config
         self._logger = logger
         self.__mqtt_client = mqtt_client
         self.__variable_manager = variable_manager
+        self.__action_factory = action_factory
 
         self.__consumers = []
 
@@ -57,9 +56,7 @@ class EventManager(LogMixin):
                 device = self.__variable_manager.get_device(device_name)
 
                 # choose an action
-                action = self.__get_action(event['action'])
-                if action is None:
-                    continue
+                action = self.__action_factory.build(event['action'])
 
                 handler = EventHandler(
                     self._logger, self.__variable_manager, device, event['condition'], action
@@ -100,35 +97,3 @@ class EventManager(LogMixin):
         self.log_info('Found %d device(s)', len(devices))
 
         return devices
-
-    def __get_action(self, action: Dict[str, Any]):
-        try:
-            state = action['state']
-
-            if state == DeviceStatus.ON:
-                return device_on_action(self.__mqtt_client)
-            if state == DeviceStatus.OFF:
-                return device_off_action(self.__mqtt_client)
-        except KeyError:
-            pass
-
-        try:
-            scene = action.get('scene', None)
-
-            return device_additional_state_action(
-                scene,
-                action['patch'],
-                self.__mqtt_client,
-                self.__variable_manager
-            )
-        except KeyError:
-            pass
-
-        try:
-            scene = action['scene']
-
-            return device_scene_action(scene, self.__mqtt_client)
-        except KeyError:
-            pass
-
-        return None
