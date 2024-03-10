@@ -2,5 +2,5 @@ apiVersion: v2
 name: network-controller
 description: A Helm chart for the PowerPi Network device controller
 type: application
-version: 0.1.8
-appVersion: 0.2.2
+version: 0.1.9
+appVersion: 0.2.3
