@@ -80,11 +80,11 @@ class EventManager(LogMixin):
             self.__mqtt_client.add_consumer(consumer)
             self.__consumers.append(consumer)
 
-            self._logger.info(
+            self.log_info(
                 f'Found listener {consumer} with {len(events)} event(s)'
             )
 
-        self._logger.info(
+        self.log_info(
             f'Found {len(self.__consumers)} matching listener(s)'
         )
 
