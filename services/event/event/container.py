@@ -4,6 +4,7 @@ from powerpi_common.container import Container as CommonContainer
 from event.__version__ import __app_name__, __version__
 from event.application import Application
 from event.config import EventConfig
+from event.services import EventManager
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -23,6 +24,14 @@ class ApplicationContainer(containers.DeclarativeContainer):
         app_name=__app_name__,
         version=__version__,
         config=config
+    )
+
+    event_manager = providers.Singleton(
+        EventManager,
+        config=config,
+        logger=common.logger,
+        mqtt_client=common.mqtt_client,
+        variable_manager=common.variable_manager
     )
 
     application = providers.Singleton(

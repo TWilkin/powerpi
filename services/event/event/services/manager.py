@@ -3,14 +3,15 @@ from typing import Any, Dict, List
 from powerpi_common.config import Config
 from powerpi_common.device import (Device, DeviceManager,
                                    DeviceNotFoundException, DeviceStatus)
-from powerpi_common.event.action import (device_additional_state_action,
-                                         device_off_action, device_on_action,
-                                         device_scene_action)
-from powerpi_common.event.consumer import EventConsumer
-from powerpi_common.event.handler import EventHandler
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import VariableManager
+
+from event.services.action import (device_additional_state_action,
+                                   device_off_action, device_on_action,
+                                   device_scene_action)
+from event.services.consumer import EventConsumer
+from event.services.handler import EventHandler
 
 
 class EventManager:
