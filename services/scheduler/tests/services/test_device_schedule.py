@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime
 from types import MethodType
@@ -15,6 +16,12 @@ from scheduler.services import DeviceSchedule
 
 SubjectBuilder = Callable[[Dict[str, Any]], DeviceSchedule]
 
+AddJobType = List[Tuple[
+    MethodType,
+    IntervalTrigger,
+    Tuple[datetime, datetime]
+]]
+
 
 @dataclass
 class ExpectedTime:
@@ -23,14 +30,9 @@ class ExpectedTime:
     minute: int
 
 
-AddJobType = List[Tuple[
-    MethodType,
-    IntervalTrigger,
-    Tuple[datetime, datetime]
-]]
-
-
 class TestDeviceSchedule:
+    __expected_topic = 'device/SomeDevice/change'
+
     @pytest.mark.parametrize('start_time,end_time,days,now,expected_start,expected_end', [
         (
             '09:00:00', '09:30:00', None, None,
@@ -101,7 +103,7 @@ class TestDeviceSchedule:
             'interval': interval
         })
 
-        with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+        with patch_datetime() as mock_datetime:
             if now is not None:
                 mock_datetime.now.return_value = now
             else:
@@ -151,7 +153,7 @@ class TestDeviceSchedule:
             'condition': condition
         })
 
-        with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+        with patch_datetime() as mock_datetime:
             mock_datetime.now.return_value = datetime(
                 2023, 3, 1, 18, 23, 1
             )
@@ -193,7 +195,7 @@ class TestDeviceSchedule:
     ):
         # pylint: disable=too-many-arguments
 
-        with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+        with patch_datetime() as mock_datetime:
             mock_datetime.now.return_value = datetime(
                 2023, 3, 1, 9, 1
             )
@@ -214,8 +216,9 @@ class TestDeviceSchedule:
         assert len(add_job) == 0
 
         if expected is not None:
-            topic = 'device/SomeDevice/change'
-            powerpi_mqtt_producer.assert_called_once_with(topic, expected)
+            powerpi_mqtt_producer.assert_called_once_with(
+                self.__expected_topic, expected
+            )
         else:
             powerpi_mqtt_producer.assert_not_called()
 
@@ -243,7 +246,7 @@ class TestDeviceSchedule:
             'brightness': current
         }
 
-        with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+        with patch_datetime() as mock_datetime:
             mock_datetime.now.return_value = datetime(
                 2023, 3, 1, 9, 1
             ).astimezone(pytz.UTC)
@@ -264,8 +267,9 @@ class TestDeviceSchedule:
             'brightness': expected
         }
 
-        topic = 'device/SomeDevice/change'
-        powerpi_mqtt_producer.assert_called_once_with(topic, message)
+        powerpi_mqtt_producer.assert_called_once_with(
+            self.__expected_topic, message
+        )
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('hue,current,expected', [
@@ -291,7 +295,7 @@ class TestDeviceSchedule:
             'hue': current
         }
 
-        with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+        with patch_datetime() as mock_datetime:
             mock_datetime.now.return_value = datetime(
                 2023, 3, 1, 9, 1
             ).astimezone(pytz.UTC)
@@ -312,8 +316,9 @@ class TestDeviceSchedule:
             'hue': expected
         }
 
-        topic = 'device/SomeDevice/change'
-        powerpi_mqtt_producer.assert_called_once_with(topic, message)
+        powerpi_mqtt_producer.assert_called_once_with(
+            self.__expected_topic, message
+        )
 
     @pytest.mark.asyncio
     async def test_execute_schedule_next(
@@ -321,7 +326,7 @@ class TestDeviceSchedule:
         subject_builder: SubjectBuilder,
         add_job: AddJobType,
     ):
-        with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+        with patch_datetime() as mock_datetime:
             mock_datetime.now.return_value = datetime(
                 2023, 3, 1, 9, 30, 1
             ).astimezone(pytz.UTC)
@@ -398,7 +403,7 @@ class TestDeviceSchedule:
                 'brightness': current
             }
 
-            with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+            with patch_datetime() as mock_datetime:
                 mock_datetime.now.return_value = datetime(
                     2023, 3, 1, 9, minutes
                 ).astimezone(pytz.UTC)
@@ -408,9 +413,10 @@ class TestDeviceSchedule:
 
                 await subject.execute(start_date, end_date)
 
-            topic = 'device/SomeDevice/change'
             message = {'brightness': expected}
-            powerpi_mqtt_producer.assert_called_once_with(topic, message)
+            powerpi_mqtt_producer.assert_called_once_with(
+                self.__expected_topic, message
+            )
 
         # run it once
         await execute(31, current, expected)
@@ -447,7 +453,7 @@ class TestDeviceSchedule:
 
             type(variable).scene = PropertyMock(return_value=scene)
 
-            with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+            with patch_datetime() as mock_datetime:
                 mock_datetime.now.return_value = datetime(
                     2023, 3, 1, 9, 26
                 ).astimezone(pytz.UTC)
@@ -457,9 +463,10 @@ class TestDeviceSchedule:
 
                 await subject.execute(start_date, end_date)
 
-            topic = 'device/SomeDevice/change'
             message = {'brightness': expected, 'scene': 'other'}
-            powerpi_mqtt_producer.assert_called_once_with(topic, message)
+            powerpi_mqtt_producer.assert_called_once_with(
+                self.__expected_topic, message
+            )
 
         # when we're in the wrong scene it pulls the value from correct scene anyway
         await execute(ReservedScenes.DEFAULT, 75 + 1)
@@ -492,7 +499,7 @@ class TestDeviceSchedule:
             return_value=current_state
         )
 
-        with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+        with patch_datetime() as mock_datetime:
             mock_datetime.now.return_value = datetime(
                 2023, 3, 1, 9, 31
             ).astimezone(pytz.UTC)
@@ -568,3 +575,9 @@ class TestDeviceSchedule:
         return lambda: ConditionParser(
             powerpi_variable_manager
         )
+
+
+@contextmanager
+def patch_datetime():
+    with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+        yield mock_datetime
