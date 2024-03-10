@@ -1,6 +1,7 @@
-from enum import StrEnum
+from enum import StrEnum, unique
 
 
+@unique
 class Lexeme(StrEnum):
     AND = 'and'
     EITHER = 'either'
