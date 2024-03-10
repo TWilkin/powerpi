@@ -64,7 +64,7 @@ class TestDeviceSchedule:
             '09:00:00', '09:30:00', None, datetime(2023, 10, 27, 9, 30, 1),
             ExpectedTime(28, 8, 0), ExpectedTime(28, 8, 30)
         ),
-        # after change over (winter time)
+        # after change over (summer -> winter time)
         (
             '09:00:00', '09:30:00', None, datetime(2023, 10, 28, 9, 30, 1),
             ExpectedTime(29, 9, 0), ExpectedTime(29, 9, 30)
@@ -75,7 +75,7 @@ class TestDeviceSchedule:
             '09:00:00', '09:30:00', None, datetime(2024, 3, 29, 9, 30, 1),
             ExpectedTime(30, 9, 0), ExpectedTime(30, 9, 30)
         ),
-        # after change over (summer time)
+        # after change over (winter -> summer time)
         (
             '09:00:00', '09:30:00', None, datetime(2024, 3, 30, 9, 30, 1),
             ExpectedTime(31, 8, 0), ExpectedTime(31, 8, 30)
@@ -120,12 +120,12 @@ class TestDeviceSchedule:
         assert job[1].start_date.day == expected_start.day
         assert job[1].start_date.hour == expected_start.hour
         assert job[1].start_date.minute == expected_start.minute
-        assert job[1].start_date.utcoffset().total_seconds() == 0
+        assert job[1].start_date.tzinfo == pytz.UTC
 
         assert job[1].end_date.day == expected_end.day
         assert job[1].end_date.hour == expected_end.hour
         assert job[1].end_date.minute == expected_end.minute
-        assert job[1].end_date.utcoffset().total_seconds() == 0
+        assert job[1].start_date.tzinfo == pytz.UTC
 
         assert job[1].interval.seconds == interval
 
@@ -341,12 +341,12 @@ class TestDeviceSchedule:
         assert job[1].start_date.day == 2
         assert job[1].start_date.hour == 9
         assert job[1].start_date.minute == 0
-        assert job[1].start_date.utcoffset().total_seconds() == 0
+        assert job[1].start_date.tzinfo == pytz.UTC
 
         assert job[1].end_date.day == 2
         assert job[1].end_date.hour == 9
         assert job[1].end_date.minute == 30
-        assert job[1].end_date.utcoffset().total_seconds() == 0
+        assert job[1].start_date.tzinfo == pytz.UTC
 
         assert job[1].interval.seconds == 60
 
