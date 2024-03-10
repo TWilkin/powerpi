@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "scheduler"
-version = "1.3.2"
+version = "1.3.3"
 description = "PowerPi Scheduler Service"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
