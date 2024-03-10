@@ -13,7 +13,6 @@
   (dict
     "UseConfig" true
     "UseDevicesFile" true
-    "UseEventsFile" true
     "RequestMemory" "50Mi"
     "LimitMemory" "100Mi"
     "MqttSecret" "mosquitto-controller-secret"
