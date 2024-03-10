@@ -23,41 +23,71 @@ class ExpectedTime:
     minute: int
 
 
+AddJobType = List[Tuple[
+    MethodType,
+    IntervalTrigger,
+    Tuple[datetime, datetime]
+]]
+
+
 class TestDeviceSchedule:
-    @pytest.mark.parametrize('start_time,end_time,days,expected_start,expected_end', [
+    @pytest.mark.parametrize('start_time,end_time,days,now,expected_start,expected_end', [
         (
-            '09:00:00', '09:30:00', None,
+            '09:00:00', '09:30:00', None, None,
             ExpectedTime(2, 9, 0), ExpectedTime(2, 9, 30)
         ),
         (
-            '18:30:00', '20:00:00', None,
+            '18:30:00', '20:00:00', None, None,
             ExpectedTime(1, 18, 30), ExpectedTime(1, 20, 0)
         ),
         (
-            '21:45:00', '00:00:00', None,
+            '21:45:00', '00:00:00', None, None,
             ExpectedTime(1, 21, 45), ExpectedTime(2, 0, 0)
         ),
         (
-            '01:45:00', '01:44:59', None,
+            '01:45:00', '01:44:59', None, None,
             ExpectedTime(1, 1, 45), ExpectedTime(2, 1, 44)
         ),
         (
-            '09:00:00', '09:30:00', ['Tuesday'],
+            '09:00:00', '09:30:00', ['Tuesday'], None,
             ExpectedTime(7, 9, 0), ExpectedTime(7, 9, 30)
         ),
         (
-            '17:00:00', '19:00:00', ['Wednesday'],
+            '17:00:00', '19:00:00', ['Wednesday'], None,
             ExpectedTime(1, 17, 0), ExpectedTime(1, 19, 0)
+        ),
+        # day light savings
+        # before change over (summer time)
+        (
+            '09:00:00', '09:30:00', None, datetime(2023, 10, 27, 9, 30, 1),
+            ExpectedTime(28, 8, 0), ExpectedTime(28, 8, 30)
+        ),
+        # after change over (winter time)
+        (
+            '09:00:00', '09:30:00', None, datetime(2023, 10, 28, 9, 30, 1),
+            ExpectedTime(29, 9, 0), ExpectedTime(29, 9, 30)
+        ),
+        # other way
+        # before change over (winter time)
+        (
+            '09:00:00', '09:30:00', None, datetime(2024, 3, 29, 9, 30, 1),
+            ExpectedTime(30, 9, 0), ExpectedTime(30, 9, 30)
+        ),
+        # after change over (summer time)
+        (
+            '09:00:00', '09:30:00', None, datetime(2024, 3, 30, 9, 30, 1),
+            ExpectedTime(31, 8, 0), ExpectedTime(31, 8, 30)
         ),
     ])
     @pytest.mark.parametrize('interval', [1, 60])
     def test_start(
         self,
         subject_builder: SubjectBuilder,
-        add_job,
+        add_job: AddJobType,
         start_time: str,
         end_time: str,
         days: List[str] | None,
+        now: datetime | None,
         expected_start: ExpectedTime,
         expected_end: ExpectedTime,
         interval: List[int]
@@ -72,9 +102,13 @@ class TestDeviceSchedule:
         })
 
         with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
-            mock_datetime.now.return_value = datetime(
-                2023, 3, 1, 18, 23, 1
-            )
+            if now is not None:
+                mock_datetime.now.return_value = now
+            else:
+                mock_datetime.now.return_value = datetime(
+                    2023, 3, 1, 18, 23, 1
+                ).astimezone(pytz.UTC)
+
             subject.start()
 
         assert len(add_job) == 1
@@ -86,10 +120,12 @@ class TestDeviceSchedule:
         assert job[1].start_date.day == expected_start.day
         assert job[1].start_date.hour == expected_start.hour
         assert job[1].start_date.minute == expected_start.minute
+        assert job[1].start_date.utcoffset().total_seconds() == 0
 
         assert job[1].end_date.day == expected_end.day
         assert job[1].end_date.hour == expected_end.hour
         assert job[1].end_date.minute == expected_end.minute
+        assert job[1].end_date.utcoffset().total_seconds() == 0
 
         assert job[1].interval.seconds == interval
 
@@ -104,7 +140,7 @@ class TestDeviceSchedule:
     def test_start_condition(
         self,
         subject_builder: SubjectBuilder,
-        add_job,
+        add_job: AddJobType,
         condition: Expression | None,
         expected: bool
     ):
@@ -150,7 +186,7 @@ class TestDeviceSchedule:
     async def test_execute(
         self,
         subject_builder: SubjectBuilder,
-        add_job,
+        add_job: AddJobType,
         powerpi_mqtt_producer: MagicMock,
         config: Dict[str, Any],
         expected: Dict[str, Any]
@@ -283,7 +319,7 @@ class TestDeviceSchedule:
     async def test_execute_schedule_next(
         self,
         subject_builder: SubjectBuilder,
-        add_job,
+        add_job: AddJobType,
     ):
         with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
             mock_datetime.now.return_value = datetime(
@@ -311,10 +347,12 @@ class TestDeviceSchedule:
         assert job[1].start_date.day == 2
         assert job[1].start_date.hour == 9
         assert job[1].start_date.minute == 0
+        assert job[1].start_date.utcoffset().total_seconds() == 0
 
         assert job[1].end_date.day == 2
         assert job[1].end_date.hour == 9
         assert job[1].end_date.minute == 30
+        assert job[1].end_date.utcoffset().total_seconds() == 0
 
         assert job[1].interval.seconds == 60
 
@@ -510,11 +548,7 @@ class TestDeviceSchedule:
 
     @pytest.fixture
     def add_job(self, powerpi_scheduler):
-        job_results: List[Tuple[
-            MethodType,
-            IntervalTrigger,
-            Tuple[datetime, datetime]
-        ]] = []
+        job_results: AddJobType = []
 
         def add_job(
             method: MethodType,
