@@ -1,9 +1,8 @@
 from dependency_injector import containers, providers
 
-from .device_additional_state_action import device_additional_state_action
-from .device_off_action import device_off_action
-from .device_on_action import device_on_action
-from .device_scene_action import device_scene_action
+from .action_device_additional_state import action_device_additional_state
+from .action_device_power import action_device_power
+from .action_device_scene import action_device_scene
 from .factory import ActionFactory
 
 
@@ -23,23 +22,18 @@ class ActionContainer(containers.DeclarativeContainer):
         service_provider=service_provider
     )
 
-    action_device_on = providers.Callable(
-        device_on_action,
-        mqtt_client=mqtt_client
-    )
-
-    action_device_off = providers.Callable(
-        device_off_action,
+    action_device_power = providers.Callable(
+        action_device_power,
         mqtt_client=mqtt_client
     )
 
     action_device_additional_state = providers.Callable(
-        device_additional_state_action,
+        action_device_additional_state,
         mqtt_client=mqtt_client,
         variable_manager=variable_manager
     )
 
     action_device_scene = providers.Callable(
-        device_scene_action,
+        action_device_scene,
         mqtt_client=mqtt_client
     )

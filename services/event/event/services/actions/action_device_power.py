@@ -3,10 +3,10 @@ from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import DeviceVariable
 
 
-def device_on_action(mqtt_client: MQTTClient):
+def action_device_power(mqtt_client: MQTTClient, state: DeviceStatus):
     producer = mqtt_client.add_producer()
 
     def wrapper(device: DeviceVariable):
-        producer(f'device/{device.name}/change', {'state': DeviceStatus.ON})
+        producer(f'device/{device.name}/change', {'state': state})
 
     return wrapper

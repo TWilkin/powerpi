@@ -11,6 +11,7 @@ class Action:
         self.__action = action
 
     def execute(self, device: DeviceVariable):
+        '''Execute this action for the given device.'''
         self.__action(device)
 
     def __str__(self):

@@ -6,7 +6,7 @@ from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import DeviceVariable, VariableManager
 
 
-def device_additional_state_action(
+def action_device_additional_state(
     mqtt_client: MQTTClient,
     variable_manager: VariableManager,
     scene: str | None,

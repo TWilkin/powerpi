@@ -19,10 +19,8 @@ class ActionFactory:
         try:
             state = action['state']
 
-            if state == DeviceStatus.ON:
-                return self.__create('action_device_on')
-            if state == DeviceStatus.OFF:
-                return self.__create('action_device_off')
+            if state in [DeviceStatus.ON, DeviceStatus.OFF]:
+                return self.__create('action_device_power', state=state)
         except KeyError:
             pass
 
