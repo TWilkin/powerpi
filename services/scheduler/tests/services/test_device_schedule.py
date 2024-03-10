@@ -569,6 +569,7 @@ def patch_datetime(mock_now: datetime):
         return mock_now.astimezone(pytz.UTC)
 
     with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+        mock_datetime.combine = datetime.combine
         mock_datetime.now = now
 
         yield mock_datetime
