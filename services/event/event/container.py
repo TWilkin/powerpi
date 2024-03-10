@@ -31,7 +31,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
         config=config,
         logger=common.logger,
         mqtt_client=common.mqtt_client,
-        device_manager=common.device.device_manager,
         variable_manager=common.variable.variable_manager
     )
 
