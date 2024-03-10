@@ -33,6 +33,9 @@ class DataType(StrEnum):
     TEMPERATURE = 'temperature'
 
 
+StandardiserConverter = Callable[[float], float]
+
+
 class Standardiser:
     '''
     Standardiser provides a simple interface to convert from a local value to a standardised value
@@ -50,13 +53,11 @@ class Standardiser:
     restricted by the range between 0 and 10s.
     '''
 
-    __Converter = Callable[[float], float]
-
     def __init__(
             self,
             converters: Dict[
                 DataType,
-                Tuple[__Converter, __Converter, Range]
+                Tuple[StandardiserConverter, StandardiserConverter, Range]
             ]):
         self.__converters = converters
 
