@@ -1,10 +1,10 @@
-from typing import Callable
-
 from powerpi_common.condition import (ConditionParser, Expression,
                                       ParseException)
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTMessage
 from powerpi_common.variable import DeviceVariable, VariableManager
+
+from .actions import Action
 
 
 class EventHandler:
@@ -14,7 +14,7 @@ class EventHandler:
         variable_manager: VariableManager,
         device: DeviceVariable,
         condition: Expression,
-        action: Callable[[DeviceVariable], None]
+        action: Action
     ):
         # pylint: disable=too-many-arguments
         self.__logger = logger
@@ -44,7 +44,7 @@ class EventHandler:
     def execute(self, message: MQTTMessage):
         # execute the action if the condition is met
         if self.__check_condition(message):
-            self.__action(self.__device)
+            self.__action.execute(self.__device)
             return True
 
         return False

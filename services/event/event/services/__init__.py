@@ -1,2 +1,2 @@
-from .action import ActionFactory
+from .actions import ActionFactory
 from .manager import EventManager

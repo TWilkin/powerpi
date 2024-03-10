@@ -6,7 +6,7 @@ from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import VariableManager
 
-from event.services.action import ActionFactory
+from event.services.actions import ActionFactory
 from event.services.consumer import EventConsumer
 from event.services.handler import EventHandler
 
