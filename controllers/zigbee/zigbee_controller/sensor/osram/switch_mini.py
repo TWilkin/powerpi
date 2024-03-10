@@ -1,5 +1,5 @@
 from asyncio import ensure_future
-from enum import IntEnum, StrEnum
+from enum import IntEnum, StrEnum, unique
 from typing import Any, List
 
 from powerpi_common.logger import Logger
@@ -17,18 +17,21 @@ from zigbee_controller.zigbee import (ClusterAttributeListener,
                                       ClusterCommandListener, ZigbeeMixin)
 
 
+@unique
 class ButtonEndpoint(IntEnum):
     UP = 1
     MIDDLE = 3
     DOWN = 2
 
 
+@unique
 class Button(StrEnum):
     UP = 'up'
     MIDDLE = 'middle'
     DOWN = 'down'
 
 
+@unique
 class PressType(StrEnum):
     SINGLE = 'single'
     HOLD = 'hold'
