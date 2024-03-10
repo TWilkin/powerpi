@@ -1,13 +1,13 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from energenie_controller.__version__ import __app_name__, __version__
-from energenie_controller.config import EnergenieConfig
 from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.controller import Controller as CommonController
 from powerpi_common.device import DeviceManager, DeviceStatusChecker
-from powerpi_common.event import EventManager
 from powerpi_common.health import HealthService
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+
+from energenie_controller.__version__ import __app_name__, __version__
+from energenie_controller.config import EnergenieConfig
 
 
 class Controller(CommonController):
@@ -18,7 +18,6 @@ class Controller(CommonController):
         logger: Logger,
         config_retriever: ConfigRetriever,
         device_manager: DeviceManager,
-        event_manager: EventManager,
         mqtt_client: MQTTClient,
         device_status_checker: DeviceStatusChecker,
         scheduler: AsyncIOScheduler,
@@ -26,7 +25,7 @@ class Controller(CommonController):
     ):
         CommonController.__init__(
             self, logger, config_retriever, device_manager,
-            event_manager, mqtt_client, device_status_checker,
+            mqtt_client, device_status_checker,
             scheduler, health,
             __app_name__, __version__
         )
