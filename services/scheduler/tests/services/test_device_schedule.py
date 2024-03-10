@@ -561,10 +561,14 @@ class TestDeviceSchedule:
 
 
 @contextmanager
-def patch_datetime(now: datetime):
+def patch_datetime(mock_now: datetime):
+    def now(timezone=None):
+        if timezone is not None:
+            return mock_now.astimezone(timezone)
+
+        return mock_now.astimezone(pytz.UTC)
+
     with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
-        mock_datetime.now = lambda timezone=None: \
-            now if timezone is not None and timezone != pytz.UTC \
-            else now.astimezone(pytz.UTC)
+        mock_datetime.now = now
 
         yield mock_datetime
