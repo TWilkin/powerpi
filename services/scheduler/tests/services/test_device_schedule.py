@@ -149,9 +149,7 @@ class TestDeviceSchedule:
             'condition': condition
         })
 
-        with patch_datetime(datetime(
-            2023, 3, 1, 18, 23, 1
-        )):
+        with patch_datetime(datetime(2023, 3, 1, 18, 23, 1, tzinfo=pytz.UTC)):
             subject.start()
 
         # if the condition is valid we expected it to schedule
@@ -190,9 +188,7 @@ class TestDeviceSchedule:
     ):
         # pylint: disable=too-many-arguments
 
-        with patch_datetime(datetime(
-            2023, 3, 1, 9, 1
-        )):
+        with patch_datetime(datetime(2023, 3, 1, 9, 1, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
                 'between': ['09:00:00', '09:50:00'],
