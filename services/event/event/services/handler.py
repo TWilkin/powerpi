@@ -41,7 +41,7 @@ class EventHandler:
 
         return False
 
-    def execute(self, message: dict):
+    def execute(self, message: MQTTMessage):
         # execute the action if the condition is met
         if self.__check_condition(message):
             self.__action(self.__device)

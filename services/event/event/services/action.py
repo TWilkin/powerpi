@@ -85,7 +85,7 @@ class ActionFactory:
 
     def __device_scene_action(self, scene: str | None):
         def wrapper(device: DeviceVariable):
-            self.__device_message(device, 'scene', {scene})
+            self.__device_message(device, 'scene', {'scene': scene})
 
         return wrapper
 
@@ -96,7 +96,7 @@ class ActionFactory:
         )
 
     def __device_power_message(self, device: DeviceVariable, state: DeviceStatus):
-        self.__device_message(device, 'change', {state})
+        self.__device_message(device, 'change', {'state': state})
 
 
 class ActionNotFoundException(Exception):
