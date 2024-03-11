@@ -117,6 +117,12 @@ jobs:
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh config-server"
 
+      - name: Test Event Service
+        if: steps.check_modified.outputs.event
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh event"
+        working-directory: services/event
+
       - name: Test Persistence
         if: steps.check_modified.outputs.persistence
         shell: bash
