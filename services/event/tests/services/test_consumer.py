@@ -2,8 +2,10 @@ from datetime import datetime
 from unittest.mock import patch
 
 import pytest
+from powerpi_common.logger import Logger
 
-from powerpi_common.event.consumer import EventConsumer
+from event.config import EventConfig
+from event.services.consumer import EventConsumer
 
 
 class EventHandlerImpl:
@@ -13,7 +15,7 @@ class EventHandlerImpl:
         EventHandlerImpl.counter = 0
 
     @classmethod
-    async def execute(cls, _):
+    def execute(cls, _):
         EventHandlerImpl.counter += 1
 
         if EventHandlerImpl.counter == 2:
@@ -21,8 +23,16 @@ class EventHandlerImpl:
 
         return False
 
+    def __str__(self):
+        return 'event'
+
 
 class TestEventConsumer:
+    def test_events(self, subject: EventConsumer):
+        assert len(subject.events) == 3
+
+    def test_str(self, subject: EventConsumer):
+        assert f'{subject}' == 'event/MySensor/explode(event, event, event)'
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('timestamp,expected', [
@@ -50,7 +60,7 @@ class TestEventConsumer:
         assert EventHandlerImpl.counter == expected
 
     @pytest.fixture
-    def subject(self, powerpi_config, powerpi_logger):
+    def subject(self, powerpi_config: EventConfig, powerpi_logger: Logger):
         event = EventHandlerImpl()
 
         return EventConsumer(
