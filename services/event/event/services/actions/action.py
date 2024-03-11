@@ -10,6 +10,10 @@ class Action:
         self.__action_type = action_type
         self.__action = action
 
+    @property
+    def action_type(self):
+        return self.__action_type
+
     def execute(self, device: DeviceVariable):
         '''Execute this action for the given device.'''
         self.__action(device)
