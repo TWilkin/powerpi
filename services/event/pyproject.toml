@@ -18,7 +18,7 @@ powerpi-common = {path = "../../common/python", develop = true}
 powerpi-common-test = {path = "../../common/pytest", develop = true}
 
 [tool.pytest.ini_options]
-addopts = "-v --cov=scheduler"
+addopts = "-v --cov=event"
 
 [build-system]
 requires = ["poetry-core>=1.1.0"]
