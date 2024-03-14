@@ -9,7 +9,7 @@ dependencies:
   - name: api
     version: 0.2.3
   - name: config-server
-    version: 0.1.15
+    version: 0.1.16
     condition: global.config
   - name: database
     version: 0.1.3
