@@ -46,8 +46,13 @@ export default class ConfigService extends CommonConfigService {
     }
 
     get configFileTypes() {
+        const filter = (fileType: ConfigFileType, checkFileType: ConfigFileType, flag: boolean) =>
+            flag || fileType !== checkFileType;
+
         return super.configFileTypes.filter(
-            (fileType) => this.schedulerEnabled || fileType !== ConfigFileType.Schedules,
+            (fileType) =>
+                filter(fileType, ConfigFileType.Events, this.eventEnabled) &&
+                filter(fileType, ConfigFileType.Schedules, this.schedulerEnabled),
         );
     }
 
