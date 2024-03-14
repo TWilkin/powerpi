@@ -21,33 +21,28 @@ export default class ConfigService extends CommonConfigService {
         return false;
     }
 
-    get gitHubUser(): string | undefined {
-        return process.env["GITHUB_USER"];
+    get gitHubUser() {
+        return this.getEnv("GITHUB_USER", undefined);
     }
 
     get gitHubToken(): Promise<string> {
         return this.getSecret("GITHUB");
     }
 
-    get repo(): string {
-        return process.env["REPO"] ?? "powerpi-config";
+    get repo() {
+        return this.getEnv("REPO", "powerpi-config");
     }
 
-    get branch(): string {
-        return process.env["BRANCH"] ?? "main";
+    get branch() {
+        return this.getEnv("BRANCH", "main");
     }
 
-    get path(): string {
-        return process.env["FILE_PATH"] ?? "";
+    get path() {
+        return this.getEnv("FILE_PATH", "");
     }
 
     get pollFrequency(): number {
-        const frequency = process.env["POLL_FREQUENCY"];
-        if (frequency) {
-            return parseInt(frequency);
-        }
-
-        return 5 * 60;
+        return this.getEnvInt("POLL_FREQUENCY", 5 * 60);
     }
 
     get configFileTypes() {
@@ -57,8 +52,7 @@ export default class ConfigService extends CommonConfigService {
     }
 
     get schedulerEnabled() {
-        const enabled = process.env["SCHEDULER_ENABLED"] ?? "true";
-        return enabled.toLowerCase() === "true";
+        return this.getEnvBoolean("SCHEDULER_ENABLED", true);
     }
 }
 

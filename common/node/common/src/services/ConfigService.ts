@@ -149,7 +149,7 @@ export class ConfigService {
         throw new Error("Method not implemented.");
     }
 
-    private getEnv<TValueType>(key: string, defaultValue: TValueType) {
+    protected getEnv<TValueType>(key: string, defaultValue: TValueType) {
         return process.env[key]?.trim() ?? defaultValue;
     }
 
