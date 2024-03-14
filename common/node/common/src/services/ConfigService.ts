@@ -42,7 +42,7 @@ export class ConfigService {
     }
 
     get logLevel() {
-        const level = this.getEnv("LOG_LEVEL")?.toLowerCase();
+        const level = this.getEnv("LOG_LEVEL", undefined)?.toLowerCase();
 
         switch (level) {
             case "trace":
@@ -62,7 +62,7 @@ export class ConfigService {
     }
 
     get mqttUser() {
-        return this.getEnv("MQTT_USER");
+        return this.getEnv("MQTT_USER", undefined);
     }
 
     get mqttPassword() {
@@ -100,7 +100,7 @@ export class ConfigService {
     }
 
     get useConfigFile() {
-        return process.env["USE_CONFIG_FILE"]?.toLowerCase() === "true";
+        return this.getEnvBoolean("USE_CONFIG_FILE", false);
     }
 
     get devices(): IDevice[] {
@@ -149,12 +149,12 @@ export class ConfigService {
         throw new Error("Method not implemented.");
     }
 
-    protected getEnv(key: string, defaultValue?: string) {
+    private getEnv<TValueType>(key: string, defaultValue: TValueType) {
         return process.env[key]?.trim() ?? defaultValue;
     }
 
-    protected getEnvInt(key: string, defaultValue?: number) {
-        const str = this.getEnv(key);
+    protected getEnvInt(key: string, defaultValue: number) {
+        const str = this.getEnv(key, undefined);
         if (str) {
             return parseInt(str);
         }
@@ -162,12 +162,12 @@ export class ConfigService {
         return defaultValue;
     }
 
-    protected getEnvBoolean(key: string, defaultValue = "true") {
-        return this.getEnv(key, defaultValue)?.toLowerCase() === "true";
+    protected getEnvBoolean(key: string, defaultValue: boolean) {
+        return this.getEnv(key, defaultValue ? "true" : "false")?.toLowerCase() === "true";
     }
 
     protected async getSecret(key: string) {
-        const fileName = this.getEnv(`${key}_SECRET_FILE`);
+        const fileName = this.getEnv(`${key}_SECRET_FILE`, undefined);
 
         if (fileName) {
             const file = await this.readFile(fileName);
