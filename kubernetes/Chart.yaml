@@ -7,7 +7,7 @@ appVersion: 0.5.3
 dependencies:
   # services
   - name: api
-    version: 0.2.3
+    version: 0.2.4
   - name: config-server
     version: 0.1.16
     condition: global.config
@@ -34,9 +34,9 @@ dependencies:
   - name: smarter-device-manager
     version: 0.1.2
   - name: ui
-    version: 0.2.4
+    version: 0.2.5
   - name: voice-assistant
-    version: 0.2.4
+    version: 0.2.5
     condition: global.voiceAssistant
   # controllers
   - name: energenie-controller
