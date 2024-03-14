@@ -21,6 +21,8 @@ This service expects the following environment variables to be set before it wil
 -   **BRANCH** - The branch of the repository containing the configuration (default _main_).
 -   **FILE_PATH** - The path in the repostiory contraining the configuration (default _""_).
 -   **POLL_FREQUENCY** - The frequency at which to check GitHub for updated configuration files in seconds (default _300_).
+-   **SCHEDULER_ENABLED** - Whether the _scheduler_ service is enabled, and therefore the config file should be downloaded for it (default _true_).
+-   **EVENTS_ENABLED** - Whether the _event_ service is enabled, and therefore the config file should be downloaded for it (default _true_).
 
 ### Configuration Files
 
