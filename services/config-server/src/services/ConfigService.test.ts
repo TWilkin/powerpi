@@ -107,6 +107,20 @@ describe("ConfigService", () => {
 
             expect(subject?.configFileTypes).not.toContain(ConfigFileType.Schedules);
         });
+
+        test("no events", () => {
+            process.env.EVENTS_ENABLED = "false";
+
+            expect(subject?.configFileTypes).not.toContain(ConfigFileType.Events);
+        });
+
+        test("none", () => {
+            process.env.SCHEDULER_ENABLED = "false";
+            process.env.EVENTS_ENABLED = "false";
+
+            expect(subject?.configFileTypes).not.toContain(ConfigFileType.Schedules);
+            expect(subject?.configFileTypes).not.toContain(ConfigFileType.Events);
+        });
     });
 
     describe("schedulerEnabled", () => {
@@ -120,6 +134,20 @@ describe("ConfigService", () => {
             process.env.SCHEDULER_ENABLED = "false";
 
             expect(subject?.schedulerEnabled).toBeFalsy();
+        });
+    });
+
+    describe("eventsEnabled", () => {
+        test("default", () => {
+            process.env.EVENTS_ENABLED = undefined;
+
+            expect(subject?.eventsEnabled).toBeTruthy();
+        });
+
+        test("value", () => {
+            process.env.EVENTS_ENABLED = "false";
+
+            expect(subject?.eventsEnabled).toBeFalsy();
         });
     });
 });

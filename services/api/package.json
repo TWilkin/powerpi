@@ -21,7 +21,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "@powerpi/common": "^0.1.1",
+        "@powerpi/common": "^0.1.2",
         "@powerpi/common-api": "0.1.4",
         "@tsed/common": "^7.34.2",
         "@tsed/core": "^7.34.2",

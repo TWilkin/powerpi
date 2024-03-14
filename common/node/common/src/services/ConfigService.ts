@@ -42,7 +42,7 @@ export class ConfigService {
     }
 
     get logLevel() {
-        const level = process.env["LOG_LEVEL"]?.trim().toLowerCase();
+        const level = this.getEnv("LOG_LEVEL", undefined)?.toLowerCase();
 
         switch (level) {
             case "trace":
@@ -58,11 +58,11 @@ export class ConfigService {
     }
 
     get mqttAddress() {
-        return process.env["MQTT_ADDRESS"] ?? "mqtt://mosquitto:1883";
+        return this.getEnv("MQTT_ADDRESS", "mqtt://mosquitto:1883");
     }
 
     get mqttUser() {
-        return process.env["MQTT_USER"];
+        return this.getEnv("MQTT_USER", undefined);
     }
 
     get mqttPassword() {
@@ -74,11 +74,11 @@ export class ConfigService {
     }
 
     get topicNameBase() {
-        return process.env["TOPIC_BASE"] ?? "powerpi";
+        return this.getEnv("TOPIC_BASE", "powerpi");
     }
 
     public get databaseSchema() {
-        return process.env["DB_SCHEMA"] ?? "powerpi";
+        return this.getEnv("DB_SCHEMA", "powerpi");
     }
 
     get databaseURI() {
@@ -88,16 +88,11 @@ export class ConfigService {
     }
 
     get healthCheckFile() {
-        return process.env["HEALTH_CHECK_FILE"] ?? "/home/node/app/powerpi_health";
+        return this.getEnv("HEALTH_CHECK_FILE", "/home/node/app/powerpi_health");
     }
 
     get configWaitTime() {
-        const str = process.env["CONFIG_WAIT_TIME"];
-        if (str) {
-            return parseInt(str);
-        }
-
-        return 2 * 60;
+        return this.getEnvInt("CONFIG_WAIT_TIME", 2 * 60);
     }
 
     get configIsNeeded() {
@@ -105,7 +100,7 @@ export class ConfigService {
     }
 
     get useConfigFile() {
-        return process.env["USE_CONFIG_FILE"]?.toLowerCase() === "true";
+        return this.getEnvBoolean("USE_CONFIG_FILE", false);
     }
 
     get devices(): IDevice[] {
@@ -138,7 +133,7 @@ export class ConfigService {
 
     public get isPopulated() {
         return this.getUsedConfig().every((key) =>
-            Object.keys(this.configs).includes(key.toString())
+            Object.keys(this.configs).includes(key.toString()),
         );
     }
 
@@ -154,8 +149,25 @@ export class ConfigService {
         throw new Error("Method not implemented.");
     }
 
+    protected getEnv<TValueType>(key: string, defaultValue: TValueType) {
+        return process.env[key]?.trim() ?? defaultValue;
+    }
+
+    protected getEnvInt(key: string, defaultValue: number) {
+        const str = this.getEnv(key, undefined);
+        if (str) {
+            return parseInt(str);
+        }
+
+        return defaultValue;
+    }
+
+    protected getEnvBoolean(key: string, defaultValue: boolean) {
+        return this.getEnv(key, defaultValue ? "true" : "false")?.toLowerCase() === "true";
+    }
+
     protected async getSecret(key: string) {
-        const fileName = process.env[`${key}_SECRET_FILE`];
+        const fileName = this.getEnv(`${key}_SECRET_FILE`, undefined);
 
         if (fileName) {
             const file = await this.readFile(fileName);
@@ -170,20 +182,15 @@ export class ConfigService {
     }
 
     private get databaseHost() {
-        return process.env["DB_HOST"] ?? "db";
+        return this.getEnv("DB_HOST", "db");
     }
 
     private get databasePort() {
-        const str = process.env["DB_PORT"];
-        if (str) {
-            return parseInt(str);
-        }
-
-        return 5432;
+        return this.getEnvInt("DB_PORT", 5432);
     }
 
     private get databaseUser() {
-        return process.env["DB_USER"] ?? "powerpi";
+        return this.getEnv("DB_USER", "powerpi");
     }
 
     private get databasePassword() {
@@ -192,7 +199,7 @@ export class ConfigService {
 
     private fileOrConfig<TConfigFile extends object>(
         key: string,
-        type: ConfigFileType
+        type: ConfigFileType,
     ): TConfigFile {
         if (this.useConfigFile) {
             const filePath = process.env[key];
