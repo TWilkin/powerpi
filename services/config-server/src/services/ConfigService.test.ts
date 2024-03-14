@@ -122,4 +122,18 @@ describe("ConfigService", () => {
             expect(subject?.schedulerEnabled).toBeFalsy();
         });
     });
+
+    describe("eventEnabled", () => {
+        test("default", () => {
+            process.env.EVENT_ENABLED = undefined;
+
+            expect(subject?.eventEnabled).toBeTruthy();
+        });
+
+        test("value", () => {
+            process.env.EVENT_ENABLED = "false";
+
+            expect(subject?.eventEnabled).toBeFalsy();
+        });
+    });
 });

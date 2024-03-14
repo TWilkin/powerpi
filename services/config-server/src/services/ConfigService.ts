@@ -54,6 +54,10 @@ export default class ConfigService extends CommonConfigService {
     get schedulerEnabled() {
         return this.getEnvBoolean("SCHEDULER_ENABLED", true);
     }
+
+    get eventEnabled() {
+        return this.getEnvBoolean("EVENT_ENABLED", true);
+    }
 }
 
 Container.override(CommonConfigService, ConfigService);
