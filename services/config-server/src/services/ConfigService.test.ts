@@ -109,7 +109,7 @@ describe("ConfigService", () => {
         });
 
         test("no events", () => {
-            process.env.EVENT_ENABLED = "false";
+            process.env.EVENTS_ENABLED = "false";
 
             expect(subject?.configFileTypes).not.toContain(ConfigFileType.Events);
         });
@@ -129,17 +129,17 @@ describe("ConfigService", () => {
         });
     });
 
-    describe("eventEnabled", () => {
+    describe("eventsEnabled", () => {
         test("default", () => {
-            process.env.EVENT_ENABLED = undefined;
+            process.env.EVENTS_ENABLED = undefined;
 
-            expect(subject?.eventEnabled).toBeTruthy();
+            expect(subject?.eventsEnabled).toBeTruthy();
         });
 
         test("value", () => {
-            process.env.EVENT_ENABLED = "false";
+            process.env.EVENTS_ENABLED = "false";
 
-            expect(subject?.eventEnabled).toBeFalsy();
+            expect(subject?.eventsEnabled).toBeFalsy();
         });
     });
 });

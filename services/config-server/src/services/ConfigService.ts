@@ -51,7 +51,7 @@ export default class ConfigService extends CommonConfigService {
 
         return super.configFileTypes.filter(
             (fileType) =>
-                filter(fileType, ConfigFileType.Events, this.eventEnabled) &&
+                filter(fileType, ConfigFileType.Events, this.eventsEnabled) &&
                 filter(fileType, ConfigFileType.Schedules, this.schedulerEnabled),
         );
     }
@@ -60,8 +60,8 @@ export default class ConfigService extends CommonConfigService {
         return this.getEnvBoolean("SCHEDULER_ENABLED", true);
     }
 
-    get eventEnabled() {
-        return this.getEnvBoolean("EVENT_ENABLED", true);
+    get eventsEnabled() {
+        return this.getEnvBoolean("EVENTS_ENABLED", true);
     }
 }
 
