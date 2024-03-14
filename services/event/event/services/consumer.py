@@ -3,6 +3,7 @@ from typing import List
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTConsumer, MQTTMessage
+
 from .handler import EventHandler
 
 
@@ -31,7 +32,7 @@ class EventConsumer(MQTTConsumer):
             pass
 
         for event in self.__events:
-            complete = await event.execute(message)
+            complete = event.execute(message)
 
             if complete:
                 self._logger.info(f'Condition match for "{self}"')

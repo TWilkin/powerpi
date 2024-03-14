@@ -34,6 +34,7 @@ The project is split into the following services, each of which have their own _
     -   [**virtual**](controllers/virtual/README.md) - Allows control of other devices by using virtual devices such as groups, delays, mutexes etc.
     -   [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
 -   [**energy-monitor**](services/energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
+-   [**event**](services/event/README.md) - Allows custom actions to be taken when events appear in the message queue.
 -   [**freedns**](services/freedns/README.md) - Overcome changing public IP addresses of consumer ISPs by pointing a free hostname at the current public IP via [FreeDNS](https://freedns.afraid.org/)
 -   [**persistence**](services/persistence/README.md) - Service for writing all the messages that appear in the MQTT message queue to a database.
 -   [**scheduler**](services/scheduler/README.md) - Schedule based control of light devices, e.g. brightness, colour, temperature etc.

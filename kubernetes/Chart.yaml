@@ -17,6 +17,9 @@ dependencies:
   - name: energy-monitor
     version: 0.1.5
     condition: global.energyMonitor
+  - name: event
+    version: 0.0.1
+    condition: global.event
   - name: freedns
     version: 0.1.4
     condition: global.freeDNS
@@ -37,22 +40,22 @@ dependencies:
     condition: global.voiceAssistant
   # controllers
   - name: energenie-controller
-    version: 0.1.10
+    version: 0.1.11
     condition: global.energenie
   - name: harmony-controller
-    version: 0.1.13
+    version: 0.1.14
     condition: global.harmony
   - name: lifx-controller
-    version: 0.1.10
+    version: 0.1.11
     condition: global.lifx
   - name: network-controller
-    version: 0.1.8
+    version: 0.1.9
     condition: global.network
   - name: snapcast-controller
-    version: 0.0.4
+    version: 0.0.5
     condition: global.snapcast
   - name: virtual-controller
-    version: 0.2.5
+    version: 0.2.6
   - name: zigbee-controller
     version: 0.1.15
     condition: global.zigbee

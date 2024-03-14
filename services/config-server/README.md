@@ -81,7 +81,7 @@ The _devices.json_ file contains the list of devices that are added to PowerPi. 
 
 #### events.json
 
-The _events.json_ file contains the mapping of events (from sensors) to actions (affecting devices). The controllers use this configuration to define automated actions triggered by sensor generated events. It supports complex conditional expressions represented in JSON, including boolean logic, relational operators and retrieving the state of other devices and sensors. The file takes the following format using the [events JSON schema](./src/schema/config/events.schema.json):
+The _events.json_ file contains the mapping of events (from sensors) to actions (affecting devices). The _event_ service uses this configuration to define automated actions triggered by sensor generated events. It supports complex conditional expressions represented in JSON, including boolean logic, relational operators and retrieving the state of other devices and sensors. The file takes the following format using the [events JSON schema](./src/schema/config/events.schema.json):
 
 ```json
 {

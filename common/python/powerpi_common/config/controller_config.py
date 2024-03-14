@@ -8,4 +8,4 @@ class ControllerConfig(Config):
 
     @property
     def used_config(self):
-        return [ConfigFileType.DEVICES, ConfigFileType.EVENTS]
+        return [ConfigFileType.DEVICES]

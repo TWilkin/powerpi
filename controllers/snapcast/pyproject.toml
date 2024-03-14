@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snapcast_controller"
-version = "0.0.4"
+version = "0.0.5"
 description = "PowerPi Snapcast Controller"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]

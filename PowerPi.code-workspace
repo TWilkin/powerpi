@@ -41,6 +41,10 @@
             "path": "services/energy-monitor"
         },
         {
+            "name": "Event",
+            "path": "services/event"
+        },
+        {
             "name": "FreeDNS",
             "path": "services/freedns"
         },
@@ -208,6 +212,7 @@
             "Common Python",
             "Common Python Test",
             "Energy Monitor",
+            "Event",
             "FreeDNS",
             "Scheduler",
             "Shutdown",

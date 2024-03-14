@@ -1,8 +1,8 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 from powerpi_common.application import Application
 from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.device import DeviceManager, DeviceStatusChecker
-from powerpi_common.event import EventManager
 from powerpi_common.health import HealthService
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
@@ -16,7 +16,6 @@ class Controller(Application):
         logger: Logger,
         config_retriever: ConfigRetriever,
         device_manager: DeviceManager,
-        event_manager: EventManager,
         mqtt_client: MQTTClient,
         device_status_checker: DeviceStatusChecker,
         scheduler: AsyncIOScheduler,
@@ -30,7 +29,6 @@ class Controller(Application):
         )
 
         self.__device_manager = device_manager
-        self.__event_manager = event_manager
         self.__device_status_checker = device_status_checker
 
     async def _initialise_devices(self):
@@ -45,9 +43,6 @@ class Controller(Application):
 
         # load the devices from the config
         await self.__device_manager.load()
-
-        # load the events from the config
-        self.__event_manager.load()
 
         # periodically check device status
         self.__device_status_checker.start()

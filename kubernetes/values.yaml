@@ -23,6 +23,9 @@ global:
   # whether to include the persistence service to store messages in a database
   persistence: false
 
+  # whether to include the event service to perform actions in reaction to events
+  event: false
+
   # whether to include the scheduler service to update devices on a schedule
   scheduler: false
 

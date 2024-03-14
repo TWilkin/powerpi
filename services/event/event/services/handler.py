@@ -1,10 +1,10 @@
-from typing import Awaitable, Callable
-
-from powerpi_common.condition import ConditionParser, Expression, ParseException
-from powerpi_common.device import Device
+from powerpi_common.condition import (ConditionParser, Expression,
+                                      ParseException)
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTMessage
-from powerpi_common.variable import VariableManager
+from powerpi_common.variable import DeviceVariable, VariableManager
+
+from .actions import Action
 
 
 class EventHandler:
@@ -12,11 +12,11 @@ class EventHandler:
         self,
         logger: Logger,
         variable_manager: VariableManager,
-        device: Device,
+        device: DeviceVariable,
         condition: Expression,
-        action: Callable[[Device], Awaitable[None]]
+        action: Action
     ):
-        #pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments
         self.__logger = logger
         self.__variable_manager = variable_manager
         self.__device = device
@@ -41,10 +41,10 @@ class EventHandler:
 
         return False
 
-    async def execute(self, message: dict):
+    def execute(self, message: MQTTMessage):
         # execute the action if the condition is met
         if self.__check_condition(message):
-            await self.__action(self.__device)
+            self.__action.execute(self.__device)
             return True
 
         return False

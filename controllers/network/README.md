@@ -21,14 +21,12 @@ This service expects the following environment variables to be set before it wil
 -   **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
 -   **USE_CONFIG_FILE** - Use local config files instead of the files downloaded from GitHub by [_config-server_](../../services/config-server/README.md) (default _false_).
 -   **DEVICES_FILE** - When _USE_CONFIG_FILE_ is true, load the _devices.json_ from this path.
--   **EVENTS_FILE** - When _USE_CONFIG_FILE_ is true, load the _events.json_ from this path.
 
 ### Configuration Files
 
-This service requires two configuration files, both of which are described on the following [_config-server_](../../services/config-server/README.md) pages.
+This service requires one configuration file, as described in the following [_config-server_](../../services/config-server/README.md) page.
 
 -   [devices.json](../../services/config-server/README.md#devicesjson)
--   [events.json](../../services/config-server/README.md#eventsjson)
 
 ## Testing
 

@@ -76,6 +76,7 @@ do
         include_project "virtual_controller" "python"
         include_project "zigbee_controller" "python"
 
+        include_project "event" "python"
         include_project "scheduler" "python"
     fi
 
@@ -91,6 +92,7 @@ do
     # check the services
     check_file $file "services/api" "api" "nodejs"
     check_file $file "services/config-server" "config_server" "nodejs"
+    check_file $file "services/event" "event" "python"
     check_file $file "services/persistence" "persistence" "nodejs"
     check_file $file "services/scheduler" "scheduler" "python"
     check_file $file "services/ui" "ui" "nodejs"
