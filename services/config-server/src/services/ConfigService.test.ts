@@ -113,6 +113,14 @@ describe("ConfigService", () => {
 
             expect(subject?.configFileTypes).not.toContain(ConfigFileType.Events);
         });
+
+        test("none", () => {
+            process.env.SCHEDULER_ENABLED = "false";
+            process.env.EVENTS_ENABLED = "false";
+
+            expect(subject?.configFileTypes).not.toContain(ConfigFileType.Schedules);
+            expect(subject?.configFileTypes).not.toContain(ConfigFileType.Events);
+        });
     });
 
     describe("schedulerEnabled", () => {
