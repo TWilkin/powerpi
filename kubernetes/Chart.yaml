@@ -9,24 +9,24 @@ dependencies:
   - name: api
     version: 0.2.5
   - name: config-server
-    version: 0.1.16
+    version: 0.1.17
     condition: global.config
   - name: database
     version: 0.1.3
     condition: global.persistence
   - name: energy-monitor
-    version: 0.1.5
+    version: 0.1.6
     condition: global.energyMonitor
   - name: event
     version: 0.0.1
     condition: global.event
   - name: freedns
-    version: 0.1.4
+    version: 0.1.5
     condition: global.freeDNS
   - name: mosquitto
     version: 0.3.1
   - name: persistence
-    version: 0.1.7
+    version: 0.1.8
     condition: global.persistence
   - name: scheduler
     version: 0.2.11
