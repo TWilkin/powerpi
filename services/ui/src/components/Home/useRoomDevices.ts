@@ -9,7 +9,7 @@ export default function useRoomDevices(room: string) {
 
     return useMemo(() => {
         const deviceList = _(devices)
-            .filter((device) => device.location === room)
+            .filter((device) => device.location === room && device.visible)
             .groupBy((device) => device.type)
             .map((group) => ({
                 deviceType: "device",
@@ -19,7 +19,7 @@ export default function useRoomDevices(room: string) {
             .value();
 
         const sensorList = _(sensors)
-            .filter((device) => device.location === room)
+            .filter((sensor) => sensor.location === room && sensor.visible)
             .groupBy((sensor) => sensor.type)
             .map((group) => ({
                 deviceType: "sensor",
