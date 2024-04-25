@@ -50,10 +50,7 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
             iconsWide = Math.max(iconsWide - 2, 0);
             iconsTall = Math.max(iconsTall - 2, 0);
 
-            // now we know what the limits are, arrange what we want
-            if (iconsWide >= devices.length) {
-                iconsTall = 1;
-            }
+            // how many devices can we actually show
             const deviceCount = Math.min(devices.length, iconsWide * iconsTall);
 
             // limit them to what is necessary to centre everything
@@ -146,11 +143,11 @@ function* factors(value: number) {
 }
 
 function* feasibleFactors(count: number, rows: number, columns: number) {
-    for (const f of factors(count)) {
-        if (f[0] <= rows && f[1] <= columns) {
-            yield [f[0], f[1]];
-        } else if (f[1] <= rows && f[0] <= columns) {
-            yield [f[1], f[0]];
+    for (const [f1, f2] of factors(count)) {
+        if (f1 <= columns && f2 <= rows) {
+            yield [f2, f1];
+        } else if (f2 <= columns && f1 <= rows) {
+            yield [f1, f2];
         }
     }
 }
