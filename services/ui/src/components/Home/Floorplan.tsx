@@ -9,6 +9,7 @@ import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import useOrientation from "../../hooks/orientation";
 import styles from "./Floorplan.module.scss";
+import useRoomDevices from "./useRoomDevices";
 
 interface FloorplanProps {
     floorplan: IFloorplan;
@@ -96,6 +97,8 @@ interface RoomProps {
 }
 
 const Room = ({ room, floor }: RoomProps) => {
+    const devices = useRoomDevices(room.name);
+
     const id = useMemo(() => `${floor}${room.name}`, [floor, room]);
 
     if (isRect(room)) {
