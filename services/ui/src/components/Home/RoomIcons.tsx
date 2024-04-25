@@ -70,7 +70,7 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
     }, [devices.length, room.height, room.points, room.width, room.x, room.y, rotate]);
 
     const getTransform = useCallback(
-        (type: string, index: number) => {
+        (index: number) => {
             // find out which row and column it's in
             let row = 0;
             while (index >= (row + 1) * iconsWide) {
@@ -96,10 +96,7 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
             {_(devices)
                 .first(deviceCount)
                 .map((device, i) => (
-                    <g
-                        key={`${device.deviceType}_${device.type}`}
-                        transform={getTransform(device.type, i)}
-                    >
+                    <g key={`${device.deviceType}_${device.type}`} transform={getTransform(i)}>
                         <title>
                             {device.type} ({device.count})
                         </title>
