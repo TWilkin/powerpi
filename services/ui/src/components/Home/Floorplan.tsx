@@ -42,7 +42,12 @@ const Floorplan = ({ floorplan }: FloorplanProps) => {
                 </defs>
 
                 {floorplan.floors.map((floor) => (
-                    <Floor key={floor.name} floor={floor} visible={params.floor === floor.name} />
+                    <Floor
+                        key={floor.name}
+                        floor={floor}
+                        visible={params.floor === floor.name}
+                        rotate={rotate}
+                    />
                 ))}
             </svg>
         </div>
@@ -73,9 +78,10 @@ const RoomOutline = ({ floor }: { floor: IFloor }) => {
 interface FloorProps {
     floor: IFloor;
     visible: boolean;
+    rotate: boolean;
 }
 
-const Floor = ({ floor, visible }: FloorProps) => {
+const Floor = ({ floor, visible, rotate }: FloorProps) => {
     return (
         <g
             id={floor.name}
@@ -85,7 +91,7 @@ const Floor = ({ floor, visible }: FloorProps) => {
             <title>{floor.display_name ?? floor.name}</title>
 
             {floor.rooms.map((room) => (
-                <Room key={room.name} room={room} floor={floor.name} />
+                <Room key={room.name} room={room} floor={floor.name} rotate={rotate} />
             ))}
         </g>
     );
@@ -94,16 +100,17 @@ const Floor = ({ floor, visible }: FloorProps) => {
 interface RoomProps {
     room: IRoom;
     floor: string;
+    rotate: boolean;
 }
 
-const Room = ({ room, floor }: RoomProps) => {
+const Room = ({ room, floor, rotate }: RoomProps) => {
     const id = useMemo(() => `${floor}${room.name}`, [floor, room]);
 
     if (isRect(room)) {
         return (
             <g id={id} data-tooltip-id={id}>
                 <rect x={room.x} y={room.y} width={room.width} height={room.height} />
-                <RoomIcons room={room} />
+                <RoomIcons room={room} rotate={rotate} />
             </g>
         );
     } else if (isPolygon(room)) {
@@ -112,7 +119,7 @@ const Room = ({ room, floor }: RoomProps) => {
         return (
             <g id={id} data-tooltip-id={id}>
                 <polygon points={points} />
-                <RoomIcons room={room} />
+                <RoomIcons room={room} rotate={rotate} />
             </g>
         );
     }

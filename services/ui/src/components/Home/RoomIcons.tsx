@@ -7,10 +7,13 @@ import useRoomDevices from "./useRoomDevices";
 
 type RoomIconsProps = {
     room: IRoom;
+    rotate: boolean;
 };
 
-const RoomIcons = ({ room }: RoomIconsProps) => {
+const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
     const devices = useRoomDevices(room.name);
+
+    console.log(rotate);
 
     const { iconSize, deviceCount, iconsWide, iconsTall, offsetX, offsetY } = useMemo(() => {
         const iconSize = 32;
@@ -82,9 +85,15 @@ const RoomIcons = ({ room }: RoomIconsProps) => {
 
             console.log(type, index, ":", row, ",", column, " ", x, ",", y);
 
-            return `translate(${x}, ${y})`;
+            const translate = `translate(${x}, ${y})`;
+
+            if (rotate) {
+                return `${translate} rotate(-90)`;
+            }
+
+            return translate;
         },
-        [iconSize, iconsWide, offsetX, offsetY],
+        [iconSize, iconsWide, offsetX, offsetY, rotate],
     );
 
     return (
