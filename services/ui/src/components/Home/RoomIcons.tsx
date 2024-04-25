@@ -139,12 +139,10 @@ function* feasibleFactors(count: number, rows: number, columns: number, rotate: 
             } else if (f2 <= rows && f1 <= columns) {
                 yield [f2, f1];
             }
-        } else {
-            if (f1 <= columns && f2 <= rows) {
-                yield [f2, f1];
-            } else if (f2 <= columns && f1 <= rows) {
-                yield [f1, f2];
-            }
+        } else if (f1 <= columns && f2 <= rows) {
+            yield [f2, f1];
+        } else if (f2 <= columns && f1 <= rows) {
+            yield [f1, f2];
         }
     }
 }
