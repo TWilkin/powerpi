@@ -49,7 +49,7 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
         const deviceCount = Math.min(devices.length, iconsWide * iconsTall);
 
         // limit them to what is necessary to centre everything
-        const best = bestValue(deviceCount, iconsWide, iconsTall);
+        const best = bestValue(deviceCount, iconsWide, iconsTall, rotate);
         if (best) {
             iconsWide = best[0];
             iconsTall = best[1];
@@ -67,7 +67,7 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
             offsetX,
             offsetY,
         };
-    }, [devices.length, room.height, room.points, room.width, room.x, room.y]);
+    }, [devices.length, room.height, room.points, room.width, room.x, room.y, rotate]);
 
     const getTransform = useCallback(
         (type: string, index: number) => {
@@ -131,18 +131,26 @@ function* factors(value: number) {
     }
 }
 
-function* feasibleFactors(count: number, rows: number, columns: number) {
+function* feasibleFactors(count: number, rows: number, columns: number, rotate: boolean) {
     for (const [f1, f2] of factors(count)) {
-        if (f1 <= columns && f2 <= rows) {
-            yield [f2, f1];
-        } else if (f2 <= columns && f1 <= rows) {
-            yield [f1, f2];
+        if (rotate) {
+            if (f1 <= rows && f2 <= columns) {
+                yield [f1, f2];
+            } else if (f2 <= rows && f1 <= columns) {
+                yield [f2, f1];
+            }
+        } else {
+            if (f1 <= columns && f2 <= rows) {
+                yield [f2, f1];
+            } else if (f2 <= columns && f1 <= rows) {
+                yield [f1, f2];
+            }
         }
     }
 }
 
-function bestValue(count: number, rows: number, columns: number) {
-    return _([...feasibleFactors(count, rows, columns)])
+function bestValue(count: number, rows: number, columns: number, rotate: boolean) {
+    return _([...feasibleFactors(count, rows, columns, rotate)])
         .reverse()
         .first()
         .value();
