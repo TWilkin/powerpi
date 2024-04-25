@@ -112,7 +112,7 @@ const Room = ({ room, floor }: RoomProps) => {
         return (
             <g id={id} data-tooltip-id={id}>
                 <polygon points={points} />
-                {/* <RoomIcons room={room} /> */}
+                <RoomIcons room={room} />
             </g>
         );
     }

@@ -16,8 +16,19 @@ const RoomIcons = ({ room }: RoomIconsProps) => {
         const iconSize = 32;
 
         // calculate the room size
-        const width = room.width ?? 1;
-        const height = room.height ?? 1;
+        let width = room.width ?? 1;
+        let height = room.height ?? 1;
+
+        // this could put the icons outside the polygon so needs to be improved
+        if (room.points) {
+            width =
+                Math.max(...room.points.map((point) => point.x)) -
+                Math.min(...room.points.map((point) => point.x));
+
+            height =
+                Math.max(...room.points.map((point) => point.y)) -
+                Math.min(...room.points.map((point) => point.y));
+        }
 
         // next we need to find the centre of the room
         const centreX = width / 2 + (room.x ?? 0);
@@ -51,12 +62,12 @@ const RoomIcons = ({ room }: RoomIconsProps) => {
             offsetX,
             offsetY,
         };
-    }, [devices.length, room.height, room.width, room.x, room.y]);
+    }, [devices.length, room.height, room.points, room.width, room.x, room.y]);
 
     console.log(room);
     console.log(room.name, deviceCount, iconsWide, "x", iconsTall, "offset", offsetX, ",", offsetY);
 
-    const getPosition = useCallback(
+    const getTransform = useCallback(
         (type: string, index: number) => {
             // find out which row and column it's in
             let row = 0;
@@ -83,7 +94,7 @@ const RoomIcons = ({ room }: RoomIconsProps) => {
                 .map((device, i) => (
                     <g
                         key={`${device.deviceType}_${device.type}`}
-                        transform={getPosition(device.type, i)}
+                        transform={getTransform(device.type, i)}
                     >
                         <title>
                             {device.type} ({device.count})
