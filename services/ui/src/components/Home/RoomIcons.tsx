@@ -82,13 +82,11 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
             const x = offsetX + column * iconPaddedSize;
             const y = offsetY + row * iconPaddedSize;
 
-            const translate = `translate(${x}, ${y})`;
-
             if (rotate) {
-                return `${translate} rotate(-90)`;
+                return `translate(${x} ${y}) rotate(-90, ${iconPaddedSize / 2} ${iconPaddedSize / 2})`;
             }
 
-            return translate;
+            return `translate(${x} ${y})`;
         },
         [iconPaddedSize, iconsWide, offsetX, offsetY, rotate],
     );
