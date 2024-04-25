@@ -15,57 +15,70 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
 
     console.log(rotate);
 
-    const { iconSize, deviceCount, iconsWide, iconsTall, offsetX, offsetY } = useMemo(() => {
-        const iconSize = 32;
+    const { iconSize, iconPaddedSize, deviceCount, iconsWide, iconsTall, offsetX, offsetY } =
+        useMemo(() => {
+            const iconSize = 32;
+            const iconPadding = 4;
+            const iconPaddedSize = iconSize + 2 * iconPadding;
 
-        // calculate the room size
-        let width = room.width ?? 1;
-        let height = room.height ?? 1;
+            // calculate the room size
+            let width = room.width ?? 1;
+            let height = room.height ?? 1;
 
-        // this could put the icons outside the polygon so needs to be improved
-        if (room.points) {
-            width =
-                Math.max(...room.points.map((point) => point.x)) -
-                Math.min(...room.points.map((point) => point.x));
+            // this could put the icons outside the polygon so needs to be improved
+            if (room.points) {
+                width =
+                    Math.max(...room.points.map((point) => point.x)) -
+                    Math.min(...room.points.map((point) => point.x));
 
-            height =
-                Math.max(...room.points.map((point) => point.y)) -
-                Math.min(...room.points.map((point) => point.y));
-        }
+                height =
+                    Math.max(...room.points.map((point) => point.y)) -
+                    Math.min(...room.points.map((point) => point.y));
+            }
 
-        // next we need to find the centre of the room
-        const centreX = width / 2 + (room.x ?? 0);
-        const centreY = height / 2 + (room.y ?? 0);
+            // next we need to find the centre of the room
+            const centreX = width / 2 + (room.x ?? 0);
+            const centreY = height / 2 + (room.y ?? 0);
 
-        console.log("centre", centreX, centreY);
+            console.log("centre", centreX, centreY);
 
-        // how many icons can we fit?
-        let iconsWide = Math.floor(width / iconSize);
-        let iconsTall = Math.floor(height / iconSize);
+            // how many icons can we fit?
+            let iconsWide = Math.floor(width / iconPaddedSize);
+            let iconsTall = Math.floor(height / iconPaddedSize);
 
-        // we want to leave some space either side
-        iconsWide = Math.max(iconsWide - 4, 0);
-        iconsTall = Math.max(iconsTall - 4, 0);
+            // we want to leave some space either side
+            iconsWide = Math.max(iconsWide - 2, 0);
+            iconsTall = Math.max(iconsTall - 2, 0);
 
-        // now we know what the limits are, arrange what we want
-        if (iconsWide >= devices.length) {
-            iconsTall = 1;
-        }
-        const deviceCount = Math.min(devices.length, iconsWide * iconsTall);
+            // now we know what the limits are, arrange what we want
+            if (iconsWide >= devices.length) {
+                iconsTall = 1;
+            }
+            const deviceCount = Math.min(devices.length, iconsWide * iconsTall);
 
-        // now we can work out the offsets
-        const offsetX = centreX - (iconsWide * iconSize) / 2;
-        const offsetY = centreY - (iconsTall * iconSize) / 2;
+            // limit them to what is necessary to centre everything
+            if (iconsWide > iconsTall) {
+                iconsWide = Math.min(iconsWide, deviceCount);
+                iconsTall = Math.ceil(deviceCount / iconsWide);
+            } else {
+                iconsTall = Math.min(iconsTall, deviceCount);
+                iconsWide = Math.ceil(deviceCount / iconsTall);
+            }
 
-        return {
-            iconSize,
-            deviceCount,
-            iconsWide,
-            iconsTall,
-            offsetX,
-            offsetY,
-        };
-    }, [devices.length, room.height, room.points, room.width, room.x, room.y]);
+            // now we can work out the offsets
+            const offsetX = centreX - (iconsWide * iconPaddedSize) / 2;
+            const offsetY = centreY - (iconsTall * iconPaddedSize) / 2;
+
+            return {
+                iconSize,
+                iconPaddedSize,
+                deviceCount,
+                iconsWide,
+                iconsTall,
+                offsetX,
+                offsetY,
+            };
+        }, [devices.length, room.height, room.points, room.width, room.x, room.y]);
 
     console.log(room);
     console.log(room.name, deviceCount, iconsWide, "x", iconsTall, "offset", offsetX, ",", offsetY);
@@ -80,8 +93,8 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
             const column = index - row * iconsWide;
 
             // now we can work out the position
-            const x = offsetX + column * iconSize;
-            const y = offsetY + row * iconSize;
+            const x = offsetX + column * iconPaddedSize;
+            const y = offsetY + row * iconPaddedSize;
 
             console.log(type, index, ":", row, ",", column, " ", x, ",", y);
 
@@ -93,7 +106,7 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
 
             return translate;
         },
-        [iconSize, iconsWide, offsetX, offsetY, rotate],
+        [iconPaddedSize, iconsWide, offsetX, offsetY, rotate],
     );
 
     return (
