@@ -9,15 +9,14 @@ import {
     faTint,
     faWalking,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
 
-interface SensorIconProps {
+type SensorIconProps = {
     type: string;
-    className?: string;
-}
+} & Omit<FontAwesomeIconProps, "icon">;
 
-const SensorIcon = ({ type, className }: SensorIconProps) => (
-    <FontAwesomeIcon icon={mapSensorIcon(type)} className={className} />
+const SensorIcon = ({ type, className, ...props }: SensorIconProps) => (
+    <FontAwesomeIcon {...props} icon={mapSensorIcon(type)} className={className} />
 );
 export default SensorIcon;
 

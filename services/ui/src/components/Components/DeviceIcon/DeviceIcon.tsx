@@ -14,18 +14,21 @@ import {
     faTowerBroadcast,
     faTv,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import { useMemo } from "react";
 import styles from "./DeviceIcon.module.scss";
 
 type DeviceIconProps = {
     type: string;
-};
+} & Omit<FontAwesomeIconProps, "icon">;
 
-const DeviceIcon = ({ type }: DeviceIconProps) => {
+const DeviceIcon = ({ type, className, ...props }: DeviceIconProps) => {
     const icon = useMemo(() => getDeviceTypeIcon(type), [type]);
 
-    return <FontAwesomeIcon icon={icon} className={styles.icon} />;
+    return (
+        <FontAwesomeIcon {...props} icon={icon} className={classNames(className, styles.icon)} />
+    );
 };
 export default DeviceIcon;
 
