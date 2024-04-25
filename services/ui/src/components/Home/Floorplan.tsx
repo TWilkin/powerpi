@@ -9,7 +9,7 @@ import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import useOrientation from "../../hooks/orientation";
 import styles from "./Floorplan.module.scss";
-import useRoomDevices from "./useRoomDevices";
+import RoomIcons from "./RoomIcons";
 
 interface FloorplanProps {
     floorplan: IFloorplan;
@@ -80,7 +80,7 @@ const Floor = ({ floor, visible }: FloorProps) => {
         <g
             id={floor.name}
             filter={`url(#${outlineId(floor)})`}
-            className={classNames({ [styles.visible]: visible })}
+            className={classNames(styles.floor, { [styles.visible]: visible })}
         >
             <title>{floor.display_name ?? floor.name}</title>
 
@@ -97,25 +97,24 @@ interface RoomProps {
 }
 
 const Room = ({ room, floor }: RoomProps) => {
-    const devices = useRoomDevices(room.name);
-
     const id = useMemo(() => `${floor}${room.name}`, [floor, room]);
 
     if (isRect(room)) {
         return (
-            <rect
-                id={id}
-                x={room.x}
-                y={room.y}
-                width={room.width}
-                height={room.height}
-                data-tooltip-id={id}
-            />
+            <g id={id} data-tooltip-id={id}>
+                <rect x={room.x} y={room.y} width={room.width} height={room.height} />
+                <RoomIcons room={room} />
+            </g>
         );
     } else if (isPolygon(room)) {
         const points = room.points?.map((point) => `${point.x},${point.y}`).join(" ");
 
-        return <polygon id={id} points={points} data-tooltip-id={id} />;
+        return (
+            <g id={id} data-tooltip-id={id}>
+                <polygon points={points} />
+                {/* <RoomIcons room={room} /> */}
+            </g>
+        );
     }
 
     return <></>;

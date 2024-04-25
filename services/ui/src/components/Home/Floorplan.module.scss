@@ -24,10 +24,12 @@
         }
 
         g {
-            display: none;
+            &.floor {
+                display: none;
 
-            &.visible {
-                display: initial;
+                &.visible {
+                    display: initial;
+                }
             }
         }
 
