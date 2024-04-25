@@ -29,6 +29,7 @@ export default function useRoomDevices(room: string) {
             .value();
 
         return _(deviceList.concat(sensorList))
+            .sortBy((device) => device.type)
             .sortBy((device) => device.count)
             .reverse()
             .value();
