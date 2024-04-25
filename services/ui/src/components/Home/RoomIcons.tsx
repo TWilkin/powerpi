@@ -1,6 +1,6 @@
 import { Room as IRoom } from "@powerpi/common-api";
 import { useCallback, useMemo } from "react";
-import _ from "underscore";
+import { chain as _ } from "underscore";
 import DeviceIcon from "../Components/DeviceIcon";
 import SensorIcon from "../Components/SensorIcon";
 import useRoomDevices from "./useRoomDevices";
@@ -57,12 +57,10 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
             const deviceCount = Math.min(devices.length, iconsWide * iconsTall);
 
             // limit them to what is necessary to centre everything
-            if (iconsWide > iconsTall) {
-                iconsWide = Math.min(iconsWide, deviceCount);
-                iconsTall = Math.ceil(deviceCount / iconsWide);
-            } else {
-                iconsTall = Math.min(iconsTall, deviceCount);
-                iconsWide = Math.ceil(deviceCount / iconsTall);
+            const best = bestValue(deviceCount, iconsWide, iconsTall);
+            if (best) {
+                iconsWide = best[0];
+                iconsTall = best[1];
             }
 
             // now we can work out the offsets
@@ -130,8 +128,36 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
                             <SensorIcon type={device.type} width={iconSize} height={iconSize} />
                         )}
                     </g>
-                ))}
+                ))
+                .value()}
         </>
     );
 };
 export default RoomIcons;
+
+function* factors(value: number) {
+    const range = Math.floor(Math.sqrt(value));
+
+    for (let i = 1; i <= range; i++) {
+        if (value % i === 0) {
+            yield [i, value / i];
+        }
+    }
+}
+
+function* feasibleFactors(count: number, rows: number, columns: number) {
+    for (const f of factors(count)) {
+        if (f[0] <= rows && f[1] <= columns) {
+            yield [f[0], f[1]];
+        } else if (f[1] <= rows && f[0] <= columns) {
+            yield [f[1], f[0]];
+        }
+    }
+}
+
+function bestValue(count: number, rows: number, columns: number) {
+    return _([...feasibleFactors(count, rows, columns)])
+        .reverse()
+        .first()
+        .value();
+}
