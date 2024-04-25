@@ -54,8 +54,8 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
         const deviceCount = Math.min(devices.length, iconsWide * iconsTall);
 
         // now we can work out the offsets
-        const offsetX = centreX - (iconsWide * iconSize) / 2 - iconSize / 2;
-        const offsetY = centreY - (iconsTall * iconSize) / 2 - iconSize / 2;
+        const offsetX = centreX - (iconsWide * iconSize) / 2;
+        const offsetY = centreY - (iconsTall * iconSize) / 2;
 
         return {
             iconSize,
@@ -74,7 +74,7 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
         (type: string, index: number) => {
             // find out which row and column it's in
             let row = 0;
-            while (index > (row + 1) * iconsWide) {
+            while (index >= (row + 1) * iconsWide) {
                 row++;
             }
             const column = index - row * iconsWide;
