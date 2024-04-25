@@ -25,11 +25,7 @@ type DeviceIconProps = {
 const DeviceIcon = ({ type }: DeviceIconProps) => {
     const icon = useMemo(() => getDeviceTypeIcon(type), [type]);
 
-    return (
-        <div className={styles.icon}>
-            <FontAwesomeIcon icon={icon} />
-        </div>
-    );
+    return <FontAwesomeIcon icon={icon} className={styles.icon} />;
 };
 export default DeviceIcon;
 
