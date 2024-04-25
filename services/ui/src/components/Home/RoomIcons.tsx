@@ -44,8 +44,8 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
         let iconsTall = Math.floor(height / iconSize);
 
         // we want to leave some space either side
-        iconsWide = Math.max(iconsWide - 2, 0);
-        iconsTall = Math.max(iconsTall - 2, 0);
+        iconsWide = Math.max(iconsWide - 4, 0);
+        iconsTall = Math.max(iconsTall - 4, 0);
 
         // now we know what the limits are, arrange what we want
         if (iconsWide >= devices.length) {
