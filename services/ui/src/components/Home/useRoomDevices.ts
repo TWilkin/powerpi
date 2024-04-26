@@ -23,7 +23,7 @@ export default function useRoomDevices(room: string) {
             device: sensor,
         }));
 
-        // get all the devices and sensors and group by type, and get the count
+        // get all the devices and sensors and group by type, then get the count
         const all = _(deviceList)
             .concat(sensorList ?? [])
             .filter(({ device }) => device.location === room && device.visible)
