@@ -116,6 +116,7 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
 };
 export default RoomIcons;
 
+/** Generate factors for value starting with the values closes to the square root. */
 function* factors(value: number) {
     const range = Math.floor(Math.sqrt(value));
 
@@ -126,8 +127,18 @@ function* factors(value: number) {
     }
 }
 
+/** Generate factors between count and rows * columns, in case the factors of count won't fit. */
+function* increasingFactors(count: number, rows: number, columns: number) {
+    for (let i = count; i <= rows * columns; i++) {
+        for (const f of factors(i)) {
+            yield f;
+        }
+    }
+}
+
+/** Generate factors of count that will work for the rows and columns. */
 function* feasibleFactors(count: number, rows: number, columns: number, rotate: boolean) {
-    for (const [f1, f2] of factors(count)) {
+    for (const [f1, f2] of increasingFactors(count, rows, columns)) {
         if (rotate) {
             if (f1 <= rows && f2 <= columns) {
                 yield [f1, f2];
@@ -142,6 +153,7 @@ function* feasibleFactors(count: number, rows: number, columns: number, rotate: 
     }
 }
 
+/** Find the "best" factors of count in a grid of no more than rows x columns. */
 function bestValue(count: number, rows: number, columns: number, rotate: boolean) {
     for (const factors of feasibleFactors(count, rows, columns, rotate)) {
         return factors;
