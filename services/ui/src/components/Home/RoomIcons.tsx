@@ -119,7 +119,7 @@ export default RoomIcons;
 function* factors(value: number) {
     const range = Math.floor(Math.sqrt(value));
 
-    for (let i = 1; i <= range; i++) {
+    for (let i = range; i >= 1; i--) {
         if (value % i === 0) {
             yield [i, value / i];
         }
@@ -143,8 +143,9 @@ function* feasibleFactors(count: number, rows: number, columns: number, rotate: 
 }
 
 function bestValue(count: number, rows: number, columns: number, rotate: boolean) {
-    return _([...feasibleFactors(count, rows, columns, rotate)])
-        .reverse()
-        .first()
-        .value();
+    for (const factors of feasibleFactors(count, rows, columns, rotate)) {
+        return factors;
+    }
+
+    return undefined;
 }
