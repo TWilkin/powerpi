@@ -6,31 +6,30 @@ export default function useAPI() {
     const api = useContext(PowerPiAPIContext);
 
     // redirect to login on 401
-    useEffect(
-        () =>
-            api.setErrorHandler((error) => {
-                if (
-                    error.response.status === HttpStatusCodes.UNAUTHORIZED &&
-                    !window.location.pathname.endsWith("/login")
-                ) {
-                    window.location.pathname = "/login";
-                }
-            }),
-        [api],
-    );
+    useEffect(() => {
+        api.setErrorHandler((error) => {
+            if (
+                error.response.status === HttpStatusCodes.UNAUTHORIZED &&
+                !window.location.pathname.endsWith("/login")
+            ) {
+                window.location.pathname = "/login";
+            }
+        });
+    }, [api]);
 
     return api;
 }
 
-// this is the API instance that will be used throughout
-const api = new PowerPiApi(`${window.location.origin}/api`);
-
 // the context holding the API instance
-const PowerPiAPIContext = createContext<PowerPiApi>(api);
+const PowerPiAPIContext = createContext<PowerPiApi>(
+    new PowerPiApi(`${window.location.origin}/api`),
+);
 
 // the API context provider
-type PowerPiAPIContextProviderProps = PropsWithChildren<unknown>;
+type PowerPiAPIContextProviderProps = PropsWithChildren<{
+    api: PowerPiApi;
+}>;
 
-export const PowerPiAPIContextProvider = ({ children }: PowerPiAPIContextProviderProps) => (
+export const PowerPiAPIContextProvider = ({ api, children }: PowerPiAPIContextProviderProps) => (
     <PowerPiAPIContext.Provider value={api}>{children}</PowerPiAPIContext.Provider>
 );
