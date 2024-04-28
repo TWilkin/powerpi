@@ -1,13 +1,12 @@
 import { Device, DeviceState, PowerPiApi, Sensor } from "@powerpi/common-api";
-import { renderHook, waitFor } from "@testing-library/react";
-import { PropsWithChildren } from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
 import { instance, mock, when } from "ts-mockito";
-import { PowerPiAPIContextProvider } from "../../hooks/api";
+import { renderHook, waitFor } from "../../test-setup";
 import useRoomDevices from "./useRoomDevices";
 
 test("useRoomDevice", async () => {
-    const { result } = renderHook(() => useRoomDevices("MyRoom"), { wrapper: Wrapper });
+    const api = setupAPI();
+
+    const { result } = renderHook(() => useRoomDevices("MyRoom"), { api: instance(api) });
 
     await waitFor(() => {
         expect(result.current).toBeDefined();
@@ -40,9 +39,7 @@ test("useRoomDevice", async () => {
     });
 });
 
-const Wrapper = ({ children }: PropsWithChildren<unknown>) => {
-    const queryClient = new QueryClient();
-
+function setupAPI() {
     const api = mock<PowerPiApi>();
 
     when(api.getDevices()).thenResolve([
@@ -72,12 +69,8 @@ const Wrapper = ({ children }: PropsWithChildren<unknown>) => {
         createSensor("Window2", "window", "MyRoom", "open"),
     ]);
 
-    return (
-        <QueryClientProvider client={queryClient}>
-            <PowerPiAPIContextProvider api={instance(api)}>{children}</PowerPiAPIContextProvider>
-        </QueryClientProvider>
-    );
-};
+    return api;
+}
 
 function createSensor(
     name: string,
