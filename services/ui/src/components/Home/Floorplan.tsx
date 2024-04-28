@@ -35,12 +35,6 @@ const Floorplan = ({ floorplan }: FloorplanProps) => {
                 preserveAspectRatio="xMidYMid"
                 className={classNames({ [styles.rotate]: rotate, [styles.wide]: isWide })}
             >
-                <defs>
-                    {floorplan.floors.map((floor) => (
-                        <RoomOutline key={floor.name} floor={floor} />
-                    ))}
-                </defs>
-
                 {floorplan.floors.map((floor) => (
                     <Floor
                         key={floor.name}
@@ -54,26 +48,6 @@ const Floorplan = ({ floorplan }: FloorplanProps) => {
     );
 };
 export default Floorplan;
-
-const RoomOutline = ({ floor }: { floor: IFloor }) => {
-    const size = useMemo(() => viewBoxByFloor(floor), [floor]);
-
-    return (
-        <filter
-            id={outlineId(floor)}
-            x={size.minX}
-            y={size.minY}
-            width={size.maxX}
-            height={size.maxY}
-            filterUnits="userSpaceOnUse"
-        >
-            <feMorphology operator="dilate" in="SourceAlpha" radius={2} result="morph1" />
-            <feMorphology operator="dilate" in="SourceAlpha" radius={3} result="morph2" />
-            <feComposite in="morph1" in2="morph2" operator="xor" result="outline" />
-            <feComposite in="outline" in2="SourceGraphic" operator="over" result="output" />
-        </filter>
-    );
-};
 
 interface FloorProps {
     floor: IFloor;
