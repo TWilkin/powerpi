@@ -1,10 +1,5 @@
 import { PowerPiApi } from "@powerpi/common-api";
-import {
-    RenderHookOptions,
-    RenderOptions,
-    render as testRender,
-    renderHook as testRenderHook,
-} from "@testing-library/react";
+import { RenderHookOptions, RenderOptions, render, renderHook } from "@testing-library/react";
 import { PropsWithChildren, ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { instance, mock } from "ts-mockito";
@@ -35,20 +30,20 @@ function setupOptions<TOptionType extends CommonProps>(options: TOptionType) {
 }
 
 /** Wrap `render` method to setup the API and `react-query`. */
-function render(component: ReactNode, options: RenderOptions & CommonProps) {
+function customRender(component: ReactNode, options: RenderOptions & CommonProps) {
     const defaultOptions = setupOptions(options);
 
-    return testRender(component, defaultOptions);
+    return render(component, defaultOptions);
 }
 
 /** Wrap `renderHook` method to setup the API and `react-query`. */
-function renderHook<TResultType>(
-    render: Parameters<typeof testRenderHook>[0],
+function customRenderHook<TResultType>(
+    render: Parameters<typeof renderHook>[0],
     options: RenderHookOptions<TResultType> & CommonProps,
 ) {
     const defaultOptions = setupOptions(options);
 
-    return testRenderHook(render, defaultOptions);
+    return renderHook(render, defaultOptions);
 }
 
 type WrapperProps = PropsWithChildren<Required<CommonProps>>;
@@ -61,4 +56,4 @@ const Wrapper = ({ api, queryClient, children }: WrapperProps) => (
 );
 
 export * from "@testing-library/react";
-export { render, renderHook };
+export { customRender as render, customRenderHook as renderHook };
