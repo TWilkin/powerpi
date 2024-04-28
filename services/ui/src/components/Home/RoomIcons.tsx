@@ -1,3 +1,5 @@
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Room as IRoom } from "@powerpi/common-api";
 import { useCallback, useMemo } from "react";
 import { chain as _ } from "underscore";
@@ -53,7 +55,11 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
         }
 
         // how many devices can we actually show
-        const deviceCount = Math.min(devices.length, iconsWide * iconsTall);
+        let deviceCount = Math.min(devices.length, iconsWide * iconsTall);
+        if (deviceCount < devices.length) {
+            // if we have too many devices we'll show an ellipsis instead of the last one
+            deviceCount--;
+        }
 
         // now we can work out the offsets
         const offsetX = centreX - (iconsWide * iconPaddedSize) / 2;
@@ -116,6 +122,15 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
                     </g>
                 ))
                 .value()}
+
+            {deviceCount < devices.length && (
+                <g transform={getTransform(deviceCount)}>
+                    <title>
+                        There are {devices.length - deviceCount} more hidden devices/sensors.
+                    </title>
+                    <FontAwesomeIcon icon={faEllipsis} width={iconSize} height={iconSize} />
+                </g>
+            )}
         </>
     );
 };
