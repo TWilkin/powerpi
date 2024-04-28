@@ -39,7 +39,11 @@ const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
             <div className={classNames(styles.sensors, { [styles.battery]: hasBattery })}>
                 {sensors.map((sensor) => (
                     <Fragment key={sensor.name}>
-                        <SensorIcon type={sensor.type} className={styles.icon} />
+                        <SensorIcon
+                            type={sensor.type}
+                            state={sensor?.state}
+                            className={styles.icon}
+                        />
 
                         {hasBattery && (
                             <span>

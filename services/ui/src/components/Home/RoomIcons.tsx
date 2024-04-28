@@ -106,7 +106,12 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
                         )}
 
                         {device.deviceType === "sensor" && (
-                            <SensorIcon type={device.type} width={iconSize} height={iconSize} />
+                            <SensorIcon
+                                type={device.type}
+                                state={device.state}
+                                width={iconSize}
+                                height={iconSize}
+                            />
                         )}
                     </g>
                 ))
@@ -130,7 +135,7 @@ function* factors(value: number) {
 /** Generate factors between count and rows * columns, in case the factors of count won't fit. */
 function* increasingFactors(count: number, rows: number, columns: number) {
     const maxCount = Math.min(count, rows * columns);
-    
+
     for (let i = maxCount; i <= rows * columns; i++) {
         for (const f of factors(i)) {
             yield f;

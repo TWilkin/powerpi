@@ -1,8 +1,10 @@
 import {
     faBolt,
     faBurn,
+    faDoorClosed,
     faDoorOpen,
-    faHome,
+    faHouseChimney,
+    faHouseChimneyWindow,
     faMobileRetro,
     faQuestion,
     faThermometerHalf,
@@ -13,34 +15,35 @@ import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontaw
 
 type SensorIconProps = {
     type: string;
+    state?: string;
 } & Omit<FontAwesomeIconProps, "icon">;
 
-const SensorIcon = ({ type, className, ...props }: SensorIconProps) => (
-    <FontAwesomeIcon {...props} icon={mapSensorIcon(type)} className={className} />
+const SensorIcon = ({ type, state, className, ...props }: SensorIconProps) => (
+    <FontAwesomeIcon {...props} icon={mapSensorIcon(type, state)} className={className} />
 );
 export default SensorIcon;
 
-function mapSensorIcon(type: string) {
+function mapSensorIcon(type: string, state?: string) {
     const split = type.split("_");
     const manufacturerType = split.length >= 2 ? split.at(0) ?? type : type;
     const sensorType = split.length >= 2 ? type.substring(manufacturerType.length + 1) : type;
 
-    let icon = typeSwitch(sensorType);
+    let icon = typeSwitch(sensorType, state);
     for (const str of split) {
         if (icon !== faQuestion) {
             break;
         }
 
-        icon = typeSwitch(str);
+        icon = typeSwitch(str, state);
     }
 
     return icon;
 }
 
-function typeSwitch(type: string) {
+function typeSwitch(type: string, state?: string) {
     switch (type) {
         case "door":
-            return faDoorOpen;
+            return state === "close" ? faDoorClosed : faDoorOpen;
 
         case "electricity":
             return faBolt;
@@ -61,7 +64,7 @@ function typeSwitch(type: string) {
             return faThermometerHalf;
 
         case "window":
-            return faHome;
+            return state === "close" ? faHouseChimney : faHouseChimneyWindow;
 
         default:
             return faQuestion;
