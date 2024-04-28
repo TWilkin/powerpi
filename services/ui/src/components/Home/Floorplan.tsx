@@ -57,13 +57,7 @@ interface FloorProps {
 
 const Floor = ({ floor, visible, rotate }: FloorProps) => {
     return (
-        <g
-            id={floor.name}
-            filter={`url(#${outlineId(floor)})`}
-            className={classNames(styles.floor, { [styles.visible]: visible })}
-        >
-            <title>{floor.display_name ?? floor.name}</title>
-
+        <g id={floor.name} className={classNames(styles.floor, { [styles.visible]: visible })}>
             {floor.rooms.map((room) => (
                 <Room key={room.name} room={room} floor={floor.name} rotate={rotate} />
             ))}
@@ -100,8 +94,6 @@ const Room = ({ room, floor, rotate }: RoomProps) => {
 
     return <></>;
 };
-
-const outlineId = (floor: IFloor) => `${floor.name}Outline`;
 
 const isRect = (room: IRoom) =>
     room.width && room.height && (!room.points || room.points.length === 0);
