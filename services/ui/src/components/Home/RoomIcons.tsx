@@ -45,15 +45,15 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
         iconsWide = Math.max(iconsWide - 2, 0);
         iconsTall = Math.max(iconsTall - 2, 0);
 
-        // how many devices can we actually show
-        const deviceCount = Math.min(devices.length, iconsWide * iconsTall);
-
         // limit them to what is necessary to centre everything
-        const best = bestValue(deviceCount, iconsWide, iconsTall, rotate);
+        const best = bestValue(devices.length, iconsWide, iconsTall, rotate);
         if (best) {
             iconsWide = best[0];
             iconsTall = best[1];
         }
+
+        // how many devices can we actually show
+        const deviceCount = Math.min(devices.length, iconsWide * iconsTall);
 
         // now we can work out the offsets
         const offsetX = centreX - (iconsWide * iconPaddedSize) / 2;
@@ -129,7 +129,9 @@ function* factors(value: number) {
 
 /** Generate factors between count and rows * columns, in case the factors of count won't fit. */
 function* increasingFactors(count: number, rows: number, columns: number) {
-    for (let i = count; i <= rows * columns; i++) {
+    const maxCount = Math.min(count, rows * columns);
+    
+    for (let i = maxCount; i <= rows * columns; i++) {
         for (const f of factors(i)) {
             yield f;
         }
