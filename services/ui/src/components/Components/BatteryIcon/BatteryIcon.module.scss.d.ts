@@ -107,7 +107,6 @@ interface CssExports {
   'fa-arrow-trend-down': string;
   'fa-arrow-trend-up': string;
   'fa-arrow-turn-down': string;
-  'fa-arrow-turn-right': string;
   'fa-arrow-turn-up': string;
   'fa-arrow-up': string;
   'fa-arrow-up-1-9': string;
