@@ -8,13 +8,15 @@
 **/kubernetes/
 **/node_modules/
 **/platforms/
+**/__snapshots__/
 **/tests/
 **/venv/
-**/.converage
+**/.coverage
 **/*.dev.js
 **/_.dev.ts
 **/*.test.ts
 **/*.test.tsx
+**/test-setup.tsx
 **/test_*.py
 **/_.pyc
 **/*.log
