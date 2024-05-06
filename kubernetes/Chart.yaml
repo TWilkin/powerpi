@@ -2,8 +2,8 @@ apiVersion: v2
 name: powerpi
 description: A Helm chart for deploying the PowerPi home automation stack
 type: application
-version: 0.6.0
-appVersion: 0.6.0
+version: 0.6.1
+appVersion: 0.6.1
 dependencies:
   # services
   - name: api
