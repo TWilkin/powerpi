@@ -1,18 +1,18 @@
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Room as IRoom } from "@powerpi/common-api";
+import { Room } from "@powerpi/common-api";
 import { useCallback, useMemo } from "react";
 import { chain as _ } from "underscore";
 import DeviceIcon from "../Components/DeviceIcon";
 import SensorIcon from "../Components/SensorIcon";
+import { isPolygon } from "./ViewBox";
 import useRoomDevices from "./useRoomDevices";
 
 type RoomIconsProps = {
-    room: IRoom;
-    rotate: boolean;
+    room: Room;
 };
 
-const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
+const RoomIcons = ({ room }: RoomIconsProps) => {
     const devices = useRoomDevices(room.name);
 
     const { iconSize, iconPaddedSize, deviceCount, iconsWide, offsetX, offsetY } = useMemo(() => {
@@ -21,23 +21,23 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
         const iconPaddedSize = iconSize + 2 * iconPadding;
 
         // calculate the room size
-        let width = room.width ?? 1;
-        let height = room.height ?? 1;
+        let x = room.x ?? 0;
+        let y = room.y ?? 0;
+        let width = room.width ?? 0;
+        let height = room.height ?? 0;
 
         // this could put the icons outside the polygon so needs to be improved
-        if (room.points) {
-            width =
-                Math.max(...room.points.map((point) => point.x)) -
-                Math.min(...room.points.map((point) => point.x));
+        if (isPolygon(room)) {
+            x = Math.min(...room.points!.map((point) => point.x));
+            y = Math.min(...room.points!.map((point) => point.y));
 
-            height =
-                Math.max(...room.points.map((point) => point.y)) -
-                Math.min(...room.points.map((point) => point.y));
+            width = Math.max(...room.points!.map((point) => point.x)) - x;
+            height = Math.max(...room.points!.map((point) => point.y)) - y;
         }
 
         // next we need to find the centre of the room
-        const centreX = width / 2 + (room.x ?? 0);
-        const centreY = height / 2 + (room.y ?? 0);
+        const centreX = width / 2 + x;
+        const centreY = height / 2 + y;
 
         // how many icons can we fit?
         let iconsWide = Math.floor(width / iconPaddedSize);
@@ -48,7 +48,7 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
         iconsTall = Math.max(iconsTall - 2, 0);
 
         // limit them to what is necessary to centre everything
-        const best = bestValue(devices.length, iconsWide, iconsTall, rotate);
+        const best = bestValue(devices.length, iconsWide, iconsTall);
         if (best) {
             iconsWide = best[0];
             iconsTall = best[1];
@@ -73,7 +73,7 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
             offsetX,
             offsetY,
         };
-    }, [devices.length, room.height, room.points, room.width, room.x, room.y, rotate]);
+    }, [devices.length, room]);
 
     const getTransform = useCallback(
         (index: number) => {
@@ -88,13 +88,9 @@ const RoomIcons = ({ room, rotate }: RoomIconsProps) => {
             const x = offsetX + column * iconPaddedSize;
             const y = offsetY + row * iconPaddedSize;
 
-            if (rotate) {
-                return `translate(${x} ${y}) rotate(-90, ${iconPaddedSize / 2} ${iconPaddedSize / 2})`;
-            }
-
             return `translate(${x} ${y})`;
         },
-        [iconPaddedSize, iconsWide, offsetX, offsetY, rotate],
+        [iconPaddedSize, iconsWide, offsetX, offsetY],
     );
 
     return (
@@ -159,15 +155,9 @@ function* increasingFactors(count: number, rows: number, columns: number) {
 }
 
 /** Generate factors of count that will work for the rows and columns. */
-function* feasibleFactors(count: number, rows: number, columns: number, rotate: boolean) {
+function* feasibleFactors(count: number, rows: number, columns: number) {
     for (const [f1, f2] of increasingFactors(count, rows, columns)) {
-        if (rotate) {
-            if (f1 <= rows && f2 <= columns) {
-                yield [f1, f2];
-            } else if (f2 <= rows && f1 <= columns) {
-                yield [f2, f1];
-            }
-        } else if (f1 <= columns && f2 <= rows) {
+        if (f1 <= columns && f2 <= rows) {
             yield [f2, f1];
         } else if (f2 <= columns && f1 <= rows) {
             yield [f1, f2];
@@ -176,8 +166,8 @@ function* feasibleFactors(count: number, rows: number, columns: number, rotate: 
 }
 
 /** Find the "best" factors of count in a grid of no more than rows x columns. */
-function bestValue(count: number, rows: number, columns: number, rotate: boolean) {
-    for (const factors of feasibleFactors(count, rows, columns, rotate)) {
+function bestValue(count: number, rows: number, columns: number) {
+    for (const factors of feasibleFactors(count, rows, columns)) {
         return factors;
     }
 

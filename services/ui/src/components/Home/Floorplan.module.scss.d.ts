@@ -3,9 +3,7 @@
 interface CssExports {
   'floor': string;
   'layout': string;
-  'rotate': string;
   'visible': string;
-  'wide': string;
 }
 export const cssExports: CssExports;
 export default cssExports;
