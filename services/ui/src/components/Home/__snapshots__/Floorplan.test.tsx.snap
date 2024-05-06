@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Floorplan renders 1`] = `
+<div>
+  <div
+    class="layout"
+  >
+    <svg
+      preserveAspectRatio="xMidYMid"
+      viewBox="0 0 100 100"
+    >
+      <g
+        class="floor"
+        id="Basement"
+      >
+        <g
+          data-tooltip-id="BasementBasement"
+          id="BasementBasement"
+        >
+          <rect
+            height="100"
+            width="100"
+          />
+        </g>
+      </g>
+      <g
+        class="floor"
+        id="Ground"
+      >
+        <g
+          data-tooltip-id="GroundLivingRoom"
+          id="GroundLivingRoom"
+        >
+          <polygon
+            points="0,0 50,0 50,100 0,100"
+          />
+        </g>
+        <g
+          data-tooltip-id="GroundKitchen"
+          id="GroundKitchen"
+        >
+          <polygon
+            points="50,0 100,0 100,100 50,100"
+          />
+        </g>
+      </g>
+    </svg>
+  </div>
+</div>
+`;

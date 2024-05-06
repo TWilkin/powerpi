@@ -11,8 +11,8 @@ type CommonProps = {
 };
 
 /** Extract our options from those used by `render`/`renderHook` and initialise those that aren't set. */
-function setupOptions<TOptionType extends CommonProps>(options: TOptionType) {
-    let { api, queryClient, ...defaultOptions } = options;
+function setupOptions<TOptionType extends CommonProps>(options?: TOptionType) {
+    let { api, queryClient, ...defaultOptions } = options ?? {};
 
     api ??= instance(mock<PowerPiApi>());
     queryClient ??= new QueryClient();
@@ -30,7 +30,7 @@ function setupOptions<TOptionType extends CommonProps>(options: TOptionType) {
 }
 
 /** Wrap `render` method to setup the API and `react-query`. */
-function customRender(component: ReactNode, options: RenderOptions & CommonProps) {
+function customRender(component: ReactNode, options?: RenderOptions & CommonProps) {
     const defaultOptions = setupOptions(options);
 
     return render(component, defaultOptions);
@@ -39,7 +39,7 @@ function customRender(component: ReactNode, options: RenderOptions & CommonProps
 /** Wrap `renderHook` method to setup the API and `react-query`. */
 function customRenderHook<TResultType>(
     render: Parameters<typeof renderHook>[0],
-    options: RenderHookOptions<TResultType> & CommonProps,
+    options?: RenderHookOptions<TResultType> & CommonProps,
 ) {
     const defaultOptions = setupOptions(options);
 
