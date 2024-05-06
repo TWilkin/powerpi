@@ -37,8 +37,8 @@ function customRender(component: ReactNode, options?: RenderOptions & CommonProp
 }
 
 /** Wrap `renderHook` method to setup the API and `react-query`. */
-function customRenderHook<TResultType>(
-    render: Parameters<typeof renderHook>[0],
+function customRenderHook<TResultType, TPropsType>(
+    render: (initialProps: TPropsType) => TResultType,
     options?: RenderHookOptions<TResultType> & CommonProps,
 ) {
     const defaultOptions = setupOptions(options);

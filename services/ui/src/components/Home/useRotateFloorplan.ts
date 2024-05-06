@@ -88,6 +88,7 @@ function rotateRoom(room: Room, radians: number, centre: Point): Room {
 
         return {
             ...room,
+            points: undefined,
             x,
             y,
             width,
