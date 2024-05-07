@@ -1,4 +1,4 @@
-import { ISensor } from "@powerpi/common";
+import { ConfigFileType, ConfigRetrieverService, ISensor } from "@powerpi/common";
 import { Service } from "@tsed/di";
 import ConfigService from "./ConfigService";
 import MqttService from "./MqttService";
@@ -10,6 +10,7 @@ export default class SensorStateService {
 
     constructor(
         private readonly config: ConfigService,
+        private readonly configRetriever: ConfigRetrieverService,
         private readonly mqttService: MqttService,
     ) {
         this._sensors = undefined;
@@ -31,14 +32,18 @@ export default class SensorStateService {
 
     private initialise() {
         this._sensors = this.config.sensors.map(
-            (sensor) => new SensorConsumer(this.mqttService, sensor),
+            (sensor) => new SensorConsumer(this.configRetriever, this.mqttService, sensor),
         );
     }
 }
 
 class SensorConsumer extends SensorStateListener {
-    constructor(mqttService: MqttService, sensor: ISensor) {
-        super(mqttService, sensor);
+    constructor(
+        configRetriever: ConfigRetrieverService,
+        mqttService: MqttService,
+        sensor: ISensor,
+    ) {
+        super(configRetriever, mqttService, sensor);
     }
 
     protected onSensorStateMessage(_: string, __: string, ___?: number): void {
@@ -50,6 +55,10 @@ class SensorConsumer extends SensorStateListener {
     }
 
     protected onSensorBatteryMessage(_: string, __: number, ___?: number): void {
+        return;
+    }
+
+    protected onConfigChange(_: ConfigFileType): void {
         return;
     }
 }

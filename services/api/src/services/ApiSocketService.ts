@@ -27,7 +27,7 @@ export default class ApiSocketService {
         this.device = new DeviceListener(configRetriever, mqttService, this);
 
         this.sensors = configService.sensors.map(
-            (sensor) => new SensorListener(mqttService, sensor, this),
+            (sensor) => new SensorListener(configRetriever, mqttService, sensor, this),
         );
     }
 
@@ -144,11 +144,12 @@ class DeviceListener extends DeviceStateListener {
 
 class SensorListener extends SensorStateListener {
     constructor(
+        configRetriever: ConfigRetrieverService,
         mqttService: MqttService,
         sensor: ISensor,
         private readonly socketService: ApiSocketService,
     ) {
-        super(mqttService, sensor);
+        super(configRetriever, mqttService, sensor);
     }
 
     protected onSensorStateMessage(sensorName: string, state: string, timestamp?: number): void {
@@ -172,4 +173,6 @@ class SensorListener extends SensorStateListener {
     ): void {
         this.socketService.onBatteryMessage("sensor", sensorName, value, charging, timestamp);
     }
+
+    protected onConfigChange(_: ConfigFileType) {}
 }
