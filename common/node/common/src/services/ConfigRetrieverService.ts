@@ -1,6 +1,6 @@
 import { Service } from "typedi";
 import { sleep } from "../util";
-import { ConfigService } from "./ConfigService";
+import { ConfigFileType, ConfigService } from "./ConfigService";
 import { LoggerService } from "./LoggerService";
 import { Message, MqttConsumer, MqttService } from "./MqttService";
 
@@ -9,16 +9,39 @@ interface ConfigMessage extends Message {
     checksum: string;
 }
 
+export interface ConfigListener {
+    /** Called when one of the ConfigFileTypes this listener is registered for is updated. */
+    configUpdate(type: ConfigFileType): void;
+}
+
 @Service()
 export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
     private static readonly topicType = "config";
     private static readonly topicAction = "change";
 
+    private listeners: { [key in ConfigFileType]?: ConfigListener[] };
+
     constructor(
         private config: ConfigService,
         private mqtt: MqttService,
-        private logger: LoggerService
-    ) {}
+        private logger: LoggerService,
+    ) {
+        this.listeners = {};
+    }
+
+    /** Add a listener for changes to ConfigFileType `type`. */
+    public addListener(type: ConfigFileType, listener: ConfigListener) {
+        if (!this.listeners[type]) {
+            this.listeners[type] = [];
+        }
+
+        this.listeners[type]?.push(listener);
+    }
+
+    /** Remove an already registered listener from changes to ConfigFileType `type`. */
+    public removeListener(type: ConfigFileType, listener: ConfigListener) {
+        this.listeners[type] = this.listeners[type]?.filter((l) => l !== listener);
+    }
 
     public async start() {
         if (this.config.configIsNeeded) {
@@ -32,9 +55,9 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
                     ConfigRetrieverService.topicType,
                     type.toLowerCase(),
                     ConfigRetrieverService.topicAction,
-                    this
-                )
-            )
+                    this,
+                ),
+            ),
         );
 
         // we have to wait until we get all the configs we're waiting for
@@ -53,7 +76,7 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
         _: string,
         entity: string,
         __: string,
-        { payload, checksum }: ConfigMessage
+        { payload, checksum }: ConfigMessage,
     ): void {
         const type = this.config.configFileTypes.find((type) => type.toLowerCase() == entity);
         if (type) {
@@ -71,6 +94,9 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
             } else {
                 // this is a new config, so just set it
                 this.config.setConfig(type, payload, checksum);
+
+                // now notify the listeners if there are any
+                this.listeners[type]?.forEach((listener) => listener.configUpdate(type));
             }
         }
     }
