@@ -14,7 +14,8 @@
     "types": "dist/src/index.d.ts",
     "scripts": {
         "build": "tsc && cp src/health.sh dist/",
-        "test": "jest"
+        "test": "jest",
+        "coverage": "jest --coverage"
     },
     "files": [
         "dist/src",
