@@ -1,16 +1,16 @@
-import { Message, MqttConsumer, MqttService } from "@powerpi/common";
+import { ConfigRetrieverService, Message, MqttConsumer, MqttService } from "@powerpi/common";
 import { DeviceState } from "@powerpi/common-api";
 import { Namespace } from "socket.io";
 import { anyString, anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
 import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
-
 import { BatteryMessage } from "./listeners/BatteryStateListener";
 import { CapabilityMessage } from "./listeners/CapabilityStateListener";
 import { StateMessage } from "./listeners/DeviceStateListener";
 import { EventMessage } from "./listeners/SensorStateListener";
 
 const mockedConfigService = mock<ConfigService>();
+const mockedConfigRetrieverService = mock<ConfigRetrieverService>();
 const mockedMqttService = mock<MqttService>();
 const mockedNamespace = mock<Namespace>();
 
@@ -46,7 +46,11 @@ describe("ApiSocketService", () => {
         resetCalls(mockedMqttService);
         resetCalls(mockedNamespace);
 
-        subject = new ApiSocketService(instance(mockedConfigService), instance(mockedMqttService));
+        subject = new ApiSocketService(
+            instance(mockedConfigService),
+            instance(mockedConfigRetrieverService),
+            instance(mockedMqttService),
+        );
 
         await subject.$onInit();
     });

@@ -1,3 +1,4 @@
+import { ConfigFileType, ConfigRetrieverService } from "@powerpi/common";
 import { AdditionalState, Device, DeviceState } from "@powerpi/common-api";
 import { Service } from "@tsed/common";
 import ConfigService from "./ConfigService";
@@ -11,9 +12,10 @@ export default class DeviceStateService extends DeviceStateListener {
 
     constructor(
         private readonly config: ConfigService,
+        configRetriever: ConfigRetrieverService,
         mqttService: MqttService,
     ) {
-        super(mqttService);
+        super(configRetriever, mqttService);
 
         this._devices = undefined;
     }
@@ -69,6 +71,8 @@ export default class DeviceStateService extends DeviceStateListener {
             device.capability = capability;
         }
     }
+
+    protected onConfigChange(_: ConfigFileType) {}
 
     private initialise() {
         this._devices = this.config.devices.map((device) => ({

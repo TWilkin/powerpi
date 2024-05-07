@@ -1,4 +1,4 @@
-import { Message, MqttConsumer, MqttService } from "@powerpi/common";
+import { ConfigRetrieverService, Message, MqttConsumer, MqttService } from "@powerpi/common";
 import { DeviceState } from "@powerpi/common-api";
 import { capture, instance, mock, resetCalls, when } from "ts-mockito";
 import ConfigService from "./ConfigService";
@@ -8,6 +8,7 @@ import { CapabilityMessage } from "./listeners/CapabilityStateListener";
 import { StateMessage } from "./listeners/DeviceStateListener";
 
 const mockedConfigService = mock<ConfigService>();
+const mockedConfigRetrieverService = mock<ConfigRetrieverService>();
 const mockedMqttService = mock<MqttService>();
 
 describe("DeviceStateService", () => {
@@ -45,6 +46,7 @@ describe("DeviceStateService", () => {
 
         subject = new DeviceStateService(
             instance(mockedConfigService),
+            instance(mockedConfigRetrieverService),
             instance(mockedMqttService),
         );
 
@@ -69,6 +71,7 @@ describe("DeviceStateService", () => {
 
             subject = new DeviceStateService(
                 instance(mockedConfigService),
+                instance(mockedConfigRetrieverService),
                 instance(mockedMqttService),
             );
 
@@ -87,6 +90,7 @@ describe("DeviceStateService", () => {
         test("none", () => {
             subject = new DeviceStateService(
                 instance(mockedConfigService),
+                instance(mockedConfigRetrieverService),
                 instance(mockedMqttService),
             );
 

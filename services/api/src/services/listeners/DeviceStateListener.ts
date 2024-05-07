@@ -1,4 +1,4 @@
-import { Message, MqttConsumer } from "@powerpi/common";
+import { ConfigFileType, ConfigRetrieverService, Message, MqttConsumer } from "@powerpi/common";
 import { AdditionalState, DeviceState } from "@powerpi/common-api";
 import MqttService from "../MqttService";
 import BatteryStateListener, { BatteryMessage } from "./BatteryStateListener";
@@ -12,7 +12,10 @@ export default abstract class DeviceStateListener
     extends BatteryStateListener
     implements MqttConsumer<StateMessage>, CapabilityStateListener
 {
-    constructor(private readonly mqttService: MqttService) {
+    constructor(
+        private readonly configRetriever: ConfigRetrieverService,
+        private readonly mqttService: MqttService,
+    ) {
         super();
     }
 
@@ -27,6 +30,14 @@ export default abstract class DeviceStateListener
         await this.mqttService.subscribe("device", "+", "capability", {
             message: (_: string, entity: string, __: string, message: CapabilityMessage) =>
                 this.onCapabilityMessage(entity, message),
+        });
+
+        this.configRetriever.addListener(ConfigFileType.Devices, {
+            onConfigChange: (type: ConfigFileType) => {
+                if (type === ConfigFileType.Devices) {
+                    this.onConfigChange(type);
+                }
+            },
         });
     }
 
@@ -61,4 +72,6 @@ export default abstract class DeviceStateListener
         timestamp?: number,
         charging?: boolean,
     ): void;
+
+    protected abstract onConfigChange(type: ConfigFileType): void;
 }

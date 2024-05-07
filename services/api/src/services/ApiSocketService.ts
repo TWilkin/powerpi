@@ -1,4 +1,4 @@
-import { ISensor } from "@powerpi/common";
+import { ConfigFileType, ConfigRetrieverService, ISensor } from "@powerpi/common";
 import { AdditionalState, Capability, DeviceState, SocketIONamespace } from "@powerpi/common-api";
 import { $log } from "@tsed/common";
 import { Nsp, SocketService } from "@tsed/socketio";
@@ -17,10 +17,15 @@ export default class ApiSocketService {
     @Nsp
     namespace?: Namespace;
 
-    constructor(configService: ConfigService, mqttService: MqttService) {
+    constructor(
+        configService: ConfigService,
+        configRetriever: ConfigRetrieverService,
+        mqttService: MqttService,
+    ) {
         this.namespace = undefined;
 
-        this.device = new DeviceListener(mqttService, this);
+        this.device = new DeviceListener(configRetriever, mqttService, this);
+
         this.sensors = configService.sensors.map(
             (sensor) => new SensorListener(mqttService, sensor, this),
         );
@@ -103,10 +108,11 @@ export default class ApiSocketService {
 
 class DeviceListener extends DeviceStateListener {
     constructor(
+        configRetriever: ConfigRetrieverService,
         mqttService: MqttService,
         private readonly socketService: ApiSocketService,
     ) {
-        super(mqttService);
+        super(configRetriever, mqttService);
     }
 
     protected onDeviceStateMessage(
@@ -132,6 +138,8 @@ class DeviceListener extends DeviceStateListener {
         delete capability.timestamp;
         this.socketService.onCapabilityMessage(deviceName, capability, message.timestamp);
     }
+
+    protected onConfigChange(_: ConfigFileType) {}
 }
 
 class SensorListener extends SensorStateListener {
