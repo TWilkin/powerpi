@@ -99,6 +99,11 @@ export class ConfigService {
         return !this.useConfigFile;
     }
 
+    /** Restart the service when one of the config files change. */
+    get configRestart() {
+        return true;
+    }
+
     get useConfigFile() {
         return this.getEnvBoolean("USE_CONFIG_FILE", false);
     }

@@ -61,6 +61,7 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
 
             if (
                 this.config.configIsNeeded &&
+                this.config.configRestart &&
                 this.config.getUsedConfig().find((config) => config === type) &&
                 this.config.getConfig(type)?.data
             ) {
