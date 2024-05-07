@@ -86,7 +86,7 @@ describe("ConfigRetrieverService", () => {
 
             test(`not required no restart ${isNeeded} ${usedConfig} ${hasConfig}`, () => {
                 const listener = {
-                    configUpdate: jest.fn(),
+                    onConfigChange: jest.fn(),
                 };
 
                 subject.addListener(ConfigFileType.Users, listener);
@@ -118,7 +118,7 @@ describe("ConfigRetrieverService", () => {
                 expect(setConfig).toHaveBeenCalledTimes(1);
                 expect(setConfig).toHaveBeenCalledWith("users", { users: ["tom"] }, "checky");
 
-                expect(listener.configUpdate).toHaveBeenCalledWith(ConfigFileType.Users);
+                expect(listener.onConfigChange).toHaveBeenCalledWith(ConfigFileType.Users);
             });
         });
     });
@@ -126,25 +126,25 @@ describe("ConfigRetrieverService", () => {
     describe("listeners", () => {
         test("add and remove", () => {
             const listener = {
-                configUpdate: jest.fn(),
+                onConfigChange: jest.fn(),
             };
 
             subject.addListener(ConfigFileType.Users, listener);
 
             // it is called with the right type
             subject.message("config", "users", "change", { payload: {}, checksum: "checky" });
-            expect(listener.configUpdate).toHaveBeenCalledWith(ConfigFileType.Users);
+            expect(listener.onConfigChange).toHaveBeenCalledWith(ConfigFileType.Users);
 
             // it's not called with the wrong type
-            listener.configUpdate.mockReset();
+            listener.onConfigChange.mockReset();
             subject.message("config", "devices", "change", { payload: {}, checksum: "checky" });
-            expect(listener.configUpdate).not.toHaveBeenCalledWith(ConfigFileType.Users);
+            expect(listener.onConfigChange).not.toHaveBeenCalledWith(ConfigFileType.Users);
 
             // removing it stops it being called
-            listener.configUpdate.mockReset();
+            listener.onConfigChange.mockReset();
             subject.removeListener(ConfigFileType.Users, listener);
             subject.message("config", "users", "change", { payload: {}, checksum: "checky" });
-            expect(listener.configUpdate).not.toHaveBeenCalledWith(ConfigFileType.Users);
+            expect(listener.onConfigChange).not.toHaveBeenCalledWith(ConfigFileType.Users);
         });
     });
 });

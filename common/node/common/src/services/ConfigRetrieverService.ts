@@ -9,9 +9,9 @@ interface ConfigMessage extends Message {
     checksum: string;
 }
 
-export interface ConfigListener {
+export interface ConfigChangeListener {
     /** Called when one of the ConfigFileTypes this listener is registered for is updated. */
-    configUpdate(type: ConfigFileType): void;
+    onConfigChange(type: ConfigFileType): void;
 }
 
 @Service()
@@ -19,7 +19,7 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
     private static readonly topicType = "config";
     private static readonly topicAction = "change";
 
-    private listeners: { [key in ConfigFileType]?: ConfigListener[] };
+    private listeners: { [key in ConfigFileType]?: ConfigChangeListener[] };
 
     constructor(
         private config: ConfigService,
@@ -30,7 +30,7 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
     }
 
     /** Add a listener for changes to ConfigFileType `type`. */
-    public addListener(type: ConfigFileType, listener: ConfigListener) {
+    public addListener(type: ConfigFileType, listener: ConfigChangeListener) {
         if (!this.listeners[type]) {
             this.listeners[type] = [];
         }
@@ -39,7 +39,7 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
     }
 
     /** Remove an already registered listener from changes to ConfigFileType `type`. */
-    public removeListener(type: ConfigFileType, listener: ConfigListener) {
+    public removeListener(type: ConfigFileType, listener: ConfigChangeListener) {
         this.listeners[type] = this.listeners[type]?.filter((l) => l !== listener);
     }
 
@@ -96,7 +96,7 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
                 this.config.setConfig(type, payload, checksum);
 
                 // now notify the listeners if there are any
-                this.listeners[type]?.forEach((listener) => listener.configUpdate(type));
+                this.listeners[type]?.forEach((listener) => listener.onConfigChange(type));
             }
         }
     }
