@@ -11,7 +11,7 @@ describe("ConfigRetrieverService", () => {
         const mqtt = new MqttService(config, logger);
 
         jest.spyOn(MqttService.prototype, "subscribe").mockImplementation(
-            (_) => new Promise((resolve) => resolve())
+            (_) => new Promise((resolve) => resolve()),
         );
 
         subject = new ConfigRetrieverService(config, mqtt, logger);
@@ -86,7 +86,7 @@ describe("ConfigRetrieverService", () => {
 
             test(`not required no restart ${isNeeded} ${usedConfig} ${hasConfig}`, () => {
                 jest.spyOn(ConfigService.prototype, "configIsNeeded", "get").mockReturnValue(
-                    isNeeded
+                    isNeeded,
                 );
 
                 const used = [ConfigFileType.Devices];
