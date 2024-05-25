@@ -18,7 +18,7 @@ const mockedMqttService = mock<MqttService>();
 describe("SensorStateService", () => {
     let subject: SensorStateService | undefined;
 
-    function getConsumer<TConsumer extends Message>(action: string) {
+    function getConsumer<TConsumer extends Message>(action: string = "+") {
         const subscriptions = capture(mockedMqttService.subscribe);
 
         for (let i = 0; ; i++) {
@@ -35,30 +35,30 @@ describe("SensorStateService", () => {
         return undefined;
     }
 
-    function* getConfigListeners() {
+    function getConfigListener() {
         const listeners = capture(mockedConfigRetrieverService.addListener);
 
-        for (let i = 0; i < 3; i++) {
-            const listener = listeners.byCallIndex(i);
-            yield listener[1];
-        }
+        const listener = listeners.byCallIndex(0);
+        return listener[1];
     }
 
     beforeEach(async () => {
         when(mockedConfigService.sensors).thenReturn([
             {
                 name: "HallwayMotionSensor",
+                displayName: "HallwayMotionSensor",
                 type: "motion",
                 location: "Hallway",
             },
             {
                 name: "BedroomTempSensor",
+                displayName: "BedroomTempSensor",
                 type: "temperature",
                 location: "Bedroom",
             },
             {
                 name: "Other",
-                display_name: "Other Sensor",
+                displayName: "Other Sensor",
                 type: "other",
                 location: "Atlantis",
                 entity: "something",
@@ -133,7 +133,7 @@ describe("SensorStateService", () => {
     describe("onSensorStateMessage", () => {
         [undefined, 1234].forEach((timestamp) =>
             test(`timestamp: ${timestamp}`, () => {
-                const consumer = getConsumer<EventMessage>("motion");
+                const consumer = getConsumer<EventMessage>();
 
                 const sensor = subject?.sensors.find(
                     (sensor) => sensor.name == "HallwayMotionSensor",
@@ -160,7 +160,7 @@ describe("SensorStateService", () => {
     describe("onSensorDataMessage", () => {
         [undefined, 1234].forEach((timestamp) =>
             test(`timestamp: ${timestamp}`, () => {
-                const consumer = getConsumer<EventMessage>("temperature");
+                const consumer = getConsumer<EventMessage>();
 
                 const sensor = subject?.sensors.find(
                     (sensor) => sensor.name == "BedroomTempSensor",
@@ -208,7 +208,7 @@ describe("SensorStateService", () => {
     });
 
     test("onConfigMessage", () => {
-        const listeners = [...getConfigListeners()];
+        const listener = getConfigListener();
 
         expect(subject?.sensors).toHaveLength(3);
 
@@ -226,17 +226,23 @@ describe("SensorStateService", () => {
         when(mockedConfigService.sensors).thenReturn([
             {
                 name: "HallwayMotionSensor",
-                display_name: "Office Motion Sensor",
+                displayName: "Office Motion Sensor",
                 type: "motion",
                 location: "Office",
                 visible: false,
             },
+            {
+                name: "NewSensor",
+                displayName: "New Sensor",
+                type: "temperature",
+                location: "Hallway",
+            },
         ]);
 
-        listeners.forEach((listener) => listener.onConfigChange(ConfigFileType.Devices));
+        listener.onConfigChange(ConfigFileType.Devices);
 
-        // we should have 1 updated and 2 removed
-        expect(subject?.sensors).toHaveLength(1);
+        // we should have 1 updated, 1 added and 2 removed
+        expect(subject?.sensors).toHaveLength(2);
 
         // check the updated config
         sensor = subject!.sensors[0];
@@ -247,5 +253,15 @@ describe("SensorStateService", () => {
         expect(sensor.entity).toBe("HallwayMotionSensor");
         expect(sensor.action).toBe("motion");
         expect(sensor.visible).toBeFalsy();
+
+        // check the added config
+        sensor = subject!.sensors[1];
+        expect(sensor.name).toBe("NewSensor");
+        expect(sensor.display_name).toBe("New Sensor");
+        expect(sensor.type).toBe("temperature");
+        expect(sensor.location).toBe("Hallway");
+        expect(sensor.entity).toBe("NewSensor");
+        expect(sensor.action).toBe("temperature");
+        expect(sensor.visible).toBeTruthy();
     });
 });

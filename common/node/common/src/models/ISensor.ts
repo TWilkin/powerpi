@@ -1,11 +1,7 @@
-export interface ISensor {
-    name: string;
-    type: string;
-    display_name?: string;
-    location: string;
-    entity?: string;
-    action?: string;
-    visible?: boolean;
+import { ISensorConfig } from "./IConfigFile";
+
+export interface ISensor extends ISensorConfig {
+    displayName: string;
 }
 
 export class Sensor implements ISensor {
@@ -14,6 +10,7 @@ export class Sensor implements ISensor {
     location: string;
     entity?: string;
     action?: string;
+    visible?: boolean;
     display_name?: string;
 
     constructor(
@@ -22,7 +19,7 @@ export class Sensor implements ISensor {
         location?: string,
         displayName?: string,
         entity?: string,
-        action?: string
+        action?: string,
     ) {
         this.name = name ?? "unknown";
         this.type = type ?? "unknown";

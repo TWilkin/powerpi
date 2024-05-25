@@ -1,95 +1,141 @@
-import { ConfigFileType, ConfigRetrieverService, ISensor } from "@powerpi/common";
+import { ConfigFileType, ConfigRetrieverService, ISensor, isDefined } from "@powerpi/common";
+import { Sensor } from "@powerpi/common-api";
 import { Service } from "@tsed/di";
 import ConfigService from "./ConfigService";
 import MqttService from "./MqttService";
 import SensorStateListener from "./listeners/SensorStateListener";
 
 @Service()
-export default class SensorStateService {
-    private _sensors: SensorStateListener[] | undefined;
-
-    constructor(
-        private readonly config: ConfigService,
-        private readonly configRetriever: ConfigRetrieverService,
-        private readonly mqttService: MqttService,
-    ) {
-        this._sensors = undefined;
-    }
-
-    public get sensors() {
-        return this._sensors?.map((sensor) => sensor.sensor) ?? [];
-    }
-
-    public async $onInit() {
-        this.initialise();
-
-        const promises = this._sensors!.map((sensor) => sensor.$onInit());
-
-        await Promise.all(promises);
-    }
-
-    private initialise() {
-        this._sensors = this.config.sensors.map(
-            (sensor) =>
-                new SensorConsumer(
-                    this.config,
-                    this.configRetriever,
-                    this.mqttService,
-                    sensor,
-                    (name: string) =>
-                        (this._sensors = this._sensors?.filter(
-                            (sensor) => sensor.sensor.name !== name,
-                        )),
-                ),
-        );
-    }
-}
-
-type SensorDestructor = (name: string) => void;
-
-class SensorConsumer extends SensorStateListener {
-    private readonly _destructor: SensorDestructor;
+export default class SensorStateService extends SensorStateListener {
+    private _sensors: Sensor[] | undefined;
 
     constructor(
         private readonly config: ConfigService,
         configRetriever: ConfigRetrieverService,
         mqttService: MqttService,
-        sensor: ISensor,
-        destructor: SensorDestructor,
     ) {
-        super(configRetriever, mqttService, sensor);
+        super(configRetriever, mqttService);
 
-        this._destructor = destructor;
+        this._sensors = undefined;
     }
 
-    protected onSensorStateMessage(_: string, __: string, ___?: number): void {
-        return;
+    public get sensors() {
+        return this._sensors ?? [];
     }
 
-    protected onSensorDataMessage(_: string, __: number, ___: string, ____?: number): void {
-        return;
+    public async $onInit() {
+        this.initialise();
+
+        await super.$onInit();
     }
 
-    protected onSensorBatteryMessage(_: string, __: number, ___?: number): void {
-        return;
-    }
+    protected getSensor = (entity: string, action: string | undefined = undefined) =>
+        this.sensors.find(
+            (sensor) =>
+                sensor.entity === entity && (action === undefined || sensor.action === action),
+        );
 
-    protected onConfigChange(_: ConfigFileType): void {
-        const updated = this.config.sensors.find((sensor) => sensor.name === this.sensor.name);
+    protected onSensorStateMessage(
+        entity: string,
+        action: string,
+        state: string,
+        timestamp?: number,
+    ): void {
+        const sensor = this.getSensor(entity, action);
 
-        if (!updated) {
-            // we need to destroy this sensor
-            this._destructor(this.sensor.name);
-
-            this.onDeInit();
-
-            return;
+        if (sensor) {
+            sensor.state = state;
+            sensor.since = timestamp ?? -1;
         }
+    }
 
-        this.sensor = {
-            ...this.sensor,
-            ...updated,
-            display_name: updated.display_name ?? this.sensor.display_name,
+    protected onSensorDataMessage(
+        entity: string,
+        action: string,
+        value: number,
+        unit: string,
+        timestamp?: number,
+    ) {
+        const sensor = this.getSensor(entity, action);
+
+        if (sensor) {
+            sensor.value = value;
+            sensor.unit = unit;
+            sensor.since = timestamp ?? -1;
+        }
+    }
+
+    protected onSensorBatteryMessage(
+        entity: string,
+        value: number,
+        timestamp?: number,
+        charging?: boolean,
+    ) {
+        const sensor = this.getSensor(entity);
+
+        if (sensor) {
+            sensor.battery = value;
+            sensor.batterySince = timestamp ?? -1;
+            sensor.charging = charging;
+        }
+    }
+
+    protected onConfigChange(_: ConfigFileType) {
+        // get the new list of sensors
+        const sensors = this.config.sensors;
+
+        // now we want to merge the sensors with the list we already have
+        const updatedSensors: Sensor[] = this.sensors
+            .map((sensor) => {
+                // find the new config
+                const newConfig = sensors.find((config) => config.name === sensor.name);
+
+                // if there is no config this sensor was removed
+                if (!newConfig) {
+                    return undefined;
+                }
+
+                // otherwise merge them
+                return {
+                    ...sensor,
+                    ...newConfig,
+                    display_name: newConfig.displayName ?? sensor.display_name,
+                };
+            })
+            .filter(isDefined);
+
+        // find any new sensors
+        const newSensors = sensors
+            .filter(
+                (sensor) =>
+                    (updatedSensors?.find((updated) => updated.name === sensor.name) ?? -1) === -1,
+            )
+            .map(this.initialiseSensor);
+
+        // finally store the new list
+        this._sensors = updatedSensors.concat(newSensors);
+    }
+
+    private initialise() {
+        this._sensors = this.config.sensors.map(this.initialiseSensor);
+    }
+
+    private initialiseSensor(sensor: ISensor): Sensor {
+        return {
+            name: sensor.name,
+            display_name: sensor.displayName ?? sensor.name,
+            type: sensor.type,
+            location: sensor.location,
+            entity: sensor.entity ?? sensor.name,
+            action: sensor.action ?? sensor.type,
+            visible: sensor.visible ?? true,
+            state: undefined,
+            value: undefined,
+            unit: undefined,
+            since: -1,
+            battery: undefined,
+            batterySince: undefined,
+            charging: false,
         };
     }
 }
