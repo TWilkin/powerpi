@@ -1,4 +1,4 @@
-import { ConfigFileType, ConfigRetrieverService } from "@powerpi/common";
+import { ConfigFileType, ConfigRetrieverService, IDevice, isDefined } from "@powerpi/common";
 import { AdditionalState, Device, DeviceState } from "@powerpi/common-api";
 import { Service } from "@tsed/common";
 import ConfigService from "./ConfigService";
@@ -72,10 +72,48 @@ export default class DeviceStateService extends DeviceStateListener {
         }
     }
 
-    protected onConfigChange(_: ConfigFileType) {}
+    protected onConfigChange(_: ConfigFileType) {
+        // get the new list of devices
+        const devices = this.config.devices;
+
+        // now we want to merge the devices with the list we already have
+        const updatedDevices: Device[] = this.devices
+            .map((device) => {
+                // find the new config
+                const newConfig = devices.find((config) => config.name === device.name);
+
+                // if there is no config this device was removed
+                if (!newConfig) {
+                    return undefined;
+                }
+
+                // otherwise merge them
+                return {
+                    ...device,
+                    ...newConfig,
+                    display_name: newConfig.displayName ?? device.display_name,
+                };
+            })
+            .filter(isDefined);
+
+        // find any new devices
+        const newDevices = devices
+            .filter(
+                (device) =>
+                    (updatedDevices?.find((updated) => updated.name === device.name) ?? -1) === -1,
+            )
+            .map(this.initialiseDevice);
+
+        // finally store the new list
+        this._devices = updatedDevices.concat(newDevices);
+    }
 
     private initialise() {
-        this._devices = this.config.devices.map((device) => ({
+        this._devices = this.config.devices.map(this.initialiseDevice);
+    }
+
+    private initialiseDevice(device: IDevice): Device {
+        return {
             name: device.name,
             display_name: device.displayName,
             type: device.type,
@@ -87,6 +125,6 @@ export default class DeviceStateService extends DeviceStateListener {
             battery: undefined,
             batterySince: undefined,
             charging: false,
-        }));
+        };
     }
 }
