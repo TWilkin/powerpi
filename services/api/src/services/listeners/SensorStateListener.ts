@@ -1,4 +1,5 @@
 import {
+    ConfigChangeListener,
     ConfigFileType,
     ConfigRetrieverService,
     ISensor,
@@ -19,7 +20,10 @@ export default abstract class SensorStateListener
     extends BatteryStateListener
     implements MqttConsumer<EventMessage>
 {
-    private readonly _sensor: Sensor;
+    protected _sensor: Sensor;
+
+    private _batteryListener: MqttConsumer<BatteryMessage> | undefined;
+    private _configListener: ConfigChangeListener | undefined;
 
     constructor(
         private readonly configRetriever: ConfigRetrieverService,
@@ -44,28 +48,68 @@ export default abstract class SensorStateListener
             batterySince: undefined,
             charging: false,
         };
+
+        this._batteryListener = undefined;
+        this._configListener = undefined;
     }
 
     public get sensor() {
         return this._sensor;
     }
 
+    protected set sensor(newSensor: Sensor) {
+        this._sensor = newSensor;
+    }
+
     public async $onInit() {
         /* eslint-disable @typescript-eslint/no-non-null-assertion */
         await this.mqttService.subscribe("event", this._sensor.entity!, this._sensor.action!, this);
 
-        await this.mqttService.subscribe("event", this._sensor.entity!, "battery", {
+        this._batteryListener = {
             message: (_: string, __: string, ___: string, message: BatteryMessage) =>
                 this.batteryMessage(this.sensor.entity!, message),
-        });
+        };
+        await this.mqttService.subscribe(
+            "event",
+            this._sensor.entity!,
+            "battery",
+            this._batteryListener,
+        );
 
-        this.configRetriever.addListener(ConfigFileType.Devices, {
+        this._configListener = {
             onConfigChange: (type: ConfigFileType) => {
                 if (type === ConfigFileType.Devices) {
                     this.onConfigChange(type);
                 }
             },
-        });
+        };
+        this.configRetriever.addListener(ConfigFileType.Devices, this._configListener);
+    }
+
+    public async onDeInit() {
+        await this.mqttService.unsubscribe(
+            "event",
+            this._sensor.entity!,
+            this._sensor.action!,
+            this,
+        );
+
+        if (this._batteryListener) {
+            await this.mqttService.unsubscribe(
+                "event",
+                this._sensor.entity!,
+                "battery",
+                this._batteryListener,
+            );
+
+            this._batteryListener = undefined;
+        }
+
+        if (this._configListener) {
+            this.configRetriever.removeListener(ConfigFileType.Devices, this._configListener);
+
+            this._configListener = undefined;
+        }
     }
 
     public message(_: string, __: string, ___: string, message: EventMessage) {

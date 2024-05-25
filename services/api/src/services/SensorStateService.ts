@@ -25,25 +25,41 @@ export default class SensorStateService {
 
         const promises = this._sensors!.map((sensor) => sensor.$onInit());
 
-        if (promises) {
-            await Promise.all(promises);
-        }
+        await Promise.all(promises);
     }
 
     private initialise() {
         this._sensors = this.config.sensors.map(
-            (sensor) => new SensorConsumer(this.configRetriever, this.mqttService, sensor),
+            (sensor) =>
+                new SensorConsumer(
+                    this.config,
+                    this.configRetriever,
+                    this.mqttService,
+                    sensor,
+                    (name: string) =>
+                        (this._sensors = this._sensors?.filter(
+                            (sensor) => sensor.sensor.name !== name,
+                        )),
+                ),
         );
     }
 }
 
+type SensorDestructor = (name: string) => void;
+
 class SensorConsumer extends SensorStateListener {
+    private readonly _destructor: SensorDestructor;
+
     constructor(
+        private readonly config: ConfigService,
         configRetriever: ConfigRetrieverService,
         mqttService: MqttService,
         sensor: ISensor,
+        destructor: SensorDestructor,
     ) {
         super(configRetriever, mqttService, sensor);
+
+        this._destructor = destructor;
     }
 
     protected onSensorStateMessage(_: string, __: string, ___?: number): void {
@@ -59,6 +75,21 @@ class SensorConsumer extends SensorStateListener {
     }
 
     protected onConfigChange(_: ConfigFileType): void {
-        return;
+        const updated = this.config.sensors.find((sensor) => sensor.name === this.sensor.name);
+
+        if (!updated) {
+            // we need to destroy this sensor
+            this._destructor(this.sensor.name);
+
+            this.onDeInit();
+
+            return;
+        }
+
+        this.sensor = {
+            ...this.sensor,
+            ...updated,
+            display_name: updated.display_name ?? this.sensor.display_name,
+        };
     }
 }
