@@ -1,6 +1,7 @@
 import { ConfigFileType, ConfigRetrieverService, IDevice, isDefined } from "@powerpi/common";
 import { AdditionalState, Device, DeviceState } from "@powerpi/common-api";
 import { Service } from "@tsed/common";
+import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
 import MqttService from "./MqttService";
 import { CapabilityMessage } from "./listeners/CapabilityStateListener";
@@ -14,6 +15,7 @@ export default class DeviceStateService extends DeviceStateListener {
         private readonly config: ConfigService,
         configRetriever: ConfigRetrieverService,
         mqttService: MqttService,
+        private readonly socket: ApiSocketService,
     ) {
         super(configRetriever, mqttService);
 
@@ -44,6 +46,13 @@ export default class DeviceStateService extends DeviceStateListener {
             device.state = state;
             device.since = timestamp ?? -1;
             device.additionalState = additionalState;
+
+            this.socket.onDeviceStateMessage(
+                device.name,
+                device.state,
+                timestamp,
+                device.additionalState,
+            );
         }
     }
 
@@ -59,6 +68,14 @@ export default class DeviceStateService extends DeviceStateListener {
             device.battery = value;
             device.batterySince = timestamp;
             device.charging = charging;
+
+            this.socket.onBatteryMessage(
+                "device",
+                device.name,
+                device.battery,
+                device.charging,
+                timestamp,
+            );
         }
     }
 
@@ -69,6 +86,8 @@ export default class DeviceStateService extends DeviceStateListener {
             const capability = { ...message };
             delete capability.timestamp;
             device.capability = capability;
+
+            this.socket.onCapabilityMessage(device.name, device.capability, message.timestamp);
         }
     }
 

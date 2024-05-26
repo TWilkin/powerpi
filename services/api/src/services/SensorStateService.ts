@@ -1,6 +1,7 @@
 import { ConfigFileType, ConfigRetrieverService, ISensor, isDefined } from "@powerpi/common";
 import { Sensor } from "@powerpi/common-api";
 import { Service } from "@tsed/di";
+import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
 import MqttService from "./MqttService";
 import SensorStateListener from "./listeners/SensorStateListener";
@@ -13,6 +14,7 @@ export default class SensorStateService extends SensorStateListener {
         private readonly config: ConfigService,
         configRetriever: ConfigRetrieverService,
         mqttService: MqttService,
+        private readonly socket: ApiSocketService,
     ) {
         super(configRetriever, mqttService);
 
@@ -46,6 +48,8 @@ export default class SensorStateService extends SensorStateListener {
         if (sensor) {
             sensor.state = state;
             sensor.since = timestamp ?? -1;
+
+            this.socket.onEventMessage(sensor.name, sensor.state, undefined, undefined, timestamp);
         }
     }
 
@@ -62,6 +66,14 @@ export default class SensorStateService extends SensorStateListener {
             sensor.value = value;
             sensor.unit = unit;
             sensor.since = timestamp ?? -1;
+
+            this.socket.onEventMessage(
+                sensor.name,
+                undefined,
+                sensor.value,
+                sensor.unit,
+                timestamp,
+            );
         }
     }
 
@@ -77,6 +89,14 @@ export default class SensorStateService extends SensorStateListener {
             sensor.battery = value;
             sensor.batterySince = timestamp ?? -1;
             sensor.charging = charging;
+
+            this.socket.onBatteryMessage(
+                "sensor",
+                sensor.name,
+                sensor.battery,
+                sensor.charging,
+                timestamp,
+            );
         }
     }
 

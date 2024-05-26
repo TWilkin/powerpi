@@ -6,6 +6,7 @@ import {
     MqttService,
 } from "@powerpi/common";
 import { capture, instance, mock, resetCalls, when } from "ts-mockito";
+import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
 import SensorStateService from "./SensorStateService";
 import { BatteryMessage } from "./listeners/BatteryStateListener";
@@ -14,6 +15,7 @@ import { EventMessage } from "./listeners/SensorStateListener";
 const mockedConfigService = mock<ConfigService>();
 const mockedConfigRetrieverService = mock<ConfigRetrieverService>();
 const mockedMqttService = mock<MqttService>();
+const mockedApiSocketService = mock<ApiSocketService>();
 
 describe("SensorStateService", () => {
     let subject: SensorStateService | undefined;
@@ -69,11 +71,13 @@ describe("SensorStateService", () => {
 
         resetCalls(mockedMqttService);
         resetCalls(mockedConfigRetrieverService);
+        resetCalls(mockedApiSocketService);
 
         subject = new SensorStateService(
             instance(mockedConfigService),
             instance(mockedConfigRetrieverService),
             instance(mockedMqttService),
+            instance(mockedApiSocketService),
         );
 
         await subject.$onInit();
@@ -108,6 +112,7 @@ describe("SensorStateService", () => {
                 instance(mockedConfigService),
                 instance(mockedConfigRetrieverService),
                 instance(mockedMqttService),
+                instance(mockedApiSocketService),
             );
 
             const sensors = subject?.sensors;
@@ -122,6 +127,7 @@ describe("SensorStateService", () => {
             instance(mockedConfigService),
             instance(mockedConfigRetrieverService),
             instance(mockedMqttService),
+            instance(mockedApiSocketService),
         );
 
         await subject.$onInit();
