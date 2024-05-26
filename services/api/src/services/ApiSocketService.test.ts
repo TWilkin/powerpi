@@ -1,3 +1,4 @@
+import { ConfigFileType, ConfigRetrieverService } from "@powerpi/common";
 import { DeviceState } from "@powerpi/common-api";
 import { Namespace } from "socket.io";
 import { anyString, anything, capture, instance, mock, resetCalls, verify } from "ts-mockito";
@@ -11,7 +12,9 @@ describe("ApiSocketService", () => {
     beforeEach(() => {
         resetCalls(mockedNamespace);
 
-        subject = new ApiSocketService();
+        const mockedConfigRetrieverService = mock<ConfigRetrieverService>();
+
+        subject = new ApiSocketService(instance(mockedConfigRetrieverService));
     });
 
     test("$onConnection", () => subject?.$onConnection());
@@ -156,6 +159,28 @@ describe("ApiSocketService", () => {
 
         test("no namespace", () => {
             subject?.onCapabilityMessage("Light", { brightness: true }, 1234);
+
+            verify(mockedNamespace.emit(anyString(), anything())).never();
+        });
+    });
+
+    describe("onConfigChange", () => {
+        test("success", () => {
+            subject?.$onNamespaceInit(instance(mockedNamespace));
+
+            subject?.onConfigChange(ConfigFileType.Devices);
+
+            verify(mockedNamespace.emit("config", anything())).once();
+
+            const payload = capture(mockedNamespace.emit<"config">);
+
+            expect(payload.first()[1]).toStrictEqual({
+                type: ConfigFileType.Devices,
+            });
+        });
+
+        test("no namespace", () => {
+            subject?.onConfigChange(ConfigFileType.Devices);
 
             verify(mockedNamespace.emit(anyString(), anything())).never();
         });
