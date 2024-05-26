@@ -1,4 +1,4 @@
-import { ConfigFileType, ConfigRetrieverService, ISensor, isDefined } from "@powerpi/common";
+import { ConfigRetrieverService, ISensor, isDefined } from "@powerpi/common";
 import { Sensor } from "@powerpi/common-api";
 import { Service } from "@tsed/di";
 import ApiSocketService from "./ApiSocketService";
@@ -100,7 +100,7 @@ export default class SensorStateService extends SensorStateListener {
         }
     }
 
-    protected onConfigChange(_: ConfigFileType) {
+    protected onConfigChange() {
         // get the new list of sensors
         const sensors = this.config.sensors;
 

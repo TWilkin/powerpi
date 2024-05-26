@@ -31,7 +31,7 @@ export default abstract class SensorStateListener
         this.configRetriever.addListener(ConfigFileType.Devices, {
             onConfigChange: (type: ConfigFileType) => {
                 if (type === ConfigFileType.Devices) {
-                    this.onConfigChange(type);
+                    this.onConfigChange();
                 }
             },
         });
@@ -80,5 +80,5 @@ export default abstract class SensorStateListener
         charging?: boolean,
     ): void;
 
-    protected abstract onConfigChange(type: ConfigFileType): void;
+    protected abstract onConfigChange(): void;
 }

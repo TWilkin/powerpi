@@ -1,4 +1,4 @@
-import { ConfigFileType, ConfigRetrieverService, IDevice, isDefined } from "@powerpi/common";
+import { ConfigRetrieverService, IDevice, isDefined } from "@powerpi/common";
 import { AdditionalState, Device, DeviceState } from "@powerpi/common-api";
 import { Service } from "@tsed/common";
 import ApiSocketService from "./ApiSocketService";
@@ -91,7 +91,7 @@ export default class DeviceStateService extends DeviceStateListener {
         }
     }
 
-    protected onConfigChange(_: ConfigFileType) {
+    protected onConfigChange() {
         // get the new list of devices
         const devices = this.config.devices;
 

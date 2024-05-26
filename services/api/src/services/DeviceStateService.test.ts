@@ -160,8 +160,6 @@ describe("DeviceStateService", () => {
                     expect(device.since).toBe(-1);
                 }
 
-                console.log(mockedApiSocketService.onDeviceStateMessage);
-
                 verify(
                     mockedApiSocketService.onDeviceStateMessage(
                         "HallwayLight",

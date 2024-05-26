@@ -35,7 +35,7 @@ export default abstract class DeviceStateListener
         this.configRetriever.addListener(ConfigFileType.Devices, {
             onConfigChange: (type: ConfigFileType) => {
                 if (type === ConfigFileType.Devices) {
-                    this.onConfigChange(type);
+                    this.onConfigChange();
                 }
             },
         });
@@ -73,5 +73,5 @@ export default abstract class DeviceStateListener
         charging?: boolean,
     ): void;
 
-    protected abstract onConfigChange(type: ConfigFileType): void;
+    protected abstract onConfigChange(): void;
 }
