@@ -27,7 +27,7 @@
         "@jovotech/platform-core": "^4.5.15",
         "@jovotech/server-express": "^4.5.15",
         "@powerpi/common": "^0.2.0",
-        "@powerpi/common-api": "^0.1.6",
+        "@powerpi/common-api": "^0.1.7",
         "http-status-codes": "^2.2.0",
         "source-map-support": "^0.5.19"
     },
