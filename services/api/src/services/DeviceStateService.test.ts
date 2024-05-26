@@ -170,6 +170,13 @@ describe("DeviceStateService", () => {
                         anything(),
                     ),
                 ).once();
+
+                const payload = capture(mockedApiSocketService.onDeviceStateMessage);
+
+                expect(payload.first()[3]).toStrictEqual({
+                    brightness: 50,
+                    temperature: 2000,
+                });
             }),
         ));
 
@@ -232,6 +239,13 @@ describe("DeviceStateService", () => {
         });
 
         verify(mockedApiSocketService.onCapabilityMessage("HallwayLight", anything(), 1234)).once();
+
+        const payload = capture(mockedApiSocketService.onCapabilityMessage);
+
+        expect(payload.first()[1]).toStrictEqual({
+            brightness: true,
+            colour: { temperature: true },
+        });
     });
 
     describe("onConfigChange", () => {
