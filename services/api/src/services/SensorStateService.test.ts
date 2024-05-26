@@ -5,7 +5,7 @@ import {
     MqttConsumer,
     MqttService,
 } from "@powerpi/common";
-import { capture, instance, mock, resetCalls, when } from "ts-mockito";
+import { capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
 import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
 import SensorStateService from "./SensorStateService";
@@ -159,6 +159,16 @@ describe("SensorStateService", () => {
                 } else {
                     expect(sensor?.since).toBe(-1);
                 }
+
+                verify(
+                    mockedApiSocketService.onEventMessage(
+                        "HallwayMotionSensor",
+                        "detected",
+                        undefined,
+                        undefined,
+                        timestamp,
+                    ),
+                ).once();
             }),
         );
     });
@@ -189,6 +199,16 @@ describe("SensorStateService", () => {
                 } else {
                     expect(sensor?.since).toBe(-1);
                 }
+
+                verify(
+                    mockedApiSocketService.onEventMessage(
+                        "BedroomTempSensor",
+                        undefined,
+                        100,
+                        "F",
+                        timestamp,
+                    ),
+                ).once();
             }),
         );
     });
@@ -211,6 +231,16 @@ describe("SensorStateService", () => {
         expect(sensor?.battery).toBe(53);
         expect(sensor?.batterySince).toBe(1234);
         expect(sensor?.charging).toBeTruthy();
+
+        verify(
+            mockedApiSocketService.onBatteryMessage(
+                "sensor",
+                "HallwayMotionSensor",
+                53,
+                true,
+                1234,
+            ),
+        ).once();
     });
 
     test("onConfigMessage", () => {

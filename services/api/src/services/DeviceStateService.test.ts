@@ -6,7 +6,7 @@ import {
     MqttService,
 } from "@powerpi/common";
 import { DeviceState } from "@powerpi/common-api";
-import { capture, instance, mock, resetCalls, when } from "ts-mockito";
+import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
 import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
 import DeviceStateService from "./DeviceStateService";
@@ -159,6 +159,17 @@ describe("DeviceStateService", () => {
                 } else {
                     expect(device.since).toBe(-1);
                 }
+
+                console.log(mockedApiSocketService.onDeviceStateMessage);
+
+                verify(
+                    mockedApiSocketService.onDeviceStateMessage(
+                        "HallwayLight",
+                        DeviceState.On,
+                        timestamp,
+                        anything(),
+                    ),
+                ).once();
             }),
         ));
 
@@ -187,6 +198,16 @@ describe("DeviceStateService", () => {
                 } else {
                     expect(device.charging).toBeFalsy();
                 }
+
+                verify(
+                    mockedApiSocketService.onBatteryMessage(
+                        "device",
+                        "HallwayLight",
+                        53,
+                        charging ?? false,
+                        1234,
+                    ),
+                ).once();
             }),
         );
     });
@@ -202,12 +223,15 @@ describe("DeviceStateService", () => {
             colour: {
                 temperature: true,
             },
+            timestamp: 1234,
         });
 
         expect(device.capability).toStrictEqual({
             brightness: true,
             colour: { temperature: true },
         });
+
+        verify(mockedApiSocketService.onCapabilityMessage("HallwayLight", anything(), 1234)).once();
     });
 
     describe("onConfigChange", () => {
