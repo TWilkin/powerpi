@@ -5,7 +5,7 @@ import {
     MqttConsumer,
     MqttService,
 } from "@powerpi/common";
-import BatteryStateListener, { BatteryMessage } from "./BatteryStateListener";
+import BatteryStateListener from "./BatteryStateListener";
 
 export interface EventMessage extends Message {
     state?: string;
@@ -25,13 +25,7 @@ export default abstract class SensorStateListener
     }
 
     public async $onInit() {
-        /* eslint-disable @typescript-eslint/no-non-null-assertion */
         await this.mqttService.subscribe("event", "+", "+", this);
-
-        await this.mqttService.subscribe("event", "+", "battery", {
-            message: (_: string, entity: string, ___: string, message: BatteryMessage) =>
-                this.batteryMessage(entity, message),
-        });
 
         this.configRetriever.addListener(ConfigFileType.Devices, {
             onConfigChange: (type: ConfigFileType) => {
@@ -43,7 +37,9 @@ export default abstract class SensorStateListener
     }
 
     public message(_: string, entity: string, action: string, message: EventMessage) {
-        if (message.state) {
+        if (action === "battery") {
+            this.batteryMessage(entity, message);
+        } else if (message.state) {
             this.onSensorStateMessage(entity, action, message.state, message.timestamp);
         } else if (message.value !== undefined && message.unit) {
             this.onSensorDataMessage(
