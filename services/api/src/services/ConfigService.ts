@@ -24,6 +24,10 @@ export default class ConfigService extends CommonConfigService {
         return [ConfigFileType.Devices, ConfigFileType.Users];
     }
 
+    get configRestart() {
+        return false;
+    }
+
     get externalHostName() {
         return process.env.EXTERNAL_HOST_NAME;
     }
