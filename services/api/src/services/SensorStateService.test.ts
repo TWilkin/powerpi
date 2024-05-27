@@ -214,7 +214,7 @@ describe("SensorStateService", () => {
     });
 
     test("onBatteryMessage", () => {
-        const consumer = getConsumer<BatteryMessage>("battery");
+        const consumer = getConsumer<BatteryMessage>();
 
         const sensor = subject?.sensors.find((sensor) => sensor.name == "HallwayMotionSensor");
         expect(sensor?.battery).toBeUndefined();
