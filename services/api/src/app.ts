@@ -9,7 +9,6 @@ async function bootstrap() {
         const platform = await PlatformExpress.bootstrap(Server);
 
         process.on("SIGINT", async () => {
-            console.log("SIGINT");
             platform.stop();
             await service.stop();
         });
