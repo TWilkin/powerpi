@@ -1,10 +1,10 @@
+import { MqttService } from "@powerpi/common";
 import { Controller, Get, Res } from "@tsed/common";
 import { Response } from "express";
 import HttpStatus from "http-status-codes";
 import _ from "underscore";
 import ConfigService from "../services/ConfigService";
 import DatabaseService from "../services/DatabaseService";
-import MqttService from "../services/MqttService";
 
 @Controller("/health")
 export default class HealthController {

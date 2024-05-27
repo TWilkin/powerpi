@@ -1,9 +1,8 @@
-import { ConfigRetrieverService, ISensor, isDefined } from "@powerpi/common";
+import { ConfigRetrieverService, ISensor, MqttService, isDefined } from "@powerpi/common";
 import { Sensor } from "@powerpi/common-api";
 import { Service } from "@tsed/di";
 import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
-import MqttService from "./MqttService";
 import SensorStateListener from "./listeners/SensorStateListener";
 
 @Service()

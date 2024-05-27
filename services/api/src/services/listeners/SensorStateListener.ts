@@ -1,5 +1,10 @@
-import { ConfigFileType, ConfigRetrieverService, Message, MqttConsumer } from "@powerpi/common";
-import MqttService from "../MqttService";
+import {
+    ConfigFileType,
+    ConfigRetrieverService,
+    Message,
+    MqttConsumer,
+    MqttService,
+} from "@powerpi/common";
 import BatteryStateListener, { BatteryMessage } from "./BatteryStateListener";
 
 export interface EventMessage extends Message {

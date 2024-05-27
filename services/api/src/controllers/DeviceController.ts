@@ -1,4 +1,4 @@
-import { OutgoingMessage } from "@powerpi/common";
+import { MqttService, OutgoingMessage } from "@powerpi/common";
 import { DeviceChangeMessage } from "@powerpi/common-api";
 import { BodyParams, Controller, Get, PathParams, Post, Res } from "@tsed/common";
 import { Required } from "@tsed/schema";
@@ -7,7 +7,6 @@ import HttpStatus from "http-status-codes";
 import _ from "underscore";
 import Authorize from "../middleware/AuthorizeMiddleware";
 import DeviceStateService from "../services/DeviceStateService";
-import MqttService from "../services/MqttService";
 
 @Controller("/device")
 export default class DeviceController {

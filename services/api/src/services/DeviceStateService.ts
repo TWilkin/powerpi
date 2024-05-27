@@ -1,9 +1,8 @@
-import { ConfigRetrieverService, IDevice, isDefined } from "@powerpi/common";
+import { ConfigRetrieverService, IDevice, MqttService, isDefined } from "@powerpi/common";
 import { AdditionalState, Device, DeviceState } from "@powerpi/common-api";
 import { Service } from "@tsed/common";
 import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
-import MqttService from "./MqttService";
 import { CapabilityMessage } from "./listeners/CapabilityStateListener";
 import DeviceStateListener from "./listeners/DeviceStateListener";
 

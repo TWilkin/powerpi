@@ -3,9 +3,9 @@ import ConfigService from "./ConfigService";
 import DatabaseService from "./DatabaseService";
 import DeviceStateService from "./DeviceStateService";
 import JwtService from "./JwtService";
-import MqttService from "./MqttService";
 import SensorStateService from "./SensorStateService";
 import UserService from "./UserService";
+import "./common";
 
 export {
     ApiSocketService,
@@ -13,7 +13,6 @@ export {
     DatabaseService,
     DeviceStateService,
     JwtService,
-    MqttService,
     SensorStateService,
     UserService,
 };
