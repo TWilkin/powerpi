@@ -130,6 +130,7 @@ export default class DeviceStateService extends DeviceStateListener {
         this._devices = this.config.devices.map(this.initialiseDevice);
     }
 
+    /** The options a device should have when it's first loaded. */
     private initialiseDevice = (device: IDevice): Device => ({
         ...this.defaultDevice(device),
         display_name: device.displayName,
@@ -140,6 +141,7 @@ export default class DeviceStateService extends DeviceStateListener {
         charging: false,
     });
 
+    /** The device options with values for any that have defaults. */
     private defaultDevice = (device: IDevice) => ({
         ...device,
         visible: device.visible ?? true,

@@ -152,7 +152,7 @@ export default class SensorStateService extends SensorStateListener {
         charging: false,
     });
 
-    /** The optional options default values for ISensor. */
+    /** The sensor options with values for any that have defaults. */
     private defaultSensor = (sensor: ISensor) => ({
         ...sensor,
         entity: sensor.entity ?? sensor.name,
