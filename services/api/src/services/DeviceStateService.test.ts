@@ -54,6 +54,7 @@ describe("DeviceStateService", () => {
                 type: "Light",
                 location: "Hallway",
                 categories: ["Light", "Something"],
+                visible: false,
             },
         ]);
 
@@ -127,7 +128,7 @@ describe("DeviceStateService", () => {
         expect(device.name).toBe("HallwayLight");
         expect(device.display_name).toBe("Hallway Light");
         expect(device.type).toBe("Light");
-        expect(device.visible).toBeTruthy();
+        expect(device.visible).toBeFalsy();
         expect(device.location).toBe("Hallway");
         expect(device.categories).toStrictEqual(["Light", "Something"]);
     });
@@ -256,6 +257,7 @@ describe("DeviceStateService", () => {
             expect(device.display_name).toBe("Hallway Light");
             expect(device.location).toBe("Hallway");
             expect(device.categories).toStrictEqual(["Light", "Something"]);
+            expect(device.visible).toBeFalsy();
 
             // check the initial state
             expect(device.state).toBe(DeviceState.Unknown);
@@ -281,6 +283,7 @@ describe("DeviceStateService", () => {
             expect(device.display_name).toBe("Office Socket");
             expect(device.location).toBe("Office");
             expect(device.categories).toStrictEqual(["Socket", "Something Else"]);
+            expect(device.visible).toBeTruthy();
 
             // check the state is unchanged
             expect(device.state).toBe(DeviceState.Unknown);
@@ -311,6 +314,7 @@ describe("DeviceStateService", () => {
             // check the device is new
             expect(device.name).toBe("Something Else");
             expect(device.display_name).toBe("Office Socket");
+            expect(device.visible).toBeTruthy();
 
             // check the state is initialised
             expect(device.state).toBe(DeviceState.Unknown);

@@ -108,7 +108,7 @@ export default class DeviceStateService extends DeviceStateListener {
                 // otherwise merge them
                 return {
                     ...device,
-                    ...newConfig,
+                    ...this.defaultDevice(newConfig),
                     display_name: newConfig.displayName ?? device.display_name,
                 };
             })
@@ -130,19 +130,18 @@ export default class DeviceStateService extends DeviceStateListener {
         this._devices = this.config.devices.map(this.initialiseDevice);
     }
 
-    private initialiseDevice(device: IDevice): Device {
-        return {
-            name: device.name,
-            display_name: device.displayName,
-            type: device.type,
-            visible: device.visible ?? true,
-            location: device.location,
-            categories: device.categories,
-            state: DeviceState.Unknown,
-            since: -1,
-            battery: undefined,
-            batterySince: undefined,
-            charging: false,
-        };
-    }
+    private initialiseDevice = (device: IDevice): Device => ({
+        ...this.defaultDevice(device),
+        display_name: device.displayName,
+        state: DeviceState.Unknown,
+        since: -1,
+        battery: undefined,
+        batterySince: undefined,
+        charging: false,
+    });
+
+    private defaultDevice = (device: IDevice) => ({
+        ...device,
+        visible: device.visible ?? true,
+    });
 }

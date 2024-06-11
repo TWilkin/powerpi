@@ -117,7 +117,7 @@ export default class SensorStateService extends SensorStateListener {
                 // otherwise merge them
                 return {
                     ...sensor,
-                    ...newConfig,
+                    ...this.defaultSensor(newConfig),
                     display_name: newConfig.displayName ?? sensor.display_name,
                 };
             })
@@ -139,22 +139,24 @@ export default class SensorStateService extends SensorStateListener {
         this._sensors = this.config.sensors.map(this.initialiseSensor);
     }
 
-    private initialiseSensor(sensor: ISensor): Sensor {
-        return {
-            name: sensor.name,
-            display_name: sensor.displayName ?? sensor.name,
-            type: sensor.type,
-            location: sensor.location,
-            entity: sensor.entity ?? sensor.name,
-            action: sensor.action ?? sensor.type,
-            visible: sensor.visible ?? true,
-            state: undefined,
-            value: undefined,
-            unit: undefined,
-            since: -1,
-            battery: undefined,
-            batterySince: undefined,
-            charging: false,
-        };
-    }
+    /** The options a sensor should have when it's first loaded. */
+    private initialiseSensor = (sensor: ISensor): Sensor => ({
+        ...this.defaultSensor(sensor),
+        display_name: sensor.displayName ?? sensor.name,
+        state: undefined,
+        value: undefined,
+        unit: undefined,
+        since: -1,
+        battery: undefined,
+        batterySince: undefined,
+        charging: false,
+    });
+
+    /** The optional options default values for ISensor. */
+    private defaultSensor = (sensor: ISensor) => ({
+        ...sensor,
+        entity: sensor.entity ?? sensor.name,
+        action: sensor.action ?? sensor.type,
+        visible: sensor.visible ?? true,
+    });
 }
