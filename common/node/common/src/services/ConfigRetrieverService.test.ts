@@ -48,34 +48,9 @@ describe("ConfigRetrieverService", () => {
     });
 
     describe("message", () => {
-        const exit = jest.spyOn(process, "exit").mockImplementation((_) => undefined as never);
         const setConfig = jest.spyOn(ConfigService.prototype, "setConfig");
 
-        beforeEach(() => {
-            exit.mockClear();
-            setConfig.mockClear();
-        });
-
-        test("required causes restart", () => {
-            jest.spyOn(ConfigService.prototype, "configIsNeeded", "get").mockReturnValue(true);
-
-            jest.spyOn(ConfigService.prototype, "getUsedConfig").mockReturnValue([
-                ConfigFileType.Devices,
-                ConfigFileType.Users,
-            ]);
-
-            jest.spyOn(ConfigService.prototype, "getConfig").mockReturnValue({
-                data: [],
-                checksum: "checky",
-            });
-
-            subject.message("config", "users", "change", {
-                payload: { users: ["tom"] },
-                checksum: "checky",
-            });
-
-            expect(exit).toHaveBeenCalledTimes(1);
-        });
+        beforeEach(() => setConfig.mockClear());
 
         [
             [true, false, false],
@@ -84,7 +59,7 @@ describe("ConfigRetrieverService", () => {
         ].forEach((options) => {
             const [isNeeded, usedConfig, hasConfig] = options;
 
-            test(`not required no restart ${isNeeded} ${usedConfig} ${hasConfig}`, () => {
+            test(`not required ${isNeeded} ${usedConfig} ${hasConfig}`, () => {
                 const listener = {
                     onConfigChange: jest.fn(),
                 };
@@ -112,8 +87,6 @@ describe("ConfigRetrieverService", () => {
                     payload: { users: ["tom"] },
                     checksum: "checky",
                 });
-
-                expect(exit).toHaveBeenCalledTimes(0);
 
                 expect(setConfig).toHaveBeenCalledTimes(1);
                 expect(setConfig).toHaveBeenCalledWith("users", { users: ["tom"] }, "checky");
