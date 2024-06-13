@@ -3,7 +3,7 @@ import { ChangeEvent, useCallback, useMemo } from "react";
 import { ParamKeyValuePair } from "react-router-dom";
 import { chain as _ } from "underscore";
 import { useFilter } from "../../hooks/Filters";
-import { useGetFloorplan } from "../../hooks/floorplan";
+import { useGetFloorplan } from "../../hooks/useGetFloorplan";
 
 export interface Filters {
     // the device types to include

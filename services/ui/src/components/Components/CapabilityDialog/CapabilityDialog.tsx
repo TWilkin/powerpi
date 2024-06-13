@@ -4,7 +4,7 @@ import { Device } from "@powerpi/common-api";
 import classNames from "classnames";
 import { useMemo } from "react";
 import _ from "underscore";
-import { useSetDeviceAdditionalState } from "../../../hooks/devices";
+import { useSetDeviceAdditionalState } from "../../../hooks/useGetDevices";
 import BrightnessSlider from "../Controls/BrightnessSlider";
 import ColourSlider from "../Controls/ColourSlider";
 import ColourTemperatureSlider from "../Controls/ColourTemperatureSlider";

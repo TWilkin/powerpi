@@ -5,4 +5,4 @@ export enum ConfigFileType {
 
 export type ConfigStatusMessage = { type: ConfigFileType };
 
-export type ConfigStatusCallback = (message: ConfigStatusMessage) => void;
+export type ConfigStatusCallback = (message: ConfigStatusMessage) => Promise<void>;

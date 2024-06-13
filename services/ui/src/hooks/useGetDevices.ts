@@ -2,12 +2,14 @@ import {
     AdditionalState,
     BatteryStatusMessage,
     CapabilityStatusMessage,
+    ConfigStatusMessage,
     Device,
     DeviceState,
     DeviceStatusMessage,
 } from "@powerpi/common-api";
+import { ConfigFileType } from "@powerpi/common-api/dist/src/ConfigStatus";
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import QueryKeyFactory from "./QueryKeyFactory";
 import useAPI from "./api";
 
@@ -17,6 +19,8 @@ export function useGetDevices() {
     const { isLoading, isError, data } = useQuery(QueryKeyFactory.devices(), () =>
         api.getDevices(),
     );
+
+    const queryClient = useQueryClient();
 
     // handle react-query updates
     useEffect(() => setDevices(data), [data]);
@@ -79,16 +83,24 @@ export function useGetDevices() {
             }
         };
 
+        const onConfigChange = async (message: ConfigStatusMessage) => {
+            if (message.type === ConfigFileType.Devices) {
+                await queryClient.invalidateQueries(QueryKeyFactory.devices());
+            }
+        };
+
         api.addDeviceListener(onStatusUpdate);
         api.addBatteryListener(onBatteryUpdate);
         api.addCapabilityListener(onCapabilityUpdate);
+        api.addConfigChangeListener(onConfigChange);
 
         return () => {
             api.removeDeviceListener(onStatusUpdate);
             api.removeBatteryListener(onBatteryUpdate);
             api.removeCapabilityListener(onCapabilityUpdate);
+            api.removeConfigChangeListener(onConfigChange);
         };
-    }, [api, devices, setDevices]);
+    }, [api, devices, queryClient, setDevices]);
 
     return {
         isDevicesLoading: isLoading,

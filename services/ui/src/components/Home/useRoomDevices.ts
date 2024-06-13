@@ -1,8 +1,8 @@
 import { BaseDevice, DeviceState } from "@powerpi/common-api";
 import { useMemo } from "react";
 import { chain as _ } from "underscore";
-import { useGetDevices } from "../../hooks/devices";
-import useGetSensors from "../../hooks/sensors";
+import { useGetDevices } from "../../hooks/useGetDevices";
+import useGetSensors from "../../hooks/useGetSensors";
 
 type DeviceList =
     | {
