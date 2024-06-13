@@ -1,6 +1,12 @@
-import { BatteryStatusMessage, Sensor, SensorStatusMessage } from "@powerpi/common-api";
+import {
+    BatteryStatusMessage,
+    ConfigStatusMessage,
+    Sensor,
+    SensorStatusMessage,
+} from "@powerpi/common-api";
+import { ConfigFileType } from "@powerpi/common-api/dist/src/ConfigStatus";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import QueryKeyFactory from "./QueryKeyFactory";
 import useAPI from "./api";
 
@@ -10,6 +16,8 @@ export default function useGetSensors() {
     const { isLoading, isError, data } = useQuery(QueryKeyFactory.sensors(), () =>
         api.getSensors(),
     );
+
+    const queryClient = useQueryClient();
 
     // handle react-query updates
     useEffect(() => setSensors(data), [data]);
@@ -65,14 +73,22 @@ export default function useGetSensors() {
             }
         };
 
+        const onConfigChange = async (message: ConfigStatusMessage) => {
+            if (message.type === ConfigFileType.Devices) {
+                await queryClient.invalidateQueries(QueryKeyFactory.sensors());
+            }
+        };
+
         api.addSensorListener(onStatusUpdate);
         api.addBatteryListener(onBatteryUpdate);
+        api.addConfigChangeListener(onConfigChange);
 
         return () => {
             api.removeSensorListener(onStatusUpdate);
             api.removeBatteryListener(onBatteryUpdate);
+            api.removeConfigChangeListener(onConfigChange);
         };
-    }, [api, sensors, setSensors]);
+    }, [api, queryClient, sensors, setSensors]);
 
     return {
         isSensorsLoading: isLoading,
