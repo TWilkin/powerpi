@@ -3,7 +3,7 @@ import { ConfigFileType } from "@powerpi/common-api/dist/src/ConfigStatus";
 import { QueryClient } from "react-query";
 import { capture, instance, mock, resetCalls, when } from "ts-mockito";
 import { renderHook, waitFor } from "../test-setup";
-import { useGetFloorplan } from "./floorplan";
+import { useGetFloorplan } from "./useGetFloorplan";
 
 describe("useGetFloorplan", () => {
     const api = mock<PowerPiApi>();

@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Fragment, useMemo } from "react";
 import _ from "underscore";
-import { useGetDevices } from "../../hooks/devices";
 import useNarrow from "../../hooks/narrow";
+import { useGetDevices } from "../../hooks/useGetDevices";
 import "../../util";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
 import BatteryIcon from "../Components/BatteryIcon";
@@ -43,7 +43,7 @@ const DeviceList = () => {
             showingHidden: !filters.visible || !String.isNullOrWhitespace(filters.search),
             showingBattery: _(filtered ?? []).any((device) => (device.batterySince ?? 0) > 0),
         }),
-        [filtered, filters.search, filters.visible]
+        [filtered, filters.search, filters.visible],
     );
 
     const { isNarrow } = useNarrow();

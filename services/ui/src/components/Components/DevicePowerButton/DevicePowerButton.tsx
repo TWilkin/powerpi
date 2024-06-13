@@ -3,7 +3,7 @@ import { Device, DeviceState } from "@powerpi/common-api";
 import classNames from "classnames";
 import { MouseEvent, useMemo, useState } from "react";
 import { useLongPress } from "use-long-press";
-import { useSetDeviceState } from "../../../hooks/devices";
+import { useSetDeviceState } from "../../../hooks/useGetDevices";
 import Button from "../Button";
 import styles from "./DevicePowerButton.module.scss";
 

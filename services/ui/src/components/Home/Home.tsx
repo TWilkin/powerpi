@@ -1,6 +1,6 @@
 import { Floorplan as IFloorplan, Sensor } from "@powerpi/common-api";
 import { useMemo } from "react";
-import useGetSensors from "../../hooks/sensors";
+import useGetSensors from "../../hooks/useGetSensors";
 import Loading from "../Components/Loading";
 import Menu from "../Components/Menu";
 import Floorplan from "./Floorplan";

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { useGetFloorplan } from "../../hooks/floorplan";
+import { useGetFloorplan } from "../../hooks/useGetFloorplan";
 import NotFound from "../NotFound";
 import Home from "./Home";
 
