@@ -1,6 +1,13 @@
-import { Message, MqttConsumer, MqttService } from "@powerpi/common";
+import {
+    ConfigFileType,
+    ConfigRetrieverService,
+    Message,
+    MqttConsumer,
+    MqttService,
+} from "@powerpi/common";
 import { DeviceState } from "@powerpi/common-api";
-import { capture, instance, mock, resetCalls, when } from "ts-mockito";
+import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
+import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
 import DeviceStateService from "./DeviceStateService";
 import { BatteryMessage } from "./listeners/BatteryStateListener";
@@ -8,7 +15,9 @@ import { CapabilityMessage } from "./listeners/CapabilityStateListener";
 import { StateMessage } from "./listeners/DeviceStateListener";
 
 const mockedConfigService = mock<ConfigService>();
+const mockedConfigRetrieverService = mock<ConfigRetrieverService>();
 const mockedMqttService = mock<MqttService>();
+const mockedApiSocketService = mock<ApiSocketService>();
 
 describe("DeviceStateService", () => {
     let subject: DeviceStateService | undefined;
@@ -30,6 +39,13 @@ describe("DeviceStateService", () => {
         return undefined;
     }
 
+    function getConfigListener() {
+        const listeners = capture(mockedConfigRetrieverService.addListener);
+
+        const listener = listeners.byCallIndex(0);
+        return listener[1];
+    }
+
     beforeEach(() => {
         when(mockedConfigService.devices).thenReturn([
             {
@@ -38,14 +54,19 @@ describe("DeviceStateService", () => {
                 type: "Light",
                 location: "Hallway",
                 categories: ["Light", "Something"],
+                visible: false,
             },
         ]);
 
         resetCalls(mockedMqttService);
+        resetCalls(mockedConfigRetrieverService);
+        resetCalls(mockedApiSocketService);
 
         subject = new DeviceStateService(
             instance(mockedConfigService),
+            instance(mockedConfigRetrieverService),
             instance(mockedMqttService),
+            instance(mockedApiSocketService),
         );
 
         subject?.$onInit();
@@ -69,7 +90,9 @@ describe("DeviceStateService", () => {
 
             subject = new DeviceStateService(
                 instance(mockedConfigService),
+                instance(mockedConfigRetrieverService),
                 instance(mockedMqttService),
+                instance(mockedApiSocketService),
             );
 
             subject?.$onInit();
@@ -87,7 +110,9 @@ describe("DeviceStateService", () => {
         test("none", () => {
             subject = new DeviceStateService(
                 instance(mockedConfigService),
+                instance(mockedConfigRetrieverService),
                 instance(mockedMqttService),
+                instance(mockedApiSocketService),
             );
 
             const devices = subject?.devices;
@@ -103,7 +128,7 @@ describe("DeviceStateService", () => {
         expect(device.name).toBe("HallwayLight");
         expect(device.display_name).toBe("Hallway Light");
         expect(device.type).toBe("Light");
-        expect(device.visible).toBeTruthy();
+        expect(device.visible).toBeFalsy();
         expect(device.location).toBe("Hallway");
         expect(device.categories).toStrictEqual(["Light", "Something"]);
     });
@@ -135,6 +160,22 @@ describe("DeviceStateService", () => {
                 } else {
                     expect(device.since).toBe(-1);
                 }
+
+                verify(
+                    mockedApiSocketService.onDeviceStateMessage(
+                        "HallwayLight",
+                        DeviceState.On,
+                        timestamp,
+                        anything(),
+                    ),
+                ).once();
+
+                const payload = capture(mockedApiSocketService.onDeviceStateMessage);
+
+                expect(payload.first()[3]).toStrictEqual({
+                    brightness: 50,
+                    temperature: 2000,
+                });
             }),
         ));
 
@@ -163,6 +204,16 @@ describe("DeviceStateService", () => {
                 } else {
                     expect(device.charging).toBeFalsy();
                 }
+
+                verify(
+                    mockedApiSocketService.onBatteryMessage(
+                        "device",
+                        "HallwayLight",
+                        53,
+                        charging ?? false,
+                        1234,
+                    ),
+                ).once();
             }),
         );
     });
@@ -178,11 +229,96 @@ describe("DeviceStateService", () => {
             colour: {
                 temperature: true,
             },
+            timestamp: 1234,
         });
 
         expect(device.capability).toStrictEqual({
             brightness: true,
             colour: { temperature: true },
+        });
+
+        verify(mockedApiSocketService.onCapabilityMessage("HallwayLight", anything(), 1234)).once();
+
+        const payload = capture(mockedApiSocketService.onCapabilityMessage);
+
+        expect(payload.first()[1]).toStrictEqual({
+            brightness: true,
+            colour: { temperature: true },
+        });
+    });
+
+    describe("onConfigChange", () => {
+        test("updated device", () => {
+            const listener = getConfigListener();
+
+            let device = subject!.devices[0];
+
+            // check the initial config
+            expect(device.display_name).toBe("Hallway Light");
+            expect(device.location).toBe("Hallway");
+            expect(device.categories).toStrictEqual(["Light", "Something"]);
+            expect(device.visible).toBeFalsy();
+
+            // check the initial state
+            expect(device.state).toBe(DeviceState.Unknown);
+            expect(device.since).toBe(-1);
+
+            // change what it'll return
+            when(mockedConfigService.devices).thenReturn([
+                {
+                    name: "HallwayLight",
+                    displayName: "Office Socket",
+                    type: "Socket",
+                    location: "Office",
+                    categories: ["Socket", "Something Else"],
+                },
+            ]);
+
+            listener.onConfigChange(ConfigFileType.Devices);
+
+            expect(subject!.devices).toHaveLength(1);
+            device = subject!.devices[0];
+
+            // check the new config
+            expect(device.display_name).toBe("Office Socket");
+            expect(device.location).toBe("Office");
+            expect(device.categories).toStrictEqual(["Socket", "Something Else"]);
+            expect(device.visible).toBeTruthy();
+
+            // check the state is unchanged
+            expect(device.state).toBe(DeviceState.Unknown);
+            expect(device.since).toBe(-1);
+        });
+
+        test("deleted/added device", () => {
+            const listener = getConfigListener();
+
+            let device = subject!.devices[0];
+
+            // check the initial config
+            expect(device.display_name).toBe("Hallway Light");
+
+            when(mockedConfigService.devices).thenReturn([
+                {
+                    name: "Something Else",
+                    displayName: "Office Socket",
+                    type: "Socket",
+                },
+            ]);
+
+            listener.onConfigChange(ConfigFileType.Devices);
+
+            expect(subject!.devices).toHaveLength(1);
+            device = subject!.devices[0];
+
+            // check the device is new
+            expect(device.name).toBe("Something Else");
+            expect(device.display_name).toBe("Office Socket");
+            expect(device.visible).toBeTruthy();
+
+            // check the state is initialised
+            expect(device.state).toBe(DeviceState.Unknown);
+            expect(device.since).toBe(-1);
         });
     });
 });

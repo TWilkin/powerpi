@@ -20,7 +20,10 @@ export class MqttService {
 
     private consumers: { [key: string]: MqttConsumer[] };
 
-    constructor(private config: ConfigService, private logger: LoggerService) {
+    constructor(
+        private config: ConfigService,
+        private logger: LoggerService,
+    ) {
         this.consumers = {};
     }
 
@@ -40,14 +43,14 @@ export class MqttService {
         const options = {
             clientId: this.clientId,
             username: this.config.mqttUser,
-            password: await this.config.mqttPassword
+            password: await this.config.mqttPassword,
         };
 
         this.logger.info(
-            "MQTT connecting to", 
-            this.config.mqttAddress, 
-            "as user", 
-            this.config.mqttUser ?? "anonymous"
+            "MQTT connecting to",
+            this.config.mqttAddress,
+            "as user",
+            this.config.mqttUser ?? "anonymous",
         );
         this.client = await connectAsync(this.config.mqttAddress, options);
         this.logger.info("MQTT client", options.clientId, "connected.");
@@ -75,8 +78,8 @@ export class MqttService {
                 .concat(
                     matches.reduce(
                         (acc, match) => acc.concat(this.consumers[match]),
-                        [] as MqttConsumer[]
-                    )
+                        [] as MqttConsumer[],
+                    ),
                 );
 
             if (consumers.length > 0) {
@@ -118,14 +121,14 @@ export class MqttService {
         type: string,
         entity: string,
         action: string,
-        consumer: MqttConsumer
+        consumer: MqttConsumer,
     ): Promise<void>;
     public async subscribe(consumer: MqttConsumer): Promise<void>;
     public async subscribe(
         a: string | MqttConsumer,
         b?: string,
         c?: string,
-        d?: MqttConsumer
+        d?: MqttConsumer,
     ): Promise<void> {
         const consumer = d ?? (a as MqttConsumer);
         const topic = typeof a === "string" && b && c ? this.topicName(a, b, c) : this.topicName();
@@ -144,14 +147,14 @@ export class MqttService {
         type: string,
         entity: string,
         action: string,
-        consumer: MqttConsumer
+        consumer: MqttConsumer,
     ): Promise<void>;
     public async unsubscribe(consumer: MqttConsumer): Promise<void>;
     public async unsubscribe(
         a: string | MqttConsumer,
         b?: string,
         c?: string,
-        d?: MqttConsumer
+        d?: MqttConsumer,
     ): Promise<void> {
         const consumer = d ?? (a as MqttConsumer);
         const topic = typeof a === "string" && b && c ? this.topicName(a, b, c) : this.topicName();
@@ -176,7 +179,7 @@ export class MqttService {
     private topicRegex(str: string) {
         if (str.indexOf("+") >= 0) {
             // this needs converting
-            str = str.replace("+", ".*");
+            str = str.replaceAll("+", ".*");
 
             return new RegExp(`^${str}$`);
         }

@@ -1,4 +1,4 @@
-import { IDeviceConfigFile, ISensor } from "@powerpi/common";
+import { IDeviceConfigFile, ISensorConfig } from "@powerpi/common";
 import { createHash } from "crypto";
 import { Service } from "typedi";
 import { chain as _ } from "underscore";
@@ -19,7 +19,7 @@ export default class DeviceHandler implements IHandler<IDeviceConfigFile> {
         }
     }
 
-    private async generateConfigMessage(sensor: ISensor) {
+    private async generateConfigMessage(sensor: ISensorConfig) {
         const props = _(sensor)
             .omit("name", "type", "display_name", "location", "entity", "action", "visible")
             .value();

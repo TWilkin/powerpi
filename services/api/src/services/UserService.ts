@@ -1,3 +1,4 @@
+import { ConfigFileType, ConfigRetrieverService } from "@powerpi/common";
 import { Service } from "@tsed/common";
 import User from "../models/User";
 import ConfigService from "./ConfigService";
@@ -7,7 +8,10 @@ export default class UserService {
     private _users: User[] | undefined;
     private _codes: { [code: string]: User };
 
-    constructor(private readonly config: ConfigService) {
+    constructor(
+        private readonly config: ConfigService,
+        private readonly configRetriever: ConfigRetrieverService,
+    ) {
         this._codes = {};
     }
 
@@ -31,6 +35,26 @@ export default class UserService {
 
     public $onInit() {
         this.initialise();
+
+        this.configRetriever.addListener(ConfigFileType.Users, {
+            onConfigChange: (type: ConfigFileType) => {
+                if (type === ConfigFileType.Users) {
+                    this.onConfigChange();
+                }
+            },
+        });
+    }
+
+    protected onConfigChange() {
+        // update the list of users
+        this.initialise();
+
+        // and remove any codes for removed users
+        const newEmailIds = this.users.map((user) => user.email);
+        this._codes = Object.keys(this._codes)
+            .map((code) => ({ code, user: this._codes[code] }))
+            .filter((pair) => newEmailIds.includes(pair.user.email))
+            .reduce((codes, pair) => ({ ...codes, [pair.code]: pair.user }), {});
     }
 
     private initialise() {

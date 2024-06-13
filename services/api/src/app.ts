@@ -7,11 +7,13 @@ import Server from "./Server";
 async function bootstrap() {
     try {
         const platform = await PlatformExpress.bootstrap(Server);
-        await platform.listen();
 
-        process.on("SIGINT", () => {
+        process.on("SIGINT", async () => {
             platform.stop();
+            await service.stop();
         });
+
+        await platform.listen();
     } catch (er) {
         $log.error(er);
     }

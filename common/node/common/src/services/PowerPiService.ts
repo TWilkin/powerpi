@@ -10,7 +10,7 @@ export class PowerPiService {
     constructor(
         private mqtt: MqttService,
         private configRetriever: ConfigRetrieverService,
-        private logger: LoggerService
+        private logger: LoggerService,
     ) {}
 
     public async start(appStart: AppStart) {
@@ -28,9 +28,13 @@ export class PowerPiService {
         } catch (e) {
             this.logger.error(e);
 
-            await this.mqtt.disconnect();
+            await this.stop();
 
             process.exit(1);
         }
+    }
+
+    public async stop() {
+        await this.mqtt.disconnect();
     }
 }

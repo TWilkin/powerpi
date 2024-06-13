@@ -1,6 +1,5 @@
 import { IFloorplan } from "./IFloorplan";
 import { ISchedule } from "./ISchedule";
-import { ISensor } from "./ISensor";
 import { IUser } from "./IUser";
 
 export interface IDeviceConfig {
@@ -12,9 +11,19 @@ export interface IDeviceConfig {
     categories?: string[];
 }
 
+export interface ISensorConfig {
+    name: string;
+    type: string;
+    display_name?: string;
+    location: string;
+    entity?: string;
+    action?: string;
+    visible?: boolean;
+}
+
 export interface IDeviceConfigFile {
     devices?: IDeviceConfig[];
-    sensors?: ISensor[];
+    sensors?: ISensorConfig[];
 }
 
 export interface IFloorplanConfigFile {

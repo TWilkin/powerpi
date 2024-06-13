@@ -11,7 +11,7 @@ describe("ConfigRetrieverService", () => {
         const mqtt = new MqttService(config, logger);
 
         jest.spyOn(MqttService.prototype, "subscribe").mockImplementation(
-            (_) => new Promise((resolve) => resolve())
+            (_) => new Promise((resolve) => resolve()),
         );
 
         subject = new ConfigRetrieverService(config, mqtt, logger);
@@ -85,8 +85,14 @@ describe("ConfigRetrieverService", () => {
             const [isNeeded, usedConfig, hasConfig] = options;
 
             test(`not required no restart ${isNeeded} ${usedConfig} ${hasConfig}`, () => {
+                const listener = {
+                    onConfigChange: jest.fn(),
+                };
+
+                subject.addListener(ConfigFileType.Users, listener);
+
                 jest.spyOn(ConfigService.prototype, "configIsNeeded", "get").mockReturnValue(
-                    isNeeded
+                    isNeeded,
                 );
 
                 const used = [ConfigFileType.Devices];
@@ -111,7 +117,34 @@ describe("ConfigRetrieverService", () => {
 
                 expect(setConfig).toHaveBeenCalledTimes(1);
                 expect(setConfig).toHaveBeenCalledWith("users", { users: ["tom"] }, "checky");
+
+                expect(listener.onConfigChange).toHaveBeenCalledWith(ConfigFileType.Users);
             });
+        });
+    });
+
+    describe("listeners", () => {
+        test("add and remove", () => {
+            const listener = {
+                onConfigChange: jest.fn(),
+            };
+
+            subject.addListener(ConfigFileType.Users, listener);
+
+            // it is called with the right type
+            subject.message("config", "users", "change", { payload: {}, checksum: "checky" });
+            expect(listener.onConfigChange).toHaveBeenCalledWith(ConfigFileType.Users);
+
+            // it's not called with the wrong type
+            listener.onConfigChange.mockReset();
+            subject.message("config", "devices", "change", { payload: {}, checksum: "checky" });
+            expect(listener.onConfigChange).not.toHaveBeenCalledWith(ConfigFileType.Users);
+
+            // removing it stops it being called
+            listener.onConfigChange.mockReset();
+            subject.removeListener(ConfigFileType.Users, listener);
+            subject.message("config", "users", "change", { payload: {}, checksum: "checky" });
+            expect(listener.onConfigChange).not.toHaveBeenCalledWith(ConfigFileType.Users);
         });
     });
 });

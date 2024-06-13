@@ -1,17 +1,26 @@
-import { Message, MqttConsumer, MqttService } from "@powerpi/common";
-import { capture, instance, mock, resetCalls, when } from "ts-mockito";
+import {
+    ConfigFileType,
+    ConfigRetrieverService,
+    Message,
+    MqttConsumer,
+    MqttService,
+} from "@powerpi/common";
+import { capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
+import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
 import SensorStateService from "./SensorStateService";
 import { BatteryMessage } from "./listeners/BatteryStateListener";
 import { EventMessage } from "./listeners/SensorStateListener";
 
 const mockedConfigService = mock<ConfigService>();
+const mockedConfigRetrieverService = mock<ConfigRetrieverService>();
 const mockedMqttService = mock<MqttService>();
+const mockedApiSocketService = mock<ApiSocketService>();
 
 describe("SensorStateService", () => {
     let subject: SensorStateService | undefined;
 
-    function getConsumer<TConsumer extends Message>(action: string) {
+    function getConsumer<TConsumer extends Message>(action: string = "+") {
         const subscriptions = capture(mockedMqttService.subscribe);
 
         for (let i = 0; ; i++) {
@@ -28,21 +37,30 @@ describe("SensorStateService", () => {
         return undefined;
     }
 
+    function getConfigListener() {
+        const listeners = capture(mockedConfigRetrieverService.addListener);
+
+        const listener = listeners.byCallIndex(0);
+        return listener[1];
+    }
+
     beforeEach(async () => {
         when(mockedConfigService.sensors).thenReturn([
             {
                 name: "HallwayMotionSensor",
+                displayName: "HallwayMotionSensor",
                 type: "motion",
                 location: "Hallway",
             },
             {
                 name: "BedroomTempSensor",
+                displayName: "BedroomTempSensor",
                 type: "temperature",
                 location: "Bedroom",
             },
             {
                 name: "Other",
-                display_name: "Other Sensor",
+                displayName: "Other Sensor",
                 type: "other",
                 location: "Atlantis",
                 entity: "something",
@@ -52,10 +70,14 @@ describe("SensorStateService", () => {
         ]);
 
         resetCalls(mockedMqttService);
+        resetCalls(mockedConfigRetrieverService);
+        resetCalls(mockedApiSocketService);
 
         subject = new SensorStateService(
             instance(mockedConfigService),
+            instance(mockedConfigRetrieverService),
             instance(mockedMqttService),
+            instance(mockedApiSocketService),
         );
 
         await subject.$onInit();
@@ -88,7 +110,9 @@ describe("SensorStateService", () => {
         test("none", () => {
             subject = new SensorStateService(
                 instance(mockedConfigService),
+                instance(mockedConfigRetrieverService),
                 instance(mockedMqttService),
+                instance(mockedApiSocketService),
             );
 
             const sensors = subject?.sensors;
@@ -101,7 +125,9 @@ describe("SensorStateService", () => {
 
         subject = new SensorStateService(
             instance(mockedConfigService),
+            instance(mockedConfigRetrieverService),
             instance(mockedMqttService),
+            instance(mockedApiSocketService),
         );
 
         await subject.$onInit();
@@ -113,7 +139,7 @@ describe("SensorStateService", () => {
     describe("onSensorStateMessage", () => {
         [undefined, 1234].forEach((timestamp) =>
             test(`timestamp: ${timestamp}`, () => {
-                const consumer = getConsumer<EventMessage>("motion");
+                const consumer = getConsumer<EventMessage>();
 
                 const sensor = subject?.sensors.find(
                     (sensor) => sensor.name == "HallwayMotionSensor",
@@ -133,6 +159,16 @@ describe("SensorStateService", () => {
                 } else {
                     expect(sensor?.since).toBe(-1);
                 }
+
+                verify(
+                    mockedApiSocketService.onEventMessage(
+                        "HallwayMotionSensor",
+                        "detected",
+                        undefined,
+                        undefined,
+                        timestamp,
+                    ),
+                ).once();
             }),
         );
     });
@@ -140,7 +176,7 @@ describe("SensorStateService", () => {
     describe("onSensorDataMessage", () => {
         [undefined, 1234].forEach((timestamp) =>
             test(`timestamp: ${timestamp}`, () => {
-                const consumer = getConsumer<EventMessage>("temperature");
+                const consumer = getConsumer<EventMessage>();
 
                 const sensor = subject?.sensors.find(
                     (sensor) => sensor.name == "BedroomTempSensor",
@@ -163,12 +199,22 @@ describe("SensorStateService", () => {
                 } else {
                     expect(sensor?.since).toBe(-1);
                 }
+
+                verify(
+                    mockedApiSocketService.onEventMessage(
+                        "BedroomTempSensor",
+                        undefined,
+                        100,
+                        "F",
+                        timestamp,
+                    ),
+                ).once();
             }),
         );
     });
 
     test("onBatteryMessage", () => {
-        const consumer = getConsumer<BatteryMessage>("battery");
+        const consumer = getConsumer<BatteryMessage>();
 
         const sensor = subject?.sensors.find((sensor) => sensor.name == "HallwayMotionSensor");
         expect(sensor?.battery).toBeUndefined();
@@ -185,5 +231,73 @@ describe("SensorStateService", () => {
         expect(sensor?.battery).toBe(53);
         expect(sensor?.batterySince).toBe(1234);
         expect(sensor?.charging).toBeTruthy();
+
+        verify(
+            mockedApiSocketService.onBatteryMessage(
+                "sensor",
+                "HallwayMotionSensor",
+                53,
+                true,
+                1234,
+            ),
+        ).once();
+    });
+
+    test("onConfigMessage", () => {
+        const listener = getConfigListener();
+
+        expect(subject?.sensors).toHaveLength(3);
+
+        // check the initial config
+        let sensor = subject!.sensors[0];
+        expect(sensor.name).toBe("HallwayMotionSensor");
+        expect(sensor.display_name).toBe("HallwayMotionSensor");
+        expect(sensor.type).toBe("motion");
+        expect(sensor.location).toBe("Hallway");
+        expect(sensor.entity).toBe("HallwayMotionSensor");
+        expect(sensor.action).toBe("motion");
+        expect(sensor.visible).toBeTruthy();
+
+        // change what it'll return
+        when(mockedConfigService.sensors).thenReturn([
+            {
+                name: "HallwayMotionSensor",
+                displayName: "Office Motion Sensor",
+                type: "motion",
+                location: "Office",
+                visible: false,
+            },
+            {
+                name: "NewSensor",
+                displayName: "New Sensor",
+                type: "temperature",
+                location: "Hallway",
+            },
+        ]);
+
+        listener.onConfigChange(ConfigFileType.Devices);
+
+        // we should have 1 updated, 1 added and 2 removed
+        expect(subject?.sensors).toHaveLength(2);
+
+        // check the updated config
+        sensor = subject!.sensors[0];
+        expect(sensor.name).toBe("HallwayMotionSensor");
+        expect(sensor.display_name).toBe("Office Motion Sensor");
+        expect(sensor.type).toBe("motion");
+        expect(sensor.location).toBe("Office");
+        expect(sensor.entity).toBe("HallwayMotionSensor");
+        expect(sensor.action).toBe("motion");
+        expect(sensor.visible).toBeFalsy();
+
+        // check the added config
+        sensor = subject!.sensors[1];
+        expect(sensor.name).toBe("NewSensor");
+        expect(sensor.display_name).toBe("New Sensor");
+        expect(sensor.type).toBe("temperature");
+        expect(sensor.location).toBe("Hallway");
+        expect(sensor.entity).toBe("NewSensor");
+        expect(sensor.action).toBe("temperature");
+        expect(sensor.visible).toBeTruthy();
     });
 });

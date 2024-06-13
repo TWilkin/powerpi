@@ -1,3 +1,4 @@
+export * from "./ConfigRetrieverService";
 export * from "./ConfigService";
 export { default as FileService } from "./FileService";
 export * from "./IntervalParserService";

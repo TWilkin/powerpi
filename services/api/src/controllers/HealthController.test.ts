@@ -1,7 +1,8 @@
+import { MqttService } from "@powerpi/common";
 import { Response } from "express";
 import { QueryResult } from "pg";
 import { anyNumber, instance, mock, resetCalls, verify, when } from "ts-mockito";
-import { ConfigService, DatabaseService, MqttService } from "../services";
+import { ConfigService, DatabaseService } from "../services";
 import HealthController from "./HealthController";
 
 const mockedConfigService = mock<ConfigService>();

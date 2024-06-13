@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/common",
-    "version": "0.1.3",
+    "version": "0.2.0",
     "description": "PowerPi Common Typescript library",
     "private": true,
     "license": "GPL-3.0-only",
@@ -14,7 +14,8 @@
     "types": "dist/src/index.d.ts",
     "scripts": {
         "build": "tsc && cp src/health.sh dist/",
-        "test": "jest"
+        "test": "jest",
+        "coverage": "jest --coverage"
     },
     "files": [
         "dist/src",

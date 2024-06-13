@@ -4,6 +4,7 @@ import AdditionalState from "./AdditionalState";
 import { BatteryStatusCallback, BatteryStatusMessage } from "./BatteryStatus";
 import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityStatus";
 import Config from "./Config";
+import { ConfigStatusCallback, ConfigStatusMessage } from "./ConfigStatus";
 import Device from "./Device";
 import DeviceChangeMessage from "./DeviceChangeMessage";
 import DeviceState from "./DeviceState";
@@ -25,6 +26,7 @@ export default class PowerPiApi {
         sensor: SensorStatusCallback[];
         battery: BatteryStatusCallback[];
         capability: CapabilityStatusCallback[];
+        config: ConfigStatusCallback[];
     };
     private headers: { [key: string]: string };
 
@@ -38,6 +40,7 @@ export default class PowerPiApi {
             sensor: [],
             battery: [],
             capability: [],
+            config: [],
         };
 
         this.headers = {};
@@ -122,6 +125,11 @@ export default class PowerPiApi {
         this.listeners.capability.push(callback);
     }
 
+    public addConfigChangeListener(callback: ConfigStatusCallback) {
+        this.connectSocketIO();
+        this.listeners.config.push(callback);
+    }
+
     public removeDeviceListener(callback: DeviceStatusCallback) {
         this.listeners.device = this.listeners.device.filter((listener) => listener === callback);
     }
@@ -138,6 +146,10 @@ export default class PowerPiApi {
         this.listeners.capability = this.listeners.capability.filter(
             (listener) => listener === callback,
         );
+    }
+
+    public removeConfigChangeListener(callback: ConfigStatusCallback) {
+        this.listeners.config = this.listeners.config.filter((listener) => listener === callback);
     }
 
     public setErrorHandler(handler: ErrorHandler) {
@@ -159,6 +171,9 @@ export default class PowerPiApi {
 
     private onCapabilityMessage = (message: CapabilityStatusMessage) =>
         this.listeners.capability.forEach((listener) => listener(message));
+
+    private onConfigMessage = (message: ConfigStatusMessage) =>
+        this.listeners.config.forEach((listener) => listener(message));
 
     private async get<TResult>(path: string, params?: object) {
         const result = await this.instance.get<TResult>(path, {
@@ -193,6 +208,7 @@ export default class PowerPiApi {
             this.socket.on(SocketIONamespace.Sensor, this.onSensorMessage);
             this.socket.on(SocketIONamespace.Battery, this.onBatteryMessage);
             this.socket.on(SocketIONamespace.Capability, this.onCapabilityMessage);
+            this.socket.on(SocketIONamespace.Config, this.onConfigMessage);
         }
     }
 }
