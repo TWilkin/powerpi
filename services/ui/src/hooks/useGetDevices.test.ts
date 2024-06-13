@@ -2,7 +2,7 @@ import { DeviceState, PowerPiApi } from "@powerpi/common-api";
 import { ConfigFileType } from "@powerpi/common-api/dist/src/ConfigStatus";
 import { QueryClient } from "react-query";
 import { capture, instance, mock, resetCalls, when } from "ts-mockito";
-import { renderHook, waitFor } from "../test-setup";
+import { act, renderHook, waitFor } from "../test-setup";
 import { useGetDevices } from "./useGetDevices";
 
 describe("useGetDevices", () => {
@@ -39,7 +39,7 @@ describe("useGetDevices", () => {
 
         beforeEach(() => jest.resetAllMocks());
 
-        test("expected config type", () => {
+        test("expected config type", async () => {
             renderHook(useGetDevices, {
                 api: instance(api),
                 queryClient: queryClient,
@@ -47,12 +47,12 @@ describe("useGetDevices", () => {
 
             const listener = getListener();
 
-            listener({ type: ConfigFileType.Devices });
+            await act(() => listener({ type: ConfigFileType.Devices }));
 
             expect(queryClient.invalidateQueries).toHaveBeenCalledWith(["powerpi", "devices"]);
         });
 
-        test("wrong config type", () => {
+        test("wrong config type", async () => {
             renderHook(useGetDevices, {
                 api: instance(api),
                 queryClient: queryClient,
@@ -60,7 +60,7 @@ describe("useGetDevices", () => {
 
             const listener = getListener();
 
-            listener({ type: ConfigFileType.Floorplan });
+            await act(() => listener({ type: ConfigFileType.Floorplan }));
 
             expect(queryClient.invalidateQueries).not.toHaveBeenCalled();
         });
