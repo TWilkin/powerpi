@@ -83,9 +83,9 @@ export function useGetDevices() {
             }
         };
 
-        const onConfigChange = (message: ConfigStatusMessage) => {
+        const onConfigChange = async (message: ConfigStatusMessage) => {
             if (message.type === ConfigFileType.Devices) {
-                queryClient.invalidateQueries(QueryKeyFactory.devices());
+                await queryClient.invalidateQueries(QueryKeyFactory.devices());
             }
         };
 
