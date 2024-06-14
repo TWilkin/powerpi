@@ -38,6 +38,7 @@ describe("UnitConverter", () => {
         test("cf -> hcf", () => check("volume", { value: 123, unit: "cf" }, "hcf", 1.23));
         test("cf -> m3", () => check("volume", { value: 5_000, unit: "cf" }, "m3", 141.584));
 
+        test("hcf -> cf", () => check("volume", { value: 50, unit: "hcf" }, "cf", 5_000));
         test("hcf -> m3", () => check("volume", { value: 50, unit: "hcf" }, "m3", 141.584));
     });
 
