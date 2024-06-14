@@ -1,6 +1,6 @@
 import { UnitType } from "../services/UnitConverter";
 
-type UserSettings = {
+export type UserSettings = {
     units: {
         [key in UnitType]?: string;
     };
