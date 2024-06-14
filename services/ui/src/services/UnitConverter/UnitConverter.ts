@@ -1,28 +1,26 @@
+import { keysOf } from "../../util";
 import temperature from "./temperature";
-
-export type UnitValue = {
-    value: number;
-    unit: string;
-};
-
-type Converter = (value: number) => number;
+import { Converter, ConverterDefinition, UnitType, UnitValue } from "./types";
 
 export default class UnitConverter {
-    private readonly converters = [...temperature];
+    private static readonly converters: { [key in UnitType]: ConverterDefinition[] } = {
+        temperature: temperature,
+    };
 
-    public convert(value: number, currentUnit: string, desiredUnit: string): UnitValue {
-        const convert = this.generateConversion(currentUnit, desiredUnit);
+    public convert(type: UnitType, value: UnitValue, desiredUnit: string): UnitValue {
+        const convert = this.generateConversion(type, value.unit, desiredUnit);
 
         if (convert) {
-            const convertedValue = convert(value);
+            const convertedValue = convert(value.value);
 
             return { value: convertedValue, unit: desiredUnit };
         }
 
-        return { value, unit: currentUnit };
+        return value;
     }
 
     private generateConversion(
+        type: UnitType,
         currentUnit: string,
         desiredUnit: string,
         consumed: string[] = [],
@@ -33,7 +31,9 @@ export default class UnitConverter {
         }
 
         // find the converters for the current unit
-        const converter = this.converters.find((converter) => converter.unit === currentUnit);
+        const converter = UnitConverter.converters[type].find(
+            (converter) => converter.unit === currentUnit,
+        );
 
         if (converter != null) {
             // we want the conversions that we haven't already tried
@@ -49,7 +49,7 @@ export default class UnitConverter {
                 }
 
                 // this is the converter for option -> desiredUnit
-                const convert = this.generateConversion(option, desiredUnit, [
+                const convert = this.generateConversion(type, option, desiredUnit, [
                     ...consumed,
                     currentUnit,
                 ]);
@@ -68,8 +68,4 @@ export default class UnitConverter {
 
         return undefined;
     }
-}
-
-function keysOf<TObjectType extends object>(obj: TObjectType): (keyof TObjectType)[] {
-    return Object.keys(obj) as (keyof TObjectType)[];
 }
