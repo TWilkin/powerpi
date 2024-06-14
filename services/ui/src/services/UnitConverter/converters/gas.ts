@@ -1,3 +1,4 @@
+import { power } from "./power";
 import { volume } from "./volume";
 
 const calorific = 38; // MJ/m3
@@ -11,4 +12,6 @@ export const gas = [
     },
     // we need the volume converters too
     ...volume,
+    // and the power converters
+    ...power,
 ];

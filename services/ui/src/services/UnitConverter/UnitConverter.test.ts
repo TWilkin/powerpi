@@ -6,10 +6,17 @@ describe("UnitConverter", () => {
 
     describe("gas", () => {
         test("m3 -> kWh", () => check("gas", { value: 100, unit: "m3" }, "kWh", 1_079.45));
+        test("m3 -> Wh", () => check("gas", { value: 100, unit: "m3" }, "Wh", 1.07945));
 
         test("cf -> kWh", () => check("gas", { value: 5_000, unit: "cf" }, "kWh", 1_528.335));
 
         test("hcf -> kWh", () => check("gas", { value: 50, unit: "hcf" }, "kWh", 1_528.335));
+    });
+
+    describe("power", () => {
+        test("kWh -> Wh", () => check("power", { value: 100, unit: "kWh" }, "Wh", 0.1));
+
+        test("Wh -> kWh", () => check("power", { value: 100, unit: "Wh" }, "kWh", 100_000));
     });
 
     describe("temperature", () => {
