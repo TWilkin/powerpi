@@ -10,6 +10,9 @@ describe("UnitConverter", () => {
         test("°C -> F", () => check(subject.convert(100, "°C", "F"), 212, "F"));
         test("F -> °C", () => check(subject.convert(100, "F", "°C"), 37.7778, "°C"));
 
+        test("°C -> K", () => check(subject.convert(100, "°C", "K"), 373.15, "K"));
+        test("K -> °C", () => check(subject.convert(100, "K", "°C"), -173.15, "°C"));
+
         test("F -> m", () => check(subject.convert(100, "F", "m"), 100, "F"));
     });
 });
