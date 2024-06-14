@@ -1,6 +1,6 @@
 const calorific = 38; // MJ/m3
 
-const converter = [
+export const gas = [
     {
         unit: "m3", // metres cubed
         convert: {
@@ -21,4 +21,3 @@ const converter = [
         },
     },
 ];
-export default converter;

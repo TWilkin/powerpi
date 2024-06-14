@@ -1,4 +1,4 @@
-const converter = [
+export const temperature = [
     {
         unit: "°C",
         convert: {
@@ -19,4 +19,3 @@ const converter = [
         },
     },
 ];
-export default converter;

@@ -1,6 +1,5 @@
 import { keysOf } from "../../util";
-import gas from "./gas";
-import temperature from "./temperature";
+import { gas, temperature } from "./converters";
 import { Converter, ConverterDefinition, UnitType, UnitValue } from "./types";
 
 export default class UnitConverter {
