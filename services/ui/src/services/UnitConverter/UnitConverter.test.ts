@@ -2,8 +2,6 @@ import UnitConverter from "./UnitConverter";
 import { UnitType, UnitValue } from "./types";
 
 describe("UnitConverter", () => {
-    const subject = new UnitConverter();
-
     describe("gas", () => {
         test("m3 -> kWh", () => check("gas", { value: 100, unit: "m3" }, "kWh", 1_079.45));
         test("m3 -> Wh", () => check("gas", { value: 100, unit: "m3" }, "Wh", 1.07945));
@@ -49,7 +47,7 @@ describe("UnitConverter", () => {
         expectedValue: number,
         expectedUnit: string = desiredUnit,
     ) {
-        const result = subject.convert(type, current, desiredUnit);
+        const result = UnitConverter.convert(type, current, desiredUnit);
 
         expect(result).not.toBeUndefined();
         expect(result.value).toBeCloseTo(expectedValue);

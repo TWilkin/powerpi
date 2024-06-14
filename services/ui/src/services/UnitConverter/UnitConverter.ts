@@ -10,7 +10,9 @@ export default class UnitConverter {
         volume,
     };
 
-    public convert(type: UnitType, value: UnitValue, desiredUnit: string): UnitValue {
+    private constructor() {}
+
+    public static convert(type: UnitType, value: UnitValue, desiredUnit: string): UnitValue {
         const convert = this.generateConversion(type, value.unit, desiredUnit);
 
         if (convert) {
@@ -22,7 +24,7 @@ export default class UnitConverter {
         return value;
     }
 
-    private generateConversion(
+    private static generateConversion(
         type: UnitType,
         currentUnit: string,
         desiredUnit: string,
