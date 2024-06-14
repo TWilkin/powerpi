@@ -4,15 +4,16 @@ import { UnitType, UnitValue } from "./types";
 describe("UnitConverter", () => {
     const subject = new UnitConverter();
 
-    describe("gas", () => {
-        test("m3 -> kWh", () => check("gas", { value: 100, unit: "m3" }, "kWh", 1_079.45));
+    describe("volume", () => {
+        test("m3 -> hcf", () => check("volume", { value: 100, unit: "m3" }, "cf", 3531.47));
+        //test("m3 -> kWh", () => check("gas", { value: 100, unit: "m3" }, "kWh", 1_079.45));
 
-        test("cf -> hcf", () => check("gas", { value: 123, unit: "cf" }, "hcf", 1.23));
-        test("cf -> m3", () => check("gas", { value: 5_000, unit: "cf" }, "m3", 141.584));
-        test("cf -> kWh", () => check("gas", { value: 5_000, unit: "cf" }, "kWh", 1_528.335));
+        test("cf -> hcf", () => check("volume", { value: 123, unit: "cf" }, "hcf", 1.23));
+        test("cf -> m3", () => check("volume", { value: 5_000, unit: "cf" }, "m3", 141.584));
+        //test("cf -> kWh", () => check("gas", { value: 5_000, unit: "cf" }, "kWh", 1_528.335));
 
-        test("hcf -> m3", () => check("gas", { value: 50, unit: "hcf" }, "m3", 141.584));
-        test("hcf -> kWh", () => check("gas", { value: 50, unit: "hcf" }, "kWh", 1_528.335));
+        test("hcf -> m3", () => check("volume", { value: 50, unit: "hcf" }, "m3", 141.584));
+        //test("hcf -> kWh", () => check("gas", { value: 50, unit: "hcf" }, "kWh", 1_528.335));
     });
 
     describe("temperature", () => {

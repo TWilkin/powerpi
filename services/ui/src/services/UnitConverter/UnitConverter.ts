@@ -1,11 +1,12 @@
 import { keysOf } from "../../util";
-import { gas, temperature } from "./converters";
+import { gas, temperature, volume } from "./converters";
 import { Converter, ConverterDefinition, UnitType, UnitValue } from "./types";
 
 export default class UnitConverter {
     private static readonly converters: { [key in UnitType]: ConverterDefinition[] } = {
         gas,
         temperature,
+        volume,
     };
 
     public convert(type: UnitType, value: UnitValue, desiredUnit: string): UnitValue {
