@@ -8,9 +8,7 @@ export type UnitValue = {
 type Converter = (value: number) => number;
 
 export default class UnitConverter {
-    private readonly converters = {
-        ...temperature,
-    };
+    private readonly converters = [...temperature];
 
     public convert(value: number, currentUnit: string, desiredUnit: string): UnitValue {
         const convert = this.generateConversion(currentUnit, desiredUnit);
