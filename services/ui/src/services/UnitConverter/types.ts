@@ -3,7 +3,7 @@ export type UnitValue = {
     unit: string;
 };
 
-export type UnitType = "temperature";
+export type UnitType = "temperature" | "gas";
 
 export type Converter = (value: number) => number;
 

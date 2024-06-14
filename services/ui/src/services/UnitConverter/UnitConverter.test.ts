@@ -4,15 +4,26 @@ import { UnitType, UnitValue } from "./types";
 describe("UnitConverter", () => {
     const subject = new UnitConverter();
 
+    describe("gas", () => {
+        test("m3 -> kWh", () => check("gas", { value: 100, unit: "m3" }, "kWh", 1_079.45));
+
+        test("cf -> hcf", () => check("gas", { value: 123, unit: "cf" }, "hcf", 1.23));
+        test("cf -> m3", () => check("gas", { value: 5_000, unit: "cf" }, "m3", 141.584));
+        test("cf -> kWh", () => check("gas", { value: 5_000, unit: "cf" }, "kWh", 1_528.335));
+
+        test("hcf -> m3", () => check("gas", { value: 50, unit: "hcf" }, "m3", 141.584));
+        test("hcf -> kWh", () => check("gas", { value: 50, unit: "hcf" }, "kWh", 1_528.335));
+    });
+
     describe("temperature", () => {
-        test("F -> K", () => check("temperature", { value: 100, unit: "F" }, "K", 310.928, "K"));
-        test("K -> F", () => check("temperature", { value: 100, unit: "K" }, "F", -279.67, "F"));
+        test("F -> K", () => check("temperature", { value: 100, unit: "F" }, "K", 310.928));
+        test("K -> F", () => check("temperature", { value: 100, unit: "K" }, "F", -279.67));
 
-        test("°C -> F", () => check("temperature", { value: 100, unit: "°C" }, "F", 212, "F"));
-        test("F -> °C", () => check("temperature", { value: 100, unit: "F" }, "°C", 37.7778, "°C"));
+        test("°C -> F", () => check("temperature", { value: 100, unit: "°C" }, "F", 212));
+        test("F -> °C", () => check("temperature", { value: 100, unit: "F" }, "°C", 37.7778));
 
-        test("°C -> K", () => check("temperature", { value: 100, unit: "°C" }, "K", 373.15, "K"));
-        test("K -> °C", () => check("temperature", { value: 100, unit: "K" }, "°C", -173.15, "°C"));
+        test("°C -> K", () => check("temperature", { value: 100, unit: "°C" }, "K", 373.15));
+        test("K -> °C", () => check("temperature", { value: 100, unit: "K" }, "°C", -173.15));
 
         test("F -> m", () => check("temperature", { value: 100, unit: "F" }, "m", 100, "F"));
     });
@@ -22,7 +33,7 @@ describe("UnitConverter", () => {
         current: UnitValue,
         desiredUnit: string,
         expectedValue: number,
-        expectedUnit: string,
+        expectedUnit: string = desiredUnit,
     ) {
         const result = subject.convert(type, current, desiredUnit);
 
