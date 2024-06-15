@@ -3,10 +3,9 @@ import { DateTime } from "luxon";
 import { useCallback, useMemo } from "react";
 import { isMobile } from "react-device-detect";
 import useOrientation from "../../../hooks/orientation";
-import useUserSettings, { UserSettings } from "../../../hooks/useUserSettings";
-import UnitConverter, { UnitType } from "../../../services/UnitConverter";
 import { getFormattedUnit, getFormattedValue } from "../FormattedValue";
 import useChartColours from "./useChartColours";
+import useDatasetConversion from "./useDatasetConversion";
 import { Dataset } from "./useHistoryDatasets";
 
 type DatasetChartScale = {
@@ -38,12 +37,7 @@ type DateFormat = {
 };
 
 export default function useChart(datasets?: Dataset[]) {
-    const settings = useUserSettings();
-
-    const convertedDatasets = useMemo(
-        () => datasets?.map((dataset) => convertDatasetUnits(dataset, settings)),
-        [datasets, settings],
-    );
+    const convertedDatasets = useDatasetConversion(datasets);
 
     const { isLandscape } = useOrientation();
 
@@ -322,33 +316,4 @@ function useTimeTick() {
         },
         [formats, getPreviousTickDate, maxTicks],
     );
-}
-
-function convertDatasetUnits(dataset: Dataset, settings: UserSettings) {
-    if (dataset.action && dataset.unit) {
-        const unitTypes = [dataset.action, dataset.entity] as UnitType[];
-
-        for (const unitType of unitTypes) {
-            const userSelectedUnit = settings.units[unitType];
-
-            if (userSelectedUnit && userSelectedUnit !== dataset.unit) {
-                const data = dataset.data.map((data) => ({
-                    ...data,
-                    value: UnitConverter.convert(
-                        unitType,
-                        { value: data.value, unit: dataset.unit! },
-                        userSelectedUnit,
-                    ).value,
-                }));
-
-                return {
-                    ...dataset,
-                    unit: userSelectedUnit,
-                    data,
-                };
-            }
-        }
-    }
-
-    return dataset;
 }

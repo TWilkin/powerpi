@@ -24,7 +24,7 @@ export default class UnitConverter {
         return value;
     }
 
-    private static generateConversion(
+    public static generateConversion(
         type: UnitType,
         currentUnit: string,
         desiredUnit: string,
