@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import useUserSettings, { UserSettings } from "../../../hooks/useUserSettings";
+import useUserSettings, { UserSettings } from "../../../hooks/UserSettings";
 import UnitConverter, { UnitType } from "../../../services/UnitConverter";
 import { Dataset } from "./useHistoryDatasets";
 

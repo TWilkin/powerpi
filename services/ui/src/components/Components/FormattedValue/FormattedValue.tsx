@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import useUserSettings from "../../../hooks/useUserSettings";
+import useUserSettings from "../../../hooks/UserSettings";
 import UnitConverter, { UnitType } from "../../../services/UnitConverter";
 
 type FormattedValueProps = {
