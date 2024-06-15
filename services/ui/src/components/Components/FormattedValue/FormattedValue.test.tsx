@@ -26,6 +26,12 @@ describe("FormattedValue", () => {
 
         expect(screen.getByText("294.15 K")).toBeInTheDocument();
     });
+
+    test("rounding", () => {
+        render(<FormattedValue type="temperature" value={1.2345} unit="m" />);
+
+        expect(screen.getByText("1.235 m")).toBeInTheDocument();
+    });
 });
 
 describe("getFormattedValue", () => {

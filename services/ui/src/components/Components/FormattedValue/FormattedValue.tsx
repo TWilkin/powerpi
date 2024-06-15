@@ -43,11 +43,14 @@ export function getFormattedValue(value: number | undefined, unit: string | unde
         return undefined;
     }
 
+    // does the value need rounding
+    const rounded = value.toLocaleString();
+
     if (unit === "%") {
-        return `${value}%`;
+        return `${rounded}%`;
     }
 
-    return `${value} ${getFormattedUnit(unit)}`;
+    return `${rounded} ${getFormattedUnit(unit)}`;
 }
 
 export function getFormattedUnit(unit: string | undefined) {
