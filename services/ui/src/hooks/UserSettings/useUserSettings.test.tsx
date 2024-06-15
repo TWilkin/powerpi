@@ -1,11 +1,15 @@
 import { renderHook } from "@testing-library/react";
-import useUserSettings, { defaultSettings } from "./useUserSettings";
+import { UserSettingsContextProvider } from "./UserSettingsContext";
+import { defaultSettings } from "./defaults";
+import useUserSettings from "./useUserSettings";
 
 jest.spyOn(Storage.prototype, "getItem");
 
 describe("useUserSettings", () => {
     test("nothing stored", () => {
-        const { result } = renderHook(useUserSettings);
+        Storage.prototype.getItem = () => null;
+
+        const { result } = renderHook(useUserSettings, { wrapper: UserSettingsContextProvider });
 
         expect(result.current).toBe(defaultSettings);
     });
@@ -19,7 +23,7 @@ describe("useUserSettings", () => {
 
         Storage.prototype.getItem = () => JSON.stringify(settings);
 
-        const { result } = renderHook(useUserSettings);
+        const { result } = renderHook(useUserSettings, { wrapper: UserSettingsContextProvider });
 
         expect(result.current).not.toBe(defaultSettings);
         expect(result.current.units["gas"]).toBe("kWh");
