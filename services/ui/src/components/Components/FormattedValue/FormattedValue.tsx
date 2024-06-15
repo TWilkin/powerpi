@@ -43,13 +43,11 @@ export function getFormattedValue(value: number | undefined, unit: string | unde
         return undefined;
     }
 
-    switch (unit.toLowerCase()) {
-        case "%":
-            return `${value}%`;
-
-        default:
-            return `${value} ${getFormattedUnit(unit)}`;
+    if (unit === "%") {
+        return `${value}%`;
     }
+
+    return `${value} ${getFormattedUnit(unit)}`;
 }
 
 export function getFormattedUnit(unit: string | undefined) {
@@ -57,11 +55,9 @@ export function getFormattedUnit(unit: string | undefined) {
         return "";
     }
 
-    switch (unit.toLowerCase()) {
-        case "m3":
-            return "m\u00B3";
-
-        default:
-            return unit;
+    if (unit === "m3") {
+        return "m\u00B3";
     }
+
+    return unit;
 }
