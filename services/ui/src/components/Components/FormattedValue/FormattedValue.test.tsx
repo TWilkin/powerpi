@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import FormattedValue, { getFormattedUnit, getFormattedValue } from "./FormattedValue";
 
-jest.mock("../../../hooks/useUserSettings", () => () => ({
+jest.mock("../../../hooks/UserSettings", () => () => ({
     units: {
         gas: "m3",
         temperature: "K",

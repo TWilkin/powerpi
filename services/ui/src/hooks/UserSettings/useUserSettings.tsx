@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { UserSettings } from "./types";
 
-const defaultSettings: UserSettings = {
+export const defaultSettings: UserSettings = {
     units: {
         gas: "m3",
         temperature: "°C",
