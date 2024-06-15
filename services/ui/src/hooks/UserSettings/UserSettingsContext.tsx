@@ -1,4 +1,5 @@
 import { PropsWithChildren, createContext, useEffect, useMemo, useReducer } from "react";
+import { isEqual } from "underscore";
 import { defaultSettings } from "./defaults";
 import { UpdateUserSettingsAction, UserSettings, UserSettingsContextType } from "./types";
 
@@ -16,10 +17,13 @@ export const UserSettingsContextProvider = ({ children }: UserSettingsContextPro
     const context = useMemo(() => ({ settings, dispatch: settingsDispatch }), [settings]);
 
     // save the settings when it's changed
-    useEffect(
-        () => localStorage.setItem(userSettingsStorageKey, JSON.stringify(settings)),
-        [settings],
-    );
+    useEffect(() => {
+        if (isEqual(settings, defaultSettings)) {
+            localStorage.setItem(userSettingsStorageKey, JSON.stringify(settings));
+        } else {
+            localStorage.removeItem(userSettingsStorageKey);
+        }
+    }, [settings]);
 
     return <UserSettingsContext.Provider value={context}>{children}</UserSettingsContext.Provider>;
 };
@@ -35,7 +39,7 @@ function reducer(state: UserSettings, action: UpdateUserSettingsAction) {
         };
     }
 
-    return state;
+    throw new Error("Unknown action");
 }
 
 function initialiser() {
