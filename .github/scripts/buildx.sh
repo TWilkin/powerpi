@@ -16,7 +16,7 @@ get_old_version() {
 
     curl $url --output $path
 
-    appVersion=`yq .appVersion $path`
+    appVersion=`yq --raw-output .appVersion $path`
 
     rm $path
 }
@@ -24,7 +24,7 @@ get_old_version() {
 get_version() {
     local path=$scriptPath/../../kubernetes/charts/$1/Chart.yaml
 
-    appVersion=`yq .appVersion $path`
+    appVersion=`yq --raw-output .appVersion $path`
 }
 
 if [ $# -ne 2 ]
@@ -55,20 +55,21 @@ then
     path=controllers/${split[0]}
 fi
 
-
 # retrieve the previous image
-echo "Pulling previous image"
-docker pull twilkin/$name:$oldVersion
+image=twilkin/$name:$oldVersion
+echo "Pulling previous image $image"
+docker pull $image
 echo
 
 # attempt to retrieve the new image, in case it's an update
-echo "Pulling current image"
-docker pull $repo/$name:$version
+image=$repo/$name:$version
+echo "Pulling current image $image"
+docker pull $image
 echo
 
 # build the image
 echo "Building image $name:$version"
-docker buildx build --load --platform $platform -t $repo/$name:$version -t twilkin/$name:$version -f $powerpiPath/$path/Dockerfile $powerpiPath
+docker buildx build --load --platform $platform -t $image -t twilkin/$name:$version -f $powerpiPath/$path/Dockerfile $powerpiPath
 echo
 
 echo "Pushing image $name:$version"
