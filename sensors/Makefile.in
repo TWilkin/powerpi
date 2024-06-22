@@ -5,7 +5,6 @@ TARGET_DIR=$(CURDIR)/bin
 LIB_DIR=$(CURDIR)/lib
 
 # variables for tools
-ARDUINO_PATH=@ARDUINO_PATH@
 SERIAL_PORT?=/dev/ttyUSB0
 
 # versions of libraries
@@ -66,33 +65,27 @@ $(LIB_DIR)/cert.pem:
 	wget -O $@ https://letsencrypt.org/certs/lets-encrypt-r3.pem
 
 # Generate certificate header
-src/cert.h: $(LIB_DIR)/cert.pem
-	cp src/cert.h.in $@
+powerpi-sensor/cert.h: $(LIB_DIR)/cert.pem
+	cp powerpi-sensor/cert.h.in $@
 	sed -i -e '/@CERT@/{r $<' -e 'd}' $@
 
 # compile the sketch
-$(TARGET_DIR)/$(SKETCH).bin: src/$(SKETCH) common_libraries dht22_libaries src/cert.h
+$(TARGET_DIR)/$(SKETCH).bin: powerpi-sensor/$(SKETCH) common_libraries dht22_libaries powerpi-sensor/cert.h
 	mkdir -p $(TARGET_DIR)
-	$(ARDUINO_PATH)/arduino-builder \
-		-compile \
-		-hardware "$(ARDUINO_PATH)/hardware" \
-		-tools "$(ARDUINO_PATH)/tools-builder" \
-		-tools "$(ARDUINO_PATH)/hardware/tools/avr" \
-		-built-in-libraries "$(ARDUINO_PATH)/libraries" \
-		-fqbn=esp8266com:esp8266:generic \
-		-libraries "$(LIB_DIR)" \
-		-build-path "$(TARGET_DIR)" \
+	arduino-cli compile \
+		--fqbn esp8266:esp8266:generic \
+		--libraries "$(LIB_DIR)" \
+		--build-path "$(TARGET_DIR)" \
 		$<
 
 compile: $(TARGET_DIR)/$(SKETCH).bin
 
 # deploy the binary to the device
 flash: $(TARGET_DIR)/$(SKETCH).bin
-	$(ARDUINO_PATH)/hardware/esp8266com/esp8266/tools/upload.py \
+	arduino-cli upload \
 		--port $(SERIAL_PORT) \
-		write_flash \
-		0x00000 \
-		$<
+		--fqbn esp8266:esp8266:generic \
+		--input-dir $(TARGET_DIR)
 
 monitor:
 	screen $(SERIAL_PORT) @serial_baud@

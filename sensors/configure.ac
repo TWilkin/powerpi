@@ -87,26 +87,16 @@ AC_ARG_ENABLE(
 )
 AC_SUBST([enable_button])
 
-dnl Find the Arduino IDE
-AC_CHECK_PROG([ARDUINO], [arduino], $(whereis arduino -b | cut -d':' -f 2), [no])
-if test "$ARDUINO" == "no"
+dnl Check for the Arduino CLI tool
+AC_CHECK_PROG([ARDUINO_CLI], [arduino-cli], [yes], [no])
+if test "$ARDUINO_CLI" == "no"
 then
-    AC_MSG_ERROR([Required program "arduino" not found.])
+    AC_MSG_ERROR([Required program "arduino-cli" not found.])
 else
-    ARDUINO_PATH=$(dirname "${ARDUINO}")
-    AC_SUBST([ARDUINO_PATH])
-fi
-
-dnl Check for the Arduino builder tool
-AC_CHECK_PROG([ARDUINO_BUILDER], [arduino-builder], [yes], [no])
-if test "$ARDUINO_BUILDER" == "no"
-then
-    AC_MSG_ERROR([Required program "arduino-builder" not found.])
-else
-    arduino-builder -version
+    arduino-cli version
 fi
 
 dnl Generate the Makefile and config.h
-AC_CONFIG_FILES([Makefile src/config.h])
+AC_CONFIG_FILES([Makefile powerpi-sensor/config.h])
 
 AC_OUTPUT

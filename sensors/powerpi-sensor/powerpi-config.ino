@@ -39,7 +39,7 @@ void setupPowerPiConfig() {
 }
 
 void useDefaultConfig() {
-    // we have to intiailise with the default values
+    // we have to initialise with the default values
     Serial.println();
     configureGeneral(POLL_DELAY);
 
