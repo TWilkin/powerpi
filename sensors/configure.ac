@@ -87,6 +87,15 @@ AC_ARG_ENABLE(
 )
 AC_SUBST([enable_button])
 
+dnl Check for the Arduino CLI tool
+AC_CHECK_PROG([ARDUINO_CLI], [arduino-cli], [yes], [no])
+if test "$ARDUINO_CLI" == "no"
+then
+    AC_MSG_ERROR([Required program "arduino-cli" not found.])
+else
+    arduino-cli version
+fi
+
 dnl Generate the Makefile and config.h
 AC_CONFIG_FILES([Makefile powerpi-sensor/config.h])
 
