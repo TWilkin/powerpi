@@ -87,8 +87,6 @@ AC_ARG_ENABLE(
 )
 AC_SUBST([enable_button])
 
-
-
 dnl Generate the Makefile and config.h
 AC_CONFIG_FILES([Makefile powerpi-sensor/config.h])
 

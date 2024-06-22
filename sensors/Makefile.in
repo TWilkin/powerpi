@@ -85,7 +85,7 @@ flash: $(TARGET_DIR)/$(SKETCH).bin
 	arduino-cli upload \
 		--port $(SERIAL_PORT) \
 		--fqbn esp8266:esp8266:generic \
-		$<
+		--input-dir $(TARGET_DIR)
 
 monitor:
 	screen $(SERIAL_PORT) @serial_baud@
