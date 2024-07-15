@@ -35,6 +35,10 @@
             left: 0;
             width: 30px;
             height: $label-height;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
             outline: none;
             @include colours.colour("background-color", "button");

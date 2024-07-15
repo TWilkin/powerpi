@@ -1,3 +1,5 @@
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { HTMLAttributes, PropsWithChildren, ReactNode, useCallback, useRef, useState } from "react";
 import useOnClickOutside from "../../../hooks/useOnClickOutside";
@@ -5,6 +7,7 @@ import styles from "./FilterDrawer.module.scss";
 
 type Filter = {
     id: string;
+    icon: IconProp;
     content: ReactNode;
 };
 
@@ -41,16 +44,17 @@ const FilterDrawer = ({ className, filters, ...props }: FilterDrawerProps) => {
 
     return (
         <div {...props} className={classNames(className, styles.drawer)}>
-            {filters.map((filter) => (
+            {filters.map(({ id, icon, content }) => (
                 <Drawer
-                    key={filter.id}
-                    id={filter.id}
-                    open={filter.id === openDrawer}
+                    key={id}
+                    id={id}
+                    icon={icon}
+                    open={id === openDrawer}
                     allClosed={openDrawer === undefined}
                     onLabelClick={toggleDrawer}
                     onCloseClick={closeDrawer}
                 >
-                    {filter.content}
+                    {content}
                 </Drawer>
             ))}
         </div>
@@ -61,6 +65,8 @@ export default FilterDrawer;
 type DrawerProps = PropsWithChildren<{
     id: string;
 
+    icon: IconProp;
+
     open: boolean;
 
     allClosed: boolean;
@@ -70,7 +76,15 @@ type DrawerProps = PropsWithChildren<{
     onCloseClick: (id: string) => void;
 }>;
 
-const Drawer = ({ id, open, allClosed, children, onLabelClick, onCloseClick }: DrawerProps) => {
+const Drawer = ({
+    id,
+    icon,
+    open,
+    allClosed,
+    children,
+    onLabelClick,
+    onCloseClick,
+}: DrawerProps) => {
     const ref = useRef<HTMLDivElement>(null);
 
     const toggleDrawer = useCallback(() => onLabelClick(id), [id, onLabelClick]);
@@ -92,6 +106,7 @@ const Drawer = ({ id, open, allClosed, children, onLabelClick, onCloseClick }: D
             </div>
 
             <button className={styles.label} onClick={toggleDrawer}>
+                <FontAwesomeIcon icon={icon} />
                 {id}
             </button>
         </div>
