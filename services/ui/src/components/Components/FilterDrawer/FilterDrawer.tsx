@@ -1,13 +1,5 @@
 import classNames from "classnames";
-import {
-    Dispatch,
-    HTMLAttributes,
-    PropsWithChildren,
-    ReactNode,
-    SetStateAction,
-    useCallback,
-    useState,
-} from "react";
+import { HTMLAttributes, PropsWithChildren, ReactNode, useCallback, useState } from "react";
 import styles from "./FilterDrawer.module.scss";
 
 type Filter = {
@@ -22,6 +14,18 @@ type FilterDrawerProps = {
 const FilterDrawer = ({ className, filters, ...props }: FilterDrawerProps) => {
     const [openDrawer, setOpenDrawer] = useState<string | undefined>(undefined);
 
+    const toggleDrawer = useCallback(
+        (id: string) =>
+            setOpenDrawer((current) => {
+                if (current === id) {
+                    return undefined;
+                }
+
+                return id;
+            }),
+        [],
+    );
+
     return (
         <div {...props} className={classNames(className, styles.drawer)}>
             {filters.map((filter) => (
@@ -30,7 +34,7 @@ const FilterDrawer = ({ className, filters, ...props }: FilterDrawerProps) => {
                     id={filter.id}
                     open={filter.id === openDrawer}
                     allClosed={openDrawer === undefined}
-                    onDrawerClick={setOpenDrawer}
+                    onLabelClick={toggleDrawer}
                 >
                     {filter.content}
                 </Drawer>
@@ -47,21 +51,11 @@ type DrawerProps = PropsWithChildren<{
 
     allClosed: boolean;
 
-    onDrawerClick: Dispatch<SetStateAction<string | undefined>>;
+    onLabelClick: (id: string) => void;
 }>;
 
-const Drawer = ({ id, open, allClosed, children, onDrawerClick }: DrawerProps) => {
-    const toggleDrawer = useCallback(
-        () =>
-            onDrawerClick((current) => {
-                if (current === id) {
-                    return undefined;
-                }
-
-                return id;
-            }),
-        [id, onDrawerClick],
-    );
+const Drawer = ({ id, open, allClosed, children, onLabelClick }: DrawerProps) => {
+    const toggleDrawer = useCallback(() => onLabelClick(id), [id, onLabelClick]);
 
     return (
         <div className={styles.filter}>
