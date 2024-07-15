@@ -1,3 +1,4 @@
+import { chain as _ } from "underscore";
 import { keysOf } from "../../util";
 import { gas, power, temperature, volume } from "./converters";
 import { Converter, ConverterDefinition, UnitType, UnitValue } from "./types";
@@ -13,7 +14,11 @@ export default class UnitConverter {
     private constructor() {}
 
     public static getConverters(type: UnitType) {
-        return this.converters[type];
+        return _(this.converters[type])
+            .map(({ unit }) => unit)
+            .unique()
+            .sortBy((unit) => unit.toLocaleLowerCase())
+            .value();
     }
 
     public static convert(type: UnitType, value: UnitValue, desiredUnit: string): UnitValue {

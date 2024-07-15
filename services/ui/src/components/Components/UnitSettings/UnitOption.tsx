@@ -1,5 +1,4 @@
 import { ChangeEvent, useCallback, useMemo } from "react";
-import { chain as _ } from "underscore";
 import useSetUserSettings from "../../../hooks/UserSettings/useSetUserSettings";
 import UnitConverter, { UnitType } from "../../../services/UnitConverter";
 import FilterGroup from "../FilterGroup";
@@ -13,15 +12,7 @@ type UnitOption = {
 const UnitOption = ({ type, currentUnit }: UnitOption) => {
     const dispatch = useSetUserSettings();
 
-    const options = useMemo(
-        () =>
-            _(UnitConverter.getConverters(type))
-                .map((unit) => unit.unit)
-                .unique()
-                .sortBy((unit) => unit.toLocaleLowerCase())
-                .value(),
-        [type],
-    );
+    const options = useMemo(() => UnitConverter.getConverters(type), [type]);
 
     const onUnitChange = useCallback(
         (event: ChangeEvent<HTMLSelectElement>) => {
