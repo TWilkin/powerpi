@@ -9,6 +9,7 @@ export type Converter = (value: number) => number;
 
 export type ConverterDefinition = {
     unit: string;
+    name: string;
     convert: {
         [key in string]?: Converter;
     };

@@ -15,9 +15,8 @@ export default class UnitConverter {
 
     public static getConverters(type: UnitType) {
         return _(this.converters[type])
-            .map(({ unit }) => unit)
-            .unique()
-            .sortBy((unit) => unit.toLocaleLowerCase())
+            .unique((unit) => unit.unit)
+            .sortBy((unit) => unit.name.toLocaleLowerCase())
             .value();
     }
 
