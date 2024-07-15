@@ -1,5 +1,6 @@
 import classNames from "classnames";
-import { HTMLAttributes, PropsWithChildren, ReactNode, useCallback, useState } from "react";
+import { HTMLAttributes, PropsWithChildren, ReactNode, useCallback, useRef, useState } from "react";
+import useOnClickOutside from "../../../hooks/useOnClickOutside";
 import styles from "./FilterDrawer.module.scss";
 
 type Filter = {
@@ -26,6 +27,18 @@ const FilterDrawer = ({ className, filters, ...props }: FilterDrawerProps) => {
         [],
     );
 
+    const closeDrawer = useCallback(
+        (id: string) =>
+            setOpenDrawer((current) => {
+                if (current === id) {
+                    return undefined;
+                }
+
+                return current;
+            }),
+        [],
+    );
+
     return (
         <div {...props} className={classNames(className, styles.drawer)}>
             {filters.map((filter) => (
@@ -35,6 +48,7 @@ const FilterDrawer = ({ className, filters, ...props }: FilterDrawerProps) => {
                     open={filter.id === openDrawer}
                     allClosed={openDrawer === undefined}
                     onLabelClick={toggleDrawer}
+                    onCloseClick={closeDrawer}
                 >
                     {filter.content}
                 </Drawer>
@@ -52,13 +66,21 @@ type DrawerProps = PropsWithChildren<{
     allClosed: boolean;
 
     onLabelClick: (id: string) => void;
+
+    onCloseClick: (id: string) => void;
 }>;
 
-const Drawer = ({ id, open, allClosed, children, onLabelClick }: DrawerProps) => {
+const Drawer = ({ id, open, allClosed, children, onLabelClick, onCloseClick }: DrawerProps) => {
+    const ref = useRef<HTMLDivElement>(null);
+
     const toggleDrawer = useCallback(() => onLabelClick(id), [id, onLabelClick]);
 
+    const closeDrawer = useCallback(() => onCloseClick(id), [id, onCloseClick]);
+
+    useOnClickOutside(ref, closeDrawer);
+
     return (
-        <div className={styles.filter}>
+        <div className={styles.filter} ref={ref}>
             <div
                 className={classNames(styles.content, {
                     [styles.open]: open,
