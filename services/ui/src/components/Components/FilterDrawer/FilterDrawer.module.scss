@@ -20,29 +20,35 @@
 
         .content {
             width: 0;
+            height: 100%;
             overflow: hidden;
             white-space: nowrap;
             transition: 0.8s ease width;
+            @include colours.colour("border-color", "border");
 
             &.open {
                 width: $drawer-width;
+                border: 1px solid;
             }
         }
 
         .label {
             position: absolute;
-            top: 0;
+            top: 0.5rem;
             left: 0;
-            width: 30px;
+            width: 24px;
             height: $label-height;
             display: flex;
             gap: 0.5rem;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
-            outline: none;
             @include colours.colour("background-color", "button");
             @include colours.colour("color", "text");
+            outline: none;
+            border: 1px solid;
+            border-left: 0;
+            @include colours.colour("border-color", "border");
+            cursor: pointer;
             writing-mode: vertical-lr;
             text-orientation: sideways;
             border-top-right-radius: 10px;
@@ -60,7 +66,7 @@
 
         &:nth-child(2) {
             .label {
-                top: $label-height;
+                top: calc(#{$label-height} + 0.5rem * 2);
             }
         }
     }
