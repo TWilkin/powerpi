@@ -1,4 +1,6 @@
-import { ChangeEvent } from "react";
+import { faFilterCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { ChangeEventHandler, MouseEventHandler } from "react";
+import Button from "../Components/Button";
 import DeviceIcon from "../Components/DeviceIcon";
 import FilterGroup from "../Components/FilterGroup";
 import ListFilter, { IListFilter } from "../Components/ListFilter";
@@ -9,10 +11,11 @@ interface DeviceFilterProps {
     types: IListFilter[];
     locations: IListFilter[];
     categories: IListFilter[];
-    onTypeChange: (event: ChangeEvent<HTMLInputElement>) => void;
-    onLocationChange: (event: ChangeEvent<HTMLInputElement>) => void;
-    onCategoryChange: (event: ChangeEvent<HTMLInputElement>) => void;
+    onTypeChange: ChangeEventHandler<HTMLInputElement>;
+    onLocationChange: ChangeEventHandler<HTMLInputElement>;
+    onCategoryChange: ChangeEventHandler<HTMLInputElement>;
     onVisibleChange: () => void;
+    onClear: MouseEventHandler<HTMLButtonElement>;
 }
 
 const DeviceFilter = ({
@@ -24,6 +27,7 @@ const DeviceFilter = ({
     onLocationChange,
     onCategoryChange,
     onVisibleChange,
+    onClear,
 }: DeviceFilterProps) => {
     return (
         <div>
@@ -62,6 +66,8 @@ const DeviceFilter = ({
                     only show visible devices
                 </label>
             </FilterGroup>
+
+            <Button text="Clear" icon={faFilterCircleXmark} onClick={onClear} />
         </div>
     );
 };

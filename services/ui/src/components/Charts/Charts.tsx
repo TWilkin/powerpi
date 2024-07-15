@@ -42,6 +42,7 @@ const Charts = () => {
                                 onStartDateFilterChange={onStartDateFilterChange}
                                 onEndDateFilterChange={onEndDateFilterChange}
                                 onMessageTypeFilterChange={onMessageTypeFilterChange}
+                                onClear={onClear}
                             />
                         ),
                     },

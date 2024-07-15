@@ -113,6 +113,7 @@ const HistoryList = () => {
                                 onStartDateFilterChange={onStartDateFilterChange}
                                 onEndDateFilterChange={onEndDateFilterChange}
                                 onMessageTypeFilterChange={onMessageTypeFilterChange}
+                                onClear={onClear}
                             />
                         ),
                     },

@@ -157,6 +157,7 @@ const DeviceList = () => {
                                 onLocationChange={onLocationChange}
                                 onCategoryChange={onCategoryChange}
                                 onVisibleChange={onVisibleChange}
+                                onClear={onClear}
                             />
                         ),
                     },
