@@ -1,0 +1,63 @@
+@use "../../../styles/colours";
+@use "../../../styles/vars";
+
+.drawer {
+    $drawer-width: 250px;
+    $label-height: 200px;
+
+    position: absolute;
+    top: calc(#{vars.$menu-height} + 1px);
+    left: 0;
+
+    .filter {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        flex-direction: row;
+        @include colours.colour("background-color", "filter-background");
+        @include colours.colour("color", "filter-text");
+
+        .content {
+            width: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            transition: 0.8s ease width;
+
+            &.open {
+                width: $drawer-width;
+            }
+        }
+
+        .label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 30px;
+            height: $label-height;
+            cursor: pointer;
+            outline: none;
+            @include colours.colour("background-color", "button");
+            @include colours.colour("color", "text");
+            writing-mode: vertical-lr;
+            text-orientation: sideways;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            transition: 0.8s ease left;
+        }
+
+        .content.open + .label {
+            left: $drawer-width;
+        }
+
+        .content.closed:not(.all-closed) + .label {
+            left: -#{$drawer-width};
+        }
+
+        &:nth-child(2) {
+            .label {
+                top: $label-height;
+            }
+        }
+    }
+}
