@@ -1,8 +1,11 @@
+import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { Floorplan as IFloorplan, Sensor } from "@powerpi/common-api";
 import { useMemo } from "react";
 import useGetSensors from "../../hooks/useGetSensors";
+import FilterDrawer from "../Components/FilterDrawer";
 import Loading from "../Components/Loading";
 import Menu from "../Components/Menu";
+import UnitSettings from "../Components/UnitSettings";
 import Floorplan from "./Floorplan";
 import Tooltip from "./Tooltip";
 
@@ -55,6 +58,16 @@ const Home = ({ floorplan }: HomeProps) => {
 
                 {floorplan && <Floorplan floorplan={floorplan} />}
             </Loading>
+
+            <FilterDrawer
+                filters={[
+                    {
+                        id: "Settings",
+                        icon: faCog,
+                        content: <UnitSettings />,
+                    },
+                ]}
+            />
         </div>
     );
 };

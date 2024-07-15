@@ -6,7 +6,7 @@
     $label-height: 200px;
 
     position: absolute;
-    top: calc(#{vars.$menu-height} + 1px);
+    top: vars.$menu-height;
     left: 0;
 
     .filter {
@@ -21,6 +21,7 @@
         .content {
             width: 0;
             height: 100%;
+            min-height: calc(100vh - 2px - #{vars.$menu-height});
             overflow: hidden;
             white-space: nowrap;
             transition: 0.8s ease width;

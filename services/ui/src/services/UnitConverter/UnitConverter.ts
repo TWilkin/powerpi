@@ -12,6 +12,10 @@ export default class UnitConverter {
 
     private constructor() {}
 
+    public static getConverters(type: UnitType) {
+        return this.converters[type];
+    }
+
     public static convert(type: UnitType, value: UnitValue, desiredUnit: string): UnitValue {
         const convert = this.generateConversion(type, value.unit, desiredUnit);
 
