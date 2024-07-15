@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 as build-api-image
+FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 AS build-api-image
 LABEL description="Node.js builder for API library"
 
 # install the API library
@@ -10,7 +10,7 @@ RUN yarn workspace @powerpi/common-api install --frozen-lockfile
 COPY common/node/common-api ./common/node/common-api/
 RUN yarn workspace @powerpi/common-api build
 
-FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 as build-ui-image
+FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 AS build-ui-image
 LABEL description="Node.js builder for UI"
 
 # install the UI
