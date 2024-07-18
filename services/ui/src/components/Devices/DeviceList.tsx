@@ -1,4 +1,4 @@
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash, faSliders } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { Fragment, useMemo } from "react";
@@ -10,7 +10,7 @@ import AbbreviatingTime from "../Components/AbbreviatingTime";
 import BatteryIcon from "../Components/BatteryIcon";
 import CapabilityDialog from "../Components/CapabilityDialog";
 import DevicePowerButton from "../Components/DevicePowerButton";
-import Filter from "../Components/Filter";
+import FilterDrawer from "../Components/FilterDrawer";
 import HistoryLink from "../Components/HistoryLink";
 import List from "../Components/List";
 import Loading from "../Components/Loading";
@@ -50,19 +50,6 @@ const DeviceList = () => {
 
     return (
         <>
-            <Filter onClear={onClear}>
-                <DeviceFilter
-                    filters={filters}
-                    types={types}
-                    locations={locations}
-                    categories={categories}
-                    onTypeChange={onTypeChange}
-                    onLocationChange={onLocationChange}
-                    onCategoryChange={onCategoryChange}
-                    onVisibleChange={onVisibleChange}
-                />
-            </Filter>
-
             <div className={styles.list}>
                 <Loading loading={isDevicesLoading}>
                     <List>
@@ -154,6 +141,28 @@ const DeviceList = () => {
                     </List>
                 </Loading>
             </div>
+
+            <FilterDrawer
+                filters={[
+                    {
+                        id: "Filters",
+                        icon: faSliders,
+                        content: (
+                            <DeviceFilter
+                                filters={filters}
+                                types={types}
+                                locations={locations}
+                                categories={categories}
+                                onTypeChange={onTypeChange}
+                                onLocationChange={onLocationChange}
+                                onCategoryChange={onCategoryChange}
+                                onVisibleChange={onVisibleChange}
+                                onClear={onClear}
+                            />
+                        ),
+                    },
+                ]}
+            />
         </>
     );
 };

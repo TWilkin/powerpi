@@ -55,7 +55,11 @@ const Tooltip = ({ title, location, floor, sensors }: TooltipProps) => {
 
                         <p className={styles.state}>
                             {sensor.value !== undefined && sensor.unit ? (
-                                <FormattedValue value={sensor.value} unit={sensor.unit} />
+                                <FormattedValue
+                                    type={sensor.type}
+                                    value={sensor.value}
+                                    unit={sensor.unit}
+                                />
                             ) : (
                                 sensor.state
                             )}

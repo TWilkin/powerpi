@@ -1,4 +1,7 @@
+import { faFilterCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { MouseEventHandler } from "react";
 import { useGetHistoryFilters } from "../../hooks/history";
+import Button from "../Components/Button";
 import DateFilter from "../Components/DateFilter";
 import FilterGroup from "../Components/FilterGroup";
 import MessageTypeFilter, { MessageFilterType } from "../Components/MessageTypeFilter";
@@ -9,6 +12,7 @@ interface HistoryFilterProps {
     onStartDateFilterChange: (value: Date | null | undefined) => void;
     onEndDateFilterChange: (value: Date | null | undefined) => void;
     onMessageTypeFilterChange: (type: MessageFilterType, value: string) => void;
+    onClear: MouseEventHandler<HTMLButtonElement>;
 }
 
 const HistoryFilter = ({
@@ -16,6 +20,7 @@ const HistoryFilter = ({
     onStartDateFilterChange,
     onEndDateFilterChange,
     onMessageTypeFilterChange,
+    onClear,
 }: HistoryFilterProps) => {
     const { actions, entities, types } = useGetHistoryFilters();
 
@@ -62,6 +67,8 @@ const HistoryFilter = ({
                     error={actions.isError}
                 />
             </FilterGroup>
+
+            <Button text="Clear" icon={faFilterCircleXmark} onClick={onClear} />
         </>
     );
 };

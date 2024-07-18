@@ -5,6 +5,7 @@ import { isMobile } from "react-device-detect";
 import useOrientation from "../../../hooks/orientation";
 import { getFormattedUnit, getFormattedValue } from "../FormattedValue";
 import useChartColours from "./useChartColours";
+import useDatasetConversion from "./useDatasetConversion";
 import { Dataset } from "./useHistoryDatasets";
 
 type DatasetChartScale = {
@@ -36,6 +37,8 @@ type DateFormat = {
 };
 
 export default function useChart(datasets?: Dataset[]) {
+    const convertedDatasets = useDatasetConversion(datasets);
+
     const { isLandscape } = useOrientation();
 
     const { textColour, lineColour, tooltipColour, lineColours } = useChartColours();
@@ -51,8 +54,10 @@ export default function useChart(datasets?: Dataset[]) {
             animation: {
                 // disable the animations for large datasets
                 duration:
-                    (datasets?.reduce((total, dataset) => total + dataset.data.length, 0) ?? 0) >
-                    (isMobile ? 2_000 : 10_000)
+                    (convertedDatasets?.reduce(
+                        (total, dataset) => total + dataset.data.length,
+                        0,
+                    ) ?? 0) > (isMobile ? 2_000 : 10_000)
                         ? 0
                         : 1 * 1000, // 1s
             },
@@ -74,8 +79,11 @@ export default function useChart(datasets?: Dataset[]) {
                         label: (context) => {
                             const value = isLandscape ? context.parsed.y : context.parsed.x;
                             const formatted =
-                                datasets && datasets[context.datasetIndex].unit
-                                    ? getFormattedValue(value, datasets[context.datasetIndex].unit)
+                                convertedDatasets && convertedDatasets[context.datasetIndex].unit
+                                    ? getFormattedValue(
+                                          value,
+                                          convertedDatasets[context.datasetIndex].unit,
+                                      )
                                     : value;
                             return `${formatted ?? value}`;
                         },
@@ -111,7 +119,7 @@ export default function useChart(datasets?: Dataset[]) {
                 },
 
                 // plus the axis for each dataset
-                ...datasets?.reduce((scales, dataset, i) => {
+                ...convertedDatasets?.reduce((scales, dataset, i) => {
                     const key = `${dataset.action}-${dataset.unit}`.toLowerCase();
                     const formattedUnit = dataset.unit ? getFormattedUnit(dataset.unit) : undefined;
 
@@ -168,14 +176,14 @@ export default function useChart(datasets?: Dataset[]) {
                 }, {} as DatasetChartScale),
             },
         }),
-        [datasets, isLandscape, lineColour, textColour, timeTickGenerator, tooltipColour],
+        [convertedDatasets, isLandscape, lineColour, textColour, timeTickGenerator, tooltipColour],
     );
 
     // extract the data points
     const data = useMemo(
         () => ({
             datasets:
-                datasets?.map((dataset, i) => ({
+                convertedDatasets?.map((dataset, i) => ({
                     label: `${dataset.entity} ${dataset.action}`,
                     data: dataset.data.map((data) => ({
                         x: isLandscape ? data.timestamp : data.value,
@@ -193,7 +201,7 @@ export default function useChart(datasets?: Dataset[]) {
                     pointRadius: 2,
                 })) ?? [],
         }),
-        [datasets, isLandscape, lineColours],
+        [convertedDatasets, isLandscape, lineColours],
     );
 
     return { options, data };

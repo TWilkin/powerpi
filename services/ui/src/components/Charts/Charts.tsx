@@ -1,6 +1,8 @@
+import { faCog, faSliders } from "@fortawesome/free-solid-svg-icons";
 import Chart from "../Components/Chart";
-import Filter from "../Components/Filter";
+import FilterDrawer from "../Components/FilterDrawer";
 import Message from "../Components/Message";
+import UnitSettings from "../Components/UnitSettings";
 import ChartFilter from "./ChartFilter";
 import styles from "./Charts.module.scss";
 import useChartFilter from "./useChartFilter";
@@ -16,15 +18,6 @@ const Charts = () => {
 
     return (
         <>
-            <Filter onClear={onClear}>
-                <ChartFilter
-                    filters={filters}
-                    onStartDateFilterChange={onStartDateFilterChange}
-                    onEndDateFilterChange={onEndDateFilterChange}
-                    onMessageTypeFilterChange={onMessageTypeFilterChange}
-                />
-            </Filter>
-
             <div className={styles.charts}>
                 {filters.entity || filters.action ? (
                     <Chart
@@ -37,6 +30,29 @@ const Charts = () => {
                     <Message message="Use the filters on the left to choose the chart data you want to see." />
                 )}
             </div>
+
+            <FilterDrawer
+                filters={[
+                    {
+                        id: "Filters",
+                        icon: faSliders,
+                        content: (
+                            <ChartFilter
+                                filters={filters}
+                                onStartDateFilterChange={onStartDateFilterChange}
+                                onEndDateFilterChange={onEndDateFilterChange}
+                                onMessageTypeFilterChange={onMessageTypeFilterChange}
+                                onClear={onClear}
+                            />
+                        ),
+                    },
+                    {
+                        id: "Settings",
+                        icon: faCog,
+                        content: <UnitSettings />,
+                    },
+                ]}
+            />
         </>
     );
 };

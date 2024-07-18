@@ -1,3 +1,4 @@
+import { faSliders } from "@fortawesome/free-solid-svg-icons";
 import { History } from "@powerpi/common-api";
 import { useEffect, useMemo } from "react";
 import { chain as _ } from "underscore";
@@ -7,7 +8,7 @@ import {
     useSocketIORefreshHistory,
 } from "../../hooks/history";
 import AbbreviatingTime from "../Components/AbbreviatingTime";
-import Filter from "../Components/Filter";
+import FilterDrawer from "../Components/FilterDrawer";
 import InfiniteScrollList from "../Components/InfiniteScrollList";
 import Message from "../Components/Message";
 import HistoryFilter from "./HistoryFilter";
@@ -53,15 +54,6 @@ const HistoryList = () => {
 
     return (
         <>
-            <Filter onClear={onClear}>
-                <HistoryFilter
-                    filters={filters}
-                    onStartDateFilterChange={onStartDateFilterChange}
-                    onEndDateFilterChange={onEndDateFilterChange}
-                    onMessageTypeFilterChange={onMessageTypeFilterChange}
-                />
-            </Filter>
-
             <div className={styles.list}>
                 <InfiniteScrollList
                     hasMore={hasHistoryNextPage ?? false}
@@ -109,6 +101,24 @@ const HistoryList = () => {
                     </table>
                 </InfiniteScrollList>
             </div>
+
+            <FilterDrawer
+                filters={[
+                    {
+                        id: "Filters",
+                        icon: faSliders,
+                        content: (
+                            <HistoryFilter
+                                filters={filters}
+                                onStartDateFilterChange={onStartDateFilterChange}
+                                onEndDateFilterChange={onEndDateFilterChange}
+                                onMessageTypeFilterChange={onMessageTypeFilterChange}
+                                onClear={onClear}
+                            />
+                        ),
+                    },
+                ]}
+            />
         </>
     );
 };

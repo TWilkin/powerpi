@@ -2,6 +2,7 @@ import { PowerPiApi } from "@powerpi/common-api";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Site from "./components/Site";
+import { UserSettingsContextProvider } from "./hooks/UserSettings";
 import { PowerPiAPIContextProvider } from "./hooks/api";
 import "./styles/imports.scss";
 
@@ -14,7 +15,9 @@ const PowerPi = () => {
     return (
         <QueryClientProvider client={queryClient}>
             <PowerPiAPIContextProvider api={api}>
-                <Site />
+                <UserSettingsContextProvider>
+                    <Site />
+                </UserSettingsContextProvider>
             </PowerPiAPIContextProvider>
         </QueryClientProvider>
     );
