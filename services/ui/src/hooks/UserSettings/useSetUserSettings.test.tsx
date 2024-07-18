@@ -19,7 +19,7 @@ describe("useSetUserSettings", () => {
     });
 
     test("update unit", () => {
-        Storage.prototype.getItem = () => "";
+        Storage.prototype.getItem = () => null;
 
         const setItem = jest.fn();
         Storage.prototype.setItem = setItem;
@@ -27,7 +27,7 @@ describe("useSetUserSettings", () => {
         const { result } = renderHook(useSetUserSettings, { wrapper: UserSettingsContextProvider });
 
         expect(result.current).toBeDefined();
-        act(() => result.current!({ name: "UpdateUnit", type: "gas", unit: "m3" }));
+        act(() => result.current!({ name: "UpdateUnit", type: "gas", unit: "kWh" }));
 
         expect(setItem).toHaveBeenCalledWith(
             "userSettings",
@@ -35,12 +35,10 @@ describe("useSetUserSettings", () => {
                 ...defaultSettings,
                 units: {
                     ...defaultSettings.units,
-                    gas: "m3",
+                    gas: "kWh",
                 },
             }),
         );
-
-        expect(removeItem).not.toHaveBeenCalled();
     });
 
     test("reset to defaults", () => {

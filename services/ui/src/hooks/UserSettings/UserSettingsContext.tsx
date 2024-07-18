@@ -18,7 +18,7 @@ export const UserSettingsContextProvider = ({ children }: UserSettingsContextPro
 
     // save the settings when it's changed
     useEffect(() => {
-        if (isEqual(settings, defaultSettings)) {
+        if (!isEqual(settings, defaultSettings)) {
             localStorage.setItem(userSettingsStorageKey, JSON.stringify(settings));
         } else {
             localStorage.removeItem(userSettingsStorageKey);
