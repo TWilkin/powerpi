@@ -5,7 +5,7 @@ type FilterGroupProps = PropsWithChildren<unknown>;
 
 const FilterGroup = ({ children }: FilterGroupProps) => (
     <>
-        <div>{children}</div>
+        <div className={styles.group}>{children}</div>
         <hr className={styles.rule} />
     </>
 );
