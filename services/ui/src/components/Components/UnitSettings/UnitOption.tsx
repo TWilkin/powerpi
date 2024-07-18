@@ -35,9 +35,9 @@ const UnitOption = ({ type, currentUnit }: UnitOption) => {
     return (
         <FilterGroup>
             {`${unitNames[type]}: `}
-            <select onChange={onUnitChange}>
+            <select onChange={onUnitChange} value={currentUnit}>
                 {options.map(({ unit, name }) => (
-                    <option key={unit} selected={currentUnit === unit} value={unit}>
+                    <option key={unit} value={unit}>
                         {name} ({unit})
                     </option>
                 ))}
