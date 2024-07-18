@@ -9,6 +9,13 @@ type UnitOption = {
     currentUnit: string | undefined;
 };
 
+const unitNames: Record<UnitType, string> = {
+    gas: "Gas",
+    power: "Power",
+    temperature: "Temperature",
+    volume: "Volume",
+};
+
 const UnitOption = ({ type, currentUnit }: UnitOption) => {
     const dispatch = useSetUserSettings();
 
@@ -27,7 +34,7 @@ const UnitOption = ({ type, currentUnit }: UnitOption) => {
 
     return (
         <FilterGroup>
-            {type}:
+            {`${unitNames[type]}: `}
             <select onChange={onUnitChange}>
                 {options.map(({ unit, name }) => (
                     <option key={unit} selected={currentUnit === unit} value={unit}>
