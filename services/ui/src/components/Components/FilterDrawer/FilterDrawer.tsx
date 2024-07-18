@@ -1,7 +1,16 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { HTMLAttributes, PropsWithChildren, ReactNode, useCallback, useRef, useState } from "react";
+import {
+    HTMLAttributes,
+    PropsWithChildren,
+    ReactNode,
+    useCallback,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
+import { uniqueId } from "underscore";
 import useOnClickOutside from "../../../hooks/useOnClickOutside";
 import styles from "./FilterDrawer.module.scss";
 
@@ -93,19 +102,23 @@ const Drawer = ({
 
     useOnClickOutside(ref, closeDrawer);
 
+    const drawerId = useMemo(() => uniqueId(`drawer`), []);
+
     return (
         <div className={styles.filter} ref={ref}>
             <div
+                id={drawerId}
                 className={classNames(styles.content, {
                     [styles.open]: open,
                     [styles.closed]: !open,
                     [styles["all-closed"]]: allClosed,
                 })}
+                aria-label={`drawer-${id}`}
             >
                 {children}
             </div>
 
-            <button className={styles.label} onClick={toggleDrawer}>
+            <button className={styles.label} onClick={toggleDrawer} aria-controls={drawerId}>
                 <FontAwesomeIcon icon={icon} />
                 {id}
             </button>
