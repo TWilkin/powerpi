@@ -161,7 +161,9 @@ update_service_version() {
     local file="$path/package.json"
     if [ -f "$file" ]
     then
-        yq -i -y -I4 -oj ".version = \"$version\"" $file
+        temp=`mktemp`
+        jq --indent 4 ".version = \"$version\"" $file > $temp
+        mv $temp $file
         git add $file
         return
     fi
