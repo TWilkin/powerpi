@@ -103,8 +103,8 @@ update_version() {
 get_version() {
     local path=$1
 
-    appVersion=`yq .appVersion $path`
-    chartVersion=`yq .version $path`
+    appVersion=`yq .appVersion $path | tr -d \"`
+    chartVersion=`yq .version $path  | tr -d \"`
 }
 
 set_chart_version() {
