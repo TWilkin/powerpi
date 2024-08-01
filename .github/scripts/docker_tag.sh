@@ -5,7 +5,7 @@ scriptPath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 get_version() {
     local path=$scriptPath/../../kubernetes/charts/$1/Chart.yaml
 
-    appVersion=`yq .appVersion $path`
+    appVersion=`yq .appVersion $path | tr -d \"`
 }
 
 registry=$1
