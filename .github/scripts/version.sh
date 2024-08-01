@@ -103,8 +103,8 @@ update_version() {
 get_version() {
     local path=$1
 
-    appVersion=`yq .appVersion $path`
-    chartVersion=`yq .version $path`
+    appVersion=`yq .appVersion $path | tr -d \"`
+    chartVersion=`yq .version $path  | tr -d \"`
 }
 
 set_chart_version() {
@@ -112,8 +112,8 @@ set_chart_version() {
     local appVersion=$2
     local chartVersion=$3
 
-    yq e -i ".appVersion = \"$appVersion\"" $path
-    yq e -i ".version = \"$chartVersion\"" $path
+    yq -i -y ".appVersion = \"$appVersion\"" $path
+    yq -i -y ".version = \"$chartVersion\"" $path
 
     git add $path
 }
@@ -123,7 +123,7 @@ set_chart_dependency_version() {
     local service=$2
     local subchartVersion=$3
 
-    yq e -i "(.dependencies[] | select(.name == \"$service\").version) = \"$subchartVersion\"" $path
+    yq -i -y "(.dependencies[] | select(.name == \"$service\").version) = \"$subchartVersion\"" $path
 
     git add $path
 }
@@ -161,7 +161,9 @@ update_service_version() {
     local file="$path/package.json"
     if [ -f "$file" ]
     then
-        yq -e -i -I4 -oj ".version = \"$version\"" $file
+        temp=`mktemp`
+        jq --indent 4 ".version = \"$version\"" $file > $temp
+        mv $temp $file
         git add $file
         return
     fi
