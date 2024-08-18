@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/freedns",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "description": "FreeDNS automatic updater service",
     "private": true,
     "license": "GPL-3.0-only",

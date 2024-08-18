@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/energy-monitor",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "PowerPi n3rgy energy usage retrieval service",
     "private": true,
     "license": "GPL-3.0-only",
