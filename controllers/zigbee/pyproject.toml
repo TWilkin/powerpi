@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "zigbee_controller"
-version = "0.5.6"
+version = "0.5.7"
 description = "PowerPi ZigBee Controller"
 license = "GPL-3.0-only"
 authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
