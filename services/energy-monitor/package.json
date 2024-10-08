@@ -19,7 +19,7 @@
         "start:prd": "node dist/src/index.js"
     },
     "dependencies": {
-        "@powerpi/common": "^0.2.0",
+        "@powerpi/common": "^0.2.1",
         "axios": "^1.6.0",
         "dateformat": "^4.6.3",
         "ts-command-line-args": "2.5.1",
