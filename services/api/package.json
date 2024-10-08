@@ -54,7 +54,7 @@
         "underscore": "^1.13.6"
     },
     "devDependencies": {
-        "@powerpi/common-test": "^0.0.11",
+        "@powerpi/common-test": "^0.0.12",
         "@types/cookie-parser": "^1.4.2",
         "@types/cors": "^2.8.10",
         "@types/express": "^4.17.12",

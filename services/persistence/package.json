@@ -30,7 +30,7 @@
         "underscore": "^1.13.6"
     },
     "devDependencies": {
-        "@powerpi/common-test": "^0.0.11",
+        "@powerpi/common-test": "^0.0.12",
         "@types/bluebird": "^3.5.36",
         "@types/node": "^20.4.9",
         "@types/underscore": "^1.11.6",
