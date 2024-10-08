@@ -69,10 +69,12 @@
         "@types/mime": "^3.0.0",
         "axios": "^1.6.0",
         "class-transformer": "^0.5.0",
+        "cookie": "^0.7.0",
         "got": "^13.0.0",
         "lodash": "^4.17.21",
         "optionator": "^0.9.3",
         "semver": "^7.5.2",
+        "send": "^0.19.0",
         "ws": "^8.17.1"
     }
 }
