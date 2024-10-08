@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/common-test",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "description": "PowerPi Common Typescript Testing library",
     "private": true,
     "license": "GPL-3.0-only",
@@ -29,6 +29,6 @@
         "typescript": "^5.1.6"
     },
     "dependencies": {
-        "@powerpi/common": "^0.2.0"
+        "@powerpi/common": "^0.2.1"
     }
 }
