@@ -35,7 +35,7 @@
         "@tsed/platform-express": "^7.34.2",
         "@tsed/schema": "^7.34.2",
         "@tsed/socketio": "^7.34.2",
-        "body-parser": "^1.19.0",
+        "body-parser": "^1.20.3",
         "cookie-parser": "^1.4.5",
         "cors": "^2.8.5",
         "express": "^4.19.2",
