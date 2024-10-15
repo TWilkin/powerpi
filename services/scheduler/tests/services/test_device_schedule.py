@@ -342,17 +342,18 @@ class TestDeviceSchedule:
         assert job[2][1] == job[1].end_date
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize('brightness,current,expected,next_expected', [
-        ([0, 100], 50, 50 + 1.67, 50 + 1.67 * 2),
-        ([100, 0], 50, 50 - 1.67, 50 - 1.67 * 2),
-        ([0, 100], 0, 3.33, 3.33 * 2),
-        ([100, 0], 100, 100 - 3.33, 100 - 3.33 * 2),
-        ([0, 100], 100, 100, 100),
-        ([100, 0], 0, 0, 0),
-        ([10, 60], 10 + 20, 10 + 21, 10 + 22),
-        ([60, 10], 60 - 20, 60 - 21, 60 - 22),
-        ([20, 30], 31, 31, 31),  # not increasing
-        ([30, 20], 19, 19, 19)  # not decreasing
+    @pytest.mark.parametrize('brightness,current,expected,next_expected,force', [
+        ([0, 100], 50, 50 + 1.67, 50 + 1.67 * 2, False),
+        ([100, 0], 50, 50 - 1.67, 50 - 1.67 * 2, False),
+        ([0, 100], 0, 3.33, 3.33 * 2, False),
+        ([100, 0], 100, 100 - 3.33, 100 - 3.33 * 2, False),
+        ([0, 100], 100, 100, 100, False),
+        ([100, 0], 0, 0, 0, False),
+        ([10, 60], 10 + 20, 10 + 21, 10 + 22, False),
+        ([60, 10], 60 - 20, 60 - 21, 60 - 22, False),
+        ([20, 30], 31, 31, 31, False),  # not increasing
+        ([30, 20], 19, 19, 19, False),  # not decreasing
+        ([60, 10], 100, 60 - 20, 60 - 21, True)  # force
     ])
     async def test_execute_current_value(
         self,
@@ -363,7 +364,8 @@ class TestDeviceSchedule:
         brightness: List[int],
         current: float,
         expected: float,
-        next_expected: float
+        next_expected: float,
+        force: bool
     ):
         # pylint: disable=too-many-arguments,too-many-locals
 
@@ -374,7 +376,8 @@ class TestDeviceSchedule:
             'device': 'SomeDevice',
             'between': ['09:10:00', '10:00:00'],
             'interval': 60,
-            'brightness': brightness
+            'brightness': brightness,
+            'force': force
         })
 
         async def execute(minutes: float, current: float, expected: float):
