@@ -276,7 +276,7 @@ class DeviceSchedule(LogMixin):
         additional_state = device.get_additional_state_for_scene(self.__scene)
 
         # do we want to overwrite start with the current value from the device
-        if not self.__force and delta_range.type in additional_state:
+        if delta_range.type in additional_state:
             start = additional_state[delta_range.type]
         else:
             start = delta_range.start
@@ -285,7 +285,15 @@ class DeviceSchedule(LogMixin):
         increasing = delta_range.start <= delta_range.end
 
         # what is the delta
-        delta = (delta_range.end - start) / remaining_intervals
+        if self.__force:
+            # when we're forcing use the value ignoring what value it already has
+            delta = (delta_range.end - delta_range.start) / intervals
+            delta *= (intervals - remaining_intervals)
+
+            # but we need to take the disparity into account
+            delta += (delta_range.start - start)
+        else:
+            delta = (delta_range.end - start) / remaining_intervals
 
         return (DeltaRange(delta_range.type, start, delta_range.end, increasing), delta)
 
@@ -326,6 +334,9 @@ class DeviceSchedule(LogMixin):
 
         for device_type, delta in self.__delta.items():
             builder += f', {device_type} between {delta.start} and {delta.end}'
+
+        if self.__force:
+            builder += ' forcing'
 
         if self.__power:
             builder += ' and turn it on'
