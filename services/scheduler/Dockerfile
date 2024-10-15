@@ -4,8 +4,8 @@ RUN pip3 install --prefer-binary setuptools==69.0.3
 
 # create a base image for building
 FROM base-image AS build-base-image
-RUN pip3 install --prefer-binary poetry==1.7.1
-RUN poetry config virtualenvs.in-project true
+RUN pip3 install --prefer-binary poetry==1.7.1 \
+    && poetry config virtualenvs.in-project true
 
 # build the common library
 FROM build-base-image AS build-common-image
@@ -43,4 +43,4 @@ COPY --chown=powerpi services/scheduler/pyproject.toml LICENSE ./
 COPY --chown=powerpi services/scheduler/scheduler ./scheduler/
 
 # start the application once the container is ready
-CMD python -m scheduler
+CMD ["python", "-m scheduler"]
