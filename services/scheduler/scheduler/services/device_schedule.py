@@ -41,6 +41,7 @@ class DeltaRange:
     type: DeltaType
     start: float
     end: float
+    increasing: bool
 
 
 class DeviceSchedule(LogMixin):
@@ -145,7 +146,9 @@ class DeviceSchedule(LogMixin):
                 self.__delta[delta_type] = DeltaRange(
                     delta_type,
                     int(device_schedule[delta_type][0]),
-                    int(device_schedule[delta_type][1])
+                    int(device_schedule[delta_type][1]),
+                    int(device_schedule[delta_type][0]) > int(
+                        device_schedule[delta_type][1])
                 )
 
         for delta_type in [DeltaType.HUE, DeltaType.SATURATION]:
@@ -153,7 +156,9 @@ class DeviceSchedule(LogMixin):
                 self.__delta[delta_type] = DeltaRange(
                     delta_type,
                     float(device_schedule[delta_type][0]),
-                    float(device_schedule[delta_type][1])
+                    float(device_schedule[delta_type][1]),
+                    float(device_schedule[delta_type][0]) > float(
+                        device_schedule[delta_type][1])
                 )
 
         self.__power = bool(device_schedule['power']) if 'power' in device_schedule \
@@ -274,15 +279,23 @@ class DeviceSchedule(LogMixin):
         else:
             start = delta_range.start
 
+        # check which direction we're going in
+        increasing = delta_range.start <= delta_range.end
+
         # what is the delta
         delta = (delta_range.end - start) / remaining_intervals
 
-        return (DeltaRange(delta_range.type, start, delta_range.end), delta)
+        return (DeltaRange(delta_range.type, start, delta_range.end, increasing), delta)
 
     def __calculate_new_value(self, start_date: datetime, delta_range: DeltaRange):
         (delta_range, delta) = self.__calculate_delta(start_date, delta_range)
 
         new_value = delta_range.start + delta
+
+        # ensure the new value is in the correct direction
+        if (new_value > delta_range.start and not delta_range.increasing) \
+                or (new_value < delta_range.start and delta_range.increasing):
+            new_value = delta_range.start
 
         new_value = round_for_type(delta_range.type, new_value)
         if delta > 0:
