@@ -135,6 +135,8 @@ class DeviceSchedule(LogMixin):
     def __parse(self, device_schedule: Dict[str, Any]):
         self.__between: List[str] = device_schedule['between']
         self.__interval = int(device_schedule['interval'])
+        self.__force = bool(
+            device_schedule['force']) if 'force' in device_schedule else False
 
         self.__days = device_schedule['days'] if 'days' in device_schedule \
             else None
@@ -274,7 +276,7 @@ class DeviceSchedule(LogMixin):
         additional_state = device.get_additional_state_for_scene(self.__scene)
 
         # do we want to overwrite start with the current value from the device
-        if delta_range.type in additional_state:
+        if not self.__force and delta_range.type in additional_state:
             start = additional_state[delta_range.type]
         else:
             start = delta_range.start
