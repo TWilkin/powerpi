@@ -43,4 +43,4 @@ COPY --chown=powerpi services/scheduler/pyproject.toml LICENSE ./
 COPY --chown=powerpi services/scheduler/scheduler ./scheduler/
 
 # start the application once the container is ready
-CMD ["python", "-m scheduler"]
+CMD python -m scheduler
