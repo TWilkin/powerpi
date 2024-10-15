@@ -350,7 +350,9 @@ class TestDeviceSchedule:
         ([0, 100], 100, 100, 100),
         ([100, 0], 0, 0, 0),
         ([10, 60], 10 + 20, 10 + 21, 10 + 22),
-        ([60, 10], 60 - 20, 60 - 21, 60 - 22)
+        ([60, 10], 60 - 20, 60 - 21, 60 - 22),
+        ([20, 30], 31, 31, 31),  # not increasing
+        ([20, 30], 19, 19, 19)  # not decreasing
     ])
     async def test_execute_current_value(
         self,
