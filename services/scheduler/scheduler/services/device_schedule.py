@@ -288,10 +288,10 @@ class DeviceSchedule(LogMixin):
         if self.__force:
             # when we're forcing use the value ignoring what value it already has
             delta = (delta_range.end - delta_range.start) / intervals
-            delta *= (intervals - remaining_intervals)
+            delta *= intervals - remaining_intervals
 
             # but we need to take the disparity into account
-            delta += (delta_range.start - start)
+            delta += delta_range.start - start
         else:
             delta = (delta_range.end - start) / remaining_intervals
 
@@ -303,15 +303,19 @@ class DeviceSchedule(LogMixin):
         new_value = delta_range.start + delta
 
         # ensure the new value is in the correct direction
-        if (new_value > delta_range.start and not delta_range.increasing) \
-                or (new_value < delta_range.start and delta_range.increasing):
+        if not self.__force and \
+                ((new_value > delta_range.start and not delta_range.increasing)
+                 or (new_value < delta_range.start and delta_range.increasing)):
             new_value = delta_range.start
 
         new_value = round_for_type(delta_range.type, new_value)
-        if delta > 0:
-            new_value = min(max(new_value, delta_range.start), delta_range.end)
-        else:
-            new_value = max(min(new_value, delta_range.start), delta_range.end)
+        if not self.__force:
+            if delta > 0:
+                new_value = min(
+                    max(new_value, delta_range.start), delta_range.end)
+            else:
+                new_value = max(
+                    min(new_value, delta_range.start), delta_range.end)
 
         return new_value
 
