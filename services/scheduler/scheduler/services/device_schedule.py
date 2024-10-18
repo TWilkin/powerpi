@@ -41,7 +41,10 @@ class DeltaRange:
     type: DeltaType
     start: float
     end: float
-    increasing: bool
+
+    @property
+    def increasing(self):
+        return self.start < self.end
 
 
 class DeviceSchedule(LogMixin):
@@ -148,9 +151,7 @@ class DeviceSchedule(LogMixin):
                 self.__delta[delta_type] = DeltaRange(
                     delta_type,
                     int(device_schedule[delta_type][0]),
-                    int(device_schedule[delta_type][1]),
-                    int(device_schedule[delta_type][0]) < int(
-                        device_schedule[delta_type][1])
+                    int(device_schedule[delta_type][1])
                 )
 
         for delta_type in [DeltaType.HUE, DeltaType.SATURATION]:
@@ -158,9 +159,7 @@ class DeviceSchedule(LogMixin):
                 self.__delta[delta_type] = DeltaRange(
                     delta_type,
                     float(device_schedule[delta_type][0]),
-                    float(device_schedule[delta_type][1]),
-                    float(device_schedule[delta_type][0]) < float(
-                        device_schedule[delta_type][1])
+                    float(device_schedule[delta_type][1])
                 )
 
         self.__power = bool(device_schedule['power']) if 'power' in device_schedule \
@@ -256,7 +255,7 @@ class DeviceSchedule(LogMixin):
         self,
         start_date: datetime,
         delta_range: DeltaRange
-    ) -> Tuple[DeltaRange, float]:
+    ) -> Tuple[float, float]:
         (schedule_start_date, end_date) = self.__calculate_dates()
 
         # how many seconds between the dates
@@ -287,7 +286,7 @@ class DeviceSchedule(LogMixin):
 
         # what is the delta
         if self.__force:
-            # when we're forcing use the value ignoring what value it already has
+            # when we're forcing use the range ignoring what value it already has
             delta = (delta_range.end - delta_range.start) / intervals
             delta *= intervals - remaining_intervals
 
@@ -296,27 +295,30 @@ class DeviceSchedule(LogMixin):
         else:
             delta = (delta_range.end - start) / remaining_intervals
 
-        return (DeltaRange(delta_range.type, start, delta_range.end, delta_range.increasing), delta)
+        return (start, delta)
 
     def __calculate_new_value(self, start_date: datetime, delta_range: DeltaRange):
-        (delta_range, delta) = self.__calculate_delta(start_date, delta_range)
+        (start, delta) = self.__calculate_delta(start_date, delta_range)
 
-        new_value = delta_range.start + delta
+        new_value = start + delta
 
         # ensure the new value is in the correct direction
         if not self.__force and \
                 ((new_value > delta_range.start and not delta_range.increasing)
-                 or (new_value < delta_range.start and delta_range.increasing)):
-            new_value = delta_range.start
+                 or (new_value < delta_range.start and delta_range.increasing)
+                 or (new_value > delta_range.end and delta_range.increasing)
+                 or (new_value < delta_range.end and not delta_range.increasing)):
+            new_value = start
+
+            new_value = round_for_type(delta_range.type, new_value)
+
+            return new_value
 
         new_value = round_for_type(delta_range.type, new_value)
-        if not self.__force:
-            if delta > 0:
-                new_value = min(
-                    max(new_value, delta_range.start), delta_range.end)
-            else:
-                new_value = max(
-                    min(new_value, delta_range.start), delta_range.end)
+        if delta_range.increasing:
+            new_value = min(max(new_value, delta_range.start), delta_range.end)
+        else:
+            new_value = max(min(new_value, delta_range.start), delta_range.end)
 
         return new_value
 
