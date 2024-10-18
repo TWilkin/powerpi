@@ -99,6 +99,10 @@
                     "power": {
                         "description": "Whether to turn the device on when the schedule starts",
                         "type": "boolean"
+                    },
+                    "force": {
+                        "description": "Whether to force the values when updating, which will provide a delta to ensure the value is where we expect to start",
+                        "type": "boolean"
                     }
                 },
                 "required": ["between", "interval"],

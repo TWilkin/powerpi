@@ -73,6 +73,7 @@ describe("Schedules", () => {
                             hue: [0, 360],
                             saturation: [0, 100],
                             power: true,
+                            force: true,
                         },
                     ],
                 };
