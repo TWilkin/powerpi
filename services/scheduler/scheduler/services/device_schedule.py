@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, time, timedelta
 from enum import IntEnum, StrEnum, unique
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -149,7 +149,7 @@ class DeviceSchedule(LogMixin):
                     delta_type,
                     int(device_schedule[delta_type][0]),
                     int(device_schedule[delta_type][1]),
-                    int(device_schedule[delta_type][0]) > int(
+                    int(device_schedule[delta_type][0]) < int(
                         device_schedule[delta_type][1])
                 )
 
@@ -159,7 +159,7 @@ class DeviceSchedule(LogMixin):
                     delta_type,
                     float(device_schedule[delta_type][0]),
                     float(device_schedule[delta_type][1]),
-                    float(device_schedule[delta_type][0]) > float(
+                    float(device_schedule[delta_type][0]) < float(
                         device_schedule[delta_type][1])
                 )
 
@@ -252,7 +252,11 @@ class DeviceSchedule(LogMixin):
 
         return (start_date, end_date)
 
-    def __calculate_delta(self, start_date: datetime, delta_range: DeltaRange):
+    def __calculate_delta(
+        self,
+        start_date: datetime,
+        delta_range: DeltaRange
+    ) -> Tuple[DeltaRange, float]:
         (schedule_start_date, end_date) = self.__calculate_dates()
 
         # how many seconds between the dates
@@ -281,9 +285,6 @@ class DeviceSchedule(LogMixin):
         else:
             start = delta_range.start
 
-        # check which direction we're going in
-        increasing = delta_range.start <= delta_range.end
-
         # what is the delta
         if self.__force:
             # when we're forcing use the value ignoring what value it already has
@@ -295,7 +296,7 @@ class DeviceSchedule(LogMixin):
         else:
             delta = (delta_range.end - start) / remaining_intervals
 
-        return (DeltaRange(delta_range.type, start, delta_range.end, increasing), delta)
+        return (DeltaRange(delta_range.type, start, delta_range.end, delta_range.increasing), delta)
 
     def __calculate_new_value(self, start_date: datetime, delta_range: DeltaRange):
         (delta_range, delta) = self.__calculate_delta(start_date, delta_range)
