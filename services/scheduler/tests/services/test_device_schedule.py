@@ -342,21 +342,21 @@ class TestDeviceSchedule:
         assert job[2][1] == job[1].end_date
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize('brightness,current,expected,next_expected,force', [
-        ([0, 100], 50, 50 + 1.67, 50 + 1.67 * 2, False),
-        ([100, 0], 50, 50 - 1.67, 50 - 1.67 * 2, False),
-        ([0, 100], 0, 3.33, 3.33 * 2, False),
-        ([100, 0], 100, 100 - 3.33, 100 - 3.33 * 2, False),
-        ([0, 100], 100, 100, 100, False),
-        ([100, 0], 0, 0, 0, False),
-        ([10, 60], 10 + 20, 10 + 21, 10 + 22, False),
-        ([60, 10], 60 - 20, 60 - 21, 60 - 22, False),
-        ([20, 30], 31, 31, 31, False),  # not increasing
-        ([30, 20], 19, 19, 19, False),  # not decreasing
+    @pytest.mark.parametrize('brightness,current,expected,force', [
+        ([0, 100], 50, [60, 70, 80, 90, 100], False),
+        ([100, 0], 50, [40, 30, 20, 10, 0], False),
+        ([0, 100], 0, [20, 40, 60, 80, 100], False),
+        ([100, 0], 100, [80, 60, 40, 20, 0], False),
+        ([0, 100], 100, [100, 100, 100, 100, 100], False),
+        ([100, 0], 0, [0, 0, 0, 0, 0], False),
+        ([10, 50], 25, [30, 35, 40, 45, 50], False),
+        ([80, 50], 75, [70, 65, 60, 55, 50], False),
+        ([20, 30], 31, [31, 31, 31, 31, 31], False),  # not increasing
+        ([30, 20], 19, [19, 19, 19, 19, 19], False),  # not decreasing
         # force
-        ([60, 10], 100, 60 - 20, 60 - 21, True),
-        ([0, 50], 50, 0 + 20, 0 + 21, True),
-        ([50, 0], 0, 50 - 20, 50 - 21, True),
+        ([60, 20], 100, [60, 50, 40, 30, 20], True),
+        ([0, 40], 40, [0, 10, 20, 30], True),
+        ([40, 0], 0, [40, 30, 20, 10, 0], True),
     ])
     async def test_execute_current_value(
         self,
@@ -366,8 +366,7 @@ class TestDeviceSchedule:
         mocker: MockerFixture,
         brightness: List[int],
         current: float,
-        expected: float,
-        next_expected: float,
+        expected: List[float],
         force: bool
     ):
         # pylint: disable=too-many-arguments,too-many-locals
@@ -377,7 +376,7 @@ class TestDeviceSchedule:
 
         subject = subject_builder({
             'device': 'SomeDevice',
-            'between': ['09:10:00', '10:00:00'],
+            'between': ['09:11:00', '09:15:00'],
             'interval': 60,
             'brightness': brightness,
             'force': force
@@ -388,10 +387,10 @@ class TestDeviceSchedule:
                 'brightness': current
             }
 
-            with patch_datetime(datetime(2023, 3, 1, 9, minutes, tzinfo=pytz.UTC)):
-                start_date = datetime(2023, 3, 1, 9, 10)
-                end_date = datetime(2023, 3, 1, 10, 0, tzinfo=pytz.UTC)
+            start_date = datetime(2023, 3, 1, 9, 11)
+            end_date = datetime(2023, 3, 1, 9, 15, tzinfo=pytz.UTC)
 
+            with patch_datetime(datetime(2023, 3, 1, 9, minutes, tzinfo=pytz.UTC)):
                 await subject.execute(start_date, end_date)
 
             message = {'brightness': expected}
@@ -399,13 +398,13 @@ class TestDeviceSchedule:
                 self.__expected_topic, message
             )
 
-        # run it once
-        await execute(31, current, expected)
+            powerpi_mqtt_producer.reset_mock()
 
-        # run it again for the next interval
-        powerpi_mqtt_producer.reset_mock()
+        previous = current
+        for i, expected_value in enumerate(expected):
+            await execute(11 + i, previous, expected_value)
 
-        await execute(32, expected, next_expected)
+            previous = expected_value
 
     @pytest.mark.asyncio
     async def test_execute_current_value_scenes(
