@@ -301,8 +301,8 @@ class DeviceSchedule(LogMixin):
 
         # ensure the new value is in the correct direction
         if not self.__force and \
-                ((new_value > delta_range.start and not delta_range.increasing)
-                 or (new_value < delta_range.start and delta_range.increasing)
+                ((new_value > start and not delta_range.increasing)
+                 or (new_value < start and delta_range.increasing)
                  or (new_value > delta_range.end and delta_range.increasing)
                  or (new_value < delta_range.end and not delta_range.increasing)):
             new_value = start
