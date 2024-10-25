@@ -213,8 +213,8 @@ class TestDeviceSchedule:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('brightness,current,expected', [
-        ([0, 100], 1.111, 1.11 + 1.65),
-        ([100, 0], 100 - 1.111, 100 - 1.11 - 1.65)
+        ([0, 100], 1.111, 1.11 + 1.94),
+        ([100, 0], 100 - 1.111, 100 - 1.11 - 1.94)
     ])
     async def test_execute_round2dp(
         self,
@@ -258,8 +258,8 @@ class TestDeviceSchedule:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('hue,current,expected', [
-        ([0, 360], 1.111, 1 + 6),
-        ([360, 0], 360 - 1.111, 360 - 1 - 6)
+        ([0, 360], 1.111, 2 + 6),
+        ([360, 0], 360 - 1.111, 360 - 2 - 6)
     ])
     async def test_execute_round0dp(
         self,
@@ -354,9 +354,9 @@ class TestDeviceSchedule:
         ([20, 30], 31, [31, 31, 31, 31, 31], False),  # not increasing
         ([30, 20], 19, [19, 19, 19, 19, 19], False),  # not decreasing
         # force
-        ([60, 20], 100, [60, 50, 40, 30, 20], True),
-        ([0, 40], 40, [0, 10, 20, 30], True),
-        ([40, 0], 0, [40, 30, 20, 10, 0], True),
+        ([70, 20], 100, [60, 50, 40, 30, 20], True),
+        ([0, 50], 50, [10, 20, 30, 40, 50], True),
+        ([50, 0], 0, [40, 30, 20, 10, 0], True),
     ])
     async def test_execute_current_value(
         self,

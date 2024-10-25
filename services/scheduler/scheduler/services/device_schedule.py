@@ -262,16 +262,13 @@ class DeviceSchedule(LogMixin):
         seconds = end_date.timestamp() - schedule_start_date.timestamp()
 
         # how many intervals will there be
-        intervals = seconds / self.__interval
+        intervals = seconds / self.__interval + 1
 
         # work out how many more intervals need to be acted on
         elapsed_seconds = datetime.now(pytz.UTC).timestamp() \
             - start_date.timestamp()
-        remaining_intervals = intervals - \
-            (elapsed_seconds / self.__interval) + 1
-
-        if remaining_intervals <= 0:
-            remaining_intervals = 1
+        remaining_intervals = max(
+            min(intervals - (elapsed_seconds / self.__interval), intervals), 1)
 
         device = self.__variable_manager.get_device(
             self.__device
@@ -288,7 +285,7 @@ class DeviceSchedule(LogMixin):
         if self.__force:
             # when we're forcing use the range ignoring what value it already has
             delta = (delta_range.end - delta_range.start) / intervals
-            delta *= intervals - remaining_intervals
+            delta *= (intervals - remaining_intervals + 1)
 
             # but we need to take the disparity into account
             delta += delta_range.start - start
