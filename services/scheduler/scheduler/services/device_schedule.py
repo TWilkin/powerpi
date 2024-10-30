@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, time, timedelta
 from enum import IntEnum, StrEnum, unique
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -41,6 +41,10 @@ class DeltaRange:
     type: DeltaType
     start: float
     end: float
+
+    @property
+    def increasing(self):
+        return self.start < self.end
 
 
 class DeviceSchedule(LogMixin):
@@ -134,6 +138,8 @@ class DeviceSchedule(LogMixin):
     def __parse(self, device_schedule: Dict[str, Any]):
         self.__between: List[str] = device_schedule['between']
         self.__interval = int(device_schedule['interval'])
+        self.__force = bool(
+            device_schedule['force']) if 'force' in device_schedule else False
 
         self.__days = device_schedule['days'] if 'days' in device_schedule \
             else None
@@ -245,23 +251,24 @@ class DeviceSchedule(LogMixin):
 
         return (start_date, end_date)
 
-    def __calculate_delta(self, start_date: datetime, delta_range: DeltaRange):
+    def __calculate_delta(
+        self,
+        start_date: datetime,
+        delta_range: DeltaRange
+    ) -> Tuple[float, float]:
         (schedule_start_date, end_date) = self.__calculate_dates()
 
         # how many seconds between the dates
         seconds = end_date.timestamp() - schedule_start_date.timestamp()
 
         # how many intervals will there be
-        intervals = seconds / self.__interval
+        intervals = seconds / self.__interval + 1
 
         # work out how many more intervals need to be acted on
         elapsed_seconds = datetime.now(pytz.UTC).timestamp() \
             - start_date.timestamp()
-        remaining_intervals = intervals - \
-            (elapsed_seconds / self.__interval) + 1
-
-        if remaining_intervals <= 0:
-            remaining_intervals = 1
+        remaining_intervals = max(
+            min(intervals - (elapsed_seconds / self.__interval), intervals), 1)
 
         device = self.__variable_manager.get_device(
             self.__device
@@ -275,17 +282,37 @@ class DeviceSchedule(LogMixin):
             start = delta_range.start
 
         # what is the delta
-        delta = (delta_range.end - start) / remaining_intervals
+        if self.__force:
+            # when we're forcing use the range ignoring what value it already has
+            delta = (delta_range.end - delta_range.start) / intervals
+            delta *= (intervals - remaining_intervals + 1)
 
-        return (DeltaRange(delta_range.type, start, delta_range.end), delta)
+            # but we need to take the disparity into account
+            delta += delta_range.start - start
+        else:
+            delta = (delta_range.end - start) / remaining_intervals
+
+        return (start, delta)
 
     def __calculate_new_value(self, start_date: datetime, delta_range: DeltaRange):
-        (delta_range, delta) = self.__calculate_delta(start_date, delta_range)
+        (start, delta) = self.__calculate_delta(start_date, delta_range)
 
-        new_value = delta_range.start + delta
+        new_value = start + delta
+
+        # ensure the new value is in the correct direction
+        if not self.__force and \
+                ((new_value > start and not delta_range.increasing)
+                 or (new_value < start and delta_range.increasing)
+                 or (new_value > delta_range.end and delta_range.increasing)
+                 or (new_value < delta_range.end and not delta_range.increasing)):
+            new_value = start
+
+            new_value = round_for_type(delta_range.type, new_value)
+
+            return new_value
 
         new_value = round_for_type(delta_range.type, new_value)
-        if delta > 0:
+        if delta_range.increasing:
             new_value = min(max(new_value, delta_range.start), delta_range.end)
         else:
             new_value = max(min(new_value, delta_range.start), delta_range.end)
@@ -311,6 +338,9 @@ class DeviceSchedule(LogMixin):
 
         for device_type, delta in self.__delta.items():
             builder += f', {device_type} between {delta.start} and {delta.end}'
+
+        if self.__force:
+            builder += ' forcing'
 
         if self.__power:
             builder += ' and turn it on'
