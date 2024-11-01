@@ -1,19 +1,25 @@
 import { PowerPiApi } from "@powerpi/common-api";
-import { useQuery } from "react-query";
-import { queryClient } from "./client";
+import { QueryClient, useQuery } from "react-query";
 import QueryKeyFactory from "./QueryKeyFactory";
 import useAPI from "./useAPI";
 
-function getConfig(api: PowerPiApi) {
-    return api.getConfig();
+function configQuery(api: PowerPiApi) {
+    return {
+        queryKey: QueryKeyFactory.config,
+        queryFn: () => api.getConfig(),
+    };
 }
 
-export function configLoader(api: PowerPiApi) {
-    return queryClient.fetchQuery(QueryKeyFactory.config, () => getConfig(api));
+export function configLoader(queryClient: QueryClient, api: PowerPiApi) {
+    const query = configQuery(api);
+
+    return async function loader() {
+        return queryClient.getQueryData(query.queryKey) ?? (await queryClient.fetchQuery(query));
+    };
 }
 
 export default function useConfig() {
     const api = useAPI();
 
-    return useQuery(QueryKeyFactory.config, () => getConfig(api));
+    return useQuery(configQuery(api));
 }
