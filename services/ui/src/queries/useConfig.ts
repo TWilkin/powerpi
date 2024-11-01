@@ -1,5 +1,5 @@
 import { PowerPiApi } from "@powerpi/common-api";
-import { QueryClient, useQuery } from "react-query";
+import { QueryClient, useQuery } from "@tanstack/react-query";
 import QueryKeyFactory from "./QueryKeyFactory";
 import useAPI from "./useAPI";
 
