@@ -1,19 +1,13 @@
 import { Outlet } from "react-router-dom";
-import useConfig from "../queries/useConfig";
+import { Header } from "../components/Header";
 
-const Layout = () => {
-    const config = useConfig();
+const Layout = () => (
+    <>
+        <Header />
 
-    return (
-        <>
-            <header className="text-blue-500">PowerPi</header>
-
-            <main>
-                <Outlet />
-
-                {JSON.stringify(config)}
-            </main>
-        </>
-    );
-};
+        <main>
+            <Outlet />
+        </main>
+    </>
+);
 export default Layout;
