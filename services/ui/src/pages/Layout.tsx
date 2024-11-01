@@ -6,7 +6,7 @@ const Layout = () => {
 
     return (
         <>
-            <header>PowerPi</header>
+            <header className="text-blue-500">PowerPi</header>
 
             <main>
                 <Outlet />
