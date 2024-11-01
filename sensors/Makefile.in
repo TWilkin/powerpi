@@ -62,7 +62,7 @@ $(LIB_DIR)/DHT-sensor-library-$(DHT_SENSOR_VERSION):
 
 # Download certificate
 $(LIB_DIR)/cert.pem:
-	wget -O $@ https://letsencrypt.org/certs/lets-encrypt-r3.pem
+	wget -O $@ https://letsencrypt.org/certs/2024/r10.pem
 
 # Generate certificate header
 powerpi-sensor/cert.h: $(LIB_DIR)/cert.pem
