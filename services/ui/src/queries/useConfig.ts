@@ -1,9 +1,9 @@
-import { PowerPiApi } from "@powerpi/common-api";
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { Config, PowerPiApi } from "@powerpi/common-api";
+import { QueryClient } from "@tanstack/react-query";
+import { loader, Query, useQuery } from "./queries";
 import QueryKeyFactory from "./QueryKeyFactory";
-import useAPI from "./useAPI";
 
-function configQuery(api: PowerPiApi) {
+function configQuery(api: PowerPiApi): Query<Config> {
     return {
         queryKey: QueryKeyFactory.config,
         queryFn: () => api.getConfig(),
@@ -11,15 +11,9 @@ function configQuery(api: PowerPiApi) {
 }
 
 export function configLoader(queryClient: QueryClient, api: PowerPiApi) {
-    const query = configQuery(api);
-
-    return async function loader() {
-        return queryClient.getQueryData(query.queryKey) ?? (await queryClient.fetchQuery(query));
-    };
+    return loader(queryClient, api, configQuery);
 }
 
 export default function useConfig() {
-    const api = useAPI();
-
-    return useQuery(configQuery(api));
+    return useQuery(configQuery);
 }
