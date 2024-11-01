@@ -1,12 +1,11 @@
-import { Outlet } from "react-router";
+import { PropsWithChildren } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-const App = () => (
-    <>
-        <header>PowerPi</header>
+const queryClient = new QueryClient();
 
-        <main>
-            <Outlet />
-        </main>
-    </>
+type AppProps = PropsWithChildren<unknown>;
+
+const App = ({ children }: AppProps) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 );
 export default App;
