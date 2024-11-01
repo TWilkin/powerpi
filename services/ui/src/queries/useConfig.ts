@@ -7,6 +7,7 @@ function configQuery(api: PowerPiApi): Query<Config> {
     return {
         queryKey: QueryKeyFactory.config,
         queryFn: () => api.getConfig(),
+        staleTime: Infinity,
     };
 }
 
