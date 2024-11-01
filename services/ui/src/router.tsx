@@ -1,6 +1,8 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./pages/Layout";
+import { api } from "./queries/client";
+import { configLoader } from "./queries/useConfig";
 
 const Login = lazy(() => import("./pages/Login"));
 const Home = lazy(() => import("./pages/Home"));
@@ -9,6 +11,7 @@ const router = createBrowserRouter([
     {
         path: "/",
         element: <Layout />,
+        loader: () => configLoader(api),
         children: [
             {
                 index: true,

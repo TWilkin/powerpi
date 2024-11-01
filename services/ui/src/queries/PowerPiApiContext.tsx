@@ -1,12 +1,11 @@
 import { PowerPiApi } from "@powerpi/common-api";
 import { createContext, PropsWithChildren } from "react";
+import { api } from "./client";
 
-export const PowerPiAPIContext = createContext<PowerPiApi>(new PowerPiApi(""));
+export const PowerPiAPIContext = createContext<PowerPiApi>(api);
 
-type PowerPiAPIContextProvider = PropsWithChildren<{
-    api: PowerPiApi;
-}>;
+type PowerPiAPIContextProvider = PropsWithChildren<unknown>;
 
-export const PowerPiAPIContextProvider = ({ api, children }: PowerPiAPIContextProvider) => (
+export const PowerPiAPIContextProvider = ({ children }: PowerPiAPIContextProvider) => (
     <PowerPiAPIContext.Provider value={api}>{children}</PowerPiAPIContext.Provider>
 );

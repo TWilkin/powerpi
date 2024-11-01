@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import useConfig from "../../queries/useConfig";
+import useConfig from "../queries/useConfig";
 
 const Layout = () => {
     const config = useConfig();
