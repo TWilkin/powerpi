@@ -1,5 +1,5 @@
-import axios from "axios";
-import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router-dom";
+import { isAxiosError } from "axios";
+import { isRouteErrorResponse, Navigate, useRouteError } from "react-router-dom";
 import Route from "../routing/Route";
 import RouteBuilder from "../routing/RouteBuilder";
 
@@ -10,7 +10,7 @@ function errorMessage(error: unknown) {
     if (isRouteErrorResponse(error)) {
         status = error.status;
         message = `${error.status} ${error.statusText}`;
-    } else if (axios.isAxiosError(error)) {
+    } else if (isAxiosError(error)) {
         status = error.response?.status;
         message = error.message;
     } else if (error instanceof Error) {
@@ -29,13 +29,11 @@ function errorMessage(error: unknown) {
 }
 
 const ErrorPage = () => {
-    const navigate = useNavigate();
-
     const error = useRouteError();
     const { status, message } = errorMessage(error);
 
     if (status === 401) {
-        navigate(RouteBuilder.build(Route.Login));
+        return <Navigate to={RouteBuilder.build(Route.Login)} />;
     }
 
     return (

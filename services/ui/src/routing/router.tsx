@@ -2,9 +2,10 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import ErrorPage from "../pages/ErrorPage";
 import Layout from "../pages/Layout";
+import ProtectedRoute from "./ProtectedRoute";
 import Routes from "./Route";
 
-const Login = lazy(() => import("../pages/LoginPage"));
+const LoginPage = lazy(() => import("../pages/LoginPage"));
 const Home = lazy(() => import("../pages/Home"));
 
 const router = createBrowserRouter([
@@ -16,16 +17,20 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <Login />,
+                element: <LoginPage />,
             },
             {
                 path: Routes.Login,
-                index: true,
-                element: <Login />,
+                element: <LoginPage />,
             },
             {
-                path: Routes.Home,
-                element: <Home />,
+                element: <ProtectedRoute />,
+                children: [
+                    {
+                        path: Routes.Home,
+                        element: <Home />,
+                    },
+                ],
             },
         ],
     },
