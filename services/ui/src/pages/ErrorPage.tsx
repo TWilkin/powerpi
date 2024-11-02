@@ -1,4 +1,6 @@
 import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router-dom";
+import Route from "../routing/Route";
+import RouteBuilder from "../routing/RouteBuilder";
 
 function errorMessage(error: unknown) {
     let status: number | undefined;
@@ -29,7 +31,7 @@ const ErrorPage = () => {
     const { status, message } = errorMessage(error);
 
     if (status === 401) {
-        navigate("/login");
+        navigate(RouteBuilder.build(Route.Login));
     }
 
     return (

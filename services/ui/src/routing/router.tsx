@@ -1,16 +1,16 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import ErrorPage from "./pages/ErrorPage";
-import Layout from "./pages/Layout";
-import { api, queryClient } from "./queries/client";
-import { configLoader } from "./queries/useConfig";
+import ErrorPage from "../pages/ErrorPage";
+import Layout, { configLoader } from "../pages/Layout";
+import { api, queryClient } from "../queries/client";
+import Routes from "./Route";
 
-const Login = lazy(() => import("./pages/Login"));
-const Home = lazy(() => import("./pages/Home"));
+const Login = lazy(() => import("../pages/Login"));
+const Home = lazy(() => import("../pages/Home"));
 
 const router = createBrowserRouter([
     {
-        path: "/",
+        path: Routes.Root,
         element: <Layout />,
         errorElement: <ErrorPage />,
         loader: configLoader(queryClient, api),
@@ -20,12 +20,12 @@ const router = createBrowserRouter([
                 element: <Login />,
             },
             {
-                path: "login",
+                path: Routes.Login,
                 index: true,
                 element: <Login />,
             },
             {
-                path: "home",
+                path: Routes.Home,
                 element: <Home />,
             },
         ],
