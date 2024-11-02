@@ -1,3 +1,4 @@
+import axios from "axios";
 import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router-dom";
 import Route from "../routing/Route";
 import RouteBuilder from "../routing/RouteBuilder";
@@ -9,6 +10,9 @@ function errorMessage(error: unknown) {
     if (isRouteErrorResponse(error)) {
         status = error.status;
         message = `${error.status} ${error.statusText}`;
+    } else if (axios.isAxiosError(error)) {
+        status = error.response?.status;
+        message = error.message;
     } else if (error instanceof Error) {
         message = error.message;
     } else if (typeof error === "string") {

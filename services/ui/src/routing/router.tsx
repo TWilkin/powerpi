@@ -1,11 +1,10 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import ErrorPage from "../pages/ErrorPage";
-import Layout, { configLoader } from "../pages/Layout";
-import { api, queryClient } from "../queries/client";
+import Layout from "../pages/Layout";
 import Routes from "./Route";
 
-const Login = lazy(() => import("../pages/Login"));
+const Login = lazy(() => import("../pages/LoginPage"));
 const Home = lazy(() => import("../pages/Home"));
 
 const router = createBrowserRouter([
@@ -13,7 +12,7 @@ const router = createBrowserRouter([
         path: Routes.Root,
         element: <Layout />,
         errorElement: <ErrorPage />,
-        loader: configLoader(queryClient, api),
+        //loader: configLoader(queryClient, api),
         children: [
             {
                 index: true,
