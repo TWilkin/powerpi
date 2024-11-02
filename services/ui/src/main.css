@@ -1,13 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-html, body {
-    width: 100%;
-
-    @apply bg-white;
-    @apply dark:bg-black;
-
-    @apply text-black;
-    @apply dark:text-white;
-}

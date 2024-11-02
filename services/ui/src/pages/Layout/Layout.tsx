@@ -5,7 +5,7 @@ const Layout = () => (
     <>
         <Header />
 
-        <main>
+        <main className="p-4">
             <Outlet />
         </main>
     </>
