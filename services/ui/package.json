@@ -1,6 +1,7 @@
 {
     "name": "@powerpi/ui",
     "version": "2.0.0",
+    "type": "module",
     "description": "PowerPi UI",
     "private": true,
     "license": "GPL-3.0-only",
