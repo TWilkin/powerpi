@@ -15,6 +15,7 @@ const router = createBrowserRouter([
     {
         path: Routes.Root,
         element: <Layout />,
+        loader: configLoader(queryClient, api),
         errorElement: <ErrorPage />,
         children: [
             {
@@ -34,7 +35,6 @@ const router = createBrowserRouter([
                     },
                     {
                         element: <OptionalRoute />,
-                        loader: configLoader(queryClient, api),
                         children: [
                             {
                                 path: Routes.Home,
