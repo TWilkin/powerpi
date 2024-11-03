@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router";
-import { useUser } from "../hooks/useUser";
+import useUser from "../hooks/useUser";
 import Route from "./Route";
 import RouteBuilder from "./RouteBuilder";
 

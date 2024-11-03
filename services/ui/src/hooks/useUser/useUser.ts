@@ -8,7 +8,7 @@ type JWTCookie = {
 /** Hook to retrieve the id of the currently logged in user (if any).
  * @return The currently logged in user.
  */
-export function useUser() {
+export default function useUser() {
     const [cookies] = useCookies(["jwt"]);
 
     if (cookies.jwt) {
