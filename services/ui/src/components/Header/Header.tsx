@@ -1,5 +1,12 @@
-export const Header = () => {
+import Logo from "../Logo";
+
+const Header = () => {
     //const { data } = useConfig();
 
-    return <header className="bg-sky-400 dark:bg-purple-950">PowerPi</header>;
+    return (
+        <header className="flex flex-row gap-1 items-center bg-sky-400 dark:bg-purple-950">
+            <Logo />
+        </header>
+    );
 };
+export default Header;
