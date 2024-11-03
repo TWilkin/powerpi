@@ -10,7 +10,7 @@ const Logo = () => {
     return (
         <a
             href={RouteBuilder.build()}
-            className="flex flex-row gap-1 items-center py-2 bg-black text-white text-sm rotate-180 logo"
+            className="flex flex-row gap-1 items-center py-2 bg-black text-white text-xs rotate-180 logo"
         >
             <FontAwesomeIcon icon={faPlug} spin={fetching > 0} className="rotate-90" />
             PowerPi

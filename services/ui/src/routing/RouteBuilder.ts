@@ -7,6 +7,6 @@ export default class RouteBuilder {
      * @return The URL for the specified Route.
      */
     public static build(route?: Route) {
-        return [Route.Root, route].filter((route) => route).join("/");
+        return [route ?? Route.Root].join("/");
     }
 }
