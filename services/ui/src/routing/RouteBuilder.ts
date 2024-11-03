@@ -6,7 +6,7 @@ export default class RouteBuilder {
      * @param route The route to build a URL for.
      * @return The URL for the specified Route.
      */
-    public static build(route: Route) {
-        return [Route.Root, route].join("/");
+    public static build(route?: Route) {
+        return [Route.Root, route].filter((route) => route).join("/");
     }
 }
