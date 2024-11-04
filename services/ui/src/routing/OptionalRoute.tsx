@@ -1,4 +1,4 @@
-import { Navigate, Outlet, useLocation } from "react-router";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Route from "./Route";
 import RouteBuilder from "./RouteBuilder";
 import useOptionalRoute from "./useOptionalRoute";

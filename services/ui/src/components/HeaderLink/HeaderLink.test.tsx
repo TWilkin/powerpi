@@ -7,7 +7,7 @@ import { describe, expect, test } from "vitest";
 import Route from "../../routing/Route";
 import HeaderLink from "./HeaderLink";
 
-describe("HeaderLink", () => {
+describe("HeaderLink", () =>
     test("renders", () => {
         render(<HeaderLink route={Route.Home} icon={faHome} text="Home" />, {
             wrapper: MemoryRouter,
@@ -21,5 +21,4 @@ describe("HeaderLink", () => {
         expect(icon).toHaveAttribute("data-icon", "house");
 
         expect(within(link).getByText("Home")).toBeInTheDocument();
-    });
-});
+    }));
