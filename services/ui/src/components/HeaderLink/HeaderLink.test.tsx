@@ -1,6 +1,5 @@
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import "@testing-library/jest-dom";
-import "@testing-library/jest-dom/vitest";
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import Route from "../../routing/Route";

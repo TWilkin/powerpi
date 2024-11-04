@@ -1,5 +1,4 @@
 import "@testing-library/jest-dom";
-import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
 import { PropsWithChildren } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
