@@ -3,7 +3,7 @@ import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
 import { PropsWithChildren } from "react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { describe, test, vi } from "vitest";
+import { vi } from "vitest";
 import OptionalRoute from "./OptionalRoute";
 
 vi.mock("react-router-dom", async () => ({

@@ -3,7 +3,6 @@ import "@testing-library/jest-dom";
 import "@testing-library/jest-dom/vitest";
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
-import { describe, expect, test } from "vitest";
 import Route from "../../routing/Route";
 import HeaderLink from "./HeaderLink";
 
