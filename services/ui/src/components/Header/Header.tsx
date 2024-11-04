@@ -12,15 +12,9 @@ const Header = () => {
             <nav className="flex flex-row items-center bg-black border-b-2 border-black divide-x-2 divide-black">
                 <Logo />
 
-                {enabled?.home && (
-                    <HeaderLink route={Route.Home} icon={faHome}>
-                        Home
-                    </HeaderLink>
-                )}
+                {enabled?.home && <HeaderLink route={Route.Home} icon={faHome} text="Home" />}
 
-                <HeaderLink route={Route.Device} icon={faPlug}>
-                    Devices
-                </HeaderLink>
+                <HeaderLink route={Route.Device} icon={faPlug} text="Devices" />
             </nav>
         </header>
     );
