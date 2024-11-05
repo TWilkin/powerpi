@@ -1,14 +1,13 @@
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { NavLink, NavLinkRenderProps } from "react-router-dom";
 import Route from "../../routing/Route";
 import RouteBuilder from "../../routing/RouteBuilder";
+import Icon, { IconType } from "../Icon";
 
 type HeaderLinkProps = {
     route: Route;
 
-    icon: IconProp;
+    icon: IconType;
 
     text: string;
 };
@@ -16,7 +15,7 @@ type HeaderLinkProps = {
 const HeaderLink = ({ route, icon, text }: HeaderLinkProps) => (
     <div className="h-20 grow">
         <NavLink to={RouteBuilder.build(route)} className={classGenerator} aria-label={text}>
-            <FontAwesomeIcon icon={icon} />
+            <Icon icon={icon} />
 
             <span className="hidden md:block">{text}</span>
         </NavLink>

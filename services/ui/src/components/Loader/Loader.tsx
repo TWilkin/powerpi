@@ -1,9 +1,8 @@
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Icon from "../Icon";
 
 const Loader = () => (
     <div role="alert" aria-label="Loading">
-        <FontAwesomeIcon icon={faSpinner} spin />
+        <Icon icon="loading" spin />
     </div>
 );
 export default Loader;

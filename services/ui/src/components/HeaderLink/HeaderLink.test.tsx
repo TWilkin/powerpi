@@ -1,4 +1,3 @@
-import { faHome } from "@fortawesome/free-solid-svg-icons";
 import "@testing-library/jest-dom";
 import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
@@ -7,7 +6,7 @@ import HeaderLink from "./HeaderLink";
 
 describe("HeaderLink", () =>
     test("renders", () => {
-        render(<HeaderLink route={Route.Home} icon={faHome} text="Home" />, {
+        render(<HeaderLink route={Route.Home} icon="home" text="Home" />, {
             wrapper: MemoryRouter,
         });
 
