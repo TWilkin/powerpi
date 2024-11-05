@@ -1,19 +1,14 @@
 import { PowerPiApi } from "@powerpi/common-api";
 import {
-    EnsureQueryDataOptions,
     QueryClient,
     QueryKey,
-    useQuery as useReactQuery,
+    useSuspenseQuery,
+    UseSuspenseQueryOptions,
 } from "@tanstack/react-query";
+import { defer } from "react-router-dom";
 import useAPI from "./useAPI";
 
-export type Query<TResultType> = EnsureQueryDataOptions<
-    TResultType,
-    Error,
-    TResultType,
-    QueryKey,
-    never
->;
+export type Query<TResultType> = UseSuspenseQueryOptions<TResultType, Error, TResultType, QueryKey>;
 
 type QueryGenerator<TResultType> = (api: PowerPiApi) => Query<TResultType>;
 
@@ -31,7 +26,7 @@ export function loader<TResultType>(
     const query = queryGenerator(api);
 
     return function loader() {
-        return queryClient.ensureQueryData(query);
+        return defer({ data: queryClient.ensureQueryData(query) });
     };
 }
 
@@ -42,5 +37,5 @@ export function loader<TResultType>(
 export function useQuery<TResultType>(queryGenerator: QueryGenerator<TResultType>) {
     const api = useAPI();
 
-    return useReactQuery(queryGenerator(api));
+    return useSuspenseQuery(queryGenerator(api));
 }
