@@ -1,12 +1,12 @@
-import { useMemo } from "react";
+import { FormHTMLAttributes, useMemo } from "react";
 import Button from "../../components/Button";
 import LoginProtocol from "./LoginProtocol";
 
 type LoginButtonProps = {
     protocol: LoginProtocol;
-};
+} & FormHTMLAttributes<HTMLFormElement>;
 
-const LoginButton = ({ protocol }: LoginButtonProps) => {
+const LoginButton = ({ protocol, ...props }: LoginButtonProps) => {
     const { protocolName, url } = useMemo(
         () => ({
             protocolName:
@@ -17,8 +17,9 @@ const LoginButton = ({ protocol }: LoginButtonProps) => {
     );
 
     return (
-        <form method="get" action={url}>
+        <form {...props} method="get" action={url} name={`${protocol}-login`}>
             <input type="hidden" name="redirect_uri" value={`${window.location.origin}/`} />
+
             <Button type="submit">Login with {protocolName}</Button>
         </form>
     );
