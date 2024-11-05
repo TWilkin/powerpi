@@ -1,0 +1,13 @@
+.button {
+    @apply font-semibold;
+    @apply p-2;
+    @apply bg-sky-400 text-black dark:bg-purple-900 dark:text-white;
+    @apply hover:bg-sky-300 hover:dark:bg-purple-800;
+    @apply focus:outline-none focus:ring-offset-2 focus:ring-offset-white focus:dark:ring-offset-black focus:ring-2 focus:ring-black focus:dark:ring-white;
+    @apply disabled:opacity-50;
+
+    &.active,
+    &:active {
+        @apply bg-sky-200 dark:bg-purple-700;
+    }
+}

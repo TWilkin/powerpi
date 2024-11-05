@@ -1,11 +1,19 @@
 import { ButtonHTMLAttributes } from "react";
+import Icon, { IconType } from "../Icon";
+import "./Button.css";
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+type ButtonProps = {
+    icon?: IconType;
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
-const Button = (props: ButtonProps) => (
+const Button = ({ children, ...props }: ButtonProps) => (
     <button
         {...props}
-        className="font-semibold p-2 rounded bg-sky-100 text-black dark:bg-purple-900 dark:text-white"
-    />
+        className="flex flex-row justify-center items-center gap-1 button rounded border-2 border-black"
+    >
+        {children}
+
+        {props.icon && <Icon icon={props.icon} />}
+    </button>
 );
 export default Button;

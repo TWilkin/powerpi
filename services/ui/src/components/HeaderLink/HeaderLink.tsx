@@ -25,10 +25,10 @@ export default HeaderLink;
 
 function classGenerator({ isActive }: NavLinkRenderProps) {
     return classNames(
-        "h-full flex flex-row justify-center items-center gap-1 grow text-2xl font-semibold p-2 text-black dark:text-white",
+        "h-full flex flex-row justify-center items-center gap-1 grow text-2xl",
+        "button",
         {
-            ["bg-sky-100 dark:bg-purple-900"]: !isActive,
-            ["bg-sky-300 dark:bg-purple-950"]: isActive,
+            ["active"]: isActive,
         },
     );
 }
