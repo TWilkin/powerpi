@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import ErrorPage from "../pages/ErrorPage";
 import Layout, { configLoader } from "../pages/Layout";
 import { api, queryClient } from "../queries/client";
+import { devicesLoader } from "../queries/useDevices";
 import OptionalRoute from "./OptionalRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import Routes from "./Route";
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
                     {
                         path: Routes.Device,
                         element: <DevicePage />,
+                        loader: devicesLoader(queryClient, api),
                     },
                     {
                         element: <OptionalRoute />,
