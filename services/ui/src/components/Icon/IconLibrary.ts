@@ -1,5 +1,5 @@
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { faHome, faPlug, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faPlug, faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 const iconLibrary = {
     logo: faPlug,
@@ -11,6 +11,8 @@ const iconLibrary = {
     // navigation
     home: faHome,
     device: faPlug,
+
+    search: faSearch,
 };
 
 export type IconType = keyof typeof iconLibrary;
