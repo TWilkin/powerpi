@@ -1,5 +1,12 @@
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { faHome, faPlug, faSearch, faSpinner, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+    faHome,
+    faInfoCircle,
+    faPlug,
+    faSearch,
+    faSpinner,
+    faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 
 const iconLibrary = {
     logo: faPlug,
@@ -12,6 +19,7 @@ const iconLibrary = {
     home: faHome,
     device: faPlug,
 
+    info: faInfoCircle,
     search: faSearch,
     clear: faXmark,
 };

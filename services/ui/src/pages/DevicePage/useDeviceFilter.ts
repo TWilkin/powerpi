@@ -23,6 +23,7 @@ export default function useDeviceFilter() {
     return {
         state,
         devices: filtered,
+        total: data.length ?? 0,
         dispatch,
     };
 }
