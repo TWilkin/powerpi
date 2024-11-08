@@ -2,117 +2,117 @@
     "folders": [
         {
             "name": "PowerPi",
-            "path": "."
+            "path": ".",
         },
 
         // Common
         {
             "name": "Common API",
-            "path": "common/node/common-api"
+            "path": "common/node/common-api",
         },
         {
             "name": "Common Node",
-            "path": "common/node/common"
+            "path": "common/node/common",
         },
         {
             "name": "Common Node Test",
-            "path": "common/node/common-test"
+            "path": "common/node/common-test",
         },
         {
             "name": "Common Python",
-            "path": "common/python"
+            "path": "common/python",
         },
         {
             "name": "Common Python Test",
-            "path": "common/pytest"
+            "path": "common/pytest",
         },
 
         // Services
         {
             "name": "API",
-            "path": "services/api"
+            "path": "services/api",
         },
         {
             "name": "Config Server",
-            "path": "services/config-server"
+            "path": "services/config-server",
         },
         {
             "name": "Energy Monitor",
-            "path": "services/energy-monitor"
+            "path": "services/energy-monitor",
         },
         {
             "name": "Event",
-            "path": "services/event"
+            "path": "services/event",
         },
         {
             "name": "FreeDNS",
-            "path": "services/freedns"
+            "path": "services/freedns",
         },
         {
             "name": "Persistence",
-            "path": "services/persistence"
+            "path": "services/persistence",
         },
         {
             "name": "Scheduler",
-            "path": "services/scheduler"
+            "path": "services/scheduler",
         },
         {
             "name": "Shutdown",
-            "path": "services/shutdown"
+            "path": "services/shutdown",
         },
         {
             "name": "UI",
-            "path": "services/ui"
+            "path": "services/ui",
         },
         {
             "name": "Voice Assistant",
-            "path": "services/voice-assistant"
+            "path": "services/voice-assistant",
         },
 
         // Controllers
         {
             "name": "Energenie Controller",
-            "path": "controllers/energenie"
+            "path": "controllers/energenie",
         },
         {
             "name": "Harmony Controller",
-            "path": "controllers/harmony"
+            "path": "controllers/harmony",
         },
         {
             "name": "LIFX Controller",
-            "path": "controllers/lifx"
+            "path": "controllers/lifx",
         },
         {
             "name": "Network Controller",
-            "path": "controllers/network"
+            "path": "controllers/network",
         },
         {
             "name": "Snapcast Controller",
-            "path": "controllers/snapcast"
+            "path": "controllers/snapcast",
         },
         {
             "name": "Virtual Controller",
-            "path": "controllers/virtual"
+            "path": "controllers/virtual",
         },
         {
             "name": "ZigBee Controller",
-            "path": "controllers/zigbee"
+            "path": "controllers/zigbee",
         },
 
         // Other
         {
             "name": "Sensors",
-            "path": "sensors"
+            "path": "sensors",
         },
         {
             "name": "Kubernetes",
-            "path": "kubernetes"
-        }
+            "path": "kubernetes",
+        },
     ],
     "launch": {
         "version": "0.2.0",
         "configurations": [],
-        "compounds": []
+        "compounds": [],
     },
     "tasks": {
         "version": "2.0.0",
@@ -122,87 +122,87 @@
                 "command": "yarn build:lib",
                 "type": "shell",
                 "presentation": {
-                    "reveal": "always"
+                    "reveal": "always",
                 },
-                "group": "build"
+                "group": "build",
             },
             {
                 "label": "Clean node",
                 "command": "yarn clean",
                 "type": "shell",
                 "presentation": {
-                    "reveal": "always"
-                }
+                    "reveal": "always",
+                },
             },
             {
                 "label": "Version service",
                 "command": "bash ${workspaceFolder}/.github/scripts/version.sh --service ${input:service} --version ${input:versionPart} --chart-version ${input:chartVersionPart} --commit",
                 "type": "shell",
                 "presentation": {
-                    "reveal": "always"
+                    "reveal": "always",
                 },
-                "problemMatcher": []
+                "problemMatcher": [],
             },
             {
                 "label": "Version release",
                 "command": "bash ${workspaceFolder}/.github/scripts/version.sh --release --version ${input:versionPart} --chart-version ${input:chartVersionPart} --commit",
                 "type": "shell",
                 "presentation": {
-                    "reveal": "always"
+                    "reveal": "always",
                 },
-                "problemMatcher": []
-            }
+                "problemMatcher": [],
+            },
         ],
         "inputs": [
             {
                 "id": "service",
                 "description": "The name of the service",
-                "type": "promptString"
+                "type": "promptString",
             },
             {
                 "id": "versionPart",
                 "description": "The part of the service/release version to increase, either major, minor or patch",
                 "default": "minor",
-                "type": "promptString"
+                "type": "promptString",
             },
             {
                 "id": "chartVersionPart",
                 "description": "The part of the Kubernetes chart version to increase, either major, minor or patch",
                 "default": "minor",
-                "type": "promptString"
-            }
-        ]
+                "type": "promptString",
+            },
+        ],
     },
     "settings": {
         "editor.codeActionsOnSave": {
-            "source.organizeImports": "explicit"
+            "source.organizeImports": "explicit",
         },
         "[scss]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
         "[javascript]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
         "[json]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
         "[jsonc]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
         "[typescript]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
         "[typescriptreact]": {
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
         "[yaml]": {
-            "editor.defaultFormatter": "redhat.vscode-yaml"
+            "editor.defaultFormatter": "redhat.vscode-yaml",
         },
         "[helm]": {
-            "editor.defaultFormatter": "redhat.vscode-yaml"
+            "editor.defaultFormatter": "redhat.vscode-yaml",
         },
         "[python]": {
-            "editor.defaultFormatter": "ms-python.autopep8"
+            "editor.defaultFormatter": "ms-python.autopep8",
         },
         "editor.formatOnSave": true,
         "jest.disabledWorkspaceFolders": [
@@ -224,11 +224,16 @@
             "Virtual Controller",
             "ZigBee Controller",
             "Sensors",
-            "Kubernetes"
+            "Kubernetes",
         ],
         "pylint.args": ["--rcfile=${workspaceFolder}/../../.pylintrc"],
         "python.testing.unittestEnabled": false,
-        "python.testing.pytestEnabled": true
+        "python.testing.pytestEnabled": true,
+        "tailwindCSS.experimental.classRegex": [
+            ["Classes \\=([^;]*);", "'([^']*)'"],
+            ["Classes \\=([^;]*);", "\"([^\"]*)\""],
+            ["Classes \\=([^;]*);", "\\`([^\\`]*)\\`"],
+        ],
     },
     "extensions": {
         "recommendations": [
@@ -241,7 +246,8 @@
             "ms-python.pylint",
             "ms-python.autopep8",
             "redhat.vscode-yaml",
-            "SonarSource.sonarlint-vscode"
-        ]
-    }
+            "SonarSource.sonarlint-vscode",
+            "bradlc.vscode-tailwindcss",
+        ],
+    },
 }
