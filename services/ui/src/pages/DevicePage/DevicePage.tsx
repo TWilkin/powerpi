@@ -1,18 +1,20 @@
-import { useState } from "react";
+import { useCallback } from "react";
 import Search from "../../components/Search";
-import useDevices from "../../queries/useDevices";
+import useDeviceFilter from "./useDeviceFilter";
 
 const DevicePage = () => {
-    const { data } = useDevices();
+    const { state, devices, dispatch } = useDeviceFilter();
 
-    const [search, setSearch] = useState("");
-    console.log("search", search);
+    const handleSearch = useCallback(
+        (search: string) => dispatch({ type: "Search", search }),
+        [dispatch],
+    );
 
     return (
         <>
-            <Search placeholder="Search for devices" value={search} onSearch={setSearch} />
+            <Search placeholder="Search for devices" value={state.search} onSearch={handleSearch} />
 
-            {JSON.stringify(data)}
+            {JSON.stringify(devices)}
         </>
     );
 };
