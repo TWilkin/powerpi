@@ -1,4 +1,5 @@
 import { FormHTMLAttributes, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import Button from "../../components/Button";
 import LoginProtocol from "./LoginProtocol";
 
@@ -7,6 +8,8 @@ type LoginButtonProps = {
 } & FormHTMLAttributes<HTMLFormElement>;
 
 const LoginButton = ({ protocol, ...props }: LoginButtonProps) => {
+    const { t } = useTranslation();
+
     const { protocolName, url } = useMemo(
         () => ({
             protocolName:
@@ -21,7 +24,7 @@ const LoginButton = ({ protocol, ...props }: LoginButtonProps) => {
             <input type="hidden" name="redirect_uri" value={`${window.location.origin}/`} />
 
             <Button type="submit" icon={protocol}>
-                Login with {protocolName}
+                {t("pages.login.login with")} {protocolName}
             </Button>
         </form>
     );

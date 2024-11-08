@@ -1,0 +1,17 @@
+{
+    "navigation": {
+        "home": "Home",
+        "devices": "Devices"
+    },
+    "pages": {
+        "login": {
+            "login with": "Login with"
+        },
+        "devices": {
+            "search for devices": "Search for devices"
+        }
+    },
+    "common": {
+        "clear search": "Clear search"
+    }
+}

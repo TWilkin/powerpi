@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { ChangeEvent, InputHTMLAttributes, MouseEvent, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import Icon from "../Icon";
 
 type SearchProps = {
@@ -9,6 +10,8 @@ type SearchProps = {
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "onChange">;
 
 const Search = ({ onSearch, value, className, ...props }: SearchProps) => {
+    const { t } = useTranslation();
+
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleClear = useCallback(
@@ -51,7 +54,7 @@ const Search = ({ onSearch, value, className, ...props }: SearchProps) => {
             <button
                 disabled={value === ""}
                 className="absolute p-0.5 right-5 disabled:opacity-50"
-                aria-label="Clear search"
+                aria-label={t("common.clear search")}
                 onClick={handleClear}
             >
                 <Icon icon="clear" />
