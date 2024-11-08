@@ -8,7 +8,7 @@ type SearchProps = {
     onSearch(search: string): void;
 } & Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "onChange">;
 
-const Search = ({ onSearch, value = "", className, ...props }: SearchProps) => {
+const Search = ({ onSearch, value, className, ...props }: SearchProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleClear = useCallback(
@@ -49,7 +49,7 @@ const Search = ({ onSearch, value = "", className, ...props }: SearchProps) => {
             />
 
             <button
-                disabled={value == null || value === ""}
+                disabled={value === ""}
                 className="absolute p-0.5 right-5 disabled:opacity-50"
                 aria-label="Clear search"
                 onClick={handleClear}

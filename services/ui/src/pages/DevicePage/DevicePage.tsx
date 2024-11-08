@@ -12,7 +12,12 @@ const DevicePage = () => {
 
     return (
         <>
-            <Search placeholder="Search for devices" value={state.search} onSearch={handleSearch} />
+            <Search
+                placeholder="Search for devices"
+                value={state.search}
+                aria-label="Search for devices"
+                onSearch={handleSearch}
+            />
 
             {JSON.stringify(devices)}
         </>
