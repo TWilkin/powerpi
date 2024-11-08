@@ -43,5 +43,5 @@ EXPOSE 8080
 # copy the built UI application into the NGINX container
 WORKDIR /var/www/powerpi
 COPY --chown=nginx:nginx LICENSE ./
-COPY --from=build-ui-image --chown=nginx:nginx /home/node/app/services/ui/index.html ./
 COPY --from=build-ui-image --chown=nginx:nginx /home/node/app/services/ui/dist/ ./
+COPY --chown=nginx:nginx services/ui/public/ ./
