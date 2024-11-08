@@ -51,8 +51,5 @@ describe("useDevices", () =>
             wrapper: Wrapper,
         });
 
-        await waitFor(() => {
-            console.log(result.current);
-            expect(result.current?.data).toBe(data);
-        });
+        await waitFor(() => expect(result.current?.data).toBe(data));
     }));

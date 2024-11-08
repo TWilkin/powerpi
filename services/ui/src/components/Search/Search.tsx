@@ -3,10 +3,12 @@ import { ChangeEvent, InputHTMLAttributes, MouseEvent, useCallback, useRef } fro
 import Icon from "../Icon";
 
 type SearchProps = {
-    onSearch(search: string): void;
-} & Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "onChange">;
+    value: string;
 
-const Search = ({ onSearch, className, ...props }: SearchProps) => {
+    onSearch(search: string): void;
+} & Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "onChange">;
+
+const Search = ({ onSearch, value = "", className, ...props }: SearchProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleClear = useCallback(
@@ -35,6 +37,7 @@ const Search = ({ onSearch, className, ...props }: SearchProps) => {
             <input
                 {...props}
                 type="search"
+                value={value}
                 autoComplete="off"
                 className={classNames(
                     className,
@@ -46,7 +49,7 @@ const Search = ({ onSearch, className, ...props }: SearchProps) => {
             />
 
             <button
-                disabled={!inputRef.current?.value}
+                disabled={value == null || value === ""}
                 className="absolute p-0.5 right-5 disabled:opacity-50"
                 aria-label="Clear search"
                 onClick={handleClear}

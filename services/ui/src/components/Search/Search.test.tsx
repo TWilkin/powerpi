@@ -5,7 +5,7 @@ import Search from "./Search";
 
 describe("Search", () => {
     test("renders", () => {
-        render(<Search onSearch={vi.fn()} />);
+        render(<Search value="" onSearch={vi.fn()} />);
 
         const search = screen.getByRole("searchbox");
         expect(search).toBeInTheDocument();
@@ -17,6 +17,7 @@ describe("Search", () => {
 
         const clear = screen.getByLabelText("Clear search");
         expect(clear).toBeInTheDocument();
+        expect(clear).toBeDisabled();
         expect(within(clear).getByRole("img", { hidden: true })).toHaveAttribute(
             "data-icon",
             "xmark",
@@ -25,27 +26,28 @@ describe("Search", () => {
 
     test("onSearch", async () => {
         const onSearch = vi.fn();
-        render(<Search onSearch={onSearch} />);
-
-        const search = screen.getByRole("searchbox");
-        expect(search).toBeInTheDocument();
-        await userEvent.type(search, "search");
-
-        expect(onSearch).toHaveBeenCalledWith("search");
-    });
-
-    test("clear", async () => {
-        const onSearch = vi.fn();
-        render(<Search onSearch={onSearch} />);
+        render(<Search value="" onSearch={onSearch} />);
 
         const search = screen.getByRole("searchbox");
         expect(search).toBeInTheDocument();
         await userEvent.type(search, "s");
 
+        expect(onSearch).toHaveBeenCalledWith("s");
+    });
+
+    test("clear", async () => {
+        const onSearch = vi.fn();
+        render(<Search value="something" onSearch={onSearch} />);
+
+        const search = screen.getByRole("searchbox");
+        expect(search).toBeInTheDocument();
+        expect(search).toHaveValue("something");
+
         vi.resetAllMocks();
 
         const clear = screen.getByLabelText("Clear search");
         expect(clear).toBeInTheDocument();
+        expect(clear).toBeEnabled();
 
         await userEvent.click(clear);
 
