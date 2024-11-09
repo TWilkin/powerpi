@@ -6,7 +6,19 @@ import QueryKeyFactory from "./QueryKeyFactory";
 function configQuery(api: PowerPiApi): Query<Config> {
     return {
         queryKey: QueryKeyFactory.config,
-        queryFn: () => api.getConfig(),
+        queryFn: async () => {
+            try {
+                return await api.getConfig();
+            } catch (e) {
+                // this probably means we're not logged in
+                return {
+                    hasDevices: false,
+                    hasFloorplan: false,
+                    hasPersistence: false,
+                    hasSensors: false,
+                };
+            }
+        },
         staleTime: Infinity,
     };
 }

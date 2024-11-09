@@ -12,6 +12,7 @@ export default function useOptionalRoute() {
 
         return {
             [Route.Home]: data.hasFloorplan,
+            [Route.Device]: data.hasDevices,
         };
     }, [data]);
 }

@@ -12,10 +12,13 @@ const OptionalRoute = () => {
         return <></>;
     }
 
-    if (pathname.includes(Route.Home) && enabled.home) {
+    if (
+        (pathname.includes(Route.Home) && enabled.home) ||
+        (pathname.includes(Route.Device) && enabled.device)
+    ) {
         return <Outlet />;
     }
 
-    return <Navigate to={RouteBuilder.build()} />;
+    return <Navigate to={RouteBuilder.build()} replace />;
 };
 export default OptionalRoute;

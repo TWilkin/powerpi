@@ -39,7 +39,7 @@ describe("configLoader", () =>
         expect(result).toBe(data);
     }));
 
-describe("useQueryConfig", () =>
+describe("useQueryConfig", () => {
     test("works", async () => {
         mocks.api.getConfig.mockImplementation(async () => data);
 
@@ -48,4 +48,24 @@ describe("useQueryConfig", () =>
         });
 
         await waitFor(() => expect(result.current.data).toBe(data));
-    }));
+    });
+
+    test("works when throwing", async () => {
+        mocks.api.getConfig.mockImplementation(async () => {
+            throw new Error("Nope");
+        });
+
+        const { result } = renderHook(useQueryConfig, {
+            wrapper: Wrapper,
+        });
+
+        await waitFor(() =>
+            expect(result.current.data).toStrictEqual({
+                hasDevices: false,
+                hasSensors: false,
+                hasFloorplan: false,
+                hasPersistence: false,
+            }),
+        );
+    });
+});

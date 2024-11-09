@@ -16,11 +16,15 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("./useOptionalRoute", () => ({ default: mocks.useOptionalRoute }));
 
-const Wrapper = ({ children }: PropsWithChildren<unknown>) => (
-    <MemoryRouter initialEntries={["/home"]}>
+type WrapperProps = PropsWithChildren<{
+    route: string;
+}>;
+
+const Wrapper = ({ children, route }: WrapperProps) => (
+    <MemoryRouter initialEntries={[`/${route}`]}>
         <Routes>
             <Route path="/" element={children}>
-                <Route path="home" element={<div>Enabled</div>} />
+                <Route path={route} element={<div>Enabled</div>} />
             </Route>
         </Routes>
     </MemoryRouter>
@@ -32,24 +36,38 @@ describe("OptionalRoute", () => {
     test("does nothing while loading", () => {
         mocks.useOptionalRoute.mockReturnValue(undefined);
 
-        render(<OptionalRoute />, { wrapper: Wrapper });
+        render(
+            <Wrapper route="home">
+                <OptionalRoute />
+            </Wrapper>,
+        );
 
         expect(screen.queryByText("Enabled")).not.toBeInTheDocument();
         expect(screen.queryByText("Disabled")).not.toBeInTheDocument();
     });
 
-    test("redirects when disabled", () => {
-        mocks.useOptionalRoute.mockReturnValue({ home: false });
+    const routes = ["home", "device"];
 
-        render(<OptionalRoute />, { wrapper: Wrapper });
+    test.each(routes)("redirects when %s disabled", (route) => {
+        mocks.useOptionalRoute.mockReturnValue({ home: true, device: true, [route]: false });
+
+        render(
+            <Wrapper route={route}>
+                <OptionalRoute />
+            </Wrapper>,
+        );
 
         expect(screen.getByText("Disabled")).toBeInTheDocument();
     });
 
-    test("shows element when enabled", () => {
-        mocks.useOptionalRoute.mockReturnValue({ home: true });
+    test.each(routes)("shows element when %s enabled", (route) => {
+        mocks.useOptionalRoute.mockReturnValue({ home: false, device: false, [route]: true });
 
-        render(<OptionalRoute />, { wrapper: Wrapper });
+        render(
+            <Wrapper route={route}>
+                <OptionalRoute />
+            </Wrapper>,
+        );
 
         expect(screen.getByText("Enabled")).toBeInTheDocument();
     });
