@@ -38,27 +38,29 @@ const DevicePage = () => {
             )}
 
             {devices.length !== 0 && (
-                <table>
-                    <tbody>
-                        {devices.map((device) => (
-                            <tr key={device.name}>
-                                {showingInvisible && (
+                <div className="flex-1 overflow-auto">
+                    <table>
+                        <tbody>
+                            {devices.map((device) => (
+                                <tr key={device.name}>
+                                    {showingInvisible && (
+                                        <td>
+                                            <Icon icon={device.visible ? "visible" : "invisible"} />
+                                        </td>
+                                    )}
+
                                     <td>
-                                        <Icon icon={device.visible ? "visible" : "invisible"} />
+                                        <DeviceIcon type={device.type} />
                                     </td>
-                                )}
 
-                                <td>
-                                    <DeviceIcon type={device.type} />
-                                </td>
+                                    <td>{device.display_name ?? device.name}</td>
 
-                                <td>{device.display_name ?? device.name}</td>
-
-                                <td>{JSON.stringify(device)}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                                    <td>{JSON.stringify(device)}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </>
     );
