@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { ButtonHTMLAttributes } from "react";
 import Icon, { IconType } from "../Icon";
-import buttonStyles from "./buttonStyles";
+import buttonClasses from "./buttonClasses";
 
 type ButtonProps = {
     icon?: IconType;
@@ -11,7 +11,7 @@ const Button = ({ children, ...props }: ButtonProps) => (
     <button
         {...props}
         className={classNames(
-            buttonStyles(),
+            buttonClasses,
             "flex flex-row justify-center items-center gap-1 rounded border-2 border-black",
         )}
     >
