@@ -7,7 +7,7 @@ const mocks = vi.hoisted(() => ({
     useConfig: vi.fn(),
 }));
 
-vi.mock("../queries/useConfig", () => ({ default: mocks.useConfig }));
+vi.mock("../queries/useQueryConfig", () => ({ default: mocks.useConfig }));
 
 describe("useOptionalRoute", () => {
     test("no data", () => {

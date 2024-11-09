@@ -1,13 +1,13 @@
-import { Config, PowerPiApi } from "@powerpi/common-api";
+import { Device, DeviceState, PowerPiApi } from "@powerpi/common-api";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import { PropsWithChildren, Suspense } from "react";
 import { vi } from "vitest";
-import useConfig, { configLoader } from "./useConfig";
+import useQueryDevices, { devicesLoader } from "./useQueryDevices";
 
 const mocks = vi.hoisted(() => ({
     api: {
-        getConfig: vi.fn(),
+        getDevices: vi.fn(),
     },
 }));
 
@@ -22,30 +22,34 @@ const Wrapper = ({ children }: PropsWithChildren<unknown>) => {
     );
 };
 
-const data: Config = {
-    hasDevices: true,
-    hasSensors: true,
-    hasFloorplan: false,
-    hasPersistence: false,
-};
+const data: Device[] = [
+    {
+        state: DeviceState.On,
+        since: 0,
+        name: "Device",
+        display_name: "Device",
+        visible: true,
+        type: "socket",
+    },
+];
 
-describe("configLoader", () =>
+describe("devicesLoader", () =>
     test("works", async () => {
-        mocks.api.getConfig.mockImplementation(async () => data);
+        mocks.api.getDevices.mockImplementation(async () => data);
 
-        const loader = configLoader(new QueryClient(), mocks.api as unknown as PowerPiApi);
+        const loader = devicesLoader(new QueryClient(), mocks.api as unknown as PowerPiApi);
 
         const result = await loader().data.data;
         expect(result).toBe(data);
     }));
 
-describe("useConfig", () =>
+describe("useQueryDevices", () =>
     test("works", async () => {
-        mocks.api.getConfig.mockImplementation(async () => data);
+        mocks.api.getDevices.mockImplementation(async () => data);
 
-        const { result } = renderHook(useConfig, {
+        const { result } = renderHook(useQueryDevices, {
             wrapper: Wrapper,
         });
 
-        await waitFor(() => expect(result.current.data).toBe(data));
+        await waitFor(() => expect(result.current?.data).toBe(data));
     }));

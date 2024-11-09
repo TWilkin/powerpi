@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import useConfig from "../queries/useConfig";
+import useQueryConfig from "../queries/useQueryConfig";
 import Route from "./Route";
 
 export default function useOptionalRoute() {
-    const { data } = useConfig();
+    const { data } = useQueryConfig();
 
     return useMemo(() => {
         if (!data) {

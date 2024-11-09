@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import ErrorPage from "../pages/ErrorPage";
 import Layout, { configLoader } from "../pages/Layout";
 import { api, queryClient } from "../queries/client";
-import { devicesLoader } from "../queries/useDevices";
+import { devicesLoader } from "../queries/useQueryDevices";
 import OptionalRoute from "./OptionalRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import Routes from "./Route";

@@ -4,10 +4,10 @@ import { vi } from "vitest";
 import useDeviceFilter from "./useDeviceFilter";
 
 const mocks = vi.hoisted(() => ({
-    useDevices: vi.fn(),
+    useQueryDevices: vi.fn(),
 }));
 
-vi.mock("../../queries/useDevices", () => ({ default: mocks.useDevices }));
+vi.mock("../../queries/useQueryDevices", () => ({ default: mocks.useQueryDevices }));
 
 describe("useDeviceFilter", () => {
     const data: Device[] = [
@@ -30,7 +30,7 @@ describe("useDeviceFilter", () => {
     ];
 
     test("search", () => {
-        mocks.useDevices.mockReturnValue({ data });
+        mocks.useQueryDevices.mockReturnValue({ data });
 
         const { result } = renderHook(useDeviceFilter);
 
@@ -54,7 +54,7 @@ describe("useDeviceFilter", () => {
     });
 
     test("clears", () => {
-        mocks.useDevices.mockReturnValue({ data });
+        mocks.useQueryDevices.mockReturnValue({ data });
 
         const { result } = renderHook(useDeviceFilter);
 

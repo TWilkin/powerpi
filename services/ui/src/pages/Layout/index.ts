@@ -1,2 +1,2 @@
-export { configLoader } from "../../queries/useConfig";
+export { configLoader } from "../../queries/useQueryConfig";
 export { default } from "./Layout";

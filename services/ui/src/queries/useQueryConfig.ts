@@ -15,6 +15,6 @@ export function configLoader(queryClient: QueryClient, api: PowerPiApi) {
     return loader(queryClient, api, configQuery);
 }
 
-export default function useConfig() {
+export default function useQueryConfig() {
     return useQuery(configQuery);
 }

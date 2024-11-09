@@ -1,6 +1,6 @@
 import { Device } from "@powerpi/common-api";
 import { useMemo, useReducer } from "react";
-import useDevices from "../../queries/useDevices";
+import useQueryDevices from "../../queries/useQueryDevices";
 
 type DeviceFilterState = {
     search: string;
@@ -14,7 +14,7 @@ const initialDeviceFilterState = {
  * @return The filter state, filtered device list and the filter state dispatch function.
  */
 export default function useDeviceFilter() {
-    const { data } = useDevices();
+    const { data } = useQueryDevices();
 
     const [state, dispatch] = useReducer(reducer, initialDeviceFilterState);
 

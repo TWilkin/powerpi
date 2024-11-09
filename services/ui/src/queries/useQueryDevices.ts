@@ -14,6 +14,6 @@ export function devicesLoader(queryClient: QueryClient, api: PowerPiApi) {
     return loader(queryClient, api, deviceQuery);
 }
 
-export default function useDevices() {
+export default function useQueryDevices() {
     return useQuery(deviceQuery);
 }
