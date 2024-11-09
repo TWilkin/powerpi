@@ -14,7 +14,7 @@ interface Resources {
       },
       "devices": {
         "search for devices": "Search for devices",
-        "empty": "No devices",
+        "empty": "No devices.",
         "filtered_one": "Filtered {{count}} device.",
         "filtered_other": "Filtered {{count}} devices."
       }

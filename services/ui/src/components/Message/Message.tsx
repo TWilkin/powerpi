@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import Icon, { IconType } from "../Icon";
 
@@ -16,7 +17,20 @@ type MessageProps = {
 } & (MessageSimpleProps | MessageCountProps);
 
 const Message = (props: MessageProps) => {
-    const message = useMessage(props);
+    const { t } = useTranslation();
+
+    const message = useMemo(() => {
+        switch (props.type) {
+            case "empty":
+                return t(`${props.translation}.${props.type}`);
+
+            case "filtered":
+                return t(`${props.translation}.${props.type}`, { count: props.count });
+
+            default:
+                throw Error("Unknown type");
+        }
+    }, [props, t]);
 
     return (
         <div>
@@ -33,21 +47,6 @@ function getIcon(type: MessageProps["type"]): IconType {
 
         case "filtered":
             return "search";
-
-        default:
-            throw Error("Unknown type");
-    }
-}
-
-function useMessage(props: MessageProps) {
-    const { t } = useTranslation();
-
-    switch (props.type) {
-        case "empty":
-            return t(`${props.translation}.${props.type}`);
-
-        case "filtered":
-            return t(`${props.translation}.${props.type}`, { count: props.count });
 
         default:
             throw Error("Unknown type");
