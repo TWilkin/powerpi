@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import DeviceIcon from "../../components/DeviceIcon";
 import Icon from "../../components/Icon";
 import Message from "../../components/Message";
 import Search from "../../components/Search";
@@ -46,6 +47,10 @@ const DevicePage = () => {
                                         <Icon icon={device.visible ? "visible" : "invisible"} />
                                     </td>
                                 )}
+
+                                <td>
+                                    <DeviceIcon type={device.type} />
+                                </td>
 
                                 <td>{device.display_name ?? device.name}</td>
 

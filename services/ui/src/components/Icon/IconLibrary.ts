@@ -1,12 +1,25 @@
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import {
+    faCode,
+    faComputer,
     faEye,
     faEyeSlash,
+    faGreaterThanEqual,
     faHome,
     faInfoCircle,
+    faLayerGroup,
+    faLightbulb,
+    faLock,
+    faMusic,
+    faPanorama,
     faPlug,
+    faQuestion,
     faSearch,
+    faServer,
     faSpinner,
+    faStopwatch,
+    faTowerBroadcast,
+    faTv,
     faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -27,6 +40,22 @@ const iconLibrary = {
 
     visible: faEye,
     invisible: faEyeSlash,
+
+    // devices
+    deviceTv: faTv,
+    deviceMusic: faMusic,
+    deviceGroup: faLayerGroup,
+    deviceCondition: faGreaterThanEqual,
+    deviceComputer: faComputer,
+    deviceDelay: faStopwatch,
+    deviceLight: faLightbulb,
+    deviceMutex: faLock,
+    devicePairing: faTowerBroadcast,
+    deviceScene: faPanorama,
+    deviceServer: faServer,
+    deviceSocket: faPlug,
+    deviceVariable: faCode,
+    deviceUnknown: faQuestion,
 };
 
 export type IconType = keyof typeof iconLibrary;
