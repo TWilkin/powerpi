@@ -44,4 +44,3 @@ EXPOSE 8080
 WORKDIR /var/www/powerpi
 COPY --chown=nginx:nginx LICENSE ./
 COPY --from=build-ui-image --chown=nginx:nginx /home/node/app/services/ui/dist/ ./
-COPY --chown=nginx:nginx services/ui/public/ ./
