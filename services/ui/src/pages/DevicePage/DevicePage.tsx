@@ -4,6 +4,9 @@ import DeviceIcon from "../../components/DeviceIcon";
 import Icon from "../../components/Icon";
 import Message from "../../components/Message";
 import Search from "../../components/Search";
+import Table from "../../components/Table";
+import TableCell from "../../components/TableCell";
+import TableRow from "../../components/TableRow";
 import useDeviceFilter from "./useDeviceFilter";
 
 const DevicePage = () => {
@@ -39,27 +42,27 @@ const DevicePage = () => {
 
             {devices.length !== 0 && (
                 <div className="flex-1 overflow-auto">
-                    <table>
+                    <Table>
                         <tbody>
                             {devices.map((device) => (
-                                <tr key={device.name}>
+                                <TableRow key={device.name}>
                                     {showingInvisible && (
-                                        <td>
+                                        <TableCell>
                                             <Icon icon={device.visible ? "visible" : "invisible"} />
-                                        </td>
+                                        </TableCell>
                                     )}
 
-                                    <td>
+                                    <TableCell>
                                         <DeviceIcon type={device.type} />
-                                    </td>
+                                    </TableCell>
 
-                                    <td>{device.display_name ?? device.name}</td>
+                                    <TableCell>{device.display_name ?? device.name}</TableCell>
 
-                                    <td>{JSON.stringify(device)}</td>
-                                </tr>
+                                    <TableCell>{JSON.stringify(device)}</TableCell>
+                                </TableRow>
                             ))}
                         </tbody>
-                    </table>
+                    </Table>
                 </div>
             )}
         </>
