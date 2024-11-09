@@ -1,11 +1,12 @@
 import { isAxiosError } from "axios";
+import { useTranslation } from "react-i18next";
 import { isRouteErrorResponse, Navigate, useRouteError } from "react-router-dom";
 import Route from "../routing/Route";
 import RouteBuilder from "../routing/RouteBuilder";
 
 function errorMessage(error: unknown) {
     let status: number | undefined;
-    let message: string;
+    let message: string | undefined;
 
     if (isRouteErrorResponse(error)) {
         status = error.status;
@@ -19,7 +20,7 @@ function errorMessage(error: unknown) {
         message = error;
     } else {
         console.error(error);
-        message = "Unknown error";
+        message = undefined;
     }
 
     return {
@@ -29,6 +30,8 @@ function errorMessage(error: unknown) {
 }
 
 const ErrorPage = () => {
+    const { t } = useTranslation();
+
     const error = useRouteError();
     const { status, message } = errorMessage(error);
 
@@ -38,8 +41,8 @@ const ErrorPage = () => {
 
     return (
         <div role="alert">
-            <h1>An unexpected error has occurred.</h1>
-            <p>{message}</p>
+            <h1>{t("pages.error.an unexpected error has occurred")}</h1>
+            <p>{message ?? t("pages.error.unknown error")}</p>
         </div>
     );
 };
