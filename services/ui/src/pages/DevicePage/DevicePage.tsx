@@ -1,5 +1,6 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import Icon from "../../components/Icon";
 import Message from "../../components/Message";
 import Search from "../../components/Search";
 import useDeviceFilter from "./useDeviceFilter";
@@ -12,6 +13,13 @@ const DevicePage = () => {
     const handleSearch = useCallback(
         (search: string) => dispatch({ type: "Search", search }),
         [dispatch],
+    );
+
+    const { showingInvisible } = useMemo(
+        () => ({
+            showingInvisible: devices.findIndex((device) => !device.visible) !== -1,
+        }),
+        [devices],
     );
 
     return (
@@ -28,7 +36,25 @@ const DevicePage = () => {
                 <Message translation="pages.devices" type="filtered" count={total} />
             )}
 
-            {devices.length !== 0 && JSON.stringify(devices)}
+            {devices.length !== 0 && (
+                <table>
+                    <tbody>
+                        {devices.map((device) => (
+                            <tr key={device.name}>
+                                {showingInvisible && (
+                                    <td>
+                                        <Icon icon={device.visible ? "visible" : "invisible"} />
+                                    </td>
+                                )}
+
+                                <td>{device.display_name ?? device.name}</td>
+
+                                <td>{JSON.stringify(device)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </>
     );
 };

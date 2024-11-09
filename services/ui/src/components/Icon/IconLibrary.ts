@@ -1,5 +1,7 @@
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import {
+    faEye,
+    faEyeSlash,
     faHome,
     faInfoCircle,
     faPlug,
@@ -22,6 +24,9 @@ const iconLibrary = {
     info: faInfoCircle,
     search: faSearch,
     clear: faXmark,
+
+    visible: faEye,
+    invisible: faEyeSlash,
 };
 
 export type IconType = keyof typeof iconLibrary;
