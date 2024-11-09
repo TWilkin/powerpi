@@ -12,7 +12,7 @@ type MessageCountProps = {
 };
 
 type MessageProps = {
-    page: string;
+    translation: "pages.devices";
 } & (MessageSimpleProps | MessageCountProps);
 
 const Message = (props: MessageProps) => {
@@ -44,10 +44,10 @@ function useMessage(props: MessageProps) {
 
     switch (props.type) {
         case "empty":
-            return t(`${props.page}.${props.type}`);
+            return t(`${props.translation}.${props.type}`);
 
         case "filtered":
-            return t(`${props.page}.${props.type}`, { count: props.count });
+            return t(`${props.translation}.${props.type}`, { count: props.count });
 
         default:
             throw Error("Unknown type");

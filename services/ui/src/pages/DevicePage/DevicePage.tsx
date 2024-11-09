@@ -23,9 +23,9 @@ const DevicePage = () => {
                 onSearch={handleSearch}
             />
 
-            {total === 0 && <Message page="pages.devices" type="empty" />}
+            {total === 0 && <Message translation="pages.devices" type="empty" />}
             {total !== 0 && devices.length === 0 && (
-                <Message page="pages.devices" type="filtered" count={total} />
+                <Message translation="pages.devices" type="filtered" count={total} />
             )}
 
             {devices.length !== 0 && JSON.stringify(devices)}

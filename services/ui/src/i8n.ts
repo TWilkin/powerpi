@@ -8,7 +8,7 @@ i18n.use(initReactI18next)
         fallbackLng: "en-GB",
         debug: true,
         backend: {
-            loadPath: "/locales/{{lng}}.json",
+            loadPath: "/locales/{{lng}}/{{ns}}.json",
         },
         interpolation: {
             escapeValue: false,
