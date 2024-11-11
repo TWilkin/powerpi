@@ -87,7 +87,7 @@ export default class PowerPiApi {
     public getHistoryActions = (type?: string) =>
         this.get<{ action: string }[]>("history/actions", { type });
 
-    public postDeviceChange(
+    public async postDeviceChange(
         device: string,
         state?: DeviceState,
         additionalState?: AdditionalState,
@@ -102,7 +102,7 @@ export default class PowerPiApi {
             message = { ...message, ...additionalState };
         }
 
-        this.post(`device/${device}`, message);
+        await this.post(`device/${device}`, message);
     }
 
     public addDeviceListener(callback: DeviceStatusCallback) {
