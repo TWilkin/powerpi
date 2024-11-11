@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import DeviceIcon from "../../components/DeviceIcon";
+import DevicePowerButton from "../../components/DevicePowerButton";
 import Icon from "../../components/Icon";
 import Message from "../../components/Message";
 import Search from "../../components/Search";
@@ -57,6 +58,10 @@ const DevicePage = () => {
                                     </TableCell>
 
                                     <TableCell>{device.display_name ?? device.name}</TableCell>
+
+                                    <TableCell width="button">
+                                        <DevicePowerButton device={device} />
+                                    </TableCell>
 
                                     <TableCell>{JSON.stringify(device)}</TableCell>
                                 </TableRow>

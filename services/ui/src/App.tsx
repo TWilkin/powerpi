@@ -2,7 +2,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { PropsWithChildren } from "react";
 import { PowerPiAPIContextProvider } from "./queries/PowerPiApiContext";
 import { queryClient } from "./queries/client";
-import { NotificationContextProvider } from "./queries/notifications/NotificationContext";
+import { NotificationContextProvider } from "./queries/notifications";
 
 type AppProps = PropsWithChildren<unknown>;
 

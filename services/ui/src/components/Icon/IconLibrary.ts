@@ -13,6 +13,7 @@ import {
     faMusic,
     faPanorama,
     faPlug,
+    faPowerOff,
     faQuestion,
     faSearch,
     faServer,
@@ -33,6 +34,11 @@ const iconLibrary = {
     // navigation
     home: faHome,
     device: faPlug,
+
+    // state
+    stateOn: faPowerOff,
+    stateOff: faPowerOff,
+    stateUnknown: faQuestion,
 
     info: faInfoCircle,
     search: faSearch,

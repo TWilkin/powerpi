@@ -20,7 +20,9 @@ interface Resources {
       }
     },
     "common": {
-      "clear search": "Clear search"
+      "clear search": "Clear search",
+      "power on": "Power on",
+      "power off": "Power off"
     }
   }
 }
