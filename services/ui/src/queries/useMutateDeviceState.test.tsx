@@ -3,16 +3,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook } from "@testing-library/react";
 import { PropsWithChildren, Suspense } from "react";
 import { vi } from "vitest";
-import QueryKeyFactory from "./QueryKeyFactory";
 import useMutateDeviceState from "./useMutateDeviceState";
 
 const mocks = vi.hoisted(() => ({
     api: {
         postDeviceChange: vi.fn(),
     },
+    patchDevice: vi.fn(),
+    setChangingState: vi.fn(),
 }));
 
 vi.mock("./useAPI", () => ({ default: () => mocks.api }));
+vi.mock("./useDevicePatcher", () => ({ default: () => mocks.patchDevice }));
+vi.mock("./notifications", () => ({
+    useDeviceChangingState: () => ({ setChangingState: mocks.setChangingState }),
+}));
 
 const device: Device = {
     name: "MyDevice",
@@ -23,35 +28,28 @@ const device: Device = {
     type: "socket",
 };
 
-type WrapperProps = PropsWithChildren<{ queryClient: QueryClient }>;
+type WrapperProps = PropsWithChildren<unknown>;
 
-const Wrapper = ({ queryClient, children }: WrapperProps) => (
-    <QueryClientProvider client={queryClient}>
+const Wrapper = ({ children }: WrapperProps) => (
+    <QueryClientProvider client={new QueryClient()}>
         <Suspense>{children}</Suspense>
     </QueryClientProvider>
 );
 
 describe("useMutateDeviceState", () =>
     test("works", async () => {
-        const queryClient = new QueryClient();
-        queryClient.setQueryData(QueryKeyFactory.devices, (_: Device[]) => [
-            { name: "SomethingElse" },
-            device,
-        ]);
-
         const { result } = renderHook(() => useMutateDeviceState(device), {
-            wrapper: ({ children }) => Wrapper({ children, queryClient }),
+            wrapper: Wrapper,
         });
-
-        expect(queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].state).toBe(
-            DeviceState.Off,
-        );
 
         await act(() => result.current.mutateAsync(DeviceState.On));
 
+        expect(mocks.patchDevice).toHaveBeenCalledWith("MyDevice", {
+            state: DeviceState.Unknown,
+            since: expect.anything(),
+        });
+
         expect(mocks.api.postDeviceChange).toHaveBeenCalledWith("MyDevice", DeviceState.On);
 
-        expect(queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].state).toBe(
-            DeviceState.On,
-        );
+        expect(mocks.setChangingState).toHaveBeenCalledWith("MyDevice", true);
     }));
