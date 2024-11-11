@@ -5,7 +5,7 @@ import { BatteryStatusMessage } from "./BatteryStatus";
 import Capability from "./Capability";
 import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityStatus";
 import Config from "./Config";
-import { ConfigStatusCallback, ConfigStatusMessage } from "./ConfigStatus";
+import { ConfigFileType, ConfigStatusCallback, ConfigStatusMessage } from "./ConfigStatus";
 import Device from "./Device";
 import DeviceChangeMessage from "./DeviceChangeMessage";
 import DeviceState from "./DeviceState";
@@ -27,6 +27,7 @@ export {
     CapabilityStatusCallback,
     CapabilityStatusMessage,
     Config,
+    ConfigFileType,
     ConfigStatusCallback,
     ConfigStatusMessage,
     Device,
