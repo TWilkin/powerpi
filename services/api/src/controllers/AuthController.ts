@@ -87,7 +87,7 @@ export default class AuthController {
 
             response.cookie(JwtService.cookieKey, jwt, {
                 secure: this.config.usesHttps,
-                httpOnly: !this.config.usesHttps,
+                httpOnly: false,
                 sameSite: true,
                 expires: new Date(decoded.exp * 1000),
             });

@@ -6,7 +6,7 @@ version: 0.7.1
 appVersion: 0.7.1
 dependencies:
   - name: api
-    version: 0.3.1
+    version: 0.3.2
   - name: config-server
     version: 0.1.19
     condition: global.config
@@ -35,7 +35,7 @@ dependencies:
   - name: ui
     version: 0.3.1
   - name: voice-assistant
-    version: 0.3.1
+    version: 0.3.2
     condition: global.voiceAssistant
   - name: energenie-controller
     version: 0.1.11

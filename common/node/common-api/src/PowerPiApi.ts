@@ -20,15 +20,18 @@ type ErrorHandler = (error: { response: { status: number } }) => void;
 
 export default class PowerPiApi {
     private readonly instance: AxiosInstance;
+
     private socket: Socket | undefined;
-    private listeners: {
+
+    private readonly listeners: {
         device: DeviceStatusCallback[];
         sensor: SensorStatusCallback[];
         battery: BatteryStatusCallback[];
         capability: CapabilityStatusCallback[];
         config: ConfigStatusCallback[];
     };
-    private headers: { [key: string]: string };
+
+    private readonly headers: { [key: string]: string };
 
     constructor(private readonly apiBaseUrl: string) {
         this.instance = axios.create({
@@ -87,7 +90,7 @@ export default class PowerPiApi {
     public getHistoryActions = (type?: string) =>
         this.get<{ action: string }[]>("history/actions", { type });
 
-    public postDeviceChange(
+    public async postDeviceChange(
         device: string,
         state?: DeviceState,
         additionalState?: AdditionalState,
@@ -102,7 +105,7 @@ export default class PowerPiApi {
             message = { ...message, ...additionalState };
         }
 
-        this.post(`device/${device}`, message);
+        await this.post(`device/${device}`, message);
     }
 
     public addDeviceListener(callback: DeviceStatusCallback) {
@@ -160,19 +163,19 @@ export default class PowerPiApi {
         this.headers.Authorization = `Bearer ${token}`;
     }
 
-    private onDeviceMessage = (message: DeviceStatusMessage) =>
+    private readonly onDeviceMessage = (message: DeviceStatusMessage) =>
         this.listeners.device.forEach((listener) => listener(message));
 
-    private onSensorMessage = (message: SensorStatusMessage) =>
+    private readonly onSensorMessage = (message: SensorStatusMessage) =>
         this.listeners.sensor.forEach((listener) => listener(message));
 
-    private onBatteryMessage = (message: BatteryStatusMessage) =>
+    private readonly onBatteryMessage = (message: BatteryStatusMessage) =>
         this.listeners.battery.forEach((listener) => listener(message));
 
-    private onCapabilityMessage = (message: CapabilityStatusMessage) =>
+    private readonly onCapabilityMessage = (message: CapabilityStatusMessage) =>
         this.listeners.capability.forEach((listener) => listener(message));
 
-    private onConfigMessage = (message: ConfigStatusMessage) =>
+    private readonly onConfigMessage = (message: ConfigStatusMessage) =>
         this.listeners.config.forEach((listener) => listener(message));
 
     private async get<TResult>(path: string, params?: object) {
