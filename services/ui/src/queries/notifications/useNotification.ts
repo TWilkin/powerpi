@@ -1,11 +1,10 @@
-import { ConfigStatusMessage, DeviceStatusMessage } from "@powerpi/common-api";
+import { ConfigFileType, ConfigStatusMessage, DeviceStatusMessage } from "@powerpi/common-api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import QueryKeyFactory from "../QueryKeyFactory";
 import useAPI from "../useAPI";
 import useDevicePatcher from "../useDevicePatcher";
 import useDeviceChangingState from "./useDeviceChangingState";
-// TODO ConfigFileType should be exported from common-api
 
 export default function useNotification() {
     const api = useAPI();
@@ -18,7 +17,7 @@ export default function useNotification() {
     // handle socket.io updates
     useEffect(() => {
         async function handleConfigChange(message: ConfigStatusMessage) {
-            if (message.type === "devices") {
+            if (message.type === ConfigFileType.Devices) {
                 await queryClient.invalidateQueries({ queryKey: QueryKeyFactory.devices });
             }
         }

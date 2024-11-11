@@ -3,7 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 import { useDeviceChangingState } from "./notifications";
 import useAPI from "./useAPI";
 import useDevicePatcher from "./useDevicePatcher";
-// TODO api.postDeviceChange should be async
 
 export default function useMutateDeviceState(device: Device) {
     const api = useAPI();
@@ -24,7 +23,7 @@ export default function useMutateDeviceState(device: Device) {
                 setChangingState(device.name, true);
             }
 
-            api.postDeviceChange(device.name, newState);
+            await api.postDeviceChange(device.name, newState);
         },
     });
 }
