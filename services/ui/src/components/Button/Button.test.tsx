@@ -1,10 +1,12 @@
 import { render, screen } from "@testing-library/react";
 import Button from "./Button";
+import { ButtonType } from "./buttonStyles";
 
 describe("Button", () => {
-    test("renders", () => {
+    const types: (ButtonType | undefined)[] = [undefined, "default", "on", "off"];
+    test.each(types)("renders type=%s", (type) => {
         const text = "A Button";
-        render(<Button>{text}</Button>);
+        render(<Button type={type}>{text}</Button>);
 
         const button = screen.getByRole("button");
         expect(button).toBeInTheDocument();

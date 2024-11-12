@@ -26,15 +26,15 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
     return (
         <div className="flex flex-row">
             <Button
+                type="on"
                 icon={changing ? "loading" : "stateOn"}
-                className="!bg-green-800"
                 aria-label={t("common.power on")}
                 onClick={handlePowerOn}
             />
 
             <Button
+                type="off"
                 icon={changing ? "loading" : "stateOff"}
-                className="!bg-red-800"
                 aria-label={t("common.power off")}
                 onClick={handlePowerOff}
             />
