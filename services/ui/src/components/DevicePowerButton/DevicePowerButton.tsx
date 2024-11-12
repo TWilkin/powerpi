@@ -1,41 +1,51 @@
 import { Device, DeviceState } from "@powerpi/common-api";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useDeviceChangingState } from "../../queries/notifications";
 import useMutateDeviceState from "../../queries/useMutateDeviceState";
 import Button from "../Button";
 
 type DevicePowerButtonProps = {
     device: Device;
+
+    onPowerChange?: () => void;
 };
 
-const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
+const DevicePowerButton = ({ device, onPowerChange }: DevicePowerButtonProps) => {
     const { t } = useTranslation();
 
     const { mutateAsync } = useMutateDeviceState(device);
-    const { changingState } = useDeviceChangingState();
 
-    const changing = useMemo(
-        () => changingState && changingState[device.name],
-        [changingState, device.name],
+    const handlePowerChange = useCallback(
+        async (state: DeviceState.On | DeviceState.Off) => {
+            await mutateAsync(state);
+
+            if (onPowerChange) {
+                onPowerChange();
+            }
+        },
+        [mutateAsync, onPowerChange],
     );
 
-    const handlePowerOn = useCallback(() => mutateAsync(DeviceState.On), [mutateAsync]);
-    const handlePowerOff = useCallback(() => mutateAsync(DeviceState.Off), [mutateAsync]);
+    const handlePowerOn = useCallback(() => handlePowerChange(DeviceState.On), [handlePowerChange]);
+
+    const handlePowerOff = useCallback(
+        () => handlePowerChange(DeviceState.Off),
+        [handlePowerChange],
+    );
 
     return (
         <div className="flex flex-row">
             <Button
                 buttonType="on"
-                icon={changing ? "loading" : "stateOn"}
-                aria-label={t("common.power on", { device: device.display_name ?? device.name })}
+                icon="stateOn"
+                aria-label={t("common.power on", { device: device.display_name })}
                 onClick={handlePowerOn}
             />
 
             <Button
                 buttonType="off"
-                icon={changing ? "loading" : "stateOff"}
-                aria-label={t("common.power off", { device: device.display_name ?? device.name })}
+                icon="stateOff"
+                aria-label={t("common.power off", { device: device.display_name })}
                 onClick={handlePowerOff}
             />
         </div>
