@@ -8,13 +8,14 @@ type ButtonProps = {
     buttonType?: ButtonType;
 
     icon?: IconType;
-} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className">;
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
-const Button = ({ buttonType: colour = "default", children, ...props }: ButtonProps) => (
+const Button = ({ buttonType = "default", className, children, ...props }: ButtonProps) => (
     <button
         {...omit(props, "icon")}
         className={classNames(
-            buttonStyles(colour),
+            className,
+            buttonStyles(buttonType),
             "flex flex-row justify-center items-center gap-1 rounded border-2 border-black",
         )}
     >

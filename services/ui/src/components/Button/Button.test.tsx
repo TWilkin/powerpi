@@ -3,10 +3,10 @@ import Button from "./Button";
 import { ButtonType } from "./buttonStyles";
 
 describe("Button", () => {
-    const types: (ButtonType | undefined)[] = [undefined, "default", "on", "off"];
+    const types: (ButtonType | undefined)[] = [undefined, "default", "icon", "on", "off"];
     test.each(types)("renders type=%s", (type) => {
         const text = "A Button";
-        render(<Button type={type}>{text}</Button>);
+        render(<Button buttonType={type}>{text}</Button>);
 
         const button = screen.getByRole("button");
         expect(button).toBeInTheDocument();

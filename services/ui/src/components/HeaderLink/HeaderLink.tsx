@@ -14,7 +14,7 @@ type HeaderLinkProps = {
 };
 
 const headerLinkClasses = classNames(
-    "h-full flex flex-row justify-center items-center gap-1 grow text-2xl",
+    "relative h-full flex flex-row justify-center items-center gap-1 grow text-2xl",
     buttonStyles("default"),
     // when the link is the current route
     "aria-current-page:bg-sky-200 aria-current-page:dark:bg-purple-950",

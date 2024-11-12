@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { ChangeEvent, InputHTMLAttributes, MouseEvent, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import Button from "../Button";
 import Icon from "../Icon";
 
 type SearchProps = {
@@ -34,8 +35,8 @@ const Search = ({ onSearch, value, className, ...props }: SearchProps) => {
     );
 
     return (
-        <span>
-            <Icon icon="search" className="absolute p-1.5" />
+        <span className="relative">
+            <Icon icon="search" className="absolute p-2" />
 
             <input
                 {...props}
@@ -44,21 +45,21 @@ const Search = ({ onSearch, value, className, ...props }: SearchProps) => {
                 autoComplete="off"
                 className={classNames(
                     className,
-                    "w-full pl-8 rounded bg-white dark:bg-black border-2 border-black dark:border-white",
+                    "w-full h-8 pl-8 rounded bg-white dark:bg-black border-2 border-black dark:border-white",
                 )}
                 data-lpignore
                 onChange={handleChange}
                 ref={inputRef}
             />
 
-            <button
+            <Button
+                buttonType="icon"
+                icon="clear"
                 disabled={value === ""}
-                className="absolute p-0.5 right-5 disabled:opacity-50"
+                className="absolute top-1 right-1"
                 aria-label={t("common.clear search")}
                 onClick={handleClear}
-            >
-                <Icon icon="clear" />
-            </button>
+            />
         </span>
     );
 };
