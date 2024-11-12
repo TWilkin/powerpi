@@ -33,7 +33,17 @@ export const NotificationContextProvider = ({ children }: NotificationContextPro
         [changingState, handleChangingState],
     );
 
+    return (
+        <NotificationContext.Provider value={context}>
+            <NotificationInner>{children}</NotificationInner>
+        </NotificationContext.Provider>
+    );
+};
+
+type NotificationInnerProps = PropsWithChildren<unknown>;
+
+const NotificationInner = ({ children }: NotificationInnerProps) => {
     useNotification();
 
-    return <NotificationContext.Provider value={context}>{children}</NotificationContext.Provider>;
+    return <>{children}</>;
 };
