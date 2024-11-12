@@ -2,7 +2,6 @@ import classNames from "classnames";
 
 const buttonClasses = classNames(
     "font-semibold",
-    "p-2",
     "text-black dark:text-white",
     "focus:outline-none focus:ring-offset-2 focus:ring-offset-white focus:dark:ring-offset-black focus:ring-2 focus:ring-black focus:dark:ring-white",
     "disabled:opacity-50",
@@ -17,8 +16,13 @@ const onTypeClasses = "bg-green-800 hover:bg-green-700 active:bg-green-600";
 
 const offTypeClasses = "bg-red-800 hover:bg-red-700 active:bg-red-600";
 
+const normalSizeClasses = "p-2";
+const smallSizeClasses = "p-1.5";
+
 export default function buttonStyles(type: ButtonType) {
     return classNames(buttonClasses, {
+        [normalSizeClasses]: type === "default",
+        [smallSizeClasses]: type === "on" || type === "off",
         [defaultTypeClasses]: type === "default",
         [onTypeClasses]: type === "on",
         [offTypeClasses]: type === "off",
