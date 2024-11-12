@@ -21,8 +21,21 @@ interface Resources {
     },
     "common": {
       "clear search": "Clear search",
-      "power on": "Power on",
-      "power off": "Power off"
+      "never": "Never",
+      "datetime": {
+        "date": "{{time, datetime(dateStyle: long; timeStyle: long;}}",
+        "relative": {
+          "second": "{{time, relativetime(seconds)}}",
+          "minute": "{{time, relativetime(minutes)}}",
+          "hour": "{{time, relativetime(hours)}}",
+          "day": "{{time, relativetime(days)}}",
+          "week": "{{time, relativetime(weeks)}}",
+          "month": "{{time, relativetime(months)}}",
+          "year": "{{time, relativetime(years)}}"
+        }
+      },
+      "power on": "Power {{device}} on",
+      "power off": "Power {{device}} off"
     }
   }
 }
