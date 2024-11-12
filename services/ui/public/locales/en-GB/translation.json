@@ -20,7 +20,7 @@
     },
     "common": {
         "clear search": "Clear search",
-        "power on": "Power on",
-        "power off": "Power off"
+        "power on": "Power {{device}} on",
+        "power off": "Power {{device}} off"
     }
 }

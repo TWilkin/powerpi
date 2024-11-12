@@ -28,14 +28,14 @@ const DevicePowerButton = ({ device }: DevicePowerButtonProps) => {
             <Button
                 buttonType="on"
                 icon={changing ? "loading" : "stateOn"}
-                aria-label={t("common.power on")}
+                aria-label={t("common.power on", { device: device.display_name ?? device.name })}
                 onClick={handlePowerOn}
             />
 
             <Button
                 buttonType="off"
                 icon={changing ? "loading" : "stateOff"}
-                aria-label={t("common.power off")}
+                aria-label={t("common.power off", { device: device.display_name ?? device.name })}
                 onClick={handlePowerOff}
             />
         </div>
