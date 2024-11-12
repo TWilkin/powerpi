@@ -3,15 +3,20 @@ import Icon from "./Icon";
 import { IconType } from "./IconLibrary";
 
 describe("Icon", () => {
-    const icons: { icon: IconType; dataIcon: string }[] = [
+    const icons: { icon: IconType; dataIcon: string; classes?: string }[] = [
         { icon: "home", dataIcon: "house" },
-        { icon: "loading", dataIcon: "spinner" },
+        { icon: "loading", dataIcon: "spinner", classes: "fa-spin" },
+        { icon: "google", dataIcon: "google" },
     ];
-    test.each(icons)("renders icon $icon", ({ icon, dataIcon }) => {
+    test.each(icons)("renders icon $icon", ({ icon, dataIcon, classes }) => {
         render(<Icon icon={icon} />);
 
         const svg = screen.getByRole("img", { hidden: true });
         expect(svg).toBeInTheDocument();
         expect(svg).toHaveAttribute("data-icon", dataIcon);
+
+        if (classes) {
+            expect(svg).toHaveClass(classes);
+        }
     });
 });
