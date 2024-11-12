@@ -1,16 +1,19 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 type TimeProps = {
     time: number;
 };
 
+/** Component to display how long since an event occurred, rounding appropriately and
+ * collapsing to the largest whole unit.
+ */
 const Time = ({ time }: TimeProps) => {
     const { t } = useTranslation();
 
-    const { date, isoDate, value, unit } = useMemo(() => {
-        const now = new Date();
+    const [now, setNow] = useState<Date>(new Date());
 
+    const { date, isoDate, value, unit } = useMemo(() => {
         const date = new Date();
         date.setTime(time);
 
@@ -28,7 +31,32 @@ const Time = ({ time }: TimeProps) => {
             value: actual,
             unit,
         };
-    }, [time]);
+    }, [now, time]);
+
+    useEffect(() => {
+        function getFrequency() {
+            switch (unit) {
+                case "second":
+                    return 0.5 * 1000;
+
+                case "minute":
+                    return 30 * 1000;
+
+                case "hour":
+                    return 30 * 60 * 1000;
+
+                default:
+                    return undefined;
+            }
+        }
+
+        const frequency = getFrequency();
+        if (frequency) {
+            const interval = setInterval(() => setNow(new Date()), frequency);
+
+            return () => clearInterval(interval);
+        }
+    }, [unit]);
 
     if (time < 0) {
         return <>{t("common.never")}</>;
@@ -44,7 +72,7 @@ export default Time;
 
 type TimeUnit = "second" | "minute" | "hour" | "day" | "week" | "month" | "year";
 
-function findClosestUnit(ms: number, round = 0.75): [number, TimeUnit] {
+function findClosestUnit(ms: number, round = 0.8): [number, TimeUnit] {
     const absMs = Math.abs(ms);
 
     if (absMs >= 1000) {
@@ -64,7 +92,7 @@ function findClosestUnit(ms: number, round = 0.75): [number, TimeUnit] {
         }
 
         const days = hours / 24;
-        if (days <= 24 * round) {
+        if (days <= 7 * round) {
             return [days, "day"];
         }
 
