@@ -10,7 +10,7 @@ interface Resources {
         "unknown error": "Unknown error"
       },
       "login": {
-        "login with": "Login with"
+        "login with": "Login with {{protocol}}"
       },
       "devices": {
         "search for devices": "Search for devices",

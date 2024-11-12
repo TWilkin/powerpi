@@ -24,7 +24,7 @@ const LoginButton = ({ protocol, ...props }: LoginButtonProps) => {
             <input type="hidden" name="redirect_uri" value={`${window.location.origin}/`} />
 
             <Button type="submit" icon={protocol}>
-                {t("pages.login.login with")} {protocolName}
+                {t("pages.login.login with", { protocol: protocolName })}
             </Button>
         </form>
     );
