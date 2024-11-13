@@ -2,6 +2,7 @@ import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import DeviceIcon from "../../components/DeviceIcon";
 import DevicePowerToggle from "../../components/DevicePowerToggle";
+import HistoryLink from "../../components/HistoryLink";
 import Icon from "../../components/Icon";
 import Message from "../../components/Message";
 import Search from "../../components/Search";
@@ -9,10 +10,13 @@ import Table from "../../components/Table";
 import TableCell from "../../components/TableCell";
 import TableRow from "../../components/TableRow";
 import Time from "../../components/Time";
+import useOptionalRoute from "../../routing/useOptionalRoute";
 import useDeviceFilter from "./useDeviceFilter";
 
 const DevicePage = () => {
     const { t } = useTranslation();
+
+    const enabled = useOptionalRoute();
 
     const { state, devices, total, dispatch } = useDeviceFilter();
 
@@ -68,7 +72,11 @@ const DevicePage = () => {
                                         <Time time={device.since} />
                                     </TableCell>
 
-                                    <TableCell>{JSON.stringify(device)}</TableCell>
+                                    {enabled?.history && (
+                                        <TableCell width="button">
+                                            <HistoryLink device={device} />
+                                        </TableCell>
+                                    )}
                                 </TableRow>
                             ))}
                         </tbody>

@@ -20,16 +20,20 @@ describe("useOptionalRoute", () => {
 
     const cases: { data?: Partial<Config>; expected: ReturnType<typeof useOptionalRoute> }[] = [
         {
-            data: { hasFloorplan: false, hasDevices: false },
-            expected: { home: false, device: false },
+            data: { hasFloorplan: false, hasDevices: false, hasPersistence: false },
+            expected: { home: false, device: false, history: false },
         },
         {
-            data: { hasFloorplan: true, hasDevices: false },
-            expected: { home: true, device: false },
+            data: { hasFloorplan: true, hasDevices: false, hasPersistence: false },
+            expected: { home: true, device: false, history: false },
         },
         {
-            data: { hasFloorplan: false, hasDevices: true },
-            expected: { home: false, device: true },
+            data: { hasFloorplan: false, hasDevices: true, hasPersistence: false },
+            expected: { home: false, device: true, history: false },
+        },
+        {
+            data: { hasFloorplan: false, hasDevices: false, hasPersistence: true },
+            expected: { home: false, device: false, history: true },
         },
     ];
     test.each(cases)("when $data then $expected", ({ data, expected }) => {

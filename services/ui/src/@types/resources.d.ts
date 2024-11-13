@@ -2,7 +2,8 @@ interface Resources {
   "translation": {
     "navigation": {
       "home": "Home",
-      "devices": "Devices"
+      "devices": "Devices",
+      "history": "History"
     },
     "pages": {
       "error": {
@@ -35,7 +36,8 @@ interface Resources {
         }
       },
       "power on": "Power {{device}} on",
-      "power off": "Power {{device}} off"
+      "power off": "Power {{device}} off",
+      "history link": "Show history for {{device}}"
     }
   }
 }

@@ -6,6 +6,8 @@ describe("RouteBuilder", () => {
         { expected: "/" },
         { route: Route.Login, expected: "login" },
         { route: Route.Home, expected: "home" },
+        { route: Route.Device, expected: "device" },
+        { route: Route.History, expected: "history" },
     ];
     test.each(cases)("builds $expected from $route", ({ route, expected }) => {
         const result = RouteBuilder.build(route);

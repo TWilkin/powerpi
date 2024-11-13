@@ -5,6 +5,7 @@ import {
     faEye,
     faEyeSlash,
     faGreaterThanEqual,
+    faHistory,
     faHome,
     faInfoCircle,
     faLayerGroup,
@@ -34,6 +35,7 @@ const iconLibrary = {
     // navigation
     home: faHome,
     device: faPlug,
+    history: faHistory,
 
     // state
     stateOn: faPowerOff,

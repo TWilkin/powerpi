@@ -5,5 +5,6 @@ enum Route {
 
     Home = "home",
     Device = "device",
+    History = "history",
 }
 export default Route;
