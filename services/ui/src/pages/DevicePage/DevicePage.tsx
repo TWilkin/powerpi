@@ -68,12 +68,12 @@ const DevicePage = () => {
                                         <DevicePowerToggle device={device} />
                                     </TableCell>
 
-                                    <TableCell>
+                                    <TableCell width="time">
                                         <Time time={device.since} />
                                     </TableCell>
 
                                     {enabled?.history && (
-                                        <TableCell width="button">
+                                        <TableCell width="icon">
                                             <HistoryLink device={device} />
                                         </TableCell>
                                     )}
