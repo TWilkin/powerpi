@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import DeviceIcon from "../../components/DeviceIcon";
+import CapabilityButton from "../../components/Capabilities/CapabilityButton";
 import DevicePowerToggle from "../../components/DevicePowerToggle";
 import HistoryLink from "../../components/HistoryLink";
 import Icon from "../../components/Icon";
@@ -59,7 +59,7 @@ const DevicePage = () => {
                                     )}
 
                                     <TableCell width="icon">
-                                        <DeviceIcon type={device.type} />
+                                        <CapabilityButton device={device} />
                                     </TableCell>
 
                                     <TableCell>{device.display_name ?? device.name}</TableCell>

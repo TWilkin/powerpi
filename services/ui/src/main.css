@@ -6,6 +6,14 @@
     .vertical-writing-lr {
         writing-mode: vertical-lr;
     }
+
+    .icon-xs {
+        font-size: 0.5rem;
+    }
+
+    .icon-m {
+        font-size: 1rem;
+    }
 }
 
 input[type="search"] {

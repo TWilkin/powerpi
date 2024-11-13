@@ -4,6 +4,7 @@ import {
     faComputer,
     faEye,
     faEyeSlash,
+    faGear,
     faGreaterThanEqual,
     faHistory,
     faHome,
@@ -48,6 +49,8 @@ const iconLibrary = {
 
     visible: faEye,
     invisible: faEyeSlash,
+
+    capability: faGear,
 
     // devices
     deviceTv: faTv,
