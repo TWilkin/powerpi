@@ -46,6 +46,7 @@ const iconLibrary = {
     info: faInfoCircle,
     search: faSearch,
     clear: faXmark,
+    close: faXmark,
 
     visible: faEye,
     invisible: faEyeSlash,

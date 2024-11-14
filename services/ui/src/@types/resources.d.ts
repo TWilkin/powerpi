@@ -21,6 +21,7 @@ interface Resources {
       }
     },
     "common": {
+      "close": "Close",
       "clear search": "Clear search",
       "never": "Never",
       "datetime": {
