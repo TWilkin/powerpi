@@ -7,6 +7,7 @@ import Button from "../../Button";
 import DeviceIcon from "../../DeviceIcon";
 import { useDialog } from "../../Dialog";
 import Icon from "../../Icon";
+import CapabilityDialogBody from "../CapabilityDialogBody";
 import getDeviceCapabilities from "../getDeviceCapabilities";
 
 type CapabilityButtonProps = {
@@ -22,8 +23,12 @@ const CapabilityButton = ({ device }: CapabilityButtonProps) => {
     const { handleDialogOpen } = useDialog();
 
     const handleClick = useCallback(() => {
-        handleDialogOpen("Test", <>{device.name}</>);
-    }, [device.name, handleDialogOpen]);
+        handleDialogOpen(
+            device.display_name,
+            <DeviceIcon type={device.type} />,
+            <CapabilityDialogBody device={device} />,
+        );
+    }, [device, handleDialogOpen]);
 
     const hasCapability = useMemo(() => {
         const { capabilities } = getDeviceCapabilities(device);

@@ -22,12 +22,13 @@ describe("useDialog", () => {
         const dialog = screen.getByRole("dialog", { hidden: true });
         expect(dialog).toBeInTheDocument();
 
-        act(() => result.current.handleDialogOpen("My Dialog", "Content"));
+        act(() => result.current.handleDialogOpen("My Dialog", "icon", "Content"));
 
         expect(mocks.showModal).toHaveBeenCalledTimes(1);
 
-        expect(within(dialog).getByText("My Dialog")).toBeInTheDocument();
-        expect(within(dialog).getByText("Content")).toBeInTheDocument();
+        expect(within(dialog).getByText(/My Dialog/)).toBeInTheDocument();
+        expect(within(dialog).getByText(/icon/)).toBeInTheDocument();
+        expect(within(dialog).getByText(/Content/)).toBeInTheDocument();
     });
 
     test("closes dialog", () => {

@@ -10,9 +10,9 @@ export default function useDialog() {
     const { ref, setContent } = useContext(DialogContext);
 
     const handleDialogOpen = useCallback(
-        (heading: string, content: ReactNode) => {
+        (heading: string, icon: ReactNode, content: ReactNode) => {
             if (ref && setContent) {
-                setContent({ heading, children: content });
+                setContent({ heading, icon, children: content });
 
                 ref?.current?.showModal();
             }

@@ -1,7 +1,16 @@
-import { createContext, Dispatch, PropsWithChildren, RefObject, SetStateAction } from "react";
+import {
+    createContext,
+    Dispatch,
+    PropsWithChildren,
+    ReactNode,
+    RefObject,
+    SetStateAction,
+} from "react";
 
 export type DialogContentType = PropsWithChildren<{
     heading: string;
+
+    icon: ReactNode;
 }>;
 
 type DialogContextType = {
