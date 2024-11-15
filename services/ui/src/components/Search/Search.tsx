@@ -3,6 +3,7 @@ import { ChangeEvent, InputHTMLAttributes, MouseEvent, useCallback, useRef } fro
 import { useTranslation } from "react-i18next";
 import Button from "../Button";
 import Icon from "../Icon";
+import { inputStyles } from "../Input";
 
 type SearchProps = {
     value: string;
@@ -43,10 +44,7 @@ const Search = ({ onSearch, value, className, ...props }: SearchProps) => {
                 type="search"
                 value={value}
                 autoComplete="off"
-                className={classNames(
-                    className,
-                    "w-full h-8 pl-8 rounded bg-white dark:bg-black border-2 border-black dark:border-white",
-                )}
+                className={classNames(className, inputStyles, "h-8 pl-8")}
                 data-lpignore
                 onChange={handleChange}
                 ref={inputRef}
