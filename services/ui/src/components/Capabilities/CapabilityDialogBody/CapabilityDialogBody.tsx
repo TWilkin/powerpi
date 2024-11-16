@@ -26,8 +26,10 @@ const CapabilityDialogBody = ({ deviceName }: CapabilityDialogBody) => {
     );
 
     return (
-        <div className="flex flex-col gap-2 items-center">
-            <DevicePowerToggle device={device} />
+        <div className="grid grid-cols-[1fr_auto_1fr] auto-rows-auto gap-2 justify-items-center">
+            <div className="col-start-2">
+                <DevicePowerToggle device={device} />
+            </div>
 
             {capabilities.brightness && (
                 <BrightnessSlider device={device} disabled={isPending} mutateAsync={mutateAsync} />

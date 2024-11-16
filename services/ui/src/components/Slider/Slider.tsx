@@ -88,12 +88,8 @@ const Slider = ({
     );
 
     return (
-        <div
-            className={classNames("w-64 flex flex-row justify-between gap-2 flex-1", {
-                "opacity-50": disabled,
-            })}
-        >
-            <div className="flex flex-col items-center gap-1">
+        <>
+            <div className="col-start-1 flex flex-col items-center gap-1">
                 <Icon icon={lowIcon} />
 
                 <span className="text-xs">{t(`common.units.${unit}`, { value: min })}</span>
@@ -108,7 +104,7 @@ const Slider = ({
                     value={value}
                     className={classNames(
                         inputStyles,
-                        "h-2 mt-1 rounded appearance-none cursor-pointer !bg-transparent",
+                        "h-2 !w-64 mt-1 rounded appearance-none cursor-pointer !bg-transparent",
                         "disabled:!opacity-100",
                     )}
                     disabled={disabled}
@@ -129,7 +125,7 @@ const Slider = ({
 
                 <span className="text-xs">{t(`common.units.${unit}`, { value: max })}</span>
             </div>
-        </div>
+        </>
     );
 };
 export default Slider;
