@@ -9,6 +9,7 @@ import {
     useMemo,
 } from "react";
 import { useTranslation } from "react-i18next";
+import Resources from "../../@types/resources";
 import Icon, { IconType } from "../Icon";
 import { inputStyles } from "../Input";
 
@@ -27,7 +28,7 @@ type SliderProps = {
 
     value: number;
 
-    unit: "percentage";
+    unit: keyof Resources["translation"]["common"]["units"];
 
     onChange(value: number): void;
 
@@ -35,7 +36,7 @@ type SliderProps = {
     onSettled(value: number): void;
 } & Omit<
     InputHTMLAttributes<HTMLInputElement>,
-    "type" | "label" | "min" | "max" | "defaultValue" | "value" | "onChange"
+    "type" | "label" | "min" | "max" | "defaultValue" | "value" | "className" | "onChange"
 >;
 
 /** Component representing a numeric input between two values using a range slider. */
@@ -57,7 +58,7 @@ const Slider = ({
 
     const valuePosition = useMemo(() => {
         const ratio = (max - min) / 100;
-        return ratio * value - 1;
+        return (value - min - 1) / ratio;
     }, [max, min, value]);
 
     const handleChange = useCallback(

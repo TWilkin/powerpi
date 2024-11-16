@@ -3,6 +3,7 @@ import useMutateDeviceState from "../../../queries/useMutateDeviceState";
 import useQueryDevices from "../../../queries/useQueryDevices";
 import DevicePowerToggle from "../../DevicePowerToggle";
 import BrightnessSlider from "../BrightnessSlider";
+import ColourTemperatureSlider from "../ColourTemperatureSlider";
 import getDeviceCapabilities from "../getDeviceCapabilities";
 
 type CapabilityDialogBody = {
@@ -19,7 +20,10 @@ const CapabilityDialogBody = ({ deviceName }: CapabilityDialogBody) => {
 
     const { isPending, mutateAsync } = useMutateDeviceState(device);
 
-    const { capabilities } = useMemo(() => getDeviceCapabilities(device), [device]);
+    const { capabilities, temperatureRange } = useMemo(
+        () => getDeviceCapabilities(device),
+        [device],
+    );
 
     return (
         <div className="flex flex-col gap-2 items-center">
@@ -27,6 +31,15 @@ const CapabilityDialogBody = ({ deviceName }: CapabilityDialogBody) => {
 
             {capabilities.brightness && (
                 <BrightnessSlider device={device} disabled={isPending} mutateAsync={mutateAsync} />
+            )}
+
+            {capabilities.temperature && (
+                <ColourTemperatureSlider
+                    device={device}
+                    range={temperatureRange}
+                    disabled={isPending}
+                    mutateAsync={mutateAsync}
+                />
             )}
         </div>
     );

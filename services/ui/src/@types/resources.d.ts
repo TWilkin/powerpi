@@ -41,10 +41,12 @@ interface Resources {
       "history link": "Show history for {{device}}",
       "capability": {
         "button": "Show capabilities for {{device}}",
-        "brightness": "Set brightness for {{device}}"
+        "brightness": "Set brightness for {{device}}",
+        "colour temperature": "Set colour temperature for {{device}}"
       },
       "units": {
-        "percentage": "{{value}}%"
+        "percentage": "{{value}}%",
+        "colour temperature": "{{value}} K"
       }
     }
   }

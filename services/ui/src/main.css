@@ -31,6 +31,12 @@ input {
             @apply border-2 border-black dark:border-white;
         }
 
+        &[data-colour-slider] {
+            &::-webkit-slider-runnable-track {
+                @apply bg-transparent;
+            }
+        }
+
         /* &::-moz-range-thumb, */
         &::-webkit-slider-thumb {
             @apply h-4 w-4;

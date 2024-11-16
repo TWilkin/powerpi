@@ -23,6 +23,8 @@ import {
     faSpinner,
     faStopwatch,
     faSun,
+    faTemperatureEmpty,
+    faTemperatureFull,
     faTowerBroadcast,
     faTv,
     faXmark,
@@ -57,6 +59,8 @@ const iconLibrary = {
     capability: faGear,
     brightnessLow: faMoon,
     brightnessHigh: faSun,
+    colourTemperatureLow: faTemperatureEmpty,
+    colourTemperatureHigh: faTemperatureFull,
 
     // devices
     deviceTv: faTv,
