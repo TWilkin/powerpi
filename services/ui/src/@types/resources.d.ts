@@ -40,7 +40,11 @@ interface Resources {
       "power off": "Power {{device}} off",
       "history link": "Show history for {{device}}",
       "capability": {
-        "button": "Show capabilities for {{device}}"
+        "button": "Show capabilities for {{device}}",
+        "brightness": "Set brightness for {{device}}"
+      },
+      "units": {
+        "percentage": "{{value}}%"
       }
     }
   }

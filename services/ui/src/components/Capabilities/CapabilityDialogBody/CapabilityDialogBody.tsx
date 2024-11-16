@@ -1,29 +1,33 @@
-import { Device } from "@powerpi/common-api";
-import { useState } from "react";
+import { useMemo } from "react";
+import useMutateDeviceState from "../../../queries/useMutateDeviceState";
+import useQueryDevices from "../../../queries/useQueryDevices";
 import DevicePowerToggle from "../../DevicePowerToggle";
-import Slider from "../../Slider";
+import BrightnessSlider from "../BrightnessSlider";
+import getDeviceCapabilities from "../getDeviceCapabilities";
 
 type CapabilityDialogBody = {
-    device: Device;
+    deviceName: string;
 };
 
-const CapabilityDialogBody = ({ device }: CapabilityDialogBody) => {
-    const [value, setValue] = useState(3);
+const CapabilityDialogBody = ({ deviceName }: CapabilityDialogBody) => {
+    const { data } = useQueryDevices();
+
+    const device = useMemo(
+        () => data.find((device) => device.name === deviceName)!,
+        [data, deviceName],
+    );
+
+    const { isPending, mutateAsync } = useMutateDeviceState(device);
+
+    const { capabilities } = useMemo(() => getDeviceCapabilities(device), [device]);
 
     return (
         <div className="flex flex-col gap-2 items-center">
             <DevicePowerToggle device={device} />
 
-            <Slider
-                lowIcon="capability"
-                highIcon="capability"
-                label="Set your brightness"
-                min={1}
-                max={100}
-                value={value}
-                onChange={setValue}
-                onSettled={() => {}}
-            />
+            {capabilities.brightness && (
+                <BrightnessSlider device={device} disabled={isPending} mutateAsync={mutateAsync} />
+            )}
         </div>
     );
 };

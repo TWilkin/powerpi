@@ -12,6 +12,7 @@ import {
     faLayerGroup,
     faLightbulb,
     faLock,
+    faMoon,
     faMusic,
     faPanorama,
     faPlug,
@@ -21,6 +22,7 @@ import {
     faServer,
     faSpinner,
     faStopwatch,
+    faSun,
     faTowerBroadcast,
     faTv,
     faXmark,
@@ -51,7 +53,10 @@ const iconLibrary = {
     visible: faEye,
     invisible: faEyeSlash,
 
+    // capabilities
     capability: faGear,
+    brightnessLow: faMoon,
+    brightnessHigh: faSun,
 
     // devices
     deviceTv: faTv,

@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import QueryKeyFactory from "./QueryKeyFactory";
 
-type DeviceStatePatch = Pick<Device, "state" | "since">;
+type DeviceStatePatch = Partial<Pick<Device, "state" | "additionalState">> & Pick<Device, "since">;
 
 export default function useDevicePatcher() {
     const queryClient = useQueryClient();
@@ -17,7 +17,11 @@ export default function useDevicePatcher() {
                 if (index >= 0) {
                     newDevices[index] = {
                         ...newDevices[index],
-                        state: newState.state,
+                        state: newState.state ?? newDevices[index].state,
+                        additionalState: {
+                            ...newDevices[index].additionalState,
+                            ...newState.additionalState,
+                        },
                         since: newState.since,
                     };
                 }

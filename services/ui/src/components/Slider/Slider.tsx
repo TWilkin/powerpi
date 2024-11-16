@@ -8,6 +8,7 @@ import {
     useCallback,
     useMemo,
 } from "react";
+import { useTranslation } from "react-i18next";
 import Icon, { IconType } from "../Icon";
 import { inputStyles } from "../Input";
 
@@ -22,7 +23,11 @@ type SliderProps = {
 
     max: number;
 
+    defaultValue: number;
+
     value: number;
+
+    unit: "percentage";
 
     onChange(value: number): void;
 
@@ -30,7 +35,7 @@ type SliderProps = {
     onSettled(value: number): void;
 } & Omit<
     InputHTMLAttributes<HTMLInputElement>,
-    "type" | "label" | "min" | "max" | "value" | "onChange"
+    "type" | "label" | "min" | "max" | "defaultValue" | "value" | "onChange"
 >;
 
 /** Component representing a numeric input between two values using a range slider. */
@@ -40,11 +45,16 @@ const Slider = ({
     label,
     min,
     max,
+    defaultValue,
     value,
+    unit,
+    disabled,
     onChange,
     onSettled,
     ...props
 }: SliderProps) => {
+    const { t } = useTranslation();
+
     const valuePosition = useMemo(() => {
         const ratio = (max - min) / 100;
         return ratio * value - 1;
@@ -69,19 +79,23 @@ const Slider = ({
 
             const target = event.target as HTMLInputElement;
             const newValue = parseInt(target.value);
-            if (newValue !== value) {
+            if (newValue !== defaultValue) {
                 onSettled(newValue);
             }
         },
-        [onSettled, value],
+        [defaultValue, onSettled],
     );
 
     return (
-        <div className="w-64 flex flex-row justify-between gap-2 flex-1">
+        <div
+            className={classNames("w-64 flex flex-row justify-between gap-2 flex-1", {
+                "opacity-50": disabled,
+            })}
+        >
             <div className="flex flex-col items-center gap-1">
                 <Icon icon={lowIcon} />
 
-                <span className="text-xs">{min}</span>
+                <span className="text-xs">{t(`common.units.${unit}`, { value: min })}</span>
             </div>
 
             <div className="relative flex flex-col items-center flex-1">
@@ -93,8 +107,10 @@ const Slider = ({
                     value={value}
                     className={classNames(
                         inputStyles,
-                        "h-2 rounded appearance-none cursor-pointer !bg-transparent",
+                        "h-2 mt-1 rounded appearance-none cursor-pointer !bg-transparent",
+                        "disabled:!opacity-100",
                     )}
+                    disabled={disabled}
                     aria-label={label}
                     onChange={handleChange}
                     onMouseOut={handleSettled}
@@ -103,14 +119,14 @@ const Slider = ({
                 />
 
                 <span className="absolute top-5 text-xs" style={{ left: `${valuePosition}%` }}>
-                    {value}
+                    {t(`common.units.${unit}`, { value })}
                 </span>
             </div>
 
             <div className="flex flex-col items-center gap-1">
                 <Icon icon={highIcon} />
 
-                <span className="text-xs">{max}</span>
+                <span className="text-xs">{t(`common.units.${unit}`, { value: max })}</span>
             </div>
         </div>
     );

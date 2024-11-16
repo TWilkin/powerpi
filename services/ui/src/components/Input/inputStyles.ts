@@ -6,7 +6,7 @@ const inputClasses = classNames(
     "accent-sky-400 dark:accent-purple-900",
     "hover:bg-sky-300 hover:dark:bg-purple-800",
     "focus:outline-none focus:ring-offset-2 focus:ring-offset-white focus:dark:ring-offset-black focus:ring-2 focus:ring-black focus:dark:ring-white focus:z-10",
-    "disabled:opacity-50",
+    "disabled:opacity-50 disabled:cursor-not-allowed",
 );
 
 export default inputClasses;
