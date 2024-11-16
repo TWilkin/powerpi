@@ -16,8 +16,8 @@ interface Resources {
       "devices": {
         "search for devices": "Search for devices",
         "empty": "No devices.",
-        "filtered_one": "Filtered {{count}} device.",
-        "filtered_other": "Filtered {{count}} devices."
+        "filtered_one": "Filtered {{count, number}} device.",
+        "filtered_other": "Filtered {{count, number}} devices."
       }
     },
     "common": {
@@ -45,8 +45,8 @@ interface Resources {
         "colour temperature": "Set colour temperature for {{device}}"
       },
       "units": {
-        "percentage": "{{value}}%",
-        "colour temperature": "{{value}} K"
+        "percentage": "{{value, number}}%",
+        "colour temperature": "{{value, number}} K"
       }
     }
   }
