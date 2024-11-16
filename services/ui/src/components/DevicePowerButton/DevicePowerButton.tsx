@@ -16,8 +16,8 @@ const DevicePowerButton = ({ device, onPowerChange }: DevicePowerButtonProps) =>
     const { mutateAsync } = useMutateDeviceState(device);
 
     const handlePowerChange = useCallback(
-        async (state: DeviceState.On | DeviceState.Off) => {
-            await mutateAsync(state);
+        async (newState: DeviceState.On | DeviceState.Off) => {
+            await mutateAsync({ newState });
 
             if (onPowerChange) {
                 onPowerChange();

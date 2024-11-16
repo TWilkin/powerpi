@@ -141,7 +141,7 @@ describe("DevicePowerToggle", () => {
             await vi.runAllTimersAsync();
 
             expect(mocks.mutateAsync).toHaveBeenCalledTimes(1);
-            expect(mocks.mutateAsync).toHaveBeenCalledWith(expectedState);
+            expect(mocks.mutateAsync).toHaveBeenCalledWith({ newState: expectedState });
         },
     );
 });

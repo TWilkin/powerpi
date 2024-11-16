@@ -43,7 +43,7 @@ const DevicePowerToggle = ({ device, ...props }: DevicePowerToggleProps) => {
             newState = DeviceState.Off;
         }
 
-        await mutateAsync(newState);
+        await mutateAsync({ newState });
     }, [device.state, isChangingState, mutateAsync]);
 
     const handleButtonTypeSwitch = useCallback(() => setButtonType("toggle"), []);

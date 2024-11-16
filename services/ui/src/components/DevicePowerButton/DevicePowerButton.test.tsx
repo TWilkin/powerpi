@@ -50,7 +50,7 @@ describe("DevicePowerButton", () => {
         await userEvent.click(button);
 
         expect(mocks.mutateAsync).toHaveBeenCalledTimes(1);
-        expect(mocks.mutateAsync).toHaveBeenCalledWith(state);
+        expect(mocks.mutateAsync).toHaveBeenCalledWith({ newState: state });
     });
 
     test.each(cases)("powers device $state with callback", async ({ label }) => {
