@@ -7,9 +7,11 @@ import {
     TouchEvent,
     useCallback,
     useMemo,
+    useState,
 } from "react";
 import { useTranslation } from "react-i18next";
 import Resources from "../../@types/resources";
+import getTextWidth from "../../utils/getTextWidth";
 import Icon, { IconType } from "../Icon";
 import { inputStyles } from "../Input";
 
@@ -56,10 +58,24 @@ const Slider = ({
 }: SliderProps) => {
     const { t } = useTranslation();
 
-    const valuePosition = useMemo(() => {
+    // using a ref so the memo re-runs when it becomes assigned
+    const [ref, setRef] = useState<HTMLSpanElement | null>(null);
+
+    const { valuePosition, valueText, valueMargin } = useMemo(() => {
         const ratio = (max - min) / 100;
-        return (value - min - 1) / ratio;
-    }, [max, min, value]);
+        const valuePosition = (value - min - 1) / ratio;
+
+        const valueText = t(`common.units.${unit}`, { value });
+
+        const width = ref ? getTextWidth(ref, valueText) : 0;
+        const valueMargin = (width / 2) * -1;
+
+        return {
+            valuePosition,
+            valueText,
+            valueMargin,
+        };
+    }, [max, min, ref, t, unit, value]);
 
     const handleChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
@@ -115,8 +131,12 @@ const Slider = ({
                     onTouchEnd={handleSettled}
                 />
 
-                <span className="absolute top-5 text-xs" style={{ left: `${valuePosition}%` }}>
-                    {t(`common.units.${unit}`, { value })}
+                <span
+                    className="absolute top-5 text-xs"
+                    style={{ left: `${valuePosition}%`, marginLeft: `${valueMargin}px` }}
+                    ref={setRef}
+                >
+                    {valueText}
                 </span>
             </div>
 

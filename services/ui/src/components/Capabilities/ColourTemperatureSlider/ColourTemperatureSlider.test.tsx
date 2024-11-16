@@ -18,6 +18,8 @@ describe("ColourTemperatureSlider", () => {
         max: 9000,
     };
 
+    beforeAll(() => (HTMLCanvasElement.prototype.getContext = vi.fn()));
+
     test("renders", () => {
         render(
             <ColourTemperatureSlider

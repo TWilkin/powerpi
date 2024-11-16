@@ -13,6 +13,8 @@ describe("BrightnessSlider", () => {
         type: "light",
     };
 
+    beforeAll(() => (HTMLCanvasElement.prototype.getContext = vi.fn()));
+
     test("renders", () => {
         render(<BrightnessSlider device={device} disabled={false} mutateAsync={vi.fn()} />);
 

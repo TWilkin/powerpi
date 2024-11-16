@@ -3,6 +3,8 @@ import { vi } from "vitest";
 import Slider from "./Slider";
 
 describe("Slider", () => {
+    beforeAll(() => (HTMLCanvasElement.prototype.getContext = vi.fn()));
+
     test("renders", () => {
         render(
             <Slider
