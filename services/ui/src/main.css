@@ -42,8 +42,8 @@ input {
             @apply h-4 w-4;
             @apply relative appearance-none;
             @apply bg-sky-200 dark:bg-purple-700;
+            @apply -translate-x-1/4 -translate-y-1/4;
             clip-path: polygon(0 0, 50% 50%, 100% 0);
-            transform: translateY(-25%);
         }
     }
 }
