@@ -16,8 +16,28 @@
     }
 }
 
-input[type="search"] {
-    &::-webkit-search-cancel-button {
-        display: none;
+input {
+    &[type="search"] {
+        &::-webkit-search-cancel-button {
+            @apply hidden;
+        }
+    }
+
+    &[type="range"] {
+        /* &::-moz-range-track, */
+        &::-webkit-slider-runnable-track {
+            @apply h-2 rounded;
+            @apply bg-sky-400 dark:bg-purple-900;
+            @apply border-2 border-black dark:border-white;
+        }
+
+        /* &::-moz-range-thumb, */
+        &::-webkit-slider-thumb {
+            @apply h-4 w-4;
+            @apply relative appearance-none;
+            @apply bg-sky-200 dark:bg-purple-700;
+            clip-path: polygon(0 0, 50% 50%, 100% 0);
+            transform: translateY(-25%);
+        }
     }
 }

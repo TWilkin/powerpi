@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import {
     ChangeEvent,
     FocusEvent,
@@ -83,14 +84,17 @@ const Slider = ({
                 <span className="text-xs">{min}</span>
             </div>
 
-            <div className="relative flex-1">
+            <div className="relative flex flex-col items-center flex-1">
                 <input
                     {...props}
                     type="range"
                     min={min}
                     max={max}
                     value={value}
-                    className={inputStyles}
+                    className={classNames(
+                        inputStyles,
+                        "h-2 rounded appearance-none cursor-pointer !bg-transparent",
+                    )}
                     aria-label={label}
                     onChange={handleChange}
                     onMouseOut={handleSettled}
