@@ -1,4 +1,5 @@
 import {
+    BatteryStatusMessage,
     CapabilityStatusMessage,
     ConfigFileType,
     ConfigStatusMessage,
@@ -29,6 +30,7 @@ export default function useNotification() {
 
         async function handleDeviceStatusChange(message: DeviceStatusMessage) {
             patchDevice(message.device, {
+                type: "State",
                 state: message.state,
                 since: message.timestamp,
                 additionalState: message.additionalState,
@@ -39,8 +41,20 @@ export default function useNotification() {
             }
         }
 
+        async function handleBatteryChange(message: BatteryStatusMessage) {
+            if ("device" in message) {
+                patchDevice(message.device, {
+                    type: "Battery",
+                    battery: message.battery,
+                    charging: message.charging,
+                    batterySince: message.timestamp,
+                });
+            }
+        }
+
         async function handleCapabilityChange(message: CapabilityStatusMessage) {
             patchDevice(message.device, {
+                type: "Capability",
                 capability: message.capability,
                 since: message.timestamp,
             });
@@ -49,12 +63,14 @@ export default function useNotification() {
         // add the listeners
         api.addConfigChangeListener(handleConfigChange);
         api.addDeviceListener(handleDeviceStatusChange);
+        api.addBatteryListener(handleBatteryChange);
         api.addCapabilityListener(handleCapabilityChange);
 
         // remove the listeners
         return () => {
             api.removeConfigChangeListener(handleConfigChange);
             api.removeDeviceListener(handleDeviceStatusChange);
+            api.removeBatteryListener(handleBatteryChange);
             api.removeCapabilityListener(handleCapabilityChange);
         };
     }, [api, patchDevice, queryClient, setChangingState]);

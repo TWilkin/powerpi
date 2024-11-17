@@ -1,4 +1,5 @@
 import {
+    BatteryStatusMessage,
     CapabilityStatusMessage,
     ConfigFileType,
     ConfigStatusMessage,
@@ -13,9 +14,11 @@ const mocks = vi.hoisted(() => ({
     api: {
         addConfigChangeListener: vi.fn(),
         addDeviceListener: vi.fn(),
+        addBatteryListener: vi.fn(),
         addCapabilityListener: vi.fn(),
         removeConfigChangeListener: vi.fn(),
         removeDeviceListener: vi.fn(),
+        removeBatteryListener: vi.fn(),
         removeCapabilityListener: vi.fn(),
     },
     patchDevice: vi.fn(),
@@ -47,16 +50,19 @@ describe("useNotification", () => {
 
         expect(mocks.api.addConfigChangeListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.addDeviceListener).toHaveBeenCalledTimes(1);
+        expect(mocks.api.addBatteryListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.addCapabilityListener).toHaveBeenCalledTimes(1);
 
         expect(mocks.api.removeConfigChangeListener).not.toHaveBeenCalled();
         expect(mocks.api.removeDeviceListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeBatteryListener).not.toHaveBeenCalled();
         expect(mocks.api.removeCapabilityListener).not.toHaveBeenCalled();
 
         act(unmount);
 
         expect(mocks.api.removeConfigChangeListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.removeDeviceListener).toHaveBeenCalledTimes(1);
+        expect(mocks.api.removeBatteryListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.removeCapabilityListener).toHaveBeenCalledTimes(1);
     });
 
@@ -115,6 +121,7 @@ describe("useNotification", () => {
 
         expect(mocks.patchDevice).toHaveBeenCalledTimes(1);
         expect(mocks.patchDevice).toHaveBeenCalledWith("MyDevice", {
+            type: "State",
             state: DeviceState.On,
             additionalState: { brightness: 100 },
             since: now,
@@ -122,6 +129,52 @@ describe("useNotification", () => {
 
         expect(mocks.setChangingState).toHaveBeenCalledTimes(1);
         expect(mocks.setChangingState).toHaveBeenCalledWith("MyDevice", false);
+    });
+
+    describe("handleBatteryChange", () => {
+        test("device", async () => {
+            renderHook(useNotification);
+
+            expect(mocks.api.addBatteryListener).toHaveBeenCalledTimes(1);
+
+            const now = new Date().getTime();
+            const event: BatteryStatusMessage = {
+                device: "MyDevice",
+                battery: 10,
+                charging: true,
+                timestamp: now,
+            };
+
+            const handleBatteryChange = mocks.api.addBatteryListener.mock.calls[0][0];
+            await act(() => handleBatteryChange(event));
+
+            expect(mocks.patchDevice).toHaveBeenCalledTimes(1);
+            expect(mocks.patchDevice).toHaveBeenCalledWith("MyDevice", {
+                type: "Battery",
+                battery: 10,
+                charging: true,
+                batterySince: now,
+            });
+        });
+
+        test("sensor", async () => {
+            renderHook(useNotification);
+
+            expect(mocks.api.addBatteryListener).toHaveBeenCalledTimes(1);
+
+            const now = new Date().getTime();
+            const event: BatteryStatusMessage = {
+                sensor: "MySensor",
+                battery: 10,
+                charging: true,
+                timestamp: now,
+            };
+
+            const handleBatteryChange = mocks.api.addBatteryListener.mock.calls[0][0];
+            await act(() => handleBatteryChange(event));
+
+            expect(mocks.patchDevice).not.toHaveBeenCalled();
+        });
     });
 
     test("handleCapabilityChange", async () => {
@@ -144,6 +197,7 @@ describe("useNotification", () => {
 
         expect(mocks.patchDevice).toHaveBeenCalledTimes(1);
         expect(mocks.patchDevice).toHaveBeenCalledWith("MyDevice", {
+            type: "Capability",
             capability: {
                 brightness: true,
                 colour: { temperature: true },
