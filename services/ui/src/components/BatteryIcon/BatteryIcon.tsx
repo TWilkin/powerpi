@@ -1,7 +1,7 @@
 import { Battery } from "@powerpi/common-api";
 import classNames from "classnames";
-import { useMemo } from "react";
-import Icon, { IconType } from "../Icon";
+import Icon from "../Icon";
+import useBatteryIcon from "./useBatteryIcon";
 
 type BatteryIconProps = {
     device: Battery;
@@ -9,29 +9,7 @@ type BatteryIconProps = {
 
 /** Icon for the battery level/charging state of a device or sensor. */
 const BatteryIcon = ({ device }: BatteryIconProps) => {
-    const icon: IconType | undefined = useMemo(() => {
-        if (device.battery != null) {
-            if (device.battery <= 5) {
-                return "batteryEmpty";
-            }
-
-            if (device.battery <= 25) {
-                return "batteryQuarter";
-            }
-
-            if (device.battery <= 50) {
-                return "batteryHalf";
-            }
-
-            if (device.battery <= 75) {
-                return "batteryThreeQuarters";
-            }
-
-            return "batteryFull";
-        }
-
-        return undefined;
-    }, [device.battery]);
+    const icon = useBatteryIcon(device.battery, device.charging);
 
     if (!icon) {
         return <></>;
@@ -46,8 +24,9 @@ const BatteryIcon = ({ device }: BatteryIconProps) => {
             icon={icon}
             className={classNames("-rotate-90", {
                 "opacity-50": outdated,
-                "text-orange-600": device.battery! <= 25 && device.battery! > 10,
-                "text-red-600": device.battery! <= 10,
+                "text-orange-600":
+                    !device.charging && device.battery! <= 25 && device.battery! > 10,
+                "text-red-600": !device.charging && device.battery! <= 10,
             })}
         />
     );
