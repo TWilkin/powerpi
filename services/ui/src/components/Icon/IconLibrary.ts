@@ -1,5 +1,10 @@
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import {
+    faBatteryEmpty,
+    faBatteryFull,
+    faBatteryHalf,
+    faBatteryQuarter,
+    faBatteryThreeQuarters,
     faCode,
     faComputer,
     faEye,
@@ -61,6 +66,13 @@ const iconLibrary = {
     brightnessHigh: faSun,
     colourTemperatureLow: faTemperatureEmpty,
     colourTemperatureHigh: faTemperatureFull,
+
+    // battery level
+    batteryEmpty: faBatteryEmpty,
+    batteryQuarter: faBatteryQuarter,
+    batteryHalf: faBatteryHalf,
+    batteryThreeQuarters: faBatteryThreeQuarters,
+    batteryFull: faBatteryFull,
 
     // devices
     deviceTv: faTv,

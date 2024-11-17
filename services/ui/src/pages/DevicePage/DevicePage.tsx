@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import BatteryIcon from "../../components/BatteryIcon";
 import CapabilityButton from "../../components/Capabilities/CapabilityButton";
 import DevicePowerToggle from "../../components/DevicePowerToggle";
 import HistoryLink from "../../components/HistoryLink";
@@ -25,9 +26,10 @@ const DevicePage = () => {
         [dispatch],
     );
 
-    const { showingInvisible } = useMemo(
+    const { showingInvisible, showingBattery } = useMemo(
         () => ({
             showingInvisible: devices.findIndex((device) => !device.visible) !== -1,
+            showingBattery: devices.findIndex((device) => (device.batterySince ?? 0) > 0) !== -1,
         }),
         [devices],
     );
@@ -61,6 +63,12 @@ const DevicePage = () => {
                                     <TableCell width="icon">
                                         <CapabilityButton device={device} />
                                     </TableCell>
+
+                                    {showingBattery && (
+                                        <TableCell width="icon">
+                                            <BatteryIcon device={device} />
+                                        </TableCell>
+                                    )}
 
                                     <TableCell>{device.display_name ?? device.name}</TableCell>
 
