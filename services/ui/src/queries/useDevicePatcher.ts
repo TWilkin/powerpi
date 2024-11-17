@@ -3,7 +3,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import QueryKeyFactory from "./QueryKeyFactory";
 
-type DeviceStatePatch = Partial<Pick<Device, "state" | "additionalState">> & Pick<Device, "since">;
+export type DeviceStatePatch = Partial<Pick<Device, "state" | "additionalState" | "capability">> &
+    Pick<Device, "since">;
 
 export default function useDevicePatcher() {
     const queryClient = useQueryClient();
@@ -23,6 +24,7 @@ export default function useDevicePatcher() {
                             ...newState.additionalState,
                         },
                         since: newState.since,
+                        capability: newState.capability ?? newDevices[index].capability,
                     };
                 }
 

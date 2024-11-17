@@ -1,4 +1,5 @@
 import {
+    CapabilityStatusMessage,
     ConfigFileType,
     ConfigStatusMessage,
     DeviceState,
@@ -12,8 +13,10 @@ const mocks = vi.hoisted(() => ({
     api: {
         addConfigChangeListener: vi.fn(),
         addDeviceListener: vi.fn(),
+        addCapabilityListener: vi.fn(),
         removeConfigChangeListener: vi.fn(),
         removeDeviceListener: vi.fn(),
+        removeCapabilityListener: vi.fn(),
     },
     patchDevice: vi.fn(),
     setChangingState: vi.fn(),
@@ -44,14 +47,17 @@ describe("useNotification", () => {
 
         expect(mocks.api.addConfigChangeListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.addDeviceListener).toHaveBeenCalledTimes(1);
+        expect(mocks.api.addCapabilityListener).toHaveBeenCalledTimes(1);
 
         expect(mocks.api.removeConfigChangeListener).not.toHaveBeenCalled();
         expect(mocks.api.removeDeviceListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeCapabilityListener).not.toHaveBeenCalled();
 
         act(unmount);
 
         expect(mocks.api.removeConfigChangeListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.removeDeviceListener).toHaveBeenCalledTimes(1);
+        expect(mocks.api.removeCapabilityListener).toHaveBeenCalledTimes(1);
     });
 
     describe("handleConfigChange", () => {
@@ -64,8 +70,8 @@ describe("useNotification", () => {
                 type: ConfigFileType.Devices,
             };
 
-            const onConfigChange = mocks.api.addConfigChangeListener.mock.calls[0][0];
-            await act(() => onConfigChange(event));
+            const handleConfigChange = mocks.api.addConfigChangeListener.mock.calls[0][0];
+            await act(() => handleConfigChange(event));
 
             expect(mocks.queryClient.invalidateQueries).toHaveBeenCalledTimes(1);
             expect(mocks.queryClient.invalidateQueries).toHaveBeenCalledWith({
@@ -82,8 +88,8 @@ describe("useNotification", () => {
                 type: ConfigFileType.Floorplan,
             };
 
-            const onConfigChange = mocks.api.addConfigChangeListener.mock.calls[0][0];
-            await act(() => onConfigChange(event));
+            const handleConfigChange = mocks.api.addConfigChangeListener.mock.calls[0][0];
+            await act(() => handleConfigChange(event));
 
             expect(mocks.queryClient.invalidateQueries).not.toHaveBeenCalled();
         });
@@ -98,23 +104,51 @@ describe("useNotification", () => {
         const event: DeviceStatusMessage = {
             device: "MyDevice",
             state: DeviceState.On,
-            timestamp: now,
             additionalState: {
                 brightness: 100,
             },
+            timestamp: now,
         };
 
-        const onDeviceStatusChange = mocks.api.addDeviceListener.mock.calls[0][0];
-        await act(() => onDeviceStatusChange(event));
+        const handleDeviceStatusChange = mocks.api.addDeviceListener.mock.calls[0][0];
+        await act(() => handleDeviceStatusChange(event));
 
         expect(mocks.patchDevice).toHaveBeenCalledTimes(1);
         expect(mocks.patchDevice).toHaveBeenCalledWith("MyDevice", {
             state: DeviceState.On,
-            since: now,
             additionalState: { brightness: 100 },
+            since: now,
         });
 
         expect(mocks.setChangingState).toHaveBeenCalledTimes(1);
         expect(mocks.setChangingState).toHaveBeenCalledWith("MyDevice", false);
+    });
+
+    test("handleCapabilityChange", async () => {
+        renderHook(useNotification);
+
+        expect(mocks.api.addCapabilityListener).toHaveBeenCalledTimes(1);
+
+        const now = new Date().getTime();
+        const event: CapabilityStatusMessage = {
+            device: "MyDevice",
+            capability: {
+                brightness: true,
+                colour: { temperature: true },
+            },
+            timestamp: now,
+        };
+
+        const handleCapabilityChange = mocks.api.addCapabilityListener.mock.calls[0][0];
+        await act(() => handleCapabilityChange(event));
+
+        expect(mocks.patchDevice).toHaveBeenCalledTimes(1);
+        expect(mocks.patchDevice).toHaveBeenCalledWith("MyDevice", {
+            capability: {
+                brightness: true,
+                colour: { temperature: true },
+            },
+            since: now,
+        });
     });
 });
