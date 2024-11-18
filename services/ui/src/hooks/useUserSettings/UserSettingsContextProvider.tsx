@@ -35,7 +35,7 @@ function reducer(state: UserSettingsType, action: UpdateSettingsAction) {
             return update({ language: action.language });
 
         case "Unit":
-            return state;
+            return update({ units: { ...state.units, [action.unitType]: action.unit } });
 
         default:
             throw Error("Unknown action");
@@ -45,5 +45,6 @@ function reducer(state: UserSettingsType, action: UpdateSettingsAction) {
 function initialiser(): UserSettingsType {
     return {
         language: undefined,
+        units: {},
     };
 }

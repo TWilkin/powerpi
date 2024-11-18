@@ -39,4 +39,25 @@ describe("useUserSettings", () => {
         expect(mocks.changeLanguage).toHaveBeenCalledTimes(1);
         expect(mocks.changeLanguage).toHaveBeenCalledWith("en-GB");
     });
+
+    test("set unit", () => {
+        const { result } = renderHook(useUserSettings, { wrapper: UserSettingsContextProvider });
+
+        expect(result.current.settings).toBeDefined();
+        expect(result.current.dispatch).toBeDefined();
+        expect(result.current.settings?.units).toStrictEqual({});
+
+        act(() => result.current.dispatch!({ type: "Unit", unitType: "temperature", unit: "K" }));
+
+        expect(result.current.settings?.units).toStrictEqual({
+            temperature: "K",
+        });
+
+        act(() => result.current.dispatch!({ type: "Unit", unitType: "gas", unit: "kWh" }));
+
+        expect(result.current.settings?.units).toStrictEqual({
+            temperature: "K",
+            gas: "kWh",
+        });
+    });
 });
