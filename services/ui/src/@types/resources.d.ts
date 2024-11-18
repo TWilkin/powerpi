@@ -1,4 +1,10 @@
 interface Resources {
+  "defaults": {
+    "units": {
+      "temperature": "°C",
+      "gas": "m3"
+    }
+  },
   "translation": {
     "navigation": {
       "home": "Home",

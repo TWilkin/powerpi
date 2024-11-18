@@ -3,6 +3,7 @@ import { cleanup } from "@testing-library/react";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { afterEach, beforeAll, expect } from "vitest";
+import defaults from "./public/locales/en-GB/defaults.json";
 import translation from "./public/locales/en-GB/translation.json";
 
 expect.extend(matchers);
@@ -13,11 +14,12 @@ beforeAll(() => {
         lng: "en-GB",
         debug: false,
         resources: {
-            "en-GB": { translation },
+            "en-GB": { translation, defaults },
         },
         interpolation: {
             escapeValue: false,
         },
+        ns: ["translation", "defaults"],
     });
 });
 

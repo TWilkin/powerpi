@@ -1,3 +1,4 @@
+import { TFunction } from "i18next";
 import { PropsWithChildren, useEffect, useMemo, useReducer } from "react";
 import { useTranslation } from "react-i18next";
 import UserSettingsContext, { UpdateSettingsAction, UserSettingsType } from "./UserSettingsContext";
@@ -5,7 +6,9 @@ import UserSettingsContext, { UpdateSettingsAction, UserSettingsType } from "./U
 type UserSettingsContextProviderProps = PropsWithChildren<unknown>;
 
 const UserSettingsContextProvider = ({ children }: UserSettingsContextProviderProps) => {
-    const [settings, dispatch] = useReducer(reducer, {}, initialiser);
+    const { t, i18n } = useTranslation("defaults");
+
+    const [settings, dispatch] = useReducer(reducer, {}, buildInitialiser(t));
 
     const context = useMemo(
         () => ({
@@ -16,7 +19,6 @@ const UserSettingsContextProvider = ({ children }: UserSettingsContextProviderPr
     );
 
     // handle a language change
-    const { i18n } = useTranslation();
     useEffect(() => {
         if (settings.language) {
             i18n.changeLanguage(settings.language);
@@ -42,9 +44,14 @@ function reducer(state: UserSettingsType, action: UpdateSettingsAction) {
     }
 }
 
-function initialiser(): UserSettingsType {
-    return {
-        language: undefined,
-        units: {},
+function buildInitialiser(t: TFunction<"defaults">) {
+    return function initialise(): UserSettingsType {
+        return {
+            language: undefined,
+            units: {
+                temperature: t("units.temperature"),
+                gas: t("units.gas"),
+            },
+        };
     };
 }
