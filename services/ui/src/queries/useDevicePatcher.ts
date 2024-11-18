@@ -1,6 +1,7 @@
 import { Device } from "@powerpi/common-api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
+import { omit } from "underscore";
 import QueryKeyFactory from "./QueryKeyFactory";
 
 type StateChange = { type: "State" } & Pick<Device, "state" | "additionalState" | "since">;
@@ -19,7 +20,7 @@ export default function useDevicePatcher() {
 
                 const index = newDevices.findIndex((device) => device.name === name);
                 if (index >= 0) {
-                    newDevices[index] = { ...newDevices[index], ...patch };
+                    newDevices[index] = { ...newDevices[index], ...omit(patch, "type") };
                 }
 
                 return newDevices;

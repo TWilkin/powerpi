@@ -26,6 +26,7 @@ export default function useMutateDeviceState(device: Device) {
             if (newState != null) {
                 // we don't know what state it's in when we submit so make it unknown
                 patchDevice(device.name, {
+                    type: "State",
                     state: DeviceState.Unknown,
                     since: new Date().getTime(),
                 });

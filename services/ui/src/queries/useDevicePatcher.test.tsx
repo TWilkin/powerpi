@@ -18,7 +18,7 @@ describe("useDevicePatcher", () => {
 
     const device: Device = {
         name: "MyDevice",
-        type: "socket",
+        type: "light",
         display_name: "",
         state: DeviceState.Off,
         additionalState: {
@@ -93,57 +93,37 @@ describe("useDevicePatcher", () => {
             });
 
             // check they have the expected initial value
-            expect(queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].state).toBe(
-                DeviceState.Off,
-            );
-
-            expect(
-                queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].additionalState,
-            ).toStrictEqual({ brightness: 50 });
-
-            expect(
-                queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].capability,
-            ).toStrictEqual({ brightness: true });
-
-            expect(queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].battery).toBe(2);
-
-            expect(
-                queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].charging,
-            ).toBeFalsy();
-
+            let cacheDevice = queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1];
+            expect(cacheDevice.state).toBe(DeviceState.Off);
+            expect(cacheDevice.additionalState).toStrictEqual({ brightness: 50 });
+            expect(cacheDevice.capability).toStrictEqual({ brightness: true });
+            expect(cacheDevice.battery).toBe(2);
+            expect(cacheDevice.charging).toBeFalsy();
             // send the patch
             act(() => result.current("MyDevice", update));
 
             // check they have the expected updated value
-            expect(queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].state).toBe(
-                expectedState ?? DeviceState.Off,
+            cacheDevice = queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1];
+            expect(cacheDevice.state).toBe(expectedState ?? DeviceState.Off);
+            expect(cacheDevice.additionalState).toStrictEqual(
+                expectedAdditionalState ?? { brightness: 50 },
+            );
+            expect(cacheDevice.capability).toStrictEqual(
+                expectedCapability ?? { brightness: true },
             );
 
-            expect(
-                queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].additionalState,
-            ).toStrictEqual(expectedAdditionalState ?? { brightness: 50 });
-
-            expect(
-                queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].capability,
-            ).toStrictEqual(expectedCapability ?? { brightness: true });
-
             if (!expectedBattery) {
-                expect(queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].since).toBe(
-                    since,
-                );
+                expect(cacheDevice.since).toBe(since);
 
-                expect(
-                    queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].batterySince,
-                ).toBe(0);
+                expect(cacheDevice.batterySince).toBe(0);
             } else {
-                expect(queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].since).toBe(
-                    0,
-                );
+                expect(cacheDevice.since).toBe(0);
 
-                expect(
-                    queryClient.getQueryData<Device[]>(QueryKeyFactory.devices)![1].batterySince,
-                ).toBe(since);
+                expect(cacheDevice.batterySince).toBe(since);
             }
+
+            // check other values persist
+            expect(cacheDevice.type).toBe("light");
         },
     );
 });

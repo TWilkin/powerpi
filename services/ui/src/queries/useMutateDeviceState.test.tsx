@@ -47,6 +47,7 @@ describe("useMutateDeviceState", () => {
         await act(() => result.current.mutateAsync({ newState: DeviceState.On }));
 
         expect(mocks.patchDevice).toHaveBeenCalledWith("MyDevice", {
+            type: "State",
             state: DeviceState.Unknown,
             since: expect.anything(),
         });
@@ -91,6 +92,7 @@ describe("useMutateDeviceState", () => {
         );
 
         expect(mocks.patchDevice).toHaveBeenCalledWith("MyDevice", {
+            type: "State",
             state: DeviceState.Unknown,
             since: expect.anything(),
         });
