@@ -106,7 +106,6 @@ describe("BatteryIcon", () => {
         expect(batteryIcon).toBeInTheDocument();
 
         for (const icon of icons) {
-            console.log(icon);
             expect(batteryIcon).toHaveAttribute("data-icon", icon);
 
             act(() => vi.advanceTimersByTime(1000));
