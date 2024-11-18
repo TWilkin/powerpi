@@ -1,16 +1,9 @@
-import { Device } from "@powerpi/common-api";
 import { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import useMutateDeviceState from "../../../queries/useMutateDeviceState";
 import Slider from "../../Slider";
+import CapabilityControlProps from "../CapabilityControlProps";
 
-type BrightnessSliderProps = {
-    device: Device;
-
-    disabled: boolean;
-
-    mutateAsync: ReturnType<typeof useMutateDeviceState>["mutateAsync"];
-};
+type BrightnessSliderProps = CapabilityControlProps;
 
 /** A slider to update the brightness value of a device. */
 const BrightnessSlider = ({ device, disabled, mutateAsync }: BrightnessSliderProps) => {

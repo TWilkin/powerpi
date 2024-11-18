@@ -1,20 +1,14 @@
-import { Device } from "@powerpi/common-api";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import _ from "underscore";
-import useMutateDeviceState from "../../../queries/useMutateDeviceState";
 import Icon, { IconType } from "../../Icon";
 import Select from "../../Select";
+import CapabilityControlProps from "../CapabilityControlProps";
+import getDeviceCapabilities from "../getDeviceCapabilities";
 
 type StreamSelectorProps = {
-    device: Device;
-
-    streams: string[];
-
-    disabled: boolean;
-
-    mutateAsync: ReturnType<typeof useMutateDeviceState>["mutateAsync"];
-};
+    streams: ReturnType<typeof getDeviceCapabilities>["streams"];
+} & CapabilityControlProps;
 
 /** A select drop-down for selecting the stream to play on a device. */
 const StreamSelector = ({ device, streams, disabled, mutateAsync }: StreamSelectorProps) => {
