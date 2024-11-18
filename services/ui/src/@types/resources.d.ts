@@ -42,7 +42,8 @@ interface Resources {
       "capability": {
         "button": "Show capabilities for {{device}}",
         "brightness": "Set brightness for {{device}}",
-        "colour temperature": "Set colour temperature for {{device}}"
+        "colour temperature": "Set colour temperature for {{device}}",
+        "stream": "Set the stream to play on {{device}}"
       },
       "units": {
         "percentage": "{{value, number}}%",

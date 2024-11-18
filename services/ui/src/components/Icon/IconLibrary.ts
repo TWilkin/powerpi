@@ -1,10 +1,12 @@
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { faGoogle, faSpotify } from "@fortawesome/free-brands-svg-icons";
 import {
     faBatteryEmpty,
     faBatteryFull,
     faBatteryHalf,
     faBatteryQuarter,
     faBatteryThreeQuarters,
+    faChevronDown,
+    faChevronUp,
     faCode,
     faComputer,
     faEye,
@@ -23,6 +25,7 @@ import {
     faPlug,
     faPowerOff,
     faQuestion,
+    faRadio,
     faSearch,
     faServer,
     faSpinner,
@@ -56,6 +59,8 @@ const iconLibrary = {
     search: faSearch,
     clear: faXmark,
     close: faXmark,
+    collapse: faChevronUp,
+    expand: faChevronDown,
 
     visible: faEye,
     invisible: faEyeSlash,
@@ -66,6 +71,7 @@ const iconLibrary = {
     brightnessHigh: faSun,
     colourTemperatureLow: faTemperatureEmpty,
     colourTemperatureHigh: faTemperatureFull,
+    stream: faMusic,
 
     // battery level
     batteryEmpty: faBatteryEmpty,
@@ -89,6 +95,11 @@ const iconLibrary = {
     deviceSocket: faPlug,
     deviceVariable: faCode,
     deviceUnknown: faQuestion,
+
+    // streams
+    streamRadio: faRadio,
+    streamSpotify: faSpotify,
+    streamOther: faMusic,
 };
 
 export type IconType = keyof typeof iconLibrary;

@@ -105,7 +105,7 @@ const Slider = ({
 
     return (
         <>
-            <div className="col-start-1 flex flex-col items-center gap-1">
+            <div className="flex flex-col items-center gap-1">
                 <Icon icon={lowIcon} />
 
                 <span className="text-xs">{t(`common.units.${unit}`, { value: min })}</span>
