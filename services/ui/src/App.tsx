@@ -1,6 +1,7 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { PropsWithChildren } from "react";
 import DialogHost from "./components/Dialog/DialogHost";
+import UserSettingsContextProvider from "./hooks/useUserSettings/UserSettingsContextProvider";
 import { PowerPiAPIContextProvider } from "./queries/PowerPiApiContext";
 import { queryClient } from "./queries/client";
 import { NotificationContextProvider } from "./queries/notifications";
@@ -11,7 +12,9 @@ const App = ({ children }: AppProps) => (
     <QueryClientProvider client={queryClient}>
         <PowerPiAPIContextProvider>
             <NotificationContextProvider>
-                <DialogHost>{children}</DialogHost>
+                <UserSettingsContextProvider>
+                    <DialogHost>{children}</DialogHost>
+                </UserSettingsContextProvider>
             </NotificationContextProvider>
         </PowerPiAPIContextProvider>
     </QueryClientProvider>
