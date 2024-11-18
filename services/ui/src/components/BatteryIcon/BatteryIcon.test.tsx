@@ -1,8 +1,11 @@
-import { render, screen } from "@testing-library/react";
-import { describe, test } from "vitest";
+import { act, render, screen } from "@testing-library/react";
+import { describe, test, vi } from "vitest";
 import BatteryIcon from "./BatteryIcon";
 
 describe("BatteryIcon", () => {
+    beforeAll(() => vi.useFakeTimers());
+    afterAll(() => vi.useRealTimers);
+
     test("no battery level", () => {
         render(<BatteryIcon device={{ battery: undefined, batterySince: undefined }} />);
 
@@ -49,6 +52,64 @@ describe("BatteryIcon", () => {
             expect(batteryIcon).toHaveClass("text-red-600");
         } else {
             expect(batteryIcon).not.toHaveClass("text-red-600");
+        }
+    });
+
+    const animationStates: { battery: number; icons: string[] }[] = [
+        {
+            battery: 100,
+            icons: [
+                "battery-full",
+                "battery-three-quarters",
+                "battery-full",
+                "battery-three-quarters",
+            ],
+        },
+        {
+            battery: 75,
+            icons: ["battery-three-quarters", "battery-full", "battery-three-quarters"],
+        },
+        {
+            battery: 50,
+            icons: ["battery-half", "battery-three-quarters", "battery-full", "battery-half"],
+        },
+        {
+            battery: 25,
+            icons: [
+                "battery-quarter",
+                "battery-half",
+                "battery-three-quarters",
+                "battery-full",
+                "battery-quarter",
+            ],
+        },
+        {
+            battery: 0,
+            icons: [
+                "battery-empty",
+                "battery-quarter",
+                "battery-half",
+                "battery-three-quarters",
+                "battery-full",
+                "battery-empty",
+            ],
+        },
+    ];
+    test.each(animationStates)("charging level $battery percent", ({ battery, icons }) => {
+        render(
+            <BatteryIcon
+                device={{ battery, charging: true, batterySince: new Date().getTime() }}
+            />,
+        );
+
+        const batteryIcon = screen.getByRole("img", { hidden: true });
+        expect(batteryIcon).toBeInTheDocument();
+
+        for (const icon of icons) {
+            console.log(icon);
+            expect(batteryIcon).toHaveAttribute("data-icon", icon);
+
+            act(() => vi.advanceTimersByTime(1000));
         }
     });
 });
