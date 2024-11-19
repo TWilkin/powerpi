@@ -53,7 +53,14 @@ interface Resources {
       },
       "units": {
         "percentage": "{{value, number}}%",
-        "colour temperature": "{{value, number}} K",
+        "watt hours": "{{value, number}} Wh",
+        "kilowatt hours": "{{value, number}} kWh",
+        "celsius": "{{value, number}} °C",
+        "kelvin": "{{value, number}} K",
+        "fahrenheit": "{{value, number}} F",
+        "metres cubed": "{{value, number}} m³",
+        "cubic feet": "{{value, number}} cf",
+        "hundred cubic feet": "{{value, number}} hcf",
         "labels": {
           "watt hours": "Watt Hours",
           "kilowatt hours": "Kilowatt Hours",
