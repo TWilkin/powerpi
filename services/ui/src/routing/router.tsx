@@ -4,6 +4,7 @@ import ErrorPage from "../pages/ErrorPage";
 import Layout, { configLoader } from "../pages/Layout";
 import { api, queryClient } from "../queries/client";
 import { devicesLoader } from "../queries/useQueryDevices";
+import { floorplanLoader } from "../queries/useQueryFloorPlan";
 import DefaultRoute from "./DefaultRoute";
 import OptionalRoute from "./OptionalRoute";
 import ProtectedRoute from "./ProtectedRoute";
@@ -35,13 +36,18 @@ const router = createBrowserRouter([
                         element: <OptionalRoute />,
                         children: [
                             {
-                                path: Routes.Home,
-                                element: <HomePage />,
-                            },
-                            {
-                                path: Routes.Device,
-                                element: <DevicePage />,
                                 loader: devicesLoader(queryClient, api),
+                                children: [
+                                    {
+                                        path: Routes.Home,
+                                        element: <HomePage />,
+                                        loader: floorplanLoader(queryClient, api),
+                                    },
+                                    {
+                                        path: Routes.Device,
+                                        element: <DevicePage />,
+                                    },
+                                ],
                             },
                         ],
                     },
