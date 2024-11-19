@@ -14,4 +14,15 @@ describe("RouteBuilder", () => {
 
         expect(result).toBe(expected);
     });
+
+    const homeCases: { floor: string; expected: string }[] = [
+        { floor: "ground", expected: "home/ground" },
+        { floor: "first floor", expected: "home/first%20floor" },
+        { floor: " ", expected: "home" },
+    ];
+    test.each(homeCases)("home builds $expected from $floor", ({ floor, expected }) => {
+        const result = RouteBuilder.home(floor);
+
+        expect(result).toBe(expected);
+    });
 });

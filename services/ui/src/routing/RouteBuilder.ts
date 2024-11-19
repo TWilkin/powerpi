@@ -7,6 +7,21 @@ export default class RouteBuilder {
      * @return The URL for the specified Route.
      */
     public static build(route?: Route) {
-        return [route ?? Route.Root].join("/");
+        return this._build(route ?? Route.Root);
+    }
+
+    /** Build the URL for the home (floorplan) links.
+     * @param floor The floor to generate the URL for.
+     * @return The URL for the specified Route.
+     */
+    public static home(floor: string) {
+        return this._build(Route.Home, floor);
+    }
+
+    private static _build(...parts: (Route | string | undefined)[]) {
+        return parts
+            .filter((part): part is string => part?.trim() !== "")
+            .map((part) => encodeURI(part))
+            .join("/");
     }
 }

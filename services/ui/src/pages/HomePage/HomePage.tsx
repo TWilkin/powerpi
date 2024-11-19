@@ -1,8 +1,8 @@
-import useUser from "../../hooks/useUser";
+import useFloor from "./useFloor";
 
 const HomePage = () => {
-    const user = useUser();
+    const floor = useFloor();
 
-    return <div>Hello {user}!</div>;
+    return <>{floor}</>;
 };
 export default HomePage;
