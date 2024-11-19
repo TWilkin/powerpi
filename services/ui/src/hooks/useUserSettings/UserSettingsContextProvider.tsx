@@ -3,6 +3,8 @@ import { PropsWithChildren, useEffect, useMemo, useReducer } from "react";
 import { useTranslation } from "react-i18next";
 import UserSettingsContext, { UpdateSettingsAction, UserSettingsType } from "./UserSettingsContext";
 
+const userSettingsStorageKey = "userSettings";
+
 type UserSettingsContextProviderProps = PropsWithChildren<unknown>;
 
 const UserSettingsContextProvider = ({ children }: UserSettingsContextProviderProps) => {
@@ -46,11 +48,23 @@ function reducer(state: UserSettingsType, action: UpdateSettingsAction) {
 
 function buildInitialiser(t: TFunction<"defaults">) {
     return function initialise(): UserSettingsType {
-        return {
+        const saved = localStorage.getItem(userSettingsStorageKey);
+        const savedSettings: UserSettingsType | undefined = saved ? JSON.parse(saved) : undefined;
+
+        const defaultSettings = {
             language: undefined,
             units: {
                 temperature: t("units.temperature"),
                 gas: t("units.gas"),
+            },
+        };
+
+        return {
+            ...defaultSettings,
+            ...savedSettings,
+            units: {
+                ...defaultSettings.units,
+                ...savedSettings?.units,
             },
         };
     };

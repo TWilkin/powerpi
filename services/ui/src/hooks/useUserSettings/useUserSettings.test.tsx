@@ -1,8 +1,11 @@
 import { act, renderHook } from "@testing-library/react";
 import { UseTranslationResponse } from "react-i18next";
 import { vi } from "vitest";
+import { UserSettingsType } from "./UserSettingsContext";
 import UserSettingsContextProvider from "./UserSettingsContextProvider";
 import useUserSettings from "./useUserSettings";
+
+vi.spyOn(Storage.prototype, "getItem");
 
 const mocks = vi.hoisted(() => ({
     changeLanguage: vi.fn(),
@@ -28,13 +31,47 @@ vi.mock("react-i18next", async () => {
 });
 
 describe("useUserSettings", () => {
-    beforeEach(() => vi.resetAllMocks());
+    beforeEach(() => {
+        Storage.prototype.getItem = () => null;
 
-    test("initialises", () => {
+        vi.resetAllMocks();
+    });
+
+    test("initialises from defaults", () => {
         const { result } = renderHook(useUserSettings, { wrapper: UserSettingsContextProvider });
 
         expect(result.current.settings).toBeDefined();
         expect(result.current.dispatch).toBeDefined();
+        expect(result.current.settings).toStrictEqual({
+            language: undefined,
+            units: {
+                temperature: "°C",
+                gas: "m3",
+            },
+        });
+    });
+
+    test("initialises from storage", () => {
+        const settings: UserSettingsType = {
+            language: "en-US",
+            units: {
+                gas: "kWh",
+            },
+        };
+
+        Storage.prototype.getItem = () => JSON.stringify(settings);
+
+        const { result } = renderHook(useUserSettings, { wrapper: UserSettingsContextProvider });
+
+        expect(result.current.settings).toBeDefined();
+        expect(result.current.dispatch).toBeDefined();
+        expect(result.current.settings).toStrictEqual({
+            language: "en-US",
+            units: {
+                temperature: "°C",
+                gas: "kWh",
+            },
+        });
     });
 
     test("set language", () => {
