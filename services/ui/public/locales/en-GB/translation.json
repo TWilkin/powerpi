@@ -46,7 +46,17 @@
         },
         "units": {
             "percentage": "{{value, number}}%",
-            "colour temperature": "{{value, number}} K"
+            "colour temperature": "{{value, number}} K",
+            "labels": {
+                "watt hours": "Watt Hours",
+                "kilowatt hours": "Kilowatt Hours",
+                "celsius": "Celsius",
+                "kelvin": "Kelvin",
+                "fahrenheit": "Fahrenheit",
+                "metres cubed": "Metres Cubed",
+                "cubic feet": "Cubic Feet",
+                "hundred cubic feet": "Hundred Cubic Feet"
+            }
         }
     }
 }
