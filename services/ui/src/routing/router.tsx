@@ -5,6 +5,7 @@ import Layout, { configLoader } from "../pages/Layout";
 import { api, queryClient } from "../queries/client";
 import { devicesLoader } from "../queries/useQueryDevices";
 import { floorplanLoader } from "../queries/useQueryFloorPlan";
+import { sensorsLoader } from "../queries/useQuerySensors";
 import DefaultRoute from "./DefaultRoute";
 import OptionalRoute from "./OptionalRoute";
 import ProtectedRoute from "./ProtectedRoute";
@@ -39,9 +40,14 @@ const router = createBrowserRouter([
                                 loader: devicesLoader(queryClient, api),
                                 children: [
                                     {
-                                        path: Routes.Home,
-                                        element: <HomePage />,
-                                        loader: floorplanLoader(queryClient, api),
+                                        loader: sensorsLoader(queryClient, api),
+                                        children: [
+                                            {
+                                                path: Routes.Home,
+                                                element: <HomePage />,
+                                                loader: floorplanLoader(queryClient, api),
+                                            },
+                                        ],
                                     },
                                     {
                                         path: Routes.Device,
