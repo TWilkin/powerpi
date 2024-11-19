@@ -10,7 +10,7 @@ import Device from "./Device";
 import DeviceChangeMessage from "./DeviceChangeMessage";
 import DeviceState from "./DeviceState";
 import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
-import { Floor, Floorplan, Point, Room } from "./Floorplan";
+import { Floor, Floorplan, Point, PolygonRoom, RectangleRoom, Room } from "./Floorplan";
 import History from "./History";
 import PaginationResponse from "./Pagination";
 import PowerPiApi from "./PowerPiApi";
@@ -40,7 +40,9 @@ export {
     History,
     PaginationResponse,
     Point,
+    PolygonRoom,
     PowerPiApi,
+    RectangleRoom,
     Room,
     Sensor,
     SensorStatusCallback,

@@ -1,11 +1,11 @@
-import { Floor, Floorplan, Point, Room } from "@powerpi/common-api";
+import { Floor, Floorplan, Point, PolygonRoom, RectangleRoom, Room } from "@powerpi/common-api";
 
-export function isRect(room: Room) {
-    return room.width && room.height && (!room.points || room.points.length === 0);
+export function isRectangleRoom(room: RectangleRoom | PolygonRoom): room is RectangleRoom {
+    return "width" in room;
 }
 
-export function isPolygon(room: Room) {
-    return !room.width && !room.height && room.points && room.points.length !== 0;
+export function isPolygonRoom(room: RectangleRoom | PolygonRoom): room is PolygonRoom {
+    return "points" in room;
 }
 
 export class ViewBox {
@@ -55,10 +55,10 @@ function viewBoxByFloor(floor: Floor) {
 function viewBoxByRoom(room: Room) {
     // convert the room into a list of points
     const points: Point[] = [];
-    if (isRect(room)) {
+    if (isRectangleRoom(room)) {
         points.push(...pointsFromRect(room.x, room.y, room.width, room.height));
-    } else if (isPolygon(room)) {
-        points.push(...(room.points ?? []));
+    } else {
+        points.push(...room.points);
     }
 
     // now get the min/max values

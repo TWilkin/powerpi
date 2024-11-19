@@ -2,6 +2,7 @@ import { Floorplan as IFloorplan } from "@powerpi/common-api";
 import { useMemo } from "react";
 import useFloor from "../useFloor";
 import Floor from "./Floor";
+import useRotateFloorplan from "./useRotateFloorplan";
 
 type FloorplanProps = {
     floorplan: IFloorplan;
@@ -11,15 +12,24 @@ type FloorplanProps = {
 const Floorplan = ({ floorplan }: FloorplanProps) => {
     const currentFloorName = useFloor();
 
+    const { floorplan: effectiveFloorplan, viewBox: effectiveViewBox } = useRotateFloorplan(
+        floorplan,
+        false,
+    );
+
     const currentFloor = useMemo(
-        () => floorplan.floors.find((floor) => floor.name === currentFloorName),
-        [currentFloorName, floorplan.floors],
+        () => effectiveFloorplan.floors.find((floor) => floor.name === currentFloorName),
+        [currentFloorName, effectiveFloorplan.floors],
     );
 
     return (
         <>
             {currentFloor && (
-                <svg preserveAspectRatio="xMidYMid" className="flex-1">
+                <svg
+                    viewBox={`${effectiveViewBox.minX} ${effectiveViewBox.minY} ${effectiveViewBox.maxX} ${effectiveViewBox.maxY}`}
+                    preserveAspectRatio="xMidYMid"
+                    className="flex-1"
+                >
                     <Floor floor={currentFloor} />
                 </svg>
             )}

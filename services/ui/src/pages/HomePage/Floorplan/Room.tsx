@@ -1,6 +1,6 @@
 import { Room as IRoom } from "@powerpi/common-api";
 import { useMemo } from "react";
-import { isPolygon, isRect } from "./ViewBox";
+import { isPolygonRoom, isRectangleRoom } from "./ViewBox";
 
 type RoomProps = {
     room: IRoom;
@@ -11,8 +11,8 @@ const shapeClasses = "fill-none stroke-black dark:stroke-white outline-none";
 /** Component representing a room in the home floorplan. */
 const Room = ({ room }: RoomProps) => {
     const points = useMemo(() => {
-        if (isPolygon(room)) {
-            return room.points?.map((point) => `${point.x},${point.y}`).join(" ");
+        if (isPolygonRoom(room)) {
+            return room.points.map((point) => `${point.x},${point.y}`).join(" ");
         }
 
         return undefined;
@@ -20,7 +20,7 @@ const Room = ({ room }: RoomProps) => {
 
     return (
         <g>
-            {isRect(room) && (
+            {isRectangleRoom(room) && (
                 <rect
                     x={room.x}
                     y={room.y}
