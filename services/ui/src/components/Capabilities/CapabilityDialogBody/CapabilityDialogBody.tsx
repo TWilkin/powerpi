@@ -45,7 +45,7 @@ const CapabilityDialogBody = ({ deviceName }: CapabilityDialogBody) => {
                 />
             )}
 
-            {capabilities.streams && streams && (
+            {capabilities.streams && (
                 <StreamSelector
                     device={device}
                     streams={streams}

@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import _ from "underscore";
 import Icon, { IconType } from "../../Icon";
 import Select from "../../Select";
 import CapabilityControlProps from "../CapabilityControlProps";
@@ -16,13 +15,11 @@ const StreamSelector = ({ device, streams, disabled, mutateAsync }: StreamSelect
 
     const options = useMemo(
         () =>
-            _(streams)
-                .sortBy((stream) => stream.toLocaleLowerCase())
-                .map((stream) => ({
-                    label: stream,
-                    icon: getStreamIcon(stream),
-                    value: stream,
-                })),
+            streams?.map((stream) => ({
+                label: stream,
+                icon: getStreamIcon(stream),
+                value: stream,
+            })) ?? [],
         [streams],
     );
 

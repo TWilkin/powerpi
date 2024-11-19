@@ -6,9 +6,9 @@ import { OptionType } from "./types";
 
 describe("Select", () => {
     const exampleOptions: OptionType<number>[] = [
-        { label: "First", icon: "streamRadio", value: 1 },
         { label: "Second", icon: "streamSpotify", value: 2 },
         { label: "Third", icon: "streamOther", value: 3 },
+        { label: "First", icon: "streamRadio", value: 1 },
     ];
 
     test("renders", async () => {

@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import ReactSelect, { SingleValue } from "react-select";
+import _ from "underscore";
 import { inputStyles } from "../Input";
 import SelectDropDownIndicator from "./SelectDropDownIndicator";
 import SelectOption from "./SelectOption";
@@ -32,6 +33,11 @@ const Select = <TValueType,>({
         [options, value],
     );
 
+    const sortedOptions = useMemo(
+        () => _(options).sortBy((option) => option.label.toLocaleLowerCase()),
+        [options],
+    );
+
     const [menuOpen, setMenuOpen] = useState(false);
     const handleMenuOpen = useCallback(() => setMenuOpen(true), []);
     const handleMenuClose = useCallback(() => setMenuOpen(false), []);
@@ -53,7 +59,7 @@ const Select = <TValueType,>({
                 isMulti={false}
                 menuPosition="fixed"
                 placeholder={label}
-                options={options}
+                options={sortedOptions}
                 value={currentValue}
                 isDisabled={disabled}
                 components={{
