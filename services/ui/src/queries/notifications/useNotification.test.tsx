@@ -228,6 +228,7 @@ describe("useNotification", () => {
             const event: BatteryStatusMessage = {
                 sensor: "MySensor",
                 battery: 10,
+                charging: true,
                 timestamp: now,
             };
 
@@ -238,6 +239,7 @@ describe("useNotification", () => {
             expect(mocks.patchSensor).toHaveBeenCalledWith("MySensor", {
                 type: "Battery",
                 battery: 10,
+                charging: true,
                 batterySince: now,
             });
             expect(mocks.patchDevice).not.toHaveBeenCalled();

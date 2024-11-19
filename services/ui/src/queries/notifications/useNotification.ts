@@ -77,6 +77,7 @@ export default function useNotification() {
                 patchSensor(message.sensor, {
                     type: "Battery",
                     battery: message.battery,
+                    charging: message.charging,
                     batterySince: message.timestamp,
                 });
             }

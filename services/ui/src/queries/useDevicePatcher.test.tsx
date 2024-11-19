@@ -112,6 +112,8 @@ describe("useDevicePatcher", () => {
             expect(cacheDevice.capability).toStrictEqual(
                 expectedCapability ?? { brightness: true },
             );
+            expect(cacheDevice.battery).toBe(expectedBattery?.battery ?? 2);
+            expect(cacheDevice.charging).toBe(expectedBattery?.charging ?? false);
 
             if (!expectedBattery) {
                 expect(cacheDevice.since).toBe(since);

@@ -4,7 +4,7 @@ import usePatcher from "./usePatcher";
 
 type StateChange = { type: "State" } & Pick<Sensor, "state" | "since">;
 type DataChange = { type: "Data" } & Pick<Sensor, "value" | "unit" | "since">;
-type BatteryChange = { type: "Battery" } & Pick<Sensor, "battery" | "batterySince">;
+type BatteryChange = { type: "Battery" } & Pick<Sensor, "battery" | "charging" | "batterySince">;
 
 export type SensorPatch = StateChange | DataChange | BatteryChange;
 

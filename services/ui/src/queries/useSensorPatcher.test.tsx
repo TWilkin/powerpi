@@ -25,6 +25,7 @@ describe("useSensorPatcher", () => {
         value: 31,
         unit: "°C",
         battery: 2,
+        charging: false,
         batterySince: 0,
         since: 0,
     };
@@ -35,7 +36,7 @@ describe("useSensorPatcher", () => {
         expectedState?: string;
         expectedValue?: number;
         expectedUnit?: string;
-        expectedBattery?: number;
+        expectedBattery?: Pick<Sensor, "battery" | "charging">;
     }[] = [
         {
             name: "updates state",
@@ -50,8 +51,8 @@ describe("useSensorPatcher", () => {
         },
         {
             name: "updates battery",
-            update: { type: "Battery", battery: 3, batterySince: since },
-            expectedBattery: 3,
+            update: { type: "Battery", battery: 3, charging: true, batterySince: since },
+            expectedBattery: { battery: 3, charging: true },
         },
     ];
     test.each(cases)(
@@ -72,6 +73,7 @@ describe("useSensorPatcher", () => {
             expect(cacheSensor.value).toBe(31);
             expect(cacheSensor.unit).toBe("°C");
             expect(cacheSensor.battery).toBe(2);
+            expect(cacheSensor.charging).toBeFalsy();
 
             // send the patch
             act(() => result.current("MySensor", update));
@@ -81,7 +83,8 @@ describe("useSensorPatcher", () => {
             expect(cacheSensor.state).toBe(expectedState ?? "hot");
             expect(cacheSensor.value).toBe(expectedValue ?? 31);
             expect(cacheSensor.unit).toBe(expectedUnit ?? "°C");
-            expect(cacheSensor.battery).toBe(expectedBattery ?? 2);
+            expect(cacheSensor.battery).toBe(expectedBattery?.battery ?? 2);
+            expect(cacheSensor.charging).toBe(expectedBattery?.charging ?? false);
 
             if (!expectedBattery) {
                 expect(cacheSensor.since).toBe(since);
