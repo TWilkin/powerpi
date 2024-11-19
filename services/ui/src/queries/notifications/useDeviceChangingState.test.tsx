@@ -7,7 +7,7 @@ vi.mock("./useNotification", () => ({
     default: () => vi.fn(),
 }));
 
-describe("useDeviceChangingState", () =>
+describe("useDeviceChangingState", () => {
     test("works", () => {
         const { result } = renderHook(useDeviceChangingState, {
             wrapper: (props) => NotificationContextProvider({ ...props }),
@@ -28,4 +28,5 @@ describe("useDeviceChangingState", () =>
             MyDevice: true,
             MyOtherDevice: false,
         });
-    }));
+    });
+});

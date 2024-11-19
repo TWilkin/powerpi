@@ -3,7 +3,7 @@ import { render, screen, within } from "@testing-library/react";
 import LoginButton from "./LoginButton";
 import LoginProtocol from "./LoginProtocol";
 
-describe("LoginButton", () =>
+describe("LoginButton", () => {
     test("renders", () => {
         render(<LoginButton protocol={LoginProtocol.Google} />);
 
@@ -19,4 +19,5 @@ describe("LoginButton", () =>
         const button = within(form).getByRole("button");
         expect(button).toBeInTheDocument();
         expect(button).toHaveTextContent("Login with Google");
-    }));
+    });
+});

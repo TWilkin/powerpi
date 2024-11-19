@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 import Slider from "./Slider";
 
@@ -80,7 +80,7 @@ describe("Slider", () => {
         const slider = screen.getByRole("slider");
         expect(slider).toBeInTheDocument();
 
-        act(() => fireEvent.change(slider, { target: { value: 60 } }));
+        fireEvent.change(slider, { target: { value: 60 } });
 
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange).toHaveBeenCalledWith(60);

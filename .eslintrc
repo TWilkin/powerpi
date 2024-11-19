@@ -1,7 +1,7 @@
 {
     "root": true,
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint", "jsx-a11y"],
+    "plugins": ["@typescript-eslint", "jsx-a11y", "@vitest", "testing-library"],
     "extends": [
         "eslint:recommended",
         "prettier",
@@ -10,7 +10,9 @@
         "plugin:i18next/recommended",
         "plugin:jsx-a11y/recommended",
         "plugin:react/recommended",
-        "plugin:react-hooks/recommended"
+        "plugin:react-hooks/recommended",
+        "plugin:@vitest/legacy-recommended",
+        "plugin:testing-library/react"
     ],
     "rules": {
         "@typescript-eslint/no-unused-vars": [

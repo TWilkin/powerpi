@@ -26,7 +26,7 @@ const data: Floorplan = {
     floors: [],
 };
 
-describe("floorplanLoader", () =>
+describe("floorplanLoader", () => {
     test("works", async () => {
         mocks.api.getFloorplan.mockImplementation(async () => data);
 
@@ -34,9 +34,10 @@ describe("floorplanLoader", () =>
 
         const result = await loader().data.data;
         expect(result).toBe(data);
-    }));
+    });
+});
 
-describe("useQueryFloorplan", () =>
+describe("useQueryFloorplan", () => {
     test("works", async () => {
         mocks.api.getFloorplan.mockImplementation(async () => data);
 
@@ -45,4 +46,5 @@ describe("useQueryFloorplan", () =>
         });
 
         await waitFor(() => expect(result.current?.data).toBe(data));
-    }));
+    });
+});

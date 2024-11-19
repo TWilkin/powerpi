@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import Dialog from "./Dialog";
 
-describe("Dialog", () =>
+describe("Dialog", () => {
     test("renders", () => {
         render(
             <Dialog heading="My Dialog" icon={<div>My Icon</div>} open>
@@ -24,4 +24,5 @@ describe("Dialog", () =>
         expect(closeButton).toBeInTheDocument();
 
         expect(within(dialog).getByText("My Content")).toBeInTheDocument();
-    }));
+    });
+});

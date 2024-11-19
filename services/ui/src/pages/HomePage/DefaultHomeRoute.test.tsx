@@ -23,7 +23,7 @@ const Wrapper = ({ children }: PropsWithChildren<unknown>) => (
     </MemoryRouter>
 );
 
-describe("DefaultHomeRoute", () =>
+describe("DefaultHomeRoute", () => {
     test("works", () => {
         mocks.useQueryFloorplan.mockReturnValue({
             data: {
@@ -33,5 +33,6 @@ describe("DefaultHomeRoute", () =>
 
         render(<DefaultHomeRoute />, { wrapper: Wrapper });
 
-        expect(screen.getByText("Redirected ground"));
-    }));
+        expect(screen.getByText("Redirected ground")).toBeInTheDocument();
+    });
+});

@@ -21,6 +21,7 @@ describe("getDeviceCapabilities", () => {
             },
         });
 
+        expect(result).toBeDefined();
         verify(result.capabilities, state ?? false, false, false, false);
     });
 
@@ -32,6 +33,7 @@ describe("getDeviceCapabilities", () => {
             },
         });
 
+        expect(result).toBeDefined();
         verify(result.capabilities, false, false, state ?? false, false);
     });
 
@@ -43,6 +45,7 @@ describe("getDeviceCapabilities", () => {
             },
         });
 
+        expect(result).toBeDefined();
         verify(result.capabilities, false, false, state ?? false, false);
     });
 

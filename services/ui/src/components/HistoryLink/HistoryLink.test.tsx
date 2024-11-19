@@ -3,7 +3,7 @@ import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import HistoryLink from "./HistoryLink";
 
-describe("HistoryLink", () =>
+describe("HistoryLink", () => {
     test("renders", () => {
         render(
             <HistoryLink
@@ -27,4 +27,5 @@ describe("HistoryLink", () =>
         const icon = within(link).getByRole("img", { hidden: true });
         expect(icon).toBeInTheDocument();
         expect(icon).toHaveAttribute("data-icon", "clock-rotate-left");
-    }));
+    });
+});

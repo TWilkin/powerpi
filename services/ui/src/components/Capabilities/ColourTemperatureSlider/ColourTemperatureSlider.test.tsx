@@ -1,5 +1,5 @@
 import { Device, DeviceState } from "@powerpi/common-api";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 import ColourTemperatureSlider from "./ColourTemperatureSlider";
 
@@ -71,7 +71,7 @@ describe("ColourTemperatureSlider", () => {
         expect(slider).toBeInTheDocument();
         expect(slider).toHaveValue("5000");
 
-        act(() => fireEvent.change(slider, { target: { value: 6000 } }));
+        fireEvent.change(slider, { target: { value: 6000 } });
 
         expect(slider).toHaveValue("6000");
     });

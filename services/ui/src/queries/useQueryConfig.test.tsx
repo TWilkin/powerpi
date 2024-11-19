@@ -29,7 +29,7 @@ const data: Config = {
     hasPersistence: false,
 };
 
-describe("configLoader", () =>
+describe("configLoader", () => {
     test("works", async () => {
         mocks.api.getConfig.mockImplementation(async () => data);
 
@@ -37,7 +37,8 @@ describe("configLoader", () =>
 
         const result = await loader().data.data;
         expect(result).toBe(data);
-    }));
+    });
+});
 
 describe("useQueryConfig", () => {
     test("works", async () => {

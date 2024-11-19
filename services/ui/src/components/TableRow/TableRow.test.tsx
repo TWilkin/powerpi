@@ -1,7 +1,7 @@
 import { render, screen, within } from "@testing-library/react";
 import TableRow from "./TableRow";
 
-describe("TableRow", () =>
+describe("TableRow", () => {
     test("renders", () => {
         render(
             <table>
@@ -20,4 +20,5 @@ describe("TableRow", () =>
         expect(row).toBeInTheDocument();
 
         expect(within(row).getByText("Cell")).toBeInTheDocument();
-    }));
+    });
+});

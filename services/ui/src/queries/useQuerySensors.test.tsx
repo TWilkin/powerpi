@@ -32,7 +32,7 @@ const data: Sensor[] = [
     },
 ];
 
-describe("sensorsLoader", () =>
+describe("sensorsLoader", () => {
     test("works", async () => {
         mocks.api.getSensors.mockImplementation(async () => data);
 
@@ -40,9 +40,10 @@ describe("sensorsLoader", () =>
 
         const result = await loader().data.data;
         expect(result).toBe(data);
-    }));
+    });
+});
 
-describe("useQuerySensors", () =>
+describe("useQuerySensors", () => {
     test("works", async () => {
         mocks.api.getSensors.mockImplementation(async () => data);
 
@@ -51,4 +52,5 @@ describe("useQuerySensors", () =>
         });
 
         await waitFor(() => expect(result.current?.data).toBe(data));
-    }));
+    });
+});

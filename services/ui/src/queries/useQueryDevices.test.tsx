@@ -33,7 +33,7 @@ const data: Device[] = [
     },
 ];
 
-describe("devicesLoader", () =>
+describe("devicesLoader", () => {
     test("works", async () => {
         mocks.api.getDevices.mockImplementation(async () => data);
 
@@ -41,9 +41,10 @@ describe("devicesLoader", () =>
 
         const result = await loader().data.data;
         expect(result).toBe(data);
-    }));
+    });
+});
 
-describe("useQueryDevices", () =>
+describe("useQueryDevices", () => {
     test("works", async () => {
         mocks.api.getDevices.mockImplementation(async () => data);
 
@@ -52,4 +53,5 @@ describe("useQueryDevices", () =>
         });
 
         await waitFor(() => expect(result.current?.data).toBe(data));
-    }));
+    });
+});
