@@ -30,7 +30,7 @@ type SliderProps = {
 
     value: number;
 
-    unit: keyof Resources["translation"]["common"]["units"];
+    unit: keyof Resources["translation"]["common"]["units"]["values"];
 
     onChange(value: number): void;
 
@@ -65,7 +65,7 @@ const Slider = ({
         const ratio = (max - min) / 100;
         const valuePosition = (value - min - 1) / ratio;
 
-        const valueText = t(`common.units.${unit}`, { value });
+        const valueText = t(`common.units.values.${unit}`, { value });
 
         const width = ref ? getTextWidth(ref, valueText) : 0;
         const valueMargin = (width / 2) * -1;
@@ -108,7 +108,7 @@ const Slider = ({
             <div className="flex flex-col items-center gap-1">
                 <Icon icon={lowIcon} />
 
-                <span className="text-xs">{t(`common.units.${unit}`, { value: min })}</span>
+                <span className="text-xs">{t(`common.units.values.${unit}`, { value: min })}</span>
             </div>
 
             <div className="relative flex flex-col items-center flex-1">
@@ -143,7 +143,7 @@ const Slider = ({
             <div className="flex flex-col items-center gap-1">
                 <Icon icon={highIcon} />
 
-                <span className="text-xs">{t(`common.units.${unit}`, { value: max })}</span>
+                <span className="text-xs">{t(`common.units.values.${unit}`, { value: max })}</span>
             </div>
         </>
     );
