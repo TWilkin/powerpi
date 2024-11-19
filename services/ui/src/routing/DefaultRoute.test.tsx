@@ -27,7 +27,7 @@ describe("DefaultRoute", () => {
     test("fallback to login", () => {
         render(<DefaultRoute />, { wrapper: Wrapper });
 
-        expect(screen.getByText("Redirected login"));
+        expect(screen.getByText("Redirected login")).toBeInTheDocument();
     });
 
     test("defaults to home when enabled", () => {
@@ -35,7 +35,7 @@ describe("DefaultRoute", () => {
 
         render(<DefaultRoute />, { wrapper: Wrapper });
 
-        expect(screen.getByText("Redirected home"));
+        expect(screen.getByText("Redirected home")).toBeInTheDocument();
     });
 
     test("defaults to devices when home disabled", () => {
@@ -43,6 +43,6 @@ describe("DefaultRoute", () => {
 
         render(<DefaultRoute />, { wrapper: Wrapper });
 
-        expect(screen.getByText("Redirected device"));
+        expect(screen.getByText("Redirected device")).toBeInTheDocument();
     });
 });

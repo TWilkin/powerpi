@@ -1,6 +1,7 @@
 import { lazy } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "../pages/ErrorPage";
+import DefaultHomeRoute from "../pages/HomePage/DefaultHomeRoute";
 import Layout, { configLoader } from "../pages/Layout";
 import { api, queryClient } from "../queries/client";
 import { devicesLoader } from "../queries/useQueryDevices";
@@ -44,8 +45,17 @@ const router = createBrowserRouter([
                                         children: [
                                             {
                                                 path: Routes.Home,
-                                                element: <HomePage />,
                                                 loader: floorplanLoader(queryClient, api),
+                                                children: [
+                                                    {
+                                                        index: true,
+                                                        element: <DefaultHomeRoute />,
+                                                    },
+                                                    {
+                                                        path: ":floor",
+                                                        element: <HomePage />,
+                                                    },
+                                                ],
                                             },
                                         ],
                                     },
@@ -62,4 +72,6 @@ const router = createBrowserRouter([
         ],
     },
 ]);
-export default router;
+
+const Router = () => <RouterProvider router={router} />;
+export default Router;
