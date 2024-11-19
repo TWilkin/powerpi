@@ -5,6 +5,7 @@ import {
     ConfigStatusMessage,
     DeviceState,
     DeviceStatusMessage,
+    SensorStatusMessage,
 } from "@powerpi/common-api";
 import { act, renderHook } from "@testing-library/react";
 import { vi } from "vitest";
@@ -14,15 +15,18 @@ const mocks = vi.hoisted(() => ({
     api: {
         addConfigChangeListener: vi.fn(),
         addDeviceListener: vi.fn(),
+        addSensorListener: vi.fn(),
         addBatteryListener: vi.fn(),
         addCapabilityListener: vi.fn(),
         removeConfigChangeListener: vi.fn(),
         removeDeviceListener: vi.fn(),
+        removeSensorListener: vi.fn(),
         removeBatteryListener: vi.fn(),
         removeCapabilityListener: vi.fn(),
     },
     patchDevice: vi.fn(),
     setChangingState: vi.fn(),
+    patchSensor: vi.fn(),
     queryClient: {
         invalidateQueries: vi.fn(),
     },
@@ -30,6 +34,7 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("../useAPI", () => ({ default: () => mocks.api }));
 vi.mock("../useDevicePatcher", () => ({ default: () => mocks.patchDevice }));
+vi.mock("../useSensorPatcher", () => ({ default: () => mocks.patchSensor }));
 vi.mock("./useDeviceChangingState", () => ({
     default: () => ({ setChangingState: mocks.setChangingState }),
 }));
@@ -50,11 +55,13 @@ describe("useNotification", () => {
 
         expect(mocks.api.addConfigChangeListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.addDeviceListener).toHaveBeenCalledTimes(1);
+        expect(mocks.api.addSensorListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.addBatteryListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.addCapabilityListener).toHaveBeenCalledTimes(1);
 
         expect(mocks.api.removeConfigChangeListener).not.toHaveBeenCalled();
         expect(mocks.api.removeDeviceListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeSensorListener).not.toHaveBeenCalled();
         expect(mocks.api.removeBatteryListener).not.toHaveBeenCalled();
         expect(mocks.api.removeCapabilityListener).not.toHaveBeenCalled();
 
@@ -62,6 +69,7 @@ describe("useNotification", () => {
 
         expect(mocks.api.removeConfigChangeListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.removeDeviceListener).toHaveBeenCalledTimes(1);
+        expect(mocks.api.removeSensorListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.removeBatteryListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.removeCapabilityListener).toHaveBeenCalledTimes(1);
     });
@@ -79,9 +87,12 @@ describe("useNotification", () => {
             const handleConfigChange = mocks.api.addConfigChangeListener.mock.calls[0][0];
             await act(() => handleConfigChange(event));
 
-            expect(mocks.queryClient.invalidateQueries).toHaveBeenCalledTimes(1);
+            expect(mocks.queryClient.invalidateQueries).toHaveBeenCalledTimes(2);
             expect(mocks.queryClient.invalidateQueries).toHaveBeenCalledWith({
                 queryKey: ["powerpi", "devices"],
+            });
+            expect(mocks.queryClient.invalidateQueries).toHaveBeenCalledWith({
+                queryKey: ["powerpi", "sensors"],
             });
         });
 
@@ -131,6 +142,56 @@ describe("useNotification", () => {
         expect(mocks.setChangingState).toHaveBeenCalledWith("MyDevice", false);
     });
 
+    describe("handleSensorStatusChange", () => {
+        test("state", async () => {
+            renderHook(useNotification);
+
+            expect(mocks.api.addSensorListener).toHaveBeenCalledTimes(1);
+
+            const now = new Date().getTime();
+            const event: SensorStatusMessage = {
+                sensor: "MyMotionSensor",
+                state: "detected",
+                timestamp: now,
+            };
+
+            const handleSensorStatusChange = mocks.api.addSensorListener.mock.calls[0][0];
+            await act(() => handleSensorStatusChange(event));
+
+            expect(mocks.patchSensor).toHaveBeenCalledTimes(1);
+            expect(mocks.patchSensor).toHaveBeenCalledWith("MyMotionSensor", {
+                type: "State",
+                state: "detected",
+                since: now,
+            });
+        });
+
+        test("data", async () => {
+            renderHook(useNotification);
+
+            expect(mocks.api.addSensorListener).toHaveBeenCalledTimes(1);
+
+            const now = new Date().getTime();
+            const event: SensorStatusMessage = {
+                sensor: "MyTempSensor",
+                value: 31,
+                unit: "°C",
+                timestamp: now,
+            };
+
+            const handleSensorStatusChange = mocks.api.addSensorListener.mock.calls[0][0];
+            await act(() => handleSensorStatusChange(event));
+
+            expect(mocks.patchSensor).toHaveBeenCalledTimes(1);
+            expect(mocks.patchSensor).toHaveBeenCalledWith("MyTempSensor", {
+                type: "Data",
+                value: 31,
+                unit: "°C",
+                since: now,
+            });
+        });
+    });
+
     describe("handleBatteryChange", () => {
         test("device", async () => {
             renderHook(useNotification);
@@ -155,6 +216,7 @@ describe("useNotification", () => {
                 charging: true,
                 batterySince: now,
             });
+            expect(mocks.patchSensor).not.toHaveBeenCalled();
         });
 
         test("sensor", async () => {
@@ -166,13 +228,18 @@ describe("useNotification", () => {
             const event: BatteryStatusMessage = {
                 sensor: "MySensor",
                 battery: 10,
-                charging: true,
                 timestamp: now,
             };
 
             const handleBatteryChange = mocks.api.addBatteryListener.mock.calls[0][0];
             await act(() => handleBatteryChange(event));
 
+            expect(mocks.patchSensor).toHaveBeenCalledTimes(1);
+            expect(mocks.patchSensor).toHaveBeenCalledWith("MySensor", {
+                type: "Battery",
+                battery: 10,
+                batterySince: now,
+            });
             expect(mocks.patchDevice).not.toHaveBeenCalled();
         });
     });

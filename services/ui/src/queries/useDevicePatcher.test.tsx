@@ -99,6 +99,7 @@ describe("useDevicePatcher", () => {
             expect(cacheDevice.capability).toStrictEqual({ brightness: true });
             expect(cacheDevice.battery).toBe(2);
             expect(cacheDevice.charging).toBeFalsy();
+
             // send the patch
             act(() => result.current("MyDevice", update));
 
