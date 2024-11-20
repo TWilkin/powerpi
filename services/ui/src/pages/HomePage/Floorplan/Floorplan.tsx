@@ -41,7 +41,7 @@ const Floorplan = ({ floorplan }: FloorplanProps) => {
                 <svg
                     viewBox={`${effectiveViewBox.minX} ${effectiveViewBox.minY} ${effectiveViewBox.maxX} ${effectiveViewBox.maxY}`}
                     preserveAspectRatio="xMidYMid"
-                    className="absolute top-0 left-0 w-full h-full"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] h-[95%]"
                 >
                     <Floor floor={currentFloor} />
                 </svg>
