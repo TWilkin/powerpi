@@ -77,7 +77,7 @@ const DevicePage = () => {
                                     </TableCell>
 
                                     <TableCell width="time">
-                                        <Time time={device.since} />
+                                        <Time time={device.since} data-tooltip-place="left" />
                                     </TableCell>
 
                                     {enabled?.history && (

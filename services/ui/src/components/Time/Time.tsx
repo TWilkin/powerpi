@@ -1,14 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
+import { TimeHTMLAttributes, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import Tooltip, { useTooltip } from "../Tooltip";
 
 type TimeProps = {
     time: number;
-};
+} & Omit<TimeHTMLAttributes<HTMLTimeElement>, "dateTime">;
 
 /** Component to display how long since an event occurred, rounding appropriately and
  * collapsing to the largest whole unit.
  */
-const Time = ({ time }: TimeProps) => {
+const Time = ({ time, ...props }: TimeProps) => {
     const { t } = useTranslation();
 
     const [now, setNow] = useState<Date>(new Date());
@@ -58,14 +59,20 @@ const Time = ({ time }: TimeProps) => {
         }
     }, [unit]);
 
+    const { tooltipProps, componentProps } = useTooltip();
+
     if (time < 0) {
         return <>{t("common.never")}</>;
     }
 
     return (
-        <time dateTime={isoDate} title={t("common.datetime.date", { time: date })}>
-            {t(`common.datetime.relative.${unit}`, { time: value })}
-        </time>
+        <div>
+            <time {...props} {...componentProps} dateTime={isoDate}>
+                {t(`common.datetime.relative.${unit}`, { time: value })}
+            </time>
+
+            <Tooltip {...tooltipProps}>{t("common.datetime.date", { time: date })}</Tooltip>
+        </div>
     );
 };
 export default Time;

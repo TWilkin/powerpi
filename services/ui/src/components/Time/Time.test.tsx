@@ -1,4 +1,5 @@
 import { act, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import Time from "./Time";
 
@@ -6,7 +7,7 @@ describe("Time", () => {
     const now = new Date().getTime();
 
     beforeEach(() => {
-        vi.useFakeTimers();
+        vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.setSystemTime(now);
     });
 
@@ -68,5 +69,23 @@ describe("Time", () => {
         act(() => vi.advanceTimersByTime(interval));
 
         expect(screen.getByText(expected[1])).toBeInTheDocument();
+    });
+
+    test("tooltip", async () => {
+        const time = new Date();
+        time.setTime(0);
+
+        render(<Time time={time.getTime()} />);
+
+        const element = screen.getByRole("time");
+        expect(element).toBeInTheDocument();
+
+        expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+
+        await userEvent.hover(element);
+
+        const tooltip = screen.getByRole("tooltip");
+        expect(tooltip).toBeInTheDocument();
+        expect(tooltip).toHaveTextContent("1 January 1970 at 01:00:00 GMT+1");
     });
 });
