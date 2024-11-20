@@ -1,8 +1,10 @@
 import { Floorplan as IFloorplan } from "@powerpi/common-api";
 import { useMemo } from "react";
+import useOrientation from "../../../hooks/useOrientation";
 import useFloor from "../useFloor";
 import Floor from "./Floor";
 import useRotateFloorplan from "./useRotateFloorplan";
+import { viewBoxByFloorplan } from "./ViewBox";
 
 type FloorplanProps = {
     floorplan: IFloorplan;
@@ -12,9 +14,20 @@ type FloorplanProps = {
 const Floorplan = ({ floorplan }: FloorplanProps) => {
     const currentFloorName = useFloor();
 
+    const { isLandscape, isPortrait } = useOrientation();
+
+    const rotate = useMemo(() => {
+        const size = viewBoxByFloorplan(floorplan);
+
+        // the floorplan is wider than it is tall
+        const wide = size.maxX >= size.maxY;
+
+        return (wide && isPortrait) || (!wide && isLandscape);
+    }, [floorplan, isLandscape, isPortrait]);
+
     const { floorplan: effectiveFloorplan, viewBox: effectiveViewBox } = useRotateFloorplan(
         floorplan,
-        false,
+        rotate,
     );
 
     const currentFloor = useMemo(
@@ -23,17 +36,17 @@ const Floorplan = ({ floorplan }: FloorplanProps) => {
     );
 
     return (
-        <>
+        <div className="relative flex-1">
             {currentFloor && (
                 <svg
                     viewBox={`${effectiveViewBox.minX} ${effectiveViewBox.minY} ${effectiveViewBox.maxX} ${effectiveViewBox.maxY}`}
                     preserveAspectRatio="xMidYMid"
-                    className="flex-1"
+                    className="absolute top-0 left-0 w-full h-full"
                 >
                     <Floor floor={currentFloor} />
                 </svg>
             )}
-        </>
+        </div>
     );
 };
 export default Floorplan;

@@ -12,7 +12,7 @@ const shapeClasses = "fill-none stroke-black dark:stroke-white outline-none";
 const Room = ({ room }: RoomProps) => {
     const points = useMemo(() => {
         if (isPolygonRoom(room)) {
-            return room.points.map((point) => `${point.x},${point.y}`).join(" ");
+            return room.points?.map((point) => `${point.x},${point.y}`).join(" ");
         }
 
         return undefined;
