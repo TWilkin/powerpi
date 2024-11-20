@@ -14,6 +14,10 @@
     .icon-m {
         font-size: 1rem;
     }
+
+    .pointer-events-all {
+        pointer-events: all;
+    }
 }
 
 input {

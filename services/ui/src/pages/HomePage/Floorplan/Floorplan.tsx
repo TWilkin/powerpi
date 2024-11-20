@@ -1,8 +1,10 @@
-import { Floorplan as IFloorplan } from "@powerpi/common-api";
+import { Floorplan as IFloorplan, Sensor } from "@powerpi/common-api";
 import { useMemo } from "react";
 import useOrientation from "../../../hooks/useOrientation";
+import useQuerySensors from "../../../queries/useQuerySensors";
 import useFloor from "../useFloor";
 import Floor from "./Floor";
+import RoomTooltip from "./RoomTooltip";
 import useRotateFloorplan from "./useRotateFloorplan";
 import { viewBoxByFloorplan } from "./ViewBox";
 
@@ -35,8 +37,37 @@ const Floorplan = ({ floorplan }: FloorplanProps) => {
         [currentFloorName, effectiveFloorplan.floors],
     );
 
+    const { data: sensors } = useQuerySensors();
+
+    const locations = useMemo(
+        () =>
+            floorplan?.floors.reduce(
+                (locations, floor) => {
+                    locations.push(
+                        ...floor.rooms.map((room) => ({
+                            name: room.display_name ?? room.name,
+                            floor: floor.name,
+                            room: room.name,
+                            sensors:
+                                sensors?.filter(
+                                    (sensor) => sensor.visible && sensor.location === room.name,
+                                ) ?? [],
+                        })),
+                    );
+
+                    return locations;
+                },
+                [] as { name: string; floor: string; room: string; sensors: Sensor[] }[],
+            ),
+        [floorplan, sensors],
+    );
+
     return (
         <div className="relative flex-1">
+            {locations.map((location) => (
+                <RoomTooltip key={`${location.floor}-${location.room}`} {...location} />
+            ))}
+
             {currentFloor && (
                 <svg
                     viewBox={`${effectiveViewBox.minX} ${effectiveViewBox.minY} ${effectiveViewBox.maxX} ${effectiveViewBox.maxY}`}

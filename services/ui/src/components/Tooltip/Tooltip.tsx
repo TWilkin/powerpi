@@ -7,7 +7,7 @@ type TooltipProps = PropsWithChildren<Pick<ComponentProps<typeof ReactTooltip>, 
  * Use alongside the @see useTooltip hook.
  */
 const Tooltip = ({ children, ...props }: TooltipProps) => (
-    <ReactTooltip {...props} className="!bg-gray-950 !text-white !rounded !text-sm">
+    <ReactTooltip {...props} className="!bg-purple-900 !text-white !rounded !text-sm z-50">
         {children}
     </ReactTooltip>
 );

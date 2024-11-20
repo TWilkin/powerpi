@@ -66,7 +66,9 @@ const DevicePage = () => {
 
                                     {showingBattery && (
                                         <TableCell width="icon">
-                                            <BatteryIcon device={device} />
+                                            {device.battery != null && (
+                                                <BatteryIcon device={device} />
+                                            )}
                                         </TableCell>
                                     )}
 

@@ -9,7 +9,7 @@ type FloorProps = {
 const Floor = ({ floor }: FloorProps) => (
     <g>
         {floor.rooms.map((room) => (
-            <Room key={room.name} room={room} />
+            <Room key={room.name} floor={floor.name} room={room} />
         ))}
     </g>
 );
