@@ -1,4 +1,4 @@
-import Resources from "../../@types/resources";
+import { SupportedUnit, SupportedUnitLabel } from "./isSupportedUnit";
 
 /** A numeric value with it's associated unit. */
 export type UnitValue = {
@@ -18,13 +18,13 @@ export type Converter = (value: number) => number;
 /** The definition of a unit and its possible conversions. */
 export type ConverterDefinition = {
     /** The shorthand unit name, e.g. kWh. */
-    unit: string;
+    unit: SupportedUnit;
 
     /** The translation key for the unit. */
-    key: keyof Resources["translation"]["common"]["units"]["labels"];
+    key: SupportedUnitLabel;
 
     /** The list of supported conversions. */
     convert: {
-        [key in string]?: Converter;
+        [key in SupportedUnit]?: Converter;
     };
 };

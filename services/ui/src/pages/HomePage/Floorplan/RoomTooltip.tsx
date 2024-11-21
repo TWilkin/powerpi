@@ -5,6 +5,7 @@ import { Fragment } from "react/jsx-runtime";
 import BatteryIcon from "../../../components/BatteryIcon";
 import SensorIcon from "../../../components/SensorIcon";
 import Tooltip from "../../../components/Tooltip";
+import Value from "../../../components/Value";
 
 type RoomTooltipProps = {
     name: string;
@@ -42,9 +43,7 @@ const RoomTooltip = ({ name, floor, room, sensors }: RoomTooltipProps) => {
                         <p className="px-2">{sensor.display_name}</p>
 
                         <p>
-                            {sensor.value != null && sensor.unit
-                                ? `${sensor.value} ${sensor.unit}`
-                                : sensor.state}
+                            <Value type={sensor.type} value={sensor.value} unit={sensor.unit} />
                         </p>
                     </Fragment>
                 ))}

@@ -61,7 +61,8 @@ interface Resources {
           "fahrenheit": "{{value, number}} F",
           "metres cubed": "{{value, number}} m³",
           "cubic feet": "{{value, number}} cf",
-          "hundred cubic feet": "{{value, number}} hcf"
+          "hundred cubic feet": "{{value, number}} hcf",
+          "unrecognised": "{{value, number}} {unit}"
         },
         "labels": {
           "watt hours": "Watt Hours",
