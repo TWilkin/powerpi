@@ -12,11 +12,25 @@ describe("HeaderLink", () => {
 
         const link = screen.getByRole("link");
         expect(link).toBeInTheDocument();
+        expect(link).toHaveTextContent("Home");
 
         const icon = within(link).getByRole("img", { hidden: true });
         expect(icon).toBeInTheDocument();
         expect(icon).toHaveAttribute("data-icon", "house");
+    });
 
-        expect(within(link).getByText("Home")).toBeInTheDocument();
+    test("small", () => {
+        render(<HeaderLink route={Route.Settings} icon="settings" text="Settings" small />, {
+            wrapper: MemoryRouter,
+        });
+
+        const link = screen.getByRole("link");
+        expect(link).toBeInTheDocument();
+        expect(link).toHaveTextContent("");
+        expect(link).toHaveAccessibleName("Settings");
+
+        const icon = within(link).getByRole("img", { hidden: true });
+        expect(icon).toBeInTheDocument();
+        expect(icon).toHaveAttribute("data-icon", "gear");
     });
 });

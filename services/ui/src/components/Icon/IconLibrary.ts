@@ -59,6 +59,7 @@ const iconLibrary = {
     home: faHome,
     device: faPlug,
     history: faHistory,
+    settings: faGear,
 
     // state
     stateOn: faPowerOff,

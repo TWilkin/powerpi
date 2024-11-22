@@ -28,8 +28,9 @@ describe("Header", () => {
         expect(within(nav).getByText("Logo")).toBeInTheDocument();
 
         const links = screen.getAllByRole("link");
-        expect(links).toHaveLength(1);
+        expect(links).toHaveLength(2);
         expectDevices(links[0]);
+        expectSettings(links[1]);
     });
 
     test("renders with Home", () => {
@@ -38,10 +39,11 @@ describe("Header", () => {
         render(<Header />, { wrapper: MemoryRouter });
 
         const links = screen.getAllByRole("link");
-        expect(links).toHaveLength(2);
+        expect(links).toHaveLength(3);
 
         expectHome(links[0]);
         expectDevices(links[1]);
+        expectSettings(links[2]);
     });
 
     function expectHome(link: HTMLElement) {
@@ -57,6 +59,14 @@ describe("Header", () => {
         expect(within(link).getByRole("img", { hidden: true })).toHaveAttribute(
             "data-icon",
             "plug",
+        );
+    }
+
+    function expectSettings(link: HTMLElement) {
+        expect(link).toHaveTextContent("");
+        expect(within(link).getByRole("img", { hidden: true })).toHaveAttribute(
+            "data-icon",
+            "gear",
         );
     }
 });

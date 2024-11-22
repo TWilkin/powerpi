@@ -9,7 +9,8 @@ interface Resources {
     "navigation": {
       "home": "Home",
       "devices": "Devices",
-      "history": "History"
+      "history": "History",
+      "settings": "Settings"
     },
     "pages": {
       "error": {

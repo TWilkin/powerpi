@@ -19,6 +19,13 @@ const Header = () => {
                 )}
 
                 <HeaderLink route={Route.Device} icon="device" text={t("navigation.devices")} />
+
+                <HeaderLink
+                    route={Route.Settings}
+                    icon="settings"
+                    text={t("navigation.settings")}
+                    small
+                />
             </nav>
         </header>
     );

@@ -11,6 +11,9 @@ type HeaderLinkProps = {
     icon: IconType;
 
     text: string;
+
+    /** Whether to always show as a small link. */
+    small?: boolean;
 };
 
 const headerLinkClasses = classNames(
@@ -20,12 +23,13 @@ const headerLinkClasses = classNames(
     "aria-current-page:bg-sky-200 aria-current-page:dark:bg-purple-950",
 );
 
-const HeaderLink = ({ route, icon, text }: HeaderLinkProps) => (
-    <div className="h-20 grow">
+/** Component for one of the main header navigation links. */
+const HeaderLink = ({ route, icon, text, small = false }: HeaderLinkProps) => (
+    <div className={classNames("h-20", { grow: !small })}>
         <NavLink to={RouteBuilder.build(route)} className={headerLinkClasses} aria-label={text}>
             <Icon icon={icon} />
 
-            <span className="hidden md:block">{text}</span>
+            {!small && <span className="hidden md:block">{text}</span>}
         </NavLink>
     </div>
 );
