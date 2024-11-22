@@ -1,7 +1,7 @@
 import _ from "underscore";
 import keysOf from "../../utils/keysOf";
 import { gas, power, temperature, volume } from "./converters";
-import { Converter, ConverterDefinition, UnitType, UnitValue } from "./types";
+import { Conversion, Converter, ConverterDefinition, UnitType, UnitValue } from "./types";
 
 /** Class representing the conversion from one numeric unit to another. */
 export default class UnitConverter {
@@ -18,7 +18,7 @@ export default class UnitConverter {
      * @param type The unit to list the conversions for.
      * @returns The list of supported conversions for the specified unit.
      */
-    public static getConverters(type: UnitType) {
+    public static getConverters(type: UnitType): Conversion[] {
         return _(this.converters[type])
             .unique((unit) => unit.unit)
             .map(({ unit, key }) => ({ unit, key }));

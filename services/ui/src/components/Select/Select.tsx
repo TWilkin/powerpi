@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { HTMLAttributes, useCallback, useMemo, useState } from "react";
 import ReactSelect, { SingleValue } from "react-select";
 import _ from "underscore";
 import { inputStyles } from "../Input";
@@ -18,9 +18,10 @@ type SelectProps<TValueType> = {
     disabled?: boolean;
 
     onChange(value: TValueType): void;
-};
+} & Pick<HTMLAttributes<HTMLElement>, "id">;
 
 const Select = <TValueType,>({
+    id,
     label,
     value,
     options,
@@ -55,6 +56,7 @@ const Select = <TValueType,>({
         <div className="w-80 flex">
             <ReactSelect
                 {...props}
+                inputId={id}
                 isSearchable
                 isMulti={false}
                 menuPosition="fixed"

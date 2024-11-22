@@ -29,6 +29,9 @@ interface Resources {
         "empty": "No devices.",
         "filtered_one": "Filtered {{count, number}} device.",
         "filtered_other": "Filtered {{count, number}} devices."
+      },
+      "settings": {
+        "units": "Units"
       }
     },
     "common": {
@@ -70,6 +73,7 @@ interface Resources {
           "unrecognised": "{{value, number}} {{unit}}"
         },
         "labels": {
+          "percentage": "Percentage",
           "watt hours": "Watt Hours",
           "kilowatt hours": "Kilowatt Hours",
           "celsius": "Celsius",
