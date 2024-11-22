@@ -62,7 +62,7 @@ interface Resources {
           "metres cubed": "{{value, number}} m³",
           "cubic feet": "{{value, number}} cf",
           "hundred cubic feet": "{{value, number}} hcf",
-          "unrecognised": "{{value, number}} {unit}"
+          "unrecognised": "{{value, number}} {{unit}}"
         },
         "labels": {
           "watt hours": "Watt Hours",

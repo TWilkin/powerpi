@@ -18,12 +18,15 @@ const Value = ({ type, value, unit }: ValueProps) => {
     const converter = useConversion();
 
     const text = useMemo(() => {
-        if (type && value != null && unit) {
+        if (value != null && unit) {
             let unitValue = { value, unit };
-            const unitType = getUnitType(type, unit);
 
-            if (unitType) {
-                unitValue = converter(unitType, unitValue);
+            if (type) {
+                const unitType = getUnitType(type, unit);
+
+                if (unitType) {
+                    unitValue = converter(unitType, unitValue);
+                }
             }
 
             if (isSupportedUnit(unitValue.unit)) {
@@ -33,9 +36,11 @@ const Value = ({ type, value, unit }: ValueProps) => {
                     return t(`common.units.values.${label}`, { value: unitValue.value });
                 }
             }
+
+            return t("common.units.values.unrecognised", { value, unit });
         }
 
-        return t("common.units.values.unrecognised", { value, unit });
+        return undefined;
     }, [converter, t, type, unit, value]);
 
     if (value == null) {

@@ -1,5 +1,5 @@
 import { Device, DeviceState } from "@powerpi/common-api";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 import BrightnessSlider from "./BrightnessSlider";
 
@@ -51,7 +51,7 @@ describe("BrightnessSlider", () => {
         expect(slider).toBeInTheDocument();
         expect(slider).toHaveValue("50");
 
-        act(() => fireEvent.change(slider, { target: { value: 60 } }));
+        fireEvent.change(slider, { target: { value: 60 } });
 
         expect(slider).toHaveValue("60");
     });
