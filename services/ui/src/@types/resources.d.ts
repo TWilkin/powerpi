@@ -29,7 +29,7 @@ interface Resources {
     "common": {
       "close": "Close",
       "clear search": "Clear search",
-      "never": "Never",
+      "never": "never",
       "datetime": {
         "date": "{{time, datetime(dateStyle: long; timeStyle: long;}}",
         "relative": {
@@ -73,6 +73,24 @@ interface Resources {
           "metres cubed": "Metres Cubed",
           "cubic feet": "Cubic Feet",
           "hundred cubic feet": "Hundred Cubic Feet"
+        }
+      },
+      "sensors": {
+        "labels": {
+          "door": "Door",
+          "electricity": "Electricity",
+          "gas": "Gas",
+          "humidity": "Humidity",
+          "motion": "Motion",
+          "switch": "Switch",
+          "temperature": "Temperature",
+          "window": "Window"
+        },
+        "states": {
+          "detected": "detected",
+          "undetected": "undetected",
+          "open": "open",
+          "close": "closed"
         }
       }
     }

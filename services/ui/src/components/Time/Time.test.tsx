@@ -44,7 +44,7 @@ describe("Time", () => {
     test("renders never", () => {
         render(<Time time={-1} />);
 
-        expect(screen.getByText("Never")).toBeInTheDocument();
+        expect(screen.getByText("never")).toBeInTheDocument();
         expect(screen.queryByRole("time")).not.toBeInTheDocument();
     });
 
