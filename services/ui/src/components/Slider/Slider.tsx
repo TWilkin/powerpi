@@ -10,7 +10,7 @@ import {
     useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-import Resources from "../../@types/resources";
+import { SupportedUnitLabel } from "../../services/UnitConverter";
 import getTextWidth from "../../utils/getTextWidth";
 import Icon, { IconType } from "../Icon";
 import { inputStyles } from "../Input";
@@ -30,7 +30,7 @@ type SliderProps = {
 
     value: number;
 
-    unit: keyof Resources["translation"]["common"]["units"]["values"];
+    unit: SupportedUnitLabel;
 
     onChange(value: number): void;
 
