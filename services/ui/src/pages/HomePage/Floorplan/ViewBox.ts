@@ -1,11 +1,13 @@
 import { Floor, Floorplan, Point, PolygonRoom, RectangleRoom, Room } from "@powerpi/common-api";
 
+/** Check whether the supplied room is using rectangle coordinates. */
 export function isRectangleRoom(room: RectangleRoom | PolygonRoom): room is RectangleRoom {
-    return "width" in room;
+    return "width" in room && room.width != null;
 }
 
+/** Check whether the supplied room is using polygon coordinates. */
 export function isPolygonRoom(room: RectangleRoom | PolygonRoom): room is PolygonRoom {
-    return "points" in room;
+    return "points" in room && room.points != null;
 }
 
 export class ViewBox {

@@ -13,6 +13,7 @@ import {
     faComputer,
     faDoorClosed,
     faDoorOpen,
+    faEllipsis,
     faEye,
     faEyeSlash,
     faGear,
@@ -75,6 +76,8 @@ const iconLibrary = {
 
     visible: faEye,
     invisible: faEyeSlash,
+
+    more: faEllipsis,
 
     // capabilities
     capability: faGear,

@@ -22,7 +22,8 @@ interface Resources {
       },
       "home": {
         "unknown floor": "Floor \"{{floor}}\" is not present in the floor plan.",
-        "empty": "No floor plan."
+        "empty": "No floor plan.",
+        "more devices": "There are {{count, number}} more hidden devices/sensors."
       },
       "devices": {
         "search for devices": "Search for devices",
