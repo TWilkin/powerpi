@@ -12,10 +12,12 @@
 **/tests/
 **/venv/
 **/.coverage
+**/coverage
 **/*.dev.js
 **/_.dev.ts
 **/*.test.ts
 **/*.test.tsx
+**/test-setup.ts
 **/test-setup.tsx
 **/test_*.py
 **/_.pyc
