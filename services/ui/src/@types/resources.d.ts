@@ -19,6 +19,10 @@ interface Resources {
       "login": {
         "login with": "Login with {{protocol}}"
       },
+      "home": {
+        "unknown floor": "Floor \"{{floor}}\" is not present in the floor plan.",
+        "empty": "No floor plan."
+      },
       "devices": {
         "search for devices": "Search for devices",
         "empty": "No devices.",
