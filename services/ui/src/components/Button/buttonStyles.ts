@@ -27,8 +27,8 @@ export default function buttonStyles(type: ButtonType) {
         [normalSizeClasses]: type === "default",
         [smallSizeClasses]: type === "on" || type === "off",
         [xSmallSizeClasses]: type === "icon",
-        [defaultTypeClasses]: type === "default",
-        [clearTypeClasses]: type === "clear" || type === "icon",
+        [defaultTypeClasses]: type === "default" || type === "icon",
+        [clearTypeClasses]: type === "clear",
         [onTypeClasses]: type === "on",
         [offTypeClasses]: type === "off",
     });
