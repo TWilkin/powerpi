@@ -37,7 +37,7 @@ const RoomTooltip = ({ name, floor, room, sensors }: RoomTooltipProps) => {
             <h3>{name}</h3>
 
             <div
-                className={classNames("grid auto-rows-auto", {
+                className={classNames("grid auto-rows-auto items-center", {
                     "grid-cols-[18px_18px_auto_auto_9ch]": showingBattery,
                     "grid-cols-[18px_auto_auto_9ch]": !showingBattery,
                 })}
