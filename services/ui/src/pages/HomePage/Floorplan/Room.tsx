@@ -30,7 +30,7 @@ const Room = ({ floor, room }: RoomProps) => {
 
     return (
         <g
-            className="hover:fill-sky-300 hover:dark:fill-purple-800"
+            className="hover:fill-sky-300 hover:dark:fill-purple-800 focus:outline-none"
             data-tooltip-id={generateRoomTooltipId(floor, room.name)}
         >
             {isRectangleRoom(room) && (

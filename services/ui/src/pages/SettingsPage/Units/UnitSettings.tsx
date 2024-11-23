@@ -12,7 +12,7 @@ const UnitSettings = () => {
     return (
         <fieldset
             className={classNames(
-                "p-2 grid auto-rows-auto grid-cols-2 gap-2 items-center",
+                "p-2 grid auto-rows-auto grid-cols-[auto_1fr] md:grid-cols-2 gap-2 items-center",
                 "border-2 border-black dark:border-white",
             )}
         >

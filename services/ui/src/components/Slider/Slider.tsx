@@ -108,7 +108,9 @@ const Slider = ({
             <div className="flex flex-col items-center gap-1">
                 <Icon icon={lowIcon} />
 
-                <span className="text-xs">{t(`common.units.values.${unit}`, { value: min })}</span>
+                <span className="text-xs whitespace-nowrap">
+                    {t(`common.units.values.${unit}`, { value: min })}
+                </span>
             </div>
 
             <div className="relative flex flex-col items-center flex-1">
@@ -132,7 +134,7 @@ const Slider = ({
                 />
 
                 <span
-                    className="absolute top-5 text-xs"
+                    className="absolute top-5 text-xs whitespace-nowrap"
                     style={{ left: `${valuePosition}%`, marginLeft: `${valueMargin}px` }}
                     ref={setRef}
                 >
@@ -143,7 +145,9 @@ const Slider = ({
             <div className="flex flex-col items-center gap-1">
                 <Icon icon={highIcon} />
 
-                <span className="text-xs">{t(`common.units.values.${unit}`, { value: max })}</span>
+                <span className="text-xs whitespace-nowrap">
+                    {t(`common.units.values.${unit}`, { value: max })}
+                </span>
             </div>
         </>
     );

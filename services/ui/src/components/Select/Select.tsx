@@ -53,7 +53,7 @@ const Select = <TValueType,>({
     );
 
     return (
-        <div className="w-80 flex">
+        <div className="w-full min-w-60 flex">
             <ReactSelect
                 {...props}
                 inputId={id}
