@@ -1,5 +1,5 @@
-import classNames from "classnames";
 import { useTranslation } from "react-i18next";
+import FieldSet from "../../../components/FieldSet";
 import useUserSettings from "../../../hooks/useUserSettings";
 import UnitOption from "./UnitOption";
 
@@ -10,21 +10,14 @@ const UnitSettings = () => {
     const { settings, dispatch } = useUserSettings();
 
     return (
-        <fieldset
-            className={classNames(
-                "p-2 rounded grid auto-rows-auto grid-cols-[auto_1fr] md:grid-cols-2 gap-2 items-center",
-                "border-2 border-black dark:border-white",
-            )}
-        >
-            <legend className="col-span-2 text-lg">{t("pages.settings.units")}</legend>
-
+        <FieldSet legend={t("pages.settings.units")}>
             <UnitOption type="gas" value={settings?.units.gas} dispatch={dispatch} />
             <UnitOption
                 type="temperature"
                 value={settings?.units.temperature}
                 dispatch={dispatch}
             />
-        </fieldset>
+        </FieldSet>
     );
 };
 export default UnitSettings;
