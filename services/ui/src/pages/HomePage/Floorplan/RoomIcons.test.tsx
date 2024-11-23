@@ -61,8 +61,8 @@ describe("RoomIcon", () => {
                 <RoomIcons
                     room={{
                         name: "Some Room",
-                        width: 190,
-                        height: 130,
+                        width: 220,
+                        height: 150,
                     }}
                 />
             </svg>,
@@ -92,7 +92,7 @@ describe("RoomIcon", () => {
                         name: "Some Room",
                         x: 100,
                         y: 200,
-                        width: 130,
+                        width: 150,
                         height: 400,
                     }}
                 />

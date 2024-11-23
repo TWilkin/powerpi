@@ -4,7 +4,7 @@ exports[`RoomIcon > enough room 1`] = `
 <div>
   <svg>
     <g
-      transform="translate(140 180) scale(0.03125)"
+      transform="translate(128 176) scale(0.0390625)"
     >
       <title>
         light
@@ -29,7 +29,7 @@ exports[`RoomIcon > enough room 1`] = `
       </svg>
     </g>
     <g
-      transform="translate(180 180) scale(0.03125)"
+      transform="translate(176 176) scale(0.0390625)"
     >
       <title>
         socket
@@ -54,7 +54,7 @@ exports[`RoomIcon > enough room 1`] = `
       </svg>
     </g>
     <g
-      transform="translate(220 180) scale(0.03125)"
+      transform="translate(224 176) scale(0.0390625)"
     >
       <title>
         temperature
@@ -86,7 +86,7 @@ exports[`RoomIcon > narrow 1`] = `
 <div>
   <svg>
     <g
-      transform="translate(145 340) scale(0.03125)"
+      transform="translate(151 328) scale(0.0390625)"
     >
       <title>
         light
@@ -111,7 +111,7 @@ exports[`RoomIcon > narrow 1`] = `
       </svg>
     </g>
     <g
-      transform="translate(145 380) scale(0.03125)"
+      transform="translate(151 376) scale(0.0390625)"
     >
       <title>
         socket
@@ -136,7 +136,7 @@ exports[`RoomIcon > narrow 1`] = `
       </svg>
     </g>
     <g
-      transform="translate(145 420) scale(0.03125)"
+      transform="translate(151 424) scale(0.0390625)"
     >
       <title>
         temperature
@@ -168,7 +168,7 @@ exports[`RoomIcon > polygon 1`] = `
 <div>
   <svg>
     <g
-      transform="translate(190 280) scale(0.03125)"
+      transform="translate(178 276) scale(0.0390625)"
     >
       <title>
         light
@@ -193,7 +193,7 @@ exports[`RoomIcon > polygon 1`] = `
       </svg>
     </g>
     <g
-      transform="translate(230 280) scale(0.03125)"
+      transform="translate(226 276) scale(0.0390625)"
     >
       <title>
         socket
@@ -218,7 +218,7 @@ exports[`RoomIcon > polygon 1`] = `
       </svg>
     </g>
     <g
-      transform="translate(270 280) scale(0.03125)"
+      transform="translate(274 276) scale(0.0390625)"
     >
       <title>
         temperature
@@ -250,7 +250,7 @@ exports[`RoomIcon > too small 1`] = `
 <div>
   <svg>
     <g
-      transform="translate(55 45) scale(0.03125)"
+      transform="translate(62 51) scale(0.0390625)"
     >
       <title>
         light
@@ -275,7 +275,7 @@ exports[`RoomIcon > too small 1`] = `
       </svg>
     </g>
     <g
-      transform="translate(95 45) scale(0.03125)"
+      transform="translate(110 51) scale(0.0390625)"
     >
       <title>
         There are 2 more hidden devices/sensors.

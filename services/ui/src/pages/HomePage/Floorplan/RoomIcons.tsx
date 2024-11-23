@@ -19,7 +19,7 @@ const RoomIcons = ({ room }: RoomIconsProps) => {
     const devices = useRoomDevices(room.name);
 
     const { scale, iconPaddedSize, deviceCount, iconsWide, offsetX, offsetY } = useMemo(() => {
-        const iconSize = 32;
+        const iconSize = 40;
         const iconPadding = 4;
         const iconPaddedSize = iconSize + 2 * iconPadding;
 
