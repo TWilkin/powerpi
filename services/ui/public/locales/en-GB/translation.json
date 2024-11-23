@@ -14,7 +14,7 @@
             "login with": "Login with {{protocol}}"
         },
         "home": {
-            "unknown floor": "Floor \"{{floor}}\" is not present in the floor plan.",
+            "unknown": "Floor \"{{value}}\" is not present in the floor plan.",
             "empty": "No floor plan.",
             "more devices": "There are {{count, number}} more hidden devices/sensors."
         },
