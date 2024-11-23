@@ -27,7 +27,7 @@ const headerLinkClasses = classNames(
 const HeaderLink = ({ route, icon, text, small = false }: HeaderLinkProps) => (
     <div className={classNames("h-20", { grow: !small })}>
         <NavLink to={RouteBuilder.build(route)} className={headerLinkClasses} aria-label={text}>
-            <Icon icon={icon} />
+            <Icon icon={icon} className="text-3xl md:text-2xl" />
 
             {!small && <span className="hidden md:block">{text}</span>}
         </NavLink>

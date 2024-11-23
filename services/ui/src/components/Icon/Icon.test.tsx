@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import { ComponentProps } from "react";
 import Icon from "./Icon";
 import { IconType } from "./IconLibrary";
 
@@ -21,12 +20,11 @@ describe("Icon", () => {
         }
     });
 
-    const sizes: ComponentProps<typeof Icon>["size"][] = [undefined, "xs", "m"];
-    test.each(sizes)("renders icon with size %s", (size) => {
-        render(<Icon icon="device" size={size} />);
+    test("renders className", () => {
+        render(<Icon icon="home" className="custom-class" />);
 
         const svg = screen.getByRole("img", { hidden: true });
         expect(svg).toBeInTheDocument();
-        expect(svg).toHaveClass(`icon-${size ?? "m"}`);
+        expect(svg).toHaveClass("custom-class");
     });
 });

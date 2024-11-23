@@ -14,7 +14,7 @@ exports[`RoomIcon > enough room 1`] = `
       </title>
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-lightbulb icon-m"
+        class="svg-inline--fa fa-lightbulb "
         data-icon="lightbulb"
         data-prefix="fas"
         focusable="false"
@@ -39,7 +39,7 @@ exports[`RoomIcon > enough room 1`] = `
       </title>
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-plug icon-m"
+        class="svg-inline--fa fa-plug "
         data-icon="plug"
         data-prefix="fas"
         focusable="false"
@@ -64,7 +64,7 @@ exports[`RoomIcon > enough room 1`] = `
       </title>
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-temperature-half icon-m"
+        class="svg-inline--fa fa-temperature-half "
         data-icon="temperature-half"
         data-prefix="fas"
         focusable="false"
@@ -96,7 +96,7 @@ exports[`RoomIcon > narrow 1`] = `
       </title>
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-lightbulb icon-m"
+        class="svg-inline--fa fa-lightbulb "
         data-icon="lightbulb"
         data-prefix="fas"
         focusable="false"
@@ -121,7 +121,7 @@ exports[`RoomIcon > narrow 1`] = `
       </title>
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-plug icon-m"
+        class="svg-inline--fa fa-plug "
         data-icon="plug"
         data-prefix="fas"
         focusable="false"
@@ -146,7 +146,7 @@ exports[`RoomIcon > narrow 1`] = `
       </title>
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-temperature-half icon-m"
+        class="svg-inline--fa fa-temperature-half "
         data-icon="temperature-half"
         data-prefix="fas"
         focusable="false"
@@ -178,7 +178,7 @@ exports[`RoomIcon > polygon 1`] = `
       </title>
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-lightbulb icon-m"
+        class="svg-inline--fa fa-lightbulb "
         data-icon="lightbulb"
         data-prefix="fas"
         focusable="false"
@@ -203,7 +203,7 @@ exports[`RoomIcon > polygon 1`] = `
       </title>
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-plug icon-m"
+        class="svg-inline--fa fa-plug "
         data-icon="plug"
         data-prefix="fas"
         focusable="false"
@@ -228,7 +228,7 @@ exports[`RoomIcon > polygon 1`] = `
       </title>
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-temperature-half icon-m"
+        class="svg-inline--fa fa-temperature-half "
         data-icon="temperature-half"
         data-prefix="fas"
         focusable="false"
@@ -260,7 +260,7 @@ exports[`RoomIcon > too small 1`] = `
       </title>
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-lightbulb icon-m"
+        class="svg-inline--fa fa-lightbulb "
         data-icon="lightbulb"
         data-prefix="fas"
         focusable="false"
@@ -282,7 +282,7 @@ exports[`RoomIcon > too small 1`] = `
       </title>
       <svg
         aria-hidden="true"
-        class="svg-inline--fa fa-ellipsis icon-m"
+        class="svg-inline--fa fa-ellipsis "
         data-icon="ellipsis"
         data-prefix="fas"
         focusable="false"

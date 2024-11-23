@@ -52,7 +52,7 @@ const CapabilityButton = ({ device }: CapabilityButtonProps) => {
         >
             <DeviceIcon type={device.type} />
 
-            <Icon icon="capability" size="xs" className="absolute top-4 left-4" />
+            <Icon icon="capability" className="absolute top-4 left-4 text-2xs" />
         </Button>
     );
 };
