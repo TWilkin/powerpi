@@ -53,7 +53,7 @@ const Select = <TValueType,>({
     );
 
     return (
-        <div className="w-full min-w-60 flex">
+        <div className="w-full min-w-40 sm:min-w-64 flex">
             <ReactSelect
                 {...props}
                 inputId={id}
@@ -72,7 +72,7 @@ const Select = <TValueType,>({
                 unstyled
                 className={classNames(
                     inputStyles,
-                    "flex-1 border-2 border-black dark:border-white cursor-pointer",
+                    "w-full flex-1 border-2 border-black dark:border-white cursor-pointer",
                     { "opacity-50": disabled },
                 )}
                 classNames={{

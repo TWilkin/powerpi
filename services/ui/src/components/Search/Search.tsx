@@ -44,7 +44,7 @@ const Search = ({ onSearch, value, className, ...props }: SearchProps) => {
                 type="search"
                 value={value}
                 autoComplete="off"
-                className={classNames(className, inputStyles, "h-8 pl-8")}
+                className={classNames(className, inputStyles, "w-full h-8 pl-8")}
                 data-lpignore
                 onChange={handleChange}
                 ref={inputRef}
