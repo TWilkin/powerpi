@@ -65,21 +65,24 @@ describe("useRotateFloorplan", () => {
 
         expect(result.current.floorplan.floors[0].name).toBe("Basement");
         expect(result.current.floorplan.floors[0].rooms).toHaveLength(1);
-        expect(result.current.floorplan.floors[0].rooms[0].x).toBeCloseTo(0);
-        expect(result.current.floorplan.floors[0].rooms[0].y).toBeCloseTo(0);
+        expect(result.current.floorplan.floors[0].rooms[0]).toHaveProperty("x", 0);
+        expect(result.current.floorplan.floors[0].rooms[0]).toHaveProperty("y", 0);
         expect(result.current.floorplan.floors[0].rooms[0]).toHaveProperty("width", 100);
         expect(result.current.floorplan.floors[0].rooms[0]).toHaveProperty("height", 200);
 
         expect(result.current.floorplan.floors[1].name).toBe("Ground");
         expect(result.current.floorplan.floors[1].rooms).toHaveLength(2);
         expect(result.current.floorplan.floors[1].rooms[0].name).toBe("LivingRoom");
-        expect(result.current.floorplan.floors[1].rooms[0].x).toBeCloseTo(0);
-        expect(result.current.floorplan.floors[1].rooms[0].y).toBeCloseTo(0);
+        expect(result.current.floorplan.floors[1].rooms[0]).toHaveProperty("x", 0);
+        expect(result.current.floorplan.floors[1].rooms[0]).toHaveProperty("y", 0);
         expect(result.current.floorplan.floors[1].rooms[0]).toHaveProperty("width", 100);
         expect(result.current.floorplan.floors[1].rooms[0]).toHaveProperty("height", 100);
         expect(result.current.floorplan.floors[1].rooms[1].name).toBe("Kitchen");
-        expect(result.current.floorplan.floors[1].rooms[1].x).toBeCloseTo(0);
-        expect(result.current.floorplan.floors[1].rooms[1].y).toBeCloseTo(100);
+        expect(result.current.floorplan.floors[1].rooms[1]).toHaveProperty("x", expect.closeTo(0));
+        expect(result.current.floorplan.floors[1].rooms[1]).toHaveProperty(
+            "y",
+            expect.closeTo(100),
+        );
         expect(result.current.floorplan.floors[1].rooms[1]).toHaveProperty("width", 100);
         expect(result.current.floorplan.floors[1].rooms[1]).toHaveProperty("height", 100);
 

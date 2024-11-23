@@ -26,8 +26,8 @@ const RoomIcons = ({ room }: RoomIconsProps) => {
         const scale = 1 / (1024 / iconSize);
 
         // calculate the room size
-        let x = room.x ?? 0;
-        let y = room.y ?? 0;
+        let x = 0;
+        let y = 0;
         let width = 0;
         let height = 0;
 
@@ -39,8 +39,11 @@ const RoomIcons = ({ room }: RoomIconsProps) => {
             width = Math.max(...room.points.map((point) => point.x)) - x;
             height = Math.max(...room.points.map((point) => point.y)) - y;
         } else {
-            width = room.width ?? 0;
-            height = room.height ?? 0;
+            x = room.x ?? x;
+            y = room.y ?? y;
+
+            width = room.width ?? width;
+            height = room.height ?? height;
         }
 
         // next we need to find the centre of the room

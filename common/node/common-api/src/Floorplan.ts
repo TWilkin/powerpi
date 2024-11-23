@@ -13,6 +13,8 @@ export type PolygonRoom = {
 };
 
 export type RectangleRoom = {
+    x?: number;
+    y?: number;
     width?: number;
     height?: number;
 };
@@ -20,8 +22,6 @@ export type RectangleRoom = {
 export type Room = {
     name: string;
     display_name?: string;
-    x?: number;
-    y?: number;
 } & (PolygonRoom | RectangleRoom);
 
 export type Point = {
