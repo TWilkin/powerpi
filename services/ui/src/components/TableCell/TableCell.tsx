@@ -8,10 +8,10 @@ type TableCellProps = {
 const TableCell = ({ width = "full", children, ...props }: TableCellProps) => (
     <td
         {...props}
-        className={classNames("min-w-min px-1 truncate hover:whitespace-normal", {
-            "w-8": width === "icon",
+        className={classNames("min-w-min truncate hover:whitespace-normal", {
+            "w-8 text-center": width === "icon",
             "w-20": width === "button",
-            "w-32": width === "time",
+            "w-20 md:w-32": width === "time",
             "w-full": width === "full",
         })}
     >

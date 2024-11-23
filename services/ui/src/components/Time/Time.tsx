@@ -66,13 +66,13 @@ const Time = ({ time, ...props }: TimeProps) => {
     }
 
     return (
-        <div>
+        <>
             <time {...props} {...componentProps} dateTime={isoDate}>
                 {t(`common.datetime.relative.${unit}`, { time: value })}
             </time>
 
             <Tooltip {...tooltipProps}>{t("common.datetime.date", { time: date })}</Tooltip>
-        </div>
+        </>
     );
 };
 export default Time;

@@ -21,9 +21,9 @@ describe("TableCell", () => {
     });
 
     const width: { width?: ComponentProps<typeof TableCell>["width"]; expected: string }[] = [
-        { width: "icon", expected: "w-8" },
+        { width: "icon", expected: "w-8 text-center" },
         { width: "button", expected: "w-20" },
-        { width: "time", expected: "w-32" },
+        { width: "time", expected: "w-20 md:w-32" },
         { width: "full", expected: "w-full" },
         { expected: "w-full" },
     ];

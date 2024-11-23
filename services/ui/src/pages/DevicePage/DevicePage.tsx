@@ -75,7 +75,9 @@ const DevicePage = () => {
                                     <TableCell>{device.display_name ?? device.name}</TableCell>
 
                                     <TableCell width="button">
-                                        <DevicePowerToggle device={device} />
+                                        <div className="flex justify-center">
+                                            <DevicePowerToggle device={device} />
+                                        </div>
                                     </TableCell>
 
                                     <TableCell width="time">
