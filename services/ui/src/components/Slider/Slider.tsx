@@ -122,7 +122,7 @@ const Slider = ({
                     value={value}
                     className={classNames(
                         inputStyles,
-                        "h-2 w-40 sm:w-64 mt-1 rounded appearance-none cursor-pointer !bg-transparent",
+                        "h-2 w-48 sm:w-64 mt-1 rounded appearance-none cursor-pointer !bg-transparent",
                         "disabled:!opacity-100",
                     )}
                     disabled={disabled}
