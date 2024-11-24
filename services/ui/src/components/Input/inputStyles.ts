@@ -2,11 +2,9 @@ import classNames from "classnames";
 
 const inputClasses = classNames(
     "rounded",
-    "bg-sky-400 dark:bg-purple-900 text-black dark:text-white",
-    "accent-sky-400 dark:accent-purple-900",
-    "hover:bg-sky-300 hover:dark:bg-purple-800",
-    "focus:outline-none focus:ring-offset-2 focus:ring-offset-white focus:dark:ring-offset-black focus:ring-2 focus:ring-black focus:dark:ring-white focus:z-10",
-    "focus-within:outline-none focus-within:ring-offset-2 focus-within:ring-offset-white focus-within:dark:ring-offset-black focus-within:ring-2 focus-within:ring-black focus-within:dark:ring-white focus-within:z-10",
+    "bg-bg-primary placeholder:text-placeholder hover:bg-bg-hover accent-bg-primary",
+    "focus:outline-none focus:ring-offset-2 focus:ring-offset-outline-offset focus:ring-2 focus:ring-outline focus:z-10",
+    "focus-within:outline-none focus-within:ring-offset-2 focus-within:ring-offset-outline-offset focus-within:ring-2 focus-within:ring-outline focus-within:z-10",
     "disabled:opacity-50 disabled:cursor-not-allowed",
 );
 

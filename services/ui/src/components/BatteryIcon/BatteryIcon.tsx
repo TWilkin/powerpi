@@ -24,9 +24,8 @@ const BatteryIcon = ({ device }: BatteryIconProps) => {
             icon={icon}
             className={classNames("-rotate-90", {
                 "opacity-50": outdated,
-                "text-orange-600":
-                    !device.charging && device.battery! <= 25 && device.battery! > 10,
-                "text-red-600": !device.charging && device.battery! <= 10,
+                "text-warning": !device.charging && device.battery! <= 25 && device.battery! > 10,
+                "text-critical": !device.charging && device.battery! <= 10,
             })}
         />
     );

@@ -43,15 +43,15 @@ describe("BatteryIcon", () => {
         expect(batteryIcon).not.toHaveClass("opacity-50");
 
         if (warning) {
-            expect(batteryIcon).toHaveClass("text-orange-600");
+            expect(batteryIcon).toHaveClass("text-warning");
         } else {
-            expect(batteryIcon).not.toHaveClass("text-orange-600");
+            expect(batteryIcon).not.toHaveClass("text-warning");
         }
 
         if (critical) {
-            expect(batteryIcon).toHaveClass("text-red-600");
+            expect(batteryIcon).toHaveClass("text-critical");
         } else {
-            expect(batteryIcon).not.toHaveClass("text-red-600");
+            expect(batteryIcon).not.toHaveClass("text-critical");
         }
     });
 

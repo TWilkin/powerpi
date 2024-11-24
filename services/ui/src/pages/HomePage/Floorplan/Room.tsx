@@ -14,8 +14,8 @@ type RoomProps = {
 const shapeClasses = classNames(
     "pointer-events-all",
     "fill-none outline-none",
-    "stroke-black dark:stroke-white",
-    "hover:fill-sky-300 hover:dark:fill-purple-800",
+    "stroke-text",
+    "hover:fill-bg-hover",
 );
 
 /** Component representing a room in the home floorplan. */
@@ -29,10 +29,7 @@ const Room = ({ floor, room }: RoomProps) => {
     }, [room]);
 
     return (
-        <g
-            className="hover:fill-sky-300 hover:dark:fill-purple-800 focus:outline-none"
-            data-tooltip-id={generateRoomTooltipId(floor, room.name)}
-        >
+        <g className="focus:outline-none" data-tooltip-id={generateRoomTooltipId(floor, room.name)}>
             {isRectangleRoom(room) && (
                 <rect
                     x={room.x}

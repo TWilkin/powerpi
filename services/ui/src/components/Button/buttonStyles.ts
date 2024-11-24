@@ -2,15 +2,13 @@ import classNames from "classnames";
 
 const buttonClasses = classNames(
     "font-semibold",
-    "text-black dark:text-white",
-    "focus:outline-none focus:ring-offset-2 focus:ring-offset-white focus:dark:ring-offset-black focus:ring-2 focus:ring-black focus:dark:ring-white focus:z-10",
+    "focus:outline-none focus:ring-offset-2 focus:ring-offset-outline-offset focus:ring-2 focus:ring-outline focus:z-10",
     "disabled:opacity-50",
 );
 
 export type ButtonType = "default" | "clear" | "icon" | "on" | "off";
 
-const defaultTypeClasses =
-    "bg-sky-400 dark:bg-purple-900 hover:bg-sky-300 hover:dark:bg-purple-800 active:bg-sky-200 active:dark:bg-purple-700";
+const defaultTypeClasses = "bg-bg-primary hover:bg-bg-hover active:bg-bg-active";
 
 const clearTypeClasses = "bg-transparent";
 

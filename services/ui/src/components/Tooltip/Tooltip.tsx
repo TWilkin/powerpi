@@ -15,11 +15,7 @@ const Tooltip = ({ className, children, ...props }: TooltipProps) => (
         {createPortal(
             <ReactTooltip
                 {...props}
-                className={classNames(
-                    className,
-                    "!p !rounded !text-sm z-50",
-                    "!bg-purple-900 !text-white",
-                )}
+                className={classNames(className, "!p !rounded !text-sm z-50", "!bg-bg-primary")}
             >
                 {children}
             </ReactTooltip>,

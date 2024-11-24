@@ -23,13 +23,11 @@ const SelectOption = <TValueType,>({
             className={classNames(
                 "p relative",
                 "!flex flex-row gap items-center whitespace-nowrap !cursor-pointer",
-                "text-black dark:text-white",
-                "hover:bg-sky-300 hover:dark:bg-purple-800",
+                "hover:bg-bg-hover",
                 {
-                    "bg-sky-400 dark:bg-purple-900": !isSelected && !isFocused,
-                    "bg-sky-200 dark:bg-purple-950": isSelected && !isFocused,
-                    "bg-sky-300 dark:bg-purple-800 ring-2 ring-black dark:ring-white z-10":
-                        isFocused,
+                    "bg-bg-primary": !isSelected && !isFocused,
+                    "bg-bg-selected": isSelected && !isFocused,
+                    "bg-bg-hover ring-2 ring-outline z-10": isFocused,
                 },
             )}
         >

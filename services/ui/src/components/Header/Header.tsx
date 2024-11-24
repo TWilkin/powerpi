@@ -11,7 +11,7 @@ const Header = () => {
 
     return (
         <header>
-            <nav className="flex flex-row items-center bg-black border-b-2 border-black divide-x-2 divide-black">
+            <nav className="flex flex-row items-center border-b-2 border-border divide-x-2 divide-border">
                 <Logo />
 
                 {enabled?.home && (

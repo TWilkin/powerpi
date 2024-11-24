@@ -20,7 +20,7 @@ const headerLinkClasses = classNames(
     "relative h-full flex flex-row justify-center items-center gap-sm grow text-2xl",
     buttonStyles("default"),
     // when the link is the current route
-    "aria-current-page:bg-sky-200 aria-current-page:dark:bg-purple-950",
+    "aria-current-page:bg-bg-selected",
 );
 
 /** Component for one of the main header navigation links. */

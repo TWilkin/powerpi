@@ -21,10 +21,10 @@ const Dialog = forwardRef(
             <dialog
                 {...props}
                 className={classNames(
-                    "backdrop:bg-gray-500/30 backdrop:backdrop-blur-sm",
+                    "backdrop:bg-bg-backdrop/30 backdrop:backdrop-blur-sm",
                     "rounded",
-                    "bg-white dark:bg-black text-black dark:text-white",
-                    "border-2 border-black dark:border-white",
+                    "bg-bg text-text",
+                    "border-2 border-outline",
                 )}
                 ref={ref}
             >
@@ -32,8 +32,8 @@ const Dialog = forwardRef(
                     <header
                         className={classNames(
                             "p flex flex-row gap-4 justify-between items-center",
-                            "bg-sky-400 dark:bg-purple-900",
-                            "border-b-2 border-black dark:border-white",
+                            "bg-bg-primary",
+                            "border-b-2 border-b-outline",
                         )}
                     >
                         {icon}
