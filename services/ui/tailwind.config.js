@@ -63,7 +63,7 @@ export default {
             colors: semanticColours.reduce(
                 (dict, colour) => ({
                     ...dict,
-                    [colour]: `rgb(var(--colour-${colour}) / <alpha-value>)`,
+                    [colour]: `rgb(var(--powerpi-colour-${colour}) / <alpha-value>)`,
                 }),
                 {},
             ),

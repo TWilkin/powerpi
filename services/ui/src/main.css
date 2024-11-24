@@ -5,68 +5,68 @@
 @layer base {
     /* Colours for the light theme */
     .theme-light {
-        --colour-bg: theme("colourComponents.white");
-        --colour-bg-primary: theme("colourComponents.sky-400");
-        --colour-bg-hover: theme("colourComponents.sky-300");
-        --colour-bg-active: theme("colourComponents.sky-200");
-        --colour-bg-selected: theme("colourComponents.sky-100");
-        --colour-bg-zebra: theme("colourComponents.sky-200");
-        --colour-bg-backdrop: theme("colourComponents.gray-500");
+        --powerpi-colour-bg: theme("colourComponents.white");
+        --powerpi-colour-bg-primary: theme("colourComponents.sky-400");
+        --powerpi-colour-bg-hover: theme("colourComponents.sky-300");
+        --powerpi-colour-bg-active: theme("colourComponents.sky-200");
+        --powerpi-colour-bg-selected: theme("colourComponents.sky-100");
+        --powerpi-colour-bg-zebra: theme("colourComponents.sky-200");
+        --powerpi-colour-bg-backdrop: theme("colourComponents.gray-500");
 
-        --colour-text: theme("colourComponents.black");
-        --colour-placeholder: theme("colourComponents.gray-600");
+        --powerpi-colour-text: theme("colourComponents.black");
+        --powerpi-colour-placeholder: theme("colourComponents.gray-600");
 
-        --colour-border: theme("colourComponents.black");
-        --colour-outline: theme("colourComponents.black");
-        --colour-outline-offset: theme("colourComponents.white");
+        --powerpi-colour-border: theme("colourComponents.black");
+        --powerpi-colour-outline: theme("colourComponents.black");
+        --powerpi-colour-outline-offset: theme("colourComponents.white");
 
-        --colour-warning: theme("colourComponents.orange-600");
-        --colour-critical: theme("colourComponents.red-600");
+        --powerpi-colour-warning: theme("colourComponents.orange-600");
+        --powerpi-colour-critical: theme("colourComponents.red-600");
 
-        --colour-on: theme("colourComponents.green-800");
-        --colour-on-hover: theme("colourComponents.green-700");
-        --colour-on-active: theme("colourComponents.green-600");
+        --powerpi-colour-on: theme("colourComponents.green-800");
+        --powerpi-colour-on-hover: theme("colourComponents.green-700");
+        --powerpi-colour-on-active: theme("colourComponents.green-600");
 
-        --colour-off: theme("colourComponents.red-800");
-        --colour-off-hover: theme("colourComponents.red-700");
-        --colour-off-active: theme("colourComponents.red-600");
+        --powerpi-colour-off: theme("colourComponents.red-800");
+        --powerpi-colour-off-hover: theme("colourComponents.red-700");
+        --powerpi-colour-off-active: theme("colourComponents.red-600");
 
-        --colour-unknown: theme("colourComponents.gray-500");
-        --colour-unknown-hover: theme("colourComponents.gray-400");
-        --colour-unknown-active: theme("colourComponents.gray-300");
+        --powerpi-colour-unknown: theme("colourComponents.gray-500");
+        --powerpi-colour-unknown-hover: theme("colourComponents.gray-400");
+        --powerpi-colour-unknown-active: theme("colourComponents.gray-300");
     }
 
     /* Colours for the dark theme. */
     .theme-dark {
-        --colour-bg: theme("colourComponents.black");
-        --colour-bg-primary: theme("colourComponents.purple-900");
-        --colour-bg-hover: theme("colourComponents.purple-800");
-        --colour-bg-active: theme("colourComponents.purple-700");
-        --colour-bg-selected: theme("colourComponents.purple-950");
-        --colour-bg-zebra: theme("colourComponents.purple-950");
-        --colour-bg-backdrop: theme("colourComponents.gray-500");
+        --powerpi-colour-bg: theme("colourComponents.black");
+        --powerpi-colour-bg-primary: theme("colourComponents.purple-900");
+        --powerpi-colour-bg-hover: theme("colourComponents.purple-800");
+        --powerpi-colour-bg-active: theme("colourComponents.purple-700");
+        --powerpi-colour-bg-selected: theme("colourComponents.purple-950");
+        --powerpi-colour-bg-zebra: theme("colourComponents.purple-950");
+        --powerpi-colour-bg-backdrop: theme("colourComponents.gray-500");
 
-        --colour-text: theme("colourComponents.white");
-        --colour-placeholder: theme("colourComponents.gray-400");
+        --powerpi-colour-text: theme("colourComponents.white");
+        --powerpi-colour-placeholder: theme("colourComponents.gray-400");
 
-        --colour-border: theme("colourComponents.black");
-        --colour-outline: theme("colourComponents.white");
-        --colour-outline-offset: theme("colourComponents.black");
+        --powerpi-colour-border: theme("colourComponents.black");
+        --powerpi-colour-outline: theme("colourComponents.white");
+        --powerpi-colour-outline-offset: theme("colourComponents.black");
 
-        --colour-warning: theme("colourComponents.orange-600");
-        --colour-critical: theme("colourComponents.red-600");
+        --powerpi-colour-warning: theme("colourComponents.orange-600");
+        --powerpi-colour-critical: theme("colourComponents.red-600");
 
-        --colour-on: theme("colourComponents.green-800");
-        --colour-on-hover: theme("colourComponents.green-700");
-        --colour-on-active: theme("colourComponents.green-600");
+        --powerpi-colour-on: theme("colourComponents.green-800");
+        --powerpi-colour-on-hover: theme("colourComponents.green-700");
+        --powerpi-colour-on-active: theme("colourComponents.green-600");
 
-        --colour-off: theme("colourComponents.red-800");
-        --colour-off-hover: theme("colourComponents.red-700");
-        --colour-off-active: theme("colourComponents.red-600");
+        --powerpi-colour-off: theme("colourComponents.red-800");
+        --powerpi-colour-off-hover: theme("colourComponents.red-700");
+        --powerpi-colour-off-active: theme("colourComponents.red-600");
 
-        --colour-unknown: theme("colourComponents.gray-500");
-        --colour-unknown-hover: theme("colourComponents.gray-400");
-        --colour-unknown-active: theme("colourComponents.gray-300");
+        --powerpi-colour-unknown: theme("colourComponents.gray-500");
+        --powerpi-colour-unknown-hover: theme("colourComponents.gray-400");
+        --powerpi-colour-unknown-active: theme("colourComponents.gray-300");
     }
 }
 
