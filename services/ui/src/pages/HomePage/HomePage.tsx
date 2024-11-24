@@ -19,9 +19,9 @@ const HomePage = () => {
     }
 
     return (
-        <div className="flex flex-col gap-2 flex-1">
+        <div className="flex flex-col gap flex-1">
             {floorplan.floors.length > 1 && (
-                <div className="flex flex-row gap-2">
+                <div className="flex flex-row gap">
                     {floorplan.floors.map((floor) => (
                         <NavLink key={floor.name} to={RouteBuilder.build(floor.name)}>
                             {floor.display_name ?? floor.name}

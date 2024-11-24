@@ -105,7 +105,7 @@ const Slider = ({
 
     return (
         <>
-            <div className="flex flex-col items-center gap-1">
+            <div className="flex flex-col items-center gap-sm">
                 <Icon icon={lowIcon} />
 
                 <span className="text-xs whitespace-nowrap">
@@ -142,7 +142,7 @@ const Slider = ({
                 </span>
             </div>
 
-            <div className="flex flex-col items-center gap-1">
+            <div className="flex flex-col items-center gap-sm">
                 <Icon icon={highIcon} />
 
                 <span className="text-xs whitespace-nowrap">

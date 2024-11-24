@@ -21,8 +21,8 @@ const SelectOption = <TValueType,>({
             isSelected={isSelected}
             isFocused={isFocused}
             className={classNames(
-                "p-2 relative",
-                "!flex flex-row gap-2 items-center whitespace-nowrap !cursor-pointer",
+                "p relative",
+                "!flex flex-row gap items-center whitespace-nowrap !cursor-pointer",
                 "text-black dark:text-white",
                 "hover:bg-sky-300 hover:dark:bg-purple-800",
                 {

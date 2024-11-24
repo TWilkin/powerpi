@@ -35,9 +35,9 @@ const RoomTooltipRow = ({ sensor, showingBattery }: RoomTooltipRowProps) => {
             {showingBattery &&
                 (sensor.battery != null ? <BatteryIcon device={sensor} /> : <span />)}
 
-            <p className="px-2">{name}:</p>
+            <p className="px">{name}:</p>
 
-            <p className="px-2">
+            <p className="px">
                 {sensor.value != null && sensor.unit ? (
                     <Value type={sensor.type} value={sensor.value} unit={sensor.unit} />
                 ) : (

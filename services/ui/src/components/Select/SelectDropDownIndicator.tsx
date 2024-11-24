@@ -5,7 +5,7 @@ type SelectDropDownIndicatorProps = {
 };
 
 const SelectDropDownIndicator = ({ isMenuOpen }: SelectDropDownIndicatorProps) => (
-    <div className="p-2 pointer-events-none">
+    <div className="p pointer-events-none">
         <Icon icon={isMenuOpen ? "collapse" : "expand"} />
     </div>
 );

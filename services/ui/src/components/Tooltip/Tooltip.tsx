@@ -17,7 +17,7 @@ const Tooltip = ({ className, children, ...props }: TooltipProps) => (
                 {...props}
                 className={classNames(
                     className,
-                    "!p-2 !rounded !text-sm z-50",
+                    "!p !rounded !text-sm z-50",
                     "!bg-purple-900 !text-white",
                 )}
             >

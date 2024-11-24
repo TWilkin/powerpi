@@ -31,7 +31,7 @@ const Dialog = forwardRef(
                 <form method="dialog">
                     <header
                         className={classNames(
-                            "p-2 flex flex-row gap-4 justify-between items-center",
+                            "p flex flex-row gap-4 justify-between items-center",
                             "bg-sky-400 dark:bg-purple-900",
                             "border-b-2 border-black dark:border-white",
                         )}
@@ -43,7 +43,7 @@ const Dialog = forwardRef(
                         <Button buttonType="icon" icon="close" aria-label={t("common.close")} />
                     </header>
 
-                    <div className="p-2">{children}</div>
+                    <div className="p">{children}</div>
                 </form>
             </dialog>
         );

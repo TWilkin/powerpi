@@ -14,7 +14,7 @@ const Layout = () => (
                 </div>
             }
         >
-            <main className="px-2 flex-1 flex flex-col gap-1">
+            <main className="px flex-1 flex flex-col gap-sm">
                 <Outlet />
             </main>
         </Suspense>

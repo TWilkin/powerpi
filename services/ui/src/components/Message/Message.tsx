@@ -50,7 +50,7 @@ const Message = (props: MessageProps) => {
     }, [props, t]);
 
     return (
-        <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-row gap items-center">
             <Icon icon={getIcon(props.type)} /> {message}
         </div>
     );

@@ -37,7 +37,7 @@ const Search = ({ onSearch, value, className, ...props }: SearchProps) => {
 
     return (
         <span className="relative">
-            <Icon icon="search" className="absolute p-2" />
+            <Icon icon="search" className="absolute p" />
 
             <input
                 {...props}

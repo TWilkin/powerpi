@@ -18,9 +18,9 @@ const onTypeClasses = "bg-green-800 hover:bg-green-700 active:bg-green-600";
 
 const offTypeClasses = "bg-red-800 hover:bg-red-700 active:bg-red-600";
 
-const normalSizeClasses = "p-2";
-const smallSizeClasses = "p-1 text-sm";
-const xSmallSizeClasses = "p-0.5 text-sm";
+const normalSizeClasses = "p";
+const smallSizeClasses = "p-sm text-sm";
+const xSmallSizeClasses = "p-xs text-sm";
 
 export default function buttonStyles(type: ButtonType) {
     return classNames(buttonClasses, {

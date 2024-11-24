@@ -12,9 +12,10 @@ const Logo = () => {
             href={RouteBuilder.build()}
             className={classNames(
                 buttonStyles("clear"),
-                "flex flex-row gap-1 items-center text-xs rotate-180 vertical-writing-lr",
+                "flex flex-row gap-sm items-center text-xs rotate-180 vertical-writing-lr",
             )}
         >
+            {/*eslint-disable-next-line i18next/no-literal-string*/}
             <Icon icon="logo" spin={fetching > 0} className="rotate-90" />
             PowerPi
         </a>

@@ -12,7 +12,7 @@ const FieldSet = ({ legend, className, children, ...props }: FieldSetProps) => {
             {...props}
             className={classNames(
                 className,
-                "p-2 rounded grid auto-rows-auto grid-cols-[auto_1fr] md:grid-cols-2 gap-2 items-center",
+                "p rounded grid auto-rows-auto grid-cols-[auto_1fr] md:grid-cols-2 gap items-center",
                 "border-2 border-black dark:border-white",
             )}
         >

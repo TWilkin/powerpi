@@ -76,9 +76,8 @@ const Select = <TValueType,>({
                     { "opacity-50": disabled },
                 )}
                 classNames={{
-                    placeholder: () => "p-2",
-                    input: () =>
-                        classNames("p-2 cursor-pointer", { "cursor-not-allowed": disabled }),
+                    placeholder: () => "p",
+                    input: () => classNames("p cursor-pointer", { "cursor-not-allowed": disabled }),
                     menu: () => "mt-2 rounded border-2 border-black dark:border-white",
                 }}
                 aria-label={label}

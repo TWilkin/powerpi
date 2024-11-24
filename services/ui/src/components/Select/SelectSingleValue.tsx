@@ -10,11 +10,7 @@ const SelectSingleValue = <TValueType,>({
     ...props
 }: SelectSingleValueProps<TValueType>) => {
     return (
-        <components.SingleValue
-            {...props}
-            data={data}
-            className="p-2 flex flex-row gap-2 items-center"
-        >
+        <components.SingleValue {...props} data={data} className="p flex flex-row gap items-center">
             {data.icon && <Icon icon={data.icon} />} {children}
         </components.SingleValue>
     );
