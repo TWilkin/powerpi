@@ -72,13 +72,13 @@ const Select = <TValueType,>({
                 unstyled
                 className={classNames(
                     inputStyles,
-                    "w-full flex-1 border-2 border-outline cursor-pointer",
+                    "w-full flex-1 border border-outline cursor-pointer",
                     { "opacity-50": disabled },
                 )}
                 classNames={{
                     placeholder: () => "p",
                     input: () => classNames("p cursor-pointer", { "cursor-not-allowed": disabled }),
-                    menu: () => "mt-2 rounded border-2 border-outline",
+                    menu: () => "mt-2 rounded border border-outline",
                 }}
                 aria-label={label}
                 onChange={handleChange}

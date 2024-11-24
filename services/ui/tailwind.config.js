@@ -46,20 +46,15 @@ export default {
 
                 return Object.fromEntries(entries);
             },
+
             aria: {
                 "current-page": 'current="page"',
             },
-            fontSize: {
-                "2xs": "0.5rem",
+
+            borderWidth: {
+                DEFAULT: defaultTheme.borderWidth[2],
             },
-            lineHeight: {
-                "2xs": "0.75rem",
-            },
-            spacing: {
-                xs: defaultTheme.spacing[0.5],
-                sm: defaultTheme.spacing[1],
-                DEFAULT: defaultTheme.spacing[2],
-            },
+
             colors: semanticColours.reduce(
                 (dict, colour) => ({
                     ...dict,
@@ -67,6 +62,20 @@ export default {
                 }),
                 {},
             ),
+
+            fontSize: {
+                "2xs": "0.5rem",
+            },
+
+            lineHeight: {
+                "2xs": "0.75rem",
+            },
+
+            spacing: {
+                xs: defaultTheme.spacing[0.5],
+                sm: defaultTheme.spacing[1],
+                DEFAULT: defaultTheme.spacing[2],
+            },
         },
     },
 };

@@ -94,7 +94,7 @@ const DevicePowerToggle = ({ device, ...props }: DevicePowerToggleProps) => {
                 {...props}
                 className={classNames(
                     "h-6 w-12 flex flex-row items-center rounded-full select-none cursor-pointer",
-                    "focus-within:ring-offset-2 focus-within:ring-offset-outline-offset focus-within:ring-2 focus-within:ring-outline focus:z-10",
+                    "focus-within:ring-offset focus-within:ring-offset-outline-offset focus-within:ring focus-within:ring-outline focus:z-10",
                     {
                         ["bg-on hover:bg-on-hover active:bg-on-active"]:
                             device.state === DeviceState.On,

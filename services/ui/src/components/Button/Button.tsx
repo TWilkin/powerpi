@@ -16,7 +16,7 @@ const Button = ({ buttonType = "default", className, children, ...props }: Butto
         className={classNames(
             className,
             buttonStyles(buttonType),
-            "flex flex-row justify-center items-center gap-sm rounded border-2 border-border",
+            "flex flex-row justify-center items-center gap-sm rounded border border-border",
         )}
     >
         {children}

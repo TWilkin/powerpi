@@ -24,7 +24,7 @@ const Dialog = forwardRef(
                     "backdrop:bg-bg-backdrop/30 backdrop:backdrop-blur-sm",
                     "rounded",
                     "bg-bg text-text",
-                    "border-2 border-outline",
+                    "border border-outline",
                 )}
                 ref={ref}
             >

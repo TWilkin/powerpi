@@ -2,7 +2,7 @@ import classNames from "classnames";
 
 const buttonClasses = classNames(
     "font-semibold",
-    "focus:outline-none focus:ring-offset-2 focus:ring-offset-outline-offset focus:ring-2 focus:ring-outline focus:z-10",
+    "focus:outline-none focus:ring-offset focus:ring-offset-outline-offset focus:ring focus:ring-outline focus:z-10",
     "disabled:opacity-50",
 );
 
