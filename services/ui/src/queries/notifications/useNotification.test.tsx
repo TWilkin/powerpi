@@ -30,8 +30,10 @@ const mocks = vi.hoisted(() => ({
     queryClient: {
         invalidateQueries: vi.fn(),
     },
+    useUser: vi.fn(),
 }));
 
+vi.mock("../../hooks/useUser", () => ({ default: mocks.useUser }));
 vi.mock("../useAPI", () => ({ default: () => mocks.api }));
 vi.mock("../useDevicePatcher", () => ({ default: () => mocks.patchDevice }));
 vi.mock("../useSensorPatcher", () => ({ default: () => mocks.patchSensor }));
@@ -48,9 +50,41 @@ vi.mock("@tanstack/react-query", async () => {
 });
 
 describe("useNotification", () => {
-    beforeEach(() => vi.resetAllMocks());
+    beforeEach(() => {
+        vi.resetAllMocks();
+
+        mocks.useUser.mockReturnValue("someone@example.com");
+    });
+
+    test("doesn't mount or unmounts without user", () => {
+        mocks.useUser.mockReturnValue(undefined);
+
+        const { unmount } = renderHook(useNotification);
+
+        expect(mocks.api.addConfigChangeListener).not.toHaveBeenCalledTimes(1);
+        expect(mocks.api.addDeviceListener).not.toHaveBeenCalledTimes(1);
+        expect(mocks.api.addSensorListener).not.toHaveBeenCalledTimes(1);
+        expect(mocks.api.addBatteryListener).not.toHaveBeenCalledTimes(1);
+        expect(mocks.api.addCapabilityListener).not.toHaveBeenCalledTimes(1);
+
+        expect(mocks.api.removeConfigChangeListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeDeviceListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeSensorListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeBatteryListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeCapabilityListener).not.toHaveBeenCalled();
+
+        act(unmount);
+
+        expect(mocks.api.removeConfigChangeListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeDeviceListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeSensorListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeBatteryListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeCapabilityListener).not.toHaveBeenCalled();
+    });
 
     test("mounts and unmounts", () => {
+        mocks.useUser.mockReturnValue("someone@example.com");
+
         const { unmount } = renderHook(useNotification);
 
         expect(mocks.api.addConfigChangeListener).toHaveBeenCalledTimes(1);

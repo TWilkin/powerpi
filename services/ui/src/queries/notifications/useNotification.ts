@@ -8,6 +8,7 @@ import {
 } from "@powerpi/common-api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import useUser from "../../hooks/useUser";
 import QueryKeyFactory from "../QueryKeyFactory";
 import useAPI from "../useAPI";
 import useDevicePatcher from "../useDevicePatcher";
@@ -15,6 +16,8 @@ import useSensorPatcher from "../useSensorPatcher";
 import useDeviceChangingState from "./useDeviceChangingState";
 
 export default function useNotification() {
+    const user = useUser();
+
     const api = useAPI();
 
     const queryClient = useQueryClient();
@@ -92,19 +95,21 @@ export default function useNotification() {
         }
 
         // add the listeners
-        api.addConfigChangeListener(handleConfigChange);
-        api.addDeviceListener(handleDeviceStatusChange);
-        api.addSensorListener(handleSensorStatusChange);
-        api.addBatteryListener(handleBatteryChange);
-        api.addCapabilityListener(handleCapabilityChange);
+        if (user) {
+            api.addConfigChangeListener(handleConfigChange);
+            api.addDeviceListener(handleDeviceStatusChange);
+            api.addSensorListener(handleSensorStatusChange);
+            api.addBatteryListener(handleBatteryChange);
+            api.addCapabilityListener(handleCapabilityChange);
 
-        // remove the listeners
-        return () => {
-            api.removeConfigChangeListener(handleConfigChange);
-            api.removeDeviceListener(handleDeviceStatusChange);
-            api.removeSensorListener(handleSensorStatusChange);
-            api.removeBatteryListener(handleBatteryChange);
-            api.removeCapabilityListener(handleCapabilityChange);
-        };
-    }, [api, patchDevice, patchSensor, queryClient, setChangingState]);
+            // remove the listeners
+            return () => {
+                api.removeConfigChangeListener(handleConfigChange);
+                api.removeDeviceListener(handleDeviceStatusChange);
+                api.removeSensorListener(handleSensorStatusChange);
+                api.removeBatteryListener(handleBatteryChange);
+                api.removeCapabilityListener(handleCapabilityChange);
+            };
+        }
+    }, [api, patchDevice, patchSensor, queryClient, setChangingState, user]);
 }
