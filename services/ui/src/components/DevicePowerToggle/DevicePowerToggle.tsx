@@ -96,11 +96,11 @@ const DevicePowerToggle = ({ device, ...props }: DevicePowerToggleProps) => {
                     "h-6 w-12 flex flex-row items-center rounded-full select-none cursor-pointer",
                     "focus-within:ring-offset-2 focus-within:ring-offset-outline-offset focus-within:ring-2 focus-within:ring-outline focus:z-10",
                     {
-                        ["bg-green-800 hover:bg-green-700 active:bg-green-600"]:
+                        ["bg-on hover:bg-on-hover active:bg-on-active"]:
                             device.state === DeviceState.On,
-                        ["bg-red-800 hover:bg-red-700 active:bg-red-600 justify-end"]:
+                        ["bg-off hover:bg-off-hover active:bg-off-active justify-end"]:
                             device.state === DeviceState.Off,
-                        ["bg-gray-500 hover:bg-gray-400 active:bg-gray-300 justify-center"]:
+                        ["bg-unknown hover:bg-unknown-hover active:bg-unknown-active justify-center"]:
                             device.state === DeviceState.Unknown,
                     },
                 )}
@@ -109,11 +109,11 @@ const DevicePowerToggle = ({ device, ...props }: DevicePowerToggleProps) => {
                 <Icon
                     icon={icon}
                     className={classNames("p-0.5 bg-white rounded-full", {
-                        ["text-green-800 hover:text-green-700 active:text-green-600 ml-1"]:
+                        ["text-on hover:text-on-hover active:text-on-active ml-1"]:
                             device.state === DeviceState.On,
-                        ["text-red-800 hover:text-red-700 active:text-red-600 mr-1"]:
+                        ["text-off hover:text-off-hover active:text-off-active mr-1"]:
                             device.state === DeviceState.Off,
-                        ["text-gray-500 hover:text-gray-400 active:text-gray-300"]:
+                        ["text-unknown hover:text-unknown-hover active:text-unknown-active"]:
                             device.state === DeviceState.Unknown,
                     })}
                 />

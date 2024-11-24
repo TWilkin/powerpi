@@ -12,9 +12,9 @@ const defaultTypeClasses = "bg-bg-primary hover:bg-bg-hover active:bg-bg-active"
 
 const clearTypeClasses = "bg-transparent";
 
-const onTypeClasses = "bg-green-800 hover:bg-green-700 active:bg-green-600";
+const onTypeClasses = "bg-on hover:bg-on-hover active:bg-on-active text-white";
 
-const offTypeClasses = "bg-red-800 hover:bg-red-700 active:bg-red-600";
+const offTypeClasses = "bg-off hover:bg-off-hover active:bg-off-active text-white";
 
 const normalSizeClasses = "p";
 const smallSizeClasses = "p-sm text-sm";

@@ -20,6 +20,15 @@ const semanticColours = [
     "placeholder",
     "warning",
     "critical",
+    "on",
+    "on-hover",
+    "on-active",
+    "off",
+    "off-hover",
+    "off-active",
+    "unknown",
+    "unknown-hover",
+    "unknown-active",
 ];
 
 /** @type {import("tailwindcss").Config} */

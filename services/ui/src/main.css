@@ -22,6 +22,18 @@
 
         --colour-warning: theme("colourComponents.orange-600");
         --colour-critical: theme("colourComponents.red-600");
+
+        --colour-on: theme("colourComponents.green-800");
+        --colour-on-hover: theme("colourComponents.green-700");
+        --colour-on-active: theme("colourComponents.green-600");
+
+        --colour-off: theme("colourComponents.red-800");
+        --colour-off-hover: theme("colourComponents.red-700");
+        --colour-off-active: theme("colourComponents.red-600");
+
+        --colour-unknown: theme("colourComponents.gray-500");
+        --colour-unknown-hover: theme("colourComponents.gray-400");
+        --colour-unknown-active: theme("colourComponents.gray-300");
     }
 
     /* Colours for the dark theme. */
@@ -43,6 +55,18 @@
 
         --colour-warning: theme("colourComponents.orange-600");
         --colour-critical: theme("colourComponents.red-600");
+
+        --colour-on: theme("colourComponents.green-800");
+        --colour-on-hover: theme("colourComponents.green-700");
+        --colour-on-active: theme("colourComponents.green-600");
+
+        --colour-off: theme("colourComponents.red-800");
+        --colour-off-hover: theme("colourComponents.red-700");
+        --colour-off-active: theme("colourComponents.red-600");
+
+        --colour-unknown: theme("colourComponents.gray-500");
+        --colour-unknown-hover: theme("colourComponents.gray-400");
+        --colour-unknown-active: theme("colourComponents.gray-300");
     }
 }
 
