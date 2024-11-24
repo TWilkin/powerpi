@@ -37,12 +37,14 @@ describe("DevicePowerButton", () => {
         expect(offButton).toBeInTheDocument();
     });
 
-    const cases: { label: string; state: DeviceState }[] = [
-        { label: "Power My Device on", state: DeviceState.On },
-        { label: "Power My Device off", state: DeviceState.Off },
+    const cases: { type: string; label: string; state: DeviceState }[] = [
+        { type: "light", label: "Power My Device on", state: DeviceState.On },
+        { type: "light", label: "Power My Device off", state: DeviceState.Off },
+        { type: "pairing", label: "Unlock My Device", state: DeviceState.On },
+        { type: "pairing", label: "Lock My Device", state: DeviceState.Off },
     ];
-    test.each(cases)("powers device $state", async ({ label, state }) => {
-        render(<DevicePowerButton device={device} />);
+    test.each(cases)("powers $type device $state", async ({ type, label, state }) => {
+        render(<DevicePowerButton device={{ ...device, type }} />);
 
         const button = screen.getByRole("button", { name: label });
         expect(button).toBeInTheDocument();
@@ -53,9 +55,9 @@ describe("DevicePowerButton", () => {
         expect(mocks.mutateAsync).toHaveBeenCalledWith({ newState: state });
     });
 
-    test.each(cases)("powers device $state with callback", async ({ label }) => {
+    test.each(cases)("powers device $state with callback", async ({ type, label }) => {
         const onPowerChange = vi.fn();
-        render(<DevicePowerButton device={device} onPowerChange={onPowerChange} />);
+        render(<DevicePowerButton device={{ ...device, type }} onPowerChange={onPowerChange} />);
 
         const button = screen.getByRole("button", { name: label });
         expect(button).toBeInTheDocument();

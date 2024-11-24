@@ -50,36 +50,44 @@ const DevicePowerToggle = ({ device, ...props }: DevicePowerToggleProps) => {
 
     const longPressProps = useLongPress(() => setButtonType("individual"));
 
+    const isLock = useMemo(() => device.type.endsWith("pairing"), [device.type]);
+
     const { checked, label } = useMemo(() => {
+        const key = isLock ? "lock" : "power";
+
         switch (device.state) {
             case DeviceState.On:
                 return {
                     checked: true,
-                    label: t("common.power off", { device: device.display_name }),
+                    label: t(`common.${key} off`, { device: device.display_name }),
                 };
 
             case DeviceState.Off:
                 return {
                     checked: false,
-                    label: t("common.power on", { device: device.display_name }),
+                    label: t(`common.${key} on`, { device: device.display_name }),
                 };
 
             case DeviceState.Unknown:
             default:
                 return {
                     checked: undefined,
-                    label: t("common.power on", { device: device.display_name }),
+                    label: t(`common.${key} on`, { device: device.display_name }),
                 };
         }
-    }, [device.display_name, device.state, t]);
+    }, [device.display_name, device.state, isLock, t]);
 
     const icon = useMemo(() => {
         if (isChangingState) {
             return "loading";
         }
 
+        if (isLock) {
+            return device.state === DeviceState.On ? "stateUnlocked" : "stateLocked";
+        }
+
         return device.state === DeviceState.On ? "stateOn" : "stateOff";
-    }, [device.state, isChangingState]);
+    }, [device.state, isChangingState, isLock]);
 
     // the checkbox is indeterminate when the state is unknown
     useEffect(() => {
@@ -97,9 +105,13 @@ const DevicePowerToggle = ({ device, ...props }: DevicePowerToggleProps) => {
                     "focus-within:ring-offset focus-within:ring-offset-outline-offset focus-within:ring focus-within:ring-outline focus:z-10",
                     {
                         ["bg-on hover:bg-on-hover active:bg-on-active"]:
-                            device.state === DeviceState.On,
+                            !isLock && device.state === DeviceState.On,
                         ["bg-off hover:bg-off-hover active:bg-off-active justify-end"]:
-                            device.state === DeviceState.Off,
+                            !isLock && device.state === DeviceState.Off,
+                        ["bg-lock hover:bg-lock-hover active:bg-lock-active"]:
+                            isLock && device.state === DeviceState.Off,
+                        ["bg-unlock hover:bg-unlock-hover active:bg-unlock-active justify-end"]:
+                            isLock && device.state === DeviceState.On,
                         ["bg-unknown hover:bg-unknown-hover active:bg-unknown-active justify-center"]:
                             device.state === DeviceState.Unknown,
                     },
@@ -108,11 +120,15 @@ const DevicePowerToggle = ({ device, ...props }: DevicePowerToggleProps) => {
             >
                 <Icon
                     icon={icon}
-                    className={classNames("p-0.5 bg-white rounded-full", {
+                    className={classNames("p-xs bg-white rounded-full text-sm", {
                         ["text-on hover:text-on-hover active:text-on-active ml-1"]:
-                            device.state === DeviceState.On,
+                            !isLock && device.state === DeviceState.On,
                         ["text-off hover:text-off-hover active:text-off-active mr-1"]:
-                            device.state === DeviceState.Off,
+                            !isLock && device.state === DeviceState.Off,
+                        ["text-lock hover:text-lock-hover active:text-lock-active ml-1"]:
+                            isLock && device.state === DeviceState.Off,
+                        ["text-unlock hover:text-unlock-hover active:text-unlock-active mr-1"]:
+                            isLock && device.state === DeviceState.On,
                         ["text-unknown hover:text-unknown-hover active:text-unknown-active"]:
                             device.state === DeviceState.Unknown,
                     })}

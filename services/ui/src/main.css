@@ -31,6 +31,14 @@
         --powerpi-colour-off-hover: theme("colourComponents.red-700");
         --powerpi-colour-off-active: theme("colourComponents.red-600");
 
+        --powerpi-colour-lock: theme("colourComponents.orange-500");
+        --powerpi-colour-lock-hover: theme("colourComponents.orange-400");
+        --powerpi-colour-lock-active: theme("colourComponents.orange-300");
+
+        --powerpi-colour-unlock: theme("colourComponents.red-800");
+        --powerpi-colour-unlock-hover: theme("colourComponents.red-700");
+        --powerpi-colour-unlock-active: theme("colourComponents.red-600");
+
         --powerpi-colour-unknown: theme("colourComponents.gray-500");
         --powerpi-colour-unknown-hover: theme("colourComponents.gray-400");
         --powerpi-colour-unknown-active: theme("colourComponents.gray-300");
@@ -63,6 +71,14 @@
         --powerpi-colour-off: theme("colourComponents.red-800");
         --powerpi-colour-off-hover: theme("colourComponents.red-700");
         --powerpi-colour-off-active: theme("colourComponents.red-600");
+
+        --powerpi-colour-lock: theme("colourComponents.orange-500");
+        --powerpi-colour-lock-hover: theme("colourComponents.orange-400");
+        --powerpi-colour-lock-active: theme("colourComponents.orange-300");
+
+        --powerpi-colour-unlock: theme("colourComponents.red-800");
+        --powerpi-colour-unlock-hover: theme("colourComponents.red-700");
+        --powerpi-colour-unlock-active: theme("colourComponents.red-600");
 
         --powerpi-colour-unknown: theme("colourComponents.gray-500");
         --powerpi-colour-unknown-hover: theme("colourComponents.gray-400");

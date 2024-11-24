@@ -53,6 +53,8 @@ interface Resources {
       },
       "power on": "Power {{device}} on",
       "power off": "Power {{device}} off",
+      "lock on": "Unlock {{device}}",
+      "lock off": "Lock {{device}}",
       "history link": "Show history for {{device}}",
       "capability": {
         "button": "Show capabilities for {{device}}",

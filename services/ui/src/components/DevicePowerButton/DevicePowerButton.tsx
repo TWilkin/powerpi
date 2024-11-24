@@ -1,5 +1,5 @@
 import { Device, DeviceState } from "@powerpi/common-api";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import useMutateDeviceState from "../../queries/useMutateDeviceState";
 import Button from "../Button";
@@ -12,6 +12,8 @@ type DevicePowerButtonProps = {
 
 const DevicePowerButton = ({ device, onPowerChange }: DevicePowerButtonProps) => {
     const { t } = useTranslation();
+
+    const isLock = useMemo(() => device.type.endsWith("pairing"), [device.type]);
 
     const { mutateAsync } = useMutateDeviceState(device);
 
@@ -36,16 +38,20 @@ const DevicePowerButton = ({ device, onPowerChange }: DevicePowerButtonProps) =>
     return (
         <div className="flex flex-row">
             <Button
-                buttonType="on"
-                icon="stateOn"
-                aria-label={t("common.power on", { device: device.display_name })}
+                buttonType={isLock ? "unlock" : "on"}
+                icon={isLock ? "stateUnlocked" : "stateOn"}
+                aria-label={t(`common.${isLock ? "lock" : "power"} on`, {
+                    device: device.display_name,
+                })}
                 onClick={handlePowerOn}
             />
 
             <Button
-                buttonType="off"
-                icon="stateOff"
-                aria-label={t("common.power off", { device: device.display_name })}
+                buttonType={isLock ? "lock" : "off"}
+                icon={isLock ? "stateLocked" : "stateOff"}
+                aria-label={t(`common.${isLock ? "lock" : "power"} off`, {
+                    device: device.display_name,
+                })}
                 onClick={handlePowerOff}
             />
         </div>

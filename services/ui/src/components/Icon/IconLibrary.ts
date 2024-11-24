@@ -45,6 +45,7 @@ import {
     faTint,
     faTowerBroadcast,
     faTv,
+    faUnlock,
     faWalking,
     faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -66,6 +67,10 @@ const iconLibrary = {
     stateOn: faPowerOff,
     stateOff: faPowerOff,
     stateUnknown: faQuestion,
+
+    // special states
+    stateUnlocked: faUnlock,
+    stateLocked: faLock,
 
     info: faInfoCircle,
     search: faSearch,

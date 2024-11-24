@@ -38,36 +38,90 @@ describe("DevicePowerToggle", () => {
         });
     });
 
-    test("renders", () => {
-        render(<DevicePowerToggle device={device} />);
-
-        const input = screen.getByRole("checkbox", { name: "Power My Device off" });
-        expect(input).toBeInTheDocument();
-        expect(input).toBeChecked();
-
-        const icon = screen.getByRole("img", { hidden: true });
-        expect(icon).toBeInTheDocument();
-        expect(icon).toHaveAttribute("data-icon", "power-off");
-    });
-
-    const loadingStates: { state: boolean | undefined; expectedIcon: "spinner" | "power-off" }[] = [
-        { state: true, expectedIcon: "spinner" },
-        { state: false, expectedIcon: "power-off" },
-        { state: undefined, expectedIcon: "power-off" },
+    const cases: {
+        type: string;
+        state: DeviceState;
+        expectedState: boolean;
+        expectedLabel: string;
+        expectedIcon: string;
+    }[] = [
+        {
+            type: "light",
+            state: DeviceState.On,
+            expectedState: true,
+            expectedLabel: "Power My Device off",
+            expectedIcon: "power-off",
+        },
+        {
+            type: "light",
+            state: DeviceState.Off,
+            expectedState: false,
+            expectedLabel: "Power My Device on",
+            expectedIcon: "power-off",
+        },
+        {
+            type: "pairing",
+            state: DeviceState.On,
+            expectedState: true,
+            expectedLabel: "Lock My Device",
+            expectedIcon: "unlock",
+        },
+        {
+            type: "pairing",
+            state: DeviceState.Off,
+            expectedState: false,
+            expectedLabel: "Unlock My Device",
+            expectedIcon: "lock",
+        },
     ];
-    test.each(loadingStates)("renders icon when loading=$state", ({ state, expectedIcon }) => {
-        mocks.useDeviceChangingState.mockReturnValue({
-            changingState: {
-                MyDevice: state,
-            },
-        });
+    test.each(cases)(
+        "renders when type=$type state=$state",
+        ({ type, state, expectedState, expectedLabel, expectedIcon }) => {
+            render(<DevicePowerToggle device={{ ...device, type, state }} />);
 
-        render(<DevicePowerToggle device={device} />);
+            const input = screen.getByRole("checkbox", { name: expectedLabel });
+            expect(input).toBeInTheDocument();
 
-        const icon = screen.getByRole("img", { hidden: true });
-        expect(icon).toBeInTheDocument();
-        expect(icon).toHaveAttribute("data-icon", expectedIcon);
-    });
+            if (expectedState) {
+                expect(input).toBeChecked();
+            } else {
+                expect(input).not.toBeChecked();
+            }
+
+            const icon = screen.getByRole("img", { hidden: true });
+            expect(icon).toBeInTheDocument();
+            expect(icon).toHaveAttribute("data-icon", expectedIcon);
+        },
+    );
+
+    const loadingStates: {
+        type: string;
+        state: boolean | undefined;
+        expectedIcon: string;
+    }[] = [
+        { type: "light", state: true, expectedIcon: "spinner" },
+        { type: "light", state: false, expectedIcon: "power-off" },
+        { type: "light", state: undefined, expectedIcon: "power-off" },
+        { type: "pairing", state: true, expectedIcon: "spinner" },
+        { type: "pairing", state: false, expectedIcon: "unlock" },
+        { type: "pairing", state: undefined, expectedIcon: "unlock" },
+    ];
+    test.each(loadingStates)(
+        "renders icon when loading=$state",
+        ({ type, state, expectedIcon }) => {
+            mocks.useDeviceChangingState.mockReturnValue({
+                changingState: {
+                    MyDevice: state,
+                },
+            });
+
+            render(<DevicePowerToggle device={{ ...device, type }} />);
+
+            const icon = screen.getByRole("img", { hidden: true });
+            expect(icon).toBeInTheDocument();
+            expect(icon).toHaveAttribute("data-icon", expectedIcon);
+        },
+    );
 
     test("renders buttons", async () => {
         render(<DevicePowerToggle device={device} data-testid="label" />);
@@ -81,7 +135,7 @@ describe("DevicePowerToggle", () => {
         expect(screen.getAllByRole("button")).toHaveLength(2);
     });
 
-    const cases: {
+    const powerCases: {
         label: string;
         state: DeviceState;
         loadingState?: boolean;
@@ -114,7 +168,7 @@ describe("DevicePowerToggle", () => {
             expectedState: DeviceState.Off,
         },
     ];
-    test.each(cases)(
+    test.each(powerCases)(
         "powers device from $state to $expectedState",
         async ({ label, state, loadingState, checked, expectedState }) => {
             mocks.useDeviceChangingState.mockReturnValue({
