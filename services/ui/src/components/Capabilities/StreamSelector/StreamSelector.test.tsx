@@ -50,6 +50,27 @@ describe("StreamSelector", () => {
         checkOption(options[2], "Spotify", "spotify");
     });
 
+    test("renders with no streams", async () => {
+        render(
+            <StreamSelector
+                device={device}
+                streams={undefined}
+                disabled={false}
+                mutateAsync={vi.fn()}
+            />,
+        );
+
+        const select = screen.getByRole("combobox");
+        expect(select).toBeInTheDocument();
+
+        expect(screen.queryByRole("option")).not.toBeInTheDocument();
+
+        await userEvent.click(select);
+
+        const options = screen.queryAllByRole("option");
+        expect(options).toHaveLength(0);
+    });
+
     test("handles change", async () => {
         const mutateAsync = vi.fn();
         render(

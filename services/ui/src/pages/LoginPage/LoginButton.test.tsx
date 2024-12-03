@@ -9,7 +9,7 @@ describe("LoginButton", () => {
 
         const form = screen.getByRole("form");
         expect(form).toBeInTheDocument();
-        expect(form).toHaveAttribute("method", "get");
+        expect(form).toHaveAttribute("method", "GET");
         expect(form).toHaveAttribute("action", "/api/auth/google");
 
         const input = screen.getByDisplayValue("http://localhost:3000/");

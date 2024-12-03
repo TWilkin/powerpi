@@ -20,7 +20,7 @@ const LoginButton = ({ protocol, ...props }: LoginButtonProps) => {
     );
 
     return (
-        <form {...props} method="get" action={url} name={`${protocol}-login`}>
+        <form {...props} method="GET" action={url} name={`${protocol}-login`}>
             <input type="hidden" name="redirect_uri" value={`${window.location.origin}/`} />
 
             <Button type="submit" icon={protocol}>
