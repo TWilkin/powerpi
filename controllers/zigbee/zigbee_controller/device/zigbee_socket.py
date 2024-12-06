@@ -11,6 +11,7 @@ from zigbee_controller.zigbee import ZigbeeMixin
 
 
 class ZigbeeSocket(Device, PollableMixin, ZigbeeMixin):
+    # pylint: disable=too-many-ancestors
     '''
     Add support for ZigBee sockets.
     '''
@@ -43,7 +44,7 @@ class ZigbeeSocket(Device, PollableMixin, ZigbeeMixin):
             changed = new_state != self.state
 
         if changed:
-            self.set_new_state(new_state)
+            await self.set_new_state(new_state)
 
     async def initialise(self):
         pass
