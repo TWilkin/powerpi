@@ -3,15 +3,15 @@ from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import PollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
-from zigpy.exceptions import DeliveryError
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 
 from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import ZigbeeMixin
+from zigbee_controller.zigbee.mixins import ZigbeeOnOffMixin
 from zigbee_controller.zigbee.constants import OnOff
 
 
-class ZigbeeSocket(Device, PollableMixin, ZigbeeMixin):
+class ZigbeeSocket(Device, PollableMixin, ZigbeeMixin, ZigbeeOnOffMixin):
     # pylint: disable=too-many-ancestors
     '''
     Add support for ZigBee sockets.
@@ -31,20 +31,10 @@ class ZigbeeSocket(Device, PollableMixin, ZigbeeMixin):
 
     async def poll(self):
         device = self._zigbee_device
-        changed = False
 
-        try:
-            # get the power state
-            cluster: OnOffCluster = device[1].in_clusters[OnOffCluster.cluster_id]
-            values, _ = await cluster.read_attributes(['on_off'])
-            new_state = DeviceStatus.ON if values['on_off'] else DeviceStatus.OFF
-            changed = new_state != self.state
-        except DeliveryError:
-            # we couldn't contact it so set to unknown
-            new_state = DeviceStatus.UNKNOWN
-            changed = new_state != self.state
+        new_state = await self._read_status(device)
 
-        if changed:
+        if new_state != self.state:
             await self.set_new_state(new_state)
 
     async def initialise(self):

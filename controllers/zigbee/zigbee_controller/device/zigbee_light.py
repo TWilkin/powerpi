@@ -14,15 +14,15 @@ from zigpy.types import bitmap8
 from zigpy.typing import DeviceType
 from zigpy.zcl import Cluster
 from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
-from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 from zigpy.zcl.clusters.lighting import Color as ColorCluster
 
 from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import DeviceAnnounceListener, ZigbeeMixin
+from zigbee_controller.zigbee.mixins import ZigbeeOnOffMixin
 
 
 # pylint: disable=too-many-ancestors
-class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeMixin):
+class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeMixin, ZigbeeOnOffMixin):
     '''
     Adds support for ZigBee RGB/temperature/brightness lights.
     '''
@@ -124,9 +124,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
 
         try:
             # get the power state
-            cluster: OnOffCluster = device[1].in_clusters[OnOffCluster.cluster_id]
-            values, _ = await cluster.read_attributes(['on_off'])
-            new_state = DeviceStatus.ON if values['on_off'] else DeviceStatus.OFF
+            new_state = await self._read_status(device)
             changed = new_state != self.state
 
             # get the additional state
