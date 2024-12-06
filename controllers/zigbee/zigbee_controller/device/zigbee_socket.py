@@ -47,7 +47,7 @@ class ZigbeeSocket(Device, PollableMixin, ZigbeeMixin):
             await self.set_new_state(new_state)
 
     async def initialise(self):
-        pass
+        '''No need to initialise as the socket has no options.'''
 
     async def _turn_on(self):
         await self.__set_power_state(DeviceStatus.ON)

@@ -15,7 +15,7 @@ from zigpy.zcl.foundation import Status
 from zigbee_controller.device.zigbee_light import ZigbeeLight
 
 
-class TestZigbeeeLight(
+class TestZigbeeLight(
     AdditionalStateDeviceTestBase,
     InitialisableMixinTestBase,
     PollableMixinTestBase
