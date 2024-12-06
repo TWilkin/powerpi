@@ -8,6 +8,7 @@ from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 
 from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import ZigbeeMixin
+from zigbee_controller.zigbee.constants import OnOff
 
 
 class ZigbeeSocket(Device, PollableMixin, ZigbeeMixin):
@@ -60,7 +61,7 @@ class ZigbeeSocket(Device, PollableMixin, ZigbeeMixin):
 
         cluster: OnOffCluster = device[1].in_clusters[OnOffCluster.cluster_id]
 
-        name = 'on' if new_state == DeviceStatus.ON else 'off'
+        name = OnOff.get(new_state)
         command = cluster.commands_by_name[name].id
 
         return await self._send_command(cluster, command)
