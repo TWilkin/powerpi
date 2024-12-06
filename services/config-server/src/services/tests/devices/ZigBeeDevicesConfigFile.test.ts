@@ -27,7 +27,7 @@ function commonZigBeeTests(validFile: object, sensor = false) {
             device.nwk = nwk;
 
             testInvalid(populateConfig(device));
-        })
+        }),
     );
 
     test("No ieee", () => {
@@ -43,7 +43,7 @@ function commonZigBeeTests(validFile: object, sensor = false) {
             device.ieee = ieee;
 
             testInvalid(populateConfig(device));
-        })
+        }),
     );
 
     return {
@@ -65,7 +65,7 @@ describe("ZigBee Devices", () => {
                         { type, name: "Aqara", nwk: "0xabcd", ieee: "00:11:22:33:44:55:66:77" },
                     ],
                 },
-                true
+                true,
             );
         });
     });
@@ -107,8 +107,21 @@ describe("ZigBee Devices", () => {
                             duration,
                         },
                     ],
-                }))
+                })),
         );
+    });
+
+    describe("Socket", () => {
+        commonZigBeeTests({
+            devices: [
+                {
+                    type: "zigbee_socket",
+                    name: "Socket",
+                    nwk: "0xabcd",
+                    ieee: "00:11:22:33:44:55:66:77",
+                },
+            ],
+        });
     });
 
     describe("Osram Switch Mini Sensor", () => {
@@ -123,7 +136,7 @@ describe("ZigBee Devices", () => {
                     },
                 ],
             },
-            true
+            true,
         );
     });
 
@@ -136,14 +149,14 @@ describe("ZigBee Devices", () => {
             test(`Good timeout ${timeout}`, () =>
                 testValid({
                     devices: [{ type: "zigbee_pairing", name: "Pairing", timeout }],
-                }))
+                })),
         );
 
         [-1, 0].forEach((timeout) =>
             test(`Bad timeout ${timeout}`, () =>
                 testInvalid({
                     devices: [{ type: "zigbee_pairing", name: "Pairing", timeout }],
-                }))
+                })),
         );
     });
 });
