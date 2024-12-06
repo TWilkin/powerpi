@@ -18,7 +18,7 @@ class TestDevice(ZigbeeOnOffMixin):
 class TestZigbeeOnOffMixin:
     @pytest.mark.asyncio
     @pytest.mark.parametrize('state', [True, False])
-    async def test_poll_gets_status(
+    async def test_read_status(
         self,
         subject: TestDevice,
         cluster: Cluster,
@@ -43,7 +43,7 @@ class TestZigbeeOnOffMixin:
         assert result == expected
 
     @pytest.mark.asyncio
-    async def test_poll_fails(
+    async def test_read_status_fails(
         self,
         subject: TestDevice,
         cluster: Cluster,
