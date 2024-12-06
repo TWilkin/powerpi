@@ -61,10 +61,7 @@ class ZigbeeSocket(Device, PollableMixin, ZigbeeMixin):
 
         cluster: OnOffCluster = device[1].in_clusters[OnOffCluster.cluster_id]
 
-        name = OnOff.get(new_state)
-        command = cluster.commands_by_name[name].id
-
-        return await self._send_command(cluster, command)
+        return await self._send_command(cluster, OnOff.get(new_state))
 
     def __str__(self):
         return ZigbeeMixin.__str__(self)
