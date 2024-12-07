@@ -1,7 +1,7 @@
 import os
 
 import zigpy
-from powerpi_common.logger import Logger
+from powerpi_common.logger import Logger, LogMixin
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 from zigpy_znp.zigbee.application import ControllerApplication
@@ -9,12 +9,12 @@ from zigpy_znp.zigbee.application import ControllerApplication
 from zigbee_controller.config import ZigbeeConfig
 
 
-class ZigbeeController:
+class ZigbeeController(LogMixin):
     def __init__(self, config: ZigbeeConfig, logger: Logger):
         self.__config = config
-        self.__logger = logger
+        self._logger = logger
 
-        self.__logger.add_logger(zigpy.__name__)
+        self._logger.add_logger(zigpy.__name__)
 
         self.__controller: ControllerApplication | None = None
 
@@ -33,12 +33,12 @@ class ZigbeeController:
         try:
             self.__controller = await ControllerApplication.new(config, auto_form=True)
         except Exception as ex:
-            self.__logger.error('Could not initialise ZigBee device')
-            self.__logger.exception(ex)
+            self.log_error('Could not initialise ZigBee device')
+            self.log_exception(ex)
             os._exit(-1)
 
     async def shutdown(self):
-        self.__logger.info('Shutting down ZigBee device')
+        self.log_info('Shutting down ZigBee device')
         await self.__controller.shutdown()
 
     async def pair(self, time: int):
