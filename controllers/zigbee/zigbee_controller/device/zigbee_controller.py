@@ -23,8 +23,8 @@ class ZigbeeController:
 
     async def startup(self):
         config = {
-            "database_path": self.__config.database_path,
-            "device": {
+            'database_path': self.__config.database_path,
+            'device': {
                 "path": self.__config.zigbee_device
             }
         }
