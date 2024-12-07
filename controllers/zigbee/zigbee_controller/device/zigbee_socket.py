@@ -30,9 +30,7 @@ class ZigbeeSocket(Device, PollableMixin, ZigbeeMixin, ZigbeeOnOffMixin):
         ZigbeeMixin.__init__(self, controller, **kwargs)
 
     async def poll(self):
-        device = self._zigbee_device
-
-        new_state = await self._read_status(device)
+        new_state = await self._read_status()
 
         if new_state != self.state:
             await self.set_new_state(new_state)

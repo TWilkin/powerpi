@@ -7,10 +7,14 @@ from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 class ZigbeeOnOffMixin:
     '''
     Mixin to be used to provide utility methods when a device supports the OnOffCluster.
+    Expected to be used alongside ZigbeeMixin.
     '''
 
-    async def _read_status(self, device: DeviceType):
-        '''Retrieve the current status of the supplied device'''
+    async def _read_status(self):
+        '''Retrieve the current status of the ZigBee device.'''
+
+        device: DeviceType = self._zigbee_device
+
         try:
             cluster: OnOffCluster = device[1].in_clusters[OnOffCluster.cluster_id]
             values, _ = await cluster.read_attributes(['on_off'])

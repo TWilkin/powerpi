@@ -124,7 +124,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
 
         try:
             # get the power state
-            new_state = await self._read_status(device)
+            new_state = await self._read_status()
             changed = new_state != self.state
 
             # get the additional state
