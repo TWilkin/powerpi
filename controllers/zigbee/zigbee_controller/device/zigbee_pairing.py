@@ -40,11 +40,10 @@ class ZigbeePairingDevice(Device, InitialisableMixin):
 
     async def _turn_on(self):
         # run in a separate task so the off state happens after the on
-        task = self.pair()
-        asyncio.create_task(task)
+        asyncio.create_task(self.pair())
 
     async def _turn_off(self):
-        '''Pairing is automatically stopped after 120s.'''
+        await self.__zigbee_controller.pair(0)
 
     async def pair(self):
         await self.__zigbee_controller.pair(self.__timeout)
