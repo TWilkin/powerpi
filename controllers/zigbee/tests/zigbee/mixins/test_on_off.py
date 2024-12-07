@@ -10,9 +10,16 @@ from zigpy.zcl.foundation import Status
 from zigbee_controller.zigbee.mixins.on_off import ZigbeeOnOffMixin
 
 
-class TestDevice(ZigbeeOnOffMixin):
-    async def read_status(self, device):
-        return await self._read_status(device)
+class ExampleDevice(ZigbeeOnOffMixin):
+    def __init__(self, device):
+        self.__device = device
+
+    @property
+    def _zigbee_device(self):
+        return self.__device
+
+    async def read_status(self):
+        return await self._read_status()
 
 
 class TestZigbeeOnOffMixin:
@@ -20,9 +27,8 @@ class TestZigbeeOnOffMixin:
     @pytest.mark.parametrize('state', [True, False])
     async def test_read_status(
         self,
-        subject: TestDevice,
+        subject: ExampleDevice,
         cluster: Cluster,
-        zigbee_device,
         mocker: MockerFixture,
         state: bool,
     ):
@@ -37,7 +43,7 @@ class TestZigbeeOnOffMixin:
             read_attributes
         )
 
-        result = await subject.read_status(zigbee_device)
+        result = await subject.read_status()
 
         expected = DeviceStatus.ON if state else DeviceStatus.OFF
         assert result == expected
@@ -45,9 +51,8 @@ class TestZigbeeOnOffMixin:
     @pytest.mark.asyncio
     async def test_read_status_fails(
         self,
-        subject: TestDevice,
+        subject: ExampleDevice,
         cluster: Cluster,
-        zigbee_device,
         mocker: MockerFixture
     ):
         async def read_attributes(_):
@@ -59,13 +64,13 @@ class TestZigbeeOnOffMixin:
             read_attributes
         )
 
-        result = await subject.read_status(zigbee_device)
+        result = await subject.read_status()
 
         assert result == DeviceStatus.UNKNOWN
 
     @pytest.fixture
-    def subject(self):
-        return TestDevice()
+    def subject(self, zigbee_device):
+        return ExampleDevice(zigbee_device)
 
     @pytest.fixture(autouse=True)
     def cluster(self, zigbee_in_cluster: Cluster):

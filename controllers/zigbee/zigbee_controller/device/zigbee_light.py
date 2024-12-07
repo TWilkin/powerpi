@@ -5,7 +5,7 @@ from typing import List, Tuple
 from powerpi_common.config import Config
 from powerpi_common.device import AdditionalStateDevice, DeviceStatus
 from powerpi_common.device.mixin import (AdditionalState, CapabilityMixin,
-                                         PollableMixin)
+                                         NewPollableMixin)
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util.data import DataType, Range, Ranges, Standardiser
@@ -22,7 +22,13 @@ from zigbee_controller.zigbee.mixins import ZigbeeOnOffMixin
 
 
 # pylint: disable=too-many-ancestors
-class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeMixin, ZigbeeOnOffMixin):
+class ZigbeeLight(
+    AdditionalStateDevice,
+    NewPollableMixin,
+    CapabilityMixin,
+    ZigbeeMixin,
+    ZigbeeOnOffMixin
+):
     '''
     Adds support for ZigBee RGB/temperature/brightness lights.
     '''
@@ -74,7 +80,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
         AdditionalStateDevice.__init__(
             self, config, logger, mqtt_client, **kwargs
         )
-        PollableMixin.__init__(self, config, **kwargs)
+        NewPollableMixin.__init__(self, config, **kwargs)
         ZigbeeMixin.__init__(self, controller, **kwargs)
 
         self.__duration = duration
@@ -115,7 +121,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
 
         return False
 
-    async def poll(self):
+    async def _poll(self):
         # we need the device to be initialised
         await self.__initialise()
 
@@ -124,7 +130,7 @@ class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeM
 
         try:
             # get the power state
-            new_state = await self._read_status(device)
+            new_state = await self._read_status()
             changed = new_state != self.state
 
             # get the additional state

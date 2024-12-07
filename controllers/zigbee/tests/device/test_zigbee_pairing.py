@@ -1,5 +1,5 @@
 from asyncio import Future
-from unittest.mock import MagicMock, PropertyMock
+from unittest.mock import MagicMock, PropertyMock, call
 
 import pytest
 from powerpi_common_test.device import DeviceTestBase
@@ -16,17 +16,18 @@ class TestZigbeePairingDevice(DeviceTestBase):
 
         await subject.pair()
 
-        zigbee_controller.pair.assert_called_once()
+        # once to turn it on with the timeout (1), then once to turn it off (0)
+        zigbee_controller.pair.assert_has_calls([call(1), call(0)])
 
         assert subject.state == 'off'
 
-    def test_device_joined(
+    def test_on_device_join(
         self,
         subject: ZigbeePairingDevice,
         powerpi_mqtt_producer: MagicMock,
         device: DeviceType
     ):
-        subject.device_joined(device)
+        subject.on_device_join(device)
 
         topic = 'device/ZigBeePairing/join'
         message = {
