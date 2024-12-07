@@ -49,7 +49,7 @@ class ZigbeePairingDevice(Device, InitialisableMixin):
         await self.__zigbee_controller.pair(self.__timeout)
         await asyncio.sleep(self.__timeout)
 
-        self.state = DeviceStatus.OFF
+        await self.turn_off()
 
     def on_device_join(self, device: DeviceType):
         self.log_info('New device joined network')
