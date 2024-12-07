@@ -12,6 +12,7 @@ from zigbee_controller.device.zigbee_controller import ZigbeeController
 from zigbee_controller.zigbee import DeviceJoinListener
 
 
+# pylint: disable=too-many-ancestors
 class ZigbeePairingDevice(Device, InitialisableMixin):
     '''
     Device to allow new devices to be paired to the ZigBee controller managed by this service.

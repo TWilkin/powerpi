@@ -11,8 +11,8 @@ from zigbee_controller.zigbee.mixins import ZigbeeOnOffMixin
 from zigbee_controller.zigbee.constants import OnOff
 
 
+# pylint: disable=too-many-ancestors
 class ZigbeeSocket(Device, PollableMixin, ZigbeeMixin, ZigbeeOnOffMixin):
-    # pylint: disable=too-many-ancestors
     '''
     Add support for ZigBee sockets.
     '''

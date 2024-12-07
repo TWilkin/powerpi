@@ -22,7 +22,13 @@ from zigbee_controller.zigbee.mixins import ZigbeeOnOffMixin
 
 
 # pylint: disable=too-many-ancestors
-class ZigbeeLight(AdditionalStateDevice, PollableMixin, CapabilityMixin, ZigbeeMixin, ZigbeeOnOffMixin):
+class ZigbeeLight(
+    AdditionalStateDevice,
+    PollableMixin,
+    CapabilityMixin,
+    ZigbeeMixin,
+    ZigbeeOnOffMixin
+):
     '''
     Adds support for ZigBee RGB/temperature/brightness lights.
     '''
