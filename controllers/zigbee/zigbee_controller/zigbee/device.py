@@ -13,13 +13,13 @@ class ZigbeeMixin(InitialisableMixin):
     def __init__(
         self,
         controller: ZigbeeController,
-        ieee: str,
-        nwk: str,
+        ieee: str | EUI64,
+        nwk: str | NWK,
         **_
     ):
         self.__controller = controller
-        self.__ieee = EUI64.convert(ieee)
-        self.__nwk = NWK.convert(nwk[2:])
+        self.__ieee = ieee if isinstance(ieee, EUI64) else EUI64.convert(ieee)
+        self.__nwk = nwk if isinstance(nwk, NWK) else NWK.convert(nwk[2:])
 
     @property
     def ieee(self):
