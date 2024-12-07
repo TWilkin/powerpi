@@ -11,6 +11,11 @@ from .zigbee_controller import ZigbeeController
 
 
 class ZigbeePairingDevice(Device):
+    '''
+    Device to allow new devices to be paired to the ZigBee controller managed by this service.
+    '''
+
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         config: Config,
@@ -33,7 +38,7 @@ class ZigbeePairingDevice(Device):
         loop.create_task(self.pair())
 
     async def _turn_off(self):
-        pass
+        '''Pairing is automatically stopped after 120s.'''
 
     async def pair(self):
         await self.__zigbee_controller.pair(self.__timeout)
