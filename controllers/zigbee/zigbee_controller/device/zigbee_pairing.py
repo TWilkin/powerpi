@@ -1,16 +1,18 @@
 import asyncio
 
+from powerpi_common.config import Config
+from powerpi_common.device import Device, DeviceStatus
+from powerpi_common.device.mixin import InitialisableMixin
+from powerpi_common.logger import Logger
+from powerpi_common.mqtt import MQTTClient
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 
-from powerpi_common.config import Config
-from powerpi_common.device import Device, DeviceStatus
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
-from .zigbee_controller import ZigbeeController
+from zigbee_controller.device.zigbee_controller import ZigbeeController
+from zigbee_controller.zigbee import DeviceJoinListener
 
 
-class ZigbeePairingDevice(Device):
+class ZigbeePairingDevice(Device, InitialisableMixin):
     '''
     Device to allow new devices to be paired to the ZigBee controller managed by this service.
     '''
@@ -30,12 +32,15 @@ class ZigbeePairingDevice(Device):
         self.__zigbee_controller = zigbee_controller
         self.__timeout = timeout
 
-        self.__zigbee_controller.add_listener(self)
+    async def initialise(self):
+        self.__zigbee_controller.add_listener(
+            DeviceJoinListener(self.on_device_join)
+        )
 
     async def _turn_on(self):
         # run in a separate task so the off state happens after the on
-        loop = asyncio.get_event_loop()
-        loop.create_task(self.pair())
+        task = self.pair()
+        asyncio.create_task(task)
 
     async def _turn_off(self):
         '''Pairing is automatically stopped after 120s.'''
@@ -46,7 +51,9 @@ class ZigbeePairingDevice(Device):
 
         self.state = DeviceStatus.OFF
 
-    def device_joined(self, device: DeviceType):
+    def on_device_join(self, device: DeviceType):
+        self.log_info('New device joined network')
+
         topic = f'device/{self.name}/join'
 
         ieee = EUI64(device.ieee)

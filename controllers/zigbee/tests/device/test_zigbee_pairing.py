@@ -20,13 +20,13 @@ class TestZigbeePairingDevice(DeviceTestBase):
 
         assert subject.state == 'off'
 
-    def test_device_joined(
+    def test_on_device_join(
         self,
         subject: ZigbeePairingDevice,
         powerpi_mqtt_producer: MagicMock,
         device: DeviceType
     ):
-        subject.device_joined(device)
+        subject.on_device_join(device)
 
         topic = 'device/ZigBeePairing/join'
         message = {
