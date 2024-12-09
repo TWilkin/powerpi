@@ -10,7 +10,7 @@ const icons: { [key: number]: IconType[] } = {
 };
 
 export default function useBatteryIcon(battery: number | undefined, charging: boolean | undefined) {
-    const interval = useRef<NodeJS.Timeout>();
+    const interval = useRef<NodeJS.Timeout>(null);
 
     const [icon, setIcon] = useState(battery != null ? icons[getLevel(battery)].at(-1) : undefined);
 
@@ -39,7 +39,7 @@ export default function useBatteryIcon(battery: number | undefined, charging: bo
             if (charging) {
                 if (interval.current) {
                     clearInterval(interval.current);
-                    interval.current = undefined;
+                    interval.current = null;
                 }
 
                 interval.current = setInterval(() => animate(level), 1000);

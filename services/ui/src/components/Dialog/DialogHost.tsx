@@ -1,4 +1,4 @@
-import { ForwardedRef, forwardRef, PropsWithChildren, useMemo, useRef, useState } from "react";
+import { PropsWithChildren, RefObject, useMemo, useRef, useState } from "react";
 import Dialog from "./Dialog";
 import DialogContext, { DialogContentType } from "./DialogContext";
 import useDialog from "./useDialog";
@@ -31,13 +31,12 @@ export default DialogHost;
 
 type DialogWrapperProps = {
     content: DialogContentType | undefined;
+
+    ref: RefObject<HTMLDialogElement | null>;
 };
 
-const DialogWrapper = forwardRef(
-    ({ content }: DialogWrapperProps, ref: ForwardedRef<HTMLDialogElement>) => {
-        const { handleDialogClose } = useDialog();
+const DialogWrapper = ({ content, ref }: DialogWrapperProps) => {
+    const { handleDialogClose } = useDialog();
 
-        return <Dialog {...content} onClose={handleDialogClose} ref={ref} />;
-    },
-);
-DialogWrapper.displayName = "DialogWrapper";
+    return <Dialog {...content} onClose={handleDialogClose} ref={ref} />;
+};

@@ -14,7 +14,7 @@ export type DialogContentType = PropsWithChildren<{
 }>;
 
 type DialogContextType = {
-    ref?: RefObject<HTMLDialogElement>;
+    ref?: RefObject<HTMLDialogElement | null>;
 
     setContent?: Dispatch<SetStateAction<DialogContentType | undefined>>;
 };
