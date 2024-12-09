@@ -4,7 +4,7 @@ import Dialog from "./Dialog";
 describe("Dialog", () => {
     test("renders", () => {
         render(
-            <Dialog heading="My Dialog" icon={<div>My Icon</div>} open>
+            <Dialog heading="My Dialog" icon={<div>My Icon</div>} open ref={{ current: null }}>
                 My Content
             </Dialog>,
         );
