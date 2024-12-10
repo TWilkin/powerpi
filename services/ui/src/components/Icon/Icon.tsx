@@ -1,20 +1,21 @@
 import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import getIcon, { IconType } from "./IconLibrary";
 
 const additionalProps: { [key in IconType]?: Omit<FontAwesomeIconProps, "icon"> } = {
-    loading: { spin: true },
+    loading: { className: "animate-spin" },
 };
 
 type IconProps = {
     icon: IconType;
-} & Omit<FontAwesomeIconProps, "icon" | "size">;
+} & Pick<FontAwesomeIconProps, "className">;
 
 const Icon = ({ icon, className, ...props }: IconProps) => (
     <FontAwesomeIcon
         {...props}
         {...additionalProps[icon]}
         icon={getIcon(icon)}
-        className={className}
+        className={classNames(className, additionalProps[icon]?.className)}
     />
 );
 export default Icon;

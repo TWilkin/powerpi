@@ -15,9 +15,11 @@ const Logo = () => {
                 "flex flex-row gap-sm items-center text-xs rotate-180 vertical-writing-lr",
             )}
         >
-            {/*eslint-disable-next-line i18next/no-literal-string*/}
-            <Icon icon="logo" spin={fetching > 0} className="rotate-90" />
-            PowerPi
+            <Icon
+                icon="logo"
+                className={classNames("rotate-90", { "animate-spin": fetching > 0 })}
+            />
+            {/*eslint-disable-next-line i18next/no-literal-string*/ "PowerPi"}
         </a>
     );
 };

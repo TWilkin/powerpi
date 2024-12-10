@@ -29,6 +29,6 @@ describe("Logo", () => {
 
         const logo = screen.getByRole("img", { hidden: true });
         expect(logo).toBeInTheDocument();
-        expect(logo).toHaveClass("fa-spin");
+        expect(logo).toHaveClass("animate-spin");
     });
 });

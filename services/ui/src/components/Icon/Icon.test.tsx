@@ -5,7 +5,7 @@ import { IconType } from "./IconLibrary";
 describe("Icon", () => {
     const icons: { icon: IconType; dataIcon: string; classes?: string }[] = [
         { icon: "home", dataIcon: "house" },
-        { icon: "loading", dataIcon: "spinner", classes: "fa-spin" },
+        { icon: "loading", dataIcon: "spinner", classes: "animate-spin" },
         { icon: "google", dataIcon: "google" },
     ];
     test.each(icons)("renders icon $icon", ({ icon, dataIcon, classes }) => {
