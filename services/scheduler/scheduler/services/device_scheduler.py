@@ -4,6 +4,7 @@ from powerpi_common.device import DeviceConfigType, DeviceNotFoundException
 from powerpi_common.logger import Logger, LogMixin
 
 from scheduler.config import SchedulerConfig
+from .device_schedule import DeviceSchedule
 from .device_schedule_factory import DeviceScheduleFactory
 
 
@@ -41,7 +42,7 @@ class DeviceScheduler(LogMixin):
 
             for schedule_device in schedule_devices:
                 if schedule_device in devices:
-                    device_schedule = self.__device_schedule_factory.build(
+                    device_schedule: DeviceSchedule = self.__device_schedule_factory.build(
                         device=schedule_device,
                         device_schedule=schedule
                     )

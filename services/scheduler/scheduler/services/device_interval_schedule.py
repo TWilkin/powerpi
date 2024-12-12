@@ -7,14 +7,12 @@ import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dependency_injector import providers
-from powerpi_common.condition import (ConditionParser, Expression,
-                                      ParseException)
-from powerpi_common.device import DeviceStatus
-from powerpi_common.logger import Logger, LogMixin
+from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import VariableManager
 
 from scheduler.config import SchedulerConfig
+from .device_schedule import DeviceSchedule
 
 
 @unique
@@ -47,8 +45,7 @@ class DeltaRange:
         return self.start < self.end
 
 
-class DeviceIntervalSchedule(LogMixin):
-    # pylint: disable=too-many-instance-attributes
+class DeviceIntervalSchedule(DeviceSchedule):
     '''
     Service to schedule and run a device's schedule defined in the schedules.json configuration file
     on an interval.
@@ -66,84 +63,20 @@ class DeviceIntervalSchedule(LogMixin):
         device_schedule: Dict[str, Any]
     ):
         # pylint: disable=too-many-arguments
+        DeviceSchedule.__init__(
+            self,
+            config,
+            logger,
+            mqtt_client,
+            scheduler,
+            variable_manager,
+            condition_parser_factory,
+            device,
+            device_schedule
+        )
 
-        self.__config = config
-        self._logger = logger
-        self.__scheduler = scheduler
-        self.__variable_manager = variable_manager
-        self.__condition_parser_factory = condition_parser_factory
-
-        self.__producer = mqtt_client.add_producer()
-
-        self.__device = device
-        self.__parse(device_schedule)
-
-    def start(self):
-        self.log_info(self)
-
-        # retrieve this variable to register the listener
-        self.__variable_manager.get_device(self.__device)
-
-        # evaluate the condition if there is one
-        try:
-            self.__check_condition()
-        except ParseException as ex:
-            self.log_error(
-                'Failed to schedule job for %s due to bad condition',
-                self.__device
-            )
-            self.log_exception(ex)
-            return
-
-        self.__start_schedule()
-
-    async def execute(self, start_date: datetime, end_date: datetime):
-        if end_date <= datetime.now(pytz.UTC):
-            # this will be the last run so schedule the next one
-            self.__start_schedule(end_date)
-
-        if not self.__check_condition():
-            self.log_info(
-                'Skipping for %s as condition is false', self.__device
-            )
-            return
-
-        message = {}
-
-        if self.__scene:
-            message['scene'] = self.__scene
-
-        for _, delta_range in self.__delta.items():
-            new_value = self.__calculate_new_value(start_date, delta_range)
-
-            self.log_info(
-                'Setting %s %s to %0.2f',
-                delta_range.type,
-                self.__device,
-                new_value
-            )
-
-            message[delta_range.type] = new_value
-
-        if self.__power is not None:
-            new_state = DeviceStatus.ON if self.__power else DeviceStatus.OFF
-
-            self.log_info('Setting %s power to %s', self.__device, new_state)
-
-            message['state'] = new_state
-
-        if len(message) > 0:
-            topic = f'device/{self.__device}/change'
-            self.__producer(topic, message)
-
-    def __parse(self, device_schedule: Dict[str, Any]):
         self.__between: List[str] = device_schedule['between']
         self.__interval = int(device_schedule['interval'])
-        self.__force = bool(
-            device_schedule['force']) if 'force' in device_schedule else False
-
-        self.__days = device_schedule['days'] if 'days' in device_schedule \
-            else None
 
         self.__delta: Dict[DeltaType, DeltaRange] = {}
 
@@ -163,24 +96,7 @@ class DeviceIntervalSchedule(LogMixin):
                     float(device_schedule[delta_type][1])
                 )
 
-        self.__power = bool(device_schedule['power']) if 'power' in device_schedule \
-            else None
-
-        self.__condition: Expression | None = device_schedule['condition'] \
-            if 'condition' in device_schedule \
-            else None
-
-        self.__scene = device_schedule['scene'] if 'scene' in device_schedule else None
-
-    def __check_condition(self):
-        if self.__condition is not None:
-            parser: ConditionParser = self.__condition_parser_factory()
-            return parser.conditional_expression(self.__condition)
-
-        return True
-
-    def __start_schedule(self, start: datetime | None = None):
-        '''Schedule the next run.'''
+    def _build_trigger(self, start: datetime | None = None):
         (start_date, end_date) = self.__calculate_dates(start)
 
         trigger = IntervalTrigger(
@@ -189,25 +105,37 @@ class DeviceIntervalSchedule(LogMixin):
             seconds=self.__interval
         )
 
-        job_name = f'DeviceSchedule.execute({self.__device})'
+        params = (start_date, end_date)
 
-        self.log_info(
-            'Scheduling %s between %s and %s every %ds',
-            job_name,
-            start_date,
-            end_date,
-            self.__interval
-        )
+        return (trigger, params)
 
-        self.__scheduler.add_job(
-            self.execute, trigger, (start_date, end_date), name=job_name
-        )
+    def _build_message(self, message, **kwargs):
+        start_date = kwargs['start_date']
+
+        for _, delta_range in self.__delta.items():
+            new_value = self.__calculate_new_value(start_date, delta_range)
+
+            self.log_info(
+                'Setting %s %s to %0.2f',
+                delta_range.type,
+                self._device.name,
+                new_value
+            )
+
+            message[delta_range.type] = new_value
+
+        return message
+
+    def _check_next_condition(self, **kwargs):
+        end_date = kwargs['end_date']
+
+        return end_date <= datetime.now(pytz.UTC)
 
     def __calculate_dates(self, start: datetime | None = None):
         start_time = [int(part) for part in self.__between[0].split(':', 3)]
         end_time = [int(part) for part in self.__between[1].split(':', 3)]
 
-        timezone = pytz.timezone(self.__config.timezone)
+        timezone = self._timezone
 
         def make_dates(start: datetime):
             start_date = timezone.localize(datetime.combine(
@@ -237,9 +165,9 @@ class DeviceIntervalSchedule(LogMixin):
         )
 
         # find the next appropriate day-of-week
-        if self.__days is not None:
+        if self._days is not None:
             days = [
-                int(DayOfWeek[value.upper()]) for value in self.__days
+                int(DayOfWeek[value.upper()]) for value in self._days
             ]
 
             while start_date.weekday() not in days:
@@ -271,10 +199,8 @@ class DeviceIntervalSchedule(LogMixin):
         remaining_intervals = max(
             min(intervals - (elapsed_seconds / self.__interval), intervals), 1)
 
-        device = self.__variable_manager.get_device(
-            self.__device
-        )
-        additional_state = device.get_additional_state_for_scene(self.__scene)
+        device = self._device
+        additional_state = device.get_additional_state_for_scene(self._scene)
 
         # do we want to overwrite start with the current value from the device
         if delta_range.type in additional_state:
@@ -283,7 +209,7 @@ class DeviceIntervalSchedule(LogMixin):
             start = delta_range.start
 
         # what is the delta
-        if self.__force:
+        if self._force:
             # when we're forcing use the range ignoring what value it already has
             delta = (delta_range.end - delta_range.start) / intervals
             delta *= (intervals - remaining_intervals + 1)
@@ -301,7 +227,7 @@ class DeviceIntervalSchedule(LogMixin):
         new_value = start + delta
 
         # ensure the new value is in the correct direction
-        if not self.__force and \
+        if not self._force and \
                 ((new_value > start and not delta_range.increasing)
                  or (new_value < start and delta_range.increasing)
                  or (new_value > delta_range.end and delta_range.increasing)
@@ -323,28 +249,10 @@ class DeviceIntervalSchedule(LogMixin):
     def __str__(self):
         builder = f'Every {self.__interval}s between {self.__between[0]} and {self.__between[1]}'
 
-        if self.__days:
-            days = ', '.join(self.__days)
-            builder += f' on {days}'
-        else:
-            builder += ' every day'
-
-        if self.__condition:
-            builder += ', if the condition is true,'
-
-        builder += f' adjust {self.__device}'
-
-        if self.__scene:
-            builder += f' for scene {self.__scene}'
+        builder += super()
 
         for device_type, delta in self.__delta.items():
             builder += f', {device_type} between {delta.start} and {delta.end}'
-
-        if self.__force:
-            builder += ' forcing'
-
-        if self.__power:
-            builder += ' and turn it on'
 
         return builder
 

@@ -199,7 +199,7 @@ class TestDeviceIntervalSchedule:
             start_date = datetime(2023, 3, 1, 9, 00, tzinfo=pytz.UTC)
             end_date = datetime(2023, 3, 1, 9, 50, tzinfo=pytz.UTC)
 
-            await subject.execute(start_date, end_date)
+            await subject.execute(start_date=start_date, end_date=end_date)
 
         # it's not the last run
         assert len(add_job) == 0
@@ -246,7 +246,7 @@ class TestDeviceIntervalSchedule:
             start_date = datetime(2023, 3, 1, 9, 10)
             end_date = datetime(2023, 3, 1, 10, 0, tzinfo=pytz.UTC)
 
-            await subject.execute(start_date, end_date)
+            await subject.execute(start_date=start_date, end_date=end_date)
 
         message = {
             'brightness': expected
@@ -291,7 +291,7 @@ class TestDeviceIntervalSchedule:
             start_date = datetime(2023, 3, 1, 9, 10)
             end_date = datetime(2023, 3, 1, 10, 0, tzinfo=pytz.UTC)
 
-            await subject.execute(start_date, end_date)
+            await subject.execute(start_date=start_date, end_date=end_date)
 
         message = {
             'hue': expected
@@ -317,7 +317,7 @@ class TestDeviceIntervalSchedule:
             start_date = datetime(2023, 3, 1, 9, 00)
             end_date = datetime(2023, 3, 1, 9, 30, tzinfo=pytz.UTC)
 
-            await subject.execute(start_date, end_date)
+            await subject.execute(start_date=start_date, end_date=end_date)
 
         assert len(add_job) == 1
 
@@ -391,7 +391,7 @@ class TestDeviceIntervalSchedule:
             end_date = datetime(2023, 3, 1, 9, 15, tzinfo=pytz.UTC)
 
             with patch_datetime(datetime(2023, 3, 1, 9, minutes, tzinfo=pytz.UTC)):
-                await subject.execute(start_date, end_date)
+                await subject.execute(start_date=start_date, end_date=end_date)
 
             message = {'brightness': expected}
             powerpi_mqtt_producer.assert_called_once_with(
@@ -437,7 +437,7 @@ class TestDeviceIntervalSchedule:
                 start_date = datetime(2023, 3, 1, 9, 0, tzinfo=pytz.UTC)
                 end_date = datetime(2023, 3, 1, 9, 50, tzinfo=pytz.UTC)
 
-                await subject.execute(start_date, end_date)
+                await subject.execute(start_date=start_date, end_date=end_date)
 
             message = {'brightness': expected, 'scene': 'other'}
             powerpi_mqtt_producer.assert_called_once_with(
@@ -488,7 +488,7 @@ class TestDeviceIntervalSchedule:
             start_date = datetime(2023, 3, 1, 9, 10)
             end_date = datetime(2023, 3, 1, 10, 0, tzinfo=pytz.UTC)
 
-            await subject.execute(start_date, end_date)
+            await subject.execute(start_date=start_date, end_date=end_date)
 
         if expected:
             powerpi_mqtt_producer.assert_called_once()
