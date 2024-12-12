@@ -20,17 +20,16 @@ class DeviceScheduleFactory(LogMixin):
         self.__device_single_schedule_factory = device_single_schedule_factory
 
     def build(self, device: str, device_schedule: Dict[str, Any]):
+        kwargs = {
+            'device': device,
+            'device_schedule': device_schedule
+        }
+
         if 'between' in device_schedule and 'interval' in device_schedule:
-            return self.__device_interval_schedule_factory(
-                device=device,
-                device_schedule=device_schedule
-            )
+            return self.__device_interval_schedule_factory(**kwargs)
 
         if 'at' in device_schedule:
-            return self.__device_single_schedule_factory(
-                device=device,
-                device_schedule=device_schedule
-            )
+            return self.__device_single_schedule_factory(**kwargs)
 
         self.log_error('Count not identify the requested schedule type')
         return None
