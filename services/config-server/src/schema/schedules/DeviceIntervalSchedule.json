@@ -1,0 +1,70 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/schedules/DeviceIntervalSchedule.schema.json",
+    "title": "DeviceIntervalSchedule",
+    "description": "The configuration for a schedule which changes a device state over an interval",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/schedules/DeviceSchedule.schema.json"
+        }
+    ],
+    "properties": {
+        "between": {
+            "description": "The start and end time this schedule applies to",
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Time.schema.json"
+            }
+        },
+        "interval": {
+            "description": "The frequency at which the change is made (in seconds)",
+            "type": "integer",
+            "minimum": 0
+        },
+        "hue": {
+            "description": "The start and end hue values this schedule applies",
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Hue.schema.json"
+            }
+        },
+        "saturation": {
+            "description": "The start and end saturation percentage values this schedule applies",
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Percentage.schema.json"
+            }
+        },
+        "brightness": {
+            "description": "The start and end brightness percentage values this schedule applies",
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Percentage.schema.json"
+            }
+        },
+        "temperature": {
+            "description": "The start and end temperature values this schedule applies",
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/ColourTemperature.schema.json"
+            }
+        },
+        "force": {
+            "description": "Whether to force the values when updating, which will provide a delta to ensure the value is where we expect to start",
+            "type": "boolean"
+        }
+    },
+    "required": ["between", "interval"],
+    "unevaluatedProperties": false
+}
