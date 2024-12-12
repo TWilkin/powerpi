@@ -19,7 +19,7 @@ SubjectBuilder = Callable[[Dict[str, Any]], DeviceIntervalSchedule]
 AddJobType = List[Tuple[
     MethodType,
     IntervalTrigger,
-    Tuple[datetime, datetime]
+    Dict[str, datetime]
 ]]
 
 
@@ -127,8 +127,8 @@ class TestDeviceIntervalSchedule:
 
         assert job[1].interval.seconds == interval
 
-        assert job[2][0] == job[1].start_date
-        assert job[2][1] == job[1].end_date
+        assert job[2]['start_date'] == job[1].start_date
+        assert job[2]['end_date'] == job[1].end_date
 
     @pytest.mark.parametrize('condition,expected', [
         (None, True),
@@ -338,8 +338,8 @@ class TestDeviceIntervalSchedule:
 
         assert job[1].interval.seconds == 60
 
-        assert job[2][0] == job[1].start_date
-        assert job[2][1] == job[1].end_date
+        assert job[2]['start_date'] == job[1].start_date
+        assert job[2]['end_date'] == job[1].end_date
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('brightness,current,expected,force', [
@@ -532,11 +532,11 @@ class TestDeviceIntervalSchedule:
         def add_job(
             method: MethodType,
             trigger: IntervalTrigger,
-            args: Tuple[datetime, datetime],
+            kwargs: Dict[str, datetime],
             **_
         ):
             nonlocal job_results
-            job_results.append((method, trigger, args))
+            job_results.append((method, trigger, kwargs))
 
         powerpi_scheduler.add_job = add_job
 

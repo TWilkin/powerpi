@@ -106,8 +106,8 @@ class DeviceIntervalSchedule(DeviceSchedule):
         )
 
         params = {
-            start_date: start_date,
-            end_date: end_date
+            'start_date': start_date,
+            'end_date': end_date
         }
 
         return (trigger, params)
