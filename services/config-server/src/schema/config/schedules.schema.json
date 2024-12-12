@@ -19,6 +19,9 @@
                 "oneOf": [
                     {
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/schedules/DeviceIntervalSchedule.schema.json"
+                    },
+                    {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/schedules/DeviceSingleSchedule.schema.json"
                     }
                 ]
             }

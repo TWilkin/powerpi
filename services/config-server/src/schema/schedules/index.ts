@@ -1,5 +1,6 @@
 import * as DeviceInternalSchedule from "./DeviceIntervalSchedule.json";
 import * as DeviceSchedule from "./DeviceSchedule.json";
+import * as DeviceSingleSchedule from "./DeviceSingleSchedule.json";
 
 export default function loadSchedulesSchema() {
     return {
@@ -8,5 +9,6 @@ export default function loadSchedulesSchema() {
 
         // the device schedules
         DeviceInternalSchedule,
+        DeviceSingleSchedule,
     };
 }

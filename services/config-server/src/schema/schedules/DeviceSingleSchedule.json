@@ -1,0 +1,20 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/schedules/DeviceSingleSchedule.schema.json",
+    "title": "DeviceSingleSchedule",
+    "description": "The configuration for a schedule which changes a device state a single time at a specified time",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/schedules/DeviceSchedule.schema.json"
+        }
+    ],
+    "properties": {
+        "at": {
+            "description": "The time this schedule applies to",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Time.schema.json"
+        }
+    },
+    "required": ["at"],
+    "unevaluatedProperties": false
+}
