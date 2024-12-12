@@ -4,7 +4,12 @@ from powerpi_common.container import Container as CommonContainer
 from scheduler.__version__ import __app_name__, __version__
 from scheduler.application import Application
 from scheduler.config import SchedulerConfig
-from scheduler.services import DeviceIntervalSchedule, DeviceScheduler, DeviceScheduleFactory
+from scheduler.services import (
+    DeviceIntervalSchedule,
+    DeviceScheduler,
+    DeviceScheduleFactory,
+    DeviceSingleSchedule
+)
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -28,6 +33,16 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     device_interval_schedule = providers.Factory(
         DeviceIntervalSchedule,
+        config=config,
+        logger=common.logger,
+        mqtt_client=common.mqtt_client,
+        scheduler=common.scheduler,
+        variable_manager=common.variable.variable_manager,
+        condition_parser_factory=common.condition.condition_parser.provider
+    )
+
+    device_single_schedule = providers.Factory(
+        DeviceSingleSchedule,
         config=config,
         logger=common.logger,
         mqtt_client=common.mqtt_client,
