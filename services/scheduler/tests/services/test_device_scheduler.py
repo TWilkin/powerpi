@@ -1,10 +1,10 @@
-from unittest.mock import MagicMock, PropertyMock
+from unittest.mock import PropertyMock
 
 import pytest
 from powerpi_common.device import DeviceNotFoundException
 from pytest_mock import MockerFixture
 from scheduler.config import SchedulerConfig
-from scheduler.services import DeviceScheduler
+from scheduler.services import DeviceScheduler, DeviceScheduleFactory
 
 
 class TestDeviceScheduler:
@@ -12,7 +12,7 @@ class TestDeviceScheduler:
         self,
         subject: DeviceScheduler,
         scheduler_config: SchedulerConfig,
-        device_schedule_factory: MagicMock
+        device_schedule_factory: DeviceScheduleFactory
     ):
         devices = {
             'devices': [
@@ -34,7 +34,7 @@ class TestDeviceScheduler:
 
         subject.start()
 
-        device_schedule_factory.assert_called_once_with(
+        device_schedule_factory.build.assert_called_once_with(
             device='SomeDevice',
             device_schedule={'device': 'SomeDevice'}
         )
@@ -43,7 +43,7 @@ class TestDeviceScheduler:
         self,
         subject: DeviceScheduler,
         scheduler_config: SchedulerConfig,
-        device_schedule_factory: MagicMock,
+        device_schedule_factory: DeviceScheduleFactory,
         mocker: MockerFixture
     ):
         devices = {
@@ -67,14 +67,14 @@ class TestDeviceScheduler:
 
         subject.start()
 
-        assert device_schedule_factory.call_count == 2
+        assert device_schedule_factory.build.call_count == 2
 
-        assert device_schedule_factory.call_args_list[0] == mocker.call(
+        assert device_schedule_factory.build.call_args_list[0] == mocker.call(
             device='SomeDevice',
             device_schedule={'devices': ['SomeDevice', 'OtherDevice']}
         )
 
-        assert device_schedule_factory.call_args_list[1] == mocker.call(
+        assert device_schedule_factory.build.call_args_list[1] == mocker.call(
             device='OtherDevice',
             device_schedule={'devices': ['SomeDevice', 'OtherDevice']}
         )

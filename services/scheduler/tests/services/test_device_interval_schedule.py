@@ -12,9 +12,9 @@ from powerpi_common.condition import ConditionParser, Expression
 from powerpi_common.device import ReservedScenes
 from pytest_mock import MockerFixture
 
-from scheduler.services import DeviceSchedule
+from scheduler.services import DeviceIntervalSchedule
 
-SubjectBuilder = Callable[[Dict[str, Any]], DeviceSchedule]
+SubjectBuilder = Callable[[Dict[str, Any]], DeviceIntervalSchedule]
 
 AddJobType = List[Tuple[
     MethodType,
@@ -30,7 +30,7 @@ class ExpectedTime:
     minute: int
 
 
-class TestDeviceSchedule:
+class TestDeviceIntervalSchedule:
     __expected_topic = 'device/SomeDevice/change'
 
     @pytest.mark.parametrize('start_time,end_time,days,now,expected_start,expected_end', [
@@ -512,7 +512,7 @@ class TestDeviceSchedule:
         )
 
         def build(schedule: Dict[str, Any]):
-            return DeviceSchedule(
+            return DeviceIntervalSchedule(
                 scheduler_config,
                 powerpi_logger,
                 powerpi_mqtt_client,
@@ -557,7 +557,7 @@ def patch_datetime(mock_now: datetime):
 
         return mock_now.astimezone(pytz.UTC)
 
-    with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+    with patch('scheduler.services.device_interval_schedule.datetime') as mock_datetime:
         mock_datetime.combine = datetime.combine
         mock_datetime.now = now
 

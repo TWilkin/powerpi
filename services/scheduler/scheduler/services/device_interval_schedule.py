@@ -47,10 +47,11 @@ class DeltaRange:
         return self.start < self.end
 
 
-class DeviceSchedule(LogMixin):
+class DeviceIntervalSchedule(LogMixin):
     # pylint: disable=too-many-instance-attributes
     '''
-    Service to schedule and run a device's schedule from the schedules.json configuration file.
+    Service to schedule and run a device's schedule defined in the schedules.json configuration file
+    on an interval.
     '''
 
     def __init__(

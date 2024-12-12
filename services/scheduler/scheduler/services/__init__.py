@@ -1,2 +1,3 @@
-from .device_schedule import DeviceSchedule
+from .device_interval_schedule import DeviceIntervalSchedule
 from .device_scheduler import DeviceScheduler
+from .device_schedule_factory import DeviceScheduleFactory
