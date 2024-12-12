@@ -53,7 +53,9 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     device_schedule_factory = providers.Factory(
         DeviceScheduleFactory,
-        device_interval_schedule_factory=device_interval_schedule.provider
+        logger=common.logger,
+        device_interval_schedule_factory=device_interval_schedule.provider,
+        device_single_schedule_factory=device_single_schedule.provider,
     )
 
     device_scheduler = providers.Factory(

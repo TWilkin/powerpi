@@ -47,7 +47,8 @@ class DeviceScheduler(LogMixin):
                         device_schedule=schedule
                     )
 
-                    device_schedule.start()
+                    if device_schedule is not None:
+                        device_schedule.start()
                 else:
                     raise DeviceNotFoundException(
                         DeviceConfigType.DEVICE, schedule_device
