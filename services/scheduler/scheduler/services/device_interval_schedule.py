@@ -105,7 +105,10 @@ class DeviceIntervalSchedule(DeviceSchedule):
             seconds=self.__interval
         )
 
-        params = (start_date, end_date)
+        params = {
+            start_date: start_date,
+            end_date: end_date
+        }
 
         return (trigger, params)
 
@@ -249,7 +252,7 @@ class DeviceIntervalSchedule(DeviceSchedule):
     def __str__(self):
         builder = f'Every {self.__interval}s between {self.__between[0]} and {self.__between[1]}'
 
-        builder += super()
+        builder += super().__str__()
 
         for device_type, delta in self.__delta.items():
             builder += f', {device_type} between {delta.start} and {delta.end}'

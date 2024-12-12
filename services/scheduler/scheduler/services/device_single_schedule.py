@@ -62,6 +62,6 @@ class DeviceSingleSchedule(DeviceSchedule):
     def __str__(self):
         builder = f'Every {self.__at}'
 
-        builder += super()
+        builder += super().__str__()
 
         return builder

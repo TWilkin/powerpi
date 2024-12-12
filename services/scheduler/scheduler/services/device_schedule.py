@@ -166,10 +166,10 @@ class DeviceSchedule(ABC, LogMixin):
         '''
         [trigger, params] = self._build_trigger()
 
-        job_name = f'${self.schedule_type}.execute({self.__device})'
+        job_name = f'{self.schedule_type}.execute({self.__device})'
 
         self.__scheduler.add_job(
-            self.execute, trigger, params, name=job_name
+            self.execute, trigger, kwargs=params, name=job_name
         )
 
     def __str__(self):
