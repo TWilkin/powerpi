@@ -18,6 +18,7 @@ type DeviceSchedule = {
 export type DeviceInternalSchedule = DeviceSchedule & {
     between: string[];
     interval: number;
+    force?: boolean;
     hue?: number[];
     saturation?: number[];
     brightness?: number[];
@@ -26,6 +27,10 @@ export type DeviceInternalSchedule = DeviceSchedule & {
 
 export type DeviceSingleSchedule = DeviceSchedule & {
     at: string;
+    hue?: number;
+    saturation?: number;
+    brightness?: number;
+    temperature?: number;
 };
 
 export type ISchedule = DeviceInternalSchedule | DeviceSingleSchedule;
