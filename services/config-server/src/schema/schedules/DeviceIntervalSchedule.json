@@ -52,7 +52,7 @@
             }
         },
         "temperature": {
-            "description": "The start and end temperature values this schedule applies",
+            "description": "The start and end colour temperature values this schedule applies",
             "type": "array",
             "minItems": 2,
             "maxItems": 2,
