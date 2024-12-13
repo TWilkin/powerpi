@@ -61,9 +61,9 @@ class DeviceSchedule(ABC, LogMixin):
         self.__device = device
         self.__days = days
         self.__condition = condition
+        self.__power = power
 
         self._scene = scene
-        self._power = power
 
     @property
     def _device(self):
@@ -110,8 +110,8 @@ class DeviceSchedule(ABC, LogMixin):
         if self._scene:
             message['scene'] = self._scene
 
-        if self._power is not None:
-            new_state = DeviceStatus.ON if self._power else DeviceStatus.OFF
+        if self.__power is not None:
+            new_state = DeviceStatus.ON if self.__power else DeviceStatus.OFF
 
             self.log_info('Setting %s power to %s', self.__device, new_state)
 
@@ -197,9 +197,9 @@ class DeviceSchedule(ABC, LogMixin):
 
         builder += f' adjust {self.__device}'
 
-        if self._power is True:
+        if self.__power is True:
             builder += ' and turn it on'
-        elif self._power is False:
+        elif self.__power is False:
             builder += ' and turn it off'
 
         if self._scene:
