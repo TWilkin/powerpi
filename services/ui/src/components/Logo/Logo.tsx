@@ -7,6 +7,8 @@ import Icon from "../Icon";
 const Logo = () => {
     const fetching = useIsFetching();
 
+    const isLoading = fetching > 0;
+
     return (
         <a
             href={RouteBuilder.build()}
@@ -17,7 +19,7 @@ const Logo = () => {
         >
             <Icon
                 icon="logo"
-                className={classNames("rotate-90", { "animate-spin": fetching > 0 })}
+                className={classNames({ "rotate-90": !isLoading, "animate-spin": isLoading })}
             />
             {/*eslint-disable-next-line i18next/no-literal-string*/ "PowerPi"}
         </a>
