@@ -49,7 +49,14 @@ class DeviceIntervalSchedule(DeviceSchedule):
         variable_manager: VariableManager,
         condition_parser_factory: providers.Factory,
         device: str,
-        device_schedule: Dict[str, Any]
+        between: List[str],
+        interval: str,
+        force: bool = False,
+        brightness: List[str] | None = None,
+        hue: List[str] | None = None,
+        saturation: List[str] | None = None,
+        temperature: List[str] | None = None,
+        **kwargs
     ):
         # pylint: disable=too-many-arguments
         DeviceSchedule.__init__(
@@ -61,28 +68,36 @@ class DeviceIntervalSchedule(DeviceSchedule):
             variable_manager,
             condition_parser_factory,
             device,
-            device_schedule
+            **kwargs
         )
 
-        self.__between: List[str] = device_schedule['between']
-        self.__interval = int(device_schedule['interval'])
+        self.__between = between
+        self.__interval = int(interval)
+        self.__force = force
 
         self.__delta: Dict[DeltaType, DeltaRange] = {}
 
+        additional_state = {
+            DeltaType.BRIGHTNESS: brightness,
+            DeltaType.HUE: hue,
+            DeltaType.SATURATION: saturation,
+            DeltaType.TEMPERATURE: temperature
+        }
+
         for delta_type in [DeltaType.BRIGHTNESS, DeltaType.TEMPERATURE]:
-            if delta_type in device_schedule:
+            if additional_state[delta_type] is not None:
                 self.__delta[delta_type] = DeltaRange(
                     delta_type,
-                    int(device_schedule[delta_type][0]),
-                    int(device_schedule[delta_type][1])
+                    int(additional_state[delta_type][0]),
+                    int(additional_state[delta_type][1])
                 )
 
         for delta_type in [DeltaType.HUE, DeltaType.SATURATION]:
-            if delta_type in device_schedule:
+            if additional_state[delta_type] is not None:
                 self.__delta[delta_type] = DeltaRange(
                     delta_type,
-                    float(device_schedule[delta_type][0]),
-                    float(device_schedule[delta_type][1])
+                    float(additional_state[delta_type][0]),
+                    float(additional_state[delta_type][1])
                 )
 
     def _build_trigger(self, start: datetime | None = None):
@@ -195,7 +210,7 @@ class DeviceIntervalSchedule(DeviceSchedule):
             start = delta_range.start
 
         # what is the delta
-        if self._force:
+        if self.__force:
             # when we're forcing use the range ignoring what value it already has
             delta = (delta_range.end - delta_range.start) / intervals
             delta *= (intervals - remaining_intervals + 1)
@@ -213,7 +228,7 @@ class DeviceIntervalSchedule(DeviceSchedule):
         new_value = start + delta
 
         # ensure the new value is in the correct direction
-        if not self._force and \
+        if not self.__force and \
                 ((new_value > start and not delta_range.increasing)
                  or (new_value < start and delta_range.increasing)
                  or (new_value > delta_range.end and delta_range.increasing)

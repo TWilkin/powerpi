@@ -519,8 +519,7 @@ class TestDeviceIntervalSchedule:
                 powerpi_scheduler,
                 powerpi_variable_manager,
                 condition_parser_factory,
-                schedule['device'],
-                schedule
+                **schedule
             )
 
         return build

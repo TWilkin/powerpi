@@ -22,7 +22,7 @@ class DeviceScheduleFactory(LogMixin):
     def build(self, device: str, device_schedule: Dict[str, Any]):
         kwargs = {
             'device': device,
-            'device_schedule': device_schedule
+            **device_schedule
         }
 
         if 'between' in device_schedule and 'interval' in device_schedule:

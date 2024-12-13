@@ -28,7 +28,8 @@ class DeviceSingleSchedule(DeviceSchedule):
         variable_manager: VariableManager,
         condition_parser_factory: providers.Factory,
         device: str,
-        device_schedule: Dict[str, Any]
+        at: str,
+        **kwargs
     ):
         # pylint: disable=too-many-arguments
         DeviceSchedule.__init__(
@@ -40,10 +41,10 @@ class DeviceSingleSchedule(DeviceSchedule):
             variable_manager,
             condition_parser_factory,
             device,
-            device_schedule
+            **kwargs
         )
 
-        self.__at: str = device_schedule['at']
+        self.__at = at
 
     def build_trigger(self, start: datetime | None = None):
         at = self.__calculate_date(start)

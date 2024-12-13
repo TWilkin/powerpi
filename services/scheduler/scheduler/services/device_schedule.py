@@ -43,7 +43,10 @@ class DeviceSchedule(ABC, LogMixin):
         variable_manager: VariableManager,
         condition_parser_factory: providers.Factory,
         device: str,
-        device_schedule: Dict[str, Any]
+        days: List[str] | None = None,
+        condition: Expression | None = None,
+        scene: str | None = None,
+        power: bool | None = None
     ):
         # pylint: disable=too-many-arguments
 
@@ -56,7 +59,11 @@ class DeviceSchedule(ABC, LogMixin):
         self.__producer = mqtt_client.add_producer()
 
         self.__device = device
-        self.__parse(device_schedule)
+        self.__days = days
+        self.__condition = condition
+
+        self._scene = scene
+        self._power = power
 
     @property
     def _device(self):
@@ -147,9 +154,9 @@ class DeviceSchedule(ABC, LogMixin):
         '''
         Find the next possible day the schedule is configured to run on.
         '''
-        if self._days is not None:
+        if self.__days is not None:
             days = [
-                int(DayOfWeek[value.upper()]) for value in self._days
+                int(DayOfWeek[value.upper()]) for value in self.__days
             ]
 
             while date.weekday() not in days:
@@ -157,32 +164,13 @@ class DeviceSchedule(ABC, LogMixin):
 
         return date
 
-    def __parse(self, device_schedule: Dict[str, Any]):
-        '''
-        Parse the common parts of the schedule, and then call on the implementation to do the rest.
-        '''
-        self._force = bool(
-            device_schedule['force']) if 'force' in device_schedule else False
-
-        self._days = device_schedule['days'] if 'days' in device_schedule \
-            else None
-
-        self._power = bool(device_schedule['power']) if 'power' in device_schedule \
-            else None
-
-        self._condition: Expression | None = device_schedule['condition'] \
-            if 'condition' in device_schedule \
-            else None
-
-        self._scene = device_schedule['scene'] if 'scene' in device_schedule else None
-
     def __check_condition(self):
         '''
         If the schedule has a condition, execute it. Otherwise always returns true.
         '''
-        if self._condition is not None:
+        if self.__condition is not None:
             parser: ConditionParser = self.__condition_parser_factory()
-            return parser.conditional_expression(self._condition)
+            return parser.conditional_expression(self.__condition)
 
         return True
 
@@ -199,17 +187,14 @@ class DeviceSchedule(ABC, LogMixin):
         )
 
     def __str__(self):
-        if self._days:
-            days = ', '.join(self._days)
+        if self.__days:
+            days = ', '.join(self.__days)
             builder = f' on {days}'
         else:
             builder = ' every day'
 
-        if self._condition:
+        if self.__condition:
             builder += ', if the condition is true,'
-
-        if self._force:
-            builder += ' force'
 
         builder += f' adjust {self.__device}'
 
