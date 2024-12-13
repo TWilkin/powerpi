@@ -28,6 +28,10 @@ class DeviceSingleSchedule(DeviceSchedule):
         condition_parser_factory: providers.Factory,
         device: str,
         at: str,
+        brightness: int | None = None,
+        hue: int | None = None,
+        saturation: int | None = None,
+        temperature: int | None = None,
         **kwargs
     ):
         # pylint: disable=too-many-arguments
@@ -45,6 +49,16 @@ class DeviceSingleSchedule(DeviceSchedule):
 
         self.__at = at
 
+        self.__additional_state = {}
+        if brightness is not None:
+            self.__additional_state['brightness'] = brightness
+        if hue is not None:
+            self.__additional_state['hue'] = hue
+        if saturation is not None:
+            self.__additional_state['saturation'] = saturation
+        if temperature is not None:
+            self.__additional_state['temperature'] = temperature
+
     def _build_trigger(self, start: datetime | None = None):
         at = self.__calculate_date(start)
 
@@ -57,7 +71,10 @@ class DeviceSingleSchedule(DeviceSchedule):
         return (trigger, params)
 
     def _build_message(self, message: MQTTMessage, **_):
-        return message
+        return {
+            **message,
+            **self.__additional_state
+        }
 
     def _check_next_condition(self, **_):
         return True
