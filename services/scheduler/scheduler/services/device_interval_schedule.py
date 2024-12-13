@@ -58,7 +58,7 @@ class DeviceIntervalSchedule(DeviceSchedule):
         temperature: List[str] | None = None,
         **kwargs
     ):
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals
         DeviceSchedule.__init__(
             self,
             config,
