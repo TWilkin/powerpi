@@ -8,14 +8,24 @@ export enum Weekday {
     Saturday,
 }
 
-export interface ISchedule {
-    device: string;
+type DeviceSchedule = {
+    device?: string;
+    devices?: string[];
     days?: Weekday[];
+    power?: boolean;
+};
+
+export type DeviceInternalSchedule = DeviceSchedule & {
     between: string[];
     interval: number;
     hue?: number[];
     saturation?: number[];
     brightness?: number[];
     temperature?: number[];
-    power?: boolean;
-}
+};
+
+export type DeviceSingleSchedule = DeviceSchedule & {
+    at: string;
+};
+
+export type ISchedule = DeviceInternalSchedule | DeviceSingleSchedule;
