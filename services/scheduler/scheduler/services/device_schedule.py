@@ -197,8 +197,10 @@ class DeviceSchedule(ABC, LogMixin):
 
         builder += f' adjust {self.__device}'
 
-        if self._power:
+        if self._power is True:
             builder += ' and turn it on'
+        elif self._power is False:
+            builder += ' and turn it off'
 
         if self._scene:
             builder += f' for scene {self._scene}'
