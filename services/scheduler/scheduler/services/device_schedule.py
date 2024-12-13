@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from enum import IntEnum, unique
-from typing import Any, Dict, List, Tuple
+from typing import Any, List, Tuple
 
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler

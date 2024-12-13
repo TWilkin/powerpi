@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 from datetime import datetime, time, timedelta
 from enum import StrEnum, unique
-from typing import Any, Dict, List, Tuple
+from typing import Dict, List, Tuple
 
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dependency_injector import providers
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
+from powerpi_common.mqtt import MQTTClient, MQTTMessage
 from powerpi_common.variable import VariableManager
 
 from scheduler.config import SchedulerConfig
@@ -116,7 +116,7 @@ class DeviceIntervalSchedule(DeviceSchedule):
 
         return (trigger, params)
 
-    def _build_message(self, message, **kwargs):
+    def _build_message(self, message: MQTTMessage, **kwargs):
         start_date = kwargs['start_date']
 
         for _, delta_range in self.__delta.items():

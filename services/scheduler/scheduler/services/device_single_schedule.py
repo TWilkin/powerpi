@@ -1,12 +1,11 @@
-from datetime import datetime, time
-from typing import Any, Dict
+from datetime import datetime, time, timedelta
 
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
 from dependency_injector import providers
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
+from powerpi_common.mqtt import MQTTClient, MQTTMessage
 from powerpi_common.variable import VariableManager
 
 from scheduler.config import SchedulerConfig
@@ -46,7 +45,7 @@ class DeviceSingleSchedule(DeviceSchedule):
 
         self.__at = at
 
-    def build_trigger(self, start: datetime | None = None):
+    def _build_trigger(self, start: datetime | None = None):
         at = self.__calculate_date(start)
 
         trigger = DateTrigger(
@@ -57,7 +56,7 @@ class DeviceSingleSchedule(DeviceSchedule):
 
         return (trigger, params)
 
-    def _build_message(self, message, **_):
+    def _build_message(self, message: MQTTMessage, **_):
         return message
 
     def _check_next_condition(self, **_):
@@ -68,12 +67,25 @@ class DeviceSingleSchedule(DeviceSchedule):
 
         timezone = self._timezone
 
+        if start is not None:
+            start = start.astimezone(timezone)
+        else:
+            start = datetime.now(timezone)
+
         start_date = timezone.localize(datetime.combine(
             start.date(), time(at[0], at[1], at[2], 0)
         ))
 
+        # check it's not in the past
+        if start_date <= datetime.now(timezone):
+            start_date += timedelta(days=1)
+
         # find the next appropriate day-of-week
         start_date = self._find_valid_day(start_date)
+
+        start_date = timezone.localize(datetime.combine(
+            start_date.date(), time(at[0], at[1], at[2], 0)
+        ))
 
         start_date = start_date.astimezone(pytz.UTC)
 
