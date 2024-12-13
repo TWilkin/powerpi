@@ -259,4 +259,52 @@ describe("Schedules", () => {
             }),
         );
     });
+
+    test("hue", () =>
+        testValid({
+            timezone: "Europe/London",
+            schedules: [
+                {
+                    device: "BedroomLight",
+                    at: "09:00:00",
+                    hue: 180,
+                },
+            ],
+        }));
+
+    test("saturation", () =>
+        testValid({
+            timezone: "Europe/London",
+            schedules: [
+                {
+                    device: "BedroomLight",
+                    at: "09:00:00",
+                    saturation: 50,
+                },
+            ],
+        }));
+
+    test("brightness", () =>
+        testValid({
+            timezone: "Europe/London",
+            schedules: [
+                {
+                    device: "BedroomLight",
+                    at: "09:00:00",
+                    brightness: 75,
+                },
+            ],
+        }));
+
+    test("temperature", () =>
+        testValid({
+            timezone: "Europe/London",
+            schedules: [
+                {
+                    device: "BedroomLight",
+                    at: "09:00:00",
+                    temperature: 2000,
+                },
+            ],
+        }));
 });
