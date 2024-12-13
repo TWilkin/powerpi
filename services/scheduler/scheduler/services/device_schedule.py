@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import datetime, timedelta
+from enum import IntEnum, unique
 from typing import Any, Dict, List, Tuple
 
 import pytz
@@ -14,6 +15,17 @@ from powerpi_common.mqtt import MQTTClient, MQTTMessage
 from powerpi_common.variable import VariableManager
 
 from scheduler.config import SchedulerConfig
+
+
+@unique
+class DayOfWeek(IntEnum):
+    MONDAY = 0
+    TUESDAY = 1
+    WEDNESDAY = 2
+    THURSDAY = 3
+    FRIDAY = 4
+    SATURDAY = 5
+    SUNDAY = 6
 
 
 class DeviceSchedule(ABC, LogMixin):
@@ -130,6 +142,20 @@ class DeviceSchedule(ABC, LogMixin):
         Extend to check whether we should schedule the next occurrence.
         '''
         raise NotImplementedError
+
+    def _find_valid_day(self, date: datetime):
+        '''
+        Find the next possible day the schedule is configured to run on.
+        '''
+        if self._days is not None:
+            days = [
+                int(DayOfWeek[value.upper()]) for value in self._days
+            ]
+
+            while date.weekday() not in days:
+                date += timedelta(days=1)
+
+        return date
 
     def __parse(self, device_schedule: Dict[str, Any]):
         '''

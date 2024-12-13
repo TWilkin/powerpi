@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, time, timedelta
-from enum import IntEnum, StrEnum, unique
+from enum import StrEnum, unique
 from typing import Any, Dict, List, Tuple
 
 import pytz
@@ -21,17 +21,6 @@ class DeltaType(StrEnum):
     HUE = 'hue'
     SATURATION = 'saturation'
     TEMPERATURE = 'temperature'
-
-
-@unique
-class DayOfWeek(IntEnum):
-    MONDAY = 0
-    TUESDAY = 1
-    WEDNESDAY = 2
-    THURSDAY = 3
-    FRIDAY = 4
-    SATURDAY = 5
-    SUNDAY = 6
 
 
 @dataclass
@@ -168,13 +157,7 @@ class DeviceIntervalSchedule(DeviceSchedule):
         )
 
         # find the next appropriate day-of-week
-        if self._days is not None:
-            days = [
-                int(DayOfWeek[value.upper()]) for value in self._days
-            ]
-
-            while start_date.weekday() not in days:
-                start_date += timedelta(days=1)
+        start_date = self._find_valid_day(start_date)
 
         (start_date, end_date) = make_dates(start_date)
 
