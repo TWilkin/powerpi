@@ -127,6 +127,14 @@ class TestDeviceSingleSchedule:
         ({}, None),
         ({'power': True}, {'state': 'on'}),
         ({'power': False}, {'state': 'off'}),
+        ({'brightness': 50}, {'brightness': 50}),
+        ({'hue': 180}, {'hue': 180}),
+        ({'saturation': 74}, {'saturation': 74}),
+        ({'temperature': 2_000}, {'temperature': 2_000}),
+        (
+            {'hue': 270, 'saturation': 50, 'power': True, 'scene': 'SomeScene'},
+            {'hue': 270, 'saturation': 50, 'state': 'on', 'scene': 'SomeScene'}
+        ),
     ])
     async def test_execute(
         self,
