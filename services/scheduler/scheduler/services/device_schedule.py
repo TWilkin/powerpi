@@ -105,8 +105,7 @@ class DeviceSchedule(ABC, LogMixin):
             )
             return
 
-        message = {}
-        self._build_message(message, **kwargs)
+        message = self._build_message({}, **kwargs)
 
         if self._scene:
             message['scene'] = self._scene
