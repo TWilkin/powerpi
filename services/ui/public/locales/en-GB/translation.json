@@ -24,7 +24,11 @@
             "filtered_one": "Filtered {{count, number}} device.",
             "filtered_other": "Filtered {{count, number}} devices.",
             "filters": {
-                "visible": "Only show visible devices",
+                "types": "Types",
+                "visibility": {
+                    "label": "Visibility",
+                    "option": "Only show visible devices"
+                },
                 "clear": "Clear Filters"
             }
         },

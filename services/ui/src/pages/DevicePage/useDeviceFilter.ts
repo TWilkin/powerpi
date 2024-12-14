@@ -1,29 +1,18 @@
 import { Device } from "@powerpi/common-api";
-import { useMemo, useReducer } from "react";
+import { useCallback, useMemo, useReducer } from "react";
 import { chain as _ } from "underscore";
 import useQueryDevices from "../../queries/useQueryDevices";
-
-type FilterList = {
-    all: boolean;
-
-    list: string[];
-};
 
 type DeviceFilterState = {
     search: string;
 
-    types: FilterList;
+    types: string[];
 
     visibleOnly: boolean;
 };
 
-const initialDeviceFilterState = {
+const initialDeviceFilterState: Omit<DeviceFilterState, "types"> = {
     search: "",
-
-    types: {
-        all: true,
-        list: [],
-    },
 
     visibleOnly: true,
 };
@@ -33,10 +22,6 @@ const initialDeviceFilterState = {
  */
 export default function useDeviceFilter() {
     const { data } = useQueryDevices();
-
-    const [state, dispatch] = useReducer(reducer, initialDeviceFilterState);
-
-    const filtered = useMemo(() => filter(state, data), [data, state]);
 
     const types = useMemo(
         () =>
@@ -48,24 +33,34 @@ export default function useDeviceFilter() {
         [data],
     );
 
+    const [state, dispatch] = useReducer(reducer, { types }, initialiser);
+
+    const clear = useCallback(
+        () => dispatch({ type: "Clear", initialState: initialiser({ types }) }),
+        [types],
+    );
+
+    const filtered = useMemo(() => filter(state, data), [data, state]);
+
     return {
         state,
         devices: filtered,
         types,
         total: data.length,
         dispatch,
+        clear,
     };
 }
 
 type SearchAction = { type: "Search"; search: string };
 
-type TypeAction = { type: "Types"; all: boolean; types: string[] };
+type TypesAction = { type: "Types"; types: string[] };
 
 type VisibleOnlyAction = { type: "VisibleOnly"; visibleOnly: boolean };
 
-type ClearAction = { type: "Clear" };
+type ClearAction = { type: "Clear"; initialState: DeviceFilterState };
 
-type DeviceFilterAction = SearchAction | TypeAction | VisibleOnlyAction | ClearAction;
+type DeviceFilterAction = SearchAction | TypesAction | VisibleOnlyAction | ClearAction;
 
 function reducer(state: DeviceFilterState, action: DeviceFilterAction) {
     function update(newState: Partial<DeviceFilterState>) {
@@ -77,17 +72,28 @@ function reducer(state: DeviceFilterState, action: DeviceFilterAction) {
             return update({ search: action.search });
 
         case "Types":
-            return update({ types: { all: action.all, list: action.types } });
+            return update({ types: action.types });
 
         case "VisibleOnly":
             return update({ visibleOnly: action.visibleOnly });
 
         case "Clear":
-            return { ...initialDeviceFilterState };
+            return action.initialState;
 
         default:
             throw Error("Unknown action");
     }
+}
+
+type InitialiserParams = {
+    types: string[];
+};
+
+function initialiser({ types }: InitialiserParams): DeviceFilterState {
+    return {
+        ...initialDeviceFilterState,
+        types,
+    };
 }
 
 function filter(state: DeviceFilterState, devices: Device[]) {
@@ -104,9 +110,7 @@ function filter(state: DeviceFilterState, devices: Device[]) {
     }
 
     // types
-    if (!state.types.all) {
-        devices = devices.filter((device) => state.types.list.includes(device.type));
-    }
+    devices = devices.filter((device) => state.types.includes(device.type));
 
     // filter invisible devices?
     if (state.visibleOnly) {

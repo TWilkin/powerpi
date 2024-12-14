@@ -66,20 +66,16 @@ describe("useDeviceFilter", () => {
         const { result } = renderHook(useDeviceFilter);
 
         expect(result.current.types).toStrictEqual(["light", "socket"]);
-        expect(result.current.state.types.all).toBeTruthy();
-        expect(result.current.state.types.list).toHaveLength(0);
+        expect(result.current.state.types).toStrictEqual(["light", "socket"]);
 
-        act(() => result.current.dispatch({ type: "Types", all: false, types: [] }));
+        act(() => result.current.dispatch({ type: "Types", types: [] }));
 
-        expect(result.current.state.types.all).toBeFalsy();
-        expect(result.current.state.types.list).toHaveLength(0);
+        expect(result.current.state.types).toHaveLength(0);
         expect(result.current.devices).toHaveLength(0);
 
-        act(() => result.current.dispatch({ type: "Types", all: false, types: ["light"] }));
+        act(() => result.current.dispatch({ type: "Types", types: ["light"] }));
 
-        expect(result.current.state.types.all).toBeFalsy();
-        expect(result.current.state.types.list).toHaveLength(1);
-        expect(result.current.state.types.list).toStrictEqual(["light"]);
+        expect(result.current.state.types).toStrictEqual(["light"]);
         expect(result.current.devices).toStrictEqual([data[0], data[1]]);
     });
 
@@ -113,23 +109,23 @@ describe("useDeviceFilter", () => {
 
         act(() => {
             result.current.dispatch({ type: "Search", search: "something" });
-            result.current.dispatch({ type: "Types", all: false, types: ["socket"] });
+            result.current.dispatch({ type: "Types", types: ["socket"] });
             result.current.dispatch({ type: "VisibleOnly", visibleOnly: false });
         });
 
         expect(result.current.state).toStrictEqual({
             search: "something",
-            types: { all: false, list: ["socket"] },
+            types: ["socket"],
             visibleOnly: false,
         });
         expect(result.current.devices).toHaveLength(0);
         expect(result.current.total).toBe(3);
 
-        act(() => result.current.dispatch({ type: "Clear" }));
+        act(() => result.current.clear());
 
         expect(result.current.state).toStrictEqual({
             search: "",
-            types: { all: true, list: [] },
+            types: ["light", "socket"],
             visibleOnly: true,
         });
         expect(result.current.devices).toStrictEqual(data);
