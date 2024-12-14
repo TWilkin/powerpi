@@ -16,6 +16,7 @@ import {
     faEllipsis,
     faEye,
     faEyeSlash,
+    faFilter,
     faGear,
     faGreaterThanEqual,
     faHistory,
@@ -74,6 +75,7 @@ const iconLibrary = {
 
     info: faInfoCircle,
     search: faSearch,
+    filter: faFilter,
     clear: faXmark,
     close: faXmark,
     collapse: faChevronUp,

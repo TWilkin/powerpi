@@ -38,6 +38,8 @@ interface Resources {
     "common": {
       "close": "Close",
       "clear search": "Clear search",
+      "open filter": "Open filters",
+      "close filter": "close filters",
       "never": "never",
       "datetime": {
         "date": "{{time, datetime(dateStyle: long; timeStyle: long;}}",

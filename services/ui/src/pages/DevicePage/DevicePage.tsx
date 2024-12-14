@@ -1,11 +1,13 @@
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import BatteryIcon from "../../components/BatteryIcon";
+import Button from "../../components/Button";
 import CapabilityButton from "../../components/Capabilities/CapabilityButton";
 import DevicePowerToggle from "../../components/DevicePowerToggle";
 import HistoryLink from "../../components/HistoryLink";
 import Icon from "../../components/Icon";
 import Message from "../../components/Message";
+import Panel, { usePanel } from "../../components/Panel";
 import Search from "../../components/Search";
 import Table from "../../components/Table";
 import TableCell from "../../components/TableCell";
@@ -20,6 +22,7 @@ const DevicePage = () => {
     const enabled = useOptionalRoute();
 
     const { state, devices, total, dispatch } = useDeviceFilter();
+    const { open: filterOpen, handleToggle: handleFilterToggle } = usePanel();
 
     const handleSearch = useCallback(
         (search: string) => dispatch({ type: "Search", search }),
@@ -36,12 +39,22 @@ const DevicePage = () => {
 
     return (
         <>
-            <Search
-                placeholder={t("pages.devices.search for devices")}
-                value={state.search}
-                aria-label={t("pages.devices.search for devices")}
-                onSearch={handleSearch}
-            />
+            <div className="w-full flex gap-1 items-center">
+                <Button
+                    icon="filter"
+                    aria-label={t(filterOpen ? "common.close filter" : "common.open filter")}
+                    onClick={handleFilterToggle}
+                />
+
+                <Search
+                    placeholder={t("pages.devices.search for devices")}
+                    value={state.search}
+                    aria-label={t("pages.devices.search for devices")}
+                    onSearch={handleSearch}
+                />
+            </div>
+
+            <Panel open={filterOpen}>Filters</Panel>
 
             {total === 0 && <Message translation="pages.devices" type="empty" />}
             {total !== 0 && devices.length === 0 && (
