@@ -216,6 +216,7 @@
             "FreeDNS",
             "Scheduler",
             "Shutdown",
+            "UI",
             "Energenie Controller",
             "Harmony Controller",
             "LIFX Controller",
@@ -248,6 +249,7 @@
             "redhat.vscode-yaml",
             "SonarSource.sonarlint-vscode",
             "bradlc.vscode-tailwindcss",
+            "vitest.explorer",
         ],
     },
 }

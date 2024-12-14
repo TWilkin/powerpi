@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "UI",
+            "request": "launch",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start"],
+            "type": "node",
+            "serverReadyAction": {
+                "action": "debugWithChrome",
+                "pattern": "Local: http://localhost:([0-9]+)",
+                "uriFormat": "http://localhost:%s"
+            },
+            "presentation": {
+                "group": "Services"
+            }
+        }
+    ]
+}
