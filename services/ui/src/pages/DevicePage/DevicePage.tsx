@@ -7,13 +7,14 @@ import DevicePowerToggle from "../../components/DevicePowerToggle";
 import HistoryLink from "../../components/HistoryLink";
 import Icon from "../../components/Icon";
 import Message from "../../components/Message";
-import Panel, { usePanel } from "../../components/Panel";
+import { usePanel } from "../../components/Panel";
 import Search from "../../components/Search";
 import Table from "../../components/Table";
 import TableCell from "../../components/TableCell";
 import TableRow from "../../components/TableRow";
 import Time from "../../components/Time";
 import useOptionalRoute from "../../routing/useOptionalRoute";
+import DeviceFilter from "./DeviceFilter";
 import useDeviceFilter from "./useDeviceFilter";
 
 const DevicePage = () => {
@@ -54,7 +55,7 @@ const DevicePage = () => {
                 />
             </div>
 
-            <Panel open={filterOpen}>Filters</Panel>
+            <DeviceFilter open={filterOpen} state={state} dispatch={dispatch} />
 
             {total === 0 && <Message translation="pages.devices" type="empty" />}
             {total !== 0 && devices.length === 0 && (

@@ -29,7 +29,10 @@ interface Resources {
         "search for devices": "Search for devices",
         "empty": "No devices.",
         "filtered_one": "Filtered {{count, number}} device.",
-        "filtered_other": "Filtered {{count, number}} devices."
+        "filtered_other": "Filtered {{count, number}} devices.",
+        "filters": {
+          "visible": "Only show visible devices"
+        }
       },
       "settings": {
         "units": "Units"
