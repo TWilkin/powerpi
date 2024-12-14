@@ -44,6 +44,7 @@ interface Resources {
       "clear search": "Clear search",
       "open filter": "Open filters",
       "close filter": "close filters",
+      "all": "All",
       "never": "never",
       "datetime": {
         "date": "{{time, datetime(dateStyle: long; timeStyle: long;}}",
