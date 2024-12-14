@@ -8,7 +8,7 @@ type DeviceFilterState = {
 
     types: string[];
 
-    locations: string[];
+    locations: (string | undefined)[];
 
     visibleOnly: boolean;
 };
@@ -37,13 +37,10 @@ export default function useDeviceFilter() {
 
     const locations = useMemo(
         () =>
-            _(
-                data
-                    .map((device) => device.location)
-                    .filter((location): location is string => location != null),
-            )
+            _(data)
+                .map((device) => device.location)
                 .unique()
-                .sortBy((location) => location.toLocaleLowerCase())
+                .sortBy((location) => location?.toLocaleLowerCase())
                 .value(),
         [data],
     );
@@ -110,11 +107,7 @@ function reducer(state: DeviceFilterState, action: DeviceFilterAction) {
     }
 }
 
-type InitialiserParams = {
-    types: string[];
-
-    locations: string[];
-};
+type InitialiserParams = Pick<DeviceFilterState, "types" | "locations">;
 
 function initialiser(params: InitialiserParams): DeviceFilterState {
     return {
@@ -140,9 +133,7 @@ function filter(state: DeviceFilterState, devices: Device[]) {
     devices = devices.filter((device) => state.types.includes(device.type));
 
     // locations
-    devices = devices.filter(
-        (device) => device.location && state.locations.includes(device.location),
-    );
+    devices = devices.filter((device) => state.locations.includes(device.location));
 
     // filter invisible devices?
     if (state.visibleOnly) {

@@ -41,9 +41,9 @@ const DeviceFilter = ({ open, state, types, locations, dispatch, clear }: Device
         () =>
             locations.map((location) => ({
                 value: location,
-                label: location,
+                label: location ?? t("common.unspecified"),
             })),
-        [locations],
+        [locations, t],
     );
 
     const handleLocationSelection = useCallback(

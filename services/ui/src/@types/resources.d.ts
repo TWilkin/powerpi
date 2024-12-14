@@ -50,6 +50,7 @@ interface Resources {
       "open filter": "Open filters",
       "close filter": "close filters",
       "all": "All",
+      "unspecified": "Unspecified",
       "never": "never",
       "datetime": {
         "date": "{{time, datetime(dateStyle: long; timeStyle: long;}}",
