@@ -103,36 +103,38 @@ const DevicePowerToggle = ({ device, ...props }: DevicePowerToggleProps) => {
                 className={classNames(
                     "h-6 w-12 flex flex-row items-center rounded-full select-none cursor-pointer",
                     "focus-within:ring-offset focus-within:ring-offset-outline-offset focus-within:ring focus-within:ring-outline focus:z-10",
+                    "relative",
                     {
                         ["bg-on hover:bg-on-hover active:bg-on-active"]:
                             !isLock && device.state === DeviceState.On,
-                        ["bg-off hover:bg-off-hover active:bg-off-active justify-end"]:
+                        ["bg-off hover:bg-off-hover active:bg-off-active"]:
                             !isLock && device.state === DeviceState.Off,
                         ["bg-lock hover:bg-lock-hover active:bg-lock-active"]:
                             isLock && device.state === DeviceState.Off,
-                        ["bg-unlock hover:bg-unlock-hover active:bg-unlock-active justify-end"]:
+                        ["bg-unlock hover:bg-unlock-hover active:bg-unlock-active"]:
                             isLock && device.state === DeviceState.On,
-                        ["bg-unknown hover:bg-unknown-hover active:bg-unknown-active justify-center"]:
+                        ["bg-unknown hover:bg-unknown-hover active:bg-unknown-active"]:
                             device.state === DeviceState.Unknown,
                     },
                 )}
                 {...longPressProps()}
             >
-                <Icon
-                    icon={icon}
-                    className={classNames("p-xs bg-white rounded-full text-sm", {
-                        ["text-on hover:text-on-hover active:text-on-active ml-1"]:
+                <div
+                    className={classNames("absolute mt-1 transition-transform duration-500", {
+                        ["text-on hover:text-on-hover active:text-on-active translate-x-1"]:
                             !isLock && device.state === DeviceState.On,
-                        ["text-off hover:text-off-hover active:text-off-active mr-1"]:
+                        ["text-off hover:text-off-hover active:text-off-active translate-x-7"]:
                             !isLock && device.state === DeviceState.Off,
-                        ["text-lock hover:text-lock-hover active:text-lock-active ml-1"]:
+                        ["text-lock hover:text-lock-hover active:text-lock-active translate-x-1"]:
                             isLock && device.state === DeviceState.Off,
-                        ["text-unlock hover:text-unlock-hover active:text-unlock-active mr-1"]:
+                        ["text-unlock hover:text-unlock-hover active:text-unlock-active translate-x-7"]:
                             isLock && device.state === DeviceState.On,
-                        ["text-unknown hover:text-unknown-hover active:text-unknown-active"]:
+                        ["text-unknown hover:text-unknown-hover active:text-unknown-active translate-x-4"]:
                             device.state === DeviceState.Unknown,
                     })}
-                />
+                >
+                    <Icon icon={icon} className="p-xs bg-white rounded-full text-sm" />
+                </div>
 
                 <input
                     type="checkbox"
