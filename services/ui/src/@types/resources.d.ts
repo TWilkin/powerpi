@@ -31,7 +31,8 @@ interface Resources {
         "filtered_one": "Filtered {{count, number}} device.",
         "filtered_other": "Filtered {{count, number}} devices.",
         "filters": {
-          "visible": "Only show visible devices"
+          "visible": "Only show visible devices",
+          "clear": "Clear Filters"
         }
       },
       "settings": {

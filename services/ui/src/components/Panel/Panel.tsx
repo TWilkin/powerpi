@@ -16,7 +16,7 @@ const Panel = ({ open, children }: PanelProps) => {
             })}
         >
             <div className="overflow-hidden">
-                <aside className="p-2 rounded bg-bg-panel">{children}</aside>
+                <aside className="p-2 rounded bg-bg-panel flex flex-col gap-1">{children}</aside>
             </div>
         </div>
     );
