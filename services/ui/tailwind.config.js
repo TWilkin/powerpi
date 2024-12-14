@@ -12,6 +12,7 @@ const semanticColours = [
     "bg-active",
     "bg-selected",
     "bg-zebra",
+    "bg-panel",
     "bg-backdrop",
     "border",
     "outline",
@@ -81,6 +82,10 @@ export default {
                 xs: defaultTheme.spacing[0.5],
                 sm: defaultTheme.spacing[1],
                 DEFAULT: defaultTheme.spacing[2],
+            },
+
+            transitionProperty: {
+                grid: "grid-template-rows",
             },
         },
     },

@@ -11,6 +11,7 @@
         --powerpi-colour-bg-active: theme("colourComponents.sky-200");
         --powerpi-colour-bg-selected: theme("colourComponents.sky-100");
         --powerpi-colour-bg-zebra: theme("colourComponents.sky-200");
+        --powerpi-colour-bg-panel: theme("colourComponents.sky-200");
         --powerpi-colour-bg-backdrop: theme("colourComponents.gray-500");
 
         --powerpi-colour-text: theme("colourComponents.black");
@@ -52,6 +53,7 @@
         --powerpi-colour-bg-active: theme("colourComponents.purple-700");
         --powerpi-colour-bg-selected: theme("colourComponents.purple-950");
         --powerpi-colour-bg-zebra: theme("colourComponents.purple-950");
+        --powerpi-colour-bg-panel: theme("colourComponents.purple-950");
         --powerpi-colour-bg-backdrop: theme("colourComponents.gray-500");
 
         --powerpi-colour-text: theme("colourComponents.white");
