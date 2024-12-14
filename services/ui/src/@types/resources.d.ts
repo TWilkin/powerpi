@@ -32,6 +32,7 @@ interface Resources {
         "filtered_other": "Filtered {{count, number}} devices.",
         "filters": {
           "types": "Types",
+          "locations": "Locations",
           "visibility": {
             "label": "Visibility",
             "option": "Only show visible devices"

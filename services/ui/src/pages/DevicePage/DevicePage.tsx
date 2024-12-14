@@ -22,7 +22,7 @@ const DevicePage = () => {
 
     const enabled = useOptionalRoute();
 
-    const { state, devices, types, total, dispatch, clear } = useDeviceFilter();
+    const { state, devices, types, locations, total, dispatch, clear } = useDeviceFilter();
     const { open: filterOpen, handleToggle: handleFilterToggle } = usePanel();
 
     const handleSearch = useCallback(
@@ -59,6 +59,7 @@ const DevicePage = () => {
                 open={filterOpen}
                 state={state}
                 types={types}
+                locations={locations}
                 dispatch={dispatch}
                 clear={clear}
             />

@@ -8,10 +8,12 @@ type DeviceFilterState = {
 
     types: string[];
 
+    locations: string[];
+
     visibleOnly: boolean;
 };
 
-const initialDeviceFilterState: Omit<DeviceFilterState, "types"> = {
+const initialDeviceFilterState: Omit<DeviceFilterState, "types" | "locations"> = {
     search: "",
 
     visibleOnly: true,
@@ -33,11 +35,24 @@ export default function useDeviceFilter() {
         [data],
     );
 
-    const [state, dispatch] = useReducer(reducer, { types }, initialiser);
+    const locations = useMemo(
+        () =>
+            _(
+                data
+                    .map((device) => device.location)
+                    .filter((location): location is string => location != null),
+            )
+                .unique()
+                .sortBy((location) => location.toLocaleLowerCase())
+                .value(),
+        [data],
+    );
+
+    const [state, dispatch] = useReducer(reducer, { types, locations }, initialiser);
 
     const clear = useCallback(
-        () => dispatch({ type: "Clear", initialState: initialiser({ types }) }),
-        [types],
+        () => dispatch({ type: "Clear", initialState: initialiser({ types, locations }) }),
+        [locations, types],
     );
 
     const filtered = useMemo(() => filter(state, data), [data, state]);
@@ -46,6 +61,7 @@ export default function useDeviceFilter() {
         state,
         devices: filtered,
         types,
+        locations,
         total: data.length,
         dispatch,
         clear,
@@ -55,12 +71,18 @@ export default function useDeviceFilter() {
 type SearchAction = { type: "Search"; search: string };
 
 type TypesAction = { type: "Types"; types: string[] };
+type LocationsAction = { type: "Locations"; locations: string[] };
 
 type VisibleOnlyAction = { type: "VisibleOnly"; visibleOnly: boolean };
 
 type ClearAction = { type: "Clear"; initialState: DeviceFilterState };
 
-type DeviceFilterAction = SearchAction | TypesAction | VisibleOnlyAction | ClearAction;
+type DeviceFilterAction =
+    | SearchAction
+    | TypesAction
+    | LocationsAction
+    | VisibleOnlyAction
+    | ClearAction;
 
 function reducer(state: DeviceFilterState, action: DeviceFilterAction) {
     function update(newState: Partial<DeviceFilterState>) {
@@ -73,6 +95,9 @@ function reducer(state: DeviceFilterState, action: DeviceFilterAction) {
 
         case "Types":
             return update({ types: action.types });
+
+        case "Locations":
+            return update({ locations: action.locations });
 
         case "VisibleOnly":
             return update({ visibleOnly: action.visibleOnly });
@@ -87,12 +112,14 @@ function reducer(state: DeviceFilterState, action: DeviceFilterAction) {
 
 type InitialiserParams = {
     types: string[];
+
+    locations: string[];
 };
 
-function initialiser({ types }: InitialiserParams): DeviceFilterState {
+function initialiser(params: InitialiserParams): DeviceFilterState {
     return {
         ...initialDeviceFilterState,
-        types,
+        ...params,
     };
 }
 
@@ -111,6 +138,11 @@ function filter(state: DeviceFilterState, devices: Device[]) {
 
     // types
     devices = devices.filter((device) => state.types.includes(device.type));
+
+    // locations
+    devices = devices.filter(
+        (device) => device.location && state.locations.includes(device.location),
+    );
 
     // filter invisible devices?
     if (state.visibleOnly) {

@@ -9,10 +9,13 @@ import Panel, { usePanel } from "../../components/Panel";
 import useDeviceFilter from "./useDeviceFilter";
 
 type DeviceFilterProps = Pick<ReturnType<typeof usePanel>, "open"> &
-    Pick<ReturnType<typeof useDeviceFilter>, "state" | "types" | "dispatch" | "clear">;
+    Pick<
+        ReturnType<typeof useDeviceFilter>,
+        "state" | "types" | "locations" | "dispatch" | "clear"
+    >;
 
 /** Component representing the filters on the devices page. */
-const DeviceFilter = ({ open, state, types, dispatch, clear }: DeviceFilterProps) => {
+const DeviceFilter = ({ open, state, types, locations, dispatch, clear }: DeviceFilterProps) => {
     const { t } = useTranslation();
 
     const typeOptions = useMemo(
@@ -34,6 +37,20 @@ const DeviceFilter = ({ open, state, types, dispatch, clear }: DeviceFilterProps
         [dispatch],
     );
 
+    const locationOptions = useMemo(
+        () =>
+            locations.map((location) => ({
+                value: location,
+                label: location,
+            })),
+        [locations],
+    );
+
+    const handleLocationSelection = useCallback(
+        (locations: string[]) => dispatch({ type: "Locations", locations }),
+        [dispatch],
+    );
+
     const handleVisibleChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) =>
             dispatch({ type: "VisibleOnly", visibleOnly: event.target.checked }),
@@ -47,6 +64,14 @@ const DeviceFilter = ({ open, state, types, dispatch, clear }: DeviceFilterProps
                     options={typeOptions}
                     selections={state.types}
                     onChange={handleTypeSelection}
+                />
+            </FieldSet>
+
+            <FieldSet legend={t("pages.devices.filters.locations")}>
+                <CheckBoxGroup
+                    options={locationOptions}
+                    selections={state.locations}
+                    onChange={handleLocationSelection}
                 />
             </FieldSet>
 
