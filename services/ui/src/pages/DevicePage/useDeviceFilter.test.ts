@@ -18,6 +18,7 @@ describe("useDeviceFilter", () => {
             since: 0,
             visible: true,
             type: "light",
+            location: "Bedroom",
         },
         {
             name: "LivingRoomLight",
@@ -26,6 +27,7 @@ describe("useDeviceFilter", () => {
             since: 0,
             visible: true,
             type: "light",
+            location: "LivingRoom",
         },
         {
             name: "Socket",
@@ -110,12 +112,14 @@ describe("useDeviceFilter", () => {
         act(() => {
             result.current.dispatch({ type: "Search", search: "something" });
             result.current.dispatch({ type: "Types", types: ["socket"] });
+            result.current.dispatch({ type: "Locations", locations: ["LivingRoom"] });
             result.current.dispatch({ type: "VisibleOnly", visibleOnly: false });
         });
 
         expect(result.current.state).toStrictEqual({
             search: "something",
             types: ["socket"],
+            locations: ["LivingRoom"],
             visibleOnly: false,
         });
         expect(result.current.devices).toHaveLength(0);
@@ -126,6 +130,7 @@ describe("useDeviceFilter", () => {
         expect(result.current.state).toStrictEqual({
             search: "",
             types: ["light", "socket"],
+            locations: ["Bedroom", "LivingRoom", undefined],
             visibleOnly: true,
         });
         expect(result.current.devices).toStrictEqual(data);
