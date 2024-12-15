@@ -12,14 +12,14 @@ from powerpi_common.condition import ConditionParser, Expression
 from powerpi_common.device import ReservedScenes
 from pytest_mock import MockerFixture
 
-from scheduler.services import DeviceSchedule
+from scheduler.services import DeviceIntervalSchedule
 
-SubjectBuilder = Callable[[Dict[str, Any]], DeviceSchedule]
+SubjectBuilder = Callable[[Dict[str, Any]], DeviceIntervalSchedule]
 
 AddJobType = List[Tuple[
     MethodType,
     IntervalTrigger,
-    Tuple[datetime, datetime]
+    Dict[str, datetime]
 ]]
 
 
@@ -30,7 +30,7 @@ class ExpectedTime:
     minute: int
 
 
-class TestDeviceSchedule:
+class TestDeviceIntervalSchedule:
     __expected_topic = 'device/SomeDevice/change'
 
     @pytest.mark.parametrize('start_time,end_time,days,now,expected_start,expected_end', [
@@ -127,8 +127,8 @@ class TestDeviceSchedule:
 
         assert job[1].interval.seconds == interval
 
-        assert job[2][0] == job[1].start_date
-        assert job[2][1] == job[1].end_date
+        assert job[2]['start_date'] == job[1].start_date
+        assert job[2]['end_date'] == job[1].end_date
 
     @pytest.mark.parametrize('condition,expected', [
         (None, True),
@@ -199,7 +199,7 @@ class TestDeviceSchedule:
             start_date = datetime(2023, 3, 1, 9, 00, tzinfo=pytz.UTC)
             end_date = datetime(2023, 3, 1, 9, 50, tzinfo=pytz.UTC)
 
-            await subject.execute(start_date, end_date)
+            await subject.execute(start_date=start_date, end_date=end_date)
 
         # it's not the last run
         assert len(add_job) == 0
@@ -246,7 +246,7 @@ class TestDeviceSchedule:
             start_date = datetime(2023, 3, 1, 9, 10)
             end_date = datetime(2023, 3, 1, 10, 0, tzinfo=pytz.UTC)
 
-            await subject.execute(start_date, end_date)
+            await subject.execute(start_date=start_date, end_date=end_date)
 
         message = {
             'brightness': expected
@@ -291,7 +291,7 @@ class TestDeviceSchedule:
             start_date = datetime(2023, 3, 1, 9, 10)
             end_date = datetime(2023, 3, 1, 10, 0, tzinfo=pytz.UTC)
 
-            await subject.execute(start_date, end_date)
+            await subject.execute(start_date=start_date, end_date=end_date)
 
         message = {
             'hue': expected
@@ -317,7 +317,7 @@ class TestDeviceSchedule:
             start_date = datetime(2023, 3, 1, 9, 00)
             end_date = datetime(2023, 3, 1, 9, 30, tzinfo=pytz.UTC)
 
-            await subject.execute(start_date, end_date)
+            await subject.execute(start_date=start_date, end_date=end_date)
 
         assert len(add_job) == 1
 
@@ -338,8 +338,8 @@ class TestDeviceSchedule:
 
         assert job[1].interval.seconds == 60
 
-        assert job[2][0] == job[1].start_date
-        assert job[2][1] == job[1].end_date
+        assert job[2]['start_date'] == job[1].start_date
+        assert job[2]['end_date'] == job[1].end_date
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('brightness,current,expected,force', [
@@ -391,7 +391,7 @@ class TestDeviceSchedule:
             end_date = datetime(2023, 3, 1, 9, 15, tzinfo=pytz.UTC)
 
             with patch_datetime(datetime(2023, 3, 1, 9, minutes, tzinfo=pytz.UTC)):
-                await subject.execute(start_date, end_date)
+                await subject.execute(start_date=start_date, end_date=end_date)
 
             message = {'brightness': expected}
             powerpi_mqtt_producer.assert_called_once_with(
@@ -437,7 +437,7 @@ class TestDeviceSchedule:
                 start_date = datetime(2023, 3, 1, 9, 0, tzinfo=pytz.UTC)
                 end_date = datetime(2023, 3, 1, 9, 50, tzinfo=pytz.UTC)
 
-                await subject.execute(start_date, end_date)
+                await subject.execute(start_date=start_date, end_date=end_date)
 
             message = {'brightness': expected, 'scene': 'other'}
             powerpi_mqtt_producer.assert_called_once_with(
@@ -488,7 +488,7 @@ class TestDeviceSchedule:
             start_date = datetime(2023, 3, 1, 9, 10)
             end_date = datetime(2023, 3, 1, 10, 0, tzinfo=pytz.UTC)
 
-            await subject.execute(start_date, end_date)
+            await subject.execute(start_date=start_date, end_date=end_date)
 
         if expected:
             powerpi_mqtt_producer.assert_called_once()
@@ -512,15 +512,14 @@ class TestDeviceSchedule:
         )
 
         def build(schedule: Dict[str, Any]):
-            return DeviceSchedule(
+            return DeviceIntervalSchedule(
                 scheduler_config,
                 powerpi_logger,
                 powerpi_mqtt_client,
                 powerpi_scheduler,
                 powerpi_variable_manager,
                 condition_parser_factory,
-                schedule['device'],
-                schedule
+                **schedule
             )
 
         return build
@@ -532,11 +531,11 @@ class TestDeviceSchedule:
         def add_job(
             method: MethodType,
             trigger: IntervalTrigger,
-            args: Tuple[datetime, datetime],
+            kwargs: Dict[str, datetime],
             **_
         ):
             nonlocal job_results
-            job_results.append((method, trigger, args))
+            job_results.append((method, trigger, kwargs))
 
         powerpi_scheduler.add_job = add_job
 
@@ -557,7 +556,7 @@ def patch_datetime(mock_now: datetime):
 
         return mock_now.astimezone(pytz.UTC)
 
-    with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
+    with patch('scheduler.services.device_interval_schedule.datetime') as mock_datetime:
         mock_datetime.combine = datetime.combine
         mock_datetime.now = now
 

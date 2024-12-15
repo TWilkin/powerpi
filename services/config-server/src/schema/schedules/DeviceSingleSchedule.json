@@ -1,0 +1,36 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/schedules/DeviceSingleSchedule.schema.json",
+    "title": "DeviceSingleSchedule",
+    "description": "The configuration for a schedule which changes a device state a single time at a specified time",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/schedules/DeviceSchedule.schema.json"
+        }
+    ],
+    "properties": {
+        "at": {
+            "description": "The time this schedule applies to",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Time.schema.json"
+        },
+        "hue": {
+            "description": "The new hue value this schedule applies",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Hue.schema.json"
+        },
+        "saturation": {
+            "description": "The new saturation percentage value this schedule applies",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Percentage.schema.json"
+        },
+        "brightness": {
+            "description": "The new brightness percentage value this schedule applies",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Percentage.schema.json"
+        },
+        "temperature": {
+            "description": "The new colour temperature value this schedule applies",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/ColourTemperature.schema.json"
+        }
+    },
+    "required": ["at"],
+    "unevaluatedProperties": false
+}

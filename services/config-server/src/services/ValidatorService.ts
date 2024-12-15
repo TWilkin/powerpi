@@ -6,18 +6,19 @@ import loadSchema from "../schema";
 
 @Service()
 export default class ValidatorService {
-    private ajv: Ajv;
+    private readonly ajv: Ajv;
 
-    constructor(private logger: LoggerService) {
+    constructor(private readonly logger: LoggerService) {
         this.ajv = new Ajv();
         addFormats(this.ajv);
     }
 
     public async initialise() {
-        const { common, devices, config } = loadSchema();
+        const { common, devices, schedules, config } = loadSchema();
 
         this.addSchema(common);
         this.addSchema(devices);
+        this.addSchema(schedules);
         this.addSchema(config);
     }
 
@@ -32,7 +33,7 @@ export default class ValidatorService {
             // failed validation
             throw new ValidationException(
                 fileType,
-                validator.errors ? JSON.stringify(validator.errors) : undefined
+                validator.errors ? JSON.stringify(validator.errors) : undefined,
             );
         } else {
             this.logger.error("Could not find schema for", fileType);
@@ -53,7 +54,10 @@ export default class ValidatorService {
 }
 
 export class ValidationException extends Error {
-    constructor(private fileType: ConfigFileType, public errors: string | undefined) {
+    constructor(
+        private readonly fileType: ConfigFileType,
+        public readonly errors: string | undefined,
+    ) {
         super();
     }
 
