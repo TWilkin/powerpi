@@ -27,9 +27,9 @@ const CheckBox = ({ label, indeterminate = false, className, ...props }: CheckBo
                     className,
                     "w-4 h-4 appearance-none",
                     inputClasses,
-                    "after:absolute after:font-extrabold",
-                    "checked:after:content-['✓'] checked:after:top-0 checked:after:left-0.5",
-                    "indeterminate:after:content-['-'] indeterminate:after:top-0 indeterminate:after:left-[0.3rem]",
+                    "after:absolute after:font-extrabold after:font-mono",
+                    "checked:after:content-['✓'] checked:after:top-[0.09rem] checked:after:left-1",
+                    "indeterminate:after:content-['-'] indeterminate:after:top-0 indeterminate:after:left-[0.2rem]",
                 )}
                 ref={ref}
             />
