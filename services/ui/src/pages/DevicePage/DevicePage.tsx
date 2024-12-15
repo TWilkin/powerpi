@@ -7,8 +7,8 @@ import DevicePowerToggle from "../../components/DevicePowerToggle";
 import HistoryLink from "../../components/HistoryLink";
 import Icon from "../../components/Icon";
 import Message from "../../components/Message";
-import { usePanel } from "../../components/Panel";
 import Search from "../../components/Search";
+import { useSlideAnimation } from "../../components/SlideAnimation";
 import Table from "../../components/Table";
 import TableCell from "../../components/TableCell";
 import TableRow from "../../components/TableRow";
@@ -23,7 +23,7 @@ const DevicePage = () => {
     const enabled = useOptionalRoute();
 
     const { state, devices, types, locations, total, dispatch, clear } = useDeviceFilter();
-    const { open: filterOpen, handleToggle: handleFilterToggle } = usePanel();
+    const { open: filterOpen, handleToggle: handleFilterToggle } = useSlideAnimation();
 
     const handleSearch = useCallback(
         (search: string) => dispatch({ type: "Search", search }),

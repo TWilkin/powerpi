@@ -1,9 +1,9 @@
 import { act, renderHook } from "@testing-library/react";
-import usePanel from "./usePanel";
+import useSlideAnimation from "./useSlideAnimation";
 
-describe("usePanel", () => {
+describe("useSlideAnimation", () => {
     test("toggles", () => {
-        const { result } = renderHook(usePanel);
+        const { result } = renderHook(useSlideAnimation);
 
         expect(result.current.open).toBeFalsy();
 

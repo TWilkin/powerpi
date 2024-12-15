@@ -4,7 +4,7 @@ import Panel from "./Panel";
 describe("Panel", () => {
     test("renders", () => {
         render(
-            <Panel open>
+            <Panel>
                 <div data-testid="content" />
             </Panel>,
         );

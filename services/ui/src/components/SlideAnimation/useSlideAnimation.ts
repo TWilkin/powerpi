@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
-/** Hook to control the Panel visibility. */
-export default function usePanel() {
+/** Hook to control the SlideAnimation visibility. */
+export default function useSlideAnimation() {
     const [open, setOpen] = useState(false);
 
     const handleToggle = useCallback(() => setOpen((current) => !current), []);
