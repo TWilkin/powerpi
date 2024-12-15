@@ -1,11 +1,13 @@
 import { ChangeEvent, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { chain as _ } from "underscore";
 import Button from "../../components/Button";
 import CheckBox from "../../components/CheckBox";
 import CheckBoxGroup from "../../components/CheckBoxGroup";
 import DeviceIcon from "../../components/DeviceIcon";
 import FieldSet from "../../components/FieldSet";
 import Panel, { usePanel } from "../../components/Panel";
+import useLocations from "../../hooks/useLocations";
 import useDeviceFilter from "./useDeviceFilter";
 
 type DeviceFilterProps = Pick<ReturnType<typeof usePanel>, "open"> &
@@ -37,13 +39,22 @@ const DeviceFilter = ({ open, state, types, locations, dispatch, clear }: Device
         [dispatch],
     );
 
+    const rooms = useLocations();
     const locationOptions = useMemo(
         () =>
-            locations.map((location) => ({
-                value: location,
-                label: location ?? t("common.unspecified"),
-            })),
-        [locations, t],
+            _(locations)
+                .map((location) => {
+                    const room = rooms.find((room) => room.name === location);
+
+                    return {
+                        value: location,
+                        label:
+                            room?.display_name ?? room?.name ?? location ?? t("common.unspecified"),
+                    };
+                })
+                .sortBy((option) => option.label.toLocaleLowerCase())
+                .value(),
+        [locations, rooms, t],
     );
 
     const handleLocationSelection = useCallback(
