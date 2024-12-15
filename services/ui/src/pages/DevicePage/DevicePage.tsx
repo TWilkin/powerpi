@@ -4,7 +4,6 @@ import BatteryIcon from "../../components/BatteryIcon";
 import Button from "../../components/Button";
 import CapabilityButton from "../../components/Capabilities/CapabilityButton";
 import DevicePowerToggle from "../../components/DevicePowerToggle";
-import HistoryLink from "../../components/HistoryLink";
 import Icon from "../../components/Icon";
 import Message from "../../components/Message";
 import Search from "../../components/Search";
@@ -13,14 +12,11 @@ import Table from "../../components/Table";
 import TableCell from "../../components/TableCell";
 import TableRow from "../../components/TableRow";
 import Time from "../../components/Time";
-import useOptionalRoute from "../../routing/useOptionalRoute";
 import DeviceFilter from "./DeviceFilter";
 import useDeviceFilter from "./useDeviceFilter";
 
 const DevicePage = () => {
     const { t } = useTranslation();
-
-    const enabled = useOptionalRoute();
 
     const { state, devices, types, locations, total, dispatch, clear } = useDeviceFilter();
     const { open: filterOpen, handleToggle: handleFilterToggle } = useSlideAnimation();
@@ -104,12 +100,6 @@ const DevicePage = () => {
                                     <TableCell width="time">
                                         <Time time={device.since} data-tooltip-place="left" />
                                     </TableCell>
-
-                                    {enabled?.history && (
-                                        <TableCell width="icon">
-                                            <HistoryLink device={device} />
-                                        </TableCell>
-                                    )}
                                 </TableRow>
                             ))}
                         </tbody>
