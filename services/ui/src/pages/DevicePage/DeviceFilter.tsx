@@ -70,7 +70,7 @@ const DeviceFilter = ({ open, state, types, locations, dispatch, clear }: Device
 
     return (
         <Panel open={open}>
-            <FieldSet legend={t("pages.devices.filters.types")}>
+            <FieldSet legend={t("pages.devices.filters.types")} content="checkbox">
                 <CheckBoxGroup
                     options={typeOptions}
                     selections={state.types}
@@ -78,7 +78,7 @@ const DeviceFilter = ({ open, state, types, locations, dispatch, clear }: Device
                 />
             </FieldSet>
 
-            <FieldSet legend={t("pages.devices.filters.locations")}>
+            <FieldSet legend={t("pages.devices.filters.locations")} content="checkbox">
                 <CheckBoxGroup
                     options={locationOptions}
                     selections={state.locations}
@@ -86,7 +86,7 @@ const DeviceFilter = ({ open, state, types, locations, dispatch, clear }: Device
                 />
             </FieldSet>
 
-            <FieldSet legend={t("pages.devices.filters.visibility.label")}>
+            <FieldSet legend={t("pages.devices.filters.visibility.label")} content="checkbox">
                 <CheckBox
                     label={t("pages.devices.filters.visibility.option")}
                     checked={state.visibleOnly}
