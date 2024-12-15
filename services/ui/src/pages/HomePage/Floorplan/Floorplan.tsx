@@ -48,10 +48,9 @@ const Floorplan = ({ floorplan }: FloorplanProps) => {
                             name: room.display_name ?? room.name,
                             floor: floor.name,
                             room: room.name,
-                            sensors:
-                                sensors?.filter(
-                                    (sensor) => sensor.visible && sensor.location === room.name,
-                                ) ?? [],
+                            sensors: sensors.filter(
+                                (sensor) => sensor.visible && sensor.location === room.name,
+                            ),
                         })),
                     );
 

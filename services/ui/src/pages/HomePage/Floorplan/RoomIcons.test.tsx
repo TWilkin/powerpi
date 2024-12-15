@@ -5,11 +5,11 @@ import RoomIcons from "./RoomIcons";
 
 const mocks = vi.hoisted(() => ({
     useQueryDevices: vi.fn(),
-    userQuerySensors: vi.fn(),
+    useQuerySensors: vi.fn(),
 }));
 
 vi.mock("../../../queries/useQueryDevices", () => ({ default: mocks.useQueryDevices }));
-vi.mock("../../../queries/useQuerySensors", () => ({ default: mocks.userQuerySensors }));
+vi.mock("../../../queries/useQuerySensors", () => ({ default: mocks.useQuerySensors }));
 
 const devices = [
     createDevice("Socket1", "socket"),
@@ -29,7 +29,7 @@ describe("RoomIcon", () => {
         mocks.useQueryDevices.mockReturnValue({
             data: devices,
         });
-        mocks.userQuerySensors.mockReturnValue({ data: sensors });
+        mocks.useQuerySensors.mockReturnValue({ data: sensors });
     });
 
     test("enough room", () => {
