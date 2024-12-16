@@ -14,7 +14,7 @@ describe("useFloor", () => {
                 <MemoryRouter initialEntries={[floor ? `/${floor}` : ""]}>
                     <Routes>
                         <Route path="/" element={children} />
-                        <Route path={"/:floor"} element={children} />
+                        <Route path="/:floor" element={children} />
                     </Routes>
                 </MemoryRouter>
             ),
