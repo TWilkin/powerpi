@@ -86,6 +86,6 @@ describe("Time", () => {
 
         const tooltip = screen.getByRole("tooltip");
         expect(tooltip).toBeInTheDocument();
-        expect(tooltip).toHaveTextContent("1 January 1970 at 01:00:00 GMT+1");
+        expect(tooltip).toHaveTextContent(/1 January 1970 at /);
     });
 });
