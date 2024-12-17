@@ -1,4 +1,5 @@
 import { ConfigFileType, IDeviceConfigFile, LoggerService } from "@powerpi/common";
+import "@powerpi/common-test/jest-globals";
 import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
 import ConfigPublishService from "./ConfigPublishService";
 import ConfigService from "./ConfigService";

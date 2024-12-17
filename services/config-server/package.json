@@ -31,7 +31,7 @@
         "yaml": "^2.3.1"
     },
     "devDependencies": {
-        "@powerpi/common-test": "^0.0.12",
+        "@powerpi/common-test": "^0.0.13",
         "@types/node": "^20.4.9",
         "@types/underscore": "^1.11.6",
         "ts-node": "^10.8.2",
@@ -40,9 +40,6 @@
     "jest": {
         "preset": "ts-jest",
         "testEnvironment": "node",
-        "setupFilesAfterEnv": [
-            "@powerpi/common-test/expect"
-        ],
         "collectCoverage": false,
         "collectCoverageFrom": [
             "src/**/*.ts",

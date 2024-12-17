@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/common-test",
-    "version": "0.0.12",
+    "version": "0.0.13",
     "description": "PowerPi Common Typescript Testing library",
     "private": true,
     "license": "GPL-3.0-only",
@@ -17,9 +17,12 @@
         "clean": "rm -rf dist"
     },
     "files": [
-        "dist/src"
+        "dist/src",
+        "jest-globals.d.ts",
+        "jest-globals.js"
     ],
     "devDependencies": {
+        "@jest/globals": "^29.7.0",
         "@types/jest": "^29.5.3",
         "@types/node": "^20.4.9",
         "jest": "^29.6.2",
