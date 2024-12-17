@@ -1,11 +1,9 @@
-import * as matchers from "@testing-library/jest-dom/matchers";
+import "@testing-library/jest-dom";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import { beforeAll, expect, vi } from "vitest";
+import { beforeAll, vi } from "vitest";
 import defaults from "./public/locales/en-GB/defaults.json";
 import translation from "./public/locales/en-GB/translation.json";
-
-expect.extend(matchers);
 
 beforeAll(() => {
     // setup i18next with en-GB translation
