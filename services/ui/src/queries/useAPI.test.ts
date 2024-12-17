@@ -3,7 +3,7 @@ import { renderHook } from "@testing-library/react";
 import { PowerPiAPIContextProvider } from "./PowerPiApiContext";
 import useAPI from "./useAPI";
 
-describe("useApi", () => {
+describe("useAPI", () => {
     test("works", () => {
         const { result } = renderHook(useAPI, {
             wrapper: (props) => PowerPiAPIContextProvider({ ...props }),
