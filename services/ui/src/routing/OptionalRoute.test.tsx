@@ -45,7 +45,7 @@ describe("OptionalRoute", () => {
         expect(screen.queryByText("Disabled")).not.toBeInTheDocument();
     });
 
-    const routes = ["home", "device"];
+    const routes = ["home", "device", "history"];
 
     test.each(routes)("redirects when %s disabled", (route) => {
         mocks.useOptionalRoute.mockReturnValue({ home: true, device: true, [route]: false });

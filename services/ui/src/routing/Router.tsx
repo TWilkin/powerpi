@@ -15,6 +15,7 @@ import Routes from "./Route";
 const LoginPage = lazy(() => import("../pages/LoginPage"));
 const HomePage = lazy(() => import("../pages/HomePage"));
 const DevicePage = lazy(() => import("../pages/DevicePage"));
+const HistoryPage = lazy(() => import("../pages/HistoryPage"));
 const SettingsPage = lazy(() => import("../pages/SettingsPage"));
 
 const router = createBrowserRouter([
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
                                         element: <DevicePage />,
                                     },
                                 ],
+                            },
+                            {
+                                path: Routes.History,
+                                element: <HistoryPage />,
                             },
                         ],
                     },

@@ -20,6 +20,14 @@ const Header = () => {
 
                 <HeaderLink route={Route.Device} icon="device" text={t("navigation.devices")} />
 
+                {enabled?.history && (
+                    <HeaderLink
+                        route={Route.History}
+                        icon="history"
+                        text={t("navigation.history")}
+                    />
+                )}
+
                 <HeaderLink
                     route={Route.Settings}
                     icon="settings"

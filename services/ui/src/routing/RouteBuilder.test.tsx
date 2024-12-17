@@ -9,11 +9,18 @@ describe("RouteBuilder", () => {
         { route: Route.Device, expected: "device" },
         { route: Route.History, expected: "history" },
         { route: Route.Settings, expected: "settings" },
+        { route: Route.Settings, expected: "settings" },
     ];
     test.each(cases)("builds $expected from $route", ({ route, expected }) => {
         const result = RouteBuilder.build(route);
 
         expect(result).toBe(expected);
+    });
+
+    test("from root", () => {
+        const result = RouteBuilder.build(Route.Root, Route.History);
+
+        expect(result).toBe("/history");
     });
 
     const homeCases: { floor: string; expected: string }[] = [

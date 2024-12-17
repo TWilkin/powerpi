@@ -13,7 +13,10 @@ export default class RouteBuilder {
             filtered = [Route.Root];
         }
 
-        return filtered.map((part) => encodeURI(part)).join("/");
+        return filtered
+            .map((part) => encodeURI(part))
+            .join("/")
+            .replace("//", "/");
     }
 
     /** Build the URL for the home (floorplan) links.
