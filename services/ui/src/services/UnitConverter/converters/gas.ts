@@ -1,12 +1,13 @@
+import { ConverterDefinition } from "../types";
 import { power } from "./power";
 import { volume } from "./volume";
 
 const calorific = 38; // MJ/m3
 
-export const gas = [
+export const gas: ConverterDefinition[] = [
     {
         unit: "m3",
-        name: "Metres Cubed",
+        key: "metres cubed",
         convert: {
             kWh: (value: number) => (value * calorific * 1.02264) / 3.6,
         },

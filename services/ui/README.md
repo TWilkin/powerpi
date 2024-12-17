@@ -16,7 +16,7 @@ yarn
 # Build the common API library
 yarn build:common-api
 
-# Build the UI using webpack
+# Build the UI using vite
 yarn build:ui
 ```
 
@@ -34,7 +34,7 @@ yarn
 # Build the common API library
 yarn build:common-api
 
-# Run the UI locally
+# Run the tests
 yarn test:ui
 ```
 
@@ -54,11 +54,11 @@ yarn build:common-api
 yarn start:ui
 ```
 
-Additionally, the _webpack.dev.js_ file can be modified as follows to utilise a deployed version of the _API_ for convenient development, where _POWERPI_URL_ is the URL base for your PowerPI deployment and _TOKEN_ is the API token after authentication as stored in your cookies under _jwt_.
+Additionally, the _vite.config.ts_ file can be modified as follows to utilise a deployed version of the _API_ for convenient development, where _POWERPI_URL_ is the URL base for your PowerPI deployment and _TOKEN_ is the API token after authentication as stored in your cookies under _jwt_.
 
 ```js
 {
-    devServer: {
+    server: {
         proxy: {
             "/api": {
                 changeOrigin: true,

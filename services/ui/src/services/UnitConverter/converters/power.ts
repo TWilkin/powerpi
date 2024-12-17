@@ -1,14 +1,16 @@
-export const power = [
+import { ConverterDefinition } from "../types";
+
+export const power: ConverterDefinition[] = [
     {
         unit: "Wh",
-        name: "Watt Hours",
+        key: "watt hours",
         convert: {
             kWh: (value: number) => value * 1000,
         },
     },
     {
         unit: "kWh",
-        name: "Kilowatt Hours",
+        key: "kilowatt hours",
         convert: {
             Wh: (value: number) => value / 1000,
         },

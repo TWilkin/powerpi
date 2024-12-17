@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    /* Colours for the light theme */
+    .theme-light {
+        --powerpi-colour-bg: theme("colourComponents.white");
+        --powerpi-colour-bg-primary: theme("colourComponents.sky-400");
+        --powerpi-colour-bg-hover: theme("colourComponents.sky-300");
+        --powerpi-colour-bg-active: theme("colourComponents.sky-200");
+        --powerpi-colour-bg-selected: theme("colourComponents.sky-100");
+        --powerpi-colour-bg-zebra: theme("colourComponents.sky-200");
+        --powerpi-colour-bg-panel: theme("colourComponents.sky-200");
+        --powerpi-colour-bg-backdrop: theme("colourComponents.gray-500");
+
+        --powerpi-colour-text: theme("colourComponents.black");
+        --powerpi-colour-placeholder: theme("colourComponents.gray-600");
+
+        --powerpi-colour-border: theme("colourComponents.black");
+        --powerpi-colour-outline: theme("colourComponents.black");
+        --powerpi-colour-outline-offset: theme("colourComponents.white");
+
+        --powerpi-colour-warning: theme("colourComponents.orange-600");
+        --powerpi-colour-critical: theme("colourComponents.red-600");
+
+        --powerpi-colour-on: theme("colourComponents.green-800");
+        --powerpi-colour-on-hover: theme("colourComponents.green-700");
+        --powerpi-colour-on-active: theme("colourComponents.green-600");
+
+        --powerpi-colour-off: theme("colourComponents.red-800");
+        --powerpi-colour-off-hover: theme("colourComponents.red-700");
+        --powerpi-colour-off-active: theme("colourComponents.red-600");
+
+        --powerpi-colour-lock: theme("colourComponents.orange-500");
+        --powerpi-colour-lock-hover: theme("colourComponents.orange-400");
+        --powerpi-colour-lock-active: theme("colourComponents.orange-300");
+
+        --powerpi-colour-unlock: theme("colourComponents.red-800");
+        --powerpi-colour-unlock-hover: theme("colourComponents.red-700");
+        --powerpi-colour-unlock-active: theme("colourComponents.red-600");
+
+        --powerpi-colour-unknown: theme("colourComponents.gray-500");
+        --powerpi-colour-unknown-hover: theme("colourComponents.gray-400");
+        --powerpi-colour-unknown-active: theme("colourComponents.gray-300");
+    }
+
+    /* Colours for the dark theme. */
+    .theme-dark {
+        --powerpi-colour-bg: theme("colourComponents.black");
+        --powerpi-colour-bg-primary: theme("colourComponents.purple-900");
+        --powerpi-colour-bg-hover: theme("colourComponents.purple-800");
+        --powerpi-colour-bg-active: theme("colourComponents.purple-700");
+        --powerpi-colour-bg-selected: theme("colourComponents.purple-950");
+        --powerpi-colour-bg-zebra: theme("colourComponents.purple-950");
+        --powerpi-colour-bg-panel: theme("colourComponents.purple-950");
+        --powerpi-colour-bg-backdrop: theme("colourComponents.gray-500");
+
+        --powerpi-colour-text: theme("colourComponents.white");
+        --powerpi-colour-placeholder: theme("colourComponents.gray-400");
+
+        --powerpi-colour-border: theme("colourComponents.black");
+        --powerpi-colour-outline: theme("colourComponents.white");
+        --powerpi-colour-outline-offset: theme("colourComponents.black");
+
+        --powerpi-colour-warning: theme("colourComponents.orange-600");
+        --powerpi-colour-critical: theme("colourComponents.red-600");
+
+        --powerpi-colour-on: theme("colourComponents.green-800");
+        --powerpi-colour-on-hover: theme("colourComponents.green-700");
+        --powerpi-colour-on-active: theme("colourComponents.green-600");
+
+        --powerpi-colour-off: theme("colourComponents.red-800");
+        --powerpi-colour-off-hover: theme("colourComponents.red-700");
+        --powerpi-colour-off-active: theme("colourComponents.red-600");
+
+        --powerpi-colour-lock: theme("colourComponents.orange-500");
+        --powerpi-colour-lock-hover: theme("colourComponents.orange-400");
+        --powerpi-colour-lock-active: theme("colourComponents.orange-300");
+
+        --powerpi-colour-unlock: theme("colourComponents.red-800");
+        --powerpi-colour-unlock-hover: theme("colourComponents.red-700");
+        --powerpi-colour-unlock-active: theme("colourComponents.red-600");
+
+        --powerpi-colour-unknown: theme("colourComponents.gray-500");
+        --powerpi-colour-unknown-hover: theme("colourComponents.gray-400");
+        --powerpi-colour-unknown-active: theme("colourComponents.gray-300");
+    }
+}
+
+@layer utilities {
+    .vertical-writing-lr {
+        writing-mode: vertical-lr;
+    }
+
+    .pointer-events-all {
+        pointer-events: all;
+    }
+}
+
+@layer components {
+    input {
+        &[type="search"] {
+            &::-webkit-search-cancel-button {
+                @apply hidden;
+            }
+        }
+
+        &[type="range"] {
+            /* &::-moz-range-track, */
+            &::-webkit-slider-runnable-track {
+                @apply h-2 rounded;
+                @apply bg-bg-primary;
+            }
+
+            &[data-colour-slider] {
+                &::-webkit-slider-runnable-track {
+                    @apply bg-transparent;
+                }
+            }
+
+            /* &::-moz-range-thumb, */
+            &::-webkit-slider-thumb {
+                @apply h-4 w-4;
+                @apply relative appearance-none;
+                @apply bg-bg-active;
+                @apply -translate-x-1/4 -translate-y-1/4;
+                clip-path: polygon(0 0, 50% 50%, 100% 0);
+            }
+        }
+    }
+}

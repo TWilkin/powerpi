@@ -13,10 +13,10 @@ describe("UnitConverter", () => {
         test("getConverters", () => {
             const result = UnitConverter.getConverters("gas");
 
-            expect(result).toContainEqual({ unit: "m3", name: "Metres Cubed" });
-            expect(result).toContainEqual({ unit: "kWh", name: "Kilowatt Hours" });
-            expect(result).toContainEqual({ unit: "hcf", name: "Hundred Cubic Feet" });
-            expect(result).toContainEqual({ unit: "cf", name: "Cubic Feet" });
+            expect(result).toContainEqual({ unit: "m3", key: "metres cubed" });
+            expect(result).toContainEqual({ unit: "kWh", key: "kilowatt hours" });
+            expect(result).toContainEqual({ unit: "hcf", key: "hundred cubic feet" });
+            expect(result).toContainEqual({ unit: "cf", key: "cubic feet" });
         });
     });
 
@@ -28,8 +28,8 @@ describe("UnitConverter", () => {
         test("getConverters", () => {
             const result = UnitConverter.getConverters("power");
 
-            expect(result).toContainEqual({ unit: "Wh", name: "Watt Hours" });
-            expect(result).toContainEqual({ unit: "kWh", name: "Kilowatt Hours" });
+            expect(result).toContainEqual({ unit: "Wh", key: "watt hours" });
+            expect(result).toContainEqual({ unit: "kWh", key: "kilowatt hours" });
         });
     });
 
@@ -48,9 +48,9 @@ describe("UnitConverter", () => {
         test("getConverters", () => {
             const result = UnitConverter.getConverters("temperature");
 
-            expect(result).toContainEqual({ unit: "°C", name: "Celsius" });
-            expect(result).toContainEqual({ unit: "K", name: "Kelvin" });
-            expect(result).toContainEqual({ unit: "F", name: "Fahrenheit" });
+            expect(result).toContainEqual({ unit: "°C", key: "celsius" });
+            expect(result).toContainEqual({ unit: "K", key: "kelvin" });
+            expect(result).toContainEqual({ unit: "F", key: "fahrenheit" });
         });
     });
 
@@ -66,9 +66,9 @@ describe("UnitConverter", () => {
         test("getConverters", () => {
             const result = UnitConverter.getConverters("volume");
 
-            expect(result).toContainEqual({ unit: "m3", name: "Metres Cubed" });
-            expect(result).toContainEqual({ unit: "hcf", name: "Hundred Cubic Feet" });
-            expect(result).toContainEqual({ unit: "cf", name: "Cubic Feet" });
+            expect(result).toContainEqual({ unit: "m3", key: "metres cubed" });
+            expect(result).toContainEqual({ unit: "hcf", key: "hundred cubic feet" });
+            expect(result).toContainEqual({ unit: "cf", key: "cubic feet" });
         });
     });
 

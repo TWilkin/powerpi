@@ -1,0 +1,6 @@
+{
+    "units": {
+        "temperature": "°C",
+        "gas": "m3"
+    }
+}

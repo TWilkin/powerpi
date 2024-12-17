@@ -1,0 +1,173 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Floorplan > renders first floor 1`] = `
+<div>
+  <div
+    class="relative flex-1"
+  >
+    <svg
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] h-[95%]"
+      preserveAspectRatio="xMidYMid"
+      viewBox="0 0 200 100"
+    >
+      <g>
+        <g
+          class="focus:outline-none"
+          data-tooltip-id="room-tooltip-First-MasterBedroom"
+        >
+          <rect
+            class="pointer-events-all fill-none outline-none stroke-text hover:fill-bg-hover"
+            height="100"
+            width="200"
+          />
+          <g
+            transform="translate(4 50) scale(0.0390625)"
+          >
+            <title>
+              There are 3 more hidden devices/sensors.
+            </title>
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-ellipsis "
+              data-icon="ellipsis"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              viewBox="0 0 448 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"
+                fill="currentColor"
+              />
+            </svg>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+</div>
+`;
+
+exports[`Floorplan > renders ground floor 1`] = `
+<div>
+  <div
+    class="relative flex-1"
+  >
+    <svg
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] h-[95%]"
+      preserveAspectRatio="xMidYMid"
+      viewBox="0 0 200 100"
+    >
+      <g>
+        <g
+          class="focus:outline-none"
+          data-tooltip-id="room-tooltip-Ground-LivingRoom"
+        >
+          <rect
+            class="pointer-events-all fill-none outline-none stroke-text hover:fill-bg-hover"
+            height="100"
+            width="100"
+          />
+          <g
+            transform="translate(2 50) scale(0.0390625)"
+          >
+            <title>
+              There are 4 more hidden devices/sensors.
+            </title>
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-ellipsis "
+              data-icon="ellipsis"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              viewBox="0 0 448 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"
+                fill="currentColor"
+              />
+            </svg>
+          </g>
+        </g>
+        <g
+          class="focus:outline-none"
+          data-tooltip-id="room-tooltip-Ground-Kitchen"
+        >
+          <rect
+            class="pointer-events-all fill-none outline-none stroke-text hover:fill-bg-hover"
+            height="100"
+            width="100"
+            x="100"
+          />
+        </g>
+      </g>
+    </svg>
+  </div>
+</div>
+`;
+
+exports[`Floorplan > renders portrait 1`] = `
+<div>
+  <div
+    class="relative flex-1"
+  >
+    <svg
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] h-[95%]"
+      preserveAspectRatio="xMidYMid"
+      viewBox="0 0 100 200"
+    >
+      <g>
+        <g
+          class="focus:outline-none"
+          data-tooltip-id="room-tooltip-Ground-LivingRoom"
+        >
+          <rect
+            class="pointer-events-all fill-none outline-none stroke-text hover:fill-bg-hover"
+            height="100"
+            width="100"
+            x="0"
+            y="0"
+          />
+          <g
+            transform="translate(2 50) scale(0.0390625)"
+          >
+            <title>
+              There are 4 more hidden devices/sensors.
+            </title>
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-ellipsis "
+              data-icon="ellipsis"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              viewBox="0 0 448 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"
+                fill="currentColor"
+              />
+            </svg>
+          </g>
+        </g>
+        <g
+          class="focus:outline-none"
+          data-tooltip-id="room-tooltip-Ground-Kitchen"
+        >
+          <rect
+            class="pointer-events-all fill-none outline-none stroke-text hover:fill-bg-hover"
+            height="100"
+            width="100"
+            x="7.105427357601002e-15"
+            y="100"
+          />
+        </g>
+      </g>
+    </svg>
+  </div>
+</div>
+`;

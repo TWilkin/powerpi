@@ -1,24 +1,30 @@
-export interface Floorplan {
+export type Floorplan = {
     floors: Floor[];
-}
+};
 
-export interface Floor {
+export type Floor = {
     name: string;
     display_name?: string;
     rooms: Room[];
-}
+};
 
-export interface Room {
-    name: string;
-    display_name?: string;
+export type PolygonRoom = {
+    points: Point[];
+};
+
+export type RectangleRoom = {
     x?: number;
     y?: number;
     width?: number;
     height?: number;
-    points?: Point[];
-}
+};
 
-export interface Point {
+export type Room = {
+    name: string;
+    display_name?: string;
+} & (PolygonRoom | RectangleRoom);
+
+export type Point = {
     x: number;
     y: number;
-}
+};

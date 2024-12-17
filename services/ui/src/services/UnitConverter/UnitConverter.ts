@@ -1,8 +1,9 @@
-import { chain as _ } from "underscore";
-import { keysOf } from "../../util";
+import _ from "underscore";
+import keysOf from "../../utils/keysOf";
 import { gas, power, temperature, volume } from "./converters";
-import { Converter, ConverterDefinition, UnitType, UnitValue } from "./types";
+import { Conversion, Converter, ConverterDefinition, UnitType, UnitValue } from "./types";
 
+/** Class representing the conversion from one numeric unit to another. */
 export default class UnitConverter {
     private static readonly converters: { [key in UnitType]: ConverterDefinition[] } = {
         gas,
@@ -13,14 +14,22 @@ export default class UnitConverter {
 
     private constructor() {}
 
-    public static getConverters(type: UnitType) {
+    /** Retrieve the list of supports conversions for the specified unit.
+     * @param type The unit to list the conversions for.
+     * @returns The list of supported conversions for the specified unit.
+     */
+    public static getConverters(type: UnitType): Conversion[] {
         return _(this.converters[type])
             .unique((unit) => unit.unit)
-            .map(({ unit, name }) => ({ unit, name }))
-            .sortBy((unit) => unit.name.toLocaleLowerCase())
-            .value();
+            .map(({ unit, key }) => ({ unit, key }));
     }
 
+    /** Convert the specified value from one unit to another.
+     * @param type The unit to convert from.
+     * @param value The value to convert.
+     * @param desiredUnit The unit to convert to.
+     * @returns The converted value.
+     */
     public static convert(type: UnitType, value: UnitValue, desiredUnit: string): UnitValue {
         const convert = this.generateConversion(type, value.unit, desiredUnit);
 
@@ -33,6 +42,14 @@ export default class UnitConverter {
         return value;
     }
 
+    /** Find a conversion through the set of possible conversions from the specified unit to
+     * the desired unit.
+     * @param type The unit to convert from.
+     * @param currentUnit The unit we're currently converting from in the chain.
+     * @param desiredUnit The unit to convert to.
+     * @param consumed The list of units we've used in our conversions, to avoid duplicates.
+     * @returns The converter from original unit to the currentUnit.
+     */
     public static generateConversion(
         type: UnitType,
         currentUnit: string,

@@ -1,24 +1,25 @@
-export const volume = [
+import { ConverterDefinition } from "../types";
+
+export const volume: ConverterDefinition[] = [
     {
         unit: "m3",
-        name: "Metres Cubed",
+        key: "metres cubed",
         convert: {
             cf: (value: number) => value * 35.3147,
         },
     },
     {
         unit: "cf",
-        name: "Cubic Feet",
+        key: "cubic feet",
         convert: {
-            hcf: (value: number) => value * 0.01,
+            hcf: (value: number) => value / 100,
         },
     },
     {
         unit: "hcf",
-        name: "Hundred Cubic Feet",
+        key: "hundred cubic feet",
         convert: {
             m3: (value: number) => value * 2.8316846592,
-            cf: (value: number) => value / 100,
         },
     },
 ];

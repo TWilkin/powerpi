@@ -1,7 +1,9 @@
-export const temperature = [
+import { ConverterDefinition } from "../types";
+
+export const temperature: ConverterDefinition[] = [
     {
         unit: "°C",
-        name: "Celsius",
+        key: "celsius",
         convert: {
             F: (value: number) => value * (9 / 5) + 32,
             K: (value: number) => value + 273.15,
@@ -9,14 +11,14 @@ export const temperature = [
     },
     {
         unit: "K",
-        name: "Kelvin",
+        key: "kelvin",
         convert: {
             "°C": (value: number) => value - 273.15,
         },
     },
     {
         unit: "F",
-        name: "Fahrenheit",
+        key: "fahrenheit",
         convert: {
             "°C": (value: number) => (value - 32) * (5 / 9),
         },

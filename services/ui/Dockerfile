@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 AS build-api-image
+FROM --platform=$BUILDPLATFORM node:20.18.1-alpine3.20 AS build-api-image
 LABEL description="Node.js builder for API library"
 
 # install the API library
@@ -10,7 +10,7 @@ RUN yarn workspace @powerpi/common-api install --frozen-lockfile
 COPY common/node/common-api ./common/node/common-api/
 RUN yarn workspace @powerpi/common-api build
 
-FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 AS build-ui-image
+FROM --platform=$BUILDPLATFORM node:20.18.1-alpine3.20 AS build-ui-image
 LABEL description="Node.js builder for UI"
 
 # install the UI
@@ -23,18 +23,17 @@ COPY services/ui/package.json ./services/ui/
 RUN yarn workspace @powerpi/ui install --frozen-lockfile
 COPY services/ui ./services/ui/
 RUN yarn workspace @powerpi/ui build
-RUN rm -rf /home/node/app/services/ui/dist/src
 
-FROM nginx:1.25.1-alpine3.17-slim AS run-image
+FROM nginx:1.27.2-alpine3.20-slim AS run-image
 LABEL description="PowerPi UI"
 
 # use non-root user
-RUN mkdir -p /var/www/powerpi
-RUN chown -R nginx:nginx /var/cache/nginx \
+RUN mkdir -p /var/www/powerpi \
+    && chown -R nginx:nginx /var/cache/nginx \
     && chown -R nginx:nginx /var/log/nginx \
     && chown -R nginx:nginx /etc/nginx/conf.d \
-    && chown -R nginx:nginx /var/www
-RUN touch /var/run/nginx.pid \
+    && chown -R nginx:nginx /var/www \
+    && touch /var/run/nginx.pid \
     && chown -R nginx:nginx /var/run/nginx.pid
 USER nginx
 
@@ -43,5 +42,4 @@ EXPOSE 8080
 # copy the built UI application into the NGINX container
 WORKDIR /var/www/powerpi
 COPY --chown=nginx:nginx LICENSE ./
-COPY --from=build-ui-image --chown=nginx:nginx /home/node/app/services/ui/public/ ./
 COPY --from=build-ui-image --chown=nginx:nginx /home/node/app/services/ui/dist/ ./
