@@ -51,11 +51,6 @@
                     "type": ["string", "null"]
                 },
 
-                "freeDNS": {
-                    "description": "Whether to deploy the FreeDNS service",
-                    "type": "boolean"
-                },
-
                 "config": {
                     "description": "Whether to include the config-server service to get configuration from GitHub",
                     "type": "boolean"
@@ -240,22 +235,6 @@
             "properties": {
                 "component": {
                     "const": "event"
-                }
-            },
-            "unevaluatedProperties": false
-        },
-
-        "freedns": {
-            "description": "The configuration for the PowerPi FreeDNS service Helm chart",
-            "type": "object",
-            "allOf": [{ "$ref": "#/$defs/service" }],
-            "properties": {
-                "component": {
-                    "const": "dns"
-                },
-                "schedule": {
-                    "description": "The cron schedule for when the FreeDNSr service should run",
-                    "type": "string"
                 }
             },
             "unevaluatedProperties": false

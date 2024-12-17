@@ -1,7 +1,0 @@
-apiVersion: v2
-name: freedns
-description: A Helm chart for the FreeDNS service making PowerPi accessible behind
-  dynamically changing IP addresses
-type: application
-version: 0.1.6
-appVersion: 0.1.4

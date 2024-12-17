@@ -19,9 +19,6 @@ dependencies:
   - name: event
     version: 0.0.1
     condition: global.event
-  - name: freedns
-    version: 0.1.6
-    condition: global.freeDNS
   - name: mosquitto
     version: 0.3.1
   - name: persistence
