@@ -81,14 +81,6 @@ microk8s helm upgrade --install --namespace powerpi -f __OVERRIDE__ powerpi powe
 
 The deployment expects the following secrets to already exist, they are described as follows and can be created with this command where _SECRET_NAME_ is the name of the specific secret and _/path/to/secret/file_ is the file containing that secret:
 
--   **freedns-secret** - The password to update the DNS record for your user in [FreeDNS](https://freedns.afraid.org/).
-
-```bash
-microk8s kubectl create secret generic freedns-secret --namespace powerpi \
-    --from-literal=username=__USERNAME__ \
-    --from-file=password=./__SECRET_NAME__
-```
-
 -   **google-auth-secret** - The Google OAuth secret used for login authentication in the API, UI and _voice-assistant_.
 
 ```bash
