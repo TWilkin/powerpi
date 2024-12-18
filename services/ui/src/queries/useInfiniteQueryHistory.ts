@@ -11,7 +11,7 @@ function historyQuery(
         initialPageParam: undefined,
 
         queryFn: ({ pageParam }) =>
-            api.getHistory(undefined, undefined, undefined, undefined, pageParam, 10),
+            api.getHistory(undefined, undefined, undefined, undefined, pageParam, 50),
 
         getNextPageParam(lastPage) {
             // first we need to get all the timestamps

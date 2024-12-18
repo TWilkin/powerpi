@@ -5,10 +5,14 @@ import Time from "../../components/Time";
 
 type HistoryRowProps = {
     row: History;
+
+    height: number;
+
+    offset: number;
 };
 
-const HistoryRow = ({ row }: HistoryRowProps) => (
-    <TableRow>
+const HistoryRow = ({ row, height, offset }: HistoryRowProps) => (
+    <TableRow style={{ height, transform: `translateY(${offset}px)` }}>
         <TableCell>{row.type}</TableCell>
 
         <TableCell>{row.entity}</TableCell>

@@ -12,7 +12,7 @@ import LoaderRow from "./LoaderRow";
 const HistoryPage = () => {
     const { t } = useTranslation();
 
-    const parentRef = useRef<HTMLDivElement>(null);
+    const scrollRef = useRef<HTMLDivElement>(null);
 
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQueryHistory();
 
@@ -23,9 +23,10 @@ const HistoryPage = () => {
 
     const virtualiser = useVirtualizer({
         count: hasNextPage ? rows.length + 1 : rows.length,
-        getScrollElement: () => parentRef.current,
+        getScrollElement: () => scrollRef.current,
+        getItemKey: (index) => generateKey(rows[index]) ?? index,
         estimateSize: () => 2 * 16, // 2rem
-        overscan: 5,
+        overscan: 10,
     });
     const items = virtualiser.getVirtualItems();
 
@@ -43,34 +44,43 @@ const HistoryPage = () => {
     }, [fetchNextPage, hasNextPage, isFetchingNextPage, items, rows.length]);
 
     return (
-        <div className="h-[90vh] -ml -mr overflow-auto" ref={parentRef}>
-            <Table grow={false} style={{ height: `${virtualiser.getTotalSize()}px` }}>
-                <thead>
-                    <TableRow header>
-                        <th>{t("pages.history.headings.type")}</th>
-                        <th>{t("pages.history.headings.entity")}</th>
-                        <th>{t("pages.history.headings.action")}</th>
-                        <th>{t("pages.history.headings.when")}</th>
-                        <th>{t("pages.history.headings.message")}</th>
-                    </TableRow>
-                </thead>
+        <div className="h-[90vh] -ml -mr overflow-auto" ref={scrollRef}>
+            <div style={{ height: `${virtualiser.getTotalSize()}px` }}>
+                <Table grow={false}>
+                    <thead>
+                        <TableRow header>
+                            <th>{t("pages.history.headings.type")}</th>
+                            <th>{t("pages.history.headings.entity")}</th>
+                            <th>{t("pages.history.headings.action")}</th>
+                            <th>{t("pages.history.headings.when")}</th>
+                            <th>{t("pages.history.headings.message")}</th>
+                        </TableRow>
+                    </thead>
 
-                <tbody>
-                    {items.map((virtualRow) => {
-                        const isLoaderRow = virtualRow.index > rows.length - 1;
-                        if (isLoaderRow) {
-                            return <LoaderRow key="loader" />;
-                        }
+                    <tbody>
+                        {items.map((virtualRow, index) => {
+                            const isLoaderRow = virtualRow.index > rows.length - 1;
+                            if (isLoaderRow) {
+                                return <LoaderRow key="loader" />;
+                            }
 
-                        const row = rows[virtualRow.index];
-                        if (!row) {
-                            return <></>;
-                        }
+                            const row = rows[virtualRow.index];
+                            if (!row) {
+                                return <></>;
+                            }
 
-                        return <HistoryRow key={generateKey(row)} row={row} />;
-                    })}
-                </tbody>
-            </Table>
+                            return (
+                                <HistoryRow
+                                    key={virtualRow.key}
+                                    row={row}
+                                    height={virtualRow.size}
+                                    offset={virtualRow.start - index * virtualRow.size}
+                                />
+                            );
+                        })}
+                    </tbody>
+                </Table>
+            </div>
         </div>
     );
 };
