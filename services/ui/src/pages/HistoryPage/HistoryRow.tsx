@@ -17,11 +17,11 @@ const HistoryRow = ({ row, height }: HistoryRowProps) => (
 
         <TableCell>{row.action}</TableCell>
 
-        <TableCell>{row.timestamp && <Time time={new Date(row.timestamp).getTime()} />}</TableCell>
-
-        <TableCell>
-            <pre className="font-mono text-sm">{JSON.stringify(row.message)}</pre>
+        <TableCell width="time">
+            {row.timestamp && <Time time={new Date(row.timestamp).getTime()} />}
         </TableCell>
+
+        <TableCell className="font-mono text-sm">{JSON.stringify(row.message)}</TableCell>
     </TableRow>
 );
 export default HistoryRow;

@@ -58,7 +58,7 @@ const HistoryPage = () => {
     return (
         <div className="h-[90vh] -ml -mr overflow-auto" ref={scrollRef}>
             <div style={{ height: `${virtualiser.getTotalSize()}px` }}>
-                <Table grow={false}>
+                <Table>
                     <thead>
                         <TableRow header>
                             <th>{t("pages.history.headings.type")}</th>
