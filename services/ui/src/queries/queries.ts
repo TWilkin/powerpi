@@ -31,12 +31,12 @@ type InfiniteQueryGenerator<TResultType, TPageType> = (
  * @params queryGenerator The function to generate the react-query query parameters.
  * @return The loader function which can be used by react-router.
  */
-export function loader<TResultType, TPageType = unknown>(
+export function loader<TResultType>(
     queryClient: QueryClient,
     api: PowerPiApi,
-    queryGenerator: QueryGenerator<TResultType> | InfiniteQueryGenerator<TResultType, TPageType>,
+    queryGenerator: QueryGenerator<TResultType>,
 ) {
-    const query = queryGenerator(api) as Query<TResultType>;
+    const query = queryGenerator(api);
 
     return function loader() {
         return defer({ data: queryClient.ensureQueryData(query) });
@@ -51,6 +51,24 @@ export function useQuery<TResultType>(queryGenerator: QueryGenerator<TResultType
     const api = useAPI();
 
     return useSuspenseQuery(queryGenerator(api));
+}
+
+/** Function to use as a loader to pre-populate the query cache with the infinite scrolling data.
+ * @params queryClient The react-query client instance.
+ * @params api The API instance.
+ * @params queryGenerator The function to generate the react-query infinite query parameters.
+ * @return The loader function which can be used by react-router.
+ */
+export function infiniteLoader<TResultType, TPageType>(
+    queryClient: QueryClient,
+    api: PowerPiApi,
+    queryGenerator: InfiniteQueryGenerator<TResultType, TPageType>,
+) {
+    const query = queryGenerator(api);
+
+    return function loader() {
+        return defer({ data: queryClient.ensureInfiniteQueryData(query) });
+    };
 }
 
 /** Function to retrieve infinite scrolling data from the react-query cache, if present.
