@@ -47,6 +47,7 @@
         "@fortawesome/free-solid-svg-icons": "^6.6.0",
         "@fortawesome/react-fontawesome": "^0.2.2",
         "@powerpi/common-api": "^0.1.9",
+        "@tanstack/react-virtual": "^3.11.2",
         "@tanstack/react-query": "^5.59.16",
         "chroma-js": "^3.1.2",
         "classnames": "^2.5.1",
