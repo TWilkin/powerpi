@@ -1,5 +1,7 @@
+import { History } from "@powerpi/common-api";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useEffect, useMemo, useRef } from "react";
+import _ from "underscore";
 import Table from "../../components/Table";
 import useInfiniteQueryHistory from "../../queries/useInfiniteQueryHistory";
 import HistoryRow from "./HistoryRow";
@@ -10,7 +12,10 @@ const HistoryPage = () => {
 
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQueryHistory();
 
-    const rows = useMemo(() => data?.pages.flatMap((page) => page.data) ?? [], [data?.pages]);
+    const rows = useMemo(
+        () => _(data.pages.flatMap((page) => page.data)).unique(generateKey),
+        [data?.pages],
+    );
 
     const virtualiser = useVirtualizer({
         count: hasNextPage ? rows.length + 1 : rows.length,
@@ -48,12 +53,7 @@ const HistoryPage = () => {
                             return <></>;
                         }
 
-                        return (
-                            <HistoryRow
-                                key={`${row.type}/${row.entity}/${row.action}:${row.timestamp}`}
-                                row={row}
-                            />
-                        );
+                        return <HistoryRow key={generateKey(row)} row={row} />;
                     })}
                 </tbody>
             </Table>
@@ -61,3 +61,11 @@ const HistoryPage = () => {
     );
 };
 export default HistoryPage;
+
+function generateKey(row: History | undefined) {
+    if (!row) {
+        return undefined;
+    }
+
+    return `${row.type}/${row.entity}/${row.action}:${row.timestamp}`;
+}

@@ -3,13 +3,15 @@ import { QueryClient } from "@tanstack/react-query";
 import { infiniteLoader, InfiniteQuery, useInfiniteQuery } from "./queries";
 import QueryKeyFactory from "./QueryKeyFactory";
 
-function historyQuery(api: PowerPiApi): InfiniteQuery<PaginationResponse<History>, Date> {
+function historyQuery(
+    api: PowerPiApi,
+): InfiniteQuery<PaginationResponse<History>, Date | undefined> {
     return {
         queryKey: QueryKeyFactory.history,
-        initialPageParam: new Date(),
+        initialPageParam: undefined,
 
-        queryFn: ({ pageParam = undefined }) =>
-            api.getHistory(undefined, undefined, undefined, pageParam, undefined, 10),
+        queryFn: ({ pageParam }) =>
+            api.getHistory(undefined, undefined, undefined, undefined, pageParam, 10),
 
         getNextPageParam(lastPage) {
             // first we need to get all the timestamps
