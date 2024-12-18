@@ -9,7 +9,7 @@ const Layout = () => (
 
         <Suspense
             fallback={
-                <div className="w-full flex justify-center">
+                <div className="w-full flex justify-center flex-1">
                     <Loader />
                 </div>
             }

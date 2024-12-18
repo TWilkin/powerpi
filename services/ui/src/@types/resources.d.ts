@@ -45,6 +45,7 @@ interface Resources {
       }
     },
     "common": {
+      "loading": "Loading",
       "close": "Close",
       "clear search": "Clear search",
       "open filter": "Open filters",
