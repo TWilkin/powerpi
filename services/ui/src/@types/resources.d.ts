@@ -40,6 +40,15 @@ interface Resources {
           "clear": "Clear Filters"
         }
       },
+      "history": {
+        "headings": {
+          "type": "Type",
+          "entity": "Entity",
+          "action": "Action",
+          "when": "When",
+          "message": "Message"
+        }
+      },
       "settings": {
         "units": "Units"
       }

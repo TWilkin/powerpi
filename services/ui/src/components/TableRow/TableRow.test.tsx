@@ -6,8 +6,8 @@ describe("TableRow", () => {
         render(
             <table>
                 <tbody>
-                    <TableRow data-testid="row">
-                        <td>Cell</td>
+                    <TableRow>
+                        <td />
                     </TableRow>
                 </tbody>
             </table>,
@@ -16,9 +16,31 @@ describe("TableRow", () => {
         const table = screen.getByRole("table");
         expect(table).toBeInTheDocument();
 
-        const row = within(table).getByTestId("row");
+        const row = within(table).getByRole("row");
         expect(row).toBeInTheDocument();
+        expect(row).not.toHaveClass("sticky");
 
-        expect(within(row).getByText("Cell")).toBeInTheDocument();
+        expect(within(row).getByRole("cell")).toBeInTheDocument();
+    });
+
+    test("renders header", () => {
+        render(
+            <table>
+                <thead>
+                    <TableRow header>
+                        <th />
+                    </TableRow>
+                </thead>
+            </table>,
+        );
+
+        const table = screen.getByRole("table");
+        expect(table).toBeInTheDocument();
+
+        const row = within(table).getByRole("row");
+        expect(row).toBeInTheDocument();
+        expect(row).toHaveClass("sticky");
+
+        expect(within(row).getByRole("columnheader")).toBeInTheDocument();
     });
 });

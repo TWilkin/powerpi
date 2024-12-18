@@ -1,9 +1,18 @@
+import classNames from "classnames";
 import { HTMLAttributes } from "react";
 
-type TableRow = Omit<HTMLAttributes<HTMLTableRowElement>, "className">;
+type TableRow = {
+    header?: boolean;
+} & Omit<HTMLAttributes<HTMLTableRowElement>, "className">;
 
-const TableRow = ({ children, ...props }: TableRow) => (
-    <tr {...props} className="h-8 bg-transparent odd:bg-bg-zebra">
+const TableRow = ({ header = false, children, ...props }: TableRow) => (
+    <tr
+        {...props}
+        className={classNames("h-8", {
+            "bg-transparent odd:bg-bg-zebra": !header,
+            "sticky top-0 bg-bg": header,
+        })}
+    >
         {children}
     </tr>
 );

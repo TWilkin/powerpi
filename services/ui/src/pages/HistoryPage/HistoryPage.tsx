@@ -1,13 +1,17 @@
 import { History } from "@powerpi/common-api";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import _ from "underscore";
 import Table from "../../components/Table";
+import TableRow from "../../components/TableRow";
 import useInfiniteQueryHistory from "../../queries/useInfiniteQueryHistory";
 import HistoryRow from "./HistoryRow";
 import LoaderRow from "./LoaderRow";
 
 const HistoryPage = () => {
+    const { t } = useTranslation();
+
     const parentRef = useRef<HTMLDivElement>(null);
 
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQueryHistory();
@@ -39,8 +43,18 @@ const HistoryPage = () => {
     }, [fetchNextPage, hasNextPage, isFetchingNextPage, items, rows.length]);
 
     return (
-        <div className="h-[90vh] overflow-auto" ref={parentRef}>
+        <div className="h-[90vh] -ml -mr overflow-auto" ref={parentRef}>
             <Table grow={false} style={{ height: `${virtualiser.getTotalSize()}px` }}>
+                <thead>
+                    <TableRow header>
+                        <th>{t("pages.history.headings.type")}</th>
+                        <th>{t("pages.history.headings.entity")}</th>
+                        <th>{t("pages.history.headings.action")}</th>
+                        <th>{t("pages.history.headings.when")}</th>
+                        <th>{t("pages.history.headings.message")}</th>
+                    </TableRow>
+                </thead>
+
                 <tbody>
                     {items.map((virtualRow) => {
                         const isLoaderRow = virtualRow.index > rows.length - 1;
