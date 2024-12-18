@@ -1,5 +1,6 @@
 import { PowerPiApi } from "@powerpi/common-api";
 import {
+    InfiniteData,
     QueryClient,
     QueryKey,
     useSuspenseInfiniteQuery,
@@ -16,7 +17,7 @@ type QueryGenerator<TResultType> = (api: PowerPiApi) => Query<TResultType>;
 export type InfiniteQuery<TResultType, TPageType> = UseSuspenseInfiniteQueryOptions<
     TResultType,
     Error,
-    TResultType,
+    InfiniteData<TResultType, TPageType>,
     TResultType,
     QueryKey,
     TPageType

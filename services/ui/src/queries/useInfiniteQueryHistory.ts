@@ -1,18 +1,17 @@
 import { History, PaginationResponse, PowerPiApi } from "@powerpi/common-api";
-import { QueryClient, useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { infiniteLoader } from "./queries";
+import { QueryClient } from "@tanstack/react-query";
+import { infiniteLoader, InfiniteQuery, useInfiniteQuery } from "./queries";
 import QueryKeyFactory from "./QueryKeyFactory";
-import useAPI from "./useAPI";
 
-function historyQuery(api: PowerPiApi) {
+function historyQuery(api: PowerPiApi): InfiniteQuery<PaginationResponse<History>, Date> {
     return {
         queryKey: QueryKeyFactory.history,
         initialPageParam: new Date(),
 
-        queryFn: ({ pageParam = undefined }: { pageParam: Date | undefined }) =>
+        queryFn: ({ pageParam = undefined }) =>
             api.getHistory(undefined, undefined, undefined, pageParam, undefined, 10),
 
-        getNextPageParam(lastPage: PaginationResponse<History>) {
+        getNextPageParam(lastPage) {
             // first we need to get all the timestamps
             const timestamps = lastPage.data
                 ?.map((record) => record.timestamp)
@@ -36,8 +35,5 @@ export function historyLoader(queryClient: QueryClient, api: PowerPiApi) {
 }
 
 export default function useInfiniteQueryHistory() {
-    // TODO work out why the hook is messing with the return type
-    const api = useAPI();
-
-    return useSuspenseInfiniteQuery(historyQuery(api));
+    return useInfiniteQuery(historyQuery);
 }
