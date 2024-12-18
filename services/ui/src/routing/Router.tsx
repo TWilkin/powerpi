@@ -4,6 +4,7 @@ import ErrorPage from "../pages/ErrorPage";
 import DefaultHomeRoute from "../pages/HomePage/DefaultHomeRoute";
 import Layout, { configLoader } from "../pages/Layout";
 import { api, queryClient } from "../queries/client";
+import { historyLoader } from "../queries/useInfiniteQueryHistory";
 import { devicesLoader } from "../queries/useQueryDevices";
 import { floorplanLoader } from "../queries/useQueryFloorPlan";
 import { sensorsLoader } from "../queries/useQuerySensors";
@@ -69,6 +70,7 @@ const router = createBrowserRouter([
                             },
                             {
                                 path: Routes.History,
+                                loader: historyLoader(queryClient, api),
                                 element: <HistoryPage />,
                             },
                         ],

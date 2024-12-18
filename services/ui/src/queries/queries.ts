@@ -2,6 +2,8 @@ import { PowerPiApi } from "@powerpi/common-api";
 import {
     QueryClient,
     QueryKey,
+    useSuspenseInfiniteQuery,
+    UseSuspenseInfiniteQueryOptions,
     useSuspenseQuery,
     UseSuspenseQueryOptions,
 } from "@tanstack/react-query";
@@ -9,8 +11,19 @@ import { defer } from "react-router-dom";
 import useAPI from "./useAPI";
 
 export type Query<TResultType> = UseSuspenseQueryOptions<TResultType, Error, TResultType, QueryKey>;
-
 type QueryGenerator<TResultType> = (api: PowerPiApi) => Query<TResultType>;
+
+export type InfiniteQuery<TResultType, TPageType> = UseSuspenseInfiniteQueryOptions<
+    TResultType,
+    Error,
+    TResultType,
+    TResultType,
+    QueryKey,
+    TPageType
+>;
+type InfiniteQueryGenerator<TResultType, TPageType> = (
+    api: PowerPiApi,
+) => InfiniteQuery<TResultType, TPageType>;
 
 /** Function to use as a loader to pre-populate the query cache with the data.
  * @params queryClient The react-query client instance.
@@ -18,12 +31,12 @@ type QueryGenerator<TResultType> = (api: PowerPiApi) => Query<TResultType>;
  * @params queryGenerator The function to generate the react-query query parameters.
  * @return The loader function which can be used by react-router.
  */
-export function loader<TResultType>(
+export function loader<TResultType, TPageType = unknown>(
     queryClient: QueryClient,
     api: PowerPiApi,
-    queryGenerator: QueryGenerator<TResultType>,
+    queryGenerator: QueryGenerator<TResultType> | InfiniteQueryGenerator<TResultType, TPageType>,
 ) {
-    const query = queryGenerator(api);
+    const query = queryGenerator(api) as Query<TResultType>;
 
     return function loader() {
         return defer({ data: queryClient.ensureQueryData(query) });
@@ -38,4 +51,16 @@ export function useQuery<TResultType>(queryGenerator: QueryGenerator<TResultType
     const api = useAPI();
 
     return useSuspenseQuery(queryGenerator(api));
+}
+
+/** Function to retrieve infinite scrolling data from the react-query cache, if present.
+ * @params queryGenerator The function to generate the react-query infinite query parameters.
+ * @return The react-query query results.
+ */
+export function useInfiniteQuery<TResultType, TPageType>(
+    queryGenerator: InfiniteQueryGenerator<TResultType, TPageType>,
+) {
+    const api = useAPI();
+
+    return useSuspenseInfiniteQuery(queryGenerator(api));
 }

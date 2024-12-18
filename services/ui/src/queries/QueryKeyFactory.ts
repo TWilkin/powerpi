@@ -8,4 +8,6 @@ export default class QueryKeyFactory {
     static readonly sensors = [...this.base, "sensors"];
 
     static readonly floorplan = [...this.base, "floor-plan"];
+
+    static readonly history = [...this.base, "history"];
 }
