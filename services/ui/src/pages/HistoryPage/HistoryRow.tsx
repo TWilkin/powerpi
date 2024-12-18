@@ -7,12 +7,10 @@ type HistoryRowProps = {
     row: History;
 
     height: number;
-
-    offset: number;
 };
 
-const HistoryRow = ({ row, height, offset }: HistoryRowProps) => (
-    <TableRow style={{ height, transform: `translateY(${offset}px)` }}>
+const HistoryRow = ({ row, height }: HistoryRowProps) => (
+    <TableRow style={{ height }}>
         <TableCell>{row.type}</TableCell>
 
         <TableCell>{row.entity}</TableCell>

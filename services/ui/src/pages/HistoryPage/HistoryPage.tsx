@@ -30,6 +30,18 @@ const HistoryPage = () => {
     });
     const items = virtualiser.getVirtualItems();
 
+    // calculate how much padding is required before and after the rows we're actually showing
+    const [before, after] = useMemo(() => {
+        if (items.length > 0) {
+            return [
+                items[0].start - virtualiser.options.scrollMargin,
+                virtualiser.getTotalSize() - (_(items).last()?.end ?? 0),
+            ];
+        }
+
+        return [0, 0];
+    }, [items, virtualiser]);
+
     // fetch more data
     useEffect(() => {
         const [lastItem] = [...items].reverse();
@@ -58,7 +70,13 @@ const HistoryPage = () => {
                     </thead>
 
                     <tbody>
-                        {items.map((virtualRow, index) => {
+                        {before > 0 && (
+                            <tr>
+                                <td colSpan={5} style={{ height: before }} />
+                            </tr>
+                        )}
+
+                        {items.map((virtualRow) => {
                             const isLoaderRow = virtualRow.index > rows.length - 1;
                             if (isLoaderRow) {
                                 return <LoaderRow key="loader" />;
@@ -74,10 +92,15 @@ const HistoryPage = () => {
                                     key={virtualRow.key}
                                     row={row}
                                     height={virtualRow.size}
-                                    offset={virtualRow.start - index * virtualRow.size}
                                 />
                             );
                         })}
+
+                        {after > 0 && (
+                            <tr>
+                                <td colSpan={5} style={{ height: after }} />
+                            </tr>
+                        )}
                     </tbody>
                 </Table>
             </div>

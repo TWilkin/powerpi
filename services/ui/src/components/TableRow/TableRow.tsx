@@ -10,7 +10,7 @@ const TableRow = ({ header = false, children, ...props }: TableRow) => (
         {...props}
         className={classNames("h-8", {
             "bg-transparent odd:bg-bg-zebra": !header,
-            "sticky top-0 bg-bg": header,
+            "sticky top-0 bg-bg z-10": header,
         })}
     >
         {children}
