@@ -20,8 +20,8 @@ const TableRow = ({ children, ...props }: TableRow) => (
         {...omit(props, "header", "index")}
         className={classNames("h-8", {
             "sticky top-0 bg-bg z-10": props.header,
-            "bg-transparent": !props.header && props.index % 2 === 0,
-            "bg-bg-zebra": !props.header && props.index % 2 === 1,
+            "bg-transparent": !props.header && props.index % 2 === 1,
+            "bg-bg-zebra": !props.header && props.index % 2 === 0,
         })}
     >
         {children}

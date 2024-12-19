@@ -3,9 +3,9 @@ import TableRow from "./TableRow";
 
 describe("TableRow", () => {
     const rows: [number, boolean][] = [
-        [0, false],
-        [1, true],
-        [2, false],
+        [0, true],
+        [1, false],
+        [2, true],
     ];
     test.each(rows)("renders index=%i", (index, zebra) => {
         render(
