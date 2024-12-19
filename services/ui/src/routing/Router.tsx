@@ -70,8 +70,19 @@ const router = createBrowserRouter([
                             },
                             {
                                 path: Routes.History,
-                                loader: historyLoader(queryClient, api),
-                                element: <HistoryPage />,
+                                children: [
+                                    {
+                                        index: true,
+                                        element: <HistoryPage />,
+                                        loader: historyLoader(queryClient, api, undefined),
+                                    },
+                                    {
+                                        path: ":entity",
+                                        element: <HistoryPage />,
+                                        loader: ({ params }) =>
+                                            historyLoader(queryClient, api, params.entity),
+                                    },
+                                ],
                             },
                         ],
                     },

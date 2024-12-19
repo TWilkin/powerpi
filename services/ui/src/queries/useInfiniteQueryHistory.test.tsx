@@ -39,7 +39,11 @@ describe("historyLoader", () => {
     test("works", async () => {
         mocks.api.getHistory.mockImplementation(async () => data);
 
-        const loader = historyLoader(new QueryClient(), mocks.api as unknown as PowerPiApi);
+        const loader = historyLoader(
+            new QueryClient(),
+            mocks.api as unknown as PowerPiApi,
+            undefined,
+        );
 
         const result = (await loader()).data;
         const page = (result as InfiniteData<PaginationResponse<History>>).pages[0];
@@ -51,9 +55,12 @@ describe("useInfiniteQueryHistory", () => {
     test("works", async () => {
         mocks.api.getHistory.mockImplementation(async () => data);
 
-        const { result } = renderHook(useInfiniteQueryHistory, {
-            wrapper: Wrapper,
-        });
+        const { result } = renderHook(
+            () => useInfiniteQueryHistory(undefined, undefined, undefined),
+            {
+                wrapper: Wrapper,
+            },
+        );
 
         await waitFor(() => expect(result.current?.data.pages[0]).toBe(data));
     });

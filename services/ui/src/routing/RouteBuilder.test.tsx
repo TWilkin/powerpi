@@ -33,4 +33,15 @@ describe("RouteBuilder", () => {
 
         expect(result).toBe(expected);
     });
+
+    const historyCases: { entity: string | undefined; expected: string }[] = [
+        { entity: undefined, expected: "history" },
+        { entity: "device", expected: "history/device" },
+        { entity: " ", expected: "history" },
+    ];
+    test.each(historyCases)("history builds $expected from $entity", ({ entity, expected }) => {
+        const result = RouteBuilder.history(entity);
+
+        expect(result).toBe(expected);
+    });
 });

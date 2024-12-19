@@ -16,7 +16,7 @@ const HistoryLink = ({ device }: HistoryLinkProps) => {
 
     return (
         <Link
-            to={RouteBuilder.build(Route.Root, Route.History)}
+            to={RouteBuilder.build(Route.Root, Route.History, device.name)}
             className={classNames(buttonStyles("icon"), "rounded border border-border")}
             aria-label={t("common.history link", { device: device.display_name })}
         >

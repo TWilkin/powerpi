@@ -35,7 +35,7 @@ describe("configLoader", () => {
 
         const loader = configLoader(new QueryClient(), mocks.api as unknown as PowerPiApi);
 
-        const result = await loader().data.data;
+        const result = (await loader()).data;
         expect(result).toBe(data);
     });
 });

@@ -26,4 +26,12 @@ export default class RouteBuilder {
     public static home(floor: string) {
         return this.build(Route.Home, floor);
     }
+
+    /** Build the URL for the history links.
+     * @param entity The entity (e.g. device or sensor name) to generate the URL for.
+     * @return The URL for the specified Route.
+     */
+    public static history(entity: string | undefined = undefined) {
+        return this.build(Route.History, entity);
+    }
 }
