@@ -8,19 +8,19 @@ import TableRow from "../../components/TableRow";
 import useInfiniteQueryHistory from "../../queries/useInfiniteQueryHistory";
 import HistoryRow from "./HistoryRow";
 import LoaderRow from "./LoaderRow";
-import useEntity from "./useEntity";
+import useHistoryFilter from "./useHistoryFilter";
 
 const HistoryPage = () => {
     const { t } = useTranslation();
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    const entity = useEntity();
+    const { state } = useHistoryFilter();
 
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQueryHistory(
-        undefined,
-        entity,
-        undefined,
+        state.type,
+        state.entity,
+        state.action,
     );
 
     const rows = useMemo(

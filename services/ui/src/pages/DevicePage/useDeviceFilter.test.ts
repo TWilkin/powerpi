@@ -136,4 +136,16 @@ describe("useDeviceFilter", () => {
         expect(result.current.devices).toStrictEqual(data);
         expect(result.current.total).toBe(3);
     });
+
+    test("unknown action", () => {
+        const { result } = renderHook(useDeviceFilter);
+
+        expect(() =>
+            act(() =>
+                result.current.dispatch({ type: "Unknown" } as unknown as Parameters<
+                    typeof result.current.dispatch
+                >[0]),
+            ),
+        ).toThrow("Unknown action");
+    });
 });
