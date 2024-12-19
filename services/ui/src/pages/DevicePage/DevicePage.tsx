@@ -73,8 +73,8 @@ const DevicePage = () => {
                 <div className="flex-1 overflow-y-auto overflow-x-visible">
                     <Table grow={false}>
                         <tbody>
-                            {devices.map((device) => (
-                                <TableRow key={device.name}>
+                            {devices.map((device, index) => (
+                                <TableRow key={device.name} index={index}>
                                     {showingInvisible && (
                                         <TableCell width="icon">
                                             <Icon icon={device.visible ? "visible" : "invisible"} />

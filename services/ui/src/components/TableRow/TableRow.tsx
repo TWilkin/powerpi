@@ -1,16 +1,27 @@
 import classNames from "classnames";
 import { HTMLAttributes } from "react";
+import { omit } from "underscore";
 
-type TableRow = {
-    header?: boolean;
-} & Omit<HTMLAttributes<HTMLTableRowElement>, "className">;
+type TableHeaderRow = {
+    header: true;
+};
 
-const TableRow = ({ header = false, children, ...props }: TableRow) => (
+type TableBodyRow = {
+    header?: false;
+
+    index: number;
+};
+
+type TableRow = Omit<HTMLAttributes<HTMLTableRowElement>, "className"> &
+    (TableHeaderRow | TableBodyRow);
+
+const TableRow = ({ children, ...props }: TableRow) => (
     <tr
-        {...props}
+        {...omit(props, "header", "index")}
         className={classNames("h-8", {
-            "bg-transparent odd:bg-bg-zebra": !header,
-            "sticky top-0 bg-bg z-10": header,
+            "sticky top-0 bg-bg z-10": props.header,
+            "bg-transparent": !props.header && props.index % 2 === 0,
+            "bg-bg-zebra": !props.header && props.index % 2 === 1,
         })}
     >
         {children}

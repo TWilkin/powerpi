@@ -6,11 +6,13 @@ import Time from "../../components/Time";
 type HistoryRowProps = {
     row: History;
 
+    index: number;
+
     height: number;
 };
 
-const HistoryRow = ({ row, height }: HistoryRowProps) => (
-    <TableRow style={{ height }}>
+const HistoryRow = ({ row, index, height }: HistoryRowProps) => (
+    <TableRow index={index} style={{ height }}>
         <TableCell>{row.type}</TableCell>
 
         <TableCell>{row.entity}</TableCell>
