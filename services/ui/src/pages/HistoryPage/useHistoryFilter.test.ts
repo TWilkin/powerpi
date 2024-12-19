@@ -16,6 +16,7 @@ describe("useHistoryFilter", () => {
         type: undefined,
         entity: undefined,
         action: undefined,
+        start: undefined,
     };
 
     beforeEach(() => {
@@ -62,21 +63,35 @@ describe("useHistoryFilter", () => {
         expect(result.current.state).toEqual({ ...initialState, action: "someAction" });
     });
 
+    test("start filter", () => {
+        const { result } = renderHook(useHistoryFilter);
+
+        expect(result.current.state).toEqual(initialState);
+
+        const date = new Date();
+        act(() => result.current.dispatch({ type: "Start", start: date }));
+
+        expect(result.current.state).toEqual({ ...initialState, start: date });
+    });
+
     test("clear filter", () => {
         const { result } = renderHook(useHistoryFilter);
 
         expect(result.current.state).toEqual(initialState);
 
+        const date = new Date();
         act(() => {
             result.current.dispatch({ type: "Type", _type: "someType" });
             result.current.dispatch({ type: "Entity", entity: "someEntity" });
             result.current.dispatch({ type: "Action", action: "someAction" });
+            result.current.dispatch({ type: "Start", start: date });
         });
 
         expect(result.current.state).toEqual({
             type: "someType",
             entity: "someEntity",
             action: "someAction",
+            start: date,
         });
 
         act(() => result.current.dispatch({ type: "Clear", initialState }));

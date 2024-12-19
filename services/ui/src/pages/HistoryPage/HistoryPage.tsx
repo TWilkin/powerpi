@@ -22,6 +22,7 @@ const HistoryPage = () => {
     const { open: filterOpen, handleToggle: handleFilterToggle } = useSlideAnimation();
 
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQueryHistory(
+        state.start,
         state.type,
         state.entity,
         state.action,
@@ -79,7 +80,7 @@ const HistoryPage = () => {
             <HistoryFilter open={filterOpen} state={state} dispatch={dispatch} clear={clear} />
 
             <div
-                className="h-[90vh] -ml -mr overflow-auto scrollbar-thin scrollbar-stable"
+                className="h-[85vh] -ml -mr overflow-auto scrollbar-thin scrollbar-stable"
                 ref={scrollRef}
             >
                 <div style={{ height: `${virtualiser.getTotalSize()}px` }}>

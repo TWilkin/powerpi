@@ -6,13 +6,14 @@ import QueryKeyFactory from "./QueryKeyFactory";
 
 function historyQuery(
     api: PowerPiApi,
+    start: Date | undefined,
     type: string | undefined,
     entity: string | undefined,
     action: string | undefined,
 ): InfiniteQuery<PaginationResponse<History>, Date | undefined> {
     return {
-        queryKey: QueryKeyFactory.history(type, entity, action),
-        initialPageParam: undefined,
+        queryKey: QueryKeyFactory.history(start, type, entity, action),
+        initialPageParam: start,
 
         queryFn: ({ pageParam }) => api.getHistory(type, entity, action, undefined, pageParam, 50),
 
@@ -40,17 +41,20 @@ export function historyLoader(
     api: PowerPiApi,
     entity: string | undefined,
 ) {
-    return infiniteLoader(queryClient, api, () => historyQuery(api, undefined, entity, undefined));
+    return infiniteLoader(queryClient, api, () =>
+        historyQuery(api, undefined, undefined, entity, undefined),
+    );
 }
 
 export default function useInfiniteQueryHistory(
+    start: Date | undefined,
     type: string | undefined,
     entity: string | undefined,
     action: string | undefined,
 ) {
     const query = useCallback(
-        (api: PowerPiApi) => historyQuery(api, type, entity, action),
-        [action, entity, type],
+        (api: PowerPiApi) => historyQuery(api, start, type, entity, action),
+        [action, entity, start, type],
     );
 
     return useInfiniteQuery(query);

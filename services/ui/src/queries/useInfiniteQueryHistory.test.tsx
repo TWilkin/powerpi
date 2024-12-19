@@ -56,7 +56,7 @@ describe("useInfiniteQueryHistory", () => {
         mocks.api.getHistory.mockImplementation(async () => data);
 
         const { result } = renderHook(
-            () => useInfiniteQueryHistory(undefined, undefined, undefined),
+            () => useInfiniteQueryHistory(undefined, undefined, undefined, undefined),
             {
                 wrapper: Wrapper,
             },

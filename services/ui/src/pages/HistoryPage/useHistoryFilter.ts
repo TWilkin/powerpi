@@ -10,12 +10,16 @@ type HistoryFilterState = {
     entity: string | undefined;
 
     action: string | undefined;
+
+    start: Date | undefined;
 };
 
 const initialHistoryFilterState: Omit<HistoryFilterState, "entity"> = {
     type: undefined,
 
     action: undefined,
+
+    start: undefined,
 };
 
 /** Hook to filter the history based on the user's filter selections.
@@ -44,9 +48,11 @@ type TypeAction = { type: "Type"; _type: string | undefined };
 type EntityAction = { type: "Entity"; entity: string | undefined };
 type ActionAction = { type: "Action"; action: string | undefined };
 
+type StartAction = { type: "Start"; start: Date | undefined };
+
 type ClearAction = { type: "Clear"; initialState: HistoryFilterState };
 
-type HistoryFilterAction = TypeAction | EntityAction | ActionAction | ClearAction;
+type HistoryFilterAction = TypeAction | EntityAction | ActionAction | StartAction | ClearAction;
 
 function useHistoryReducer() {
     const navigate = useNavigate();
@@ -67,6 +73,9 @@ function useHistoryReducer() {
 
                 case "Action":
                     return update({ action: action.action });
+
+                case "Start":
+                    return update({ start: action.start });
 
                 case "Clear":
                     navigate(
