@@ -8,7 +8,6 @@ import {
     useSuspenseQuery,
     UseSuspenseQueryOptions,
 } from "@tanstack/react-query";
-import { defer } from "react-router-dom";
 import useAPI from "./useAPI";
 
 export type Query<TResultType> = UseSuspenseQueryOptions<TResultType, Error, TResultType, QueryKey>;
@@ -39,8 +38,9 @@ export function loader<TResultType>(
 ) {
     const query = queryGenerator(api);
 
-    return function loader() {
-        return defer({ data: queryClient.ensureQueryData(query) });
+    return async function loader() {
+        const data = await queryClient.ensureQueryData(query);
+        return { data };
     };
 }
 
@@ -67,8 +67,9 @@ export function infiniteLoader<TResultType, TPageType>(
 ) {
     const query = queryGenerator(api);
 
-    return function loader() {
-        return defer({ data: queryClient.ensureInfiniteQueryData(query) });
+    return async function loader() {
+        const data = await queryClient.ensureInfiniteQueryData(query);
+        return { data };
     };
 }
 

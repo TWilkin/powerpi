@@ -41,7 +41,7 @@ describe("historyLoader", () => {
 
         const loader = historyLoader(new QueryClient(), mocks.api as unknown as PowerPiApi);
 
-        const result = await loader().data.data;
+        const result = (await loader()).data;
         const page = (result as InfiniteData<PaginationResponse<History>>).pages[0];
         expect(page).toBe(data);
     });
