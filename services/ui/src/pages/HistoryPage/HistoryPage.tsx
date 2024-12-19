@@ -56,7 +56,10 @@ const HistoryPage = () => {
     }, [fetchNextPage, hasNextPage, isFetchingNextPage, items, rows.length]);
 
     return (
-        <div className="h-[90vh] -ml -mr overflow-auto" ref={scrollRef}>
+        <div
+            className="h-[90vh] -ml -mr overflow-auto scrollbar-thin scrollbar-stable"
+            ref={scrollRef}
+        >
             <div style={{ height: `${virtualiser.getTotalSize()}px` }}>
                 <Table>
                     <thead>
