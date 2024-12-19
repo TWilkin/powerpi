@@ -79,10 +79,10 @@ const HistoryPage = () => {
                             </tr>
                         )}
 
-                        {items.map((virtualRow, index) => {
+                        {items.map((virtualRow) => {
                             const isLoaderRow = virtualRow.index > rows.length - 1;
                             if (isLoaderRow) {
-                                return <LoaderRow key="loader" index={index} />;
+                                return <LoaderRow key="loader" index={rows.length} />;
                             }
 
                             const row = rows[virtualRow.index];
@@ -94,7 +94,7 @@ const HistoryPage = () => {
                                 <HistoryRow
                                     key={virtualRow.key}
                                     row={row}
-                                    index={index}
+                                    index={virtualRow.index}
                                     height={virtualRow.size}
                                 />
                             );
