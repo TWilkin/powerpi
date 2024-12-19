@@ -3,9 +3,12 @@ import { vi } from "vitest";
 import useHistoryFilter from "./useHistoryFilter";
 
 const mocks = vi.hoisted(() => ({
+    navigate: vi.fn(),
+    useNavigate: vi.fn(),
     useEntity: vi.fn(),
 }));
 
+vi.mock("react-router-dom", () => ({ useNavigate: mocks.useNavigate }));
 vi.mock("./useEntity", () => ({ default: mocks.useEntity }));
 
 describe("useHistoryFilter", () => {
@@ -15,7 +18,19 @@ describe("useHistoryFilter", () => {
         action: undefined,
     };
 
-    beforeEach(() => mocks.useEntity.mockReturnValue(undefined));
+    beforeEach(() => {
+        mocks.useNavigate.mockReturnValue(mocks.navigate);
+        mocks.useEntity.mockReturnValue(undefined);
+    });
+
+    const entity = [undefined, "someEntity"];
+    test.each(entity)("defaults entity=%s", (entity) => {
+        mocks.useEntity.mockReturnValue(entity);
+
+        const { result } = renderHook(useHistoryFilter);
+
+        expect(result.current.state).toEqual({ ...initialState, entity });
+    });
 
     test("type filter", () => {
         const { result } = renderHook(useHistoryFilter);
@@ -27,15 +42,15 @@ describe("useHistoryFilter", () => {
         expect(result.current.state).toEqual({ ...initialState, type: "someType" });
     });
 
-    // test("entity filter", () => {
-    //     const { result } = renderHook(useHistoryFilter);
+    test("entity filter", () => {
+        const { result } = renderHook(useHistoryFilter);
 
-    //     expect(result.current.state).toEqual(initialState);
+        expect(result.current.state).toEqual(initialState);
 
-    //     act(() => result.current.dispatch({ type: "Entity", entity: "someEntity" }));
+        act(() => result.current.dispatch({ type: "Entity", entity: "someEntity" }));
 
-    //     expect(result.current.state).toEqual({ ...initialState, entity: "someEntity" });
-    // });
+        expect(result.current.state).toEqual({ ...initialState, entity: "someEntity" });
+    });
 
     test("action filter", () => {
         const { result } = renderHook(useHistoryFilter);
@@ -60,7 +75,7 @@ describe("useHistoryFilter", () => {
 
         expect(result.current.state).toEqual({
             type: "someType",
-            entity: undefined, //"someEntity",
+            entity: "someEntity",
             action: "someAction",
         });
 
