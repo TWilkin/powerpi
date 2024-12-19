@@ -3,9 +3,12 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import _ from "underscore";
+import Button from "../../components/Button";
+import { useSlideAnimation } from "../../components/SlideAnimation";
 import Table from "../../components/Table";
 import TableRow from "../../components/TableRow";
 import useInfiniteQueryHistory from "../../queries/useInfiniteQueryHistory";
+import HistoryFilter from "./HistoryFilter";
 import HistoryRow from "./HistoryRow";
 import LoaderRow from "./LoaderRow";
 import useHistoryFilter from "./useHistoryFilter";
@@ -15,7 +18,8 @@ const HistoryPage = () => {
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    const { state } = useHistoryFilter();
+    const { state, dispatch, clear } = useHistoryFilter();
+    const { open: filterOpen, handleToggle: handleFilterToggle } = useSlideAnimation();
 
     const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQueryHistory(
         state.type,
@@ -63,59 +67,71 @@ const HistoryPage = () => {
     }, [fetchNextPage, hasNextPage, isFetchingNextPage, items, rows.length]);
 
     return (
-        <div
-            className="h-[90vh] -ml -mr overflow-auto scrollbar-thin scrollbar-stable"
-            ref={scrollRef}
-        >
-            <div style={{ height: `${virtualiser.getTotalSize()}px` }}>
-                <Table>
-                    <thead>
-                        <TableRow header>
-                            <th>{t("pages.history.headings.type")}</th>
-                            <th>{t("pages.history.headings.entity")}</th>
-                            <th>{t("pages.history.headings.action")}</th>
-                            <th>{t("pages.history.headings.when")}</th>
-                            <th>{t("pages.history.headings.message")}</th>
-                        </TableRow>
-                    </thead>
-
-                    <tbody>
-                        {before > 0 && (
-                            <tr>
-                                <td colSpan={5} style={{ height: before }} />
-                            </tr>
-                        )}
-
-                        {items.map((virtualRow) => {
-                            const isLoaderRow = virtualRow.index > rows.length - 1;
-                            if (isLoaderRow) {
-                                return <LoaderRow key="loader" index={rows.length} />;
-                            }
-
-                            const row = rows[virtualRow.index];
-                            if (!row) {
-                                return <></>;
-                            }
-
-                            return (
-                                <HistoryRow
-                                    key={virtualRow.key}
-                                    row={row}
-                                    index={virtualRow.index}
-                                    height={virtualRow.size}
-                                />
-                            );
-                        })}
-
-                        {after > 0 && (
-                            <tr>
-                                <td colSpan={5} style={{ height: after }} />
-                            </tr>
-                        )}
-                    </tbody>
-                </Table>
+        <>
+            <div className="w-full flex gap-1 items-center">
+                <Button
+                    icon="filter"
+                    aria-label={t(filterOpen ? "common.close filter" : "common.open filter")}
+                    onClick={handleFilterToggle}
+                />
             </div>
-        </div>
+
+            <HistoryFilter open={filterOpen} state={state} dispatch={dispatch} clear={clear} />
+
+            <div
+                className="h-[90vh] -ml -mr overflow-auto scrollbar-thin scrollbar-stable"
+                ref={scrollRef}
+            >
+                <div style={{ height: `${virtualiser.getTotalSize()}px` }}>
+                    <Table>
+                        <thead>
+                            <TableRow header>
+                                <th>{t("pages.history.headings.type")}</th>
+                                <th>{t("pages.history.headings.entity")}</th>
+                                <th>{t("pages.history.headings.action")}</th>
+                                <th>{t("pages.history.headings.when")}</th>
+                                <th>{t("pages.history.headings.message")}</th>
+                            </TableRow>
+                        </thead>
+
+                        <tbody>
+                            {before > 0 && (
+                                <tr>
+                                    <td colSpan={5} style={{ height: before }} />
+                                </tr>
+                            )}
+
+                            {items.map((virtualRow) => {
+                                const isLoaderRow = virtualRow.index > rows.length - 1;
+                                if (isLoaderRow) {
+                                    return <LoaderRow key="loader" index={rows.length} />;
+                                }
+
+                                const row = rows[virtualRow.index];
+                                if (!row) {
+                                    return <></>;
+                                }
+
+                                return (
+                                    <HistoryRow
+                                        key={virtualRow.key}
+                                        row={row}
+                                        index={virtualRow.index}
+                                        height={virtualRow.size}
+                                    />
+                                );
+                            })}
+
+                            {after > 0 && (
+                                <tr>
+                                    <td colSpan={5} style={{ height: after }} />
+                                </tr>
+                            )}
+                        </tbody>
+                    </Table>
+                </div>
+            </div>
+        </>
     );
 };
 export default HistoryPage;

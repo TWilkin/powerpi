@@ -97,7 +97,7 @@ const DeviceFilter = ({ open, state, types, locations, dispatch, clear }: Device
                 </FieldSet>
 
                 <Button icon="filter" className="self-start" onClick={clear}>
-                    {t("pages.devices.filters.clear")}
+                    {t("common.clear filters")}
                 </Button>
             </Panel>
         </SlideAnimation>

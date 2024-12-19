@@ -36,8 +36,7 @@ interface Resources {
           "visibility": {
             "label": "Visibility",
             "option": "Only show visible devices"
-          },
-          "clear": "Clear Filters"
+          }
         }
       },
       "history": {
@@ -57,6 +56,7 @@ interface Resources {
       "loading": "Loading",
       "close": "Close",
       "clear search": "Clear search",
+      "clear filters": "Clear Filters",
       "open filter": "Open filters",
       "close filter": "close filters",
       "all": "All",

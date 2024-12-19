@@ -1,5 +1,6 @@
 import { useCallback, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
+import Route from "../../routing/Route";
 import RouteBuilder from "../../routing/RouteBuilder";
 import useEntity from "./useEntity";
 
@@ -28,8 +29,8 @@ export default function useHistoryFilter() {
     const [state, dispatch] = useReducer(reducer, { entity }, initialiser);
 
     const clear = useCallback(
-        () => dispatch({ type: "Clear", initialState: initialiser({ entity }) }),
-        [entity],
+        () => dispatch({ type: "Clear", initialState: initialiser({ entity: undefined }) }),
+        [],
     );
 
     return {
@@ -61,13 +62,16 @@ function useHistoryReducer() {
                     return update({ type: action._type });
 
                 case "Entity":
-                    navigate(RouteBuilder.history(action.entity));
+                    navigate(RouteBuilder.build(Route.Root, Route.History, action.entity));
                     return update({ entity: action.entity });
 
                 case "Action":
                     return update({ action: action.action });
 
                 case "Clear":
+                    navigate(
+                        RouteBuilder.build(Route.Root, Route.History, action.initialState.entity),
+                    );
                     return action.initialState;
 
                 default:
