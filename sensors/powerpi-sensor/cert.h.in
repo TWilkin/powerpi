@@ -3,7 +3,11 @@
 
 #ifdef MQTT_SSL
 const char cert_LetsEncrypt_R10[] PROGMEM = R"CERT(
-@CERT@
+@R10@
+)CERT";
+
+const char cert_LetsEncrypt_R11[] PROGMEM = R"CERT(
+@R11@
 )CERT";
 #endif
 
