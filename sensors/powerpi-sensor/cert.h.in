@@ -2,8 +2,12 @@
 #define __INCLUDED_CERT_H
 
 #ifdef MQTT_SSL
-const char cert_LetsEncrypt_R3 [] PROGMEM = R"CERT(
-@CERT@
+const char cert_LetsEncrypt_R10[] PROGMEM = R"CERT(
+@R10@
+)CERT";
+
+const char cert_LetsEncrypt_R11[] PROGMEM = R"CERT(
+@R11@
 )CERT";
 #endif
 
