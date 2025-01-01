@@ -1,0 +1,59 @@
+{{- $components := list
+  (dict
+    "Component" "api"
+    "Port" 1883
+  )
+  (dict
+    "Component" "controller"
+    "Port" 1883
+  )
+}}
+
+{{- if .Values.global.config }}
+{{- $components = append $components (dict
+  "Component" "config"
+  "Port" 1883
+)}}
+{{- end }}
+
+{{- if .Values.global.energyMonitor }}
+{{- $components = append $components (dict
+  "Component" "energy-monitor"
+  "Port" 1883
+)}}
+{{- end }}
+
+{{- if .Values.global.event }}
+{{- $components = append $components (dict
+  "Component" "event"
+  "Port" 1883
+)}}
+{{- end }}
+
+{{- if .Values.global.persistence }}
+{{- $components = append $components (dict
+  "Component" "persistence"
+  "Port" 1883
+)}}
+{{- end }}
+
+{{- if .Values.global.scheduler }}
+{{- $components = append $components (dict
+  "Component" "scheduler"
+  "Port" 1883
+)}}
+{{- end }}
+
+{{- if .Values.global.voiceAssistant }}
+{{- $components = append $components (dict
+  "Component" "voice-assistant"
+  "Port" 1883
+)}}
+{{- end }}
+
+{{- $data := dict
+    "Name" "mosquitto-ingress"
+    "Component" "message-queue"
+    "Ingress" $components
+}}
+{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
