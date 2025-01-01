@@ -49,6 +49,16 @@ spec:
   egress:
   {{- range $element := .Params.Egress }}
   - to:
+    {{- if eq (empty $element.Cidr) false }}
+    - ipBlock:
+      cidr: {{ $element.Cidr }}
+      {{- if eq (empty $element.Except) false }}
+      except:
+      {{- range $except := $element.Except }}
+      - {{ $except }}
+      {{- end }}
+      {{- end }}
+    {{- else }}
     - podSelector:
         matchLabels:
           {{- if eq (empty $element.Label) false }}
@@ -60,6 +70,7 @@ spec:
       ports:
       - protocol: {{ default "TCP" $element.Protocol }}
         port: {{ $element.Port }}
+    {{- end }}
   {{- end }}
   {{- end }}
 {{- end -}}
@@ -93,6 +104,26 @@ spec:
   (dict
     "Label" "database"
     "Port" 5432
+  )
+-}}
+{{- $data := dict
+    "Name" $name
+    "Label" .Chart.Name
+    "Egress" $messageQueue
+}}
+
+{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+
+{{- end -}}
+
+{{- define "powerpi.internet-network-policy" -}}
+
+{{- $name := printf "%s-internet" .Chart.Name -}}
+
+{{- $messageQueue := list
+  (dict
+    "Cidr" "0.0.0.0/0"
+    "Except" (list "10.0.0.0/8" "192.168.0.0/16" "172.16.0.0/20")
   )
 -}}
 {{- $data := dict
