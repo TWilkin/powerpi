@@ -49,7 +49,7 @@ ports:
 ) -}}
 {{- end -}}
 
-{{- if .Params.Database -}}
+{{- if and .Params.Database .Values.global.persistence -}}
 {{- $egress = append $egress (dict
     "Label" "database"
     "Port" 5432
