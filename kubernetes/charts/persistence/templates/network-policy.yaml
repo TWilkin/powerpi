@@ -1,1 +1,3 @@
 {{- include "powerpi.mosquitto-network-policy" . -}}
+---
+{{ include "powerpi.database-network-policy" . -}}

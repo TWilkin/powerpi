@@ -67,3 +67,24 @@ spec:
 {{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
 
 {{- end -}}
+
+
+{{- define "powerpi.database-network-policy" -}}
+
+{{- $name := printf "%s-database" .Chart.Name -}}
+
+{{- $messageQueue := list
+  (dict
+    "Component" "database"
+    "Port" 5432
+  )
+-}}
+{{- $data := dict
+    "Name" $name
+    "Component" .Chart.Name
+    "Egress" $messageQueue
+}}
+
+{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+
+{{- end -}}

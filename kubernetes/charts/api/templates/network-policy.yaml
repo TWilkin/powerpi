@@ -1,1 +1,6 @@
 {{- include "powerpi.mosquitto-network-policy" . -}}
+
+{{ if eq .Values.global.persistence true }}
+---
+{{ include "powerpi.database-network-policy" . -}}
+{{- end -}}
