@@ -295,7 +295,7 @@
             "allOf": [{ "$ref": "#/$defs/service" }],
             "properties": {
                 "component": {
-                    "const": "database"
+                    "const": "persistence"
                 }
             },
             "unevaluatedProperties": false
