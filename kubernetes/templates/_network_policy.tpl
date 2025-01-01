@@ -37,7 +37,7 @@ ports:
 
 {{- end -}}
 
-{{- define "powerpi.network-policy2" -}}
+{{- define "powerpi.network-policy" -}}
 
 {{- $ingress := .Params.Ingress | default list -}}
 {{- $egress := .Params.Egress | default list -}}

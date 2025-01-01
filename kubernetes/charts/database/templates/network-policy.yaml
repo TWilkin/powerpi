@@ -10,7 +10,7 @@
 }}
 
 {{- $data := dict
-    "Name" "database-ingress"
+    "Name" "database-policy"
     "Label" "database"
     "Ingress" $services
 }}

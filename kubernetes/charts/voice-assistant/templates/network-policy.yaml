@@ -1,3 +1,7 @@
-{{- include "powerpi.mosquitto-network-policy" . }}
----
-{{ include "powerpi.ingress-network-policy" . -}}
+{{- $data := dict
+    "Name" "voice-assistant-policy"
+    "Label" .Chart.Name
+    "External" true
+    "IngressController" true
+}}
+{{- include "powerpi.network-policy" (merge (dict "Params" $data) .) -}}

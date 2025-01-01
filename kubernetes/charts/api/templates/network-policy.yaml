@@ -1,8 +1,8 @@
-{{- include "powerpi.mosquitto-network-policy" . -}}
-
-{{ if eq .Values.global.persistence true }}
----
-{{ include "powerpi.database-network-policy" . -}}
-{{- end }}
----
-{{ include "powerpi.ingress-network-policy" . -}}
+{{- $data := dict
+    "Name" "api-policy"
+    "Label" .Chart.Name
+    "Mosquitto" true
+    "Database" true
+    "IngressController" true
+}}
+{{- include "powerpi.network-policy" (merge (dict "Params" $data) .) -}}

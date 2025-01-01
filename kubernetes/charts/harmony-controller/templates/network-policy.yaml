@@ -1,1 +1,6 @@
-{{- include "powerpi.local-network-policy" . -}}
+{{- $data := dict
+    "Name" "harmony-controller-policy"
+    "Label" .Chart.Name
+    "Local" "egress"
+}}
+{{- include "powerpi.network-policy" (merge (dict "Params" $data) .) -}}

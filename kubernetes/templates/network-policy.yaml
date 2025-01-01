@@ -12,17 +12,9 @@ spec:
   - Egress
 ---
 # Allow the controllers to access the message queue
-{{- 
-    $messageQueue := list
-      (dict
-        "Label" "mosquitto"
-        "Port" 1883
-      )
--}}
-
 {{- $data := dict
     "Name" "controller-mosquitto"
     "Component" "controller"
-    "Egress" $messageQueue
+    "Mosquitto" true
 }}
 {{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
