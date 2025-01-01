@@ -39,9 +39,9 @@ spec:
           app.kubernetes.io/component: {{ $element.Component }}
           {{- end }}
 
-      ports:
-      - protocol: {{ default "TCP" $element.Protocol }}
-        port: {{ $element.Port }}
+    ports:
+    - protocol: {{ default "TCP" $element.Protocol }}
+      port: {{ $element.Port }}
   {{- end }}
   {{- end }}
   {{- if $hasEgress }}
@@ -51,13 +51,13 @@ spec:
   - to:
     {{- if eq (empty $element.Cidr) false }}
     - ipBlock:
-      cidr: {{ $element.Cidr }}
-      {{- if eq (empty $element.Except) false }}
-      except:
-      {{- range $except := $element.Except }}
-      - {{ $except }}
-      {{- end }}
-      {{- end }}
+        cidr: {{ $element.Cidr }}
+        {{- if eq (empty $element.Except) false }}
+        except:
+        {{- range $except := $element.Except }}
+        - {{ $except }}
+        {{- end }}
+        {{- end }}
     {{- else }}
     - podSelector:
         matchLabels:
@@ -67,9 +67,10 @@ spec:
           {{- if eq (empty $element.Component) false }}
           app.kubernetes.io/component: {{ $element.Component }}
           {{- end }}
-      ports:
-      - protocol: {{ default "TCP" $element.Protocol }}
-        port: {{ $element.Port }}
+
+    ports:
+    - protocol: {{ default "TCP" $element.Protocol }}
+      port: {{ $element.Port }}
     {{- end }}
   {{- end }}
   {{- end }}
