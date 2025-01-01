@@ -120,7 +120,7 @@ spec:
 
 {{- $name := printf "%s-internet" .Chart.Name -}}
 
-{{- $messageQueue := list
+{{- $internet := list
   (dict
     "Cidr" "0.0.0.0/0"
     "Except" (list "10.0.0.0/8" "192.168.0.0/16" "172.16.0.0/20")
@@ -129,7 +129,32 @@ spec:
 {{- $data := dict
     "Name" $name
     "Label" .Chart.Name
-    "Egress" $messageQueue
+    "Egress" $internet
+}}
+
+{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+
+{{- end -}}
+
+{{- define "powerpi.local-network-policy" -}}
+
+{{- $name := printf "%s-local" .Chart.Name -}}
+
+{{- $local := list
+  (dict
+    "Cidr" "10.0.0.0/8"
+  )
+  (dict
+    "Cidr" "192.168.0.0/16"
+  )
+  (dict
+    "Cidr" "172.16.0.0/20"
+  )
+-}}
+{{- $data := dict
+    "Name" $name
+    "Label" .Chart.Name
+    "Egress" $local
 }}
 
 {{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
