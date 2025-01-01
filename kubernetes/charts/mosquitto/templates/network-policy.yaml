@@ -11,7 +11,7 @@
 
 {{- if .Values.global.config }}
 {{- $services = append $services (dict
-  "Label" "config"
+  "Label" "config-server"
   "Port" 1883
 )}}
 {{- end }}
