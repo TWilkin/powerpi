@@ -77,7 +77,7 @@ spec:
 
 {{- define "powerpi.mosquitto-network-policy" -}}
 
-{{- $name := printf "%s-mosquitto" .Chart.Name -}}
+{{- $name := printf "%s-mosquitto-egress" .Chart.Name -}}
 
 {{- $messageQueue := list
   (dict
@@ -98,7 +98,7 @@ spec:
 
 {{- define "powerpi.database-network-policy" -}}
 
-{{- $name := printf "%s-database" .Chart.Name -}}
+{{- $name := printf "%s-database-egress" .Chart.Name -}}
 
 {{- $messageQueue := list
   (dict
@@ -118,7 +118,7 @@ spec:
 
 {{- define "powerpi.internet-network-policy" -}}
 
-{{- $name := printf "%s-internet" .Chart.Name -}}
+{{- $name := printf "%s-internet-egress" .Chart.Name -}}
 
 {{- $internet := list
   (dict
@@ -138,7 +138,7 @@ spec:
 
 {{- define "powerpi.local-network-policy" -}}
 
-{{- $name := printf "%s-local" .Chart.Name -}}
+{{- $name := printf "%s-local-egress" .Chart.Name -}}
 
 {{- $local := list
   (dict

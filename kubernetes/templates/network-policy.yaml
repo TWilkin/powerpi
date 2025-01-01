@@ -15,7 +15,7 @@ spec:
 {{- 
     $messageQueue := list
       (dict
-        "Component" "message-queue"
+        "Label" "mosquitto"
         "Port" 1883
       )
 -}}
