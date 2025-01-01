@@ -47,19 +47,13 @@ spec:
 
 {{- $name := printf "%s-mosquitto-egress" .Chart.Name -}}
 
-{{- $messageQueue := list
-  (dict
-    "Label" "mosquitto"
-    "Port" 1883
-  )
--}}
 {{- $data := dict
     "Name" $name
     "Label" .Chart.Name
-    "Egress" $messageQueue
+    "Mosquitto" true
 }}
 
-{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+{{ include "powerpi.network-policy2" (merge (dict "Params" $data) .) }}
 
 {{- end -}}
 
@@ -68,19 +62,13 @@ spec:
 
 {{- $name := printf "%s-database-egress" .Chart.Name -}}
 
-{{- $messageQueue := list
-  (dict
-    "Label" "database"
-    "Port" 5432
-  )
--}}
 {{- $data := dict
     "Name" $name
     "Label" .Chart.Name
-    "Egress" $messageQueue
+    "Database" true
 }}
 
-{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+{{ include "powerpi.network-policy2" (merge (dict "Params" $data) .) }}
 
 {{- end -}}
 
@@ -133,17 +121,12 @@ spec:
 
 {{- $name := printf "%s-ingress" .Chart.Name -}}
 
-{{- $ingress := list
-  (dict
-    "Namespace" "ingress"
-  )
--}}
 {{- $data := dict
     "Name" $name
     "Label" .Chart.Name
-    "Ingress" $ingress
+    "IngressController" true
 }}
 
-{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+{{ include "powerpi.network-policy2" (merge (dict "Params" $data) .) }}
 
 {{- end -}}
