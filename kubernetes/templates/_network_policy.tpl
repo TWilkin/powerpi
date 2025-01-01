@@ -65,6 +65,35 @@ ports:
 {{- $hasIngress := eq (empty $ingress) false  -}}
 {{- $hasEgress := eq (empty $egress) false  -}}
 
+{{- if .Params.External -}}
+{{- $egress = append $egress (dict
+    "Cidr" "0.0.0.0/0"
+    "Except" (list "10.0.0.0/8" "192.168.0.0/16" "172.16.0.0/20")
+) -}}
+{{- end -}}
+
+{{- $local := list
+  (dict
+    "Cidr" "10.0.0.0/8"
+  )
+  (dict
+    "Cidr" "192.168.0.0/16"
+  )
+  (dict
+    "Cidr" "172.16.0.0/20"
+  )
+-}}
+
+{{- if eq .Params.Local "ingress" -}}
+{{- $ingress = concat $ingress $local -}}
+{{- end -}}
+{{- if eq .Params.Local "egress" -}}
+{{- $egress = concat $egress $local -}}
+{{- end -}}
+
+{{- $hasIngress := eq (empty $ingress) false  -}}
+{{- $hasEgress := eq (empty $egress) false  -}}
+
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:

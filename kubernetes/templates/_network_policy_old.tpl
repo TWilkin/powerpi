@@ -76,19 +76,13 @@ spec:
 
 {{- $name := printf "%s-internet-egress" .Chart.Name -}}
 
-{{- $internet := list
-  (dict
-    "Cidr" "0.0.0.0/0"
-    "Except" (list "10.0.0.0/8" "192.168.0.0/16" "172.16.0.0/20")
-  )
--}}
 {{- $data := dict
     "Name" $name
     "Label" .Chart.Name
-    "Egress" $internet
+    "External" true
 }}
 
-{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+{{ include "powerpi.network-policy2" (merge (dict "Params" $data) .) }}
 
 {{- end -}}
 
@@ -96,24 +90,13 @@ spec:
 
 {{- $name := printf "%s-local-egress" .Chart.Name -}}
 
-{{- $local := list
-  (dict
-    "Cidr" "10.0.0.0/8"
-  )
-  (dict
-    "Cidr" "192.168.0.0/16"
-  )
-  (dict
-    "Cidr" "172.16.0.0/20"
-  )
--}}
 {{- $data := dict
     "Name" $name
     "Label" .Chart.Name
-    "Egress" $local
+    "Local" "egress"
 }}
 
-{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+{{ include "powerpi.network-policy2" (merge (dict "Params" $data) .) }}
 
 {{- end -}}
 
