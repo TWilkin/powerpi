@@ -1,0 +1,1 @@
+{{- include "powerpi.mosquitto-network-policy" . -}}

@@ -11,6 +11,7 @@ spec:
   - Ingress
   - Egress
 ---
+# Allow the controllers to access the message queue
 {{- 
     $messageQueue := list
       (dict
@@ -19,84 +20,9 @@ spec:
       )
 -}}
 
-# Allow the API to access the message queue
 {{- $data := dict
-    "Name" "api-mosquitto"
-    "Component" "api"
-    "Egress" $messageQueue
-}}
-{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
----
-# Allow the controllers to access the message queue
-{{- $data = dict
     "Name" "controller-mosquitto"
     "Component" "controller"
     "Egress" $messageQueue
 }}
 {{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
-
-{{ if .Values.global.config }}
----
-# Allow the config-server service to access the message queue
-{{- $data = dict
-    "Name" "config-server-mosquitto"
-    "Component" "config"
-    "Egress" $messageQueue
-}}
-{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
-{{- end -}}
-
-{{ if .Values.global.energyMonitor }}
----
-# Allow the energy-monitor service to access the message queue
-{{- $data = dict
-    "Name" "energy-monitor-mosquitto"
-    "Component" "energy-monitor"
-    "Egress" $messageQueue
-}}
-{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
-{{- end -}}
-
-{{ if .Values.global.event }}
----
-# Allow the event service to access the message queue
-{{- $data = dict
-    "Name" "event-mosquitto"
-    "Component" "event"
-    "Egress" $messageQueue
-}}
-{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
-{{- end -}}
-
-{{ if .Values.global.persistence }}
----
-# Allow the persistence service to access the message queue
-{{- $data = dict
-    "Name" "persistence-mosquitto"
-    "Component" "persistence"
-    "Egress" $messageQueue
-}}
-{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
-{{- end -}}
-
-{{ if .Values.global.scheduler }}
----
-# Allow the scheduler service to access the message queue
-{{- $data = dict
-    "Name" "scheduler-mosquitto"
-    "Component" "scheduler"
-    "Egress" $messageQueue
-}}
-{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
-{{- end -}}
-
-{{ if .Values.global.voiceAssistant }}
----
-# Allow the voice-assistant service to access the message queue
-{{- $data = dict
-    "Name" "voice-assistant-mosquitto"
-    "Component" "voice-assistant"
-    "Egress" $messageQueue
-}}
-{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
-{{- end -}}

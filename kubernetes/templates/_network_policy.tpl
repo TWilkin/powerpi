@@ -47,3 +47,23 @@ spec:
   {{- end }}
   {{- end }}
 {{- end -}}
+
+{{- define "powerpi.mosquitto-network-policy" -}}
+
+{{- $name := printf "%s-mosquitto" .Chart.Name -}}
+
+{{- $messageQueue := list
+  (dict
+    "Component" "message-queue"
+    "Port" 1883
+  )
+-}}
+{{- $data := dict
+    "Name" $name
+    "Component" .Chart.Name
+    "Egress" $messageQueue
+}}
+
+{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+
+{{- end -}}
