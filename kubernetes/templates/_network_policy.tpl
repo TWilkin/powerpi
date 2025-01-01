@@ -11,7 +11,12 @@ metadata:
 spec:
   podSelector:
     matchLabels:
+      {{- if eq (empty .Params.Label) false }}
+      app.kubernetes.io/name: {{ .Params.Label }}
+      {{- end }}
+      {{- if eq (empty .Params.Component) false }}
       app.kubernetes.io/component: {{ .Params.Component }}
+      {{- end }}
 
   policyTypes:
   {{- if $hasIngress }}
@@ -27,7 +32,13 @@ spec:
   - from:
     - podSelector:
         matchLabels:
+          {{- if eq (empty $element.Label) false }}
+          app.kubernetes.io/name: {{ $element.Label }}
+          {{- end }}
+          {{- if eq (empty $element.Component) false }}
           app.kubernetes.io/component: {{ $element.Component }}
+          {{- end }}
+
       ports:
       - protocol: {{ default "TCP" $element.Protocol }}
         port: {{ $element.Port }}
@@ -40,7 +51,12 @@ spec:
   - to:
     - podSelector:
         matchLabels:
+          {{- if eq (empty $element.Label) false }}
+          app.kubernetes.io/name: {{ $element.Label }}
+          {{- end }}
+          {{- if eq (empty $element.Component) false }}
           app.kubernetes.io/component: {{ $element.Component }}
+          {{- end }}
       ports:
       - protocol: {{ default "TCP" $element.Protocol }}
         port: {{ $element.Port }}
@@ -54,13 +70,13 @@ spec:
 
 {{- $messageQueue := list
   (dict
-    "Component" "message-queue"
+    "Label" "mosquitto"
     "Port" 1883
   )
 -}}
 {{- $data := dict
     "Name" $name
-    "Component" .Chart.Name
+    "Label" .Chart.Name
     "Egress" $messageQueue
 }}
 
@@ -75,13 +91,13 @@ spec:
 
 {{- $messageQueue := list
   (dict
-    "Component" "database"
+    "Label" "database"
     "Port" 5432
   )
 -}}
 {{- $data := dict
     "Name" $name
-    "Component" .Chart.Name
+    "Label" .Chart.Name
     "Egress" $messageQueue
 }}
 

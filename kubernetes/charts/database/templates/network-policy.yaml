@@ -1,17 +1,17 @@
-{{- $components := list
+{{- $services := list
   (dict
-    "Component" "api"
+    "Label" "api"
     "Port" 5432
   )
   (dict
-    "Component" "persistence"
+    "Label" "persistence"
     "Port" 5432
   )
 }}
 
 {{- $data := dict
     "Name" "database-ingress"
-    "Component" "database"
-    "Ingress" $components
+    "Label" "database"
+    "Ingress" $services
 }}
 {{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
