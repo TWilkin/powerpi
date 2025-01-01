@@ -30,6 +30,12 @@ spec:
   ingress:
   {{- range $element := .Params.Ingress }}
   - from:
+    {{- if eq (empty $element.Namespace) false }}
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ $element.Namespace }}
+    {{- end }}
+    {{- if eq (and (empty $element.Label) (empty $element.Component)) false }}
     - podSelector:
         matchLabels:
           {{- if eq (empty $element.Label) false }}
@@ -42,6 +48,7 @@ spec:
     ports:
     - protocol: {{ default "TCP" $element.Protocol }}
       port: {{ $element.Port }}
+    {{- end }}
   {{- end }}
   {{- end }}
   {{- if $hasEgress }}
@@ -156,6 +163,25 @@ spec:
     "Name" $name
     "Label" .Chart.Name
     "Egress" $local
+}}
+
+{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+
+{{- end -}}
+
+{{- define "powerpi.ingress-network-policy" -}}
+
+{{- $name := printf "%s-ingress" .Chart.Name -}}
+
+{{- $ingress := list
+  (dict
+    "Namespace" "ingress"
+  )
+-}}
+{{- $data := dict
+    "Name" $name
+    "Label" .Chart.Name
+    "Ingress" $ingress
 }}
 
 {{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}

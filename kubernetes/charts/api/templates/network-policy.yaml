@@ -3,4 +3,6 @@
 {{ if eq .Values.global.persistence true }}
 ---
 {{ include "powerpi.database-network-policy" . -}}
-{{- end -}}
+{{- end }}
+---
+{{ include "powerpi.ingress-network-policy" . -}}
