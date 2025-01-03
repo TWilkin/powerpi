@@ -13,7 +13,7 @@ spec:
 ---
 # Allow the controllers to access the message queue
 {{- $data := dict
-    "Name" "controller-mosquitto"
+    "Name" "controller-policy"
     "Component" "controller"
     "Mosquitto" true
 }}

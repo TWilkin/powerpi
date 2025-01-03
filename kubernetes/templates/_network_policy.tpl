@@ -6,7 +6,7 @@
       kubernetes.io/metadata.name: {{ .Params.Namespace }}
 {{- end }}
 
-{{- if eq (and (empty .Params.Label) (empty .Params.Component)) false }}
+{{- if eq (or (empty .Params.Label) (empty .Params.Component) (empty .Params.K8sApp)) true }}
 - podSelector:
     matchLabels:
       {{- if eq (empty .Params.Label) false }}
@@ -34,7 +34,7 @@
 
 {{- if eq (empty .Params.Port) false }}
 ports:
-- protocol: {{ default "TCP" .Params.Protocol }}
+- protocol: {{ .Params.Protocol | default "TCP" }}
   port: {{ .Params.Port }}
 {{- end }}
 
