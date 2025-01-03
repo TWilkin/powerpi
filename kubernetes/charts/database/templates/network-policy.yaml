@@ -7,6 +7,10 @@
     "Label" "persistence"
     "Port" 5432
   )
+  (dict
+    "Label" "database-backup"
+    "Port" 5432
+  )
 }}
 
 {{- $data := dict

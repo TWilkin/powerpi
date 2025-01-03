@@ -1,5 +1,9 @@
 {{- define "powerpi.selector" }}
-  app.kubernetes.io/name: {{ .Chart.Name }}
+{{- $name := .Chart.Name }}
+{{- if eq (empty .Params) false }}
+{{- $name = .Params.Name }}
+{{- end }}
+  app.kubernetes.io/name: {{ $name | default .Chart.Name }}
   app.kubernetes.io/component: {{ .Values.component }}
   app.kubernetes.io/part-of: powerpi
   app.kubernetes.io/managed-by: {{ .Release.Service }}
