@@ -15,6 +15,9 @@
       {{- if eq (empty .Params.Component) false }}
       app.kubernetes.io/component: {{ .Params.Component }}
       {{- end }}
+      {{- if eq (empty .Params.K8sApp) false }}
+      k8s-app: {{ .Params.K8sApp }}
+      {{- end }}
 {{- end }}
 
 {{- if eq (empty .Params.Cidr) false }}
@@ -39,8 +42,19 @@ ports:
 
 {{- define "powerpi.network-policy" -}}
 
+{{- $database := and .Params.Database .Values.global.persistence -}}
+
 {{- $ingress := .Params.Ingress | default list -}}
 {{- $egress := .Params.Egress | default list -}}
+
+{{- if or .Params.DNS .Params.Mosquitto $database .Params.External .Params.Local -}}
+{{- $egress = append $egress (dict
+    "Namespace" "kube-system"
+    "K8sApp" "kube-dns"
+    "Protocol" "UDP"
+    "Port" 53
+) -}}
+{{- end -}}
 
 {{- if .Params.Mosquitto -}}
 {{- $egress = append $egress (dict
@@ -49,7 +63,7 @@ ports:
 ) -}}
 {{- end -}}
 
-{{- if and .Params.Database .Values.global.persistence -}}
+{{- if $database -}}
 {{- $egress = append $egress (dict
     "Label" "database"
     "Port" 5432
