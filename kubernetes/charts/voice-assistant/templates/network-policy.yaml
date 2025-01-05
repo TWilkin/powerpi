@@ -2,6 +2,6 @@
     "Name" "voice-assistant-policy"
     "Label" .Chart.Name
     "External" true
-    "IngressController" true
+    "IngressController" 3000
 }}
 {{- include "powerpi.network-policy" (merge (dict "Params" $data) .) -}}

@@ -3,6 +3,6 @@
     "Label" .Chart.Name
     "Mosquitto" true
     "Database" true
-    "IngressController" true
+    "IngressController" 3000
 }}
 {{- include "powerpi.network-policy" (merge (dict "Params" $data) .) -}}

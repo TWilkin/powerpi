@@ -73,6 +73,7 @@ ports:
 {{- if .Params.IngressController -}}
 {{- $ingress = append $ingress (dict
     "Namespace" "ingress"
+    "Port" .Params.IngressController
 ) -}}
 {{- end -}}
 
