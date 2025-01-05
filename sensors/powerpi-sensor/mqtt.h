@@ -44,8 +44,8 @@ WiFiClient espClient;
 
 #ifdef MQTT_SSL
 // the root CA
-X509List certR10(cert_LetsEncrypt_R10);
-X509List certR11(cert_LetsEncrypt_R11);
+X509List certX1(cert_LetsEncrypt_X1);
+X509List certX2(cert_LetsEncrypt_X2);
 #endif
 
 // the MQTT client

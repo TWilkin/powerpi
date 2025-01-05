@@ -20,8 +20,8 @@ void setupMQTT()
 void connectMQTT(bool waitForNTP)
 {
 #ifdef MQTT_SSL
-    espClient.setTrustAnchors(&certR10);
-    espClient.setTrustAnchors(&certR11);
+    espClient.setTrustAnchors(&certX1);
+    espClient.setTrustAnchors(&certX2);
 #endif
 
     // wait until it's connected
