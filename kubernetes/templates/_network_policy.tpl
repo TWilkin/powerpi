@@ -41,6 +41,7 @@ ports:
 {{- end -}}
 
 {{- define "powerpi.network-policy" -}}
+{{- if .Values.global.useNetworkPolicies -}}
 
 {{- $database := and .Params.Database .Values.global.persistence -}}
 
@@ -147,4 +148,5 @@ spec:
   {{- end }}
   {{- end }}
 
+{{- end -}}
 {{- end -}}

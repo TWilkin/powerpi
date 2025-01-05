@@ -46,8 +46,13 @@
                     "type": "boolean"
                 },
 
+                "useNetworkPolicies": {
+                    "description": "Whether to enable network policies to restrict traffic between services, only disable when diagnosing issues",
+                    "type": "boolean"
+                },
+
                 "clusterIssuer": {
-                    "description": "the name of a ClusterIssuer to use to request certificates",
+                    "description": "The name of a ClusterIssuer to use to request certificates",
                     "type": ["string", "null"]
                 },
 

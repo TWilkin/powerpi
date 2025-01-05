@@ -1,4 +1,5 @@
 # By default deny all traffic
+{{- if .Values.global.useNetworkPolicies -}}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -11,6 +12,7 @@ spec:
   - Ingress
   - Egress
 ---
+{{- end }}
 # Allow the controllers to access the message queue
 {{- $data := dict
     "Name" "controller-policy"
