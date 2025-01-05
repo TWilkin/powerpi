@@ -1,6 +1,11 @@
 {{- $data := dict
     "Name" "lifx-controller-policy"
     "Label" .Chart.Name
-    "Local" "egress"
+    "Local" (dict 
+        "Direction" "egress"
+        "Cidr" .Values.localCIDR
+        "Port" 56700
+        "Protocol" "UDP"
+    )
 }}
 {{- include "powerpi.network-policy" (merge (dict "Params" $data) .) -}}

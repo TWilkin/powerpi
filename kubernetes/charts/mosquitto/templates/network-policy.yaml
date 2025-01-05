@@ -52,11 +52,21 @@
 {{- end }}
 
 {{- $local := ternary "ingress" nil .Values.global.useSensors -}}
+{{- $ssl := and 
+  (eq .Values.global.useSSL true) 
+  (eq .Values.global.useSensors true) 
+  (not (eq .Values.global.clusterIssuer nil)) 
+  (not (eq .Values.hostName nil))
+-}}
 
 {{- $data := dict
     "Name" "mosquitto-policy"
     "Label" "mosquitto"
     "Ingress" $services
-    "Local" $local
+    "Local" (dict
+      "Direction" "ingress"
+      "Cidr" .Values.localCIDR
+      "Port" (ternary 8883 1883 $ssl)
+    )
 }}
 {{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}

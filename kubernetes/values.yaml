@@ -60,3 +60,31 @@ config-server:
 energenie-controller:
   # the Energenie device type to use, either ENER314-RT or ENER314
   type: "ENER314-RT"
+
+mosquitto:
+  # the IP address range of internal networks, used to restrict access from outside to mosquitto
+  localCIDR:
+    - 10.0.0.0/8
+    - 192.168.0.0/16
+    - 172.16.0.0/20
+
+harmony-controller:
+  # the IP address range of internal networks, used to restrict access only to the Harmony Hub(s)
+  localCIDR:
+    - 10.0.0.0/8
+    - 192.168.0.0/16
+    - 172.16.0.0/20
+
+lifx-controller:
+  # the IP address range of internal networks, used to restrict access only to the LIFX device(s)
+  localCIDR:
+    - 10.0.0.0/8
+    - 192.168.0.0/16
+    - 172.16.0.0/20
+
+snapcast-controller:
+  # the IP address range of internal networks, used to restrict access only to the Snapcast server(s)
+  localCIDR:
+    - 10.0.0.0/8
+    - 192.168.0.0/16
+    - 172.16.0.0/20

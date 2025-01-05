@@ -6,7 +6,7 @@
       kubernetes.io/metadata.name: {{ .Params.Namespace }}
 {{- end }}
 
-{{- if eq (or (empty .Params.Label) (empty .Params.Component) (empty .Params.K8sApp)) true }}
+{{- if eq (and (empty .Params.Label) (empty .Params.Component) (empty .Params.K8sApp)) false }}
 - podSelector:
     matchLabels:
       {{- if eq (empty .Params.Label) false }}
@@ -23,7 +23,6 @@
 {{- if eq (empty .Params.Cidr) false }}
 - ipBlock:
     cidr: {{ .Params.Cidr }}
-
     {{- if eq (empty .Params.Except) false }}
     except:
     {{- range $except := .Params.Except }}
@@ -48,7 +47,7 @@ ports:
 {{- $ingress := .Params.Ingress | default list -}}
 {{- $egress := .Params.Egress | default list -}}
 
-{{- if or .Params.DNS .Params.Mosquitto $database .Params.External .Params.Local -}}
+{{- if or .Params.DNS .Params.Mosquitto $database .Params.External -}}
 {{- $egress = append $egress (dict
     "Namespace" "kube-system"
     "K8sApp" "kube-dns"
@@ -77,9 +76,6 @@ ports:
 ) -}}
 {{- end -}}
 
-{{- $hasIngress := eq (empty $ingress) false  -}}
-{{- $hasEgress := eq (empty $egress) false  -}}
-
 {{- if .Params.External -}}
 {{- $egress = append $egress (dict
     "Cidr" "0.0.0.0/0"
@@ -87,23 +83,24 @@ ports:
 ) -}}
 {{- end -}}
 
-{{- $local := list
-  (dict
-    "Cidr" "10.0.0.0/8"
-  )
-  (dict
-    "Cidr" "192.168.0.0/16"
-  )
-  (dict
-    "Cidr" "172.16.0.0/20"
-  )
--}}
+{{- if eq (empty .Params.Local) false -}}
+{{- $local := list -}}
+{{- $port := .Params.Local.Port -}}
+{{- $protocol := .Params.Local.Protocol -}}
+{{- range $cidr := .Params.Local.Cidr }}
+{{- $local = append $local (dict
+  "Cidr" $cidr
+  "Port" $port
+  "Protocol" $protocol
+) -}}
+{{- end -}}
 
-{{- if eq .Params.Local "ingress" -}}
+{{- if eq .Params.Local.Direction "ingress" -}}
 {{- $ingress = concat $ingress $local -}}
 {{- end -}}
-{{- if eq .Params.Local "egress" -}}
+{{- if eq .Params.Local.Direction "egress" -}}
 {{- $egress = concat $egress $local -}}
+{{- end -}}
 {{- end -}}
 
 {{- $hasIngress := eq (empty $ingress) false  -}}

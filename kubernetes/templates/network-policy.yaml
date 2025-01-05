@@ -1,5 +1,5 @@
+{{ if .Values.global.useNetworkPolicies }}
 # By default deny all traffic
-{{- if .Values.global.useNetworkPolicies -}}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:

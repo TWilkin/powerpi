@@ -248,21 +248,21 @@
         "harmony-controller": {
             "description": "The configuration for the PowerPi Harmony controller Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/controller" }],
+            "allOf": [{ "$ref": "#/$defs/controller" }, { "$ref": "#/$defs/local-network" }],
             "unevaluatedProperties": false
         },
 
         "lifx-controller": {
             "description": "The configuration for the PowerPi LIFX controller Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/controller" }],
+            "allOf": [{ "$ref": "#/$defs/controller" }, { "$ref": "#/$defs/local-network" }],
             "unevaluatedProperties": false
         },
 
         "mosquitto": {
             "description": "The configuration for the Mosquitto MQTT service Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/service" }],
+            "allOf": [{ "$ref": "#/$defs/service" }, { "$ref": "#/$defs/local-network" }],
             "properties": {
                 "component": {
                     "const": "message-queue"
@@ -290,7 +290,7 @@
         "snapcast-controller": {
             "description": "The configuration for the PowerPi Snapcast controller Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/controller" }],
+            "allOf": [{ "$ref": "#/$defs/controller" }, { "$ref": "#/$defs/local-network" }],
             "unevaluatedProperties": false
         },
 
@@ -406,6 +406,22 @@
                     "description": "The frequency in seconds at which to poll for external changes to the devices",
                     "type": "integer",
                     "minimum": 10
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "local-network": {
+            "type": "object",
+            "properties": {
+                "localCIDR": {
+                    "description": "The CIDR address range(s) for the local network access policy",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "format": "ipv4-cidr"
+                    }
                 }
             },
             "unevaluatedProperties": false
