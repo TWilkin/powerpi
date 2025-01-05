@@ -80,6 +80,7 @@ ports:
 {{- $egress = append $egress (dict
     "Cidr" "0.0.0.0/0"
     "Except" (list "10.0.0.0/8" "192.168.0.0/16" "172.16.0.0/20")
+    "Port" 443
 ) -}}
 {{- end -}}
 
