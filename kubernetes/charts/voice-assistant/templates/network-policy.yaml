@@ -1,6 +1,7 @@
 {{- $data := dict
     "Name" "voice-assistant-policy"
     "Label" .Chart.Name
+    "Mosquitto" true
     "External" true
     "IngressController" 3000
 }}
