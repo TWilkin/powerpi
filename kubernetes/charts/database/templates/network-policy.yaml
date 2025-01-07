@@ -1,0 +1,21 @@
+{{- $services := list
+  (dict
+    "Label" "api"
+    "Port" 5432
+  )
+  (dict
+    "Label" "persistence"
+    "Port" 5432
+  )
+  (dict
+    "Label" "database-backup"
+    "Port" 5432
+  )
+}}
+
+{{- $data := dict
+    "Name" "database-policy"
+    "Label" "database"
+    "Ingress" $services
+}}
+{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}

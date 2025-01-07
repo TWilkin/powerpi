@@ -1,0 +1,22 @@
+{{ if .Values.global.useNetworkPolicies }}
+# By default deny all traffic
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all-policy
+  {{- include "powerpi.labels" . }}
+spec:
+  podSelector: {}
+
+  policyTypes:
+  - Ingress
+  - Egress
+---
+{{- end }}
+# Allow the controllers to access the message queue
+{{- $data := dict
+    "Name" "controller-policy"
+    "Component" "controller"
+    "Mosquitto" true
+}}
+{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}

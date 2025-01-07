@@ -6,7 +6,7 @@ metadata:
   {{- include "powerpi.labels" . }}
 spec:
   selector:
-  {{- include "powerpi.selector" . | indent 2 }}
+  {{- include "powerpi.selector" (merge (dict "Params" (dict "Name" .Chart.Name)) .) | indent 2 }}
   type: {{ .Params.Type | default "ClusterIP" }}
   ports:
   - name: {{ .Params.PortName | default "http" }}
