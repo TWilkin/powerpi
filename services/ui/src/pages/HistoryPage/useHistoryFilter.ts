@@ -1,4 +1,4 @@
-import { useCallback, useReducer } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import Route from "../../routing/Route";
 import RouteBuilder from "../../routing/RouteBuilder";
@@ -29,13 +29,20 @@ export default function useHistoryFilter() {
     // Get the current entity from the URL (if there is one)
     const entity = useEntity();
 
-    const reducer = useHistoryReducer();
+    const navigate = useNavigate();
+
     const [state, dispatch] = useReducer(reducer, { entity }, initialiser);
 
     const clear = useCallback(
         () => dispatch({ type: "Clear", initialState: initialiser({ entity: undefined }) }),
         [],
     );
+
+    useEffect(() => {
+        if (entity !== state.entity) {
+            navigate(RouteBuilder.build(Route.Root, Route.History, state.entity));
+        }
+    }, [entity, navigate, state.entity]);
 
     return {
         state,
@@ -54,41 +61,30 @@ type ClearAction = { type: "Clear"; initialState: HistoryFilterState };
 
 type HistoryFilterAction = TypeAction | EntityAction | ActionAction | StartAction | ClearAction;
 
-function useHistoryReducer() {
-    const navigate = useNavigate();
+function reducer(state: HistoryFilterState, action: HistoryFilterAction): HistoryFilterState {
+    function update(newState: Partial<HistoryFilterState>) {
+        return { ...state, ...newState };
+    }
 
-    return useCallback(
-        (state: HistoryFilterState, action: HistoryFilterAction): HistoryFilterState => {
-            function update(newState: Partial<HistoryFilterState>) {
-                return { ...state, ...newState };
-            }
+    switch (action.type) {
+        case "Type":
+            return update({ type: action._type });
 
-            switch (action.type) {
-                case "Type":
-                    return update({ type: action._type });
+        case "Entity":
+            return update({ entity: action.entity });
 
-                case "Entity":
-                    navigate(RouteBuilder.build(Route.Root, Route.History, action.entity));
-                    return update({ entity: action.entity });
+        case "Action":
+            return update({ action: action.action });
 
-                case "Action":
-                    return update({ action: action.action });
+        case "Start":
+            return update({ start: action.start });
 
-                case "Start":
-                    return update({ start: action.start });
+        case "Clear":
+            return action.initialState;
 
-                case "Clear":
-                    navigate(
-                        RouteBuilder.build(Route.Root, Route.History, action.initialState.entity),
-                    );
-                    return action.initialState;
-
-                default:
-                    throw Error("Unknown action");
-            }
-        },
-        [navigate],
-    );
+        default:
+            throw Error("Unknown action");
+    }
 }
 
 type InitialiserParams = Pick<HistoryFilterState, "entity">;
