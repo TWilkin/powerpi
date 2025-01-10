@@ -7,6 +7,7 @@ import DevicePowerToggle from "../../components/DevicePowerToggle";
 import HistoryLink from "../../components/HistoryLink";
 import Icon from "../../components/Icon";
 import Message from "../../components/Message";
+import Scrollbar from "../../components/Scrollbar";
 import Search from "../../components/Search";
 import { useSlideAnimation } from "../../components/SlideAnimation";
 import Table from "../../components/Table";
@@ -70,7 +71,7 @@ const DevicePage = () => {
             )}
 
             {devices.length !== 0 && (
-                <div className="flex-1 overflow-y-auto overflow-x-visible">
+                <Scrollbar direction="y" className="flex-1">
                     <Table grow={false}>
                         <tbody>
                             {devices.map((device, index) => (
@@ -114,7 +115,7 @@ const DevicePage = () => {
                             ))}
                         </tbody>
                     </Table>
-                </div>
+                </Scrollbar>
             )}
         </>
     );

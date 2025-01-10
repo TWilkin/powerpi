@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import _ from "underscore";
 import Button from "../../components/Button";
+import Scrollbar from "../../components/Scrollbar";
 import { useSlideAnimation } from "../../components/SlideAnimation";
 import Table from "../../components/Table";
 import TableRow from "../../components/TableRow";
@@ -79,10 +80,7 @@ const HistoryPage = () => {
 
             <HistoryFilter open={filterOpen} state={state} dispatch={dispatch} clear={clear} />
 
-            <div
-                className="h-[85vh] -ml -mr overflow-auto scrollbar-thin scrollbar-stable"
-                ref={scrollRef}
-            >
+            <Scrollbar ref={scrollRef}>
                 <div style={{ height: `${virtualiser.getTotalSize()}px` }}>
                     <Table>
                         <thead>
@@ -131,7 +129,7 @@ const HistoryPage = () => {
                         </tbody>
                     </Table>
                 </div>
-            </div>
+            </Scrollbar>
         </>
     );
 };
