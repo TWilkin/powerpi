@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import _ from "underscore";
 import Button from "../../components/Button";
+import Message from "../../components/Message";
 import Scrollbar from "../../components/Scrollbar";
 import { useSlideAnimation } from "../../components/SlideAnimation";
 import Table from "../../components/Table";
@@ -33,6 +34,8 @@ const HistoryPage = () => {
         () => _(data.pages.flatMap((page) => page.data)).unique(generateKey),
         [data?.pages],
     );
+
+    const total = useMemo(() => _(data.pages).last()?.records ?? 0, [data.pages]);
 
     const virtualiser = useVirtualizer({
         count: hasNextPage ? rows.length + 1 : rows.length,
@@ -80,56 +83,63 @@ const HistoryPage = () => {
 
             <HistoryFilter open={filterOpen} state={state} dispatch={dispatch} clear={clear} />
 
-            <Scrollbar ref={scrollRef}>
-                <div style={{ height: `${virtualiser.getTotalSize()}px` }}>
-                    <Table>
-                        <thead>
-                            <TableRow header>
-                                <th>{t("pages.history.headings.type")}</th>
-                                <th>{t("pages.history.headings.entity")}</th>
-                                <th>{t("pages.history.headings.action")}</th>
-                                <th>{t("pages.history.headings.when")}</th>
-                                <th>{t("pages.history.headings.message")}</th>
-                            </TableRow>
-                        </thead>
+            {total === 0 && <Message translation="pages.history" type="empty" />}
+            {total !== 0 && rows.length === 0 && (
+                <Message translation="pages.history" type="filtered" count={total} />
+            )}
 
-                        <tbody>
-                            {before > 0 && (
-                                <tr>
-                                    <td colSpan={5} style={{ height: before }} />
-                                </tr>
-                            )}
+            {rows.length !== 0 && (
+                <Scrollbar ref={scrollRef}>
+                    <div style={{ height: `${virtualiser.getTotalSize()}px` }}>
+                        <Table>
+                            <thead>
+                                <TableRow header>
+                                    <th>{t("pages.history.headings.type")}</th>
+                                    <th>{t("pages.history.headings.entity")}</th>
+                                    <th>{t("pages.history.headings.action")}</th>
+                                    <th>{t("pages.history.headings.when")}</th>
+                                    <th>{t("pages.history.headings.message")}</th>
+                                </TableRow>
+                            </thead>
 
-                            {items.map((virtualRow) => {
-                                const isLoaderRow = virtualRow.index > rows.length - 1;
-                                if (isLoaderRow) {
-                                    return <LoaderRow key="loader" index={rows.length} />;
-                                }
+                            <tbody>
+                                {before > 0 && (
+                                    <tr>
+                                        <td colSpan={5} style={{ height: before }} />
+                                    </tr>
+                                )}
 
-                                const row = rows[virtualRow.index];
-                                if (!row) {
-                                    return <></>;
-                                }
+                                {items.map((virtualRow) => {
+                                    const isLoaderRow = virtualRow.index > rows.length - 1;
+                                    if (isLoaderRow) {
+                                        return <LoaderRow key="loader" index={rows.length} />;
+                                    }
 
-                                return (
-                                    <HistoryRow
-                                        key={virtualRow.key}
-                                        row={row}
-                                        index={virtualRow.index}
-                                        height={virtualRow.size}
-                                    />
-                                );
-                            })}
+                                    const row = rows[virtualRow.index];
+                                    if (!row) {
+                                        return <></>;
+                                    }
 
-                            {after > 0 && (
-                                <tr>
-                                    <td colSpan={5} style={{ height: after }} />
-                                </tr>
-                            )}
-                        </tbody>
-                    </Table>
-                </div>
-            </Scrollbar>
+                                    return (
+                                        <HistoryRow
+                                            key={virtualRow.key}
+                                            row={row}
+                                            index={virtualRow.index}
+                                            height={virtualRow.size}
+                                        />
+                                    );
+                                })}
+
+                                {after > 0 && (
+                                    <tr>
+                                        <td colSpan={5} style={{ height: after }} />
+                                    </tr>
+                                )}
+                            </tbody>
+                        </Table>
+                    </div>
+                </Scrollbar>
+            )}
         </>
     );
 };

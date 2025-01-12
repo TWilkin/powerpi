@@ -46,6 +46,15 @@ interface Resources {
           "action": "Action",
           "when": "When",
           "message": "Message"
+        },
+        "empty": "No history.",
+        "filtered_one": "Filtered {{count, number}} record.",
+        "filtered_other": "Filtered {{count, number}} records.",
+        "filters": {
+          "path": "Path",
+          "types": "Types",
+          "entities": "Entities",
+          "actions": "Actions"
         }
       },
       "settings": {

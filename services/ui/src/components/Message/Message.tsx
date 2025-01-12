@@ -5,7 +5,7 @@ import Icon, { IconType } from "../Icon";
 type MessageEmptyProps = {
     type: "empty";
 
-    translation: "pages.devices" | "pages.home";
+    translation: "pages.devices" | "pages.home" | "pages.history";
 };
 
 type MessageUnknownProps = {
@@ -19,7 +19,7 @@ type MessageUnknownProps = {
 type MessageCountProps = {
     type: "filtered";
 
-    translation: "pages.devices";
+    translation: "pages.devices" | "pages.history";
 
     count: number;
 };
