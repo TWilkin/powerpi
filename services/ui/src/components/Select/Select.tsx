@@ -85,6 +85,7 @@ const Select = <TValueType,>({
                     placeholder: () => "p",
                     input: () => classNames("p cursor-pointer", { "cursor-not-allowed": disabled }),
                     menu: () => "mt-2 rounded border border-outline",
+                    menuList: () => "scrollbar-thin",
                 }}
                 aria-label={label}
                 onChange={handleChange}
