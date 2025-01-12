@@ -4,6 +4,7 @@ import ReactSelect, { SingleValue } from "react-select";
 import _ from "underscore";
 import { inputStyles } from "../Input";
 import SelectDropDownIndicator from "./SelectDropDownIndicator";
+import SelectLoadingIndicator from "./SelectLoadingIndicator";
 import SelectOption from "./SelectOption";
 import SelectSingleValue from "./SelectSingleValue";
 import { OptionType } from "./types";
@@ -17,6 +18,8 @@ type SelectProps<TValueType> = {
 
     disabled?: boolean;
 
+    loading?: boolean;
+
     onChange(value: TValueType): void;
 } & Pick<HTMLAttributes<HTMLElement>, "id">;
 
@@ -26,6 +29,7 @@ const Select = <TValueType,>({
     value,
     options,
     disabled,
+    loading,
     onChange,
     ...props
 }: SelectProps<TValueType>) => {
@@ -64,10 +68,12 @@ const Select = <TValueType,>({
                 options={sortedOptions}
                 value={currentValue}
                 isDisabled={disabled}
+                isLoading={loading}
                 components={{
                     Option: SelectOption,
                     SingleValue: SelectSingleValue,
                     DropdownIndicator: () => SelectDropDownIndicator({ isMenuOpen: menuOpen }),
+                    LoadingIndicator: SelectLoadingIndicator,
                 }}
                 unstyled
                 className={classNames(

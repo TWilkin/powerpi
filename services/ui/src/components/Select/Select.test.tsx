@@ -94,4 +94,23 @@ describe("Select", () => {
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange).toHaveBeenCalledWith(2);
     });
+
+    test("loading", () => {
+        render(
+            <Select
+                options={exampleOptions}
+                label="A select"
+                value={undefined}
+                loading
+                onChange={vi.fn()}
+            />,
+        );
+
+        const select = screen.getByRole("combobox", { name: "A select" });
+        expect(select).toBeInTheDocument();
+
+        const icons = screen.getAllByRole("img", { hidden: true });
+        expect(icons).toHaveLength(2);
+        expect(icons[0]).toHaveAttribute("data-icon", "spinner");
+    });
 });
