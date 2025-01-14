@@ -12,7 +12,7 @@ from powerpi_common.util import ismixin
 
 
 # pylint: disable=too-many-ancestors
-class CompositeDevice(AdditionalStateDevice, DeviceOrchestratorMixin, NewPollableMixin):
+class GroupDevice(AdditionalStateDevice, DeviceOrchestratorMixin, NewPollableMixin):
     # pylint: disable=too-many-arguments
     def __init__(
         self,

@@ -8,12 +8,12 @@ from powerpi_common_test.device.mixin import (DeviceOrchestratorMixinTestBase,
                                               PollableMixinTestBase)
 from pytest_mock import MockerFixture
 
-from virtual_controller.device import CompositeDevice
+from virtual_controller.device import GroupDevice
 
 DeviceList = Dict[str, MagicMock]
 
 
-class TestCompositeDevice(
+class TestGroupDevice(
     AdditionalStateDeviceTestBase,
     DeviceOrchestratorMixinTestBase,
     PollableMixinTestBase
@@ -22,7 +22,7 @@ class TestCompositeDevice(
     @pytest.mark.asyncio
     async def test_all_on(
         self,
-        subject: CompositeDevice,
+        subject: GroupDevice,
         devices: DeviceList
     ):
         # store the order they were called
@@ -44,7 +44,7 @@ class TestCompositeDevice(
     @pytest.mark.asyncio
     async def test_all_off(
         self,
-        subject: CompositeDevice,
+        subject: GroupDevice,
         devices: DeviceList
     ):
         # store the order they were called
@@ -70,7 +70,7 @@ class TestCompositeDevice(
     ])
     async def test_all_change_power_and_additional_state(
         self,
-        subject: CompositeDevice,
+        subject: GroupDevice,
         devices: DeviceList,
         new_state: str,
         expected_order: List[str]
@@ -88,7 +88,7 @@ class TestCompositeDevice(
 
         new_additional_state = {'something': 'else'}
 
-        with patch('virtual_controller.device.composite.ismixin') as ismixin:
+        with patch('virtual_controller.device.group.ismixin') as ismixin:
             ismixin.return_value = True
 
             await subject.change_power_and_additional_state(
@@ -102,10 +102,10 @@ class TestCompositeDevice(
     @pytest.mark.asyncio
     async def test_all_change_power_and_additional_state_scene(
         self,
-        subject: CompositeDevice,
+        subject: GroupDevice,
         devices: DeviceList
     ):
-        with patch('virtual_controller.device.composite.ismixin') as ismixin:
+        with patch('virtual_controller.device.group.ismixin') as ismixin:
             ismixin.return_value = True
 
             await subject.change_power_and_additional_state(
@@ -123,13 +123,13 @@ class TestCompositeDevice(
     @pytest.mark.asyncio
     async def test_all_change_power_and_additional_state_unsupported(
         self,
-        subject: CompositeDevice,
+        subject: GroupDevice,
         devices: DeviceList
     ):
         new_state = 'on'
         new_additional_state = {'something': 'else'}
 
-        with patch('virtual_controller.device.composite.ismixin') as ismixin:
+        with patch('virtual_controller.device.group.ismixin') as ismixin:
             ismixin.return_value = False
 
             await subject.change_power_and_additional_state(
@@ -143,10 +143,10 @@ class TestCompositeDevice(
     @pytest.mark.asyncio
     async def test_all_change_scene(
         self,
-        subject: CompositeDevice,
+        subject: GroupDevice,
         devices: DeviceList
     ):
-        with patch('virtual_controller.device.composite.ismixin') as ismixin:
+        with patch('virtual_controller.device.group.ismixin') as ismixin:
             ismixin.return_value = True
 
             await subject.change_scene('other')
@@ -168,7 +168,7 @@ class TestCompositeDevice(
     ])
     async def test_on_referenced_device_status(
         self,
-        subject: CompositeDevice,
+        subject: GroupDevice,
         devices: Dict[str, MagicMock],
         initial_state: str,
         update_state: str,
@@ -191,7 +191,7 @@ class TestCompositeDevice(
         assert subject.state == update_state
 
     @pytest.mark.asyncio
-    async def test_scene_event_message(self, subject: CompositeDevice):
+    async def test_scene_event_message(self, subject: GroupDevice):
         scene_event_consumer = self._mqtt_consumers['scene']
 
         message = {
@@ -205,7 +205,7 @@ class TestCompositeDevice(
         await scene_event_consumer.on_message(message, subject.name, 'scene')
         assert subject.scene == 'other'
 
-        # additional state will always be applied to the composite regardless of scene
+        # additional state will always be applied to the group regardless of scene
 
     @pytest.fixture
     def subject(
@@ -215,10 +215,10 @@ class TestCompositeDevice(
         powerpi_mqtt_client,
         device_manager
     ):
-        return CompositeDevice(
+        return GroupDevice(
             powerpi_config, powerpi_logger, powerpi_mqtt_client, device_manager,
             devices=['device0', 'device1', 'device2', 'device3'],
-            name='composite',
+            name='group',
             poll_frequency=60
         )
 
