@@ -3,13 +3,13 @@ import commonDeviceTests from "./commonDeviceTests";
 describe("Virtual Devices", () => {
     describe("Group", () => {
         const { testInvalid } = commonDeviceTests({
-            devices: [{ type: "group", name: "Composite", devices: ["Device1", "Device2"] }],
+            devices: [{ type: "group", name: "Group", devices: ["Device1", "Device2"] }],
         });
 
         [[], undefined, [1]].forEach((devices) =>
             test(`Bad devices ${devices}`, () =>
                 testInvalid({
-                    devices: [{ type: "group", name: "Composite", devices }],
+                    devices: [{ type: "group", name: "Group", devices }],
                 })),
         );
     });
