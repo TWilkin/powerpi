@@ -30,9 +30,6 @@ function getDeviceTypeIcon(type: string): IconType {
     }
 
     switch (deviceType) {
-        case "composite":
-            return "deviceGroup";
-
         case "condition":
             return "deviceCondition";
 
@@ -41,6 +38,9 @@ function getDeviceTypeIcon(type: string): IconType {
 
         case "delay":
             return "deviceDelay";
+
+        case "group":
+            return "deviceGroup";
 
         case "light":
             return "deviceLight";

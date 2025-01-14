@@ -1,8 +1,8 @@
 from dependency_injector import containers, providers
 
-from virtual_controller.device.composite import CompositeDevice
 from virtual_controller.device.condition import ConditionDevice
 from virtual_controller.device.delay import DelayDevice
+from virtual_controller.device.group import GroupDevice
 from virtual_controller.device.factory import RemoteDeviceFactory
 from virtual_controller.device.log import LogDevice
 from virtual_controller.device.mutex import MutexDevice
@@ -33,18 +33,6 @@ def add_devices(container):
 
     setattr(
         device_container,
-        'composite_device',
-        providers.Factory(
-            CompositeDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
-            device_manager=container.common.device.device_manager
-        )
-    )
-
-    setattr(
-        device_container,
         'condition_device',
         providers.Factory(
             ConditionDevice,
@@ -64,6 +52,18 @@ def add_devices(container):
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client
+        )
+    )
+
+    setattr(
+        device_container,
+        'group_device',
+        providers.Factory(
+            GroupDevice,
+            config=container.common.config,
+            logger=container.common.logger,
+            mqtt_client=container.common.mqtt_client,
+            device_manager=container.common.device.device_manager
         )
     )
 

@@ -38,8 +38,8 @@ The _devices.json_ file contains the list of devices that are added to PowerPi. 
 {
     "devices": [
         {
-            // the composite device allows control of multiple devices, in this case the single LogDevice
-            "type": "composite",
+            // the group device allows control of multiple devices, in this case the single LogDevice
+            "type": "group",
             "name": "MyDevices",
             "display_name": "My Devices",
             "devices": ["LogDevice"],
