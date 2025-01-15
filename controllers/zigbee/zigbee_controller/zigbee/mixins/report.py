@@ -16,17 +16,23 @@ class ZigbeeReportMixin:
         if len(attributes) == 0:
             return
 
-        try:
-            await cluster.bind()
+        count = 0
+        while count <= 2:
+            try:
+                await cluster.bind()
 
-            reports = {}
-            for attribute in attributes:
-                reports[attribute] = (frequency, frequency, 1)
+                reports = {}
+                for attribute in attributes:
+                    reports[attribute] = (frequency, frequency, 1)
 
-            await cluster.configure_reporting_multiple(reports)
+                await cluster.configure_reporting_multiple(reports)
 
-            self.log_info('Registered %d report(s)', len(reports))
-        except TimeoutError:
-            self.log_warning(
-                'Bind failed, likely the device is not on, will try again when it rejoins'
-            )
+                self.log_info('Registered %d report(s)', len(reports))
+
+                return
+            except TimeoutError:
+                self.log_warning(
+                    'Bind failed, likely the device is not on, will try again when it rejoins'
+                )
+
+                count += 1
