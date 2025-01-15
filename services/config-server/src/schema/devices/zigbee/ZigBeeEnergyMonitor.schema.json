@@ -12,12 +12,27 @@
             "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Sensor.schema.json"
         },
         {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PollableDevice.schema.json"
+        },
+        {
             "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeeDevice.schema.json"
         }
     ],
     "properties": {
         "type": {
             "const": "zigbee_energy_monitor"
+        },
+        "power": {
+            "description": "Whether to capture the power usage reported by the sensor",
+            "type": "boolean"
+        },
+        "current": {
+            "description": "Whether to capture the current reported by the sensor",
+            "type": "boolean"
+        },
+        "voltage": {
+            "description": "Whether to capture the voltage reported by the sensor",
+            "type": "boolean"
         }
     },
     "unevaluatedProperties": false
