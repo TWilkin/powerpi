@@ -1,11 +1,11 @@
 from powerpi_common.device.mixin import InitialisableMixin
-from zigbee_controller.device import ZigbeeController
 from zigpy.exceptions import DeliveryError
 from zigpy.types import EUI64, NWK, uint8_t
 from zigpy.typing import DeviceType
 from zigpy.zcl import Cluster
 from zigpy.zcl.foundation import Status
 
+from zigbee_controller.device import ZigbeeController
 from .zigbee_listener import ZigBeeListener
 
 
