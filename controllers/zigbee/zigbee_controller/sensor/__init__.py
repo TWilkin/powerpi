@@ -2,7 +2,7 @@ from dependency_injector import providers
 
 from .aqara import add_aqara_sensors
 from .osram import add_osram_sensors
-from .zigbee_energy_monitor import ZigbeeEnergyMonitor
+from .zigbee_energy_monitor import ZigbeeEnergyMonitorSensor
 
 
 def add_sensors(container):
@@ -13,11 +13,11 @@ def add_sensors(container):
 
     setattr(
         device_container,
-        'zigbee_energy_monitor',
+        'zigbee_energy_monitor_sensor',
         providers.Factory(
-            ZigbeeEnergyMonitor,
+            ZigbeeEnergyMonitorSensor,
             logger=container.common.logger,
-            controller=container.device.zigbee_controller,
-            mqtt_client=container.common.mqtt_client
+            mqtt_client=container.common.mqtt_client,
+            zigbee_controller=container.device.zigbee_controller
         )
     )
