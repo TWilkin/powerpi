@@ -1,6 +1,11 @@
+from asyncio import get_event_loop
 from typing import List
 
+from zigpy.types import EUI64
+from zigpy.typing import DeviceType
 from zigpy.zcl.clusters import Cluster
+
+from zigbee_controller.zigbee import DeviceJoinListener
 
 
 class ZigbeeReportMixin:
@@ -16,23 +21,45 @@ class ZigbeeReportMixin:
         if len(attributes) == 0:
             return
 
-        count = 0
-        while count <= 2:
-            try:
-                await cluster.bind()
+        registered = False
 
-                reports = {}
-                for attribute in attributes:
-                    reports[attribute] = (frequency, frequency, 1)
+        async def register():
+            count = 0
+            while count <= 2:
+                try:
+                    await cluster.bind()
 
-                await cluster.configure_reporting_multiple(reports)
+                    reports = {}
+                    for attribute in attributes:
+                        reports[attribute] = (frequency, frequency, 1)
 
-                self.log_info('Registered %d report(s)', len(reports))
+                    await cluster.configure_reporting_multiple(reports)
 
-                return
-            except TimeoutError:
-                self.log_warning(
-                    'Bind failed, likely the device is not on, will try again when it rejoins'
-                )
+                    self.log_info('Registered %d report(s)', len(reports))
 
-                count += 1
+                    nonlocal registered
+                    registered = True
+
+                    return
+                except TimeoutError:
+                    self.log_warning(
+                        'Bind failed, likely the device is not on, will try again when it rejoins'
+                    )
+
+                    count += 1
+
+        def on_device_join(device: DeviceType):
+            nonlocal registered
+
+            ieee = EUI64(device.ieee)
+
+            if not registered and ieee == self.ieee and device.nwk == self.nwk:
+                # this is the current device, so we can call register again
+                loop = get_event_loop()
+                loop.run_until_complete(register())
+
+        self._zigbee_controller.add_listener(
+            DeviceJoinListener(on_device_join)
+        )
+
+        await register()
