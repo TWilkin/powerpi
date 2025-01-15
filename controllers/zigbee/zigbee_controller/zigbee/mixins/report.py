@@ -27,6 +27,6 @@ class ZigbeeReportMixin:
 
             self.log_info('Registered %d report(s)', len(reports))
         except TimeoutError:
-            self.log_warn(
+            self.log_warning(
                 'Bind failed, likely the device is not on, will try again when it rejoins'
             )

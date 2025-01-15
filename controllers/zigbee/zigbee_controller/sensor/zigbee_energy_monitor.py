@@ -41,6 +41,10 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
 
         cluster: ElectricalMeasurement = device[1].in_clusters[ElectricalMeasurement.cluster_id]
 
+        cluster.add_listener(
+            ClusterAttributeListener(self.on_attribute_updated)
+        )
+
         attributes = []
         if self.__power:
             attributes.append('active_power')
