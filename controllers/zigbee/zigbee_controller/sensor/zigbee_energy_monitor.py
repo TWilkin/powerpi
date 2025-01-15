@@ -7,14 +7,19 @@ from zigpy.zcl.clusters.homeautomation import ElectricalMeasurement
 
 from zigbee_controller.device import ZigbeeController
 from zigbee_controller.zigbee import ClusterAttributeListener, ZigbeeMixin
+from zigbee_controller.zigbee.mixins import ZigbeeReportMixin
 
 
-class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeMixin):
+class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
     def __init__(
         self,
         logger: Logger,
         mqtt_client: MQTTClient,
         zigbee_controller: ZigbeeController,
+        poll_frequency: int | None = 120,
+        power: bool | None = False,
+        current: bool | None = False,
+        voltage: bool | None = False,
         **kwargs
     ):
         Sensor.__init__(self, mqtt_client, **kwargs)
@@ -22,7 +27,13 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeMixin):
 
         self._logger = logger
 
+        self.__poll_frequency = poll_frequency
+        self.__power = power
+        self.__current = current
+        self.__voltage = voltage
+
     def on_attribute_updated(self, attribute_id: int, value: Any):
+        self.log_info('update!')
         self.log_info('attribute updated %d %s', attribute_id, value)
 
     async def initialise(self):
@@ -30,14 +41,12 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeMixin):
 
         cluster: ElectricalMeasurement = device[1].in_clusters[ElectricalMeasurement.cluster_id]
 
-        await cluster.bind()
+        attributes = []
+        if self.__power:
+            attributes.append('active_power')
+        if self.__current:
+            attributes.append('rms_current')
+        if self.__voltage:
+            attributes.append('rms_voltage')
 
-        cluster.add_listener(
-            ClusterAttributeListener(self.on_attribute_updated)
-        )
-
-        await cluster.configure_reporting_multiple({
-            'active_power': (60, 60 * 5, 1),
-            'rms_voltage': (60, 60 * 5, 1),
-            'rms_current': (60, 60 * 5, 1),
-        })
+        await self._register_reports(cluster, attributes, self.__poll_frequency)
