@@ -31,6 +31,8 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         self.__current = current
         self.__voltage = voltage
 
+        self.__divisors = {}
+
     def on_attribute_updated(self, frame: ZCLHeader, args: AttributeReport):
         if frame.command_id != GeneralCommand.Report_Attributes:
             return
@@ -41,6 +43,7 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         def broadcast_attribute(
             flag: bool,
             attribute_name: str,
+            divisor_name: str,
             invalid: bool,
             name: str,
             unit: str
@@ -49,18 +52,24 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
                 if invalid and attribute.value.value == 0xFFFF:
                     return
 
-                message = {'value': attribute.value.value, 'unit': unit}
+                value = attribute.value.value
+
+                divisor = self.__divisors.get(divisor_name, 1)
+                if divisor is not None and divisor > 0:
+                    value /= divisor
+
+                message = {'value': value, 'unit': unit}
                 self._broadcast(name, message)
 
         for attribute in args.attribute_reports:
             broadcast_attribute(
-                self.__power, 'active_power', False, 'power', 'W'
+                self.__power, 'active_power', 'power_divisor', False, 'power', 'W'
             )
             broadcast_attribute(
-                self.__current, 'rms_current', True, 'current', 'A'
+                self.__current, 'rms_current', 'ac_current_divisor', True, 'current', 'A'
             )
             broadcast_attribute(
-                self.__voltage, 'rms_voltage', True, 'voltage', 'V'
+                self.__voltage, 'rms_voltage', 'ac_voltage_divisor', True, 'voltage', 'V'
             )
 
     async def initialise(self):
@@ -81,3 +90,7 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
             attributes.append('rms_voltage')
 
         await self._register_reports(cluster, attributes, self.__poll_frequency)
+
+        self.__divisors, _ = await cluster.read_attributes([
+            'power_divisor', 'ac_current_divisor', 'ac_voltage_divisor'
+        ])
