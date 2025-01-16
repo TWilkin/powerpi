@@ -10,6 +10,11 @@ from zigbee_controller.zigbee.mixins import AttributeReport, ZigbeeReportMixin
 
 
 class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
+    '''
+    Add support for ZigBee Energy Monitoring sensors, supporting take periodic
+    power, current and voltage readings.
+    '''
+
     def __init__(
         self,
         logger: Logger,
@@ -21,6 +26,7 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         voltage: bool | None = False,
         **kwargs
     ):
+        # pylint: disable=too-many-arguments
         Sensor.__init__(self, mqtt_client, **kwargs)
         ZigbeeMixin.__init__(self, zigbee_controller, **kwargs)
 
@@ -48,11 +54,12 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
             name: str,
             unit: str
         ):
+            # pylint: disable=too-many-arguments
             if flag and attribute.attrid == cluster.attributes_by_name[attribute_name].id:
-                if invalid and attribute.value.value == 0xFFFF:
-                    return
-
                 value = attribute.value.value
+
+                if invalid and value == 0xFFFF:
+                    return
 
                 divisor = self.__divisors.get(divisor_name, 1)
                 if divisor is not None and divisor > 0:
@@ -81,16 +88,22 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
             ClusterGeneralCommandListener(self.on_attribute_updated)
         )
 
-        attributes = []
+        report_attributes = []
+        divisor_attributes = []
         if self.__power:
-            attributes.append('active_power')
+            report_attributes.append('active_power')
+            divisor_attributes.append('power_divisor')
         if self.__current:
-            attributes.append('rms_current')
+            report_attributes.append('rms_current')
+            divisor_attributes.append('ac_current_divisor')
         if self.__voltage:
-            attributes.append('rms_voltage')
+            report_attributes.append('rms_voltage')
+            divisor_attributes.append('ac_voltage_divisor')
 
-        await self._register_reports(cluster, attributes, self.__poll_frequency)
+        if len(report_attributes) > 0:
+            await self._register_reports(cluster, report_attributes, self.__poll_frequency)
 
-        self.__divisors, _ = await cluster.read_attributes([
-            'power_divisor', 'ac_current_divisor', 'ac_voltage_divisor'
-        ])
+            self.__divisors, _ = await cluster.read_attributes(divisor_attributes)
+
+    def __str__(self):
+        return ZigbeeMixin.__str__(self)
