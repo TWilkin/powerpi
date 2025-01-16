@@ -1,12 +1,18 @@
 from asyncio import get_event_loop
+from dataclasses import dataclass
 from typing import List
 
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 from zigpy.zcl.clusters import Cluster
-from zigpy.zcl.foundation import Status
+from zigpy.zcl.foundation import Attribute, Status
 
 from zigbee_controller.zigbee import DeviceJoinListener
+
+
+@dataclass
+class AttributeReport:
+    attribute_reports: List[Attribute]
 
 
 class ZigbeeReportMixin:

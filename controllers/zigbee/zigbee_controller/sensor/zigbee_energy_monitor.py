@@ -1,13 +1,12 @@
-from typing import Any
-
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
+from zigpy.zcl.foundation import GeneralCommand, ZCLHeader
 from zigpy.zcl.clusters.homeautomation import ElectricalMeasurement
 
 from zigbee_controller.device import ZigbeeController
-from zigbee_controller.zigbee import ClusterAttributeListener, ZigbeeMixin
-from zigbee_controller.zigbee.mixins import ZigbeeReportMixin
+from zigbee_controller.zigbee import ClusterGeneralCommandListener, ZigbeeMixin
+from zigbee_controller.zigbee.mixins import AttributeReport, ZigbeeReportMixin
 
 
 class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
@@ -32,9 +31,25 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         self.__current = current
         self.__voltage = voltage
 
-    def on_attribute_updated(self, attribute_id: int, value: Any):
-        self.log_info('update!')
-        self.log_info('attribute updated %d %s', attribute_id, value)
+    def on_attribute_updated(self, frame: ZCLHeader, args: AttributeReport):
+        if frame.command_id != GeneralCommand.Report_Attributes:
+            return
+
+        device = self._zigbee_device
+        cluster: ElectricalMeasurement = device[1].in_clusters[ElectricalMeasurement.cluster_id]
+
+        for attribute in args.attribute_reports:
+            if self.__power and attribute.attrid == cluster.attributes_by_name['active_power'].id:
+                message = {'value': attribute.value.value, 'unit': 'W'}
+                self._broadcast('power', message)
+
+            if self.__current and attribute.attrid == cluster.attributes_by_name['rms_current'].id:
+                message = {'value': attribute.value.value, 'unit': 'mA'}
+                self._broadcast('current', message)
+
+            if self.__voltage and attribute.attrid == cluster.attributes_by_name['rms_voltage'].id:
+                message = {'value': attribute.value.value, 'unit': 'V'}
+                self._broadcast('voltage', message)
 
     async def initialise(self):
         device = self._zigbee_device
@@ -42,7 +57,7 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         cluster: ElectricalMeasurement = device[1].in_clusters[ElectricalMeasurement.cluster_id]
 
         cluster.add_listener(
-            ClusterAttributeListener(self.on_attribute_updated)
+            ClusterGeneralCommandListener(self.on_attribute_updated)
         )
 
         attributes = []
