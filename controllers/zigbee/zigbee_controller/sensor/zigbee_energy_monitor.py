@@ -1,8 +1,8 @@
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
-from zigpy.zcl.foundation import GeneralCommand, ZCLHeader
 from zigpy.zcl.clusters.homeautomation import ElectricalMeasurement
+from zigpy.zcl.foundation import GeneralCommand, ZCLHeader
 
 from zigbee_controller.device import ZigbeeController
 from zigbee_controller.zigbee import ClusterGeneralCommandListener, ZigbeeMixin
@@ -38,18 +38,30 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         device = self._zigbee_device
         cluster: ElectricalMeasurement = device[1].in_clusters[ElectricalMeasurement.cluster_id]
 
+        def broadcast_attribute(
+            flag: bool,
+            attribute_name: str,
+            invalid: bool,
+            name: str,
+            unit: str
+        ):
+            if flag and attribute.attrid == cluster.attributes_by_name[attribute_name].id:
+                if invalid and attribute.value.value == 0xFFFF:
+                    return
+
+                message = {'value': attribute.value.value, 'unit': unit}
+                self._broadcast(name, message)
+
         for attribute in args.attribute_reports:
-            if self.__power and attribute.attrid == cluster.attributes_by_name['active_power'].id:
-                message = {'value': attribute.value.value, 'unit': 'W'}
-                self._broadcast('power', message)
-
-            if self.__current and attribute.attrid == cluster.attributes_by_name['rms_current'].id:
-                message = {'value': attribute.value.value, 'unit': 'mA'}
-                self._broadcast('current', message)
-
-            if self.__voltage and attribute.attrid == cluster.attributes_by_name['rms_voltage'].id:
-                message = {'value': attribute.value.value, 'unit': 'V'}
-                self._broadcast('voltage', message)
+            broadcast_attribute(
+                self.__power, 'active_power', False, 'power', 'W'
+            )
+            broadcast_attribute(
+                self.__current, 'rms_current', True, 'current', 'A'
+            )
+            broadcast_attribute(
+                self.__voltage, 'rms_voltage', True, 'voltage', 'V'
+            )
 
     async def initialise(self):
         device = self._zigbee_device
