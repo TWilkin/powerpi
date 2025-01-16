@@ -4,6 +4,7 @@ from typing import List
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 from zigpy.zcl.clusters import Cluster
+from zigpy.zcl.foundation import Status
 
 from zigbee_controller.zigbee import DeviceJoinListener
 
@@ -24,29 +25,37 @@ class ZigbeeReportMixin:
         registered = False
 
         async def register():
-            count = 0
-            while count <= 2:
-                try:
-                    await cluster.bind()
+            try:
+                await cluster.bind()
 
-                    reports = {}
-                    for attribute in attributes:
-                        reports[attribute] = (frequency, frequency, 1)
+                reports = {}
+                for attribute in attributes:
+                    reports[attribute] = (frequency, frequency, 0)
 
-                    await cluster.configure_reporting_multiple(reports)
+                result = await cluster.configure_reporting_multiple(reports)
 
-                    self.log_info('Registered %d report(s)', len(reports))
-
-                    nonlocal registered
-                    registered = True
-
-                    return
-                except TimeoutError:
+                success = sum(
+                    1 if record is not None and record.status == Status.SUCCESS else 0
+                    for record in result.status_records
+                )
+                if success != len(reports):
                     self.log_warning(
-                        'Bind failed, likely the device is not on, will try again when it rejoins'
+                        'Registered %d of %d reports(s), will try again later',
+                        success,
+                        len(reports)
                     )
+                    return
 
-                    count += 1
+                self.log_info('Registered %d report(s)', len(reports))
+
+                nonlocal registered
+                registered = True
+
+                return
+            except TimeoutError:
+                self.log_warning(
+                    'Bind failed, likely the device is not on, will try again when it rejoins'
+                )
 
         def on_device_join(device: DeviceType):
             nonlocal registered
