@@ -1,5 +1,3 @@
-from typing import Any
-
 from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import NewPollableMixin
@@ -8,13 +6,13 @@ from powerpi_common.mqtt import MQTTClient
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 
 from zigbee_controller.device.zigbee_controller import ZigbeeController
-from zigbee_controller.zigbee import ClusterAttributeListener, ZigbeeMixin
-from zigbee_controller.zigbee.mixins import ZigbeeOnOffMixin, ZigbeeReportMixin
+from zigbee_controller.zigbee import ZigbeeMixin
+from zigbee_controller.zigbee.mixins import ZigbeeOnOffMixin
 from zigbee_controller.zigbee.constants import OnOff
 
 
 # pylint: disable=too-many-ancestors
-class ZigbeeSocket(Device, NewPollableMixin, ZigbeeMixin, ZigbeeOnOffMixin, ZigbeeReportMixin):
+class ZigbeeSocket(Device, NewPollableMixin, ZigbeeMixin, ZigbeeOnOffMixin):
     '''
     Add support for ZigBee sockets.
     '''
@@ -31,10 +29,6 @@ class ZigbeeSocket(Device, NewPollableMixin, ZigbeeMixin, ZigbeeOnOffMixin, Zigb
         NewPollableMixin.__init__(self, config, **kwargs)
         ZigbeeMixin.__init__(self, controller, **kwargs)
 
-    def on_attribute_updated(self, attribute_id: int, value: Any):
-        self.log_info('update!')
-        self.log_info('attribute updated %d %s', attribute_id, value)
-
     async def _poll(self):
         new_state = await self._read_status()
 
@@ -42,15 +36,7 @@ class ZigbeeSocket(Device, NewPollableMixin, ZigbeeMixin, ZigbeeOnOffMixin, Zigb
             await self.set_new_state(new_state)
 
     async def initialise(self):
-        device = self._zigbee_device
-
-        cluster: OnOffCluster = device[1].in_clusters[OnOffCluster.cluster_id]
-
-        cluster.add_listener(
-            ClusterAttributeListener(self.on_attribute_updated)
-        )
-
-        await self._register_reports(cluster, ['on_off'], 120)
+        '''No need to initialise as the socket has no options.'''
 
     async def _turn_on(self):
         await self.__set_power_state(DeviceStatus.ON)
