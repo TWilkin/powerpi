@@ -47,5 +47,6 @@
             "additionalProperties": false
         }
     },
+    "required": ["metrics"],
     "unevaluatedProperties": false
 }
