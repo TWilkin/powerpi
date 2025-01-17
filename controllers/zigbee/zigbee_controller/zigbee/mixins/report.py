@@ -53,7 +53,7 @@ class ZigbeeReportMixin(ABC):
                 )
                 if success != len(reports):
                     self.log_warning(
-                        'Registered %d of %d reports(s), will try again later',
+                        'Registered %d of %d report(s), will try again later',
                         success,
                         len(reports)
                     )
