@@ -22,17 +22,29 @@
         "type": {
             "const": "zigbee_energy_monitor"
         },
-        "power": {
-            "description": "Whether to capture the power usage reported by the sensor",
-            "type": "boolean"
-        },
-        "current": {
-            "description": "Whether to capture the current reported by the sensor",
-            "type": "boolean"
-        },
-        "voltage": {
-            "description": "Whether to capture the voltage reported by the sensor",
-            "type": "boolean"
+        "metrics": {
+            "description": "The list of metrics to enable for this sensor",
+            "type": "object",
+            "properties": {
+                "power": {
+                    "description": "Whether to capture the power usage reported by the sensor",
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                },
+                "current": {
+                    "description": "Whether to capture the current reported by the sensor",
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                },
+                "voltage": {
+                    "description": "Whether to capture the voltage reported by the sensor",
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                }
+            },
+            "anyOf": [
+                { "required": ["power"] },
+                { "required": ["current"] },
+                { "required": ["voltage"] }
+            ],
+            "additionalProperties": false
         }
     },
     "unevaluatedProperties": false
