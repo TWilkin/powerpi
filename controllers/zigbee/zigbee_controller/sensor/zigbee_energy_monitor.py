@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+from enum import StrEnum, unique
+
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
@@ -8,6 +11,24 @@ from zigpy.zcl.foundation import Attribute
 from zigbee_controller.device import ZigbeeController
 from zigbee_controller.zigbee import ZigbeeMixin
 from zigbee_controller.zigbee.mixins import ZigbeeReportMixin
+
+
+@unique
+class Metric(StrEnum):
+    NONE = 'none'
+    READ = 'read'
+    VISIBLE = 'visible'
+
+
+@dataclass
+class SupportedMetrics:
+    power: Metric | bool
+    current: Metric | bool
+    voltage: Metric | bool
+
+    @staticmethod
+    def is_enabled(metric: Metric | bool):
+        return metric is True or metric == Metric.VISIBLE or metric == Metric.READ
 
 
 class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
@@ -21,10 +42,8 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         logger: Logger,
         mqtt_client: MQTTClient,
         zigbee_controller: ZigbeeController,
+        metrics: SupportedMetrics,
         poll_frequency: int | None = 120,
-        power: bool | None = False,
-        current: bool | None = False,
-        voltage: bool | None = False,
         **kwargs
     ):
         # pylint: disable=too-many-arguments
@@ -34,11 +53,21 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         self._logger = logger
 
         self.__poll_frequency = poll_frequency
-        self.__power = power
-        self.__current = current
-        self.__voltage = voltage
+        self.__metrics = metrics
 
         self.__divisors = {}
+
+    @property
+    def power_enabled(self):
+        return SupportedMetrics.is_enabled(self.__metrics.power)
+
+    @property
+    def current_enabled(self):
+        return SupportedMetrics.is_enabled(self.__metrics.current)
+
+    @property
+    def voltage_enabled(self):
+        return SupportedMetrics.is_enabled(self.__metrics.voltage)
 
     def on_report(self, cluster: Cluster, attribute: Attribute):
         if cluster.cluster_id != ElectricalMeasurement.cluster_id:
@@ -67,13 +96,13 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
                 self._broadcast(name, message)
 
         broadcast_attribute(
-            self.__power, 'active_power', 'power_divisor', False, 'power', 'W'
+            self.power_enabled, 'active_power', 'power_divisor', False, 'power', 'W'
         )
         broadcast_attribute(
-            self.__current, 'rms_current', 'ac_current_divisor', True, 'current', 'A'
+            self.current_enabled, 'rms_current', 'ac_current_divisor', True, 'current', 'A'
         )
         broadcast_attribute(
-            self.__voltage, 'rms_voltage', 'ac_voltage_divisor', True, 'voltage', 'V'
+            self.voltage_enabled, 'rms_voltage', 'ac_voltage_divisor', True, 'voltage', 'V'
         )
 
     async def initialise(self):
@@ -83,13 +112,13 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
 
         report_attributes = []
         divisor_attributes = []
-        if self.__power:
+        if self.power_enabled:
             report_attributes.append('active_power')
             divisor_attributes.append('power_divisor')
-        if self.__current:
+        if self.current_enabled:
             report_attributes.append('rms_current')
             divisor_attributes.append('ac_current_divisor')
-        if self.__voltage:
+        if self.voltage_enabled:
             report_attributes.append('rms_voltage')
             divisor_attributes.append('ac_voltage_divisor')
 
