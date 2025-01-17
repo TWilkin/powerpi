@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from asyncio import get_event_loop
 from dataclasses import dataclass
 from typing import List
@@ -5,9 +6,9 @@ from typing import List
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 from zigpy.zcl.clusters import Cluster
-from zigpy.zcl.foundation import Attribute, Status
+from zigpy.zcl.foundation import Attribute, GeneralCommand, Status, ZCLHeader
 
-from zigbee_controller.zigbee import DeviceJoinListener
+from zigbee_controller.zigbee import DeviceJoinListener, ClusterGeneralCommandListener
 
 
 @dataclass
@@ -15,11 +16,17 @@ class AttributeReport:
     attribute_reports: List[Attribute]
 
 
-class ZigbeeReportMixin:
+class ZigbeeReportMixin(ABC):
     '''
     Mixin to be used to bind to a cluster to listen for reports on a schedule.
     Expected to be used alongside ZigbeeMixin.
     '''
+
+    @abstractmethod
+    def on_report(self, cluster: Cluster, attribute: Attribute):
+        '''
+        Override this method to listen to the attribute values registered in the reports.
+        '''
 
     async def _register_reports(self, cluster: Cluster, attributes: List[str], frequency: int):
         '''
@@ -77,4 +84,18 @@ class ZigbeeReportMixin:
             DeviceJoinListener(on_device_join)
         )
 
+        self.__add_report_listener(cluster)
+
         await register()
+
+    def __add_report_listener(self, cluster: Cluster):
+        def on_report(frame: ZCLHeader, report: AttributeReport):
+            if frame.command_id != GeneralCommand.Report_Attributes:
+                return
+
+            for attribute in report.attribute_reports:
+                self.on_report(cluster, attribute)
+
+        cluster.add_listener(
+            ClusterGeneralCommandListener(on_report)
+        )

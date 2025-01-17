@@ -2,11 +2,12 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from zigpy.zcl.clusters.homeautomation import ElectricalMeasurement
-from zigpy.zcl.foundation import GeneralCommand, ZCLHeader
+from zigpy.zcl.clusters import Cluster
+from zigpy.zcl.foundation import Attribute
 
 from zigbee_controller.device import ZigbeeController
-from zigbee_controller.zigbee import ClusterGeneralCommandListener, ZigbeeMixin
-from zigbee_controller.zigbee.mixins import AttributeReport, ZigbeeReportMixin
+from zigbee_controller.zigbee import ZigbeeMixin
+from zigbee_controller.zigbee.mixins import ZigbeeReportMixin
 
 
 class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
@@ -39,12 +40,9 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
 
         self.__divisors = {}
 
-    def on_attribute_updated(self, frame: ZCLHeader, args: AttributeReport):
-        if frame.command_id != GeneralCommand.Report_Attributes:
+    def on_report(self, cluster: Cluster, attribute: Attribute):
+        if cluster.cluster_id != ElectricalMeasurement.cluster_id:
             return
-
-        device = self._zigbee_device
-        cluster: ElectricalMeasurement = device[1].in_clusters[ElectricalMeasurement.cluster_id]
 
         def broadcast_attribute(
             flag: bool,
@@ -68,25 +66,20 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
                 message = {'value': value, 'unit': unit}
                 self._broadcast(name, message)
 
-        for attribute in args.attribute_reports:
-            broadcast_attribute(
-                self.__power, 'active_power', 'power_divisor', False, 'power', 'W'
-            )
-            broadcast_attribute(
-                self.__current, 'rms_current', 'ac_current_divisor', True, 'current', 'A'
-            )
-            broadcast_attribute(
-                self.__voltage, 'rms_voltage', 'ac_voltage_divisor', True, 'voltage', 'V'
-            )
+        broadcast_attribute(
+            self.__power, 'active_power', 'power_divisor', False, 'power', 'W'
+        )
+        broadcast_attribute(
+            self.__current, 'rms_current', 'ac_current_divisor', True, 'current', 'A'
+        )
+        broadcast_attribute(
+            self.__voltage, 'rms_voltage', 'ac_voltage_divisor', True, 'voltage', 'V'
+        )
 
     async def initialise(self):
         device = self._zigbee_device
 
         cluster: ElectricalMeasurement = device[1].in_clusters[ElectricalMeasurement.cluster_id]
-
-        cluster.add_listener(
-            ClusterGeneralCommandListener(self.on_attribute_updated)
-        )
 
         report_attributes = []
         divisor_attributes = []
