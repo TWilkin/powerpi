@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 from enum import StrEnum, unique
+from typing import Dict
 
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
@@ -15,20 +15,20 @@ from zigbee_controller.zigbee.mixins import ZigbeeReportMixin
 
 @unique
 class Metric(StrEnum):
+    POWER = 'power'
+    CURRENT = 'current'
+    VOLTAGE = 'voltage'
+
+
+@unique
+class MetricValue(StrEnum):
     NONE = 'none'
     READ = 'read'
     VISIBLE = 'visible'
 
-
-@dataclass
-class SupportedMetrics:
-    power: Metric | bool
-    current: Metric | bool
-    voltage: Metric | bool
-
     @staticmethod
-    def is_enabled(metric: Metric | bool):
-        return metric is True or metric == Metric.VISIBLE or metric == Metric.READ
+    def is_enabled(value):
+        return value in [MetricValue.READ, MetricValue.VISIBLE]
 
 
 class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
@@ -42,7 +42,7 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         logger: Logger,
         mqtt_client: MQTTClient,
         zigbee_controller: ZigbeeController,
-        metrics: SupportedMetrics,
+        metrics: Dict[Metric, MetricValue],
         poll_frequency: int | None = 120,
         **kwargs
     ):
@@ -59,15 +59,15 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
 
     @property
     def power_enabled(self):
-        return SupportedMetrics.is_enabled(self.__metrics.power)
+        return MetricValue.is_enabled(self.__metrics[Metric.POWER])
 
     @property
     def current_enabled(self):
-        return SupportedMetrics.is_enabled(self.__metrics.current)
+        return MetricValue.is_enabled(self.__metrics[Metric.CURRENT])
 
     @property
     def voltage_enabled(self):
-        return SupportedMetrics.is_enabled(self.__metrics.voltage)
+        return MetricValue.is_enabled(self.__metrics[Metric.VOLTAGE])
 
     def on_report(self, cluster: Cluster, attribute: Attribute):
         if cluster.cluster_id != ElectricalMeasurement.cluster_id:
