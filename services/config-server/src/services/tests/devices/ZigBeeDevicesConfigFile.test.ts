@@ -82,7 +82,7 @@ describe("ZigBee Devices", () => {
                         metrics: {
                             power: "visible",
                             current: "read",
-                            voltage: "read",
+                            voltage: "none",
                         },
                     },
                 ],
