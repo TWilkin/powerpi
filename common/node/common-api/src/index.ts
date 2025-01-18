@@ -14,7 +14,7 @@ import { Floor, Floorplan, Point, PolygonRoom, RectangleRoom, Room } from "./Flo
 import History from "./History";
 import PaginationResponse from "./Pagination";
 import PowerPiApi from "./PowerPiApi";
-import Sensor from "./Sensor";
+import Sensor, { Metric, MetricValue } from "./Sensor";
 import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus";
 import SocketIONamespace from "./SocketIONamespace";
 
@@ -38,6 +38,8 @@ export {
     Floor,
     Floorplan,
     History,
+    Metric,
+    MetricValue,
     PaginationResponse,
     Point,
     PolygonRoom,
