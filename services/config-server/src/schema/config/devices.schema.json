@@ -89,6 +89,9 @@
                     },
                     {
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/OsramSwitchMini.schema.json"
+                    },
+                    {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeeEnergyMonitor.schema.json"
                     }
                 ]
             }

@@ -3,6 +3,7 @@ import loadEnergenieSchema from "./energenie";
 import * as GenericSensor from "./GenericSensor.schema.json";
 import loadHarmonySchema from "./harmony";
 import loadLIFXSchema from "./lifx";
+import * as Metric from "./Metric.schema.json";
 import loadNetworkSchema from "./network";
 import * as PollableDevice from "./PollableDevice.schema.json";
 import * as PowerPiSensor from "./PowerPiSensor.schema.json";
@@ -13,6 +14,9 @@ import loadZigBeeSchema from "./zigbee";
 
 export default function loadDevicesSchema() {
     return {
+        // common types
+        Metric,
+
         // the base device/sensor
         BaseDevice,
         Sensor,
