@@ -30,7 +30,7 @@ describe("UnitConverter", () => {
 
     describe("gas", () => {
         test("m3 -> kWh", () => check("gas", { value: 100, unit: "m3" }, "kWh", 1_079.45));
-        test("m3 -> Wh", () => check("gas", { value: 100, unit: "m3" }, "Wh", 1.07945));
+        test("m3 -> Wh", () => check("gas", { value: 100, unit: "m3" }, "Wh", 1_079_453.33));
 
         test("cf -> kWh", () => check("gas", { value: 5_000, unit: "cf" }, "kWh", 1_528.335));
 
@@ -47,9 +47,9 @@ describe("UnitConverter", () => {
     });
 
     describe("power", () => {
-        test("kWh -> Wh", () => check("power", { value: 100, unit: "kWh" }, "Wh", 0.1));
+        test("Wh -> kWh", () => check("power", { value: 100, unit: "Wh" }, "kWh", 0.1));
 
-        test("Wh -> kWh", () => check("power", { value: 100, unit: "Wh" }, "kWh", 100_000));
+        test("kWh -> Wh", () => check("power", { value: 100, unit: "kWh" }, "Wh", 100_000));
 
         test("W -> kW", () => check("power", { value: 50, unit: "W" }, "kW", 0.05));
 
