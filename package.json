@@ -18,10 +18,6 @@
             "services/persistence",
             "services/ui",
             "services/voice-assistant"
-        ],
-        "nohoist": [
-            "**/@fortawesome/fontawesome-free",
-            "**/react-datepicker"
         ]
     },
     "scripts": {

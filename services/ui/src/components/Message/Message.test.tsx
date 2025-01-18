@@ -2,11 +2,15 @@ import { render, screen } from "@testing-library/react";
 import Message from "./Message";
 
 describe("Message", () => {
-    const cases: { translation: "pages.home" | "pages.devices"; expected: string }[] = [
+    const emptyPages: {
+        translation: "pages.home" | "pages.devices" | "pages.history";
+        expected: string;
+    }[] = [
         { translation: "pages.home", expected: "No floor plan." },
         { translation: "pages.devices", expected: "No devices." },
+        { translation: "pages.history", expected: "No history." },
     ];
-    test.each(cases)("empty for $translation", ({ translation, expected }) => {
+    test.each(emptyPages)("empty for $translation", ({ translation, expected }) => {
         render(<Message type="empty" translation={translation} />);
 
         expect(screen.getByText(expected)).toBeInTheDocument();
@@ -20,15 +24,22 @@ describe("Message", () => {
         ).toBeInTheDocument();
     });
 
-    test("filtered 10", () => {
-        render(<Message type="filtered" count={10} translation="pages.devices" />);
+    const filteredPages: {
+        translation: "pages.devices" | "pages.history";
+        count: number;
+        expected: string;
+    }[] = [
+        { translation: "pages.devices", count: 10, expected: "Filtered 10 devices." },
+        { translation: "pages.devices", count: 1, expected: "Filtered 1 device." },
+        { translation: "pages.history", count: 10, expected: "Filtered 10 records." },
+        { translation: "pages.history", count: 1, expected: "Filtered 1 record." },
+    ];
+    test.each(filteredPages)(
+        "filtered $count for $translation",
+        ({ translation, count, expected }) => {
+            render(<Message type="filtered" count={count} translation={translation} />);
 
-        expect(screen.getByText("Filtered 10 devices.")).toBeInTheDocument();
-    });
-
-    test("filtered 1", () => {
-        render(<Message type="filtered" count={1} translation="pages.devices" />);
-
-        expect(screen.getByText("Filtered 1 device.")).toBeInTheDocument();
-    });
+            expect(screen.getByText(expected)).toBeInTheDocument();
+        },
+    );
 });

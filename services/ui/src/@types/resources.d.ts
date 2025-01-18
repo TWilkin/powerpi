@@ -36,8 +36,25 @@ interface Resources {
           "visibility": {
             "label": "Visibility",
             "option": "Only show visible devices"
-          },
-          "clear": "Clear Filters"
+          }
+        }
+      },
+      "history": {
+        "headings": {
+          "type": "Type",
+          "entity": "Entity",
+          "action": "Action",
+          "when": "When",
+          "message": "Message"
+        },
+        "empty": "No history.",
+        "filtered_one": "Filtered {{count, number}} record.",
+        "filtered_other": "Filtered {{count, number}} records.",
+        "filters": {
+          "path": "Path",
+          "types": "Types",
+          "entities": "Entities",
+          "actions": "Actions"
         }
       },
       "settings": {
@@ -45,8 +62,10 @@ interface Resources {
       }
     },
     "common": {
+      "loading": "Loading",
       "close": "Close",
       "clear search": "Clear search",
+      "clear filters": "Clear Filters",
       "open filter": "Open filters",
       "close filter": "close filters",
       "all": "All",

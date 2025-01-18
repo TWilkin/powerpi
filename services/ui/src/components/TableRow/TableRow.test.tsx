@@ -2,12 +2,17 @@ import { render, screen, within } from "@testing-library/react";
 import TableRow from "./TableRow";
 
 describe("TableRow", () => {
-    test("renders", () => {
+    const rows: [number, boolean][] = [
+        [0, true],
+        [1, false],
+        [2, true],
+    ];
+    test.each(rows)("renders index=%i", (index, zebra) => {
         render(
             <table>
                 <tbody>
-                    <TableRow data-testid="row">
-                        <td>Cell</td>
+                    <TableRow index={index}>
+                        <td />
                     </TableRow>
                 </tbody>
             </table>,
@@ -16,9 +21,32 @@ describe("TableRow", () => {
         const table = screen.getByRole("table");
         expect(table).toBeInTheDocument();
 
-        const row = within(table).getByTestId("row");
+        const row = within(table).getByRole("row");
         expect(row).toBeInTheDocument();
+        expect(row).not.toHaveClass("sticky");
+        expect(row).toHaveClass(zebra ? "bg-bg-zebra" : "bg-transparent");
 
-        expect(within(row).getByText("Cell")).toBeInTheDocument();
+        expect(within(row).getByRole("cell")).toBeInTheDocument();
+    });
+
+    test("renders header", () => {
+        render(
+            <table>
+                <thead>
+                    <TableRow header>
+                        <th />
+                    </TableRow>
+                </thead>
+            </table>,
+        );
+
+        const table = screen.getByRole("table");
+        expect(table).toBeInTheDocument();
+
+        const row = within(table).getByRole("row");
+        expect(row).toBeInTheDocument();
+        expect(row).toHaveClass("sticky");
+
+        expect(within(row).getByRole("columnheader")).toBeInTheDocument();
     });
 });

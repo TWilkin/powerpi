@@ -4,7 +4,7 @@ import { vi } from "vitest";
 import Header from "./Header";
 
 vi.mock("../Logo", () => ({
-    default: () => <div>Logo</div>,
+    default: () => <div data-testid="logo" />,
 }));
 
 const mocks = vi.hoisted(() => ({
@@ -25,7 +25,7 @@ describe("Header", () => {
         const nav = within(header).getByRole("navigation");
         expect(nav).toBeInTheDocument();
 
-        expect(within(nav).getByText("Logo")).toBeInTheDocument();
+        expect(within(nav).getByTestId("logo")).toBeInTheDocument();
 
         const links = screen.getAllByRole("link");
         expect(links).toHaveLength(2);
@@ -46,6 +46,19 @@ describe("Header", () => {
         expectSettings(links[2]);
     });
 
+    test("renders with History", () => {
+        mocks.useOptionalRoute.mockReturnValue({ history: true });
+
+        render(<Header />, { wrapper: MemoryRouter });
+
+        const links = screen.getAllByRole("link");
+        expect(links).toHaveLength(3);
+
+        expectDevices(links[0]);
+        expectHistory(links[1]);
+        expectSettings(links[2]);
+    });
+
     function expectHome(link: HTMLElement) {
         expect(link).toHaveTextContent("Home");
         expect(within(link).getByRole("img", { hidden: true })).toHaveAttribute(
@@ -59,6 +72,14 @@ describe("Header", () => {
         expect(within(link).getByRole("img", { hidden: true })).toHaveAttribute(
             "data-icon",
             "plug",
+        );
+    }
+
+    function expectHistory(link: HTMLElement) {
+        expect(link).toHaveTextContent("History");
+        expect(within(link).getByRole("img", { hidden: true })).toHaveAttribute(
+            "data-icon",
+            "clock-rotate-left",
         );
     }
 

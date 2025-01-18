@@ -9,11 +9,18 @@ describe("RouteBuilder", () => {
         { route: Route.Device, expected: "device" },
         { route: Route.History, expected: "history" },
         { route: Route.Settings, expected: "settings" },
+        { route: Route.Settings, expected: "settings" },
     ];
     test.each(cases)("builds $expected from $route", ({ route, expected }) => {
         const result = RouteBuilder.build(route);
 
         expect(result).toBe(expected);
+    });
+
+    test("from root", () => {
+        const result = RouteBuilder.build(Route.Root, Route.History);
+
+        expect(result).toBe("/history");
     });
 
     const homeCases: { floor: string; expected: string }[] = [
@@ -23,6 +30,17 @@ describe("RouteBuilder", () => {
     ];
     test.each(homeCases)("home builds $expected from $floor", ({ floor, expected }) => {
         const result = RouteBuilder.home(floor);
+
+        expect(result).toBe(expected);
+    });
+
+    const historyCases: { entity: string | undefined; expected: string }[] = [
+        { entity: undefined, expected: "history" },
+        { entity: "device", expected: "history/device" },
+        { entity: " ", expected: "history" },
+    ];
+    test.each(historyCases)("history builds $expected from $entity", ({ entity, expected }) => {
+        const result = RouteBuilder.history(entity);
 
         expect(result).toBe(expected);
     });

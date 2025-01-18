@@ -1,7 +1,7 @@
 import { Device } from "@powerpi/common-api";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Route from "../../routing/Route";
 import RouteBuilder from "../../routing/RouteBuilder";
 import { buttonStyles } from "../Button";
@@ -15,13 +15,13 @@ const HistoryLink = ({ device }: HistoryLinkProps) => {
     const { t } = useTranslation();
 
     return (
-        <NavLink
-            to={RouteBuilder.build(Route.History)}
+        <Link
+            to={RouteBuilder.build(Route.Root, Route.History, device.name)}
             className={classNames(buttonStyles("icon"), "rounded border border-border")}
             aria-label={t("common.history link", { device: device.display_name })}
         >
             <Icon icon="history" />
-        </NavLink>
+        </Link>
     );
 };
 export default HistoryLink;

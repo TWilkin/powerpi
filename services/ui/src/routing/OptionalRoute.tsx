@@ -14,7 +14,8 @@ const OptionalRoute = () => {
 
     if (
         (pathname.includes(Route.Home) && enabled.home) ||
-        (pathname.includes(Route.Device) && enabled.device)
+        (pathname.includes(Route.Device) && enabled.device) ||
+        (pathname.includes(Route.History) && enabled.history)
     ) {
         return <Outlet />;
     }

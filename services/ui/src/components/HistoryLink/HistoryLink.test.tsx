@@ -21,7 +21,7 @@ describe("HistoryLink", () => {
 
         const link = screen.getByRole("link");
         expect(link).toBeInTheDocument();
-        expect(link).toHaveAttribute("href", "/history");
+        expect(link).toHaveAttribute("href", "/history/MyDevice");
         expect(screen.getByLabelText("Show history for My Device")).toBeInTheDocument();
 
         const icon = within(link).getByRole("img", { hidden: true });

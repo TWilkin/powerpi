@@ -4,19 +4,24 @@ import BatteryIcon from "../../components/BatteryIcon";
 import Button from "../../components/Button";
 import CapabilityButton from "../../components/Capabilities/CapabilityButton";
 import DevicePowerToggle from "../../components/DevicePowerToggle";
+import HistoryLink from "../../components/HistoryLink";
 import Icon from "../../components/Icon";
 import Message from "../../components/Message";
+import Scrollbar from "../../components/Scrollbar";
 import Search from "../../components/Search";
 import { useSlideAnimation } from "../../components/SlideAnimation";
 import Table from "../../components/Table";
 import TableCell from "../../components/TableCell";
 import TableRow from "../../components/TableRow";
 import Time from "../../components/Time";
+import useOptionalRoute from "../../routing/useOptionalRoute";
 import DeviceFilter from "./DeviceFilter";
 import useDeviceFilter from "./useDeviceFilter";
 
 const DevicePage = () => {
     const { t } = useTranslation();
+
+    const enabled = useOptionalRoute();
 
     const { state, devices, types, locations, total, dispatch, clear } = useDeviceFilter();
     const { open: filterOpen, handleToggle: handleFilterToggle } = useSlideAnimation();
@@ -66,11 +71,11 @@ const DevicePage = () => {
             )}
 
             {devices.length !== 0 && (
-                <div className="flex-1 overflow-y-auto overflow-x-visible">
+                <Scrollbar direction="y" className="flex-1">
                     <Table grow={false}>
                         <tbody>
-                            {devices.map((device) => (
-                                <TableRow key={device.name}>
+                            {devices.map((device, index) => (
+                                <TableRow key={device.name} index={index}>
                                     {showingInvisible && (
                                         <TableCell width="icon">
                                             <Icon icon={device.visible ? "visible" : "invisible"} />
@@ -100,11 +105,17 @@ const DevicePage = () => {
                                     <TableCell width="time">
                                         <Time time={device.since} data-tooltip-place="left" />
                                     </TableCell>
+
+                                    {enabled?.history && (
+                                        <TableCell width="icon">
+                                            <HistoryLink device={device} />
+                                        </TableCell>
+                                    )}
                                 </TableRow>
                             ))}
                         </tbody>
                     </Table>
-                </div>
+                </Scrollbar>
             )}
         </>
     );

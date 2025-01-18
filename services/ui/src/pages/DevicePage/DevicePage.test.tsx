@@ -7,9 +7,11 @@ import DevicePage from "./DevicePage";
 
 const mocks = vi.hoisted(() => ({
     useDeviceFilter: vi.fn(),
+    useOptionalRoute: vi.fn(),
 }));
 
 vi.mock("./useDeviceFilter", () => ({ default: mocks.useDeviceFilter }));
+vi.mock("../../routing/useOptionalRoute", () => ({ default: mocks.useOptionalRoute }));
 
 vi.mock("./DeviceFilter", () => ({
     default: ({ open }: ComponentProps<typeof DeviceFilter>) => (
@@ -22,6 +24,9 @@ vi.mock("../../components/Capabilities/CapabilityButton", () => ({
 }));
 vi.mock("../../components/DevicePowerToggle", () => ({
     default: () => <div data-testid="device-power-toggle" />,
+}));
+vi.mock("../../components/HistoryLink", () => ({
+    default: () => <div data-testid="history-link" />,
 }));
 
 describe("DevicePage", () => {
@@ -72,6 +77,8 @@ describe("DevicePage", () => {
         expect(rows).toHaveLength(2);
 
         expect(within(rows[0]).getByText("Device 1")).toBeInTheDocument();
+        expect(within(rows[0]).getByTestId("capability-button")).toBeInTheDocument();
+        expect(within(rows[0]).getByTestId("device-power-toggle")).toBeInTheDocument();
         expect(within(rows[0]).getByRole("time")).toBeInTheDocument();
 
         expect(within(rows[1]).getByText("device2")).toBeInTheDocument();
@@ -213,5 +220,33 @@ describe("DevicePage", () => {
         const icon = within(cells[1]).getByRole("img", { hidden: true });
         expect(icon).toBeInTheDocument();
         expect(icon).toHaveAttribute("data-icon", "battery-half");
+    });
+
+    test("history", () => {
+        mocks.useDeviceFilter.mockReturnValue({
+            ...defaultFilter,
+            devices: [
+                {
+                    name: "device1",
+                    display_name: "Device 1",
+                    type: "light",
+                    since: 0,
+                    visible: true,
+                },
+            ],
+            total: 1,
+        });
+
+        mocks.useOptionalRoute.mockReturnValue({ history: true });
+
+        render(<DevicePage />);
+
+        const row = screen.getByRole("row");
+        expect(row).toBeInTheDocument();
+
+        expect(within(row).getByText("Device 1")).toBeInTheDocument();
+        const cells = within(row).getAllByRole("cell");
+        expect(cells).toHaveLength(5);
+        expect(within(cells[4]).getByTestId("history-link")).toBeInTheDocument();
     });
 });

@@ -4,6 +4,7 @@ import ErrorPage from "../pages/ErrorPage";
 import DefaultHomeRoute from "../pages/HomePage/DefaultHomeRoute";
 import Layout, { configLoader } from "../pages/Layout";
 import { api, queryClient } from "../queries/client";
+import { historyLoader } from "../queries/useInfiniteQueryHistory";
 import { devicesLoader } from "../queries/useQueryDevices";
 import { floorplanLoader } from "../queries/useQueryFloorPlan";
 import { sensorsLoader } from "../queries/useQuerySensors";
@@ -15,6 +16,7 @@ import Routes from "./Route";
 const LoginPage = lazy(() => import("../pages/LoginPage"));
 const HomePage = lazy(() => import("../pages/HomePage"));
 const DevicePage = lazy(() => import("../pages/DevicePage"));
+const HistoryPage = lazy(() => import("../pages/HistoryPage"));
 const SettingsPage = lazy(() => import("../pages/SettingsPage"));
 
 const router = createBrowserRouter([
@@ -63,6 +65,22 @@ const router = createBrowserRouter([
                                     {
                                         path: Routes.Device,
                                         element: <DevicePage />,
+                                    },
+                                ],
+                            },
+                            {
+                                path: Routes.History,
+                                children: [
+                                    {
+                                        index: true,
+                                        element: <HistoryPage />,
+                                        loader: historyLoader(queryClient, api, undefined),
+                                    },
+                                    {
+                                        path: ":entity",
+                                        element: <HistoryPage />,
+                                        loader: ({ params }) =>
+                                            historyLoader(queryClient, api, params.entity),
                                     },
                                 ],
                             },
