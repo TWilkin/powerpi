@@ -1,11 +1,10 @@
 import { Sensor } from "@powerpi/common-api";
 import classNames from "classnames";
 import { useMemo } from "react";
-import _ from "underscore";
 import Tooltip from "../../../../components/Tooltip";
-import getSensorType from "../../../../utils/getSensorType";
 import RoomTooltipRow from "./RoomTooltipRow";
 import generateRoomTooltipId from "./generateRoomTooltipId";
+import useSensors from "./useSensors";
 
 type RoomTooltipProps = {
     name: string;
@@ -24,13 +23,8 @@ const RoomTooltip = ({ name, floor, room, sensors }: RoomTooltipProps) => {
         [sensors],
     );
 
-    const sortedSensors = useMemo(
-        () =>
-            _(sensors).sortBy((sensor) =>
-                (getSensorType(sensor.type) ?? sensor.type).toLocaleLowerCase(),
-            ),
-        [sensors],
-    );
+    const sortedSensors = useSensors(sensors);
+    console.log(sortedSensors);
 
     return (
         <Tooltip id={generateRoomTooltipId(floor, room)} place="top" className="whitespace-nowrap">

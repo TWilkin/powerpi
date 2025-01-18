@@ -2,9 +2,9 @@ import BaseDevice from "./BaseDevice";
 import Battery from "./Battery";
 
 export enum MetricValue {
-    none,
-    read,
-    visible,
+    NONE = "none",
+    READ = "read",
+    VISIBLE = "visible",
 }
 
 export type Metric = {
