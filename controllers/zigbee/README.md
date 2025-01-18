@@ -6,11 +6,13 @@ The service is built using python, with dependencies using [poetry](https://pyth
 
 ## Supported Devices
 
-This controller service currently supports the following ZigBee devices:
+This controller service currently supports the following ZigBee devices/sensors:
 
--   Lights - Any ZigBee standard compliant light bulb, the following bulbs have been tested and confirmed working:
+-   Lights - Any ZigBee standard compliant light bulb; the following bulbs have been tested and confirmed working:
     -   [Innr Smart Bulb Colour](https://www.innr.com/en/product/innr-smart-bulb-colour-b22-uk/) - Innr RGB light bulb.
--   Sockets - Any ZigBee standard compliant socket, the following sockets have been tested and confirmed working:
+-   Sockets - Any ZigBee standard compliant socket; the following sockets have been tested and confirmed working:
+    -   [Innr Smart Plug](https://www.innr.com/en/product/innr-smart-plug-uk/) - Innr Smart Plug
+-   Energy Monitoring - Any ZigBee standard compliant energy monitoring sensor producing power, current and voltage readings; the following sensors have been tested and confirmed working:
     -   [Innr Smart Plug](https://www.innr.com/en/product/innr-smart-plug-uk/) - Innr Smart Plug
 -   [Aqara Door and Window Sensor](https://www.aqara.com/en/door_and_window_sensor.html) - Magnetic door and window sensor supporting open and close events as well as battery life.
 -   Osram Smart+ Switch Mini - ZigBee remote with 3 buttons (centre, up and down) supporting single and long press as well as battery life.
