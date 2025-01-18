@@ -1,0 +1,8 @@
+{{- $data := dict
+    "Name" "api-policy"
+    "Label" .Chart.Name
+    "Mosquitto" true
+    "Database" true
+    "IngressController" 3000
+}}
+{{- include "powerpi.network-policy" (merge (dict "Params" $data) .) -}}

@@ -1,7 +1,7 @@
 import asyncio
 
 from powerpi_common.config import Config
-from powerpi_common.device import Device, DeviceStatus
+from powerpi_common.device import Device
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient

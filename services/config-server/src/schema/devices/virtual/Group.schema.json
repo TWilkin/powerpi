@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/virtual/Composite.schema.json",
-    "title": "Composite",
-    "description": "The Composite device",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/virtual/Group.schema.json",
+    "title": "Group",
+    "description": "The Group device",
     "type": "object",
     "allOf": [
         {
@@ -14,7 +14,7 @@
     ],
     "properties": {
         "type": {
-            "const": "composite"
+            "const": "group"
         },
         "devices": {
             "description": "The list of devices that will be turned on or off in sequence",

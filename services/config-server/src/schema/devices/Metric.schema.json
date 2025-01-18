@@ -1,0 +1,8 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json",
+    "title": "Metric",
+    "description": "The enumeration for options available to a sensor's metric list, none for not reading (same as undefined), read for read-only and visible for reading and showing in the UI",
+    "type": "string",
+    "enum": ["none", "read", "visible"]
+}

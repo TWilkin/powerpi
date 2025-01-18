@@ -1,0 +1,74 @@
+{{- $services := list
+  (dict
+    "Label" "api"
+    "Port" 1883
+  )
+  (dict
+    "Component" "controller"
+    "Port" 1883
+  )
+}}
+
+{{- if .Values.global.config }}
+{{- $services = append $services (dict
+  "Label" "config-server"
+  "Port" 1883
+)}}
+{{- end }}
+
+{{- if .Values.global.energyMonitor }}
+{{- $services = append $services (dict
+  "Label" "energy-monitor"
+  "Port" 1883
+)}}
+{{- end }}
+
+{{- if .Values.global.event }}
+{{- $services = append $services (dict
+  "Label" "event"
+  "Port" 1883
+)}}
+{{- end }}
+
+{{- if .Values.global.persistence }}
+{{- $services = append $services (dict
+  "Label" "persistence"
+  "Port" 1883
+)}}
+{{- end }}
+
+{{- if .Values.global.scheduler }}
+{{- $services = append $services (dict
+  "Label" "scheduler"
+  "Port" 1883
+)}}
+{{- end }}
+
+{{- if .Values.global.voiceAssistant }}
+{{- $services = append $services (dict
+  "Label" "voice-assistant"
+  "Port" 1883
+)}}
+{{- end }}
+
+{{- $ssl := and 
+  (eq .Values.global.useSSL true) 
+  (eq .Values.global.useSensors true) 
+  (not (eq .Values.global.clusterIssuer nil)) 
+  (not (eq .Values.hostName nil))
+-}}
+
+{{- $local := ternary (dict
+      "Direction" "ingress"
+      "Cidr" .Values.localCIDR
+      "Port" (ternary 8883 1883 $ssl)
+    ) nil .Values.global.useSensors 
+-}}
+
+{{- $data := dict
+    "Name" "mosquitto-policy"
+    "Label" "mosquitto"
+    "Ingress" $services
+    "Local" $local
+}}
+{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}

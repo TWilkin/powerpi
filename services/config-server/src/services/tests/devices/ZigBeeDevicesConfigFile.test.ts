@@ -70,6 +70,56 @@ describe("ZigBee Devices", () => {
         });
     });
 
+    describe("Energy Monitor", () => {
+        const { testInvalid } = commonZigBeeTests(
+            {
+                sensors: [
+                    {
+                        type: "zigbee_energy_monitor",
+                        name: "EnergyMonitor",
+                        nwk: "0xabcd",
+                        ieee: "00:11:22:33:44:55:66:77",
+                        metrics: {
+                            power: "visible",
+                            current: "read",
+                            voltage: "none",
+                        },
+                    },
+                ],
+            },
+            true,
+        );
+
+        test("No metrics", () =>
+            testInvalid({
+                sensors: [
+                    {
+                        type: "zigbee_energy_monitor",
+                        name: "EnergyMonitor",
+                        nwk: "0xabcd",
+                        ieee: "00:11:22:33:44:55:66:77",
+                    },
+                ],
+            }));
+
+        const invalidMetrics = ["ready", 1, true];
+        test.each(invalidMetrics)("Bad metric $metric", (metric) =>
+            testInvalid({
+                sensors: [
+                    {
+                        type: "zigbee_energy_monitor",
+                        name: "EnergyMonitor",
+                        nwk: "0xabcd",
+                        ieee: "00:11:22:33:44:55:66:77",
+                        metrics: {
+                            power: metric,
+                        },
+                    },
+                ],
+            }),
+        );
+    });
+
     describe("Light", () => {
         const { testValid, testInvalid } = commonZigBeeTests({
             devices: [

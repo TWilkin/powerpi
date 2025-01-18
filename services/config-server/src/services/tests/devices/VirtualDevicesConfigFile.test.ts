@@ -1,16 +1,16 @@
 import commonDeviceTests from "./commonDeviceTests";
 
 describe("Virtual Devices", () => {
-    describe("Composite", () => {
+    describe("Group", () => {
         const { testInvalid } = commonDeviceTests({
-            devices: [{ type: "composite", name: "Composite", devices: ["Device1", "Device2"] }],
+            devices: [{ type: "group", name: "Group", devices: ["Device1", "Device2"] }],
         });
 
         [[], undefined, [1]].forEach((devices) =>
             test(`Bad devices ${devices}`, () =>
                 testInvalid({
-                    devices: [{ type: "composite", name: "Composite", devices }],
-                }))
+                    devices: [{ type: "group", name: "Group", devices }],
+                })),
         );
     });
 
@@ -149,8 +149,8 @@ describe("Virtual Devices", () => {
                                 [prop]: devices,
                             },
                         ],
-                    }))
-            )
+                    })),
+            ),
         );
     });
 
@@ -171,7 +171,7 @@ describe("Virtual Devices", () => {
             test(`Bad devices ${devices}`, () =>
                 testInvalid({
                     devices: [{ type: "scene", name: "Scene", devices, state: { brightness: 50 } }],
-                }))
+                })),
         );
 
         describe("State", () => {
@@ -220,7 +220,7 @@ describe("Virtual Devices", () => {
                                         state: { [state]: value },
                                     },
                                 ],
-                            }))
+                            })),
                     );
 
                     badValues.forEach((value) =>
@@ -234,9 +234,9 @@ describe("Virtual Devices", () => {
                                         state: { [state]: value },
                                     },
                                 ],
-                            }))
+                            })),
                     );
-                })
+                }),
             );
         });
     });

@@ -43,8 +43,8 @@ WiFiClient espClient;
 #endif
 
 #ifdef MQTT_SSL
-// the root CA
-X509List cert(cert_LetsEncrypt_R3);
+// the root CAs
+X509List certs(certs_LetsEncrypt);
 #endif
 
 // the MQTT client
@@ -52,6 +52,6 @@ PubSubClient mqttClient(espClient);
 
 void setupMQTT();
 void connectMQTT(bool waitForNTP);
-void publish(const char action[], ArduinoJson::JsonDocument& message);
+void publish(const char action[], ArduinoJson::JsonDocument &message);
 
 #endif

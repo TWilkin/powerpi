@@ -1,6 +1,7 @@
 #include "mqtt.h"
 
-void setupMQTT() {
+void setupMQTT()
+{
     mqttClient.setServer(MQTT_SERVER, MQTT_PORT);
 
     Serial.print("Using MQTT: ");
@@ -8,40 +9,45 @@ void setupMQTT() {
     Serial.print(":");
     Serial.print(MQTT_PORT);
 
-    #ifdef MQTT_USER
-        Serial.print(" as ");
-        Serial.print(MQTT_USER);
-    #endif
+#ifdef MQTT_USER
+    Serial.print(" as ");
+    Serial.print(MQTT_USER);
+#endif
 
     Serial.println();
 }
 
-void connectMQTT(bool waitForNTP) {
-    #ifdef MQTT_SSL
-    espClient.setTrustAnchors(&cert);
-    #endif
+void connectMQTT(bool waitForNTP)
+{
+#ifdef MQTT_SSL
+    espClient.setTrustAnchors(&certs);
+#endif
 
     // wait until it's connected
-    while(!mqttClient.connected()) {
-        #ifdef MQTT_USER
-            bool connected = mqttClient.connect(HOSTNAME, MQTT_USER, MQTT_PASSWORD);
-        #else
-            bool connected = mqttClient.connect(HOSTNAME);
-        #endif
+    while (!mqttClient.connected())
+    {
+#ifdef MQTT_USER
+        bool connected = mqttClient.connect(HOSTNAME, MQTT_USER, MQTT_PASSWORD);
+#else
+        bool connected = mqttClient.connect(HOSTNAME);
+#endif
 
-        if(!connected) {
+        if (!connected)
+        {
             Serial.print("MQTT connection failed ");
             Serial.println(mqttClient.state());
-            
+
             delay(MQTT_ACTION_DELAY);
         }
     }
 
     // check NTP update has run
-    if(waitForNTP) {
+    if (waitForNTP)
+    {
         unsigned short retries = 0;
 
-        while(retries < MAX_NTP_RETRIES && timeClient.getEpochTime() < 24 * 60 * 60 * 1000) {
+        while (retries < MAX_NTP_RETRIES && timeClient.getEpochTime() < 24 * 60 * 60 * 1000)
+        {
             retries++;
 
             Serial.println("Waiting for NTP update");
@@ -50,13 +56,15 @@ void connectMQTT(bool waitForNTP) {
         }
 
         // restart the device if NTP isn't working
-        if(retries >= MAX_NTP_RETRIES) {
+        if (retries >= MAX_NTP_RETRIES)
+        {
             ESP.restart();
         }
     }
 }
 
-void publish(const char action[], ArduinoJson::JsonDocument& message) {
+void publish(const char action[], ArduinoJson::JsonDocument &message)
+{
     // retrieve the timestamp
     unsigned long long timestamp = timeClient.getEpochTime();
 
@@ -73,8 +81,8 @@ void publish(const char action[], ArduinoJson::JsonDocument& message) {
     connectMQTT(true);
     mqttClient.publish(topic, messageStr, true);
 
-    // wait for a moment if we're planning to deep sleep to ensure it sends
-    #ifdef DEEP_SLEEP
-        delay(MQTT_ACTION_DELAY);
-    #endif
+// wait for a moment if we're planning to deep sleep to ensure it sends
+#ifdef DEEP_SLEEP
+    delay(MQTT_ACTION_DELAY);
+#endif
 }
