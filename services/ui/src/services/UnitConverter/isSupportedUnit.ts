@@ -12,9 +12,11 @@ const supportedUnits = {
     millivolt: "mV",
     volt: "V",
 
-    // power
+    // energy
     "watt hours": "Wh",
     "kilowatt hours": "kWh",
+
+    // power
     watt: "W",
     kilowatt: "kW",
 

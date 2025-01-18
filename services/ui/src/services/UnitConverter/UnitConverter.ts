@@ -1,18 +1,12 @@
 import _ from "underscore";
 import keysOf from "../../utils/keysOf";
-import { current, electricalPotential, gas, power, temperature, volume } from "./converters";
+import * as converterDefinitions from "./converters";
 import { Conversion, Converter, ConverterDefinition, UnitType, UnitValue } from "./types";
 
 /** Class representing the conversion from one numeric unit to another. */
 export default class UnitConverter {
-    private static readonly converters: { [key in UnitType]: ConverterDefinition[] } = {
-        current,
-        electricalPotential,
-        gas,
-        power,
-        temperature,
-        volume,
-    };
+    private static readonly converters: { [key in UnitType]: ConverterDefinition[] } =
+        converterDefinitions;
 
     private constructor() {}
 

@@ -13,6 +13,7 @@ export type UnitValue = {
 export type UnitType =
     | "current"
     | "electricalPotential"
+    | "energy"
     | "gas"
     | "power"
     | "temperature"
