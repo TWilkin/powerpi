@@ -54,8 +54,10 @@ function buildInitialiser(t: TFunction<"defaults">) {
         const defaultSettings = {
             language: undefined,
             units: {
-                temperature: t("units.temperature"),
+                current: t("units.current"),
+                electricalPotential: t("units.electricalPotential"),
                 gas: t("units.gas"),
+                temperature: t("units.temperature"),
             },
         };
 

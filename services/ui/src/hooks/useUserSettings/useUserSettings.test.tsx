@@ -45,8 +45,10 @@ describe("useUserSettings", () => {
         expect(result.current.settings).toStrictEqual({
             language: undefined,
             units: {
-                temperature: "°C",
+                current: "A",
+                electricalPotential: "V",
                 gas: "m3",
+                temperature: "°C",
             },
         });
     });
@@ -68,8 +70,10 @@ describe("useUserSettings", () => {
         expect(result.current.settings).toStrictEqual({
             language: "en-US",
             units: {
-                temperature: "°C",
+                current: "A",
+                electricalPotential: "V",
                 gas: "kWh",
+                temperature: "°C",
             },
         });
     });
@@ -95,22 +99,28 @@ describe("useUserSettings", () => {
         expect(result.current.settings).toBeDefined();
         expect(result.current.dispatch).toBeDefined();
         expect(result.current.settings?.units).toStrictEqual({
-            temperature: "°C",
+            current: "A",
+            electricalPotential: "V",
             gas: "m3",
+            temperature: "°C",
         });
 
         act(() => result.current.dispatch!({ type: "Unit", unitType: "temperature", unit: "K" }));
 
         expect(result.current.settings?.units).toStrictEqual({
-            temperature: "K",
+            current: "A",
+            electricalPotential: "V",
             gas: "m3",
+            temperature: "K",
         });
 
         act(() => result.current.dispatch!({ type: "Unit", unitType: "gas", unit: "kWh" }));
 
         expect(result.current.settings?.units).toStrictEqual({
-            temperature: "K",
+            current: "A",
+            electricalPotential: "V",
             gas: "kWh",
+            temperature: "K",
         });
     });
 });

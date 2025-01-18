@@ -1,8 +1,10 @@
 interface Resources {
   "defaults": {
     "units": {
-      "temperature": "°C",
-      "gas": "m3"
+      "current": "A",
+      "electricalPotential": "V",
+      "gas": "m3",
+      "temperature": "°C"
     }
   },
   "translation": {
