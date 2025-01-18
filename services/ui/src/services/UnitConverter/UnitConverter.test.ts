@@ -30,20 +30,27 @@ describe("UnitConverter", () => {
 
     describe("energy", () => {
         test("Wh -> kWh", () => check("energy", { value: 100, unit: "Wh" }, "kWh", 0.1));
+        test("Wh -> J", () => check("energy", { value: 3600, unit: "Wh" }, "J", 1));
 
         test("kWh -> Wh", () => check("energy", { value: 100, unit: "kWh" }, "Wh", 100_000));
+
+        test("J -> Wh", () => check("energy", { value: 100, unit: "J" }, "Wh", 360_000));
+        test("J -> kJ", () => check("energy", { value: 100, unit: "J" }, "kJ", 0.1));
 
         test("getConverters", () => {
             const result = UnitConverter.getConverters("energy");
 
             expect(result).toContainEqual({ unit: "Wh", key: "watt hours" });
             expect(result).toContainEqual({ unit: "kWh", key: "kilowatt hours" });
+            expect(result).toContainEqual({ unit: "J", key: "joule" });
+            expect(result).toContainEqual({ unit: "kJ", key: "kilojoule" });
         });
     });
 
     describe("gas", () => {
         test("m3 -> kWh", () => check("gas", { value: 100, unit: "m3" }, "kWh", 1_079.45));
         test("m3 -> Wh", () => check("gas", { value: 100, unit: "m3" }, "Wh", 1_079_453.33));
+        test("m3 -> J", () => check("gas", { value: 100, unit: "m3" }, "J", 299.848));
 
         test("cf -> kWh", () => check("gas", { value: 5_000, unit: "cf" }, "kWh", 1_528.335));
 

@@ -15,6 +15,8 @@ const supportedUnits = {
     // energy
     "watt hours": "Wh",
     "kilowatt hours": "kWh",
+    joule: "J",
+    kilojoule: "kJ",
 
     // power
     watt: "W",
