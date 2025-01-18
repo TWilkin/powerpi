@@ -15,4 +15,18 @@ export const power: ConverterDefinition[] = [
             Wh: (value: number) => value / 1000,
         },
     },
+    {
+        unit: "W",
+        key: "watt",
+        convert: {
+            kW: (value: number) => value / 1000,
+        },
+    },
+    {
+        unit: "kW",
+        key: "kilowatt",
+        convert: {
+            W: (value: number) => value * 1000,
+        },
+    },
 ];

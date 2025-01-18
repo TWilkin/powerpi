@@ -3,15 +3,23 @@ import { UnitType } from "./types";
 
 describe("getUnitType", () => {
     const cases: { type: string; unit?: string; expected: UnitType | undefined }[] = [
+        { type: "current", expected: "current" },
         { type: "gas", expected: "gas" },
         { type: "power", expected: "power" },
         { type: "temperature", expected: "temperature" },
+        { type: "voltage", expected: "voltage" },
         { type: "volume", expected: "volume" },
+        { type: "nope", unit: "mA", expected: "current" },
+        { type: "nope", unit: "A", expected: "current" },
         { type: "nope", unit: "Wh", expected: "power" },
         { type: "nope", unit: "kWh", expected: "power" },
+        { type: "nope", unit: "W", expected: "power" },
+        { type: "nope", unit: "kW", expected: "power" },
         { type: "nope", unit: "°C", expected: "temperature" },
         { type: "nope", unit: "K", expected: "temperature" },
         { type: "nope", unit: "F", expected: "temperature" },
+        { type: "nope", unit: "mV", expected: "voltage" },
+        { type: "nope", unit: "V", expected: "voltage" },
         { type: "nope", unit: "m3", expected: "volume" },
         { type: "nope", unit: "cf", expected: "volume" },
         { type: "nope", unit: "hcf", expected: "volume" },

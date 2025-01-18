@@ -2,6 +2,32 @@ import UnitConverter from "./UnitConverter";
 import { UnitType, UnitValue } from "./types";
 
 describe("UnitConverter", () => {
+    describe("current", () => {
+        test("mA -> A", () => check("current", { value: 100, unit: "mA" }, "A", 0.1));
+
+        test("A -> mA", () => check("current", { value: 0.1, unit: "A" }, "mA", 100));
+
+        test("getConverters", () => {
+            const result = UnitConverter.getConverters("current");
+
+            expect(result).toContainEqual({ unit: "mA", key: "milliampere" });
+            expect(result).toContainEqual({ unit: "A", key: "ampere" });
+        });
+    });
+
+    describe("electricalPotential", () => {
+        test("mV -> V", () => check("electricalPotential", { value: 100, unit: "mV" }, "V", 0.1));
+
+        test("V -> mV", () => check("electricalPotential", { value: 0.1, unit: "V" }, "mV", 100));
+
+        test("getConverters", () => {
+            const result = UnitConverter.getConverters("electricalPotential");
+
+            expect(result).toContainEqual({ unit: "mV", key: "millivolt" });
+            expect(result).toContainEqual({ unit: "V", key: "volt" });
+        });
+    });
+
     describe("gas", () => {
         test("m3 -> kWh", () => check("gas", { value: 100, unit: "m3" }, "kWh", 1_079.45));
         test("m3 -> Wh", () => check("gas", { value: 100, unit: "m3" }, "Wh", 1.07945));
@@ -25,11 +51,18 @@ describe("UnitConverter", () => {
 
         test("Wh -> kWh", () => check("power", { value: 100, unit: "Wh" }, "kWh", 100_000));
 
+        test("W -> kW", () => check("power", { value: 50, unit: "W" }, "kW", 0.05));
+
+        test("kW -> W", () => check("power", { value: 50, unit: "kW" }, "W", 50_000));
+
         test("getConverters", () => {
             const result = UnitConverter.getConverters("power");
 
             expect(result).toContainEqual({ unit: "Wh", key: "watt hours" });
             expect(result).toContainEqual({ unit: "kWh", key: "kilowatt hours" });
+
+            expect(result).toContainEqual({ unit: "W", key: "watt" });
+            expect(result).toContainEqual({ unit: "kW", key: "kilowatt" });
         });
     });
 

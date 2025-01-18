@@ -4,9 +4,19 @@ import keysOf from "../../utils/keysOf";
 const supportedUnits = {
     percentage: "%",
 
+    // current
+    milliampere: "mA",
+    ampere: "A",
+
+    // electrical potential
+    millivolt: "mV",
+    volt: "V",
+
     // power
     "watt hours": "Wh",
     "kilowatt hours": "kWh",
+    watt: "W",
+    kilowatt: "kW",
 
     // temperature
     celsius: "°C",
