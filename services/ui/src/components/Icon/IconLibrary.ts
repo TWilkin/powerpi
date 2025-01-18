@@ -118,14 +118,17 @@ const iconLibrary = {
     deviceUnknown: faQuestion,
 
     // sensors
+    sensorCurrent: faBolt,
     sensorDoorOpen: faDoorOpen,
     sensorDoorClosed: faDoorClosed,
     sensorElectricity: faBolt,
     sensorGas: faBurn,
     sensorHumidity: faTint,
     sensorMotion: faWalking,
+    sensorPower: faBolt,
     sensorSwitch: faMobileRetro,
     sensorTemperature: faThermometerHalf,
+    sensorVoltage: faBolt,
     sensorWindowOpen: faHouseChimneyWindow,
     sensorWindowClosed: faHouseChimney,
     sensorUnknown: faQuestion,
