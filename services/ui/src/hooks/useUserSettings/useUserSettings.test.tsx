@@ -48,6 +48,7 @@ describe("useUserSettings", () => {
                 current: "A",
                 electricalPotential: "V",
                 gas: "m3",
+                power: "W",
                 temperature: "°C",
             },
         });
@@ -57,7 +58,8 @@ describe("useUserSettings", () => {
         const settings: UserSettingsType = {
             language: "en-US",
             units: {
-                gas: "kWh",
+                gas: "hcf",
+                temperature: "F",
             },
         };
 
@@ -72,8 +74,9 @@ describe("useUserSettings", () => {
             units: {
                 current: "A",
                 electricalPotential: "V",
-                gas: "kWh",
-                temperature: "°C",
+                gas: "hcf",
+                power: "W",
+                temperature: "F",
             },
         });
     });
@@ -102,6 +105,7 @@ describe("useUserSettings", () => {
             current: "A",
             electricalPotential: "V",
             gas: "m3",
+            power: "W",
             temperature: "°C",
         });
 
@@ -111,6 +115,7 @@ describe("useUserSettings", () => {
             current: "A",
             electricalPotential: "V",
             gas: "m3",
+            power: "W",
             temperature: "K",
         });
 
@@ -120,6 +125,7 @@ describe("useUserSettings", () => {
             current: "A",
             electricalPotential: "V",
             gas: "kWh",
+            power: "W",
             temperature: "K",
         });
     });

@@ -57,6 +57,7 @@ function buildInitialiser(t: TFunction<"defaults">) {
                 current: t("units.current"),
                 electricalPotential: t("units.electricalPotential"),
                 gas: t("units.gas"),
+                power: t("units.power"),
                 temperature: t("units.temperature"),
             },
         };

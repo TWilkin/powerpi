@@ -21,6 +21,8 @@ const UnitSettings = () => {
 
             <UnitOption type="gas" value={settings?.units.gas} dispatch={dispatch} />
 
+            <UnitOption type="power" value={settings?.units.power} dispatch={dispatch} />
+
             <UnitOption
                 type="temperature"
                 value={settings?.units.temperature}

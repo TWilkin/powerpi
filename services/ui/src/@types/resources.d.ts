@@ -4,6 +4,7 @@ interface Resources {
       "current": "A",
       "electricalPotential": "V",
       "gas": "m3",
+      "power": "W",
       "temperature": "°C"
     }
   },

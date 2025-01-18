@@ -31,11 +31,12 @@ describe("UnitSettings", () => {
         expect(group).toHaveAccessibleName("Units");
 
         const comboboxes = within(group).getAllByRole("combobox");
-        expect(comboboxes).toHaveLength(4);
+        expect(comboboxes).toHaveLength(5);
 
         expect(within(group).getByLabelText("Current")).toBeInTheDocument();
         expect(within(group).getByLabelText("Electrical Potential")).toBeInTheDocument();
         expect(within(group).getByLabelText("Gas")).toBeInTheDocument();
+        expect(within(group).getByLabelText("Power")).toBeInTheDocument();
         expect(within(group).getByLabelText("Temperature")).toBeInTheDocument();
     });
 

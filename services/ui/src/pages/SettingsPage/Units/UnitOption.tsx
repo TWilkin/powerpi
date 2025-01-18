@@ -6,7 +6,7 @@ import useUserSettings from "../../../hooks/useUserSettings";
 import UnitConverter, { SupportedUnit, UnitType } from "../../../services/UnitConverter";
 
 type UnitOption = {
-    type: Exclude<UnitType, "volume">;
+    type: Exclude<UnitType, "energy" | "volume">;
 
     value: string | undefined;
 
