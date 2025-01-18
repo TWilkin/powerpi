@@ -134,10 +134,13 @@ interface Resources {
       "sensors": {
         "labels": {
           "door": "Door",
+          "current": "Current",
+          "electricalPotential": "Electrical Potential",
           "electricity": "Electricity",
           "gas": "Gas",
           "humidity": "Humidity",
           "motion": "Motion",
+          "power": "Power",
           "switch": "Switch",
           "temperature": "Temperature",
           "window": "Window"
