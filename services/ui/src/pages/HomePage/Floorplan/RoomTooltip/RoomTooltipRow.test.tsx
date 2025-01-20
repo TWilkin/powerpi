@@ -30,7 +30,7 @@ describe("RoomTooltipRow", () => {
         expect(icon).toBeInTheDocument();
         expect(icon).toHaveAttribute("data-icon", "temperature-half");
 
-        expect(screen.getByText("Temperature:")).toBeInTheDocument();
+        expect(screen.getByText("My Sensor:")).toBeInTheDocument();
 
         expect(screen.getByText("10 K")).toBeInTheDocument();
 
@@ -42,7 +42,7 @@ describe("RoomTooltipRow", () => {
     test("renders unsupported type", () => {
         render(<RoomTooltipRow sensor={{ ...sensor, type: "banana" }} showingBattery={false} />);
 
-        expect(screen.getByText("banana:")).toBeInTheDocument();
+        expect(screen.getByText("My Sensor:")).toBeInTheDocument();
     });
 
     test("renders state", () => {
@@ -53,7 +53,7 @@ describe("RoomTooltipRow", () => {
             />,
         );
 
-        expect(screen.getByText("Motion:")).toBeInTheDocument();
+        expect(screen.getByText("My Sensor:")).toBeInTheDocument();
 
         expect(screen.getByText("detected")).toBeInTheDocument();
     });

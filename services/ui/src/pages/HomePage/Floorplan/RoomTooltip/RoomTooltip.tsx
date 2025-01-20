@@ -24,7 +24,6 @@ const RoomTooltip = ({ name, floor, room, sensors }: RoomTooltipProps) => {
     );
 
     const sortedSensors = useSensors(sensors);
-    console.log(sortedSensors);
 
     return (
         <Tooltip id={generateRoomTooltipId(floor, room)} place="top" className="whitespace-nowrap">

@@ -1,12 +1,10 @@
 import { Sensor } from "@powerpi/common-api";
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import BatteryIcon from "../../../../components/BatteryIcon";
 import SensorIcon from "../../../../components/SensorIcon";
 import SensorState from "../../../../components/SensorState";
 import Time from "../../../../components/Time";
 import Value from "../../../../components/Value";
-import getSensorType from "../../../../utils/getSensorType";
 
 type RoomTooltipRowProps = {
     sensor: Sensor;
@@ -18,16 +16,6 @@ type RoomTooltipRowProps = {
 const RoomTooltipRow = ({ sensor, showingBattery }: RoomTooltipRowProps) => {
     const { t } = useTranslation();
 
-    const name = useMemo(() => {
-        const type = getSensorType(sensor.type);
-
-        if (type) {
-            return t(`common.sensors.labels.${type}`);
-        }
-
-        return sensor.type;
-    }, [sensor.type, t]);
-
     return (
         <>
             <SensorIcon type={sensor.type} state={sensor.state} />
@@ -35,7 +23,7 @@ const RoomTooltipRow = ({ sensor, showingBattery }: RoomTooltipRowProps) => {
             {showingBattery &&
                 (sensor.battery != null ? <BatteryIcon device={sensor} /> : <span />)}
 
-            <p className="px">{name}:</p>
+            <p className="px">{sensor.display_name}:</p>
 
             <p className="px">
                 {sensor.value != null && sensor.unit ? (
