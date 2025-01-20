@@ -1,17 +1,6 @@
 import BaseDevice from "./BaseDevice";
 import Battery from "./Battery";
-
-export enum MetricValue {
-    NONE = "none",
-    READ = "read",
-    VISIBLE = "visible",
-}
-
-export type Metric = {
-    power?: MetricValue;
-    current?: MetricValue;
-    voltage?: MetricValue;
-};
+import { Metric } from "./Metric";
 
 export default interface Sensor extends BaseDevice, Battery {
     entity?: string;

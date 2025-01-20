@@ -12,9 +12,10 @@ import DeviceState from "./DeviceState";
 import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import { Floor, Floorplan, Point, PolygonRoom, RectangleRoom, Room } from "./Floorplan";
 import History from "./History";
+import { Metric, MetricValue } from "./Metric";
 import PaginationResponse from "./Pagination";
 import PowerPiApi from "./PowerPiApi";
-import Sensor, { Metric, MetricValue } from "./Sensor";
+import Sensor from "./Sensor";
 import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus";
 import SocketIONamespace from "./SocketIONamespace";
 
