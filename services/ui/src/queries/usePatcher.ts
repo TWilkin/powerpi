@@ -17,7 +17,10 @@ export default function usePatcher<TData extends Data, TPatch extends Patch<TDat
 
                 const index = newData.findIndex((record) => record.name === name);
                 if (index >= 0) {
-                    newData[index] = { ...newData[index], ...omit(patch, "type") };
+                    newData[index] = deepExtend(
+                        newData[index],
+                        omit(patch, "type") as Partial<TData>,
+                    );
                 }
 
                 return newData;
@@ -25,4 +28,20 @@ export default function usePatcher<TData extends Data, TPatch extends Patch<TDat
         },
         [queryClient, queryKey],
     );
+}
+
+function deepExtend<TDataType>(target: TDataType, source: Partial<TDataType>) {
+    const result = { ...target };
+
+    for (const prop in source) {
+        if (source[prop] != null && Object.hasOwn(source, prop)) {
+            if (target[prop] && typeof source[prop] === "object") {
+                result[prop] = deepExtend(result[prop], source[prop]);
+            } else {
+                result[prop] = source[prop];
+            }
+        }
+    }
+
+    return result;
 }
