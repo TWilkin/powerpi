@@ -10,15 +10,29 @@ describe("RoomTooltip", () => {
             display_name: "My Sensor 1",
             type: "temperature",
             metrics: {
-                temperature: MetricValue.VISIBLE,
+                current: MetricValue.NONE,
                 humidity: MetricValue.VISIBLE,
                 power: MetricValue.READ,
-                current: MetricValue.NONE,
+                temperature: MetricValue.VISIBLE,
+            },
+            data: {
+                humidity: {
+                    value: 50,
+                    unit: "%",
+                    since: 0,
+                },
+                power: {
+                    value: 3,
+                    unit: "W",
+                    since: 0,
+                },
+                temperature: {
+                    value: 10,
+                    unit: "K",
+                    since: 0,
+                },
             },
             visible: true,
-            since: 0,
-            value: 10,
-            unit: "K",
         },
         {
             name: "MySensor2",
@@ -27,9 +41,13 @@ describe("RoomTooltip", () => {
             metrics: {
                 motion: MetricValue.VISIBLE,
             },
+            data: {
+                motion: {
+                    state: "undetected",
+                    since: 0,
+                },
+            },
             visible: true,
-            since: 0,
-            state: "undetected",
         },
     ];
 

@@ -12,5 +12,3 @@ export type Metric = {
     voltage?: MetricValue;
     temperature?: MetricValue;
 };
-
-export type MetricType = keyof Metric;

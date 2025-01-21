@@ -11,9 +11,13 @@ describe("RoomTooltipRow", () => {
         display_name: "My Sensor",
         type: "temperature",
         visible: true,
-        since: now - 60 * 1000,
-        value: 10,
-        unit: "K",
+        data: {
+            temperature: {
+                since: now - 60 * 1000,
+                value: 10,
+                unit: "K",
+            },
+        },
     };
 
     beforeEach(() => {
@@ -24,7 +28,7 @@ describe("RoomTooltipRow", () => {
     afterEach(() => vi.useRealTimers());
 
     test("renders supported unit", () => {
-        render(<RoomTooltipRow sensor={sensor} showingBattery />);
+        render(<RoomTooltipRow type="temperature" sensor={sensor} showingBattery />);
 
         const icon = screen.getByRole("img", { hidden: true });
         expect(icon).toBeInTheDocument();
@@ -40,7 +44,13 @@ describe("RoomTooltipRow", () => {
     });
 
     test("renders unsupported type", () => {
-        render(<RoomTooltipRow sensor={{ ...sensor, type: "banana" }} showingBattery={false} />);
+        render(
+            <RoomTooltipRow
+                type="temperature"
+                sensor={{ ...sensor, type: "banana" }}
+                showingBattery={false}
+            />,
+        );
 
         expect(screen.getByText("My Sensor:")).toBeInTheDocument();
     });
@@ -48,7 +58,12 @@ describe("RoomTooltipRow", () => {
     test("renders state", () => {
         render(
             <RoomTooltipRow
-                sensor={{ ...sensor, type: "motion", value: undefined, state: "detected" }}
+                type="motion"
+                sensor={{
+                    ...sensor,
+                    type: "motion",
+                    data: { motion: { state: "detected", since: now - 60 * 1000 } },
+                }}
                 showingBattery={false}
             />,
         );
@@ -59,7 +74,13 @@ describe("RoomTooltipRow", () => {
     });
 
     test("renders battery", () => {
-        render(<RoomTooltipRow sensor={{ ...sensor, battery: 50 }} showingBattery />);
+        render(
+            <RoomTooltipRow
+                type="temperature"
+                sensor={{ ...sensor, battery: 50 }}
+                showingBattery
+            />,
+        );
 
         const icons = screen.getAllByRole("img", { hidden: true });
         expect(icons).toHaveLength(2);

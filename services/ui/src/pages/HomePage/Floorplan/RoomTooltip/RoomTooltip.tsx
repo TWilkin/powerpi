@@ -1,4 +1,4 @@
-import { Sensor } from "@powerpi/common-api";
+import { Metric, Sensor } from "@powerpi/common-api";
 import classNames from "classnames";
 import { useMemo } from "react";
 import Tooltip from "../../../../components/Tooltip";
@@ -35,13 +35,16 @@ const RoomTooltip = ({ name, floor, room, sensors }: RoomTooltipProps) => {
                     "grid-cols-[18px_auto_auto_9ch]": !showingBattery,
                 })}
             >
-                {sortedSensors.map((sensor) => (
-                    <RoomTooltipRow
-                        key={sensor.name}
-                        sensor={sensor}
-                        showingBattery={showingBattery}
-                    />
-                ))}
+                {sortedSensors
+                    .filter((sensor) => sensor.data && Object.hasOwn(sensor.data, sensor.type))
+                    .map((sensor) => (
+                        <RoomTooltipRow
+                            key={sensor.name}
+                            type={sensor.type as keyof Metric}
+                            sensor={sensor}
+                            showingBattery={showingBattery}
+                        />
+                    ))}
             </div>
         </Tooltip>
     );
