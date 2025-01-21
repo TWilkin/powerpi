@@ -15,7 +15,7 @@ import History from "./History";
 import { Metric, MetricValue } from "./Metric";
 import PaginationResponse from "./Pagination";
 import PowerPiApi from "./PowerPiApi";
-import Sensor from "./Sensor";
+import Sensor, { SensorData, SensorNumericValue, SensorStateValue } from "./Sensor";
 import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus";
 import SocketIONamespace from "./SocketIONamespace";
 
@@ -48,6 +48,9 @@ export {
     RectangleRoom,
     Room,
     Sensor,
+    SensorData,
+    SensorNumericValue,
+    SensorStateValue,
     SensorStatusCallback,
     SensorStatusMessage,
     SocketIONamespace,

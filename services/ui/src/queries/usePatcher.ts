@@ -34,7 +34,7 @@ function deepExtend<TDataType>(target: TDataType, source: Partial<TDataType>) {
     const result = { ...target };
 
     for (const prop in source) {
-        if (source[prop] != null && Object.hasOwn(source, prop)) {
+        if (Object.hasOwn(source, prop) && source[prop] != null) {
             if (target[prop] && typeof source[prop] === "object") {
                 result[prop] = deepExtend(result[prop], source[prop]);
             } else {
