@@ -185,6 +185,7 @@ describe("useNotification", () => {
             const now = new Date().getTime();
             const event: SensorStatusMessage = {
                 sensor: "MyMotionSensor",
+                action: "motion",
                 state: "detected",
                 timestamp: now,
             };
@@ -212,6 +213,7 @@ describe("useNotification", () => {
             const now = new Date().getTime();
             const event: SensorStatusMessage = {
                 sensor: "MyTempSensor",
+                action: "temperature",
                 value: 31,
                 unit: "°C",
                 timestamp: now,

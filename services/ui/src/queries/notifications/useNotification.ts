@@ -56,7 +56,7 @@ export default function useNotification() {
                 patchSensor(message.sensor, {
                     type: "State",
                     data: {
-                        motion: {
+                        [message.action]: {
                             state: message.state,
                             since: message.timestamp,
                         },
@@ -66,7 +66,7 @@ export default function useNotification() {
                 patchSensor(message.sensor, {
                     type: "Data",
                     data: {
-                        temperature: {
+                        [message.action]: {
                             value: message.value,
                             unit: message.unit,
                             since: message.timestamp,
