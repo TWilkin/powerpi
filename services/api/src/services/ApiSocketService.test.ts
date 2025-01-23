@@ -49,7 +49,14 @@ describe("ApiSocketService", () => {
         test("motion", () => {
             subject?.$onNamespaceInit(instance(mockedNamespace));
 
-            subject?.onEventMessage("HallwayMotionSensor", "detected", undefined, undefined, 1234);
+            subject?.onEventMessage(
+                "HallwayMotionSensor",
+                "motion",
+                "detected",
+                undefined,
+                undefined,
+                1234,
+            );
 
             verify(mockedNamespace.emit("sensor", anything())).once();
 
@@ -57,6 +64,7 @@ describe("ApiSocketService", () => {
 
             expect(payload.first()[1]).toStrictEqual({
                 sensor: "HallwayMotionSensor",
+                action: "motion",
                 state: "detected",
                 value: undefined,
                 unit: undefined,
@@ -67,7 +75,7 @@ describe("ApiSocketService", () => {
         test("data", () => {
             subject?.$onNamespaceInit(instance(mockedNamespace));
 
-            subject?.onEventMessage("HallwayTempSensor", undefined, 100, "F", 1234);
+            subject?.onEventMessage("HallwayTempSensor", "temperature", undefined, 100, "F", 1234);
 
             verify(mockedNamespace.emit("sensor", anything())).once();
 
@@ -75,6 +83,7 @@ describe("ApiSocketService", () => {
 
             expect(payload.first()[1]).toStrictEqual({
                 sensor: "HallwayTempSensor",
+                action: "temperature",
                 state: undefined,
                 value: 100,
                 unit: "F",
@@ -83,7 +92,7 @@ describe("ApiSocketService", () => {
         });
 
         test("no namespace", () => {
-            subject?.onEventMessage("HallwayTempSensor", undefined, 100, "F", 1234);
+            subject?.onEventMessage("HallwayTempSensor", "temperature", undefined, 100, "F", 1234);
 
             verify(mockedNamespace.emit(anyString(), anything())).never();
         });

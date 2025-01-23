@@ -53,7 +53,7 @@ export default class SensorStateService extends SensorStateListener {
                 },
             };
 
-            this.socket.onEventMessage(sensor.name, state, undefined, undefined, timestamp);
+            this.socket.onEventMessage(sensor.name, action, state, undefined, undefined, timestamp);
         }
     }
 
@@ -76,7 +76,7 @@ export default class SensorStateService extends SensorStateListener {
                 },
             };
 
-            this.socket.onEventMessage(sensor.name, undefined, value, unit, timestamp);
+            this.socket.onEventMessage(sensor.name, action, undefined, value, unit, timestamp);
         }
     }
 

@@ -163,6 +163,7 @@ describe("SensorStateService", () => {
                 verify(
                     mockedApiSocketService.onEventMessage(
                         "HallwayMotionSensor",
+                        "motion",
                         "detected",
                         undefined,
                         undefined,
@@ -202,6 +203,7 @@ describe("SensorStateService", () => {
                 verify(
                     mockedApiSocketService.onEventMessage(
                         "BedroomTempSensor",
+                        "temperature",
                         undefined,
                         100,
                         "F",

@@ -38,6 +38,7 @@ export default class ApiSocketService implements ConfigChangeListener {
 
     onEventMessage(
         sensorName: string,
+        action?: string,
         state?: string,
         value?: number,
         unit?: string,
@@ -45,6 +46,7 @@ export default class ApiSocketService implements ConfigChangeListener {
     ) {
         this.namespace?.emit(SocketIONamespace.Sensor, {
             sensor: sensorName,
+            action,
             state,
             value,
             unit,
