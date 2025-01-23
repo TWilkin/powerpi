@@ -45,10 +45,15 @@ export default class SensorStateService extends SensorStateListener {
         const sensor = this.getSensor(entity, action);
 
         if (sensor) {
-            sensor.state = state;
-            sensor.since = timestamp ?? -1;
+            sensor.data = {
+                ...sensor.data,
+                [action]: {
+                    state,
+                    since: timestamp ?? -1,
+                },
+            };
 
-            this.socket.onEventMessage(sensor.name, sensor.state, undefined, undefined, timestamp);
+            this.socket.onEventMessage(sensor.name, state, undefined, undefined, timestamp);
         }
     }
 
@@ -62,17 +67,16 @@ export default class SensorStateService extends SensorStateListener {
         const sensor = this.getSensor(entity, action);
 
         if (sensor) {
-            sensor.value = value;
-            sensor.unit = unit;
-            sensor.since = timestamp ?? -1;
+            sensor.data = {
+                ...sensor.data,
+                [action]: {
+                    value,
+                    unit,
+                    since: timestamp ?? -1,
+                },
+            };
 
-            this.socket.onEventMessage(
-                sensor.name,
-                undefined,
-                sensor.value,
-                sensor.unit,
-                timestamp,
-            );
+            this.socket.onEventMessage(sensor.name, undefined, value, unit, timestamp);
         }
     }
 
@@ -140,20 +144,17 @@ export default class SensorStateService extends SensorStateListener {
     }
 
     /** The options a sensor should have when it's first loaded. */
-    private initialiseSensor = (sensor: ISensor): Sensor => ({
+    private readonly initialiseSensor = (sensor: ISensor): Sensor => ({
         ...this.defaultSensor(sensor),
         display_name: sensor.displayName ?? sensor.name,
-        state: undefined,
-        value: undefined,
-        unit: undefined,
-        since: -1,
+        data: {},
         battery: undefined,
         batterySince: undefined,
         charging: false,
     });
 
     /** The sensor options with values for any that have defaults. */
-    private defaultSensor = (sensor: ISensor) => ({
+    private readonly defaultSensor = (sensor: ISensor) => ({
         ...sensor,
         entity: sensor.entity ?? sensor.name,
         action: sensor.action ?? sensor.type,

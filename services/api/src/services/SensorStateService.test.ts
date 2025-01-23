@@ -144,20 +144,20 @@ describe("SensorStateService", () => {
                 const sensor = subject?.sensors.find(
                     (sensor) => sensor.name == "HallwayMotionSensor",
                 );
-                expect(sensor?.state).toBeUndefined();
-                expect(sensor?.since).toBe(-1);
+                expect(sensor?.data.motion).toBeUndefined();
 
                 consumer?.message("event", "HallwayMotionSensor", "motion", {
                     state: "detected",
                     timestamp,
                 });
 
-                expect(sensor?.state).toBe("detected");
+                expect(sensor?.data.motion).toBeDefined();
+                expect(sensor?.data.motion?.state).toBe("detected");
 
                 if (timestamp) {
-                    expect(sensor?.since).toBe(timestamp);
+                    expect(sensor?.data.motion?.since).toBe(timestamp);
                 } else {
-                    expect(sensor?.since).toBe(-1);
+                    expect(sensor?.data.motion?.since).toBe(-1);
                 }
 
                 verify(
@@ -181,9 +181,7 @@ describe("SensorStateService", () => {
                 const sensor = subject?.sensors.find(
                     (sensor) => sensor.name == "BedroomTempSensor",
                 );
-                expect(sensor?.value).toBeUndefined();
-                expect(sensor?.unit).toBeUndefined();
-                expect(sensor?.since).toBe(-1);
+                expect(sensor?.data.temperature).toBeUndefined();
 
                 consumer?.message("event", "BedroomTempSensor", "temperature", {
                     value: 100,
@@ -191,13 +189,14 @@ describe("SensorStateService", () => {
                     timestamp,
                 });
 
-                expect(sensor?.value).toBe(100);
-                expect(sensor?.unit).toBe("F");
+                expect(sensor?.data.temperature).toBeDefined();
+                expect(sensor?.data.temperature?.value).toBe(100);
+                expect(sensor?.data.temperature?.unit).toBe("F");
 
                 if (timestamp) {
-                    expect(sensor?.since).toBe(timestamp);
+                    expect(sensor?.data.temperature?.since).toBe(timestamp);
                 } else {
-                    expect(sensor?.since).toBe(-1);
+                    expect(sensor?.data.temperature?.since).toBe(-1);
                 }
 
                 verify(
