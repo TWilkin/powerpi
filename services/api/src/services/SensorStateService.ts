@@ -30,11 +30,8 @@ export default class SensorStateService extends SensorStateListener {
         await super.$onInit();
     }
 
-    protected getSensor = (entity: string, action: string | undefined = undefined) =>
-        this.sensors.find(
-            (sensor) =>
-                sensor.entity === entity && (action === undefined || sensor.action === action),
-        );
+    protected getSensor = (entity: string) =>
+        this.sensors.find((sensor) => sensor.entity === entity);
 
     protected onSensorStateMessage(
         entity: string,
@@ -42,7 +39,7 @@ export default class SensorStateService extends SensorStateListener {
         state: string,
         timestamp?: number,
     ): void {
-        const sensor = this.getSensor(entity, action);
+        const sensor = this.getSensor(entity);
 
         if (sensor) {
             sensor.data = {
@@ -64,7 +61,7 @@ export default class SensorStateService extends SensorStateListener {
         unit: string,
         timestamp?: number,
     ) {
-        const sensor = this.getSensor(entity, action);
+        const sensor = this.getSensor(entity);
 
         if (sensor) {
             sensor.data = {
