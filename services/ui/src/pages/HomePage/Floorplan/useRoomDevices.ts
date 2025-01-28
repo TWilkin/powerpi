@@ -58,7 +58,7 @@ export default function useRoomDevices(room: string) {
                             }
                         }
 
-                        return null;
+                        return undefined;
                     })
                     .unique()
                     .value();
