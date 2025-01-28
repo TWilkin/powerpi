@@ -6,9 +6,11 @@ export enum MetricValue {
 
 export type Metric = {
     current?: MetricValue;
+    door?: MetricValue;
     humidity?: MetricValue;
     motion?: MetricValue;
     power?: MetricValue;
     voltage?: MetricValue;
     temperature?: MetricValue;
+    window?: MetricValue;
 };

@@ -15,11 +15,13 @@ export type SensorStateValue = {
 
 export type SensorData = {
     current?: SensorNumericValue;
+    door?: SensorStateValue;
     humidity?: SensorNumericValue;
     motion?: SensorStateValue;
     power?: SensorNumericValue;
     voltage?: SensorNumericValue;
     temperature?: SensorNumericValue;
+    window?: SensorStateValue;
 };
 
 export default interface Sensor extends BaseDevice, Battery {
