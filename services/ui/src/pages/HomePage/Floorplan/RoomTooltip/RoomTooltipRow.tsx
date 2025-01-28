@@ -17,7 +17,7 @@ type RoomTooltipRowProps = {
 /** Component containing a row from the tooltip, showing the details for a single sensor. */
 const RoomTooltipRow = ({ type, sensor, showingBattery }: RoomTooltipRowProps) => {
     const { state, value } = useMemo(() => {
-        if (!Object.hasOwn(sensor.data, type)) {
+        if (!(type in sensor.data)) {
             return {};
         }
 

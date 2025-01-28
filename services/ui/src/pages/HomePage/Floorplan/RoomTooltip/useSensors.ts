@@ -25,6 +25,10 @@ function* expandMetrics(sensor: Sensor, t: ReturnType<typeof useTranslation>["t"
             yield buildSensor(sensor, "current", t("common.sensors.labels.current"));
         }
 
+        if (isEnabled(sensor.metrics.door)) {
+            yield buildSensor(sensor, "door", t("common.sensors.labels.door"));
+        }
+
         if (isEnabled(sensor.metrics.humidity)) {
             yield buildSensor(sensor, "humidity", t("common.sensors.labels.humidity"));
         }
@@ -43,6 +47,10 @@ function* expandMetrics(sensor: Sensor, t: ReturnType<typeof useTranslation>["t"
 
         if (isEnabled(sensor.metrics.voltage)) {
             yield buildSensor(sensor, "voltage", t("common.sensors.labels.electricalPotential"));
+        }
+
+        if (isEnabled(sensor.metrics.window)) {
+            yield buildSensor(sensor, "window", t("common.sensors.labels.window"));
         }
     } else {
         yield sensor;

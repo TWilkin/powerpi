@@ -10,7 +10,7 @@ export type Metric = {
     humidity?: MetricValue;
     motion?: MetricValue;
     power?: MetricValue;
-    voltage?: MetricValue;
     temperature?: MetricValue;
+    voltage?: MetricValue;
     window?: MetricValue;
 };
