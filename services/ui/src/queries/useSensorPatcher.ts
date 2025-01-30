@@ -1,17 +1,15 @@
-import { Sensor, SensorData } from "@powerpi/common-api";
+import { Sensor, SensorNumericData, SensorStateData } from "@powerpi/common-api";
 import QueryKeyFactory from "./QueryKeyFactory";
 import usePatcher from "./usePatcher";
 
-type StateTypes = "door" | "motion" | "window";
-
 type StateChange = {
     type: "State";
-    data: Pick<SensorData, StateTypes>;
+    data: SensorStateData;
 };
 
 type DataChange = {
     type: "Data";
-    data: Omit<SensorData, StateTypes>;
+    data: SensorNumericData;
 };
 
 type BatteryChange = { type: "Battery" } & Pick<Sensor, "battery" | "charging" | "batterySince">;

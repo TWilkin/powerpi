@@ -13,15 +13,15 @@ export type SensorStateValue = {
     since: number;
 };
 
-type SensorNumericData = {
+export type SensorNumericData = {
     [key in MetricNumericType]?: SensorNumericValue;
 };
 
-type SensorStateDate = {
+export type SensorStateData = {
     [key in MetricStateType]?: SensorStateValue;
 };
 
-export type SensorData = SensorNumericData & SensorStateDate;
+export type SensorData = SensorNumericData & SensorStateData;
 
 export default interface Sensor extends BaseDevice, Battery {
     entity?: string;

@@ -12,10 +12,16 @@ import DeviceState from "./DeviceState";
 import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import { Floor, Floorplan, Point, PolygonRoom, RectangleRoom, Room } from "./Floorplan";
 import History from "./History";
-import { Metric, MetricValue } from "./Metric";
+import { Metric, MetricNumericType, MetricStateType, MetricValue } from "./Metric";
 import PaginationResponse from "./Pagination";
 import PowerPiApi from "./PowerPiApi";
-import Sensor, { SensorData, SensorNumericValue, SensorStateValue } from "./Sensor";
+import Sensor, {
+    SensorData,
+    SensorNumericData,
+    SensorNumericValue,
+    SensorStateData,
+    SensorStateValue,
+} from "./Sensor";
 import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus";
 import SocketIONamespace from "./SocketIONamespace";
 
@@ -40,6 +46,8 @@ export {
     Floorplan,
     History,
     Metric,
+    MetricNumericType,
+    MetricStateType,
     MetricValue,
     PaginationResponse,
     Point,
@@ -49,7 +57,9 @@ export {
     Room,
     Sensor,
     SensorData,
+    SensorNumericData,
     SensorNumericValue,
+    SensorStateData,
     SensorStateValue,
     SensorStatusCallback,
     SensorStatusMessage,
