@@ -55,15 +55,23 @@ export default function useNotification() {
             if ("state" in message) {
                 patchSensor(message.sensor, {
                     type: "State",
-                    state: message.state,
-                    since: message.timestamp,
+                    data: {
+                        [message.action]: {
+                            state: message.state,
+                            since: message.timestamp,
+                        },
+                    },
                 });
             } else if ("value" in message) {
                 patchSensor(message.sensor, {
                     type: "Data",
-                    value: message.value,
-                    unit: message.unit,
-                    since: message.timestamp,
+                    data: {
+                        [message.action]: {
+                            value: message.value,
+                            unit: message.unit,
+                            since: message.timestamp,
+                        },
+                    },
                 });
             }
         }

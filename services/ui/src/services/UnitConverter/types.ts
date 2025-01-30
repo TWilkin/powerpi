@@ -10,7 +10,14 @@ export type UnitValue = {
 };
 
 /** The unit types that support conversion. */
-export type UnitType = "gas" | "power" | "temperature" | "volume";
+export type UnitType =
+    | "current"
+    | "electricalPotential"
+    | "energy"
+    | "gas"
+    | "power"
+    | "temperature"
+    | "volume";
 
 /** A possible conversion. */
 export type Conversion = {

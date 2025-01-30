@@ -1,11 +1,10 @@
-import { Sensor } from "@powerpi/common-api";
+import { Metric, Sensor } from "@powerpi/common-api";
 import classNames from "classnames";
 import { useMemo } from "react";
-import _ from "underscore";
 import Tooltip from "../../../../components/Tooltip";
-import getSensorType from "../../../../utils/getSensorType";
 import RoomTooltipRow from "./RoomTooltipRow";
 import generateRoomTooltipId from "./generateRoomTooltipId";
+import useSensors from "./useSensors";
 
 type RoomTooltipProps = {
     name: string;
@@ -24,13 +23,7 @@ const RoomTooltip = ({ name, floor, room, sensors }: RoomTooltipProps) => {
         [sensors],
     );
 
-    const sortedSensors = useMemo(
-        () =>
-            _(sensors).sortBy((sensor) =>
-                (getSensorType(sensor.type) ?? sensor.type).toLocaleLowerCase(),
-            ),
-        [sensors],
-    );
+    const sortedSensors = useSensors(sensors);
 
     return (
         <Tooltip id={generateRoomTooltipId(floor, room)} place="top" className="whitespace-nowrap">
@@ -42,13 +35,16 @@ const RoomTooltip = ({ name, floor, room, sensors }: RoomTooltipProps) => {
                     "grid-cols-[18px_auto_auto_9ch]": !showingBattery,
                 })}
             >
-                {sortedSensors.map((sensor) => (
-                    <RoomTooltipRow
-                        key={sensor.name}
-                        sensor={sensor}
-                        showingBattery={showingBattery}
-                    />
-                ))}
+                {sortedSensors
+                    .filter((sensor) => sensor.data && Object.hasOwn(sensor.data, sensor.type))
+                    .map((sensor) => (
+                        <RoomTooltipRow
+                            key={sensor.name}
+                            type={sensor.type as keyof Metric}
+                            sensor={sensor}
+                            showingBattery={showingBattery}
+                        />
+                    ))}
             </div>
         </Tooltip>
     );

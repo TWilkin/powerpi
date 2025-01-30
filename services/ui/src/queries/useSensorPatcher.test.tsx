@@ -21,13 +21,20 @@ describe("useSensorPatcher", () => {
         display_name: "My Sensor",
         type: "temperature",
         visible: true,
-        state: "hot",
-        value: 31,
-        unit: "°C",
+        data: {
+            motion: {
+                state: "undetected",
+                since: 0,
+            },
+            temperature: {
+                value: 31,
+                unit: "°C",
+                since: 0,
+            },
+        },
         battery: 2,
         charging: false,
         batterySince: 0,
-        since: 0,
     };
 
     const cases: {
@@ -40,12 +47,12 @@ describe("useSensorPatcher", () => {
     }[] = [
         {
             name: "updates state",
-            update: { type: "State", state: "cold", since },
-            expectedState: "cold",
+            update: { type: "State", data: { motion: { state: "detected", since } } },
+            expectedState: "detected",
         },
         {
             name: "updates data",
-            update: { type: "Data", value: 87.8, unit: "F", since },
+            update: { type: "Data", data: { temperature: { value: 87.8, unit: "F", since } } },
             expectedValue: 87.8,
             expectedUnit: "F",
         },
@@ -69,9 +76,9 @@ describe("useSensorPatcher", () => {
             });
 
             let cacheSensor = queryClient.getQueryData<Sensor[]>(QueryKeyFactory.sensors)![1];
-            expect(cacheSensor.state).toBe("hot");
-            expect(cacheSensor.value).toBe(31);
-            expect(cacheSensor.unit).toBe("°C");
+            expect(cacheSensor.data.motion?.state).toBe("undetected");
+            expect(cacheSensor.data.temperature?.value).toBe(31);
+            expect(cacheSensor.data.temperature?.unit).toBe("°C");
             expect(cacheSensor.battery).toBe(2);
             expect(cacheSensor.charging).toBeFalsy();
 
@@ -80,18 +87,25 @@ describe("useSensorPatcher", () => {
 
             // check they have the expected updated value
             cacheSensor = queryClient.getQueryData<Sensor[]>(QueryKeyFactory.sensors)![1];
-            expect(cacheSensor.state).toBe(expectedState ?? "hot");
-            expect(cacheSensor.value).toBe(expectedValue ?? 31);
-            expect(cacheSensor.unit).toBe(expectedUnit ?? "°C");
+            expect(cacheSensor.data.motion?.state).toBe(expectedState ?? "undetected");
+            expect(cacheSensor.data.temperature?.value).toBe(expectedValue ?? 31);
+            expect(cacheSensor.data.temperature?.unit).toBe(expectedUnit ?? "°C");
             expect(cacheSensor.battery).toBe(expectedBattery?.battery ?? 2);
             expect(cacheSensor.charging).toBe(expectedBattery?.charging ?? false);
 
             if (!expectedBattery) {
-                expect(cacheSensor.since).toBe(since);
+                if (update.type === "State") {
+                    expect(cacheSensor.data.motion?.since).toBe(since);
+                    expect(cacheSensor.data.temperature?.since).toBe(0);
+                } else {
+                    expect(cacheSensor.data.motion?.since).toBe(0);
+                    expect(cacheSensor.data.temperature?.since).toBe(since);
+                }
 
                 expect(cacheSensor.batterySince).toBe(0);
             } else {
-                expect(cacheSensor.since).toBe(0);
+                expect(cacheSensor.data.motion?.since).toBe(0);
+                expect(cacheSensor.data.temperature?.since).toBe(0);
 
                 expect(cacheSensor.batterySince).toBe(since);
             }

@@ -34,6 +34,9 @@ function getSensorTypeIcon(type: string, state?: string) {
 
 function typeSwitch(type: string, state?: string): IconType {
     switch (type) {
+        case "current":
+            return "sensorCurrent";
+
         case "door":
             return state === "close" ? "sensorDoorClosed" : "sensorDoorOpen";
 
@@ -49,11 +52,17 @@ function typeSwitch(type: string, state?: string): IconType {
         case "motion":
             return "sensorMotion";
 
+        case "power":
+            return "sensorPower";
+
         case "switch":
             return "sensorSwitch";
 
         case "temperature":
             return "sensorTemperature";
+
+        case "voltage":
+            return "sensorVoltage";
 
         case "window":
             return state === "close" ? "sensorWindowClosed" : "sensorWindowOpen";

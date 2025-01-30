@@ -185,6 +185,7 @@ describe("useNotification", () => {
             const now = new Date().getTime();
             const event: SensorStatusMessage = {
                 sensor: "MyMotionSensor",
+                action: "motion",
                 state: "detected",
                 timestamp: now,
             };
@@ -195,8 +196,12 @@ describe("useNotification", () => {
             expect(mocks.patchSensor).toHaveBeenCalledTimes(1);
             expect(mocks.patchSensor).toHaveBeenCalledWith("MyMotionSensor", {
                 type: "State",
-                state: "detected",
-                since: now,
+                data: {
+                    motion: {
+                        state: "detected",
+                        since: now,
+                    },
+                },
             });
         });
 
@@ -208,6 +213,7 @@ describe("useNotification", () => {
             const now = new Date().getTime();
             const event: SensorStatusMessage = {
                 sensor: "MyTempSensor",
+                action: "temperature",
                 value: 31,
                 unit: "°C",
                 timestamp: now,
@@ -219,9 +225,13 @@ describe("useNotification", () => {
             expect(mocks.patchSensor).toHaveBeenCalledTimes(1);
             expect(mocks.patchSensor).toHaveBeenCalledWith("MyTempSensor", {
                 type: "Data",
-                value: 31,
-                unit: "°C",
-                since: now,
+                data: {
+                    temperature: {
+                        value: 31,
+                        unit: "°C",
+                        since: now,
+                    },
+                },
             });
         });
     });

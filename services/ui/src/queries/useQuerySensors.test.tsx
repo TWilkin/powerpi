@@ -27,8 +27,8 @@ const data: Sensor[] = [
         name: "MySensor",
         display_name: "My Sensor",
         type: "temperature",
+        data: {},
         visible: true,
-        since: 0,
     },
 ];
 

@@ -1,4 +1,4 @@
-import { Device, DeviceState, Sensor } from "@powerpi/common-api";
+import { DeviceState, Sensor } from "@powerpi/common-api";
 import { renderHook, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 import useRoomDevices from "./useRoomDevices";
@@ -86,8 +86,7 @@ function createSensor(
         name,
         display_name: name,
         type,
-        state,
-        since: 1,
+        data: { [type]: { state, since: 1 } },
         visible,
         location,
     };
@@ -100,5 +99,13 @@ function createDevice(
     state = DeviceState.Unknown,
     visible = true,
 ) {
-    return createSensor(name, type, location, state, visible) as Device;
+    return {
+        name,
+        display_name: name,
+        type,
+        state,
+        since: 1,
+        visible,
+        location,
+    };
 }

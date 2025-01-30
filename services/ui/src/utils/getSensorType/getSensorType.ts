@@ -25,13 +25,16 @@ export default function getSensorType(type: string): SupportedSensor | undefined
 
 function isSupportedSensor(type: string): type is SupportedSensor {
     return [
+        "current",
         "door",
         "electricity",
         "gas",
         "humidity",
         "motion",
+        "power",
         "switch",
         "temperature",
+        "voltage",
         "window",
     ].includes(type);
 }

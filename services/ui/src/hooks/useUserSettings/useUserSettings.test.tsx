@@ -45,8 +45,11 @@ describe("useUserSettings", () => {
         expect(result.current.settings).toStrictEqual({
             language: undefined,
             units: {
-                temperature: "°C",
+                current: "A",
+                electricalPotential: "V",
                 gas: "m3",
+                power: "W",
+                temperature: "°C",
             },
         });
     });
@@ -55,7 +58,8 @@ describe("useUserSettings", () => {
         const settings: UserSettingsType = {
             language: "en-US",
             units: {
-                gas: "kWh",
+                gas: "hcf",
+                temperature: "F",
             },
         };
 
@@ -68,8 +72,11 @@ describe("useUserSettings", () => {
         expect(result.current.settings).toStrictEqual({
             language: "en-US",
             units: {
-                temperature: "°C",
-                gas: "kWh",
+                current: "A",
+                electricalPotential: "V",
+                gas: "hcf",
+                power: "W",
+                temperature: "F",
             },
         });
     });
@@ -95,22 +102,31 @@ describe("useUserSettings", () => {
         expect(result.current.settings).toBeDefined();
         expect(result.current.dispatch).toBeDefined();
         expect(result.current.settings?.units).toStrictEqual({
-            temperature: "°C",
+            current: "A",
+            electricalPotential: "V",
             gas: "m3",
+            power: "W",
+            temperature: "°C",
         });
 
         act(() => result.current.dispatch!({ type: "Unit", unitType: "temperature", unit: "K" }));
 
         expect(result.current.settings?.units).toStrictEqual({
-            temperature: "K",
+            current: "A",
+            electricalPotential: "V",
             gas: "m3",
+            power: "W",
+            temperature: "K",
         });
 
         act(() => result.current.dispatch!({ type: "Unit", unitType: "gas", unit: "kWh" }));
 
         expect(result.current.settings?.units).toStrictEqual({
-            temperature: "K",
+            current: "A",
+            electricalPotential: "V",
             gas: "kWh",
+            power: "W",
+            temperature: "K",
         });
     });
 });

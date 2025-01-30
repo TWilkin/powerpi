@@ -1,15 +1,23 @@
-import { BaseDevice, DeviceState } from "@powerpi/common-api";
+import { BaseDevice, DeviceState, SensorData } from "@powerpi/common-api";
 import { useMemo } from "react";
 import { chain as _ } from "underscore";
 import useQueryDevices from "../../../queries/useQueryDevices";
 import useQuerySensors from "../../../queries/useQuerySensors";
 
+type Device = {
+    deviceType: "device";
+    state: DeviceState | string | undefined;
+};
+
+type Sensor = {
+    deviceType: "sensor";
+    data: SensorData;
+};
+
 type DeviceList =
-    | {
-          deviceType: "device" | "sensor";
+    | ({
           device: BaseDevice;
-          state: DeviceState | string | undefined;
-      }[]
+      } & (Device | Sensor))[]
     | undefined;
 
 /** Hook to get, and organise by count and type all the devices/sensors in a room on the floorplan. */
@@ -27,7 +35,7 @@ export default function useRoomDevices(room: string) {
         const sensorList: DeviceList = sensors.map((sensor) => ({
             deviceType: "sensor",
             device: sensor,
-            state: sensor.state,
+            data: sensor.data,
         }));
 
         // get all the devices and sensors and group by type, then get the count
@@ -37,7 +45,21 @@ export default function useRoomDevices(room: string) {
             .groupBy(({ deviceType, device }) => `${deviceType}_${device.type}`)
             .map((group) => {
                 const states = _(group)
-                    .map((device) => device.state)
+                    .map((device) => {
+                        if (device.deviceType === "device") {
+                            return device.state;
+                        }
+
+                        if (device.deviceType === "sensor" && device.data) {
+                            const data = device.data[device.device.type as keyof SensorData];
+
+                            if (data && "state" in data) {
+                                return data.state;
+                            }
+                        }
+
+                        return undefined;
+                    })
                     .unique()
                     .value();
 

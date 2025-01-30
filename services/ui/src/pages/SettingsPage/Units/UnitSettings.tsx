@@ -11,7 +11,18 @@ const UnitSettings = () => {
 
     return (
         <FieldSet legend={t("pages.settings.units")}>
+            <UnitOption type="current" value={settings?.units.current} dispatch={dispatch} />
+
+            <UnitOption
+                type="electricalPotential"
+                value={settings?.units.electricalPotential}
+                dispatch={dispatch}
+            />
+
             <UnitOption type="gas" value={settings?.units.gas} dispatch={dispatch} />
+
+            <UnitOption type="power" value={settings?.units.power} dispatch={dispatch} />
+
             <UnitOption
                 type="temperature"
                 value={settings?.units.temperature}

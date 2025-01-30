@@ -1,8 +1,11 @@
 interface Resources {
   "defaults": {
     "units": {
-      "temperature": "°C",
-      "gas": "m3"
+      "current": "A",
+      "electricalPotential": "V",
+      "gas": "m3",
+      "power": "W",
+      "temperature": "°C"
     }
   },
   "translation": {
@@ -97,8 +100,16 @@ interface Resources {
       "units": {
         "values": {
           "percentage": "{{value, number}}%",
+          "milliampere": "{{value, number}} mA",
+          "ampere": "{{value, number}} A",
+          "millivolt": "{{value, number}} mV",
+          "volt": "{{value, number}} V",
           "watt hours": "{{value, number}} Wh",
           "kilowatt hours": "{{value, number}} kWh",
+          "watt": "{{value, number}} W",
+          "kilowatt": "{{value, number}} kW",
+          "joule": "{{value, number}} J",
+          "kilojoule": "{{value, number}} kJ",
           "celsius": "{{value, number}} °C",
           "kelvin": "{{value, number}} K",
           "fahrenheit": "{{value, number}} F",
@@ -109,8 +120,16 @@ interface Resources {
         },
         "labels": {
           "percentage": "Percentage",
+          "milliampere": "Milliampere",
+          "ampere": "Ampere",
+          "millivolt": "Millivolt",
+          "volt": "Volt",
           "watt hours": "Watt Hours",
           "kilowatt hours": "Kilowatt Hours",
+          "watt": "Watt",
+          "kilowatt": "Kilowatt",
+          "joule": "Joule",
+          "kilojoule": "Kilojoule",
           "celsius": "Celsius",
           "kelvin": "Kelvin",
           "fahrenheit": "Fahrenheit",
@@ -122,10 +141,13 @@ interface Resources {
       "sensors": {
         "labels": {
           "door": "Door",
+          "current": "Current",
+          "electricalPotential": "Electrical Potential",
           "electricity": "Electricity",
           "gas": "Gas",
           "humidity": "Humidity",
           "motion": "Motion",
+          "power": "Power",
           "switch": "Switch",
           "temperature": "Temperature",
           "window": "Window"

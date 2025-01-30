@@ -1,5 +1,5 @@
 import { ConverterDefinition } from "../types";
-import { power } from "./power";
+import { energy } from "./energy";
 import { volume } from "./volume";
 
 const calorific = 38; // MJ/m3
@@ -14,6 +14,6 @@ export const gas: ConverterDefinition[] = [
     },
     // we need the volume converters too
     ...volume,
-    // and the power converters
-    ...power,
+    // and the energy converters
+    ...energy,
 ];

@@ -2,6 +2,9 @@ import { UnitType } from "./types";
 
 export default function getUnitType(type: string, unit: string): UnitType | undefined {
     switch (type) {
+        case "current":
+        case "electricalPotential":
+        case "energy":
         case "gas":
         case "power":
         case "temperature":
@@ -10,8 +13,20 @@ export default function getUnitType(type: string, unit: string): UnitType | unde
     }
 
     switch (unit) {
+        case "mA":
+        case "A":
+            return "current";
+
+        case "mV":
+        case "V":
+            return "electricalPotential";
+
         case "Wh":
         case "kWh":
+            return "energy";
+
+        case "W":
+        case "kW":
             return "power";
 
         case "°C":
