@@ -2,6 +2,7 @@ import { MetricValue, Sensor } from "@powerpi/common-api";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import _ from "underscore";
+import Resources from "../../../../@types/resources";
 import getSensorType from "../../../../utils/getSensorType";
 
 export default function useSensors(sensors: Sensor[]) {
@@ -20,37 +21,31 @@ export default function useSensors(sensors: Sensor[]) {
 
 function* expandMetrics(sensor: Sensor, t: ReturnType<typeof useTranslation>["t"]) {
     if (sensor.metrics) {
-        // TODO make this use a map
-        if (isEnabled(sensor.metrics.current)) {
-            yield buildSensor(sensor, "current", t("common.sensors.labels.current"));
-        }
+        for (const [metric, value] of Object.entries(sensor.metrics)) {
+            if (isEnabled(value)) {
+                let key: keyof Resources["translation"]["common"]["sensors"]["labels"];
 
-        if (isEnabled(sensor.metrics.door)) {
-            yield buildSensor(sensor, "door", t("common.sensors.labels.door"));
-        }
+                switch (metric) {
+                    case "current":
+                    case "door":
+                    case "humidity":
+                    case "motion":
+                    case "power":
+                    case "temperature":
+                    case "window":
+                        key = metric;
+                        break;
 
-        if (isEnabled(sensor.metrics.humidity)) {
-            yield buildSensor(sensor, "humidity", t("common.sensors.labels.humidity"));
-        }
+                    case "voltage":
+                        key = "electricalPotential";
+                        break;
 
-        if (isEnabled(sensor.metrics.motion)) {
-            yield buildSensor(sensor, "motion", t("common.sensors.labels.motion"));
-        }
+                    default:
+                        continue;
+                }
 
-        if (isEnabled(sensor.metrics.power)) {
-            yield buildSensor(sensor, "power", t("common.sensors.labels.power"));
-        }
-
-        if (isEnabled(sensor.metrics.temperature)) {
-            yield buildSensor(sensor, "temperature", t("common.sensors.labels.temperature"));
-        }
-
-        if (isEnabled(sensor.metrics.voltage)) {
-            yield buildSensor(sensor, "voltage", t("common.sensors.labels.electricalPotential"));
-        }
-
-        if (isEnabled(sensor.metrics.window)) {
-            yield buildSensor(sensor, "window", t("common.sensors.labels.window"));
+                yield buildSensor(sensor, metric, t(`common.sensors.labels.${key}`));
+            }
         }
     } else {
         yield sensor;
