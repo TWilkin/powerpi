@@ -1,6 +1,6 @@
 import BaseDevice from "./BaseDevice";
 import Battery from "./Battery";
-import { Metric } from "./Metric";
+import { Metric, MetricNumericType, MetricStateType } from "./Metric";
 
 export type SensorNumericValue = {
     value?: number;
@@ -13,16 +13,15 @@ export type SensorStateValue = {
     since: number;
 };
 
-export type SensorData = {
-    current?: SensorNumericValue;
-    door?: SensorStateValue;
-    humidity?: SensorNumericValue;
-    motion?: SensorStateValue;
-    power?: SensorNumericValue;
-    voltage?: SensorNumericValue;
-    temperature?: SensorNumericValue;
-    window?: SensorStateValue;
+type SensorNumericData = {
+    [key in MetricNumericType]?: SensorNumericValue;
 };
+
+type SensorStateDate = {
+    [key in MetricStateType]?: SensorStateValue;
+};
+
+export type SensorData = SensorNumericData & SensorStateDate;
 
 export default interface Sensor extends BaseDevice, Battery {
     entity?: string;

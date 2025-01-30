@@ -4,13 +4,12 @@ export enum MetricValue {
     VISIBLE = "visible",
 }
 
+export type MetricStateType = "door" | "motion" | "window";
+
+export type MetricNumericType = "current" | "humidity" | "power" | "temperature" | "voltage";
+
+export type MetricType = MetricStateType | MetricNumericType;
+
 export type Metric = {
-    current?: MetricValue;
-    door?: MetricValue;
-    humidity?: MetricValue;
-    motion?: MetricValue;
-    power?: MetricValue;
-    temperature?: MetricValue;
-    voltage?: MetricValue;
-    window?: MetricValue;
+    [key in MetricType]?: MetricValue;
 };
