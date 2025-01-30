@@ -24,7 +24,7 @@ const CapabilityButton = ({ device }: CapabilityButtonProps) => {
 
     const handleClick = useCallback(() => {
         handleDialogOpen(
-            device.display_name,
+            device.display_name ?? device.name,
             <DeviceIcon type={device.type} />,
             <CapabilityDialogBody deviceName={device.name} />,
         );
