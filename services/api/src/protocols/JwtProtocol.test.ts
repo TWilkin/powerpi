@@ -71,36 +71,34 @@ describe("JwtProtocol", () => {
 describe("getSecret", () => {
     jest.spyOn(Container, "get").mockImplementation((_) => instance(mockedConfigService));
 
-    test("no secret", async () => {
-        when(mockedConfigService.getJWTSecret()).thenThrow(new Error());
+    test("no secret", (done) => {
+        when(mockedConfigService.getJWTSecret()).thenReject(new Error());
 
-        let actualError = null;
-        let actualSecret = null;
-        const done = (error: string | null | unknown, secret?: string) => {
-            actualError = error;
-            actualSecret = secret;
-        };
+        function callback(error: string | null, secret: string | Buffer | undefined) {
+            expect(error).toBeDefined();
+            expect(secret).toBeUndefined();
 
-        await getSecret(instance(mockedRequest), "str", done);
+            done();
+        }
 
-        expect(actualError).toBeDefined();
-        expect(actualSecret).toBeUndefined();
+        getSecret(instance(mockedRequest), "str", callback);
+
+        expect.assertions(2);
     });
 
-    test("secret", async () => {
+    test("secret", (done) => {
         when(mockedConfigService.getJWTSecret()).thenResolve("a secret");
 
-        let actualError = null;
-        let actualSecret = null;
-        const done = (error: string | null | unknown, secret?: string) => {
-            actualError = error;
-            actualSecret = secret;
-        };
+        function callback(error: string | null, secret: string | Buffer | undefined) {
+            expect(error).toBeNull();
+            expect(secret).toBe("a secret");
 
-        await getSecret(instance(mockedRequest), "str", done);
+            done();
+        }
 
-        expect(actualError).toBeNull();
-        expect(actualSecret).toBe("a secret");
+        getSecret(instance(mockedRequest), "str", callback);
+
+        expect.assertions(2);
     });
 });
 
