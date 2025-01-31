@@ -1,22 +1,13 @@
 import commonSensorTests from "./commonSensorTests";
 
-describe("PowerPi Sensor", () => {
+describe("Meter Sensor", () => {
     const { testInvalid } = commonSensorTests({
         sensors: [
             {
-                type: "powerpi",
+                type: "meter",
                 name: "Sensor",
-                metrics: { humidity: "visible", motion: "read", temperature: "none" },
+                metrics: { electricity: "visible", gas: "read" },
                 location: "Hallway",
-                poll_delay: 60,
-                dht22: {
-                    skip: 10,
-                },
-                pir: {
-                    init_delay: 1,
-                    post_detect_skip: 2,
-                    post_motion_check: 3,
-                },
             },
         ],
     });
@@ -26,7 +17,7 @@ describe("PowerPi Sensor", () => {
             testInvalid({
                 sensors: [
                     {
-                        type: "powerpi",
+                        type: "meter",
                         name: "Sensor",
                         location: "Hallway",
                     },
@@ -37,7 +28,7 @@ describe("PowerPi Sensor", () => {
             testInvalid({
                 sensors: [
                     {
-                        type: "powerpi",
+                        type: "meter",
                         name: "Sensor",
                         location: "Hallway",
                         metrics: {},
@@ -49,7 +40,7 @@ describe("PowerPi Sensor", () => {
             testInvalid({
                 sensors: [
                     {
-                        type: "powerpi",
+                        type: "meter",
                         name: "Sensor",
                         location: "Hallway",
                         metrics: {
@@ -63,11 +54,11 @@ describe("PowerPi Sensor", () => {
             testInvalid({
                 sensors: [
                     {
-                        type: "powerpi",
+                        type: "meter",
                         name: "Sensor",
                         location: "Hallway",
                         metrics: {
-                            temperature: "nope",
+                            electricity: "nope",
                         },
                     },
                 ],
