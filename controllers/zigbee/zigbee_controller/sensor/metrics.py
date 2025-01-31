@@ -3,9 +3,11 @@ from enum import StrEnum, unique
 
 @unique
 class Metric(StrEnum):
+    DOOR = 'door'
     POWER = 'power'
     CURRENT = 'current'
     VOLTAGE = 'voltage'
+    WINDOW = 'window'
 
 
 @unique
