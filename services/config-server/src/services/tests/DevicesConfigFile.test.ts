@@ -25,8 +25,20 @@ describe("Devices", () => {
                 { type: "delay", name: "Delay", start: 10, end: 5 },
             ],
             sensors: [
-                { type: "temperature", name: "Temp", location: "Garden", entity: "Garden" },
-                { type: "humidity", name: "Humidity", location: "Garden", entity: "Garden" },
+                {
+                    type: "powerpi",
+                    name: "Temp",
+                    location: "Garden",
+                    entity: "Garden",
+                    metrics: { temperature: "visible" },
+                },
+                {
+                    type: "powerpi",
+                    name: "Humidity",
+                    location: "Garden",
+                    entity: "Garden",
+                    metrics: { humidity: "visible" },
+                },
             ],
         }));
 
@@ -44,7 +56,14 @@ describe("Devices", () => {
         test("No type", () =>
             testInvalid({
                 devices: [],
-                sensors: [{ name: "Temp", location: "Garden", entity: "Garden" }],
+                sensors: [
+                    {
+                        name: "Temp",
+                        location: "Garden",
+                        entity: "Garden",
+                        metrics: { temperature: "visible" },
+                    },
+                ],
             }));
     });
 });
