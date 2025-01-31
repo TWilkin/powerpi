@@ -1,4 +1,5 @@
 from enum import StrEnum, unique
+from typing import Dict, TypeVar
 
 
 @unique
@@ -10,6 +11,9 @@ class Metric(StrEnum):
     WINDOW = 'window'
 
 
+MetricValueT = TypeVar('MetricValueT', bound='MetricValue')
+
+
 @unique
 class MetricValue(StrEnum):
     NONE = 'none'
@@ -17,5 +21,5 @@ class MetricValue(StrEnum):
     VISIBLE = 'visible'
 
     @staticmethod
-    def is_enabled(value):
-        return value in [MetricValue.READ, MetricValue.VISIBLE]
+    def is_enabled(metrics: Dict[Metric, MetricValueT], value: MetricValueT):
+        return value in metrics and metrics[value] in [MetricValue.READ, MetricValue.VISIBLE]

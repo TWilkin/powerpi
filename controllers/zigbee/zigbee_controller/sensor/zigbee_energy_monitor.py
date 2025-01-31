@@ -41,15 +41,15 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
 
     @property
     def power_enabled(self):
-        return MetricValue.is_enabled(self.__metrics[Metric.POWER])
+        return MetricValue.is_enabled(self.__metrics, Metric.POWER)
 
     @property
     def current_enabled(self):
-        return MetricValue.is_enabled(self.__metrics[Metric.CURRENT])
+        return MetricValue.is_enabled(self.__metrics, Metric.CURRENT)
 
     @property
     def voltage_enabled(self):
-        return MetricValue.is_enabled(self.__metrics[Metric.VOLTAGE])
+        return MetricValue.is_enabled(self.__metrics, Metric.VOLTAGE)
 
     def on_report(self, cluster: Cluster, attribute: Attribute):
         if cluster.cluster_id != ElectricalMeasurement.cluster_id:

@@ -58,10 +58,10 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
 
     @property
     def sensor_type(self):
-        if MetricValue.is_enabled(self.__metrics[Metric.DOOR]):
+        if MetricValue.is_enabled(self.__metrics, Metric.DOOR):
             return Metric.DOOR
 
-        if MetricValue.is_enabled(self.__metrics[Metric.WINDOW]):
+        if MetricValue.is_enabled(self.__metrics, Metric.WINDOW):
             return Metric.WINDOW
 
         return None
