@@ -62,7 +62,13 @@ describe("ZigBee Devices", () => {
             commonZigBeeTests(
                 {
                     sensors: [
-                        { type, name: "Aqara", nwk: "0xabcd", ieee: "00:11:22:33:44:55:66:77" },
+                        {
+                            type,
+                            name: "Aqara",
+                            nwk: "0xabcd",
+                            ieee: "00:11:22:33:44:55:66:77",
+                            location: "Hallway",
+                        },
                     ],
                 },
                 true,
@@ -84,6 +90,7 @@ describe("ZigBee Devices", () => {
                             current: "read",
                             voltage: "none",
                         },
+                        location: "Hallway",
                     },
                 ],
             },
@@ -98,6 +105,7 @@ describe("ZigBee Devices", () => {
                         name: "EnergyMonitor",
                         nwk: "0xabcd",
                         ieee: "00:11:22:33:44:55:66:77",
+                        location: "Hallway",
                     },
                 ],
             }));
@@ -114,6 +122,7 @@ describe("ZigBee Devices", () => {
                         metrics: {
                             power: metric,
                         },
+                        location: "Hallway",
                     },
                 ],
             }),
@@ -183,6 +192,7 @@ describe("ZigBee Devices", () => {
                         name: "Osram",
                         nwk: "0xabcd",
                         ieee: "00:11:22:33:44:55:66:77",
+                        location: "Hallway",
                     },
                 ],
             },
