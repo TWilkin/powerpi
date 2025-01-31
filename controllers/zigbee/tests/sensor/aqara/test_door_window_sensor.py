@@ -88,11 +88,12 @@ class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, Batt
         return AqaraDoorWindowSensor(
             powerpi_logger, zigbee_controller, powerpi_mqtt_client,
             ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA',
-            name='test'
+            name='test',
+            metrics={'door': 'visible'},
         )
 
     def __verify_publish(self, powerpi_mqtt_producer: MagicMock, state: str):
-        topic = 'event/test/change'
+        topic = 'event/test/door'
 
         message = {'state': state}
 
