@@ -4,5 +4,6 @@
     "Mosquitto" true
     "Database" true
     "IngressController" 3000
+    "External" true
 }}
 {{- include "powerpi.network-policy" (merge (dict "Params" $data) .) -}}
