@@ -29,14 +29,12 @@ describe("Devices", () => {
                     type: "powerpi",
                     name: "Temp",
                     location: "Garden",
-                    entity: "Garden",
                     metrics: { temperature: "visible" },
                 },
                 {
                     type: "powerpi",
                     name: "Humidity",
                     location: "Garden",
-                    entity: "Garden",
                     metrics: { humidity: "visible" },
                 },
             ],
@@ -60,7 +58,6 @@ describe("Devices", () => {
                     {
                         name: "Temp",
                         location: "Garden",
-                        entity: "Garden",
                         metrics: { temperature: "visible" },
                     },
                 ],
