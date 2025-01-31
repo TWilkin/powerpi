@@ -1,5 +1,5 @@
 import { Service } from "@tsed/common";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 import User from "../models/User";
 import ConfigService from "./ConfigService";
 
@@ -35,7 +35,7 @@ export default class JwtService {
             provider,
         };
 
-        const options = {
+        const options: SignOptions = {
             audience: this.audience,
             issuer: this.issuer,
             expiresIn: "30 days",

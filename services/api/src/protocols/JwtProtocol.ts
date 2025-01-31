@@ -1,7 +1,6 @@
 import { Req } from "@tsed/common";
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
-import { Request } from "express";
-import { ExtractJwt, Strategy, StrategyOptions } from "passport-jwt";
+import { ExtractJwt, SecretOrKeyProvider, Strategy, StrategyOptions } from "passport-jwt";
 import Container from "../Container";
 import ConfigService from "../services/ConfigService";
 import JwtService from "../services/JwtService";
@@ -54,25 +53,24 @@ export default class JwtProtocol implements OnVerify, OnInstall {
     }
 }
 
-export async function getSecret(
-    _: Request,
-    __: string,
-    done: (err: string | null | unknown, secret?: string) => void,
+export function getSecret(
+    _: Parameters<SecretOrKeyProvider>[0],
+    __: Parameters<SecretOrKeyProvider>[1],
+    done: Parameters<SecretOrKeyProvider>[2],
 ) {
-    try {
-        const config = Container.get(ConfigService);
-        const secret = await config.getJWTSecret();
-        done(null, secret);
-    } catch (error) {
-        done(error);
-    }
+    const config = Container.get(ConfigService);
+
+    config
+        .getJWTSecret()
+        .then((secret) => done(null, secret))
+        .catch((error) => done(error));
 }
 
 export function getToken(request: Req): string | null {
     // read from the authorization header
     let token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
 
-    if (!token && request.cookies && request.cookies[JwtService.cookieKey]) {
+    if (!token && request.cookies?.[JwtService.cookieKey]) {
         // read from a cookie
         token = request.cookies[JwtService.cookieKey];
     }

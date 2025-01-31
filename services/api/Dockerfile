@@ -1,5 +1,5 @@
 # build the API library
-FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 as build-api-image
+FROM --platform=$BUILDPLATFORM node:23.6.1-alpine3.20 AS build-api-image
 LABEL description="Node.js builder for common API library"
 WORKDIR /home/node/app
 RUN mkdir -p /home/node/app/common/node/common-api
@@ -10,7 +10,7 @@ COPY common/node/common-api ./common/node/common-api/
 RUN yarn workspace @powerpi/common-api build
 
 # build the common library
-FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 as build-common-image
+FROM --platform=$BUILDPLATFORM node:23.6.1-alpine3.20 AS build-common-image
 LABEL description="Node.js builder for common library"
 WORKDIR /home/node/app
 RUN mkdir -p /home/node/app/common/node/common
@@ -21,7 +21,7 @@ COPY common/node/common ./common/node/common/
 RUN yarn workspace @powerpi/common build
 
 # build the common test library
-FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 as build-common-test-image
+FROM --platform=$BUILDPLATFORM node:23.6.1-alpine3.20 AS build-common-test-image
 LABEL description="Node.js builder for common-test library"
 WORKDIR /home/node/app
 COPY --from=build-common-image /home/node/app/common/node/common/package.json ./common/node/common/
@@ -34,7 +34,7 @@ COPY common/node/common-test ./common/node/common-test/
 RUN yarn workspace @powerpi/common-test build
 
 # build the service
-FROM --platform=$BUILDPLATFORM node:20.5.0-alpine3.18 as build-service-image
+FROM --platform=$BUILDPLATFORM node:23.6.1-alpine3.20 AS build-service-image
 LABEL description="Node.js builder for the API service"
 WORKDIR /home/node/app
 COPY --from=build-api-image /home/node/app/common/node/common-api/package.json ./common/node/common-api/
@@ -51,7 +51,7 @@ COPY services/api ./services/api/
 RUN yarn workspace @powerpi/api build
 
 # service image
-FROM node:20.5.0-alpine3.18 as run-image
+FROM node:23.6.1-alpine3.20 AS run-image
 LABEL description="PowerPi API service"
 
 # expose the port used by the application
@@ -79,4 +79,4 @@ RUN yarn workspace @powerpi/api install --production --frozen-lockfile
 COPY --from=build-service-image --chown=node:node /home/node/app/services/api/dist/ ./services/api/dist/
 
 # start the application once the container is ready
-CMD yarn workspace @powerpi/api start:prd
+CMD ["yarn", "workspace", "@powerpi/api", "start:prd"]

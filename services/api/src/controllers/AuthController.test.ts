@@ -1,5 +1,5 @@
+import { Res } from "@tsed/common";
 import crypto from "crypto";
-import { Response } from "express";
 import passport from "passport";
 import {
     anyNumber,
@@ -18,7 +18,7 @@ const mockedConfigService = mock<ConfigService>();
 const mockedJwtService = mock<JwtService>();
 const mockedUserService = mock<UserService>();
 const mockedSession = mock<AuthSession>();
-const mockedResponse = mock<Response>();
+const mockedResponse = mock<Res>();
 
 describe("AuthController", () => {
     let subject: AuthController | undefined;
