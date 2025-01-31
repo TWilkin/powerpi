@@ -21,12 +21,20 @@
                     "description": "Whether to capture the humidity reported by the sensor",
                     "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
                 },
+                "motion": {
+                    "description": "Whether to capture the motion reported by the sensor",
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                },
                 "temperature": {
                     "description": "Whether to capture the temperature reported by the sensor",
                     "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
                 }
             },
-            "anyOf": [{ "required": ["humidity"] }, { "required": ["temperature"] }],
+            "anyOf": [
+                { "required": ["humidity"] },
+                { "required": ["motion"] },
+                { "required": ["temperature"] }
+            ],
             "additionalProperties": false
         },
         "poll_delay": {
