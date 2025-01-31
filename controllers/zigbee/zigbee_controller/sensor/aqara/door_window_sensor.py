@@ -9,6 +9,7 @@ from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 from zigpy.zcl.foundation import Attribute, TypeValue
 
 from zigbee_controller.device import ZigbeeController
+from zigbee_controller.sensor.metrics import Metric, MetricValue
 from zigbee_controller.zigbee import (ClusterAttributeListener,
                                       ClusterGeneralCommandListener, OnOff,
                                       OpenClose, ZigbeeMixin)
@@ -20,10 +21,10 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
     Generates the following events on open/close.
 
     Open:
-    /event/NAME/change:{"state": "open"}
+    /event/NAME/(door|window):{"state": "open"}
 
     Close:
-    /event/NAME/change:{"state": "close"}
+    /event/NAME/(door|window):{"state": "close"}
     '''
 
     # the additional attribute id returned by this device
@@ -44,13 +45,26 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
         logger: Logger,
         controller: ZigbeeController,
         mqtt_client: MQTTClient,
+        metrics: Dict[Metric, MetricValue],
         **kwargs
     ):
         Sensor.__init__(self, mqtt_client, **kwargs)
         ZigbeeMixin.__init__(self, controller, **kwargs)
         BatteryMixin.__init__(self)
 
+        self.__metrics = metrics
+
         self._logger = logger
+
+    @property
+    def sensor_type(self):
+        if MetricValue.is_enabled(self.__metrics, Metric.DOOR):
+            return Metric.DOOR
+
+        if MetricValue.is_enabled(self.__metrics, Metric.WINDOW):
+            return Metric.WINDOW
+
+        return None
 
     def open_close_handler(self, on_off: OnOff):
         self.log_info(f'Received {on_off} from door/window sensor')
@@ -61,10 +75,12 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
         elif on_off == OnOff.OFF:
             state = OpenClose.CLOSE
 
-        if state:
+        action = self.sensor_type
+
+        if state and action:
             message = {'state': state}
 
-            self._broadcast('change', message)
+            self._broadcast(action, message)
 
     def on_attribute_updated(self, attribute_id: int, value: Any, _):
         if attribute_id == self.AQARA_ATTRIBUTE:

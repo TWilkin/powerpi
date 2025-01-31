@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Tuple
 from unittest.mock import MagicMock
 
@@ -9,9 +9,18 @@ from powerpi_common_test.sensor.mixin import BatteryMixinTestBase
 
 from zigbee_controller.sensor.aqara.door_window_sensor import \
     AqaraDoorWindowSensor
+from zigbee_controller.sensor.metrics import Metric
 
 
 class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, BatteryMixinTestBase):
+    def test_sensor_type(
+        self,
+        subject: AqaraDoorWindowSensor,
+        subject_window: AqaraDoorWindowSensor
+    ):
+        assert subject.sensor_type == Metric.DOOR
+        assert subject_window.sensor_type == Metric.WINDOW
+
     @pytest.mark.parametrize(
         'values', [(0, 'close'), (1, 'open'), (False, 'close'), (True, 'open')]
     )
@@ -59,7 +68,8 @@ class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, Batt
         value += data.to_bytes(2, 'little')
         value = value.decode('utf8')
 
-        subject.on_attribute_updated(0xFF01, value, datetime.utcnow())
+        subject.on_attribute_updated(
+            0xFF01, value, datetime.now(timezone.utc))
 
         topic = 'event/test/battery'
         message = {'value': percent, 'unit': '%'}
@@ -79,7 +89,8 @@ class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, Batt
         value += b'\x21\x00\x00'
         value = value.decode('utf8')
 
-        subject.on_attribute_updated(attribute_id, value, datetime.utcnow())
+        subject.on_attribute_updated(
+            attribute_id, value, datetime.now(timezone.utc))
 
         powerpi_mqtt_producer.assert_not_called()
 
@@ -88,11 +99,21 @@ class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, Batt
         return AqaraDoorWindowSensor(
             powerpi_logger, zigbee_controller, powerpi_mqtt_client,
             ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA',
-            name='test'
+            name='test',
+            metrics={'door': 'visible'},
+        )
+
+    @pytest.fixture
+    def subject_window(self, powerpi_logger, zigbee_controller, powerpi_mqtt_client):
+        return AqaraDoorWindowSensor(
+            powerpi_logger, zigbee_controller, powerpi_mqtt_client,
+            ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA',
+            name='test',
+            metrics={'window': 'visible'},
         )
 
     def __verify_publish(self, powerpi_mqtt_producer: MagicMock, state: str):
-        topic = 'event/test/change'
+        topic = 'event/test/door'
 
         message = {'state': state}
 
