@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Tuple
 from unittest.mock import MagicMock
 
@@ -59,7 +59,8 @@ class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, Batt
         value += data.to_bytes(2, 'little')
         value = value.decode('utf8')
 
-        subject.on_attribute_updated(0xFF01, value, datetime.utcnow())
+        subject.on_attribute_updated(
+            0xFF01, value, datetime.now(timezone.utc))
 
         topic = 'event/test/battery'
         message = {'value': percent, 'unit': '%'}
@@ -79,7 +80,8 @@ class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, Batt
         value += b'\x21\x00\x00'
         value = value.decode('utf8')
 
-        subject.on_attribute_updated(attribute_id, value, datetime.utcnow())
+        subject.on_attribute_updated(
+            attribute_id, value, datetime.now(timezone.utc))
 
         powerpi_mqtt_producer.assert_not_called()
 
