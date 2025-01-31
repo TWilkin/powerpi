@@ -2,8 +2,8 @@ import { MetricValue, Sensor } from "@powerpi/common-api";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import _ from "underscore";
-import Resources from "../../../../@types/resources";
-import getSensorType from "../../../../utils/getSensorType";
+import Resources from "../../../@types/resources";
+import getSensorType from "../../../utils/getSensorType";
 
 export default function useSensors(sensors: Sensor[]) {
     const { t } = useTranslation();
