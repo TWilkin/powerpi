@@ -7,11 +7,30 @@
     "allOf": [
         {
             "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Sensor.schema.json"
         }
     ],
     "properties": {
         "type": {
-            "const": "esp8266"
+            "const": "powerpi"
+        },
+        "metrics": {
+            "description": "The list of metrics to enable for this sensor",
+            "type": "object",
+            "properties": {
+                "humidity": {
+                    "description": "Whether to capture the humidity reported by the sensor",
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                },
+                "temperature": {
+                    "description": "Whether to capture the temperature reported by the sensor",
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                }
+            },
+            "anyOf": [{ "required": ["humidity"] }, { "required": ["temperature"] }],
+            "additionalProperties": false
         },
         "poll_delay": {
             "description": "The delay between sensor polling in milliseconds",
