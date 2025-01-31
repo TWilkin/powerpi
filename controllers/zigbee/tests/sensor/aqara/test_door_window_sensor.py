@@ -9,9 +9,18 @@ from powerpi_common_test.sensor.mixin import BatteryMixinTestBase
 
 from zigbee_controller.sensor.aqara.door_window_sensor import \
     AqaraDoorWindowSensor
+from zigbee_controller.sensor.metrics import Metric
 
 
 class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, BatteryMixinTestBase):
+    def test_sensor_type(
+        self,
+        subject: AqaraDoorWindowSensor,
+        subject_window: AqaraDoorWindowSensor
+    ):
+        assert subject.sensor_type == Metric.DOOR
+        assert subject_window.sensor_type == Metric.WINDOW
+
     @pytest.mark.parametrize(
         'values', [(0, 'close'), (1, 'open'), (False, 'close'), (True, 'open')]
     )
@@ -92,6 +101,15 @@ class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, Batt
             ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA',
             name='test',
             metrics={'door': 'visible'},
+        )
+
+    @pytest.fixture
+    def subject_window(self, powerpi_logger, zigbee_controller, powerpi_mqtt_client):
+        return AqaraDoorWindowSensor(
+            powerpi_logger, zigbee_controller, powerpi_mqtt_client,
+            ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA',
+            name='test',
+            metrics={'window': 'visible'},
         )
 
     def __verify_publish(self, powerpi_mqtt_producer: MagicMock, state: str):
