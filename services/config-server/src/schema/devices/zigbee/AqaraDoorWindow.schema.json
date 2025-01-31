@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/AqaraDoor.schema.json",
-    "title": "AqaraDoor",
-    "description": "The AqaraDoor sensor",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/AqaraDoorWindow.schema.json",
+    "title": "AqaraDoorWindow",
+    "description": "The Aqara door or window sensor",
     "type": "object",
     "allOf": [
         {
