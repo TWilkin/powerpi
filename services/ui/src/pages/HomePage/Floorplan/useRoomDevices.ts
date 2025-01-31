@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { chain as _ } from "underscore";
 import useQueryDevices from "../../../queries/useQueryDevices";
 import useQuerySensors from "../../../queries/useQuerySensors";
+import useSensors from "./useSensors";
 
 type Device = {
     deviceType: "device";
@@ -25,6 +26,8 @@ export default function useRoomDevices(room: string) {
     const { data: devices } = useQueryDevices();
     const { data: sensors } = useQuerySensors();
 
+    const expandedSensors = useSensors(sensors ?? []);
+
     return useMemo(() => {
         const deviceList: DeviceList = devices.map((device) => ({
             deviceType: "device",
@@ -32,7 +35,7 @@ export default function useRoomDevices(room: string) {
             state: device.state,
         }));
 
-        const sensorList: DeviceList = sensors.map((sensor) => ({
+        const sensorList: DeviceList = expandedSensors.map((sensor) => ({
             deviceType: "sensor",
             device: sensor,
             data: sensor.data,
@@ -78,5 +81,5 @@ export default function useRoomDevices(room: string) {
             .sortBy((device) => device.count)
             .reverse()
             .value();
-    }, [devices, room, sensors]);
+    }, [devices, expandedSensors, room]);
 }

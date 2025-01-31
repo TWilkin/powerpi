@@ -2,9 +2,9 @@ import { Metric, Sensor } from "@powerpi/common-api";
 import classNames from "classnames";
 import { useMemo } from "react";
 import Tooltip from "../../../../components/Tooltip";
+import useSensors from "../useSensors";
 import RoomTooltipRow from "./RoomTooltipRow";
 import generateRoomTooltipId from "./generateRoomTooltipId";
-import useSensors from "./useSensors";
 
 type RoomTooltipProps = {
     name: string;
