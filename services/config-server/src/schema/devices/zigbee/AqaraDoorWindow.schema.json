@@ -20,6 +20,7 @@
             "$ref": "#/$defs/window"
         }
     ],
+    "required": ["metrics"],
     "unevaluatedProperties": false,
     "$defs": {
         "door": {
