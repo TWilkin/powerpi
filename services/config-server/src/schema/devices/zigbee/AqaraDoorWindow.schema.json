@@ -12,10 +12,55 @@
             "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeeDevice.schema.json"
         }
     ],
-    "properties": {
-        "type": {
-            "oneOf": [{ "const": "aqara_door" }, { "const": "aqara_window" }]
+    "oneOf": [
+        {
+            "$ref": "#/$defs/door"
+        },
+        {
+            "$ref": "#/$defs/window"
         }
-    },
-    "unevaluatedProperties": false
+    ],
+    "unevaluatedProperties": false,
+    "$defs": {
+        "door": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "aqara_door"
+                },
+                "metrics": {
+                    "description": "The list of metrics to enable for this sensor",
+                    "type": "object",
+                    "properties": {
+                        "door": {
+                            "description": "Whether to capture the door open/close state report by the sensor",
+                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                        }
+                    },
+                    "required": ["door"],
+                    "additionalProperties": false
+                }
+            }
+        },
+        "window": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "aqara_window"
+                },
+                "metrics": {
+                    "description": "The list of metrics to enable for this sensor",
+                    "type": "object",
+                    "properties": {
+                        "window": {
+                            "description": "Whether to capture the window open/close state report by the sensor",
+                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                        }
+                    },
+                    "required": ["window"],
+                    "additionalProperties": false
+                }
+            }
+        }
+    }
 }

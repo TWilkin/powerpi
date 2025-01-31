@@ -59,7 +59,7 @@ describe("ZigBee Devices", () => {
         const type = `aqara_${sensorType}`;
 
         describe(`Aqara ${sensorType} Sensor`, () => {
-            commonZigBeeTests(
+            const { testInvalid } = commonZigBeeTests(
                 {
                     sensors: [
                         {
@@ -67,12 +67,31 @@ describe("ZigBee Devices", () => {
                             name: "Aqara",
                             nwk: "0xabcd",
                             ieee: "00:11:22:33:44:55:66:77",
+                            metrics: {
+                                [sensorType]: "visible",
+                            },
                             location: "Hallway",
                         },
                     ],
                 },
                 true,
             );
+
+            test("Wrong metric", () =>
+                testInvalid({
+                    sensors: [
+                        {
+                            type,
+                            name: "Aqara",
+                            nwk: "0xabcd",
+                            ieee: "00:11:22:33:44:55:66:77",
+                            metrics: {
+                                [sensorType === "door" ? "window" : "door"]: "visible",
+                            },
+                            location: "Hallway",
+                        },
+                    ],
+                }));
         });
     });
 
