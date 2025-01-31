@@ -4,14 +4,10 @@
     "title": "Sensor",
     "description": "The common properties for a sensor in PowerPi",
     "type": "object",
-    "properties": {
-        "entity": {
-            "description": "The entity name to use when generating events in the message queue",
-            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
-        },
-        "action": {
-            "description": "The action name to use when generating events in the message queue",
-            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/BaseDevice.schema.json"
         }
-    }
+    ],
+    "required": ["location"]
 }

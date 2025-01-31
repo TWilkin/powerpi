@@ -1,8 +1,8 @@
 import * as BaseDevice from "./BaseDevice.schema.json";
 import loadEnergenieSchema from "./energenie";
-import * as GenericSensor from "./GenericSensor.schema.json";
 import loadHarmonySchema from "./harmony";
 import loadLIFXSchema from "./lifx";
+import * as MeterSensor from "./MeterSensor.schema.json";
 import * as Metric from "./Metric.schema.json";
 import loadNetworkSchema from "./network";
 import * as PollableDevice from "./PollableDevice.schema.json";
@@ -46,9 +46,7 @@ export default function loadDevicesSchema() {
         ...loadZigBeeSchema(),
 
         // PowerPi sensors
+        MeterSensor,
         PowerPiSensor,
-
-        // other sensors outside of PowerPi
-        GenericSensor,
     };
 }

@@ -35,9 +35,10 @@ export default function commonSensorTests(validFile: object) {
     });
 
     test("Location", () => {
-        const sensor = getSensor(validFile);
+        const sensor = { ...getSensor(validFile) };
+        delete sensor.location;
 
-        testValid({ devices: [], ...validFile, sensors: [{ ...sensor, location: "LivingRoom" }] });
+        testInvalid({ devices: [], ...validFile, sensors: [sensor] });
     });
 
     test("Visible", () => {

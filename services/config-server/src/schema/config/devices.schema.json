@@ -79,13 +79,13 @@
             "items": {
                 "oneOf": [
                     {
-                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/GenericSensor.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/MeterSensor.schema.json"
                     },
                     {
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PowerPiSensor.schema.json"
                     },
                     {
-                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/AqaraDoor.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/AqaraDoorWindow.schema.json"
                     },
                     {
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/OsramSwitchMini.schema.json"

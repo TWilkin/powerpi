@@ -44,9 +44,9 @@ describe("DeviceHandler", () => {
         test("sensors", async () => {
             const config = {
                 sensors: [
-                    { type: "esp8266", value: 1, name: "sensor1" },
+                    { type: "powerpi", value: 1, name: "sensor1" },
                     { type: "other", value: 2, name: "sensor2" },
-                    { type: "esp8266", value: 3, name: "sensor3" },
+                    { type: "powerpi", value: 3, name: "sensor3" },
                 ] as unknown as ISensor[],
             };
 
