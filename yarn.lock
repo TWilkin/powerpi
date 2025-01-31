@@ -2126,9 +2126,9 @@
   integrity sha512-iJt33IQnVRkqeqC7PzBHPTC6fDlRNRW8vjrgqtScAhrmMwe8c4Eo7+fUGTa+XdWrpEgpyKWMYmi2dIwMAYRzPw==
 
 "@types/ms@*":
-  version "0.7.34"
-  resolved "https://registry.yarnpkg.com/@types/ms/-/ms-0.7.34.tgz#10964ba0dee6ac4cd462e2795b6bebd407303433"
-  integrity sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@types/ms/-/ms-2.1.0.tgz#052aa67a48eccc4309d7f0191b7e41434b90bb78"
+  integrity sha512-GsCCIZDE/p3i96vtEqx+7dBUGXrc7zeSK3wwPHIaRThS+9OhWIXRqzs4d6k1SVU8g91DrNRWxWUGhp5KXQb2VA==
 
 "@types/multer@^1.4.7":
   version "1.4.12"
@@ -2314,7 +2314,12 @@
   resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.13.0.tgz#dd8c034a92e5b8e24650c31af43d807c5340cee4"
   integrity sha512-L6LBgy1f0EFQZ+7uSA57+n2g/s4Qs5r06Vwrwn0/nuK1de+adz00NWaztRQ30aEqw5qOaWbPI8u2cGQ52lj6VA==
 
-"@types/validator@^13.11.1", "@types/validator@^13.11.8", "@types/validator@^13.7.17":
+"@types/validator@^13.11.1", "@types/validator@^13.7.17":
+  version "13.12.2"
+  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.12.2.tgz#760329e756e18a4aab82fc502b51ebdfebbe49f5"
+  integrity sha512-6SlHBzUW8Jhf3liqrGGXyTJSIFe4nqlJ5A5KaMZ2l/vbM3Wh3KSybots/wfWVzNLK4D1NZluDlSQIbIEPx6oyA==
+
+"@types/validator@^13.11.8":
   version "13.11.9"
   resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.11.9.tgz#adfe96520b437a0eaa798a475877bf2f75ee402d"
   integrity sha512-FCTsikRozryfayPuiI46QzH3fnrOoctTjvOYZkho9BTFLCOZ2rgZJHMOVgCOfttjPJcgOx52EpkY0CMfy87MIw==
@@ -6846,9 +6851,9 @@ mkdirp@^0.5.4:
     minimist "^1.2.6"
 
 moment-timezone@^0.5.43:
-  version "0.5.45"
-  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.45.tgz#cb685acd56bac10e69d93c536366eb65aa6bcf5c"
-  integrity sha512-HIWmqA86KcmCAhnMAN0wuDOARV/525R2+lOLotuGFzn4HO+FH+/645z2wx0Dt3iDv6/p61SIvKnDstISainhLQ==
+  version "0.5.47"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.47.tgz#d4d1a21b78372d914d6d69ae285454732a429749"
+  integrity sha512-UbNt/JAWS0m/NJOebR0QMRHBk0hu03r5dx9GK8Cs0AS3I81yDcOc9k+DytPItgVvBP7J6Mf6U2n3BPAacAV9oA==
   dependencies:
     moment "^2.29.4"
 
@@ -7419,12 +7424,7 @@ pg-cloudflare@^1.1.1:
   resolved "https://registry.yarnpkg.com/pg-cloudflare/-/pg-cloudflare-1.1.1.tgz#e6d5833015b170e23ae819e8c5d7eaedb472ca98"
   integrity sha512-xWPagP/4B6BgFO+EKz3JONXv3YDgvkbVrGw2mTo3D6tVDQRh1e7cqVGvyR3BE+eQgAvx1XhW/iEASj4/jCWl3Q==
 
-pg-connection-string@^2.6.1:
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-2.6.3.tgz#0393c04b00262bca1d656694f9193aaba9f17fb4"
-  integrity sha512-77FxhhKJQH+xJx6tDqkhhMa0nZvv3U1HYLDQgwZxZafVD583++O5LXn5oo5HaQZ0vXwYcZA1koYAJM3JvD6Gtw==
-
-pg-connection-string@^2.7.0:
+pg-connection-string@^2.6.1, pg-connection-string@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-2.7.0.tgz#f1d3489e427c62ece022dba98d5262efcb168b37"
   integrity sha512-PI2W9mv53rXJQEOb8xNR8lH7Hr+EKa6oJa38zsK0S/ky2er16ios1wLKhZyxzD7jUReiWokc9WK5nxSnC7W1TA==
@@ -8289,9 +8289,9 @@ sequelize-typescript@^2.1.6:
     glob "7.2.0"
 
 sequelize@^6.32.1:
-  version "6.37.2"
-  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-6.37.2.tgz#f98052f81c40c26ba85382fcb35e7346308542f4"
-  integrity sha512-bnb7swGANONXCTrVyebpOOZssLwQrVkYX2tcC6qOIvH+P+OhsoMBi7c3GXI5bC+Z4b4tOl+kQy6yeqLCZ1YQAQ==
+  version "6.37.5"
+  resolved "https://registry.yarnpkg.com/sequelize/-/sequelize-6.37.5.tgz#2711ab97d0e0fe49c652368946a7312eb0f11cd7"
+  integrity sha512-10WA4poUb3XWnUROThqL2Apq9C2NhyV1xHPMZuybNMCucDsbbFuKg51jhmyvvAUyUqCiimwTZamc3AHhMoBr2Q==
   dependencies:
     "@types/debug" "^4.1.8"
     "@types/validator" "^13.7.17"
@@ -9420,9 +9420,9 @@ v8-to-istanbul@^9.0.1:
     convert-source-map "^2.0.0"
 
 validator@^13.9.0:
-  version "13.11.0"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-13.11.0.tgz#23ab3fd59290c61248364eabf4067f04955fbb1b"
-  integrity sha512-Ii+sehpSfZy+At5nPdnyMhx78fEoPDkR2XW/zimHEL3MyGJQOCQ7WeP20jPYRz7ZCpcKLB21NxuXHF3bxjStBQ==
+  version "13.12.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.12.0.tgz#7d78e76ba85504da3fee4fd1922b385914d4b35f"
+  integrity sha512-c1Q0mCiPlgdTVVVIJIrBuxNicYE+t/7oKeI9MWLj3fh/uq2Pxh/3eeWbVZ4OcGW1TUf53At0njHw5SMdA3tmMg==
 
 vary@^1, vary@~1.1.2:
   version "1.1.2"
