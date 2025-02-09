@@ -219,6 +219,23 @@ describe("ZigBee Devices", () => {
         );
     });
 
+    describe("Sonoff Switch Sensor", () => {
+        commonZigBeeTests(
+            {
+                sensors: [
+                    {
+                        type: "sonoff_switch",
+                        name: "Switch",
+                        nwk: "0xabcd",
+                        ieee: "00:11:22:33:44:55:66:77",
+                        location: "Hallway",
+                    },
+                ],
+            },
+            true,
+        );
+    });
+
     describe("ZigBee Pairing", () => {
         const { testValid, testInvalid } = commonDeviceTests({
             devices: [{ type: "zigbee_pairing", name: "Pairing", timeout: 1 }],
