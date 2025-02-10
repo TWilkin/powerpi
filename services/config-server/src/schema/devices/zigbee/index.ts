@@ -1,5 +1,6 @@
 import * as AqaraDoorWindow from "./AqaraDoorWindow.schema.json";
 import * as OsramSwitchMini from "./OsramSwitchMini.schema.json";
+import * as SonoffSwitch from "./SonoffSwitch.schema.json";
 import * as ZigBeeDevice from "./ZigBeeDevice.schema.json";
 import * as ZigBeeEnergyMonitor from "./ZigBeeEnergyMonitor.schema.json";
 import * as ZigBeeLight from "./ZigBeeLight.schema.json";
@@ -19,5 +20,8 @@ export default function loadZigBeeSchema() {
 
         // Osram
         OsramSwitchMini,
+
+        // Sonoff
+        SonoffSwitch,
     };
 }
