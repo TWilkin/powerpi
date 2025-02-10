@@ -15,8 +15,9 @@ This controller service currently supports the following ZigBee devices/sensors:
 - Energy Monitoring - Any ZigBee standard compliant energy monitoring sensor producing power, current and voltage readings; the following sensors have been tested and confirmed working:
     - [Innr Smart Plug](https://www.innr.com/en/product/innr-smart-plug-uk/) - Innr Smart Plug
 - Remotes:
-    - Osram Smart+ Switch Mini - ZigBee remote with 3 buttons (centre, up and down) supporting single and long press as well as battery life.
+    - [IKEA Styrbar](https://www.ikea.com/gb/en/p/styrbar-remote-control-smart-white-60488366/) - ZigBee 4-button remote supporting short and long press.
     - [Sonoff ZigBee Wireless Switch](https://sonoff.tech/product/gateway-and-sensors/snzb-01p/) - ZigBee single button switch supporting short, long and double press.
+    - Osram Smart+ Switch Mini - ZigBee remote with 3 buttons (centre, up and down) supporting single and long press as well as battery life.
 - [Aqara Door and Window Sensor](https://www.aqara.com/en/door_and_window_sensor.html) - Magnetic door and window sensor supporting open and close events as well as battery life.
 
 ## Building
