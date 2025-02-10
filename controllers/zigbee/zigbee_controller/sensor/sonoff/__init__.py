@@ -1,6 +1,6 @@
 from dependency_injector import providers
 
-from .switch import SonoffSwitch
+from .switch import SonoffSwitchSensor
 
 
 def add_sonoff_sensors(container):
@@ -10,7 +10,7 @@ def add_sonoff_sensors(container):
         device_container,
         'sonoff_switch_sensor',
         providers.Factory(
-            SonoffSwitch,
+            SonoffSwitchSensor,
             logger=container.common.logger,
             zigbee_controller=container.device.zigbee_controller,
             mqtt_client=container.common.mqtt_client

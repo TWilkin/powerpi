@@ -16,7 +16,7 @@ class PressType(StrEnum):
     LONG = 'long'
 
 
-class SonoffSwitch(Sensor, ZigbeeMixin):
+class SonoffSwitchSensor(Sensor, ZigbeeMixin):
     '''
     Adds support for Sonoff Switch.
     '''
