@@ -5,7 +5,7 @@ from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 
 from zigbee_controller.device import ZigbeeController
 from zigbee_controller.zigbee import ZigbeeMixin
-from zigbee_controller.zigbee.mixins import Button, PressType, ZigbeeRemoteMixin
+from zigbee_controller.zigbee.mixins import Button, ButtonConfig, PressType, RemoteConfig, ZigbeeRemoteMixin
 
 
 class SonoffSwitchSensor(Sensor, ZigbeeRemoteMixin, ZigbeeMixin):
@@ -26,20 +26,20 @@ class SonoffSwitchSensor(Sensor, ZigbeeRemoteMixin, ZigbeeMixin):
         self._logger = logger
 
     def _remote_config(self):
-        return {
-            'buttons': [
-                {
-                    'cluster_id': OnOffCluster.cluster_id,
-                    'endpoint_id': 1,
-                    'button': Button.BUTTON
-                }
+        return RemoteConfig(
+            buttons=[
+                ButtonConfig(
+                    cluster_id=OnOffCluster.cluster_id,
+                    endpoint_id=1,
+                    button=Button.BUTTON
+                )
             ],
-            'press_type': {
+            press_types={
                 2: PressType.SHORT,
                 0: PressType.LONG,
                 1: PressType.DOUBLE
             }
-        }
+        )
 
     def __str__(self):
         return ZigbeeMixin.__str__(self)
