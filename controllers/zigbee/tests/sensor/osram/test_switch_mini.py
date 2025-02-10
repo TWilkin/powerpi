@@ -136,8 +136,8 @@ class TestOsramSwitchMiniSensor(SensorTestBase, InitialisableMixinTestBase, Batt
         topic = 'event/test/press'
 
         message = {
-            "button": button,
-            "type": press_type
+            'button': button,
+            'type': press_type
         }
 
         powerpi_mqtt_producer.assert_called_once()
