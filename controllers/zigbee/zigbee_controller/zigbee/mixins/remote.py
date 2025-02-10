@@ -64,10 +64,12 @@ class ZigbeeRemoteMixin(ABC):
             cluster: Cluster = device[button.endpoint_id].out_clusters[button.cluster_id]
 
             cluster.add_listener(
-                ClusterCommandListener(lambda _, command_id, __: self._button_press_handler(
-                    button.button,
-                    get_command(cluster, command_id)
-                ))
+                ClusterCommandListener(lambda _, command_id, __, button=button, cluster=cluster:
+                                       self._button_press_handler(
+                                           button.button,
+                                           get_command(cluster, command_id)
+                                       )
+                                       )
             )
 
     @abstractmethod
