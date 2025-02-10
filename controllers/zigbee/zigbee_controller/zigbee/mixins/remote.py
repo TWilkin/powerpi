@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import StrEnum, unique
-from typing import List
+from typing import Dict, List
 
 from zigpy.zcl.clusters import Cluster
 
@@ -30,7 +30,7 @@ class ButtonConfig:
 @dataclass
 class RemoteConfig:
     buttons: List[ButtonConfig]
-    press_types: List[PressType]
+    press_types: Dict[int, PressType]
 
 
 class ZigbeeRemoteMixin(ABC):
