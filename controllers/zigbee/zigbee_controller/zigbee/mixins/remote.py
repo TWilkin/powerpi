@@ -11,6 +11,10 @@ from zigbee_controller.zigbee import ClusterCommandListener
 @unique
 class Button(StrEnum):
     BUTTON = 'button'
+    UP = 'up'
+    RIGHT = 'right'
+    DOWN = 'down'
+    LEFT = 'left'
 
 
 @unique
@@ -51,7 +55,7 @@ class ZigbeeRemoteMixin(ABC):
             cluster.add_listener(
                 ClusterCommandListener(lambda _, press_type, __: self._button_press_handler(
                     button.button,
-                    config.press_types[press_type]
+                    config.press_types.get(press_type, None)
                 ))
             )
 
