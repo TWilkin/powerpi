@@ -27,6 +27,7 @@ class ZigbeeReportMixin(ABC):
         '''
         Override this method to listen to the attribute values registered in the reports.
         '''
+        raise NotImplementedError
 
     async def _register_reports(self, cluster: Cluster, attributes: List[str], frequency: int):
         '''
