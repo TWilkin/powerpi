@@ -35,9 +35,9 @@ class SonoffSwitchSensor(Sensor, ZigbeeRemoteMixin, ZigbeeMixin):
                 )
             ],
             press_types={
-                2: PressType.SHORT,
-                0: PressType.LONG,
-                1: PressType.DOUBLE
+                'toggle': PressType.SHORT,
+                'off': PressType.LONG,
+                'on': PressType.DOUBLE
             }
         )
 

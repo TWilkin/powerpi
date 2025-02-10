@@ -34,7 +34,7 @@ class ButtonConfig:
 @dataclass
 class RemoteConfig:
     buttons: List[ButtonConfig]
-    press_types: Dict[int, PressType]
+    press_types: Dict[str, PressType]
 
 
 class ZigbeeRemoteMixin(ABC):
@@ -49,13 +49,24 @@ class ZigbeeRemoteMixin(ABC):
 
         config = self._remote_config()
 
+        def get_command(cluster: Cluster, command_id: int):
+            command = next(filter(
+                lambda command: command.id == command_id,
+                cluster.commands
+            ))
+
+            if command is not None:
+                return config.press_types[command.name]
+
+            return None
+
         for button in config.buttons:
             cluster: Cluster = device[button.endpoint_id].out_clusters[button.cluster_id]
 
             cluster.add_listener(
-                ClusterCommandListener(lambda _, press_type, __: self._button_press_handler(
+                ClusterCommandListener(lambda _, command_id, __: self._button_press_handler(
                     button.button,
-                    config.press_types.get(press_type, None)
+                    get_command(cluster, command_id)
                 ))
             )
 
