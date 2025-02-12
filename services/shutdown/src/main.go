@@ -66,18 +66,22 @@ func shutdown(client mqtt.MqttClient, state mqtt.DeviceState, mock bool, startTi
 		return
 	}
 
-	fmt.Println("Initiating shutdown")
+	if (state == "off") {
+		fmt.Println("Initiating shutdown")
 
-	// publish the off message and wait to make sure it's sent
-	client.PublishState(mqtt.Off)
-	time.Sleep(time.Second)
+		// publish the off message and wait to make sure it's sent
+		client.PublishState(mqtt.Off)
+		time.Sleep(time.Second)
 
-	// turn off the computer if we're not mocking
-	if !mock {
-		err := exec.Command("shutdown").Run()
-		if err != nil {
-			fmt.Println("Failed to shutdown:", err)
+		// turn off the computer if we're not mocking
+		if !mock {
+			err := exec.Command("shutdown").Run()
+			if err != nil {
+				fmt.Println("Failed to shutdown:", err)
+			}
 		}
+	} else {
+		fmt.Println("Ignoring message as it was not an off command")
 	}
 }
 
