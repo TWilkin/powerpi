@@ -14,7 +14,7 @@ func GetBrightness(device string) int {
 	brightnessFile := getBrightnessFile(device)
 	brightnessRange := getBrightnessRange(device)
 	if brightnessFile == "" || brightnessRange.min == -1 || brightnessRange.max == -1 {
-		fmt.Printf("Unrecognised brightness device %s", device)
+		fmt.Printf("Unrecognised brightness device %s\n", device)
 		return -1
 	}
 
@@ -30,8 +30,8 @@ func GetBrightness(device string) int {
 		panic(err)
 	}
 
-	brightness := int((value - brightnessRange.min) / brightnessRange.max * 100)
-	fmt.Printf("Read brightness %d (%d%%)", value, brightness)
+	brightness := int(float64(value - brightnessRange.min) / float64(brightnessRange.max) * 100.0)
+	fmt.Printf("Read brightness %d (%d%%)\n", value, brightness)
 	return brightness
 }
 
@@ -39,12 +39,12 @@ func SetBrightness(device string, value int) {
 	brightnessFile := getBrightnessFile(device)
 	brightnessRange := getBrightnessRange(device)
 	if brightnessFile == "" || brightnessRange.min == -1 || brightnessRange.max == -1 {
-		fmt.Printf("Unrecognised brightness device %s", device)
+		fmt.Printf("Unrecognised brightness device %s\n", device)
 		return
 	}
 
-	brightness := int((value / 100) * (brightnessRange.max - brightnessRange.min))
-	fmt.Printf("Wrote brightness %d (%d%%)", brightness, value)
+	brightness := int(((float64(value) / 100.0) * brightnessRange.max) + brightnessRange.min)
+	fmt.Printf("Wrote brightness %d (%d%%)\n", brightness, value)
 
 	err := os.WriteFile(brightnessFile, []byte(string(brightness)), 0777)
 	if err != nil {
