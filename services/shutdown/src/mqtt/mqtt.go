@@ -6,6 +6,9 @@ import (
 	"time"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
+
+	"powerpi/shutdown/additional"
+	"powerpi/shutdown/flags"
 )
 
 type DeviceState string
@@ -14,7 +17,8 @@ const (
 	Off = "off"
 )
 
-type MqttMessageAction func(MqttClient, DeviceState)
+
+type MqttMessageAction func(MqttClient, DeviceState, additional.AdditionalState)
 
 type MqttClient struct {
 	client MQTT.Client
@@ -25,6 +29,12 @@ type MqttClient struct {
 
 type DeviceMessage struct {
 	State DeviceState `json:"state"`
+	Brightness *int `json:"brightness"`
+	Timestamp int64 `json:"timestamp"`
+}
+
+type CapabilityMessage struct {
+	Brightness bool `json:"brightness"`
 	Timestamp int64 `json:"timestamp"`
 }
 
@@ -33,7 +43,7 @@ func New(hostname string, topicBase string, action MqttMessageAction) MqttClient
 	return client
 }
 
-func (client MqttClient) Connect(host string, port int, user *string, password *string) {
+func (client MqttClient) Connect(host string, port int, user *string, password *string, config flags.Config) {
 	protocol := "tcp"
 	if port == 8883 {
 		protocol = "tcps"
@@ -55,7 +65,7 @@ func (client MqttClient) Connect(host string, port int, user *string, password *
 	}
 
 	options.OnConnect = func(_ MQTT.Client) {
-		client.onConnect()
+		client.onConnect(config)
 	}
 
 	logUser := "anonymous"
@@ -70,10 +80,7 @@ func (client MqttClient) Connect(host string, port int, user *string, password *
 	}
 }
 
-func (client MqttClient) PublishState(state DeviceState) {
-	topic := client.topic("status")
-	message := &DeviceMessage{state, time.Now().Unix() * 1000}
-
+func (client MqttClient) publish(topic string, message any) {
 	payload, err := json.Marshal(message)
 	if err != nil {
 		fmt.Println("Could not encode JSON message")
@@ -85,16 +92,35 @@ func (client MqttClient) PublishState(state DeviceState) {
 	client.client.Publish(topic, 2, true, payload)
 }
 
+func (client MqttClient) PublishState(state DeviceState, additionalState additional.AdditionalState) {
+	topic := client.topic("status")
+
+	message := &DeviceMessage{state, additionalState.Brightness, time.Now().Unix() * 1000}
+
+	client.publish(topic, message)
+}
+
+func (client MqttClient) publishCapability(config flags.AdditionalStateConfig) {
+	if len(config.Brightness.Device) > 0 {
+		topic := client.topic("capability")
+
+		message := &CapabilityMessage{true, time.Now().Unix() * 1000}
+
+		client.publish(topic, message)
+	}
+}
+
 func (client MqttClient) topic(action string) string {
 	return fmt.Sprintf("%s/device/%s/%s", client.topicBase, client.hostname, action)
 }
 
 
-func (client MqttClient) onConnect() {
+func (client MqttClient) onConnect(config flags.Config) {
 	fmt.Println("Connected to MQTT")
 
 	// publish that this device is now on
-	client.PublishState(On)
+	client.PublishState(On, additional.GetAdditionalState(config.AdditionalState))
+	client.publishCapability(config.AdditionalState)
 
 	// subscribe to the shutdown event for this device
 	topic := client.topic("change")
@@ -127,6 +153,10 @@ func (client MqttClient) onMessageReceived(message MQTT.Message) {
 		return
 	}
 
+	// retrieve any supported additional state
+	var additionalState additional.AdditionalState
+	additionalState.Brightness = payload.Brightness
+
 	// call the action
-	client.action(client, payload.State)
+	client.action(client, payload.State, additionalState)
 }
