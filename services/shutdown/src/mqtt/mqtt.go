@@ -34,6 +34,7 @@ type DeviceMessage struct {
 
 type CapabilityMessage struct {
 	Brightness bool `json:"brightness"`
+	Timestamp int64 `json:"timestamp"`
 }
 
 func New(hostname string, topicBase string, action MqttMessageAction) MqttClient {
@@ -78,11 +79,7 @@ func (client MqttClient) Connect(host string, port int, user *string, password *
 	}
 }
 
-func (client MqttClient) PublishState(state DeviceState, additionalState additional.AdditionalState) {
-	topic := client.topic("status")
-
-	message := &DeviceMessage{state, additionalState.Brightness, time.Now().Unix() * 1000}
-
+func (client MqttClient) publish(topic string, message any) {
 	payload, err := json.Marshal(message)
 	if err != nil {
 		fmt.Println("Could not encode JSON message")
@@ -94,21 +91,21 @@ func (client MqttClient) PublishState(state DeviceState, additionalState additio
 	client.client.Publish(topic, 2, true, payload)
 }
 
+func (client MqttClient) PublishState(state DeviceState, additionalState additional.AdditionalState) {
+	topic := client.topic("status")
+
+	message := &DeviceMessage{state, additionalState.Brightness, time.Now().Unix() * 1000}
+
+	client.publish(topic, message)
+}
+
 func (client MqttClient) PublishCapability(device additional.AdditionalStateDevice) {
 	if device.Brightness != nil && len(*device.Brightness) > 0 {
 		topic := client.topic("capability")
 
-		message := &CapabilityMessage{true}
+		message := &CapabilityMessage{true, time.Now().Unix() * 1000}
 
-		payload, err := json.Marshal(message)
-		if err != nil {
-			fmt.Println("Could not encode JSON message")
-			return
-		}
-
-		fmt.Printf("Publishing %s: %s\n", topic, payload)
-
-		client.client.Publish(topic, 2, true, payload)
+		client.publish(topic, message)
 	}
 }
 
