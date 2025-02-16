@@ -42,9 +42,9 @@ func ParseFlags() Config {
 
 	// additional state
 	// brightness
-	flag.StringVar(&config.AdditionalState.Brightness.Device, "brightnessDevice", "", "The path to the device to use for controller brightness")
-	flag.Float64Var(&config.AdditionalState.Brightness.Min, "brightnessMin", 0.0, "The minimum value supported for the brightness setting")
-	flag.Float64Var(&config.AdditionalState.Brightness.Max, "brightnessMax", 100.0, "The maximum value supported for the brightness setting")
+	flag.StringVar(&config.AdditionalState.Brightness.Device, "brightnessDevice", "", "The path to the device to use for controller brightness, e.g. \"/sys/class/backlight/10-0045/brightness\" for a Pi Touch Display 2")
+	flag.Float64Var(&config.AdditionalState.Brightness.Min, "brightnessMin", 0.0, "The minimum value supported for the brightness setting, e.g. 0 for a Pi Touch Display 2")
+	flag.Float64Var(&config.AdditionalState.Brightness.Max, "brightnessMax", 100.0, "The maximum value supported for the brightness setting, e.g. 31 for a Pi Touch Display 2")
 	
 	// others
 	flag.BoolVar(&config.AllowQuickShutdown, "allowQuickShutdown", false, "If true allow a message within 2 minutes of service starting to initiate a shutdown")
