@@ -21,9 +21,6 @@ var Version = "development"
 func main() {
 	fmt.Printf("PowerPi Shutdown Service %s\n", Version)
 
-	// nilable strings
-	var brightness *string = nil
-
 	// use command line args
 	host := flag.String("host", "localhost", "The hostname of the MQTT broker")
 	port := flag.Int("port", 1883, "The port number for the MQTT broker")
@@ -32,7 +29,7 @@ func main() {
 	topicBase := flag.String("topic", "powerpi", "The topic base for the MQTT broker")
 	mock := flag.Bool("mock", false, "Whether to actually shutdown or not")
 	allowQuickShutdown := flag.Bool("allowQuickShutdown", false, "If true allow a message within 2 minutes of service starting to initiate a shutdown")
-	flag.StringVar(brightness, "brightness", "", "The type of brightness device, e.g. pi-touch-display-2 if supported by this device")
+	brightness := flag.String("brightness", "", "The type of brightness device, e.g. pi-touch-display-2 if supported by this device")
 	flag.Parse()
 
 	// capture the start time, or clear it if we're not allowing quick shutdown
@@ -47,7 +44,11 @@ func main() {
 	}
 
 	// generate the additional state device config
-	device := additional.AdditionalStateDevice{brightness}
+	var brightnessDevice *string = nil
+	if brightness != nil && len(*brightness) > 0 {
+		brightnessDevice = brightness
+	}
+	device := additional.AdditionalStateDevice{brightnessDevice}
 
 	// read the password from the file (if set)
 	password := getPassword(passwordFile)
@@ -61,7 +62,7 @@ func main() {
 		updateState(client, state, additionalState, *mock, device, startTime)
 	} 
 	client := mqtt.New(hostname, *topicBase, callback)
-	client.Connect(*host, *port, user, password)
+	client.Connect(*host, *port, user, password, device)
 
 	// join the channel
 	<-channel

@@ -41,7 +41,7 @@ func New(hostname string, topicBase string, action MqttMessageAction) MqttClient
 	return client
 }
 
-func (client MqttClient) Connect(host string, port int, user *string, password *string) {
+func (client MqttClient) Connect(host string, port int, user *string, password *string, device additional.AdditionalStateDevice) {
 	protocol := "tcp"
 	if port == 8883 {
 		protocol = "tcps"
@@ -63,7 +63,7 @@ func (client MqttClient) Connect(host string, port int, user *string, password *
 	}
 
 	options.OnConnect = func(_ MQTT.Client) {
-		client.onConnect()
+		client.onConnect(device)
 	}
 
 	logUser := "anonymous"
@@ -94,11 +94,11 @@ func (client MqttClient) PublishState(state DeviceState, additionalState additio
 	client.client.Publish(topic, 2, true, payload)
 }
 
-func (client MqttClient) PublishCapability(brightness bool) {
-	if brightness {
+func (client MqttClient) PublishCapability(device additional.AdditionalStateDevice) {
+	if device.Brightness != nil && len(*device.Brightness) > 0 {
 		topic := client.topic("capability")
 
-		message := &CapabilityMessage{brightness}
+		message := &CapabilityMessage{true}
 
 		payload, err := json.Marshal(message)
 		if err != nil {
@@ -117,12 +117,12 @@ func (client MqttClient) topic(action string) string {
 }
 
 
-func (client MqttClient) onConnect() {
+func (client MqttClient) onConnect(device additional.AdditionalStateDevice) {
 	fmt.Println("Connected to MQTT")
 
 	// publish that this device is now on
-	client.PublishState(On, additional.AdditionalState{})
-	client.PublishCapability(false)
+	client.PublishState(On, additional.GetAdditionalState(device))
+	client.PublishCapability(device)
 
 	// subscribe to the shutdown event for this device
 	topic := client.topic("change")
