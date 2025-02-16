@@ -14,7 +14,11 @@ const (
 	Off = "off"
 )
 
-type MqttMessageAction func(MqttClient, DeviceState)
+type AdditionalState struct {
+	brightness *int
+}
+
+type MqttMessageAction func(MqttClient, DeviceState, AdditionalState)
 
 type MqttClient struct {
 	client MQTT.Client
@@ -25,6 +29,7 @@ type MqttClient struct {
 
 type DeviceMessage struct {
 	State DeviceState `json:"state"`
+	Brightness *int `json:"brightness"`
 	Timestamp int64 `json:"timestamp"`
 }
 
@@ -70,9 +75,15 @@ func (client MqttClient) Connect(host string, port int, user *string, password *
 	}
 }
 
-func (client MqttClient) PublishState(state DeviceState) {
+func (client MqttClient) PublishState(state DeviceState, additionalState *AdditionalState) {
 	topic := client.topic("status")
-	message := &DeviceMessage{state, time.Now().Unix() * 1000}
+
+	var brightness *int = nil
+	if additionalState != nil {
+		brightness = additionalState.brightness
+	}
+
+	message := &DeviceMessage{state, brightness, time.Now().Unix() * 1000}
 
 	payload, err := json.Marshal(message)
 	if err != nil {
@@ -94,7 +105,7 @@ func (client MqttClient) onConnect() {
 	fmt.Println("Connected to MQTT")
 
 	// publish that this device is now on
-	client.PublishState(On)
+	client.PublishState(On, nil)
 
 	// subscribe to the shutdown event for this device
 	topic := client.topic("change")
@@ -127,6 +138,10 @@ func (client MqttClient) onMessageReceived(message MQTT.Message) {
 		return
 	}
 
+	// retrieve any supported additional state
+	var additionalState AdditionalState
+	additionalState.brightness = payload.Brightness
+
 	// call the action
-	client.action(client, payload.State)
+	client.action(client, payload.State, additionalState)
 }

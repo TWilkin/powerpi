@@ -49,8 +49,8 @@ func main() {
 	signal.Notify(channel, os.Interrupt, syscall.SIGTERM)
 
 	// connect to MQTT
-	callback := func(client mqtt.MqttClient, state mqtt.DeviceState) {
-		updateState(client, state, *mock, startTime)
+	callback := func(client mqtt.MqttClient, state mqtt.DeviceState, additionalState mqtt.AdditionalState) {
+		updateState(client, state, additionalState, *mock, startTime)
 	} 
 	client := mqtt.New(hostname, *topicBase, callback)
 	client.Connect(*host, *port, user, password)
@@ -59,7 +59,7 @@ func main() {
 	<-channel
 }
 
-func updateState(client mqtt.MqttClient, state mqtt.DeviceState, mock bool, startTime time.Time) {
+func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState mqtt.AdditionalState, mock bool, startTime time.Time) {
 	// don't shutdown if the service has only just started
 	if (time.Now().Unix() - startTime.Unix()) <= 2 * 60 {
 		fmt.Println("Ignoring message as service recently started")
@@ -70,7 +70,7 @@ func updateState(client mqtt.MqttClient, state mqtt.DeviceState, mock bool, star
 		fmt.Println("Initiating shutdown")
 
 		// publish the off message and wait to make sure it's sent
-		client.PublishState(mqtt.Off)
+		client.PublishState(mqtt.Off, nil)
 		time.Sleep(time.Second)
 
 		// turn off the computer if we're not mocking
