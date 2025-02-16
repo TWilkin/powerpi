@@ -100,7 +100,7 @@ func (client MqttClient) PublishState(state DeviceState, additionalState additio
 	client.publish(topic, message)
 }
 
-func (client MqttClient) PublishCapability(config flags.AdditionalStateConfig) {
+func (client MqttClient) publishCapability(config flags.AdditionalStateConfig) {
 	if len(config.Brightness.Device) > 0 {
 		topic := client.topic("capability")
 
@@ -120,7 +120,7 @@ func (client MqttClient) onConnect(config flags.Config) {
 
 	// publish that this device is now on
 	client.PublishState(On, additional.GetAdditionalState(config.AdditionalState))
-	client.PublishCapability(config.AdditionalState)
+	client.publishCapability(config.AdditionalState)
 
 	// subscribe to the shutdown event for this device
 	topic := client.topic("change")
