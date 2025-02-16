@@ -50,7 +50,7 @@ func main() {
 
 	// connect to MQTT
 	callback := func(client mqtt.MqttClient, state mqtt.DeviceState) {
-		shutdown(client, state, *mock, startTime)
+		updateState(client, state, *mock, startTime)
 	} 
 	client := mqtt.New(hostname, *topicBase, callback)
 	client.Connect(*host, *port, user, password)
@@ -59,7 +59,7 @@ func main() {
 	<-channel
 }
 
-func shutdown(client mqtt.MqttClient, state mqtt.DeviceState, mock bool, startTime time.Time) {
+func updateState(client mqtt.MqttClient, state mqtt.DeviceState, mock bool, startTime time.Time) {
 	// don't shutdown if the service has only just started
 	if (time.Now().Unix() - startTime.Unix()) <= 2 * 60 {
 		fmt.Println("Ignoring message as service recently started")
