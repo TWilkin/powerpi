@@ -69,12 +69,6 @@ func main() {
 }
 
 func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState, mock bool, device additional.AdditionalStateDevice, startTime time.Time) {
-	// don't shutdown if the service has only just started
-	if (time.Now().Unix() - startTime.Unix()) <= 2 * 60 {
-		fmt.Println("Ignoring message as service recently started")
-		return
-	}
-
 	// update any additional state
 	currentAdditionalState := additional.GetAdditionalState(device)
 	additional.SetAdditionalState(device, additionalState)
@@ -90,6 +84,12 @@ func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState
 	}
 
 	if (state == "off") {
+		// don't shutdown if the service has only just started
+		if (time.Now().Unix() - startTime.Unix()) <= 2 * 60 {
+			fmt.Println("Ignoring message as service recently started")
+			return
+		}
+
 		// wait to make sure the publish message is sent
 		time.Sleep(time.Second)
 
