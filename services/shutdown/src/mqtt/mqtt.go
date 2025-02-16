@@ -33,6 +33,10 @@ type DeviceMessage struct {
 	Timestamp int64 `json:"timestamp"`
 }
 
+type CapabilityMessage struct {
+	Brightness bool `json:"brightness"`
+}
+
 func New(hostname string, topicBase string, action MqttMessageAction) MqttClient {
 	client := MqttClient{nil, hostname, topicBase, action}
 	return client
@@ -96,6 +100,24 @@ func (client MqttClient) PublishState(state DeviceState, additionalState *Additi
 	client.client.Publish(topic, 2, true, payload)
 }
 
+func (client MqttClient) PublishCapability(brightness bool) {
+	if brightness {
+		topic := client.topic("capability")
+
+		message := &CapabilityMessage{brightness}
+
+		payload, err := json.Marshal(message)
+		if err != nil {
+			fmt.Println("Could not encode JSON message")
+			return
+		}
+
+		fmt.Printf("Publishing %s: %s\n", topic, payload)
+
+		client.client.Publish(topic, 2, true, payload)
+	}
+}
+
 func (client MqttClient) topic(action string) string {
 	return fmt.Sprintf("%s/device/%s/%s", client.topicBase, client.hostname, action)
 }
@@ -106,6 +128,7 @@ func (client MqttClient) onConnect() {
 
 	// publish that this device is now on
 	client.PublishState(On, nil)
+	client.PublishCapability(false)
 
 	// subscribe to the shutdown event for this device
 	topic := client.topic("change")
