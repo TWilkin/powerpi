@@ -8,6 +8,7 @@ import (
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 
 	"powerpi/shutdown/additional"
+	"powerpi/shutdown/flags"
 )
 
 type DeviceState string
@@ -42,7 +43,7 @@ func New(hostname string, topicBase string, action MqttMessageAction) MqttClient
 	return client
 }
 
-func (client MqttClient) Connect(host string, port int, user *string, password *string, device additional.AdditionalStateDevice) {
+func (client MqttClient) Connect(host string, port int, user *string, password *string, config flags.Config) {
 	protocol := "tcp"
 	if port == 8883 {
 		protocol = "tcps"
@@ -64,7 +65,7 @@ func (client MqttClient) Connect(host string, port int, user *string, password *
 	}
 
 	options.OnConnect = func(_ MQTT.Client) {
-		client.onConnect(device)
+		client.onConnect(config)
 	}
 
 	logUser := "anonymous"
@@ -99,8 +100,8 @@ func (client MqttClient) PublishState(state DeviceState, additionalState additio
 	client.publish(topic, message)
 }
 
-func (client MqttClient) PublishCapability(device additional.AdditionalStateDevice) {
-	if device.Brightness != nil && len(*device.Brightness) > 0 {
+func (client MqttClient) PublishCapability(config flags.AdditionalStateConfig) {
+	if len(config.Brightness.Device) > 0 {
 		topic := client.topic("capability")
 
 		message := &CapabilityMessage{true, time.Now().Unix() * 1000}
@@ -114,12 +115,12 @@ func (client MqttClient) topic(action string) string {
 }
 
 
-func (client MqttClient) onConnect(device additional.AdditionalStateDevice) {
+func (client MqttClient) onConnect(config flags.Config) {
 	fmt.Println("Connected to MQTT")
 
 	// publish that this device is now on
-	client.PublishState(On, additional.GetAdditionalState(device))
-	client.PublishCapability(device)
+	client.PublishState(On, additional.GetAdditionalState(config.AdditionalState))
+	client.PublishCapability(config.AdditionalState)
 
 	// subscribe to the shutdown event for this device
 	topic := client.topic("change")

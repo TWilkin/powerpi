@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -12,6 +11,7 @@ import (
 	"time"
 
 	"powerpi/shutdown/additional"
+	"powerpi/shutdown/flags"
 	"powerpi/shutdown/mqtt"
 )
 
@@ -22,19 +22,11 @@ func main() {
 	fmt.Printf("PowerPi Shutdown Service %s\n", Version)
 
 	// use command line args
-	host := flag.String("host", "localhost", "The hostname of the MQTT broker")
-	port := flag.Int("port", 1883, "The port number for the MQTT broker")
-	user := flag.String("user", "device", "The username for the MQTT broker")
-	passwordFile := flag.String("password", "undefined", "The path to the password file")
-	topicBase := flag.String("topic", "powerpi", "The topic base for the MQTT broker")
-	mock := flag.Bool("mock", false, "Whether to actually shutdown or not")
-	allowQuickShutdown := flag.Bool("allowQuickShutdown", false, "If true allow a message within 2 minutes of service starting to initiate a shutdown")
-	brightness := flag.String("brightness", "", "The type of brightness device, e.g. pi-touch-display-2 if supported by this device")
-	flag.Parse()
+	config := flags.ParseFlags()
 
 	// capture the start time, or clear it if we're not allowing quick shutdown
 	var startTime = time.Now()
-	if *allowQuickShutdown {
+	if config.AllowQuickShutdown {
 		startTime = time.Time{}
 	}
 
@@ -43,15 +35,8 @@ func main() {
 		panic(err)
 	}
 
-	// generate the additional state device config
-	var brightnessDevice *string = nil
-	if brightness != nil && len(*brightness) > 0 {
-		brightnessDevice = brightness
-	}
-	device := additional.AdditionalStateDevice{brightnessDevice}
-
 	// read the password from the file (if set)
-	password := getPassword(passwordFile)
+	password := getPassword(config.Mqtt.PasswordFile)
 
 	// make the channel
 	channel := make(chan os.Signal, 1)
@@ -59,19 +44,19 @@ func main() {
 
 	// connect to MQTT
 	callback := func(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState) {
-		updateState(client, state, additionalState, *mock, device, startTime)
+		updateState(client, state, additionalState, config, startTime)
 	} 
-	client := mqtt.New(hostname, *topicBase, callback)
-	client.Connect(*host, *port, user, password, device)
+	client := mqtt.New(hostname, config.Mqtt.TopicBase, callback)
+	client.Connect(config.Mqtt.Host, config.Mqtt.Port, &config.Mqtt.User, password, config)
 
 	// join the channel
 	<-channel
 }
 
-func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState, mock bool, device additional.AdditionalStateDevice, startTime time.Time) {
+func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState, config flags.Config, startTime time.Time) {
 	// update any additional state
-	currentAdditionalState := additional.GetAdditionalState(device)
-	additional.SetAdditionalState(device, additionalState)
+	currentAdditionalState := additional.GetAdditionalState(config.AdditionalState)
+	additional.SetAdditionalState(config.AdditionalState, additionalState)
 
 	newState := mqtt.On
 	if (state == "off") {
@@ -80,7 +65,7 @@ func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState
 
 	// publish the state message if necessary
 	if newState != mqtt.On || !additional.CompareAdditionalState(currentAdditionalState, additionalState) {
-		client.PublishState(newState, additional.GetAdditionalState(device))
+		client.PublishState(newState, additional.GetAdditionalState(config.AdditionalState))
 	}
 
 	if (state == "off") {
@@ -96,7 +81,7 @@ func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState
 		fmt.Println("Initiating shutdown")
 
 		// turn off the computer if we're not mocking
-		if !mock {
+		if !config.Mock {
 			err := exec.Command("shutdown").Run()
 			if err != nil {
 				fmt.Println("Failed to shutdown:", err)
@@ -107,23 +92,23 @@ func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState
 	}
 }
 
-func getPassword(passwordFile *string) *string {
+func getPassword(passwordFile string) *string {
 	var password *string
 	password = nil
 
-	if passwordFile != nil && *passwordFile != "undefined" {
+	if passwordFile != "undefined" {
 		// check the password file permissions
-		info, err := os.Stat(*passwordFile)
+		info, err := os.Stat(passwordFile)
 		if err != nil {
 			panic(err)
 		}
 
 		permissions := info.Mode().Perm()
 		if permissions != 0o600 {
-			log.Fatalf("Incorrect permissions (0%o), must be 0600 on '%s'", permissions, *passwordFile)
+			log.Fatalf("Incorrect permissions (0%o), must be 0600 on '%s'", permissions, passwordFile)
 		}
 
-		data, err := os.ReadFile(*passwordFile)
+		data, err := os.ReadFile(passwordFile)
 		if err != nil {
 			panic(err)
 		}

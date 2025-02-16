@@ -2,22 +2,19 @@ package additional
 
 import (
 	"powerpi/shutdown/additional/brightness"
+	"powerpi/shutdown/flags"
 )
-
-type AdditionalStateDevice struct {
-	Brightness *string
-}
 
 type AdditionalState struct {
 	Brightness *int
 }
 
-func GetAdditionalState(device AdditionalStateDevice) AdditionalState {
+func GetAdditionalState(config flags.AdditionalStateConfig) AdditionalState {
 	var additionalState AdditionalState
 
-	if device.Brightness != nil {
+	if len(config.Brightness.Device) > 0 {
 		var brightnessValue *int = new(int)
-		*brightnessValue = brightness.GetBrightness(*device.Brightness)
+		*brightnessValue = brightness.GetBrightness(config.Brightness)
 
 		if *brightnessValue >= 0 {
 			additionalState.Brightness = brightnessValue
@@ -27,9 +24,9 @@ func GetAdditionalState(device AdditionalStateDevice) AdditionalState {
 	return additionalState
 }
 
-func SetAdditionalState(device AdditionalStateDevice, state AdditionalState) {
-	if device.Brightness != nil && state.Brightness != nil && *state.Brightness >= 0 {
-		brightness.SetBrightness(*device.Brightness, *state.Brightness)
+func SetAdditionalState(config flags.AdditionalStateConfig, state AdditionalState) {
+	if len(config.Brightness.Device) > 0 && state.Brightness != nil && *state.Brightness >= 0 {
+		brightness.SetBrightness(config.Brightness, *state.Brightness)
 	}
 }
 
