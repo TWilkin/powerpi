@@ -21,6 +21,9 @@ var Version = "development"
 func main() {
 	fmt.Printf("PowerPi Shutdown Service %s\n", Version)
 
+	// nilable strings
+	var brightness *string = nil
+
 	// use command line args
 	host := flag.String("host", "localhost", "The hostname of the MQTT broker")
 	port := flag.Int("port", 1883, "The port number for the MQTT broker")
@@ -29,6 +32,7 @@ func main() {
 	topicBase := flag.String("topic", "powerpi", "The topic base for the MQTT broker")
 	mock := flag.Bool("mock", false, "Whether to actually shutdown or not")
 	allowQuickShutdown := flag.Bool("allowQuickShutdown", false, "If true allow a message within 2 minutes of service starting to initiate a shutdown")
+	flag.StringVar(brightness, "brightness", "", "The type of brightness device, e.g. pi-touch-display-2 if supported by this device")
 	flag.Parse()
 
 	// capture the start time, or clear it if we're not allowing quick shutdown
@@ -42,6 +46,9 @@ func main() {
 		panic(err)
 	}
 
+	// generate the additional state device config
+	device := additional.AdditionalStateDevice{brightness}
+
 	// read the password from the file (if set)
 	password := getPassword(passwordFile)
 
@@ -51,7 +58,7 @@ func main() {
 
 	// connect to MQTT
 	callback := func(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState) {
-		updateState(client, state, additionalState, *mock, startTime)
+		updateState(client, state, additionalState, *mock, device, startTime)
 	} 
 	client := mqtt.New(hostname, *topicBase, callback)
 	client.Connect(*host, *port, user, password)
@@ -60,19 +67,32 @@ func main() {
 	<-channel
 }
 
-func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState, mock bool, startTime time.Time) {
+func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState, mock bool, device additional.AdditionalStateDevice, startTime time.Time) {
 	// don't shutdown if the service has only just started
 	if (time.Now().Unix() - startTime.Unix()) <= 2 * 60 {
 		fmt.Println("Ignoring message as service recently started")
 		return
 	}
 
-	if (state == "off") {
-		fmt.Println("Initiating shutdown")
+	// update any additional state
+	currentAdditionalState := additional.GetAdditionalState(device)
+	additional.SetAdditionalState(device, additionalState)
 
-		// publish the off message and wait to make sure it's sent
-		client.PublishState(mqtt.Off, nil)
+	newState := mqtt.On
+	if (state == "off") {
+		newState = mqtt.Off
+	}
+
+	// publish the state message if necessary
+	if newState != mqtt.On || !additional.CompareAdditionalState(currentAdditionalState, additionalState) {
+		client.PublishState(newState, additional.GetAdditionalState(device))
+	}
+
+	if (state == "off") {
+		// wait to make sure the publish message is sent
 		time.Sleep(time.Second)
+
+		fmt.Println("Initiating shutdown")
 
 		// turn off the computer if we're not mocking
 		if !mock {

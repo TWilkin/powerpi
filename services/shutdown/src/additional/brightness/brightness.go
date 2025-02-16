@@ -6,12 +6,10 @@ import (
 	"strconv"
 )
 
-type BrightnessDevice string
-const (
-	PiTouchDisplay2 BrightnessDevice = "pi-touch-display-2"
-)
+const PiTouchDisplay2 = "pi-touch-display-2"
 
-func GetBrightness(device BrightnessDevice) int {
+
+func GetBrightness(device string) int {
 	brightnessFile := getBrightnessFile(device)
 	brightnessRange := getBrightnessRange(device)
 	if brightnessFile == "" || brightnessRange.min == -1 || brightnessRange.max == -1 {
@@ -33,7 +31,7 @@ func GetBrightness(device BrightnessDevice) int {
 	return brightness
 }
 
-func SetBrightness(device BrightnessDevice, brightness int) {
+func SetBrightness(device string, brightness int) {
 	brightnessFile := getBrightnessFile(device)
 	brightnessRange := getBrightnessRange(device)
 	if brightnessFile == "" || brightnessRange.min == -1 || brightnessRange.max == -1 {
@@ -47,7 +45,7 @@ func SetBrightness(device BrightnessDevice, brightness int) {
 	}
 }
 
-func getBrightnessFile(device BrightnessDevice) string {
+func getBrightnessFile(device string) string {
 	switch device {
 		case PiTouchDisplay2:
 			return "/sys/class/backlight/10-0045"
@@ -57,7 +55,7 @@ func getBrightnessFile(device BrightnessDevice) string {
 	}
 }
 
-func getBrightnessRange(device BrightnessDevice) struct {min int; max int} {
+func getBrightnessRange(device string) struct {min int; max int} {
 	switch device {
 		case PiTouchDisplay2:
 			return struct {min int; max int} { 0, 31 }
