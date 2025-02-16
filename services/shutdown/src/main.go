@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	"powerpi/shutdown/additional"
 	"powerpi/shutdown/mqtt"
 )
 
@@ -49,7 +50,7 @@ func main() {
 	signal.Notify(channel, os.Interrupt, syscall.SIGTERM)
 
 	// connect to MQTT
-	callback := func(client mqtt.MqttClient, state mqtt.DeviceState, additionalState mqtt.AdditionalState) {
+	callback := func(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState) {
 		updateState(client, state, additionalState, *mock, startTime)
 	} 
 	client := mqtt.New(hostname, *topicBase, callback)
@@ -59,7 +60,7 @@ func main() {
 	<-channel
 }
 
-func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState mqtt.AdditionalState, mock bool, startTime time.Time) {
+func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState, mock bool, startTime time.Time) {
 	// don't shutdown if the service has only just started
 	if (time.Now().Unix() - startTime.Unix()) <= 2 * 60 {
 		fmt.Println("Ignoring message as service recently started")

@@ -6,6 +6,8 @@ import (
 	"time"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
+
+	"powerpi/shutdown/additional"
 )
 
 type DeviceState string
@@ -14,11 +16,8 @@ const (
 	Off = "off"
 )
 
-type AdditionalState struct {
-	brightness *int
-}
 
-type MqttMessageAction func(MqttClient, DeviceState, AdditionalState)
+type MqttMessageAction func(MqttClient, DeviceState, additional.AdditionalState)
 
 type MqttClient struct {
 	client MQTT.Client
@@ -79,12 +78,12 @@ func (client MqttClient) Connect(host string, port int, user *string, password *
 	}
 }
 
-func (client MqttClient) PublishState(state DeviceState, additionalState *AdditionalState) {
+func (client MqttClient) PublishState(state DeviceState, additionalState *additional.AdditionalState) {
 	topic := client.topic("status")
 
 	var brightness *int = nil
 	if additionalState != nil {
-		brightness = additionalState.brightness
+		brightness = additionalState.Brightness
 	}
 
 	message := &DeviceMessage{state, brightness, time.Now().Unix() * 1000}
@@ -162,8 +161,8 @@ func (client MqttClient) onMessageReceived(message MQTT.Message) {
 	}
 
 	// retrieve any supported additional state
-	var additionalState AdditionalState
-	additionalState.brightness = payload.Brightness
+	var additionalState additional.AdditionalState
+	additionalState.Brightness = payload.Brightness
 
 	// call the action
 	client.action(client, payload.State, additionalState)
