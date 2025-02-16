@@ -30,7 +30,7 @@ func GetBrightness(device string) int {
 		panic(err)
 	}
 
-	brightness := int(float64(value - brightnessRange.min) / float64(brightnessRange.max) * 100.0)
+	brightness := int((float64(value) - brightnessRange.min) / brightnessRange.max * 100.0)
 	fmt.Printf("Read brightness %d (%d%%)\n", value, brightness)
 	return brightness
 }
@@ -46,7 +46,8 @@ func SetBrightness(device string, value int) {
 	brightness := int(((float64(value) / 100.0) * brightnessRange.max) + brightnessRange.min)
 	fmt.Printf("Wrote brightness %d (%d%%)\n", brightness, value)
 
-	err := os.WriteFile(brightnessFile, []byte(string(brightness)), 0777)
+	data := fmt.Sprintf("%d\n", brightness)
+	err := os.WriteFile(brightnessFile, []byte(data), 0777)
 	if err != nil {
 		panic(err)
 	}
@@ -62,12 +63,12 @@ func getBrightnessFile(device string) string {
 	}
 }
 
-func getBrightnessRange(device string) struct {min int; max int} {
+func getBrightnessRange(device string) struct {min float64; max float64} {
 	switch device {
 		case PiTouchDisplay2:
-			return struct {min int; max int} { 0, 31 }
+			return struct {min float64; max float64} { 0, 31 }
 
 		default:
-			return struct {min int; max int} { -1, -1 }
+			return struct {min float64; max float64} { -1, -1 }
 	}
 }
