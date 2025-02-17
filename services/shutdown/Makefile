@@ -17,5 +17,9 @@ $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH): src/main.go
 
 compile: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
 
+test: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
+	go test
+
 clean:
+	go clean
 	rm -r $(TARGET_DIR)
