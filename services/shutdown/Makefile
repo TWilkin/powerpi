@@ -22,6 +22,9 @@ compile: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
 test: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
 	cd src; go test ./...
 
+coverage: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
+	cd src; go test -coverprofile=powerpi_shutdown.coverage ./...
+
 clean:
 	go clean
 	rm -r $(TARGET_DIR)
