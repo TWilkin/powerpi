@@ -9,9 +9,11 @@ TARGET_ARCH?=arm64
 # the version of the shutdown service
 VERSION=0.2.0
 
+SOURCES := $(shell find ./src -name "*.go") 
+
 all: compile
 
-$(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH): src/main.go
+$(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH): $(SOURCES)
 	mkdir -p $(TARGET_DIR)
 	cd src; env GOOS=$(TARGET_OS) GOARCH=$(TARGET_ARCH) go build -o $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH) -ldflags="-X 'main.Version=v$(VERSION)'"
 
