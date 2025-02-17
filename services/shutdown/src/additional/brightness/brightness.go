@@ -2,6 +2,7 @@ package brightness
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"strconv"
 	"strings"
@@ -9,8 +10,8 @@ import (
 	"powerpi/shutdown/flags"
 )
 
-func GetBrightness(config flags.BrightnessConfig) int {
-	data, err := os.ReadFile(config.Device)
+func GetBrightness(filesystem fs.FS, config flags.BrightnessConfig) int {
+	data, err := fs.ReadFile(filesystem, config.Device)
 	if err != nil {
 		panic(err)
 	}

@@ -1,6 +1,8 @@
 package additional
 
 import (
+	"os"
+
 	"powerpi/shutdown/additional/brightness"
 	"powerpi/shutdown/flags"
 )
@@ -14,7 +16,7 @@ func GetAdditionalState(config flags.AdditionalStateConfig) AdditionalState {
 
 	if len(config.Brightness.Device) > 0 {
 		var brightnessValue *int = new(int)
-		*brightnessValue = brightness.GetBrightness(config.Brightness)
+		*brightnessValue = brightness.GetBrightness(os.DirFS("/"), config.Brightness)
 
 		if *brightnessValue >= 0 {
 			additionalState.Brightness = brightnessValue

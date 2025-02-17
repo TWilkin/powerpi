@@ -20,7 +20,7 @@ $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH): $(SOURCES)
 compile: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
 
 test: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
-	go test
+	cd src; go test ./...
 
 clean:
 	go clean
