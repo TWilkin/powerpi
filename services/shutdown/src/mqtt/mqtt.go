@@ -12,34 +12,35 @@ import (
 )
 
 type DeviceState string
-const (
-	On DeviceState = "on"
-	Off = "off"
-)
 
+const (
+	On  DeviceState = "on"
+	Off DeviceState = "off"
+)
 
 type MqttMessageAction func(MqttClient, DeviceState, additional.AdditionalState)
 
 type MqttClient struct {
-	client MQTT.Client
-	hostname string
-	topicBase string
-	action MqttMessageAction
+	client          MQTT.Client
+	hostname        string
+	topicBase       string
+	action          MqttMessageAction
+	additionalState additional.IAdditionalStateService
 }
 
 type DeviceMessage struct {
-	State DeviceState `json:"state"`
-	Brightness *int `json:"brightness"`
-	Timestamp int64 `json:"timestamp"`
+	State      DeviceState `json:"state"`
+	Brightness *int        `json:"brightness"`
+	Timestamp  int64       `json:"timestamp"`
 }
 
 type CapabilityMessage struct {
-	Brightness bool `json:"brightness"`
-	Timestamp int64 `json:"timestamp"`
+	Brightness bool  `json:"brightness"`
+	Timestamp  int64 `json:"timestamp"`
 }
 
-func New(hostname string, topicBase string, action MqttMessageAction) MqttClient {
-	client := MqttClient{nil, hostname, topicBase, action}
+func New(config flags.MqttConfig, additionalState additional.IAdditionalStateService, hostname string, action MqttMessageAction) MqttClient {
+	client := MqttClient{nil, hostname, config.TopicBase, action, additionalState}
 	return client
 }
 
@@ -114,12 +115,11 @@ func (client MqttClient) topic(action string) string {
 	return fmt.Sprintf("%s/device/%s/%s", client.topicBase, client.hostname, action)
 }
 
-
 func (client MqttClient) onConnect(config flags.Config) {
 	fmt.Println("Connected to MQTT")
 
 	// publish that this device is now on
-	client.PublishState(On, additional.GetAdditionalState(config.AdditionalState))
+	client.PublishState(On, client.additionalState.GetAdditionalState())
 	client.publishCapability(config.AdditionalState)
 
 	// subscribe to the shutdown event for this device
@@ -147,7 +147,7 @@ func (client MqttClient) onMessageReceived(message MQTT.Message) {
 	}
 
 	// check if the message is old
-	twoMinsAgo := time.Now().Unix() - 2 * 60
+	twoMinsAgo := time.Now().Unix() - 2*60
 	if twoMinsAgo >= (payload.Timestamp / 1000) {
 		fmt.Println("Ignoring old message")
 		return

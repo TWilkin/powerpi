@@ -17,7 +17,6 @@ import (
 
 var Version = "development"
 
-
 func main() {
 	fmt.Printf("PowerPi Shutdown Service %s\n", Version)
 
@@ -35,6 +34,9 @@ func main() {
 		panic(err)
 	}
 
+	// setup the services
+	services := SetupServices(config)
+
 	// read the password from the file (if set)
 	password := getPassword(config.Mqtt.PasswordFile)
 
@@ -44,33 +46,33 @@ func main() {
 
 	// connect to MQTT
 	callback := func(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState) {
-		updateState(client, state, additionalState, config, startTime)
-	} 
-	client := mqtt.New(hostname, config.Mqtt.TopicBase, callback)
+		updateState(services.AdditionalStateService, client, config, state, additionalState, startTime)
+	}
+	client := mqtt.New(config.Mqtt, services.AdditionalStateService, hostname, callback)
 	client.Connect(config.Mqtt.Host, config.Mqtt.Port, &config.Mqtt.User, password, config)
 
 	// join the channel
 	<-channel
 }
 
-func updateState(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState, config flags.Config, startTime time.Time) {
+func updateState(additionalStateService additional.IAdditionalStateService, client mqtt.MqttClient, config flags.Config, state mqtt.DeviceState, additionalState additional.AdditionalState, startTime time.Time) {
 	// update any additional state
-	currentAdditionalState := additional.GetAdditionalState(config.AdditionalState)
-	additional.SetAdditionalState(config.AdditionalState, additionalState)
+	currentAdditionalState := additionalStateService.GetAdditionalState()
+	additionalStateService.SetAdditionalState(additionalState)
 
 	newState := mqtt.On
-	if (state == "off") {
+	if state == "off" {
 		newState = mqtt.Off
 	}
 
 	// publish the state message if necessary
-	if newState != mqtt.On || !additional.CompareAdditionalState(currentAdditionalState, additionalState) {
-		client.PublishState(newState, additional.GetAdditionalState(config.AdditionalState))
+	if newState != mqtt.On || !additionalStateService.CompareAdditionalState(currentAdditionalState, additionalState) {
+		client.PublishState(newState, additionalStateService.GetAdditionalState())
 	}
 
-	if (state == "off") {
+	if state == "off" {
 		// don't shutdown if the service has only just started
-		if (time.Now().Unix() - startTime.Unix()) <= 2 * 60 {
+		if (time.Now().Unix() - startTime.Unix()) <= 2*60 {
 			fmt.Println("Ignoring message as service recently started")
 			return
 		}

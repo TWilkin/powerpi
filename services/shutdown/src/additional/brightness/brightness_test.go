@@ -29,7 +29,7 @@ func TestGetBrightness(t *testing.T) {
 
 			config := flags.BrightnessConfig{Device: "brightness", Min: test.min, Max: test.max}
 
-			result := GetBrightness(fs, config)
+			result := New(config, fs).GetBrightness()
 
 			if result != test.expected {
 				t.Errorf("Brightness incorrect, got: %d, expected: %d", result, test.expected)
