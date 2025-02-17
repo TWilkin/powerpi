@@ -9,12 +9,12 @@ import (
 
 func TestGetBrightness(t *testing.T) {
 	var tests = []struct {
-		name string
+		name       string
 		brightness string
-		min float64
-		max float64
-		expected int
-	} {
+		min        float64
+		max        float64
+		expected   int
+	}{
 		{"0 == 0", "0", 0.0, 100.0, 0},
 		{"50 == 50", "50", 0.0, 100.0, 50},
 		{"100 == 100", "100", 0.0, 100.0, 100},
@@ -26,11 +26,11 @@ func TestGetBrightness(t *testing.T) {
 			fs := fstest.MapFS{
 				"brightness": {Data: []byte(test.brightness)},
 			}
-		
-			config := flags.BrightnessConfig{"brightness", test.min, test.max}
-		
+
+			config := flags.BrightnessConfig{Device: "brightness", Min: test.min, Max: test.max}
+
 			result := GetBrightness(fs, config)
-		
+
 			if result != test.expected {
 				t.Errorf("Brightness incorrect, got: %d, expected: %d", result, test.expected)
 			}
