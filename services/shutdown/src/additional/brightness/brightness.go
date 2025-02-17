@@ -23,7 +23,7 @@ func GetBrightness(filesystem fs.FS, config flags.BrightnessConfig) int {
 		panic(err)
 	}
 
-	brightness := int((float64(value) - config.Min) / config.Max * 100.0)
+	brightness := int((float64(value) - config.Min) / (config.Max - config.Min) * 100.0)
 	fmt.Printf("Read brightness %d (%d%%)\n", value, brightness)
 	return brightness
 }
