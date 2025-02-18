@@ -44,7 +44,7 @@ func (service BrightnessService) GetBrightness() int {
 }
 
 func (service BrightnessService) SetBrightness(value int) {
-	brightness := int(((float64(value) / 100.0) * service.config.Max) + service.config.Min)
+	brightness := int(((float64(value) / 100.0) * (service.config.Max - service.config.Min)) + service.config.Min)
 	fmt.Printf("Wrote brightness %d (%d%%)\n", brightness, value)
 
 	data := fmt.Sprintf("%d\n", brightness)
