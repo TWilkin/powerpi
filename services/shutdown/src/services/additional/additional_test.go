@@ -4,11 +4,8 @@ import (
 	"testing"
 
 	"powerpi/shutdown/services/flags"
+	"powerpi/shutdown/utils"
 )
-
-func intPtr(value int) *int {
-	return &value
-}
 
 type MockBrightnessService struct {
 	brightness int
@@ -29,7 +26,7 @@ func TestGetAdditionalState(t *testing.T) {
 		expected AdditionalState
 	}{
 		{"empty config", flags.AdditionalStateConfig{}, AdditionalState{}},
-		{"brightness config", flags.AdditionalStateConfig{Brightness: flags.BrightnessConfig{Device: "test"}}, AdditionalState{Brightness: intPtr(50)}},
+		{"brightness config", flags.AdditionalStateConfig{Brightness: flags.BrightnessConfig{Device: "test"}}, AdditionalState{Brightness: utils.ToPtr(50)}},
 	}
 
 	for _, test := range tests {
@@ -60,7 +57,7 @@ func TestSetAdditionalState(t *testing.T) {
 			mockBrightness := MockBrightnessService{0}
 			subject := New(test.config, &mockBrightness)
 
-			subject.SetAdditionalState(AdditionalState{Brightness: intPtr(50)})
+			subject.SetAdditionalState(AdditionalState{Brightness: utils.ToPtr(50)})
 
 			if mockBrightness.brightness != test.expected {
 				t.Errorf("SetAdditionalState incorrect, got: %v, expected: %v", mockBrightness.brightness, test.expected)
@@ -76,10 +73,10 @@ func TestCompareAdditionalState(t *testing.T) {
 		state2   AdditionalState
 		expected bool
 	}{
-		{"brightness match", AdditionalState{Brightness: intPtr(50)}, AdditionalState{Brightness: intPtr(50)}, true},
+		{"brightness match", AdditionalState{Brightness: utils.ToPtr(50)}, AdditionalState{Brightness: utils.ToPtr(50)}, true},
 		{"brightness nil match", AdditionalState{Brightness: nil}, AdditionalState{Brightness: nil}, true},
-		{"brightness mismatch", AdditionalState{Brightness: intPtr(51)}, AdditionalState{Brightness: intPtr(50)}, false},
-		{"brightness nil mismatch", AdditionalState{Brightness: nil}, AdditionalState{Brightness: intPtr(50)}, false},
+		{"brightness mismatch", AdditionalState{Brightness: utils.ToPtr(51)}, AdditionalState{Brightness: utils.ToPtr(50)}, false},
+		{"brightness nil mismatch", AdditionalState{Brightness: nil}, AdditionalState{Brightness: utils.ToPtr(50)}, false},
 	}
 
 	for _, test := range tests {
