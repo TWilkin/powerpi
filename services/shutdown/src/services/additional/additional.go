@@ -1,8 +1,8 @@
 package additional
 
 import (
-	"powerpi/shutdown/additional/brightness"
-	"powerpi/shutdown/flags"
+	"powerpi/shutdown/services/additional/brightness"
+	"powerpi/shutdown/services/flags"
 )
 
 type AdditionalState struct {

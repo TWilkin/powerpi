@@ -10,9 +10,9 @@ import (
 	"syscall"
 	"time"
 
-	"powerpi/shutdown/additional"
-	"powerpi/shutdown/flags"
-	"powerpi/shutdown/mqtt"
+	"powerpi/shutdown/services/additional"
+	"powerpi/shutdown/services/flags"
+	"powerpi/shutdown/services/mqtt"
 )
 
 var Version = "development"

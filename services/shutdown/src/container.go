@@ -1,9 +1,9 @@
 package main
 
 import (
-	"powerpi/shutdown/additional"
-	"powerpi/shutdown/additional/brightness"
-	"powerpi/shutdown/flags"
+	"powerpi/shutdown/services/additional"
+	"powerpi/shutdown/services/additional/brightness"
+	"powerpi/shutdown/services/flags"
 )
 
 type Container struct {

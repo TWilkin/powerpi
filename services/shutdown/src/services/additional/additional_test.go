@@ -3,7 +3,7 @@ package additional
 import (
 	"testing"
 
-	"powerpi/shutdown/flags"
+	"powerpi/shutdown/services/flags"
 )
 
 func intPtr(value int) *int {

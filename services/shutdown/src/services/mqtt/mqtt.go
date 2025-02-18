@@ -7,8 +7,8 @@ import (
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 
-	"powerpi/shutdown/additional"
-	"powerpi/shutdown/flags"
+	"powerpi/shutdown/services/additional"
+	"powerpi/shutdown/services/flags"
 )
 
 type DeviceState string

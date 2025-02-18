@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"powerpi/shutdown/flags"
+	"powerpi/shutdown/services/flags"
 )
 
 func TestGetBrightness(t *testing.T) {
