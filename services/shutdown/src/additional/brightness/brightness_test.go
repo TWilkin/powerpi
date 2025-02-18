@@ -3,7 +3,6 @@ package brightness
 import (
 	"os"
 	"testing"
-	"testing/fstest"
 
 	"powerpi/shutdown/flags"
 )
@@ -24,13 +23,14 @@ func TestGetBrightness(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			fs := fstest.MapFS{
-				"brightness": {Data: []byte(test.brightness)},
-			}
+			dir := t.TempDir()
+			file := dir + "/brightness"
 
-			config := flags.BrightnessConfig{Device: "brightness", Min: test.min, Max: test.max}
+			os.WriteFile(file, []byte(test.brightness), 0777)
 
-			result := New(config, fs).GetBrightness()
+			config := flags.BrightnessConfig{Device: file, Min: test.min, Max: test.max}
+
+			result := New(config).GetBrightness()
 
 			if result != test.expected {
 				t.Errorf("Brightness incorrect, got: %d, expected: %d", result, test.expected)
@@ -55,13 +55,12 @@ func TestSetBrightness(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			fs := fstest.MapFS{}
 			dir := t.TempDir()
 			file := dir + "/brightness"
 
 			config := flags.BrightnessConfig{Device: file, Min: test.min, Max: test.max}
 
-			New(config, fs).SetBrightness(test.brightness)
+			New(config).SetBrightness(test.brightness)
 			result, _ := os.ReadFile(file)
 
 			if string(result) != test.expected {

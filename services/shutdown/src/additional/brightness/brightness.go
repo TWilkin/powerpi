@@ -2,7 +2,6 @@ package brightness
 
 import (
 	"fmt"
-	"io/fs"
 	"os"
 	"strconv"
 	"strings"
@@ -17,16 +16,15 @@ type IBrightnessService interface {
 }
 
 type BrightnessService struct {
-	config     flags.BrightnessConfig
-	filesystem fs.FS
+	config flags.BrightnessConfig
 }
 
-func New(config flags.BrightnessConfig, filesystem fs.FS) BrightnessService {
-	return BrightnessService{config, filesystem}
+func New(config flags.BrightnessConfig) BrightnessService {
+	return BrightnessService{config}
 }
 
 func (service BrightnessService) GetBrightness() int {
-	data, err := fs.ReadFile(service.filesystem, service.config.Device)
+	data, err := os.ReadFile(service.config.Device)
 	if err != nil {
 		panic(err)
 	}

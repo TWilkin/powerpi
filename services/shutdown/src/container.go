@@ -1,8 +1,6 @@
 package main
 
 import (
-	"os"
-
 	"powerpi/shutdown/additional"
 	"powerpi/shutdown/additional/brightness"
 	"powerpi/shutdown/flags"
@@ -15,7 +13,7 @@ type Container struct {
 }
 
 func SetupServices(config flags.Config) Container {
-	brightness := brightness.New(config.AdditionalState.Brightness, os.DirFS("/"))
+	brightness := brightness.New(config.AdditionalState.Brightness)
 
 	return Container{
 		config,
