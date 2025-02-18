@@ -47,6 +47,10 @@ func (service AdditionalStateService) SetAdditionalState(state AdditionalState) 
 	}
 }
 
+func nilOrEqual(value1 *int, value2 *int) bool {
+	return (value1 == nil && value2 == nil) || (value1 != nil && value2 != nil && *value1 == *value2)
+}
+
 func (service AdditionalStateService) CompareAdditionalState(state1 AdditionalState, state2 AdditionalState) bool {
-	return state1.Brightness == state2.Brightness
+	return nilOrEqual(state1.Brightness, state2.Brightness)
 }
