@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"powerpi/shutdown/services"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/flags"
 	"powerpi/shutdown/services/mqtt"
@@ -35,7 +36,7 @@ func main() {
 	}
 
 	// setup the services
-	services := SetupServices(config)
+	services := services.SetupServices(config)
 
 	// read the password from the file (if set)
 	password := getPassword(config.Mqtt.PasswordFile)
@@ -46,9 +47,9 @@ func main() {
 
 	// connect to MQTT
 	callback := func(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState) {
-		updateState(services.AdditionalStateService, client, config, state, additionalState, startTime)
+		updateState(services.Additional.AdditionalStateService, client, config, state, additionalState, startTime)
 	}
-	client := mqtt.New(config.Mqtt, services.AdditionalStateService, hostname, callback)
+	client := mqtt.New(config.Mqtt, services.Additional.AdditionalStateService, hostname, callback)
 	client.Connect(config.Mqtt.Host, config.Mqtt.Port, &config.Mqtt.User, password, config)
 
 	// join the channel
