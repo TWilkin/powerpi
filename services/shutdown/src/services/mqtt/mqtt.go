@@ -20,7 +20,14 @@ const (
 
 type MqttMessageAction func(MqttClient, DeviceState, additional.AdditionalState)
 
+type IMqttClient interface {
+	Connect(string, int, *string, *string, flags.Config)
+
+	PublishState(DeviceState, additional.AdditionalState)
+}
+
 type MqttClient struct {
+	factory         IMqttClientFactory
 	client          MQTT.Client
 	hostname        string
 	topicBase       string
@@ -39,8 +46,8 @@ type CapabilityMessage struct {
 	Timestamp  int64 `json:"timestamp"`
 }
 
-func New(config flags.MqttConfig, additionalState additional.IAdditionalStateService, hostname string, action MqttMessageAction) MqttClient {
-	client := MqttClient{nil, hostname, config.TopicBase, action, additionalState}
+func new(config flags.MqttConfig, factory IMqttClientFactory, additionalState additional.IAdditionalStateService, hostname string, action MqttMessageAction) MqttClient {
+	client := MqttClient{factory, nil, hostname, config.TopicBase, action, additionalState}
 	return client
 }
 
@@ -74,7 +81,7 @@ func (client MqttClient) Connect(host string, port int, user *string, password *
 		logUser = *user
 	}
 	fmt.Printf("Connecting to MQTT at %s as %s\n", address, logUser)
-	client.client = MQTT.NewClient(options)
+	client.client = client.factory.BuildClient(options)
 
 	if token := client.client.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())

@@ -49,7 +49,7 @@ func main() {
 	callback := func(client mqtt.MqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState) {
 		updateState(services.Additional.AdditionalStateService, client, config, state, additionalState, startTime)
 	}
-	client := mqtt.New(config.Mqtt, services.Additional.AdditionalStateService, hostname, callback)
+	client := services.Mqtt.MqttClientFactory(hostname, callback)
 	client.Connect(config.Mqtt.Host, config.Mqtt.Port, &config.Mqtt.User, password, config)
 
 	// join the channel
