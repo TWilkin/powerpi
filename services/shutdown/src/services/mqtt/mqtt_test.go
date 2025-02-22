@@ -1,6 +1,7 @@
 package mqtt
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -104,7 +105,7 @@ func (message *MockMessage) Topic() string {
 type MockClock struct{}
 
 func (clock MockClock) Now() time.Time {
-	return time.Time{}
+	return time.Date(2025, 2, 22, 0, 2, 0, 0, time.UTC)
 }
 
 func TestPublishState(t *testing.T) {
@@ -197,26 +198,37 @@ func TestOnMessageReceived(t *testing.T) {
 	var tests = []struct {
 		name               string
 		payload            string
-		expectedState      DeviceState
-		expectedAdditional additional.AdditionalState
+		timestamp          *time.Time
+		expectedState      *DeviceState
+		expectedAdditional *additional.AdditionalState
 	}{
 		{
 			"on",
-			"{\"state\":\"on\"}",
-			On,
-			additional.AdditionalState{},
+			"{\"state\":\"on\", %s}",
+			nil,
+			utils.ToPtr(On),
+			&additional.AdditionalState{},
 		},
 		{
 			"off",
-			"{\"state\":\"off\"}",
-			Off,
-			additional.AdditionalState{},
+			"{\"state\":\"off\", %s}",
+			nil,
+			utils.ToPtr(Off),
+			&additional.AdditionalState{},
 		},
 		{
 			"brightness",
-			"{\"state\":\"off\", \"brightness\":50}",
-			Off,
-			additional.AdditionalState{Brightness: utils.ToPtr(50)},
+			"{\"state\":\"off\", \"brightness\":50, %s}",
+			nil,
+			utils.ToPtr(Off),
+			&additional.AdditionalState{Brightness: utils.ToPtr(50)},
+		},
+		{
+			"too old",
+			"{\"state\":\"off\", %s}",
+			utils.ToPtr(time.Date(2025, 2, 22, 0, 0, 0, 0, time.UTC)),
+			nil,
+			nil,
 		},
 	}
 
@@ -224,11 +236,11 @@ func TestOnMessageReceived(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			config := flags.MqttConfig{TopicBase: "powerpi"}
 
-			receivedState := On
-			receivedAdditionalState := additional.AdditionalState{}
+			var receivedState *DeviceState
+			var receivedAdditionalState *additional.AdditionalState
 			action := func(client MqttClient, state DeviceState, additionalState additional.AdditionalState) {
-				receivedState = state
-				receivedAdditionalState = additionalState
+				receivedState = &state
+				receivedAdditionalState = &additionalState
 			}
 
 			subject := newClient(config, MockFactory{}, nil, MockClock{}, "MyDevice", action)
@@ -236,9 +248,16 @@ func TestOnMessageReceived(t *testing.T) {
 			client := &MockMqttClient{}
 			subject.client = client
 
+			timestamp := time.Date(2025, 2, 22, 0, 2, 0, 0, time.UTC)
+			if test.timestamp != nil {
+				timestamp = *test.timestamp
+			}
+
+			payload := fmt.Sprintf(test.payload, fmt.Sprintf("\"timestamp\":%d", timestamp.Unix()*1000))
+
 			message := &MockMessage{}
 			message.On("Topic").Return("powerpi/device/MyDevice/change")
-			message.On("Payload").Return([]byte(test.payload))
+			message.On("Payload").Return([]byte(payload))
 
 			subject.onMessageReceived(message)
 
