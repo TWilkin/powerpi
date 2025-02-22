@@ -14,7 +14,7 @@ func SetupServices(config flags.MqttConfig, additionalState additional.IAddition
 
 	return MqttContainer{
 		func(hostname string, action MqttMessageAction) IMqttClient {
-			return new(config, factory, additionalState, hostname, action)
+			return newClient(config, factory, additionalState, hostname, action)
 		},
 	}
 }
