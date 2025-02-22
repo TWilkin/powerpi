@@ -88,7 +88,7 @@ func (client MqttClient) Connect(host string, port int, user *string, password *
 	}
 }
 
-func (client MqttClient) publish(topic string, message any) {
+func (client MqttClient) publish(topic string, message interface{}) {
 	payload, err := json.Marshal(message)
 	if err != nil {
 		fmt.Println("Could not encode JSON message")

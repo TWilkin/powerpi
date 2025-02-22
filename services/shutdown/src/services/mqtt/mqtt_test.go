@@ -101,3 +101,52 @@ func TestPublishState(t *testing.T) {
 		})
 	}
 }
+
+func TestPublishCapability(t *testing.T) {
+	var tests = []struct {
+		name     string
+		config   flags.AdditionalStateConfig
+		expected *string
+	}{
+		{
+			"brightness on",
+			flags.AdditionalStateConfig{
+				Brightness: flags.BrightnessConfig{Device: "/device", Min: 0, Max: 100},
+			},
+			utils.ToPtr("\"brightness\":true"),
+		},
+		{
+			"brightness off",
+			flags.AdditionalStateConfig{},
+			nil,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			config := flags.MqttConfig{TopicBase: "powerpi"}
+			subject := newClient(config, MockFactory{}, nil, "MyDevice", nil)
+
+			client := &MockMqttClient{}
+			subject.client = client
+
+			if test.expected != nil {
+				client.On(
+					"Publish",
+					"powerpi/device/MyDevice/capability",
+					byte(2),
+					true,
+					mock.MatchedBy(func(payload []byte) bool {
+						return strings.Contains(string(payload), *test.expected)
+					}),
+				).Return(&MQTT.PublishToken{})
+
+				subject.publishCapability(test.config)
+
+				client.AssertExpectations(t)
+			} else {
+				client.AssertNotCalled(t, "Publish")
+			}
+		})
+	}
+}
