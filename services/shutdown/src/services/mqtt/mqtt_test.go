@@ -11,11 +11,76 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"powerpi/shutdown/services/additional"
+	"powerpi/shutdown/services/additional_test"
 	"powerpi/shutdown/services/clock_test"
 	"powerpi/shutdown/services/flags"
 	"powerpi/shutdown/services/mqtt_test"
 	"powerpi/shutdown/utils"
 )
+
+func TestConnect(t *testing.T) {
+	var tests = []struct {
+		name            string
+		port            int
+		username        string
+		password        string
+		expectedAddress string
+	}{
+		{
+			"tcp",
+			1883,
+			"",
+			"",
+			"tcp://mqtt-host:1883",
+		},
+		{
+			"tcps",
+			8883,
+			"",
+			"",
+			"tcps://mqtt-host:8883",
+		},
+		{
+			"auth",
+			8883,
+			"user",
+			"password",
+			"tcps://mqtt-host:8883",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			config := flags.MqttConfig{TopicBase: "powerpi"}
+			factory := &mqtt_test.MockFactory{}
+			subject := newClient(config, factory, nil, clock_test.MockClock{}, "MyDevice", nil)
+
+			client := &mqtt_test.MockMqttClient{}
+			factory.On("BuildClient", mock.MatchedBy(func(options *MQTT.ClientOptions) bool {
+				return options.Servers[0].String() == test.expectedAddress &&
+					options.Username == test.username &&
+					options.Password == test.password
+			})).Return(client)
+
+			token := &mqtt_test.MockToken{}
+			token.On("Wait").Return(true)
+			token.On("Error").Return(nil)
+			client.On("Connect").Return(token)
+
+			var user *string = &test.username
+			if test.username == "" {
+				user = nil
+			}
+
+			var password *string = &test.password
+			if test.password == "" {
+				password = nil
+			}
+
+			subject.Connect("mqtt-host", test.port, user, password, flags.Config{})
+		})
+	}
+}
 
 func TestPublishState(t *testing.T) {
 	var tests = []struct {
@@ -32,7 +97,7 @@ func TestPublishState(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			config := flags.MqttConfig{TopicBase: "powerpi"}
-			subject := newClient(config, mqtt_test.MockFactory{}, nil, clock_test.MockClock{}, "MyDevice", nil)
+			subject := newClient(config, nil, nil, clock_test.MockClock{}, "MyDevice", nil)
 
 			client := &mqtt_test.MockMqttClient{}
 			subject.client = client
@@ -77,7 +142,7 @@ func TestPublishCapability(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			config := flags.MqttConfig{TopicBase: "powerpi"}
-			subject := newClient(config, mqtt_test.MockFactory{}, nil, clock_test.MockClock{}, "MyDevice", nil)
+			subject := newClient(config, nil, nil, clock_test.MockClock{}, "MyDevice", nil)
 
 			client := &mqtt_test.MockMqttClient{}
 			subject.client = client
@@ -101,6 +166,42 @@ func TestPublishCapability(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestOnConnect(t *testing.T) {
+	additionalService := &additional_test.MockAdditionalStateService{}
+	config := flags.MqttConfig{TopicBase: "powerpi"}
+	subject := newClient(config, nil, additionalService, clock_test.MockClock{}, "MyDevice", nil)
+
+	client := &mqtt_test.MockMqttClient{}
+	subject.client = client
+
+	client.On(
+		"Publish",
+		"powerpi/device/MyDevice/status",
+		byte(2),
+		true,
+		mock.MatchedBy(func(payload []byte) bool {
+			return strings.Contains(string(payload), "\"state\":\"on\"")
+		})).Return(&MQTT.PublishToken{})
+
+	client.On(
+		"Publish",
+		"powerpi/device/MyDevice/capability",
+		byte(2),
+		true,
+		mock.MatchedBy(func(payload []byte) bool {
+			return strings.Contains(string(payload), "\"brightness\":true")
+		})).Return(&MQTT.PublishToken{})
+
+	token := &mqtt_test.MockToken{}
+	token.On("Wait").Return(true)
+	token.On("Error").Return(nil)
+	client.On("Subscribe", "powerpi/device/MyDevice/change", byte(2), mock.Anything).Return(token)
+
+	additionalService.On("GetAdditionalState").Return(additional.AdditionalState{})
+
+	subject.onConnect(flags.Config{AdditionalState: flags.AdditionalStateConfig{Brightness: flags.BrightnessConfig{Device: "/device", Min: 0, Max: 100}}})
 }
 
 func TestOnMessageReceived(t *testing.T) {
@@ -152,7 +253,7 @@ func TestOnMessageReceived(t *testing.T) {
 				receivedAdditionalState = &additionalState
 			}
 
-			subject := newClient(config, mqtt_test.MockFactory{}, nil, clock_test.MockClock{}, "MyDevice", action)
+			subject := newClient(config, nil, nil, clock_test.MockClock{}, "MyDevice", action)
 
 			client := &mqtt_test.MockMqttClient{}
 			subject.client = client
