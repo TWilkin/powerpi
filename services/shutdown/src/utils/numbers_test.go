@@ -1,6 +1,10 @@
 package utils
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestNilOrEqual(t *testing.T) {
 	var tests = []struct {
@@ -20,9 +24,7 @@ func TestNilOrEqual(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			result := NilOrEqual(test.value1, test.value2)
 
-			if result != test.expected {
-				t.Errorf("NilOrEqual incorrect, got: %v, expected: %v", result, test.expected)
-			}
+			assert.Equal(t, result, test.expected)
 		})
 	}
 }

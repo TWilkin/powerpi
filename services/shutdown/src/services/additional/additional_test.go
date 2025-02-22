@@ -3,6 +3,8 @@ package additional
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"powerpi/shutdown/services/flags"
 	"powerpi/shutdown/utils"
 )
@@ -35,9 +37,7 @@ func TestGetAdditionalState(t *testing.T) {
 
 			result := subject.GetAdditionalState()
 
-			if subject.CompareAdditionalState(result, test.expected) == false {
-				t.Errorf("GetAdditionalState incorrect, got: %v, expected: %v", result, test.expected)
-			}
+			assert.Equal(t, result, test.expected)
 		})
 	}
 }
@@ -59,9 +59,7 @@ func TestSetAdditionalState(t *testing.T) {
 
 			subject.SetAdditionalState(AdditionalState{Brightness: utils.ToPtr(50)})
 
-			if mockBrightness.brightness != test.expected {
-				t.Errorf("SetAdditionalState incorrect, got: %v, expected: %v", mockBrightness.brightness, test.expected)
-			}
+			assert.Equal(t, mockBrightness.brightness, test.expected)
 		})
 	}
 }
@@ -83,9 +81,7 @@ func TestCompareAdditionalState(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			result := AdditionalStateService{}.CompareAdditionalState(test.state1, test.state2)
 
-			if result != test.expected {
-				t.Errorf("CompareAdditionalState incorrect, got: %t, expected: %t", result, test.expected)
-			}
+			assert.Equal(t, result, test.expected)
 		})
 	}
 }

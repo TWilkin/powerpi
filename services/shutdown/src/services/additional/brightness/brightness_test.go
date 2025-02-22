@@ -4,6 +4,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"powerpi/shutdown/services/flags"
 )
 
@@ -32,9 +34,7 @@ func TestGetBrightness(t *testing.T) {
 
 			result := New(config).GetBrightness()
 
-			if result != test.expected {
-				t.Errorf("Brightness incorrect, got: %d, expected: %d", result, test.expected)
-			}
+			assert.Equal(t, result, test.expected)
 		})
 	}
 }
@@ -63,9 +63,7 @@ func TestSetBrightness(t *testing.T) {
 			New(config).SetBrightness(test.brightness)
 			result, _ := os.ReadFile(file)
 
-			if string(result) != test.expected {
-				t.Errorf("Brightness incorrect, got: %s, expected: %s", result, test.expected)
-			}
+			assert.Equal(t, string(result), test.expected)
 		})
 	}
 }
