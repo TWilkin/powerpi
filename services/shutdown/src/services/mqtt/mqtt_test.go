@@ -11,102 +11,11 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"powerpi/shutdown/services/additional"
+	"powerpi/shutdown/services/clock_test"
 	"powerpi/shutdown/services/flags"
+	"powerpi/shutdown/services/mqtt_test"
 	"powerpi/shutdown/utils"
 )
-
-type MockMqttClient struct {
-	mock.Mock
-}
-
-func (client *MockMqttClient) AddRoute(topic string, callback MQTT.MessageHandler) {
-	panic("unimplemented")
-}
-
-func (client *MockMqttClient) Connect() MQTT.Token {
-	panic("unimplemented")
-}
-
-func (client *MockMqttClient) Disconnect(quiesce uint) {
-	panic("unimplemented")
-}
-
-func (client *MockMqttClient) IsConnected() bool {
-	panic("unimplemented")
-}
-
-func (client *MockMqttClient) IsConnectionOpen() bool {
-	panic("unimplemented")
-}
-
-func (client *MockMqttClient) OptionsReader() MQTT.ClientOptionsReader {
-	panic("unimplemented")
-}
-
-func (client *MockMqttClient) Publish(topic string, qos byte, retained bool, payload interface{}) MQTT.Token {
-	client.Called(topic, qos, retained, payload)
-
-	return &MQTT.PublishToken{}
-}
-
-func (client *MockMqttClient) Subscribe(topic string, qos byte, callback MQTT.MessageHandler) MQTT.Token {
-	panic("unimplemented")
-}
-
-func (client *MockMqttClient) SubscribeMultiple(filters map[string]byte, callback MQTT.MessageHandler) MQTT.Token {
-	panic("unimplemented")
-}
-
-func (client *MockMqttClient) Unsubscribe(topics ...string) MQTT.Token {
-	panic("unimplemented")
-}
-
-type MockFactory struct {
-}
-
-func (factory MockFactory) BuildClient(options *MQTT.ClientOptions) MQTT.Client {
-	return &MockMqttClient{}
-}
-
-type MockMessage struct {
-	mock.Mock
-}
-
-func (message MockMessage) Ack() {
-	panic("unimplemented")
-}
-
-func (message MockMessage) Duplicate() bool {
-	panic("unimplemented")
-}
-
-func (message MockMessage) MessageID() uint16 {
-	panic("unimplemented")
-}
-
-func (message *MockMessage) Payload() []byte {
-	args := message.Called()
-	return args.Get(0).([]byte)
-}
-
-func (message MockMessage) Qos() byte {
-	panic("unimplemented")
-}
-
-func (message MockMessage) Retained() bool {
-	panic("unimplemented")
-}
-
-func (message *MockMessage) Topic() string {
-	args := message.Called()
-	return args.String(0)
-}
-
-type MockClock struct{}
-
-func (clock MockClock) Now() time.Time {
-	return time.Date(2025, 2, 22, 0, 2, 0, 0, time.UTC)
-}
 
 func TestPublishState(t *testing.T) {
 	var tests = []struct {
@@ -123,9 +32,9 @@ func TestPublishState(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			config := flags.MqttConfig{TopicBase: "powerpi"}
-			subject := newClient(config, MockFactory{}, nil, MockClock{}, "MyDevice", nil)
+			subject := newClient(config, mqtt_test.MockFactory{}, nil, clock_test.MockClock{}, "MyDevice", nil)
 
-			client := &MockMqttClient{}
+			client := &mqtt_test.MockMqttClient{}
 			subject.client = client
 
 			client.On(
@@ -168,9 +77,9 @@ func TestPublishCapability(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			config := flags.MqttConfig{TopicBase: "powerpi"}
-			subject := newClient(config, MockFactory{}, nil, MockClock{}, "MyDevice", nil)
+			subject := newClient(config, mqtt_test.MockFactory{}, nil, clock_test.MockClock{}, "MyDevice", nil)
 
-			client := &MockMqttClient{}
+			client := &mqtt_test.MockMqttClient{}
 			subject.client = client
 
 			if test.expected != nil {
@@ -243,9 +152,9 @@ func TestOnMessageReceived(t *testing.T) {
 				receivedAdditionalState = &additionalState
 			}
 
-			subject := newClient(config, MockFactory{}, nil, MockClock{}, "MyDevice", action)
+			subject := newClient(config, mqtt_test.MockFactory{}, nil, clock_test.MockClock{}, "MyDevice", action)
 
-			client := &MockMqttClient{}
+			client := &mqtt_test.MockMqttClient{}
 			subject.client = client
 
 			timestamp := time.Date(2025, 2, 22, 0, 2, 0, 0, time.UTC)
@@ -255,7 +164,7 @@ func TestOnMessageReceived(t *testing.T) {
 
 			payload := fmt.Sprintf(test.payload, fmt.Sprintf("\"timestamp\":%d", timestamp.Unix()*1000))
 
-			message := &MockMessage{}
+			message := &mqtt_test.MockMessage{}
 			message.On("Topic").Return("powerpi/device/MyDevice/change")
 			message.On("Payload").Return([]byte(payload))
 
