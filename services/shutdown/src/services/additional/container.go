@@ -6,8 +6,8 @@ import (
 )
 
 type AdditionalContainer struct {
-	AdditionalStateService IAdditionalStateService
-	BrightnessService      brightness.IBrightnessService
+	AdditionalStateService AdditionalStateService
+	BrightnessService      brightness.BrightnessService
 }
 
 func SetupServices(config flags.AdditionalStateConfig) AdditionalContainer {

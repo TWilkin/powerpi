@@ -4,13 +4,13 @@ import (
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 )
 
-type IMqttClientFactory interface {
+type MqttClientFactory interface {
 	BuildClient(options *MQTT.ClientOptions) MQTT.Client
 }
 
-type MqttClientFactory struct {
+type mqttClientFactory struct {
 }
 
-func (factory MqttClientFactory) BuildClient(options *MQTT.ClientOptions) MQTT.Client {
+func (factory mqttClientFactory) BuildClient(options *MQTT.ClientOptions) MQTT.Client {
 	return MQTT.NewClient(options)
 }

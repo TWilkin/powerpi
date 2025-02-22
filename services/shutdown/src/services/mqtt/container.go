@@ -7,14 +7,14 @@ import (
 )
 
 type MqttContainer struct {
-	MqttClientFactory func(string, MqttMessageAction) IMqttClient
+	MqttClientFactory func(string, mqttMessageAction) IMqttClient
 }
 
-func SetupServices(config flags.MqttConfig, additionalState additional.IAdditionalStateService, clock clock.IClock) MqttContainer {
-	factory := MqttClientFactory{}
+func SetupServices(config flags.MqttConfig, additionalState additional.AdditionalStateService, clock clock.Clock) MqttContainer {
+	factory := mqttClientFactory{}
 
 	return MqttContainer{
-		func(hostname string, action MqttMessageAction) IMqttClient {
+		func(hostname string, action mqttMessageAction) IMqttClient {
 			return newClient(config, factory, additionalState, clock, hostname, action)
 		},
 	}

@@ -9,14 +9,14 @@ import (
 
 type Container struct {
 	Config     flags.Config
-	Clock      clock.IClock
+	Clock      clock.Clock
 	Additional additional.AdditionalContainer
 	Mqtt       mqtt.MqttContainer
 }
 
 func SetupServices(config flags.Config) Container {
 	additionalContainer := additional.SetupServices(config.AdditionalState)
-	clock := clock.Clock{}
+	clock := clock.RealClock{}
 
 	return Container{
 		config,

@@ -9,21 +9,21 @@ import (
 	"powerpi/shutdown/services/flags"
 )
 
-type IBrightnessService interface {
+type BrightnessService interface {
 	GetBrightness() int
 
 	SetBrightness(value int)
 }
 
-type BrightnessService struct {
+type brightnessService struct {
 	config flags.BrightnessConfig
 }
 
-func New(config flags.BrightnessConfig) BrightnessService {
-	return BrightnessService{config}
+func New(config flags.BrightnessConfig) brightnessService {
+	return brightnessService{config}
 }
 
-func (service BrightnessService) GetBrightness() int {
+func (service brightnessService) GetBrightness() int {
 	data, err := os.ReadFile(service.config.Device)
 	if err != nil {
 		panic(err)
@@ -41,7 +41,7 @@ func (service BrightnessService) GetBrightness() int {
 	return brightness
 }
 
-func (service BrightnessService) SetBrightness(value int) {
+func (service brightnessService) SetBrightness(value int) {
 	brightness := int(((float64(value) / 100.0) * (service.config.Max - service.config.Min)) + service.config.Min)
 	fmt.Printf("Wrote brightness %d (%d%%)\n", brightness, value)
 

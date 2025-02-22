@@ -18,7 +18,7 @@ const (
 	Off DeviceState = "off"
 )
 
-type MqttMessageAction func(MqttClient, DeviceState, additional.AdditionalState)
+type mqttMessageAction func(IMqttClient, DeviceState, additional.AdditionalState)
 
 type IMqttClient interface {
 	Connect(string, int, *string, *string, flags.Config)
@@ -26,33 +26,33 @@ type IMqttClient interface {
 	PublishState(DeviceState, additional.AdditionalState)
 }
 
-type MqttClient struct {
-	factory         IMqttClientFactory
+type mqttClient struct {
+	factory         MqttClientFactory
 	client          MQTT.Client
 	hostname        string
 	topicBase       string
-	action          MqttMessageAction
-	additionalState additional.IAdditionalStateService
-	clock           clock.IClock
+	action          mqttMessageAction
+	additionalState additional.AdditionalStateService
+	clock           clock.Clock
 }
 
-type DeviceMessage struct {
+type deviceMessage struct {
 	State      DeviceState `json:"state"`
 	Brightness *int        `json:"brightness"`
 	Timestamp  int64       `json:"timestamp"`
 }
 
-type CapabilityMessage struct {
+type capabilityMessage struct {
 	Brightness bool  `json:"brightness"`
 	Timestamp  int64 `json:"timestamp"`
 }
 
-func newClient(config flags.MqttConfig, factory IMqttClientFactory, additionalState additional.IAdditionalStateService, clock clock.IClock, hostname string, action MqttMessageAction) MqttClient {
-	client := MqttClient{factory, nil, hostname, config.TopicBase, action, additionalState, clock}
+func newClient(config flags.MqttConfig, factory MqttClientFactory, additionalState additional.AdditionalStateService, clock clock.Clock, hostname string, action mqttMessageAction) mqttClient {
+	client := mqttClient{factory, nil, hostname, config.TopicBase, action, additionalState, clock}
 	return client
 }
 
-func (client MqttClient) Connect(host string, port int, user *string, password *string, config flags.Config) {
+func (client mqttClient) Connect(host string, port int, user *string, password *string, config flags.Config) {
 	protocol := "tcp"
 	if port == 8883 {
 		protocol = "tcps"
@@ -89,7 +89,7 @@ func (client MqttClient) Connect(host string, port int, user *string, password *
 	}
 }
 
-func (client MqttClient) publish(topic string, message interface{}) {
+func (client mqttClient) publish(topic string, message interface{}) {
 	payload, err := json.Marshal(message)
 	if err != nil {
 		fmt.Println("Could not encode JSON message")
@@ -101,29 +101,29 @@ func (client MqttClient) publish(topic string, message interface{}) {
 	client.client.Publish(topic, 2, true, payload)
 }
 
-func (client MqttClient) PublishState(state DeviceState, additionalState additional.AdditionalState) {
+func (client mqttClient) PublishState(state DeviceState, additionalState additional.AdditionalState) {
 	topic := client.topic("status")
 
-	message := &DeviceMessage{state, additionalState.Brightness, client.clock.Now().Unix() * 1000}
+	message := &deviceMessage{state, additionalState.Brightness, client.clock.Now().Unix() * 1000}
 
 	client.publish(topic, message)
 }
 
-func (client MqttClient) publishCapability(config flags.AdditionalStateConfig) {
+func (client mqttClient) publishCapability(config flags.AdditionalStateConfig) {
 	if len(config.Brightness.Device) > 0 {
 		topic := client.topic("capability")
 
-		message := &CapabilityMessage{true, client.clock.Now().Unix() * 1000}
+		message := &capabilityMessage{true, client.clock.Now().Unix() * 1000}
 
 		client.publish(topic, message)
 	}
 }
 
-func (client MqttClient) topic(action string) string {
+func (client mqttClient) topic(action string) string {
 	return fmt.Sprintf("%s/device/%s/%s", client.topicBase, client.hostname, action)
 }
 
-func (client MqttClient) onConnect(config flags.Config) {
+func (client mqttClient) onConnect(config flags.Config) {
 	fmt.Println("Connected to MQTT")
 
 	// publish that this device is now on
@@ -143,11 +143,11 @@ func (client MqttClient) onConnect(config flags.Config) {
 	}
 }
 
-func (client MqttClient) onMessageReceived(message MQTT.Message) {
+func (client mqttClient) onMessageReceived(message MQTT.Message) {
 	data := []byte(message.Payload())
 	fmt.Printf("Received %s: %s\n", message.Topic(), data)
 
-	var payload DeviceMessage
+	var payload deviceMessage
 	err := json.Unmarshal(data, &payload)
 	if err != nil {
 		fmt.Println("Could not decode JSON message")

@@ -2,13 +2,13 @@ package clock
 
 import "time"
 
-type IClock interface {
+type Clock interface {
 	Now() time.Time
 }
 
-type Clock struct {
+type RealClock struct {
 }
 
-func (Clock) Now() time.Time {
+func (RealClock) Now() time.Time {
 	return time.Now()
 }

@@ -10,7 +10,7 @@ type AdditionalState struct {
 	Brightness *int
 }
 
-type IAdditionalStateService interface {
+type AdditionalStateService interface {
 	GetAdditionalState() AdditionalState
 
 	SetAdditionalState(state AdditionalState)
@@ -18,16 +18,16 @@ type IAdditionalStateService interface {
 	CompareAdditionalState(state1 AdditionalState, state2 AdditionalState) bool
 }
 
-type AdditionalStateService struct {
+type additionalStateService struct {
 	config     flags.AdditionalStateConfig
-	brightness brightness.IBrightnessService
+	brightness brightness.BrightnessService
 }
 
-func New(config flags.AdditionalStateConfig, brightness brightness.IBrightnessService) AdditionalStateService {
-	return AdditionalStateService{config, brightness}
+func New(config flags.AdditionalStateConfig, brightness brightness.BrightnessService) additionalStateService {
+	return additionalStateService{config, brightness}
 }
 
-func (service AdditionalStateService) GetAdditionalState() AdditionalState {
+func (service additionalStateService) GetAdditionalState() AdditionalState {
 	var additionalState AdditionalState
 
 	if len(service.config.Brightness.Device) > 0 {
@@ -42,12 +42,12 @@ func (service AdditionalStateService) GetAdditionalState() AdditionalState {
 	return additionalState
 }
 
-func (service AdditionalStateService) SetAdditionalState(state AdditionalState) {
+func (service additionalStateService) SetAdditionalState(state AdditionalState) {
 	if len(service.config.Brightness.Device) > 0 && state.Brightness != nil && *state.Brightness >= 0 {
 		service.brightness.SetBrightness(*state.Brightness)
 	}
 }
 
-func (service AdditionalStateService) CompareAdditionalState(state1 AdditionalState, state2 AdditionalState) bool {
+func (service additionalStateService) CompareAdditionalState(state1 AdditionalState, state2 AdditionalState) bool {
 	return utils.NilOrEqual(state1.Brightness, state2.Brightness)
 }

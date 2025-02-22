@@ -79,7 +79,7 @@ func TestCompareAdditionalState(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result := AdditionalStateService{}.CompareAdditionalState(test.state1, test.state2)
+			result := additionalStateService{}.CompareAdditionalState(test.state1, test.state2)
 
 			assert.Equal(t, result, test.expected)
 		})

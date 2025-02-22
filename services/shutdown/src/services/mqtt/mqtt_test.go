@@ -147,7 +147,7 @@ func TestOnMessageReceived(t *testing.T) {
 
 			var receivedState *DeviceState
 			var receivedAdditionalState *additional.AdditionalState
-			action := func(client MqttClient, state DeviceState, additionalState additional.AdditionalState) {
+			action := func(client IMqttClient, state DeviceState, additionalState additional.AdditionalState) {
 				receivedState = &state
 				receivedAdditionalState = &additionalState
 			}
