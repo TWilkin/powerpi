@@ -51,6 +51,13 @@ jobs:
           virtualenvs-in-project: true
           installer-parallel: true
 
+      # setup go
+      - name: Install Go
+        if: steps.check_modified.outputs.go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22.2
+
       # test the common libraries
       - name: Test PowerPi Node Common
         if: steps.check_modified.outputs.node_common
@@ -133,6 +140,12 @@ jobs:
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_python.sh scheduler"
         working-directory: services/scheduler
+
+      - name: Test Shutdown
+        if: steps.check_modified.outputs.shutdown
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_go.sh shutdown"
+        working-directory: services/shutdown
 
       - name: Test UI
         if: steps.check_modified.outputs.ui

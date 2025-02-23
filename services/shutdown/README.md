@@ -2,6 +2,10 @@
 
 PowerPi shutdown service runs on a computer which you would like PowerPi to be able to control, (like those that can be started with wake-on-LAN using the [_network_controller_](../../controllers/network/README.md)).
 
+The service also supports limited additional state as follows.
+
+- Writing a brightness value to a file to adjust the brightness of an LED/Display (e.g. [Raspberry Pi Touch Display 2](https://www.raspberrypi.com/products/touch-display-2/))
+
 The service is built using Go.
 
 ## Building
@@ -73,6 +77,12 @@ The service takes the following command line arguments:
 ```
   -allowQuickShutdown
     	If true allow a message within 2 minutes of service starting to initiate a shutdown
+  -brightnessDevice string
+    	The path to the device to use for controller brightness, e.g. "/sys/class/backlight/10-0045/brightness" for a Pi Touch Display 2
+  -brightnessMax float
+    	The maximum value supported for the brightness setting, e.g. 31 for a Pi Touch Display 2 (default 100)
+  -brightnessMin float
+    	The minimum value supported for the brightness setting, e.g. 0 for a Pi Touch Display 2
   -host string
     	The hostname of the MQTT broker (default "localhost")
   -mock
@@ -89,7 +99,15 @@ The service takes the following command line arguments:
 
 ## Testing
 
-There are currently no automated tests for this service.
+This service can be tested by executing the following commands.
+
+```bash
+# From the root of your PowerPi checkout
+cd services/shutdown
+
+# Run the tests
+make test
+```
 
 ## Local Execution
 
