@@ -94,6 +94,7 @@ do
     check_file $file "services/event" "event" "python"
     check_file $file "services/persistence" "persistence" "nodejs"
     check_file $file "services/scheduler" "scheduler" "python"
+    check_file $file "services/shutdown" "shutdown" "go"
     check_file $file "services/ui" "ui" "nodejs"
     check_file $file "services/voice-assistant" "voice_assistant" "nodejs"
 done < files.txt

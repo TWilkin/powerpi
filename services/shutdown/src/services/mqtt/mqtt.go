@@ -3,47 +3,63 @@ package mqtt
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 
-	"powerpi/shutdown/additional"
-	"powerpi/shutdown/flags"
+	"powerpi/shutdown/models"
+	"powerpi/shutdown/services/additional"
+	"powerpi/shutdown/services/clock"
+	"powerpi/shutdown/services/flags"
 )
 
-type DeviceState string
-const (
-	On DeviceState = "on"
-	Off = "off"
-)
+type mqttMessageAction func(IMqttClient, models.DeviceState, additional.AdditionalState)
 
+type IMqttClient interface {
+	Connect(string, int, *string, *string, flags.Config)
 
-type MqttMessageAction func(MqttClient, DeviceState, additional.AdditionalState)
-
-type MqttClient struct {
-	client MQTT.Client
-	hostname string
-	topicBase string
-	action MqttMessageAction
+	PublishState(models.DeviceState, additional.AdditionalState)
 }
 
-type DeviceMessage struct {
-	State DeviceState `json:"state"`
-	Brightness *int `json:"brightness"`
-	Timestamp int64 `json:"timestamp"`
+type mqttClient struct {
+	factory         MqttClientFactory
+	client          MQTT.Client
+	hostname        string
+	topicBase       string
+	action          mqttMessageAction
+	additionalState additional.AdditionalStateService
+	clock           clock.Clock
 }
 
-type CapabilityMessage struct {
-	Brightness bool `json:"brightness"`
-	Timestamp int64 `json:"timestamp"`
+type deviceMessage struct {
+	State      models.DeviceState `json:"state"`
+	Brightness *int               `json:"brightness"`
+	Timestamp  int64              `json:"timestamp"`
 }
 
-func New(hostname string, topicBase string, action MqttMessageAction) MqttClient {
-	client := MqttClient{nil, hostname, topicBase, action}
+type capabilityMessage struct {
+	Brightness bool  `json:"brightness"`
+	Timestamp  int64 `json:"timestamp"`
+}
+
+func newClient(
+	config flags.MqttConfig,
+	factory MqttClientFactory,
+	additionalState additional.AdditionalStateService,
+	clock clock.Clock,
+	hostname string,
+	action mqttMessageAction,
+) mqttClient {
+	client := mqttClient{factory, nil, hostname, config.TopicBase, action, additionalState, clock}
 	return client
 }
 
-func (client MqttClient) Connect(host string, port int, user *string, password *string, config flags.Config) {
+func (client mqttClient) Connect(
+	host string,
+	port int,
+	user *string,
+	password *string,
+	config flags.Config,
+) {
 	protocol := "tcp"
 	if port == 8883 {
 		protocol = "tcps"
@@ -73,14 +89,14 @@ func (client MqttClient) Connect(host string, port int, user *string, password *
 		logUser = *user
 	}
 	fmt.Printf("Connecting to MQTT at %s as %s\n", address, logUser)
-	client.client = MQTT.NewClient(options)
+	client.client = client.factory.BuildClient(options)
 
 	if token := client.client.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())
 	}
 }
 
-func (client MqttClient) publish(topic string, message any) {
+func (client mqttClient) publish(topic string, message interface{}) {
 	payload, err := json.Marshal(message)
 	if err != nil {
 		fmt.Println("Could not encode JSON message")
@@ -92,34 +108,36 @@ func (client MqttClient) publish(topic string, message any) {
 	client.client.Publish(topic, 2, true, payload)
 }
 
-func (client MqttClient) PublishState(state DeviceState, additionalState additional.AdditionalState) {
+func (client mqttClient) PublishState(
+	state models.DeviceState,
+	additionalState additional.AdditionalState,
+) {
 	topic := client.topic("status")
 
-	message := &DeviceMessage{state, additionalState.Brightness, time.Now().Unix() * 1000}
+	message := &deviceMessage{state, additionalState.Brightness, client.clock.Now().Unix() * 1000}
 
 	client.publish(topic, message)
 }
 
-func (client MqttClient) publishCapability(config flags.AdditionalStateConfig) {
+func (client mqttClient) publishCapability(config flags.AdditionalStateConfig) {
 	if len(config.Brightness.Device) > 0 {
 		topic := client.topic("capability")
 
-		message := &CapabilityMessage{true, time.Now().Unix() * 1000}
+		message := &capabilityMessage{true, client.clock.Now().Unix() * 1000}
 
 		client.publish(topic, message)
 	}
 }
 
-func (client MqttClient) topic(action string) string {
+func (client mqttClient) topic(action string) string {
 	return fmt.Sprintf("%s/device/%s/%s", client.topicBase, client.hostname, action)
 }
 
-
-func (client MqttClient) onConnect(config flags.Config) {
+func (client mqttClient) onConnect(config flags.Config) {
 	fmt.Println("Connected to MQTT")
 
 	// publish that this device is now on
-	client.PublishState(On, additional.GetAdditionalState(config.AdditionalState))
+	client.PublishState(models.On, client.additionalState.GetAdditionalState())
 	client.publishCapability(config.AdditionalState)
 
 	// subscribe to the shutdown event for this device
@@ -135,11 +153,11 @@ func (client MqttClient) onConnect(config flags.Config) {
 	}
 }
 
-func (client MqttClient) onMessageReceived(message MQTT.Message) {
-	fmt.Printf("Received %s: %s\n", message.Topic(), message.Payload())
-
+func (client mqttClient) onMessageReceived(message MQTT.Message) {
 	data := []byte(message.Payload())
-	var payload DeviceMessage
+	fmt.Printf("Received %s: %s\n", message.Topic(), data)
+
+	var payload deviceMessage
 	err := json.Unmarshal(data, &payload)
 	if err != nil {
 		fmt.Println("Could not decode JSON message")
@@ -147,7 +165,7 @@ func (client MqttClient) onMessageReceived(message MQTT.Message) {
 	}
 
 	// check if the message is old
-	twoMinsAgo := time.Now().Unix() - 2 * 60
+	twoMinsAgo := client.clock.Now().Unix() - 2*60
 	if twoMinsAgo >= (payload.Timestamp / 1000) {
 		fmt.Println("Ignoring old message")
 		return
