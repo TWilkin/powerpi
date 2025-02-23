@@ -59,7 +59,8 @@ func TestConnect(t *testing.T) {
 			factory.On("BuildClient", mock.MatchedBy(func(options *MQTT.ClientOptions) bool {
 				return options.Servers[0].String() == test.expectedAddress &&
 					options.Username == test.username &&
-					options.Password == test.password
+					options.Password == test.password &&
+					options.ClientID == "shutdown-MyDevice"
 			})).Return(client)
 
 			token := &mqtt_test.MockToken{}

@@ -56,7 +56,14 @@ func main() {
 	<-channel
 }
 
-func updateState(additionalStateService additional.AdditionalStateService, client mqtt.IMqttClient, config flags.Config, state mqtt.DeviceState, additionalState additional.AdditionalState, startTime time.Time) {
+func updateState(
+	additionalStateService additional.AdditionalStateService,
+	client mqtt.IMqttClient,
+	config flags.Config,
+	state mqtt.DeviceState,
+	additionalState additional.AdditionalState,
+	startTime time.Time,
+) {
 	// update any additional state
 	currentAdditionalState := additionalStateService.GetAdditionalState()
 	additionalStateService.SetAdditionalState(additionalState)

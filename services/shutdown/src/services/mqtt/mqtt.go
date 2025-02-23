@@ -47,7 +47,14 @@ type capabilityMessage struct {
 	Timestamp  int64 `json:"timestamp"`
 }
 
-func newClient(config flags.MqttConfig, factory MqttClientFactory, additionalState additional.AdditionalStateService, clock clock.Clock, hostname string, action mqttMessageAction) mqttClient {
+func newClient(
+	config flags.MqttConfig,
+	factory MqttClientFactory,
+	additionalState additional.AdditionalStateService,
+	clock clock.Clock,
+	hostname string,
+	action mqttMessageAction,
+) mqttClient {
 	client := mqttClient{factory, nil, hostname, config.TopicBase, action, additionalState, clock}
 	return client
 }
