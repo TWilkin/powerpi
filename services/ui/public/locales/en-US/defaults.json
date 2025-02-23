@@ -2,7 +2,7 @@
     "units": {
         "current": "A",
         "electricalPotential": "V",
-        "gas": "cf",
+        "gas": "Mcf",
         "power": "W",
         "temperature": "F"
     }
