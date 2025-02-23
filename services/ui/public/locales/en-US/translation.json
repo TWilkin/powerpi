@@ -51,6 +51,7 @@
             }
         },
         "settings": {
+            "languages": "Languages",
             "units": "Units"
         }
     },

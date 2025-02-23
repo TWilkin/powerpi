@@ -16,8 +16,8 @@ const LanguageSettings = () => {
         () =>
             _(supportedLanguages)
                 .map((language) => ({
-                    label: language,
-                    value: language,
+                    label: language.label,
+                    value: language.id,
                 }))
                 .sortBy((option) => option.label)
                 .value(),
@@ -36,10 +36,10 @@ const LanguageSettings = () => {
     const currentLanguage = i18n.language ?? settings?.language ?? "en-GB";
 
     return (
-        <FieldSet legend="Language">
+        <FieldSet legend={t("pages.settings.languages")}>
             {t("common.capability.colour temperature", { device: "Blah" })}
             <Select
-                label="Language"
+                label={t("pages.settings.languages")}
                 options={options}
                 value={currentLanguage}
                 onChange={handleChange}
