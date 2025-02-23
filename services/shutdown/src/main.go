@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"powerpi/shutdown/models"
 	"powerpi/shutdown/services"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/flags"
@@ -46,7 +47,7 @@ func main() {
 	signal.Notify(channel, os.Interrupt, syscall.SIGTERM)
 
 	// connect to MQTT
-	callback := func(client mqtt.IMqttClient, state mqtt.DeviceState, additionalState additional.AdditionalState) {
+	callback := func(client mqtt.IMqttClient, state models.DeviceState, additionalState additional.AdditionalState) {
 		updateState(services.Additional.AdditionalStateService, client, config, state, additionalState, startTime)
 	}
 	client := services.Mqtt.MqttClientFactory(hostname, callback)
@@ -60,7 +61,7 @@ func updateState(
 	additionalStateService additional.AdditionalStateService,
 	client mqtt.IMqttClient,
 	config flags.Config,
-	state mqtt.DeviceState,
+	state models.DeviceState,
 	additionalState additional.AdditionalState,
 	startTime time.Time,
 ) {
@@ -68,13 +69,13 @@ func updateState(
 	currentAdditionalState := additionalStateService.GetAdditionalState()
 	additionalStateService.SetAdditionalState(additionalState)
 
-	newState := mqtt.On
+	newState := models.On
 	if state == "off" {
-		newState = mqtt.Off
+		newState = models.Off
 	}
 
 	// publish the state message if necessary
-	if newState != mqtt.On || !additionalStateService.CompareAdditionalState(currentAdditionalState, additionalState) {
+	if newState != models.On || !additionalStateService.CompareAdditionalState(currentAdditionalState, additionalState) {
 		client.PublishState(newState, additionalStateService.GetAdditionalState())
 	}
 

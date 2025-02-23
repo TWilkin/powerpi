@@ -6,24 +6,18 @@ import (
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 
+	"powerpi/shutdown/models"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/clock"
 	"powerpi/shutdown/services/flags"
 )
 
-type DeviceState string
-
-const (
-	On  DeviceState = "on"
-	Off DeviceState = "off"
-)
-
-type mqttMessageAction func(IMqttClient, DeviceState, additional.AdditionalState)
+type mqttMessageAction func(IMqttClient, models.DeviceState, additional.AdditionalState)
 
 type IMqttClient interface {
 	Connect(string, int, *string, *string, flags.Config)
 
-	PublishState(DeviceState, additional.AdditionalState)
+	PublishState(models.DeviceState, additional.AdditionalState)
 }
 
 type mqttClient struct {
@@ -37,9 +31,9 @@ type mqttClient struct {
 }
 
 type deviceMessage struct {
-	State      DeviceState `json:"state"`
-	Brightness *int        `json:"brightness"`
-	Timestamp  int64       `json:"timestamp"`
+	State      models.DeviceState `json:"state"`
+	Brightness *int               `json:"brightness"`
+	Timestamp  int64              `json:"timestamp"`
 }
 
 type capabilityMessage struct {
@@ -59,7 +53,13 @@ func newClient(
 	return client
 }
 
-func (client mqttClient) Connect(host string, port int, user *string, password *string, config flags.Config) {
+func (client mqttClient) Connect(
+	host string,
+	port int,
+	user *string,
+	password *string,
+	config flags.Config,
+) {
 	protocol := "tcp"
 	if port == 8883 {
 		protocol = "tcps"
@@ -108,7 +108,10 @@ func (client mqttClient) publish(topic string, message interface{}) {
 	client.client.Publish(topic, 2, true, payload)
 }
 
-func (client mqttClient) PublishState(state DeviceState, additionalState additional.AdditionalState) {
+func (client mqttClient) PublishState(
+	state models.DeviceState,
+	additionalState additional.AdditionalState,
+) {
 	topic := client.topic("status")
 
 	message := &deviceMessage{state, additionalState.Brightness, client.clock.Now().Unix() * 1000}
@@ -134,7 +137,7 @@ func (client mqttClient) onConnect(config flags.Config) {
 	fmt.Println("Connected to MQTT")
 
 	// publish that this device is now on
-	client.PublishState(On, client.additionalState.GetAdditionalState())
+	client.PublishState(models.On, client.additionalState.GetAdditionalState())
 	client.publishCapability(config.AdditionalState)
 
 	// subscribe to the shutdown event for this device

@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
+	"powerpi/shutdown/models"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/additional_test"
 	"powerpi/shutdown/services/clock_test"
@@ -55,7 +56,7 @@ func TestConnect(t *testing.T) {
 			factory := &mqtt_test.MockFactory{}
 			subject := newClient(config, factory, nil, clock_test.MockClock{}, "MyDevice", nil)
 
-			client := &mqtt_test.MockMqttClient{}
+			client := &mqtt_test.MockPahoMqttClient{}
 			factory.On("BuildClient", mock.MatchedBy(func(options *MQTT.ClientOptions) bool {
 				return options.Servers[0].String() == test.expectedAddress &&
 					options.Username == test.username &&
@@ -86,13 +87,13 @@ func TestConnect(t *testing.T) {
 func TestPublishState(t *testing.T) {
 	var tests = []struct {
 		name            string
-		state           DeviceState
+		state           models.DeviceState
 		additionalState additional.AdditionalState
 		expected        string
 	}{
-		{"off", Off, additional.AdditionalState{}, "\"state\":\"off\""},
-		{"on", On, additional.AdditionalState{}, "\"state\":\"on\""},
-		{"off with brightness", Off, additional.AdditionalState{Brightness: utils.ToPtr(50)}, "\"brightness\":50"},
+		{"off", models.Off, additional.AdditionalState{}, "\"state\":\"off\""},
+		{"on", models.On, additional.AdditionalState{}, "\"state\":\"on\""},
+		{"off with brightness", models.Off, additional.AdditionalState{Brightness: utils.ToPtr(50)}, "\"brightness\":50"},
 	}
 
 	for _, test := range tests {
@@ -100,7 +101,7 @@ func TestPublishState(t *testing.T) {
 			config := flags.MqttConfig{TopicBase: "powerpi"}
 			subject := newClient(config, nil, nil, clock_test.MockClock{}, "MyDevice", nil)
 
-			client := &mqtt_test.MockMqttClient{}
+			client := &mqtt_test.MockPahoMqttClient{}
 			subject.client = client
 
 			client.On(
@@ -145,7 +146,7 @@ func TestPublishCapability(t *testing.T) {
 			config := flags.MqttConfig{TopicBase: "powerpi"}
 			subject := newClient(config, nil, nil, clock_test.MockClock{}, "MyDevice", nil)
 
-			client := &mqtt_test.MockMqttClient{}
+			client := &mqtt_test.MockPahoMqttClient{}
 			subject.client = client
 
 			if test.expected != nil {
@@ -174,7 +175,7 @@ func TestOnConnect(t *testing.T) {
 	config := flags.MqttConfig{TopicBase: "powerpi"}
 	subject := newClient(config, nil, additionalService, clock_test.MockClock{}, "MyDevice", nil)
 
-	client := &mqtt_test.MockMqttClient{}
+	client := &mqtt_test.MockPahoMqttClient{}
 	subject.client = client
 
 	client.On(
@@ -210,28 +211,28 @@ func TestOnMessageReceived(t *testing.T) {
 		name               string
 		payload            string
 		timestamp          *time.Time
-		expectedState      *DeviceState
+		expectedState      *models.DeviceState
 		expectedAdditional *additional.AdditionalState
 	}{
 		{
 			"on",
 			"{\"state\":\"on\", %s}",
 			nil,
-			utils.ToPtr(On),
+			utils.ToPtr(models.On),
 			&additional.AdditionalState{},
 		},
 		{
 			"off",
 			"{\"state\":\"off\", %s}",
 			nil,
-			utils.ToPtr(Off),
+			utils.ToPtr(models.Off),
 			&additional.AdditionalState{},
 		},
 		{
 			"brightness",
 			"{\"state\":\"off\", \"brightness\":50, %s}",
 			nil,
-			utils.ToPtr(Off),
+			utils.ToPtr(models.Off),
 			&additional.AdditionalState{Brightness: utils.ToPtr(50)},
 		},
 		{
@@ -247,16 +248,20 @@ func TestOnMessageReceived(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			config := flags.MqttConfig{TopicBase: "powerpi"}
 
-			var receivedState *DeviceState
+			var receivedState *models.DeviceState
 			var receivedAdditionalState *additional.AdditionalState
-			action := func(client IMqttClient, state DeviceState, additionalState additional.AdditionalState) {
+			action := func(
+				client IMqttClient,
+				state models.DeviceState,
+				additionalState additional.AdditionalState,
+			) {
 				receivedState = &state
 				receivedAdditionalState = &additionalState
 			}
 
 			subject := newClient(config, nil, nil, clock_test.MockClock{}, "MyDevice", action)
 
-			client := &mqtt_test.MockMqttClient{}
+			client := &mqtt_test.MockPahoMqttClient{}
 			subject.client = client
 
 			timestamp := time.Date(2025, 2, 22, 0, 2, 0, 0, time.UTC)
