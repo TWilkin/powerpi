@@ -36,9 +36,9 @@ const LanguageSettings = () => {
     const currentLanguage = i18n.language ?? settings?.language ?? "en-GB";
 
     return (
-        <FieldSet legend={t("pages.settings.languages")}>
+        <FieldSet legend={t("pages.settings.language")} content="unlabelled">
             <Select
-                label={t("pages.settings.languages")}
+                label={t("pages.settings.language")}
                 options={options}
                 value={currentLanguage}
                 onChange={handleChange}

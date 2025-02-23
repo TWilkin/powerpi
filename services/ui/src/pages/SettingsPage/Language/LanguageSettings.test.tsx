@@ -23,7 +23,7 @@ describe("LanguageSettings", () => {
 
         const group = screen.getByRole("group");
         expect(group).toBeInTheDocument();
-        expect(group).toHaveAccessibleName("Languages");
+        expect(group).toHaveAccessibleName("Language");
 
         const combobox = within(group).getByRole("combobox");
         expect(combobox).toBeInTheDocument();

@@ -61,7 +61,7 @@ interface Resources {
         }
       },
       "settings": {
-        "languages": "Languages",
+        "language": "Language",
         "units": "Units"
       }
     },
