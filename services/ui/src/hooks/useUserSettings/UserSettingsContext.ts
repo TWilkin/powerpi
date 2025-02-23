@@ -13,8 +13,9 @@ export type UserSettingsType = {
 
 type UpdateLanguageAction = { type: "Language"; language: string };
 type UpdateUnitAction = { type: "Unit"; unitType: UnitType; unit: string };
+type ReinitialiseAction = { type: "Reinitialise"; defaults: UserSettingsType };
 
-export type UpdateSettingsAction = UpdateLanguageAction | UpdateUnitAction;
+export type UpdateSettingsAction = UpdateLanguageAction | UpdateUnitAction | ReinitialiseAction;
 
 export type UserSettingsContextType = {
     /** The user's current settings. */
