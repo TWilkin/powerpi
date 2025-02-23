@@ -1,4 +1,5 @@
 import * as AqaraDoorWindow from "./AqaraDoorWindow.schema.json";
+import * as IkeaStyrbarSwitch from "./IkeaStyrbarSwitch.schema.json";
 import * as OsramSwitchMini from "./OsramSwitchMini.schema.json";
 import * as SonoffSwitch from "./SonoffSwitch.schema.json";
 import * as ZigBeeDevice from "./ZigBeeDevice.schema.json";
@@ -17,6 +18,9 @@ export default function loadZigBeeSchema() {
 
         // Aqara
         AqaraDoorWindow,
+
+        // Ikea
+        IkeaStyrbarSwitch,
 
         // Osram
         OsramSwitchMini,
