@@ -8,6 +8,7 @@ import { initReactI18next } from "react-i18next";
 export const supportedLanguages = [
     { id: "en-GB", label: "English (UK)" },
     { id: "en-US", label: "English (US)" },
+    { id: "es-ES", label: "Español" },
 ];
 
 i18n.use(initReactI18next)
