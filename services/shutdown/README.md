@@ -99,7 +99,15 @@ The service takes the following command line arguments:
 
 ## Testing
 
-There are currently no automated tests for this service.
+This service can be tested by executing the following commands.
+
+```bash
+# From the root of your PowerPi checkout
+cd services/shutdown
+
+# Run the tests
+make test
+```
 
 ## Local Execution
 
