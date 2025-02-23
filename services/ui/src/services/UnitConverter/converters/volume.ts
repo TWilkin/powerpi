@@ -13,6 +13,7 @@ export const volume: ConverterDefinition[] = [
         key: "cubic feet",
         convert: {
             hcf: (value: number) => value / 100,
+            Mcf: (value: number) => value / 1000,
         },
     },
     {
@@ -20,6 +21,13 @@ export const volume: ConverterDefinition[] = [
         key: "hundred cubic feet",
         convert: {
             m3: (value: number) => value * 2.8316846592,
+        },
+    },
+    {
+        unit: "Mcf",
+        key: "thousand cubic feet",
+        convert: {
+            cf: (value: number) => value * 1000,
         },
     },
 ];

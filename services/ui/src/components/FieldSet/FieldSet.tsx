@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { FieldsetHTMLAttributes } from "react";
 
-type FieldSetContentType = "label" | "checkbox";
+type FieldSetContentType = "label" | "unlabelled" | "checkbox";
 
 type FieldSetProps = {
     legend: string;

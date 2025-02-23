@@ -37,6 +37,7 @@ export default function getUnitType(type: string, unit: string): UnitType | unde
         case "m3":
         case "cf":
         case "hcf":
+        case "Mcf":
             return "volume";
     }
 

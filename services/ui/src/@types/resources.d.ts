@@ -61,6 +61,7 @@ interface Resources {
         }
       },
       "settings": {
+        "language": "Language",
         "units": "Units"
       }
     },
@@ -116,6 +117,7 @@ interface Resources {
           "metres cubed": "{{value, number}} m³",
           "cubic feet": "{{value, number}} cf",
           "hundred cubic feet": "{{value, number}} hcf",
+          "thousand cubic feet": "{{value, number}} Mcf",
           "unrecognised": "{{value, number}} {{unit}}"
         },
         "labels": {
@@ -135,7 +137,8 @@ interface Resources {
           "fahrenheit": "Fahrenheit",
           "metres cubed": "Metres Cubed",
           "cubic feet": "Cubic Feet",
-          "hundred cubic feet": "Hundred Cubic Feet"
+          "hundred cubic feet": "Hundred Cubic Feet",
+          "thousand cubic feet": "Thousand Cubic Feet"
         }
       },
       "sensors": {

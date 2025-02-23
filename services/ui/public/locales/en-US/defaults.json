@@ -1,0 +1,9 @@
+{
+    "units": {
+        "current": "A",
+        "electricalPotential": "V",
+        "gas": "Mcf",
+        "power": "W",
+        "temperature": "F"
+    }
+}
