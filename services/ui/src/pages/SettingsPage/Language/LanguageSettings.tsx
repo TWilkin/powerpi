@@ -37,7 +37,6 @@ const LanguageSettings = () => {
 
     return (
         <FieldSet legend={t("pages.settings.languages")}>
-            {t("common.capability.colour temperature", { device: "Blah" })}
             <Select
                 label={t("pages.settings.languages")}
                 options={options}

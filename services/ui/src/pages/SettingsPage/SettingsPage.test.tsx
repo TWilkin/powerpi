@@ -1,12 +1,20 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import SettingsPage from "./SettingsPage";
 
 describe("SettingsPage", () => {
     test("renders", () => {
         render(<SettingsPage />);
 
-        expect(screen.getByText("Units")).toBeInTheDocument();
-        expect(screen.getByLabelText("Gas")).toBeInTheDocument();
-        expect(screen.getByLabelText("Temperature")).toBeInTheDocument();
+        const groups = screen.getAllByRole("group");
+        expect(groups).toHaveLength(2);
+
+        const languages = groups[0];
+        expect(within(languages).getByText("Languages")).toBeInTheDocument();
+        expect(within(languages).getByLabelText("Languages")).toBeInTheDocument();
+
+        const units = groups[1];
+        expect(within(units).getByText("Units")).toBeInTheDocument();
+        expect(within(units).getByLabelText("Gas")).toBeInTheDocument();
+        expect(within(units).getByLabelText("Temperature")).toBeInTheDocument();
     });
 });
