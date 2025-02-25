@@ -165,9 +165,9 @@ template:
       {{- end }}
       {{- end }}
 
-      {{- if .Params.LogLevel }}
+      {{- if .Values.logLevel }}
       - name: LOG_LEVEL
-        value: {{ .Params.LogLevel }}
+        value: {{ .Values.logLevel }}
       {{- end }}
       
       {{- range $element := .Params.Env }}
