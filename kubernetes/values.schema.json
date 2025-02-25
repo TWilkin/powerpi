@@ -390,6 +390,10 @@
                 "imageTag": {
                     "description": "The image tag to use instead of the image tag from the Helm chart",
                     "type": "string"
+                },
+                "logLevel": {
+                    "description": "The log level to configure this service to use",
+                    "enum": ["critical", "error", "warning", "info", "debug"]
                 }
             },
             "unevaluatedProperties": false
