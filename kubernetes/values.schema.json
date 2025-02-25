@@ -141,7 +141,7 @@
         "api": {
             "description": "The configuration for the PowerPi API service Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/service" }],
+            "allOf": [{ "$ref": "#/$defs/powerpi-service" }],
             "properties": {
                 "component": {
                     "const": "api"
@@ -153,7 +153,7 @@
         "config-server": {
             "description": "The configuration for the PowerPi Config Server Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/service" }],
+            "allOf": [{ "$ref": "#/$defs/powerpi-service" }],
             "properties": {
                 "component": {
                     "const": "config"
@@ -214,7 +214,7 @@
         "energy-monitor": {
             "description": "The configuration for the PowerPi Energy Monitor service Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/service" }],
+            "allOf": [{ "$ref": "#/$defs/powerpi-service" }],
             "properties": {
                 "component": {
                     "const": "energy-monitor"
@@ -236,7 +236,7 @@
         "event": {
             "description": "The configuration for the PowerPi Event service Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/service" }],
+            "allOf": [{ "$ref": "#/$defs/powerpi-service" }],
             "properties": {
                 "component": {
                     "const": "event"
@@ -297,7 +297,7 @@
         "persistence": {
             "description": "The configuration for the PowerPi Persistence service Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/service" }],
+            "allOf": [{ "$ref": "#/$defs/powerpi-service" }],
             "properties": {
                 "component": {
                     "const": "database"
@@ -309,7 +309,7 @@
         "scheduler": {
             "description": "The configuration for the PowerPi Scheduler service Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/service" }],
+            "allOf": [{ "$ref": "#/$defs/powerpi-service" }],
             "properties": {
                 "component": {
                     "const": "scheduler"
@@ -352,7 +352,7 @@
         "voice-assistant": {
             "description": "The configuration for the PowerPi Voice Assistant service Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/service" }],
+            "allOf": [{ "$ref": "#/$defs/powerpi-service" }],
             "properties": {
                 "component": {
                     "const": "voice-assistant"
@@ -390,7 +390,15 @@
                 "imageTag": {
                     "description": "The image tag to use instead of the image tag from the Helm chart",
                     "type": "string"
-                },
+                }
+            },
+            "unevaluatedProperties": false
+        },
+
+        "powerpi-service": {
+            "type": "object",
+            "allOf": [{ "$ref": "#/$defs/service" }],
+            "properties": {
                 "logLevel": {
                     "description": "The log level to configure this service to use",
                     "enum": ["critical", "error", "warning", "info", "debug"]
@@ -401,7 +409,7 @@
 
         "controller": {
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/service" }],
+            "allOf": [{ "$ref": "#/$defs/powerpi-service" }],
             "properties": {
                 "component": {
                     "const": "controller"
