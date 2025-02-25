@@ -164,6 +164,11 @@ template:
         value: /var/run/config/powerpi_config/users.json
       {{- end }}
       {{- end }}
+
+      {{- if .Values.logLevel }}
+      - name: LOG_LEVEL
+        value: {{ .Values.logLevel }}
+      {{- end }}
       
       {{- range $element := .Params.Env }}
       - name: {{ $element.Name }}
