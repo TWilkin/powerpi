@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
-from enum import IntEnum, unique
+from datetime import datetime
 from typing import Any, List, Tuple
 
 import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.base import BaseTrigger
+from cron_converter import Cron
 from dependency_injector import providers
 from powerpi_common.condition import (ConditionParser, Expression,
                                       ParseException)
@@ -15,17 +15,6 @@ from powerpi_common.mqtt import MQTTClient, MQTTMessage
 from powerpi_common.variable import VariableManager
 
 from scheduler.config import SchedulerConfig
-
-
-@unique
-class DayOfWeek(IntEnum):
-    MONDAY = 0
-    TUESDAY = 1
-    WEDNESDAY = 2
-    THURSDAY = 3
-    FRIDAY = 4
-    SATURDAY = 5
-    SUNDAY = 6
 
 
 class DeviceSchedule(ABC, LogMixin):
@@ -42,8 +31,9 @@ class DeviceSchedule(ABC, LogMixin):
         scheduler: AsyncIOScheduler,
         variable_manager: VariableManager,
         condition_parser_factory: providers.Factory,
+        cron_factory: providers.Factory,
         device: str,
-        days: List[str] | None = None,
+        cron: str,
         condition: Expression | None = None,
         scene: str | None = None,
         power: bool | None = None
@@ -59,7 +49,7 @@ class DeviceSchedule(ABC, LogMixin):
         self.__producer = mqtt_client.add_producer()
 
         self.__device = device
-        self.__days = days
+        self.__cron: Cron = cron_factory(cron_string=cron)
         self.__condition = condition
         self.__power = power
 
@@ -128,8 +118,16 @@ class DeviceSchedule(ABC, LogMixin):
         '''
         return self.__class__.__name__
 
+    def _next_run(self) -> datetime:
+        '''
+        Return the time the next schedule should occur, in UTC.
+        '''
+        now = datetime.now(self._timezone)
+
+        return self.__cron.schedule(start_date=now).next().astimezone(pytz.utc)
+
     @abstractmethod
-    def _build_trigger(self, start: datetime | None = None) -> Tuple[BaseTrigger, List[Any]]:
+    def _build_trigger(self) -> Tuple[BaseTrigger, List[Any]]:
         '''
         Extend to build the trigger for the next run of the schedule.
         '''
@@ -148,20 +146,6 @@ class DeviceSchedule(ABC, LogMixin):
         Extend to check whether we should schedule the next occurrence.
         '''
         raise NotImplementedError
-
-    def _find_valid_day(self, date: datetime):
-        '''
-        Find the next possible day the schedule is configured to run on.
-        '''
-        if self.__days is not None:
-            days = [
-                int(DayOfWeek[value.upper()]) for value in self.__days
-            ]
-
-            while date.weekday() not in days:
-                date += timedelta(days=1)
-
-        return date
 
     def __check_condition(self):
         '''
@@ -186,11 +170,7 @@ class DeviceSchedule(ABC, LogMixin):
         )
 
     def __str__(self):
-        if self.__days:
-            days = ', '.join(self.__days)
-            builder = f' on {days}'
-        else:
-            builder = ' every day'
+        builder = f'Every "{str(self.__cron)}"'
 
         if self.__condition:
             builder += ', if the condition is true,'
