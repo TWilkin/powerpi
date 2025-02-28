@@ -27,6 +27,5 @@
             "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/ColourTemperature.schema.json"
         }
     },
-    "required": ["at"],
     "unevaluatedProperties": false
 }
