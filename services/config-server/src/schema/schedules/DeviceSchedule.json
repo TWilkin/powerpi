@@ -17,13 +17,9 @@
                 "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
             }
         },
-        "days": {
-            "description": "The days this schedule applies to",
-            "type": "array",
-            "minItems": 1,
-            "items": {
-                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/WeekDay.schema.json"
-            }
+        "cron": {
+            "description": "The cron syntax description of the schedule",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Cron.schema.json"
         },
         "condition": {
             "description": "The condition to test if this schedule should be executed",
@@ -38,5 +34,6 @@
             "type": "boolean"
         }
     },
+    "required": ["cron"],
     "oneOf": [{ "required": ["device"] }, { "required": ["devices"] }]
 }

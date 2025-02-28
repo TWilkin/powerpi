@@ -10,10 +10,6 @@
         }
     ],
     "properties": {
-        "at": {
-            "description": "The time this schedule applies to",
-            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Time.schema.json"
-        },
         "hue": {
             "description": "The new hue value this schedule applies",
             "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Hue.schema.json"

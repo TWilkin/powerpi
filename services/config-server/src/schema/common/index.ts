@@ -9,8 +9,6 @@ import * as JsonPath from "./JsonPatch.schema.json";
 import * as MACAddress from "./MACAddress.schema.json";
 import * as Percentage from "./Percentage.schema.json";
 import * as Port from "./Port.schema.json";
-import * as Time from "./Time.schema.json";
-import * as WeekDay from "./WeekDay.schema.json";
 
 export default function loadCommonSchema() {
     return {
@@ -25,7 +23,5 @@ export default function loadCommonSchema() {
         MACAddress,
         Percentage,
         Port,
-        Time,
-        WeekDay,
     };
 }
