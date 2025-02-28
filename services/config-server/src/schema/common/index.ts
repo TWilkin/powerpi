@@ -1,6 +1,7 @@
 import * as AdditionalState from "./AdditionalState.schema.json";
 import * as ColourTemperature from "./ColourTemperature.schema.json";
 import * as Condition from "./Condition.schema.json";
+import * as Cron from "./Cron.schema.json";
 import * as DeviceState from "./DeviceState.schema.json";
 import * as Hue from "./Hue.schema.json";
 import * as Identifier from "./Identifier.schema.json";
@@ -16,6 +17,7 @@ export default function loadCommonSchema() {
         AdditionalState,
         ColourTemperature,
         Condition,
+        Cron,
         DeviceState,
         Hue,
         Identifier,
