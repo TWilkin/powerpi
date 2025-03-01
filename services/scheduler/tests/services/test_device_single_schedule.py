@@ -32,7 +32,7 @@ class ExpectedTime:
 class TestDeviceSingleSchedule:
     __expected_topic = 'device/SomeDevice/change'
 
-    @pytest.mark.parametrize('cron,now,timezone,expected', [
+    @pytest.mark.parametrize('schedule,now,timezone,expected', [
         (
             '0 9 * * *', None, None, ExpectedTime(2, 9, 0)
         ),
@@ -83,7 +83,7 @@ class TestDeviceSingleSchedule:
         self,
         subject_builder: SubjectBuilder,
         add_job: AddJobType,
-        cron: str,
+        schedule: str,
         now: datetime | None,
         timezone: str,
         expected: ExpectedTime,
@@ -97,7 +97,7 @@ class TestDeviceSingleSchedule:
 
         subject = subject_builder({
             'device': 'SomeDevice',
-            'cron': cron
+            'schedule': schedule
         })
 
         with patch_datetime(
@@ -131,7 +131,7 @@ class TestDeviceSingleSchedule:
     ):
         subject = subject_builder({
             'device': 'SomeDevice',
-            'cron': '0 9 * * *',
+            'schedule': '0 9 * * *',
             'condition': condition
         })
 
@@ -168,7 +168,7 @@ class TestDeviceSingleSchedule:
         with patch_datetime(datetime(2023, 3, 1, 9, 1, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
-                'cron': '0 9 * * *',
+                'schedule': '0 9 * * *',
                 **config
             })
 

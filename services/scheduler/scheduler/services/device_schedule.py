@@ -34,7 +34,7 @@ class DeviceSchedule(ABC, LogMixin):
         condition_parser_factory: providers.Factory,
         cron_factory: providers.Factory,
         device: str,
-        cron: str,
+        schedule: str,
         condition: Expression | None = None,
         scene: str | None = None,
         power: bool | None = None
@@ -50,7 +50,7 @@ class DeviceSchedule(ABC, LogMixin):
         self.__producer = mqtt_client.add_producer()
 
         self.__device = device
-        self.__cron: Cron = cron_factory(cron_string=cron)
+        self.__cron: Cron = cron_factory(cron_string=schedule)
         self.__condition = condition
         self.__power = power
 

@@ -49,7 +49,6 @@ class DeviceIntervalSchedule(DeviceSchedule):
         variable_manager: VariableManager,
         condition_parser_factory: providers.Factory,
         cron_factory: providers.Factory,
-        device: str,
         duration: str,
         interval: str,
         force: bool = False,
@@ -69,7 +68,6 @@ class DeviceIntervalSchedule(DeviceSchedule):
             variable_manager,
             condition_parser_factory,
             cron_factory,
-            device,
             **kwargs
         )
 

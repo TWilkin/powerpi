@@ -24,7 +24,6 @@ class DeviceSingleSchedule(DeviceSchedule):
         variable_manager: VariableManager,
         condition_parser_factory: providers.Factory,
         cron_factory: providers.Factory,
-        device: str,
         brightness: int | None = None,
         hue: int | None = None,
         saturation: int | None = None,
@@ -41,7 +40,6 @@ class DeviceSingleSchedule(DeviceSchedule):
             variable_manager,
             condition_parser_factory,
             cron_factory,
-            device,
             **kwargs
         )
 
