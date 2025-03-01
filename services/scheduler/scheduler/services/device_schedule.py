@@ -124,7 +124,18 @@ class DeviceSchedule(ABC, LogMixin):
         '''
         now = datetime.now(self._timezone)
 
-        return self.__cron.schedule(start_date=now).next().astimezone(pytz.utc)
+        schedule = self.__cron.schedule(start_date=now)
+
+        # get the next schedule time
+        next_run = schedule.next()
+
+        # the schedule time will be in the same timezone as now, even if it shouldn't be due to DST
+        next_run = next_run.replace(tzinfo=None)
+
+        # ultimately we want UTC
+        next_run = next_run.astimezone(pytz.utc)
+
+        return next_run
 
     @abstractmethod
     def _build_trigger(self) -> Tuple[BaseTrigger, List[Any]]:
