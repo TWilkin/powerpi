@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
 from apscheduler.triggers.date import DateTrigger
+from cron_converter import Cron
 from powerpi_common.condition import ConditionParser, Expression
 import pytz
 
@@ -31,36 +32,37 @@ class ExpectedTime:
 class TestDeviceSingleSchedule:
     __expected_topic = 'device/SomeDevice/change'
 
-    @pytest.mark.parametrize('at,days,now,expected', [
+    @pytest.mark.parametrize('cron,now,expected', [
         (
-            '09:00:00', None, None, ExpectedTime(2, 9, 0)
+            '0 9 * * *', None, ExpectedTime(2, 9, 0)
         ),
         (
-            '18:30:00', None, None, ExpectedTime(1, 18, 30)
+            '30 18 * * *', None, ExpectedTime(1, 18, 30)
         ),
         (
-            '09:00:00', ['Tuesday'], None, ExpectedTime(7, 9, 0)
+            '0 9 * * 2', None, ExpectedTime(7, 9, 0)
         ),
         # day light savings
         # before change over (summer time)
         (
-            '09:00:00', None, datetime(2023, 10, 27, 9, 0, 1),
+            '0 9 * * *', datetime(2023, 10, 27, 9, 0, 1),
             ExpectedTime(28, 8, 0)
         ),
         # after change over (summer -> winter time)
         (
-            '09:00:00', None, datetime(2023, 10, 28, 9, 0, 1),
+            '0 9 * * *', datetime(2023, 10, 28, 9, 0, 1),
             ExpectedTime(29, 9, 0)
         ),
         # other way
-        # before change over (winter time)
+        # before change over(winter time)
         (
-            '09:00:00', None, datetime(2024, 3, 29, 9, 0, 1),
+            '0 9 * * *', datetime(2024, 3, 29, 9, 0, 1),
             ExpectedTime(30, 9, 0)
         ),
         # after change over (winter -> summer time)
         (
-            '09:00:00', None, datetime(2024, 3, 30, 9, 0, 1),
+            '0 9 * * *',
+            datetime(2024, 3, 30, 9, 0, 1),
             ExpectedTime(31, 8, 0)
         ),
     ])
@@ -68,8 +70,7 @@ class TestDeviceSingleSchedule:
         self,
         subject_builder: SubjectBuilder,
         add_job: AddJobType,
-        at: str,
-        days: List[str] | None,
+        cron: str,
         now: datetime | None,
         expected: ExpectedTime
     ):
@@ -77,8 +78,7 @@ class TestDeviceSingleSchedule:
 
         subject = subject_builder({
             'device': 'SomeDevice',
-            'at': at,
-            'days': days
+            'cron': cron
         })
 
         with patch_datetime(
@@ -112,7 +112,7 @@ class TestDeviceSingleSchedule:
     ):
         subject = subject_builder({
             'device': 'SomeDevice',
-            'at': '09:00:00',
+            'cron': '0 9 * * *',
             'condition': condition
         })
 
@@ -149,7 +149,7 @@ class TestDeviceSingleSchedule:
         with patch_datetime(datetime(2023, 3, 1, 9, 1, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
-                'at': '09:00:00',
+                'cron': '0 9 * * *',
                 **config
             })
 
@@ -182,7 +182,8 @@ class TestDeviceSingleSchedule:
         powerpi_mqtt_client,
         powerpi_scheduler,
         powerpi_variable_manager,
-        condition_parser_factory
+        condition_parser_factory,
+        cron_factory
     ) -> SubjectBuilder:
         # pylint: disable=too-many-arguments
 
@@ -198,6 +199,7 @@ class TestDeviceSingleSchedule:
                 powerpi_scheduler,
                 powerpi_variable_manager,
                 condition_parser_factory,
+                cron_factory,
                 **schedule
             )
 
@@ -226,17 +228,21 @@ class TestDeviceSingleSchedule:
             powerpi_variable_manager
         )
 
+    @pytest.fixture
+    def cron_factory(self):
+        return Cron
+
 
 @contextmanager
 def patch_datetime(mock_now: datetime):
     def now(timezone=None):
+        print(f'mocking: {mock_now} {timezone}')
         if timezone is not None:
             return mock_now.astimezone(timezone)
 
         return mock_now.astimezone(pytz.UTC)
 
-    with patch('scheduler.services.device_single_schedule.datetime') as mock_datetime:
-        mock_datetime.combine = datetime.combine
+    with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
         mock_datetime.now = now
 
         yield mock_datetime
