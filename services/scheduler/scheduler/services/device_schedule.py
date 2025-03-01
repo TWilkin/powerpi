@@ -124,13 +124,21 @@ class DeviceSchedule(ABC, LogMixin):
         '''
         now = datetime.now(self._timezone)
 
-        schedule = self.__cron.schedule(start_date=now)
-
         # get the next schedule time
+        schedule = self.__cron.schedule(start_date=now)
         next_run = schedule.next()
 
-        # the schedule time will be in the same timezone as now, even if it shouldn't be due to DST
+        # the schedule time will be in the same timezone as now,
+        # even if it shouldn't be due to DST changes
         next_run = next_run.replace(tzinfo=None)
+
+        # now we've cleared the erroneous timezone, set the correct timezone
+        next_run_timezone = self._timezone.localize(next_run).tzinfo
+        next_run = datetime.combine(
+            next_run.date(),
+            next_run.time(),
+            next_run_timezone
+        )
 
         # ultimately we want UTC
         next_run = next_run.astimezone(pytz.utc)

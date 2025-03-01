@@ -46,24 +46,24 @@ class TestDeviceSingleSchedule:
         # before change over (summer time)
         (
             '0 9 * * *', datetime(2023, 10, 27, 9, 0, 1), None,
-            ExpectedTime(28, 8, 0)
+            ExpectedTime(28, 9 - 1, 0)
         ),
         # after change over (summer -> winter time)
         (
             '0 9 * * *', datetime(2023, 10, 28, 9, 0, 1), None,
-            ExpectedTime(29, 9, 0)
+            ExpectedTime(29, 9 - 0, 0)
         ),
         (
             '0 9 * * *',
             datetime(2025, 11, 1, 9 + 4, 0, 1),
             'America/New_York',
-            ExpectedTime(2, 9 - 5, 0)
+            ExpectedTime(2, 9 + 5, 0)
         ),
         # other way
         # before change over(winter time)
         (
             '0 9 * * *', datetime(2024, 3, 29, 9, 0, 1), None,
-            ExpectedTime(30, 9, 0)
+            ExpectedTime(30, 9 - 0, 0)
         ),
         # after change over (winter -> summer time)
         (
@@ -76,7 +76,7 @@ class TestDeviceSingleSchedule:
             '0 9 * * *',
             datetime(2025, 3, 8, 9 + 5, 0, 1),
             'America/New_York',
-            ExpectedTime(9, 9 - 4, 0)
+            ExpectedTime(9, 9 + 4, 0)
         ),
     ])
     def test_start(
@@ -262,5 +262,6 @@ def patch_datetime(mock_now: datetime):
 
     with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
         mock_datetime.now = now
+        mock_datetime.combine = datetime.combine
 
         yield mock_datetime
