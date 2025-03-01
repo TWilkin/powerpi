@@ -214,9 +214,9 @@ class DeviceIntervalSchedule(DeviceSchedule):
         return new_value
 
     def __str__(self):
-        builder = f'Every {self.__interval}s for {self.__duration}s'
+        builder = super().__str__()
 
-        builder += super().__str__()
+        builder += f', every {self.__interval}s for {self.__duration}s'
 
         for device_type, delta in self.__delta.items():
             builder += f', {device_type} between {delta.start} and {delta.end}'
