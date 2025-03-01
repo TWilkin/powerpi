@@ -33,11 +33,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
     )
 
     cron_factory = providers.Factory(
-        Cron,
-        options={
-            'output_weekday_names': True,
-            'output_month_names': True
-        }
+        Cron
     )
 
     device_interval_schedule = providers.Factory(

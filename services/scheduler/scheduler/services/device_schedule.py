@@ -6,6 +6,7 @@ import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.base import BaseTrigger
 from cron_converter import Cron
+from cron_descriptor import get_description
 from dependency_injector import providers
 from powerpi_common.condition import (ConditionParser, Expression,
                                       ParseException)
@@ -189,7 +190,7 @@ class DeviceSchedule(ABC, LogMixin):
         )
 
     def __str__(self):
-        builder = f'Every "{str(self.__cron)}"'
+        builder = get_description(str(self.__cron))
 
         if self.__condition:
             builder += ', if the condition is true,'
