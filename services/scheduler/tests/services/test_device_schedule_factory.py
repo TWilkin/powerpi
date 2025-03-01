@@ -14,7 +14,7 @@ class TestDeviceScheduleFactory:
         single_factory: MagicMock
     ):
         result = subject.build(
-            'MyDevice', {'cron': '* * * * *', 'duration': 600, 'interval': 300})
+            'MyDevice', {'schedule': '* * * * *', 'duration': 600, 'interval': 300})
 
         assert result is not None
         assert result == 'Interval'
@@ -22,7 +22,7 @@ class TestDeviceScheduleFactory:
         assert interval_factory.call_count == 1
         assert interval_factory.call_args_list[0] == call(
             device='MyDevice',
-            cron='* * * * *',
+            schedule='* * * * *',
             duration=600,
             interval=300
         )
@@ -36,7 +36,7 @@ class TestDeviceScheduleFactory:
         single_factory: MagicMock
     ):
         result = subject.build(
-            'MyDevice', {'cron': '* * * * *'}
+            'MyDevice', {'schedule': '* * * * *'}
         )
 
         assert result is not None
@@ -45,7 +45,7 @@ class TestDeviceScheduleFactory:
         assert single_factory.call_count == 1
         assert single_factory.call_args_list[0] == call(
             device='MyDevice',
-            cron='* * * * *'
+            schedule='* * * * *'
         )
 
         assert interval_factory.call_count == 0

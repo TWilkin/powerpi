@@ -28,5 +28,5 @@ class DeviceScheduleFactory(LogMixin):
         if 'duration' in device_schedule and 'interval' in device_schedule:
             return self.__device_interval_schedule_factory(**kwargs)
 
-        # the single schedule just uses "cron"
+        # the single schedule just uses "schedule"
         return self.__device_single_schedule_factory(**kwargs)
