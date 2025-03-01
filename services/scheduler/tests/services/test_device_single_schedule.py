@@ -32,38 +32,51 @@ class ExpectedTime:
 class TestDeviceSingleSchedule:
     __expected_topic = 'device/SomeDevice/change'
 
-    @pytest.mark.parametrize('cron,now,expected', [
+    @pytest.mark.parametrize('cron,now,timezone,expected', [
         (
-            '0 9 * * *', None, ExpectedTime(2, 9, 0)
+            '0 9 * * *', None, None, ExpectedTime(2, 9, 0)
         ),
         (
-            '30 18 * * *', None, ExpectedTime(1, 18, 30)
+            '30 18 * * *', None, None, ExpectedTime(1, 18, 30)
         ),
         (
-            '0 9 * * 2', None, ExpectedTime(7, 9, 0)
+            '0 9 * * 2', None, None, ExpectedTime(7, 9, 0)
         ),
         # day light savings
         # before change over (summer time)
         (
-            '0 9 * * *', datetime(2023, 10, 27, 9, 0, 1),
+            '0 9 * * *', datetime(2023, 10, 27, 9, 0, 1), None,
             ExpectedTime(28, 8, 0)
         ),
         # after change over (summer -> winter time)
         (
-            '0 9 * * *', datetime(2023, 10, 28, 9, 0, 1),
+            '0 9 * * *', datetime(2023, 10, 28, 9, 0, 1), None,
             ExpectedTime(29, 9, 0)
+        ),
+        (
+            '0 9 * * *',
+            datetime(2025, 11, 1, 9 + 4, 0, 1),
+            'America/New_York',
+            ExpectedTime(2, 9 - 5, 0)
         ),
         # other way
         # before change over(winter time)
         (
-            '0 9 * * *', datetime(2024, 3, 29, 9, 0, 1),
+            '0 9 * * *', datetime(2024, 3, 29, 9, 0, 1), None,
             ExpectedTime(30, 9, 0)
         ),
         # after change over (winter -> summer time)
         (
             '0 9 * * *',
             datetime(2024, 3, 30, 9, 0, 1),
-            ExpectedTime(31, 8, 0)
+            None,
+            ExpectedTime(31, 9 - 1, 0)
+        ),
+        (
+            '0 9 * * *',
+            datetime(2025, 3, 8, 9 + 5, 0, 1),
+            'America/New_York',
+            ExpectedTime(9, 9 - 4, 0)
         ),
     ])
     def test_start(
@@ -72,9 +85,15 @@ class TestDeviceSingleSchedule:
         add_job: AddJobType,
         cron: str,
         now: datetime | None,
-        expected: ExpectedTime
+        timezone: str,
+        expected: ExpectedTime,
+        scheduler_config
     ):
         # pylint: disable=too-many-arguments
+
+        type(scheduler_config).timezone = PropertyMock(
+            return_value='Europe/London' if timezone is None else timezone
+        )
 
         subject = subject_builder({
             'device': 'SomeDevice',
@@ -236,7 +255,6 @@ class TestDeviceSingleSchedule:
 @contextmanager
 def patch_datetime(mock_now: datetime):
     def now(timezone=None):
-        print(f'mocking: {mock_now} {timezone}')
         if timezone is not None:
             return mock_now.astimezone(timezone)
 
