@@ -17,8 +17,8 @@
                 "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
             }
         },
-        "cron": {
-            "description": "The cron syntax description of the schedule",
+        "schedule": {
+            "description": "The cron syntax description of the schedule, e.g. 0 9 * * 1-5 will be Every 9am Monday through Friday",
             "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Cron.schema.json"
         },
         "condition": {
@@ -34,6 +34,6 @@
             "type": "boolean"
         }
     },
-    "required": ["cron"],
+    "required": ["schedule"],
     "oneOf": [{ "required": ["device"] }, { "required": ["devices"] }]
 }

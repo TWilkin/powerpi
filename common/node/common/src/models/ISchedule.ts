@@ -1,7 +1,7 @@
 type DeviceSchedule = {
     device?: string;
     devices?: string[];
-    cron: string;
+    schedule: string;
     power?: boolean;
 };
 

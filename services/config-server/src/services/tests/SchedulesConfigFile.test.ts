@@ -24,7 +24,7 @@ describe("Schedules", () => {
             schedules: [
                 {
                     device: "BedroomLight",
-                    cron: "0 1 * * *",
+                    schedule: "0 1 * * *",
                     duration: 3600,
                     interval: 60,
                     brightness: [10.1, 99.99],
@@ -32,7 +32,7 @@ describe("Schedules", () => {
                 },
                 {
                     device: "HallwayLight",
-                    cron: "0 22 * * 3",
+                    schedule: "0 22 * * 3",
                     duration: 3600,
                     interval: 600,
                     hue: [0, 100],
@@ -41,7 +41,7 @@ describe("Schedules", () => {
                 },
                 {
                     devices: ["BedroomLight", "HallwayLight"],
-                    cron: "0 1 * * *",
+                    schedule: "0 1 * * *",
                     duration: 3600,
                     interval: 60,
                     condition: {
@@ -53,7 +53,7 @@ describe("Schedules", () => {
                 },
                 {
                     device: "BedroomLight",
-                    cron: "0 9 * * 3",
+                    schedule: "0 9 * * 3",
                     brightness: 50,
                 },
             ],
@@ -73,7 +73,7 @@ describe("Schedules", () => {
                     {
                         device: "BedroomLight",
                         devices: undefined,
-                        cron: "0 1 * * 3",
+                        schedule: "0 1 * * 3",
                         duration: 3600,
                         interval: 60,
                         brightness: [0, 100],
@@ -98,7 +98,7 @@ describe("Schedules", () => {
                     schedules: [
                         {
                             device: "BedroomLight",
-                            cron: "0 1 * * *",
+                            schedule: "0 1 * * *",
                             duration: 3600,
                             interval: 60,
                             [prop]: [100, 200, 300],
@@ -114,7 +114,7 @@ describe("Schedules", () => {
                     {
                         device: "BedroomLight",
                         devices: ["BedroomLight", "HallwayLight"],
-                        cron: "0 1 * * *",
+                        schedule: "0 1 * * *",
                         duration: 3600,
                         interval: 60,
                     },
@@ -127,7 +127,7 @@ describe("Schedules", () => {
                 schedules: [
                     {
                         device: "BedroomLight",
-                        cron: "0 1 * * *",
+                        schedule: "0 1 * * *",
                         duration: 3600,
                         interval: 60,
                         something: "else",
@@ -143,7 +143,7 @@ describe("Schedules", () => {
                 schedules: [
                     {
                         devices: undefined,
-                        cron: "0 9 * * 3",
+                        schedule: "0 9 * * 3",
                         brightness: 50,
                         hue: 180,
                         saturation: 75,
@@ -154,33 +154,35 @@ describe("Schedules", () => {
             });
         });
 
-        const goodCron = ["* * * * *", "*/2 * * * *", "* * * * 1-5", "* * * * 5,7"];
-        test.each(goodCron)("good cron %p", (cron) =>
-            testValid({
-                timezone: "Europe/London",
-                schedules: [
-                    {
-                        device: "BedroomLight",
-                        cron,
-                        brightness: 100,
-                    },
-                ],
-            }),
-        );
+        describe("schedule", () => {
+            const goodSchedule = ["* * * * *", "*/2 * * * *", "* * * * 1-5", "* * * * 5,7"];
+            test.each(goodSchedule)("good %p", (schedule) =>
+                testValid({
+                    timezone: "Europe/London",
+                    schedules: [
+                        {
+                            device: "BedroomLight",
+                            schedule,
+                            brightness: 100,
+                        },
+                    ],
+                }),
+            );
 
-        const badCron = [null, "", "* * * *", "A * * * *", "* * * * * * * *"];
-        test.each(badCron)("bad cron %p", (cron) =>
-            testInvalid({
-                timezone: "Europe/London",
-                schedules: [
-                    {
-                        device: "BedroomLight",
-                        cron,
-                        brightness: 100,
-                    },
-                ],
-            }),
-        );
+            const badSchedule = [null, "", "* * * *", "A * * * *", "* * * * * * * *"];
+            test.each(badSchedule)("bad %p", (schedule) =>
+                testInvalid({
+                    timezone: "Europe/London",
+                    schedules: [
+                        {
+                            device: "BedroomLight",
+                            schedule,
+                            brightness: 100,
+                        },
+                    ],
+                }),
+            );
+        });
 
         test("Other properties", () =>
             testInvalid({
@@ -188,7 +190,7 @@ describe("Schedules", () => {
                 schedules: [
                     {
                         device: "BedroomLight",
-                        cron: "0 9 * * 3",
+                        schedule: "0 9 * * 3",
                         something: "else",
                     },
                 ],
@@ -201,7 +203,7 @@ describe("Schedules", () => {
             schedules: [
                 {
                     device: "BedroomLight",
-                    cron: "0 9 * * *",
+                    schedule: "0 9 * * *",
                     hue: 180,
                 },
             ],
@@ -213,7 +215,7 @@ describe("Schedules", () => {
             schedules: [
                 {
                     device: "BedroomLight",
-                    cron: "0 9 * * *",
+                    schedule: "0 9 * * *",
                     saturation: 50,
                 },
             ],
@@ -225,7 +227,7 @@ describe("Schedules", () => {
             schedules: [
                 {
                     device: "BedroomLight",
-                    cron: "0 9 * * *",
+                    schedule: "0 9 * * *",
                     brightness: 75,
                 },
             ],
@@ -237,7 +239,7 @@ describe("Schedules", () => {
             schedules: [
                 {
                     device: "BedroomLight",
-                    cron: "0 9 * * *",
+                    schedule: "0 9 * * *",
                     temperature: 2000,
                 },
             ],
