@@ -8,6 +8,7 @@ from unittest.mock import MagicMock, PropertyMock, patch
 import pytest
 import pytz
 from apscheduler.triggers.interval import IntervalTrigger
+from cron_converter import Cron
 from powerpi_common.condition import ConditionParser, Expression
 from powerpi_common.device import ReservedScenes
 from pytest_mock import MockerFixture
@@ -33,51 +34,51 @@ class ExpectedTime:
 class TestDeviceIntervalSchedule:
     __expected_topic = 'device/SomeDevice/change'
 
-    @pytest.mark.parametrize('start_time,end_time,days,now,expected_start,expected_end', [
+    @pytest.mark.parametrize('schedule,duration,now,expected_start,expected_end', [
         (
-            '09:00:00', '09:30:00', None, None,
+            '0 9 * * *', 30 * 60, None,
             ExpectedTime(2, 9, 0), ExpectedTime(2, 9, 30)
         ),
         (
-            '18:30:00', '20:00:00', None, None,
+            '30 18 * * *', 1.5 * 60 * 60, None,
             ExpectedTime(1, 18, 30), ExpectedTime(1, 20, 0)
         ),
         (
-            '21:45:00', '00:00:00', None, None,
+            '45 21 * * *', 2.25 * 60 * 60, None,
             ExpectedTime(1, 21, 45), ExpectedTime(2, 0, 0)
         ),
         (
-            '01:45:00', '01:44:59', None, None,
+            '45 1 * * *', 24 * 60 * 60 - 1, None,
             ExpectedTime(1, 1, 45), ExpectedTime(2, 1, 44)
         ),
         (
-            '09:00:00', '09:30:00', ['Tuesday'], None,
+            '0 9 * * 2', 30 * 60, None,
             ExpectedTime(7, 9, 0), ExpectedTime(7, 9, 30)
         ),
         (
-            '17:00:00', '19:00:00', ['Wednesday'], None,
+            '0 17 * * 3', 2 * 60 * 60, None,
             ExpectedTime(1, 17, 0), ExpectedTime(1, 19, 0)
         ),
         # day light savings
         # before change over (summer time)
         (
-            '09:00:00', '09:30:00', None, datetime(2023, 10, 27, 9, 30, 1),
+            '0 9 * * *', 30 * 60, datetime(2023, 10, 27, 9, 30, 1),
             ExpectedTime(28, 8, 0), ExpectedTime(28, 8, 30)
         ),
         # after change over (summer -> winter time)
         (
-            '09:00:00', '09:30:00', None, datetime(2023, 10, 28, 9, 30, 1),
+            '0 9 * * *', 30 * 60, datetime(2023, 10, 28, 9, 30, 1),
             ExpectedTime(29, 9, 0), ExpectedTime(29, 9, 30)
         ),
         # other way
         # before change over (winter time)
         (
-            '09:00:00', '09:30:00', None, datetime(2024, 3, 29, 9, 30, 1),
+            '0 9 * * *', 30 * 60, datetime(2024, 3, 29, 9, 30, 1),
             ExpectedTime(30, 9, 0), ExpectedTime(30, 9, 30)
         ),
         # after change over (winter -> summer time)
         (
-            '09:00:00', '09:30:00', None, datetime(2024, 3, 30, 9, 30, 1),
+            '0 9 * * *', 30 * 60, datetime(2024, 3, 30, 9, 30, 1),
             ExpectedTime(31, 8, 0), ExpectedTime(31, 8, 30)
         ),
     ])
@@ -86,20 +87,19 @@ class TestDeviceIntervalSchedule:
         self,
         subject_builder: SubjectBuilder,
         add_job: AddJobType,
-        start_time: str,
-        end_time: str,
-        days: List[str] | None,
+        schedule: str,
+        duration: int,
         now: datetime | None,
         expected_start: ExpectedTime,
         expected_end: ExpectedTime,
-        interval: List[int]
+        interval: int
     ):
         # pylint: disable=too-many-arguments
 
         subject = subject_builder({
             'device': 'SomeDevice',
-            'between': [start_time, end_time],
-            'days': days,
+            'schedule': schedule,
+            'duration': duration,
             'interval': interval
         })
 
@@ -123,7 +123,7 @@ class TestDeviceIntervalSchedule:
         assert job[1].end_date.day == expected_end.day
         assert job[1].end_date.hour == expected_end.hour
         assert job[1].end_date.minute == expected_end.minute
-        assert job[1].start_date.tzinfo == pytz.UTC
+        assert job[1].end_date.tzinfo == pytz.UTC
 
         assert job[1].interval.seconds == interval
 
@@ -144,7 +144,8 @@ class TestDeviceIntervalSchedule:
     ):
         subject = subject_builder({
             'device': 'SomeDevice',
-            'between': ['09:00:00', '10:00:00'],
+            'schedule': '0 9 * * *',
+            'duration': 60 * 60,
             'interval': 60,
             'condition': condition
         })
@@ -191,7 +192,8 @@ class TestDeviceIntervalSchedule:
         with patch_datetime(datetime(2023, 3, 1, 9, 1, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
-                'between': ['09:00:00', '09:50:00'],
+                'schedule': '0 9 * * *',
+                'duration': 50 * 60,
                 'interval': 60,
                 **config
             })
@@ -238,7 +240,8 @@ class TestDeviceIntervalSchedule:
         with patch_datetime(datetime(2023, 3, 1, 9, 1, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
-                'between': ['09:10:00', '10:00:00'],
+                'schedule': '10 9 * * *',
+                'duration': 50 * 60,
                 'interval': 60,
                 'brightness': brightness
             })
@@ -283,7 +286,8 @@ class TestDeviceIntervalSchedule:
         with patch_datetime(datetime(2023, 3, 1, 9, 1, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
-                'between': ['09:10:00', '10:00:00'],
+                'schedule': '10 9 * * *',
+                'duration': 50 * 60,
                 'interval': 60,
                 'hue': hue
             })
@@ -310,7 +314,8 @@ class TestDeviceIntervalSchedule:
         with patch_datetime(datetime(2023, 3, 1, 9, 30, 1, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
-                'between': ['09:00:00', '09:30:00'],
+                'schedule': '0 9 * * *',
+                'duration': 30 * 60,
                 'interval': 60
             })
 
@@ -376,7 +381,8 @@ class TestDeviceIntervalSchedule:
 
         subject = subject_builder({
             'device': 'SomeDevice',
-            'between': ['09:11:00', '09:15:00'],
+            'schedule': '11 9 * * *',
+            'duration': 4 * 60,
             'interval': 60,
             'brightness': brightness,
             'force': force
@@ -423,7 +429,8 @@ class TestDeviceIntervalSchedule:
         subject = subject_builder({
             'device': 'SomeDevice',
             'scene': 'other',
-            'between': ['09:00:00', '09:50:00'],
+            'schedule': '0 9 * * *',
+            'duration': 50 * 60,
             'interval': 60,
             'brightness': [0, 100],
         })
@@ -478,7 +485,8 @@ class TestDeviceIntervalSchedule:
         with patch_datetime(datetime(2023, 3, 1, 9, 31, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
-                'between': ['09:10:00', '10:00:00'],
+                'schedule': '10 9 * * *',
+                'duration': 50 * 60,
                 'interval': 60,
                 'brightness': [0, 100],
                 'condition': None if not set_condition
@@ -503,7 +511,8 @@ class TestDeviceIntervalSchedule:
         powerpi_mqtt_client,
         powerpi_scheduler,
         powerpi_variable_manager,
-        condition_parser_factory
+        condition_parser_factory,
+        cron_factory
     ) -> SubjectBuilder:
         # pylint: disable=too-many-arguments
 
@@ -519,6 +528,7 @@ class TestDeviceIntervalSchedule:
                 powerpi_scheduler,
                 powerpi_variable_manager,
                 condition_parser_factory,
+                cron_factory,
                 **schedule
             )
 
@@ -546,6 +556,10 @@ class TestDeviceIntervalSchedule:
         return lambda: ConditionParser(
             powerpi_variable_manager
         )
+
+    @pytest.fixture
+    def cron_factory(self):
+        return Cron
 
 
 @contextmanager
