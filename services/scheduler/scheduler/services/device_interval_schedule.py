@@ -139,7 +139,10 @@ class DeviceIntervalSchedule(DeviceSchedule):
         return end_date <= datetime.now(pytz.UTC)
 
     def __calculate_dates(self):
-        start_date = self._next_run()
+        # adjust now by the duration in case we're inside the window already
+        now = datetime.now(self._timezone) - timedelta(seconds=self.__duration)
+
+        start_date = self._next_run(now)
         end_date = start_date + timedelta(seconds=self.__duration)
 
         return (start_date, end_date)

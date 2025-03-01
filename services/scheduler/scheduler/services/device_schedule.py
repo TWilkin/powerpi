@@ -119,11 +119,11 @@ class DeviceSchedule(ABC, LogMixin):
         '''
         return self.__class__.__name__
 
-    def _next_run(self) -> datetime:
+    def _next_run(self, now: datetime | None = None) -> datetime:
         '''
         Return the time the next schedule should occur, in UTC.
         '''
-        now = datetime.now(self._timezone)
+        now = datetime.now(self._timezone) if now is None else now
 
         # get the next schedule time
         schedule = self.__cron.schedule(start_date=now)
