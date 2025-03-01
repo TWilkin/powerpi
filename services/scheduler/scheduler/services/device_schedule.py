@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Any, List, Tuple
 
-import pytz
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.base import BaseTrigger
 from cron_converter import Cron
@@ -14,6 +13,7 @@ from powerpi_common.device import DeviceStatus
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.mqtt import MQTTClient, MQTTMessage
 from powerpi_common.variable import VariableManager
+from pytz import timezone, utc
 
 from scheduler.config import SchedulerConfig
 
@@ -64,7 +64,7 @@ class DeviceSchedule(ABC, LogMixin):
 
     @property
     def _timezone(self):
-        return pytz.timezone(self.__config.timezone)
+        return timezone(self.__config.timezone)
 
     def start(self):
         self.log_info(self)
@@ -142,7 +142,7 @@ class DeviceSchedule(ABC, LogMixin):
         )
 
         # ultimately we want UTC
-        next_run = next_run.astimezone(pytz.utc)
+        next_run = next_run.astimezone(utc)
 
         return next_run
 
