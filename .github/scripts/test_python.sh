@@ -6,7 +6,7 @@ echo Testing $project
 
 # not every project has the main and powerpi dependency group
 groups=test
-if grep -q "dependencies = [" pyproject.toml
+if grep -q "^dependencies" pyproject.toml
 then
     groups=$groups,main
 fi
