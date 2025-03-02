@@ -3,6 +3,7 @@ import {
     CapabilityStatusMessage,
     ConfigFileType,
     ConfigStatusMessage,
+    DeviceChangeMessage,
     DeviceStatusMessage,
     SensorStatusMessage,
 } from "@powerpi/common-api";
@@ -94,6 +95,12 @@ export default function useNotification() {
             }
         }
 
+        async function handleDeviceChange(message: DeviceChangeMessage) {
+            if (setChangingState) {
+                setChangingState(message.device, true);
+            }
+        }
+
         async function handleCapabilityChange(message: CapabilityStatusMessage) {
             patchDevice(message.device, {
                 type: "Capability",
@@ -109,6 +116,7 @@ export default function useNotification() {
             api.addSensorListener(handleSensorStatusChange);
             api.addBatteryListener(handleBatteryChange);
             api.addCapabilityListener(handleCapabilityChange);
+            api.addDeviceChangeListener(handleDeviceChange);
 
             // remove the listeners
             return () => {
@@ -117,6 +125,7 @@ export default function useNotification() {
                 api.removeSensorListener(handleSensorStatusChange);
                 api.removeBatteryListener(handleBatteryChange);
                 api.removeCapabilityListener(handleCapabilityChange);
+                api.removeDeviceChangeListener(handleDeviceChange);
             };
         }
     }, [api, patchDevice, patchSensor, queryClient, setChangingState, user]);
