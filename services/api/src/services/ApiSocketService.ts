@@ -38,13 +38,15 @@ export default class ApiSocketService implements ConfigChangeListener {
 
     onDeviceChangeMessage(
         deviceName: string,
-        state: DeviceState,
-        additionalState?: AdditionalState,
+        state: DeviceState | undefined,
+        additionalState: AdditionalState | undefined,
+        timestamp: number | undefined,
     ) {
         this.namespace?.emit(SocketIONamespace.Change, {
             device: deviceName,
             state,
             additionalState,
+            timestamp,
         });
     }
 

@@ -1,9 +1,11 @@
 import { ConfigRetrieverService, IDevice, MqttService, isDefined } from "@powerpi/common";
 import { AdditionalState, Device, DeviceState } from "@powerpi/common-api";
 import { Service } from "@tsed/common";
+import { omit } from "underscore";
 import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
 import { CapabilityMessage } from "./listeners/CapabilityStateListener";
+import { ChangeMessage } from "./listeners/DeviceChangeListener";
 import DeviceStateListener from "./listeners/DeviceStateListener";
 
 @Service()
@@ -90,11 +92,17 @@ export default class DeviceStateService extends DeviceStateListener {
         }
     }
 
-    onChangeMessage(deviceName: string, state: DeviceState, additionalState?: AdditionalState) {
+    onDeviceChangeMessage(deviceName: string, message: ChangeMessage) {
+        console.log("received", deviceName, message);
         const device = this.getDevice(deviceName);
 
         if (device) {
-            this.socket.onDeviceChangeMessage(device.name, state, additionalState);
+            this.socket.onDeviceChangeMessage(
+                device.name,
+                message.state,
+                omit(message, "state", "timestamp"),
+                message.timestamp,
+            );
         }
     }
 
