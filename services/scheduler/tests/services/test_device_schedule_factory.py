@@ -14,7 +14,7 @@ class TestDeviceScheduleFactory:
         single_factory: MagicMock
     ):
         result = subject.build(
-            'MyDevice', {'between': ['09:00:00', '09:10:00'], 'interval': 300})
+            'MyDevice', {'schedule': '* * * * *', 'duration': 600, 'interval': 300})
 
         assert result is not None
         assert result == 'Interval'
@@ -22,7 +22,8 @@ class TestDeviceScheduleFactory:
         assert interval_factory.call_count == 1
         assert interval_factory.call_args_list[0] == call(
             device='MyDevice',
-            between=['09:00:00', '09:10:00'],
+            schedule='* * * * *',
+            duration=600,
             interval=300
         )
 
@@ -35,7 +36,8 @@ class TestDeviceScheduleFactory:
         single_factory: MagicMock
     ):
         result = subject.build(
-            'MyDevice', {'at': '09:00:00'})
+            'MyDevice', {'schedule': '* * * * *'}
+        )
 
         assert result is not None
         assert result == 'Single'
@@ -43,23 +45,10 @@ class TestDeviceScheduleFactory:
         assert single_factory.call_count == 1
         assert single_factory.call_args_list[0] == call(
             device='MyDevice',
-            at='09:00:00'
+            schedule='* * * * *'
         )
 
         assert interval_factory.call_count == 0
-
-    def test_build_not_found(
-        self,
-        subject: DeviceScheduleFactory,
-        interval_factory: MagicMock,
-        single_factory: MagicMock
-    ):
-        result = subject.build('MyDevice', {})
-
-        assert result is None
-
-        assert interval_factory.call_count == 0
-        assert single_factory.call_count == 0
 
     @pytest.fixture
     def subject(

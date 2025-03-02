@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, time, timedelta
+from datetime import datetime, timedelta
 from enum import StrEnum, unique
 from typing import Dict, List, Tuple
 
@@ -48,8 +48,8 @@ class DeviceIntervalSchedule(DeviceSchedule):
         scheduler: AsyncIOScheduler,
         variable_manager: VariableManager,
         condition_parser_factory: providers.Factory,
-        device: str,
-        between: List[str],
+        cron_factory: providers.Factory,
+        duration: str,
         interval: str,
         force: bool = False,
         brightness: List[str] | None = None,
@@ -67,11 +67,11 @@ class DeviceIntervalSchedule(DeviceSchedule):
             scheduler,
             variable_manager,
             condition_parser_factory,
-            device,
+            cron_factory,
             **kwargs
         )
 
-        self.__between = between
+        self.__duration = int(duration)
         self.__interval = int(interval)
         self.__force = force
 
@@ -100,8 +100,8 @@ class DeviceIntervalSchedule(DeviceSchedule):
                     float(additional_state[delta_type][1])
                 )
 
-    def _build_trigger(self, start: datetime | None = None):
-        (start_date, end_date) = self.__calculate_dates(start)
+    def _build_trigger(self):
+        (start_date, end_date) = self.__calculate_dates()
 
         trigger = IntervalTrigger(
             start_date=start_date,
@@ -138,46 +138,12 @@ class DeviceIntervalSchedule(DeviceSchedule):
 
         return end_date <= datetime.now(pytz.UTC)
 
-    def __calculate_dates(self, start: datetime | None = None):
-        start_time = [int(part) for part in self.__between[0].split(':', 3)]
-        end_time = [int(part) for part in self.__between[1].split(':', 3)]
+    def __calculate_dates(self):
+        # adjust now by the duration in case we're inside the window already
+        now = datetime.now(self._timezone) - timedelta(seconds=self.__duration)
 
-        timezone = self._timezone
-
-        def make_dates(start: datetime):
-            start_date = timezone.localize(datetime.combine(
-                start.date(),
-                time(start_time[0], start_time[1], start_time[2], 0)
-            ))
-
-            end_date = timezone.localize(datetime.combine(
-                start.date(),
-                time(end_time[0], end_time[1], end_time[2], 0)
-            ))
-
-            # handle end_time on the next day
-            if end_date <= start_date:
-                end_date = end_date + timedelta(days=1)
-
-            # check it's not in the past
-            if end_date <= datetime.now(timezone):
-                start_date += timedelta(days=1)
-
-            return start_date, end_date
-
-        # get a first guess start_date
-        (start_date, _) = make_dates(
-            start.astimezone(timezone) if start is not None
-            else datetime.now(timezone)
-        )
-
-        # find the next appropriate day-of-week
-        start_date = self._find_valid_day(start_date)
-
-        (start_date, end_date) = make_dates(start_date)
-
-        start_date = start_date.astimezone(pytz.UTC)
-        end_date = end_date.astimezone(pytz.UTC)
+        start_date = self._next_run(now)
+        end_date = start_date + timedelta(seconds=self.__duration)
 
         return (start_date, end_date)
 
@@ -248,9 +214,9 @@ class DeviceIntervalSchedule(DeviceSchedule):
         return new_value
 
     def __str__(self):
-        builder = f'Every {self.__interval}s between {self.__between[0]} and {self.__between[1]}'
+        builder = super().__str__()
 
-        builder += super().__str__()
+        builder += f', every {self.__interval}s for {self.__duration}s'
 
         for device_type, delta in self.__delta.items():
             builder += f', {device_type} between {delta.start} and {delta.end}'

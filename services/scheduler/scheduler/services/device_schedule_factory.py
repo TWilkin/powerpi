@@ -25,11 +25,8 @@ class DeviceScheduleFactory(LogMixin):
             **device_schedule
         }
 
-        if 'between' in device_schedule and 'interval' in device_schedule:
+        if 'duration' in device_schedule and 'interval' in device_schedule:
             return self.__device_interval_schedule_factory(**kwargs)
 
-        if 'at' in device_schedule:
-            return self.__device_single_schedule_factory(**kwargs)
-
-        self.log_error('Count not identify the requested schedule type')
-        return None
+        # the single schedule just uses "schedule"
+        return self.__device_single_schedule_factory(**kwargs)
