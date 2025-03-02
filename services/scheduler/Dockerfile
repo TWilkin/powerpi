@@ -1,9 +1,9 @@
-# create a common base image with updated setuptools
-FROM python:3.11.8-slim-bookworm AS base-image
+# create a common base image
+FROM python:3.11.11-slim-bookworm AS base-image
 
 # create a base image for building
 FROM base-image AS build-base-image
-RUN pip3 install --prefer-binary poetry==1.7.1 \
+RUN pip3 install --prefer-binary poetry==2.1.1 \
     && poetry config virtualenvs.in-project true
 
 # build the common library
