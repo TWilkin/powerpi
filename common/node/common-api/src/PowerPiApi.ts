@@ -186,10 +186,8 @@ export default class PowerPiApi {
     private readonly onCapabilityMessage = (message: CapabilityStatusMessage) =>
         this.listeners.capability.forEach((listener) => listener(message));
 
-    private readonly onDeviceChangeMessage = (message: DeviceChangeMessage) => {
-        console.log("here");
+    private readonly onDeviceChangeMessage = (message: DeviceChangeMessage) =>
         this.listeners.change.forEach((listener) => listener(message));
-    };
 
     private readonly onConfigMessage = (message: ConfigStatusMessage) =>
         this.listeners.config.forEach((listener) => listener(message));

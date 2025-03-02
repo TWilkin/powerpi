@@ -4,6 +4,7 @@ import {
     ConfigFileType,
     ConfigStatusMessage,
     DeviceChangeMessage,
+    DeviceState,
     DeviceStatusMessage,
     SensorStatusMessage,
 } from "@powerpi/common-api";
@@ -96,8 +97,12 @@ export default function useNotification() {
         }
 
         function handleDeviceChange(message: DeviceChangeMessage) {
-            console.log(message);
             if (setChangingState) {
+                patchDevice(message.device, {
+                    type: "State",
+                    state: DeviceState.Unknown,
+                    since: message.timestamp,
+                });
                 setChangingState(message.device, true);
             }
         }
@@ -109,8 +114,6 @@ export default function useNotification() {
                 since: message.timestamp,
             });
         }
-
-        console.log("register");
 
         // add the listeners
         if (user) {

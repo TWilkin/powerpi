@@ -93,7 +93,6 @@ export default class DeviceStateService extends DeviceStateListener {
     }
 
     onDeviceChangeMessage(deviceName: string, message: ChangeMessage) {
-        console.log("received", deviceName, message);
         const device = this.getDevice(deviceName);
 
         if (device) {
