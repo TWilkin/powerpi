@@ -7,6 +7,7 @@ export default interface ChangeMessage extends AdditionalState {
 
 export type DeviceChangeMessage = {
     device: string;
+    timestamp: number;
 } & ChangeMessage;
 
 export type DeviceChangeCallback = (message: DeviceChangeMessage) => void;
