@@ -310,7 +310,7 @@ name = "powerpi-common"
 version = "0.7.4"
 description = "PowerPi Common Python Library"
 optional = false
-python-versions = ">=3.11"
+python-versions = ">=3.11,<4.0"
 groups = ["powerpi"]
 files = []
 develop = true
@@ -330,7 +330,7 @@ name = "powerpi-common-test"
 version = "0.6.1"
 description = "PowerPi Common Python Test Library"
 optional = false
-python-versions = ">=3.11"
+python-versions = ">=3.11,<4.0"
 groups = ["test"]
 files = []
 develop = true
@@ -506,5 +506,5 @@ devenv = ["black", "check-manifest", "flake8", "pyroma", "pytest (>=4.3)", "pyte
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.11"
-content-hash = "0f73f1ece8c5119bcaa8db380ef83bd902c458620b87324c7532d46ce5a3c78f"
+python-versions = ">=3.11,<4.0"
+content-hash = "d07a31aeb41559169dcfbb4cad1245a99041185fc173dfaea6c297b2d207ae6d"

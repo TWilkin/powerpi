@@ -1,10 +1,9 @@
-# create a common base image with updated setuptools
-FROM python:3.11.8-slim-bookworm AS base-image
-RUN pip3 install --prefer-binary setuptools==69.0.3
+# create a common base image
+FROM python:3.11.11-slim-bookworm AS base-image
 
 # create a base image for building
 FROM base-image AS build-base-image
-RUN pip3 install --prefer-binary poetry==1.7.1 \
+RUN pip3 install --prefer-binary poetry==2.1.1 \
     && poetry config virtualenvs.in-project true
 
 # build the common library
@@ -19,7 +18,7 @@ FROM build-base-image AS build-image
 WORKDIR /opt/powerpi/controllers/virtual
 COPY --from=build-common-image /opt/powerpi/common ./../../common
 COPY controllers/virtual/poetry.lock controllers/virtual/pyproject.toml ./
-RUN poetry install --compile --only main --no-root --no-directory --no-interaction --no-ansi
+RUN poetry install --compile --no-root --no-directory --no-interaction --no-ansi
 
 # install the common library
 COPY --from=build-common-image /opt/powerpi/common/python/dist/*.whl .

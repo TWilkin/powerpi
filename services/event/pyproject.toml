@@ -9,7 +9,7 @@ authors = [
 repository = "https://github.com/TWilkin/powerpi.git"
 readme = "README.md"
 
-requires-python = ">=3.11"
+requires-python = ">=3.11,<4.0"
 dependencies = [
     "jsonpatch (~=1.33)"
 ]
