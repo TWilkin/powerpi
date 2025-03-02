@@ -36,6 +36,18 @@ export default class ApiSocketService implements ConfigChangeListener {
         });
     }
 
+    onDeviceChangeMessage(
+        deviceName: string,
+        state: DeviceState,
+        additionalState?: AdditionalState,
+    ) {
+        this.namespace?.emit(SocketIONamespace.Change, {
+            device: deviceName,
+            state,
+            additionalState,
+        });
+    }
+
     onEventMessage(
         sensorName: string,
         action?: string,

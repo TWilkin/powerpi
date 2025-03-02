@@ -90,6 +90,14 @@ export default class DeviceStateService extends DeviceStateListener {
         }
     }
 
+    onChangeMessage(deviceName: string, state: DeviceState, additionalState?: AdditionalState) {
+        const device = this.getDevice(deviceName);
+
+        if (device) {
+            this.socket.onDeviceChangeMessage(device.name, state, additionalState);
+        }
+    }
+
     protected onConfigChange() {
         // get the new list of devices
         const devices = this.config.devices;
@@ -131,7 +139,7 @@ export default class DeviceStateService extends DeviceStateListener {
     }
 
     /** The options a device should have when it's first loaded. */
-    private initialiseDevice = (device: IDevice): Device => ({
+    private readonly initialiseDevice = (device: IDevice): Device => ({
         ...this.defaultDevice(device),
         display_name: device.displayName,
         state: DeviceState.Unknown,
@@ -142,7 +150,7 @@ export default class DeviceStateService extends DeviceStateListener {
     });
 
     /** The device options with values for any that have defaults. */
-    private defaultDevice = (device: IDevice) => ({
+    private readonly defaultDevice = (device: IDevice) => ({
         ...device,
         visible: device.visible ?? true,
     });
