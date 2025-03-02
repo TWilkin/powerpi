@@ -208,5 +208,5 @@ dev = ["pre-commit", "pytest-asyncio", "tox"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.11"
-content-hash = "66164830a0f30d900e94dffcce68487346c5e32f4caf1d9032811f7371deb120"
+python-versions = ">=3.11"
+content-hash = "cfdd18302b19969e61372d2ba8dcfc7492fb51b44c74b0f458697e87c03b8c63"
