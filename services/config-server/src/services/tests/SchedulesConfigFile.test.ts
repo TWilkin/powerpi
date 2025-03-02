@@ -169,7 +169,7 @@ describe("Schedules", () => {
                 }),
             );
 
-            const badSchedule = [null, "", "* * * *", "A * * * *", "* * * * * * * *"];
+            const badSchedule = [null, "", "* * * *", "A * * * *", "* * * * * *"];
             test.each(badSchedule)("bad %p", (schedule) =>
                 testInvalid({
                     timezone: "Europe/London",
