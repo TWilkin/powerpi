@@ -46,7 +46,7 @@ jobs:
         if: steps.check_modified.outputs.python
         uses: snok/install-poetry@v1
         with:
-          version: 1.7.1
+          version: 2.1.1
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
