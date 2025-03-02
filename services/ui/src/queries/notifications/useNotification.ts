@@ -39,7 +39,7 @@ export default function useNotification() {
             }
         }
 
-        async function handleDeviceStatusChange(message: DeviceStatusMessage) {
+        function handleDeviceStatusChange(message: DeviceStatusMessage) {
             patchDevice(message.device, {
                 type: "State",
                 state: message.state,
@@ -52,7 +52,7 @@ export default function useNotification() {
             }
         }
 
-        async function handleSensorStatusChange(message: SensorStatusMessage) {
+        function handleSensorStatusChange(message: SensorStatusMessage) {
             if ("state" in message) {
                 patchSensor(message.sensor, {
                     type: "State",
@@ -77,7 +77,7 @@ export default function useNotification() {
             }
         }
 
-        async function handleBatteryChange(message: BatteryStatusMessage) {
+        function handleBatteryChange(message: BatteryStatusMessage) {
             if ("device" in message) {
                 patchDevice(message.device, {
                     type: "Battery",
@@ -95,13 +95,14 @@ export default function useNotification() {
             }
         }
 
-        async function handleDeviceChange(message: DeviceChangeMessage) {
+        function handleDeviceChange(message: DeviceChangeMessage) {
+            console.log(message);
             if (setChangingState) {
                 setChangingState(message.device, true);
             }
         }
 
-        async function handleCapabilityChange(message: CapabilityStatusMessage) {
+        function handleCapabilityChange(message: CapabilityStatusMessage) {
             patchDevice(message.device, {
                 type: "Capability",
                 capability: message.capability,
@@ -109,14 +110,16 @@ export default function useNotification() {
             });
         }
 
+        console.log("register");
+
         // add the listeners
         if (user) {
             api.addConfigChangeListener(handleConfigChange);
             api.addDeviceListener(handleDeviceStatusChange);
             api.addSensorListener(handleSensorStatusChange);
             api.addBatteryListener(handleBatteryChange);
-            api.addCapabilityListener(handleCapabilityChange);
             api.addDeviceChangeListener(handleDeviceChange);
+            api.addCapabilityListener(handleCapabilityChange);
 
             // remove the listeners
             return () => {
@@ -124,8 +127,8 @@ export default function useNotification() {
                 api.removeDeviceListener(handleDeviceStatusChange);
                 api.removeSensorListener(handleSensorStatusChange);
                 api.removeBatteryListener(handleBatteryChange);
-                api.removeCapabilityListener(handleCapabilityChange);
                 api.removeDeviceChangeListener(handleDeviceChange);
+                api.removeCapabilityListener(handleCapabilityChange);
             };
         }
     }, [api, patchDevice, patchSensor, queryClient, setChangingState, user]);
