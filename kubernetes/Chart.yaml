@@ -44,7 +44,7 @@ dependencies:
     version: 0.1.12
     condition: global.lifx
   - name: network-controller
-    version: 0.1.9
+    version: 0.1.10
     condition: global.network
   - name: snapcast-controller
     version: 0.0.8
