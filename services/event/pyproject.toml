@@ -20,9 +20,12 @@ powerpi-common = {path = "../../common/python", develop = true}
 [tool.poetry.group.test.dependencies]
 powerpi-common-test = {path = "../../common/pytest", develop = true}
 
+[tool.poetry]
+requires-poetry = ">=2.0"
+
 [tool.pytest.ini_options]
 addopts = "-v --cov=event"
 
 [build-system]
-requires = ["poetry-core>=1.1.0"]
+requires = ["poetry-core>=2.0"]
 build-backend = "poetry.core.masonry.api"
