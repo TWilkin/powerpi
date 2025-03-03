@@ -45,6 +45,36 @@ describe("ApiSocketService", () => {
         });
     });
 
+    describe("onDeviceChangeMessage", () => {
+        test("success", () => {
+            subject?.$onNamespaceInit(instance(mockedNamespace));
+
+            subject?.onDeviceChangeMessage(
+                "HallwayLight",
+                DeviceState.On,
+                { brightness: 50 },
+                1234,
+            );
+
+            verify(mockedNamespace.emit("change", anything())).once();
+
+            const payload = capture(mockedNamespace.emit<"change">);
+
+            expect(payload.first()[1]).toStrictEqual({
+                device: "HallwayLight",
+                state: "on",
+                additionalState: { brightness: 50 },
+                timestamp: 1234,
+            });
+        });
+
+        test("no namespace", () => {
+            subject?.onDeviceChangeMessage("HallwayLight", DeviceState.On, {}, 1234);
+
+            verify(mockedNamespace.emit(anyString(), anything())).never();
+        });
+    });
+
     describe("onEventMessage", () => {
         test("motion", () => {
             subject?.$onNamespaceInit(instance(mockedNamespace));

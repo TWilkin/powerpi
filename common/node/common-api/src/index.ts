@@ -7,7 +7,7 @@ import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityS
 import Config from "./Config";
 import { ConfigFileType, ConfigStatusCallback, ConfigStatusMessage } from "./ConfigStatus";
 import Device from "./Device";
-import { DeviceChangeCallback, DeviceChangeMessage } from "./DeviceChangeMessage";
+import ChangeMessage, { DeviceChangeCallback, DeviceChangeMessage } from "./DeviceChangeMessage";
 import DeviceState from "./DeviceState";
 import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import { Floor, Floorplan, Point, PolygonRoom, RectangleRoom, Room } from "./Floorplan";
@@ -33,6 +33,7 @@ export {
     Capability,
     CapabilityStatusCallback,
     CapabilityStatusMessage,
+    ChangeMessage,
     Config,
     ConfigFileType,
     ConfigStatusCallback,

@@ -57,6 +57,19 @@ export default class DeviceStateService extends DeviceStateListener {
         }
     }
 
+    onDeviceChangeMessage(deviceName: string, message: ChangeMessage) {
+        const device = this.getDevice(deviceName);
+
+        if (device) {
+            this.socket.onDeviceChangeMessage(
+                device.name,
+                message.state,
+                omit(message, "state", "timestamp"),
+                message.timestamp,
+            );
+        }
+    }
+
     protected onDeviceBatteryMessage(
         deviceName: string,
         value: number,
@@ -89,19 +102,6 @@ export default class DeviceStateService extends DeviceStateListener {
             device.capability = capability;
 
             this.socket.onCapabilityMessage(device.name, device.capability, message.timestamp);
-        }
-    }
-
-    onDeviceChangeMessage(deviceName: string, message: ChangeMessage) {
-        const device = this.getDevice(deviceName);
-
-        if (device) {
-            this.socket.onDeviceChangeMessage(
-                device.name,
-                message.state,
-                omit(message, "state", "timestamp"),
-                message.timestamp,
-            );
         }
     }
 
