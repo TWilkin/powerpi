@@ -3,6 +3,7 @@ import {
     CapabilityStatusMessage,
     ConfigFileType,
     ConfigStatusMessage,
+    DeviceChangeMessage,
     DeviceState,
     DeviceStatusMessage,
     SensorStatusMessage,
@@ -15,11 +16,13 @@ const mocks = vi.hoisted(() => ({
     api: {
         addConfigChangeListener: vi.fn(),
         addDeviceListener: vi.fn(),
+        addDeviceChangeListener: vi.fn(),
         addSensorListener: vi.fn(),
         addBatteryListener: vi.fn(),
         addCapabilityListener: vi.fn(),
         removeConfigChangeListener: vi.fn(),
         removeDeviceListener: vi.fn(),
+        removeDeviceChangeListener: vi.fn(),
         removeSensorListener: vi.fn(),
         removeBatteryListener: vi.fn(),
         removeCapabilityListener: vi.fn(),
@@ -63,12 +66,14 @@ describe("useNotification", () => {
 
         expect(mocks.api.addConfigChangeListener).not.toHaveBeenCalledTimes(1);
         expect(mocks.api.addDeviceListener).not.toHaveBeenCalledTimes(1);
+        expect(mocks.api.addDeviceChangeListener).not.toHaveBeenCalledTimes(1);
         expect(mocks.api.addSensorListener).not.toHaveBeenCalledTimes(1);
         expect(mocks.api.addBatteryListener).not.toHaveBeenCalledTimes(1);
         expect(mocks.api.addCapabilityListener).not.toHaveBeenCalledTimes(1);
 
         expect(mocks.api.removeConfigChangeListener).not.toHaveBeenCalled();
         expect(mocks.api.removeDeviceListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeDeviceChangeListener).not.toHaveBeenCalled();
         expect(mocks.api.removeSensorListener).not.toHaveBeenCalled();
         expect(mocks.api.removeBatteryListener).not.toHaveBeenCalled();
         expect(mocks.api.removeCapabilityListener).not.toHaveBeenCalled();
@@ -77,6 +82,7 @@ describe("useNotification", () => {
 
         expect(mocks.api.removeConfigChangeListener).not.toHaveBeenCalled();
         expect(mocks.api.removeDeviceListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeDeviceChangeListener).not.toHaveBeenCalled();
         expect(mocks.api.removeSensorListener).not.toHaveBeenCalled();
         expect(mocks.api.removeBatteryListener).not.toHaveBeenCalled();
         expect(mocks.api.removeCapabilityListener).not.toHaveBeenCalled();
@@ -89,12 +95,14 @@ describe("useNotification", () => {
 
         expect(mocks.api.addConfigChangeListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.addDeviceListener).toHaveBeenCalledTimes(1);
+        expect(mocks.api.addDeviceChangeListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.addSensorListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.addBatteryListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.addCapabilityListener).toHaveBeenCalledTimes(1);
 
         expect(mocks.api.removeConfigChangeListener).not.toHaveBeenCalled();
         expect(mocks.api.removeDeviceListener).not.toHaveBeenCalled();
+        expect(mocks.api.removeDeviceChangeListener).not.toHaveBeenCalled();
         expect(mocks.api.removeSensorListener).not.toHaveBeenCalled();
         expect(mocks.api.removeBatteryListener).not.toHaveBeenCalled();
         expect(mocks.api.removeCapabilityListener).not.toHaveBeenCalled();
@@ -103,6 +111,7 @@ describe("useNotification", () => {
 
         expect(mocks.api.removeConfigChangeListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.removeDeviceListener).toHaveBeenCalledTimes(1);
+        expect(mocks.api.removeDeviceChangeListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.removeSensorListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.removeBatteryListener).toHaveBeenCalledTimes(1);
         expect(mocks.api.removeCapabilityListener).toHaveBeenCalledTimes(1);
@@ -174,6 +183,35 @@ describe("useNotification", () => {
 
         expect(mocks.setChangingState).toHaveBeenCalledTimes(1);
         expect(mocks.setChangingState).toHaveBeenCalledWith("MyDevice", false);
+    });
+
+    test("handleDeviceChange", async () => {
+        renderHook(useNotification);
+
+        expect(mocks.api.addDeviceChangeListener).toHaveBeenCalledTimes(1);
+
+        const now = new Date().getTime();
+        const event: DeviceChangeMessage = {
+            device: "MyDevice",
+            state: DeviceState.On,
+
+            brightness: 100,
+
+            timestamp: now,
+        };
+
+        const handleDeviceChange = mocks.api.addDeviceChangeListener.mock.calls[0][0];
+        await act(() => handleDeviceChange(event));
+
+        expect(mocks.patchDevice).toHaveBeenCalledTimes(1);
+        expect(mocks.patchDevice).toHaveBeenCalledWith("MyDevice", {
+            type: "State",
+            state: DeviceState.Unknown,
+            since: now,
+        });
+
+        expect(mocks.setChangingState).toHaveBeenCalledTimes(1);
+        expect(mocks.setChangingState).toHaveBeenCalledWith("MyDevice", true);
     });
 
     describe("handleSensorStatusChange", () => {
