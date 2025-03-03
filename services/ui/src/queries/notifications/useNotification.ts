@@ -53,6 +53,17 @@ export default function useNotification() {
             }
         }
 
+        function handleDeviceChange(message: DeviceChangeMessage) {
+            if (setChangingState) {
+                patchDevice(message.device, {
+                    type: "State",
+                    state: DeviceState.Unknown,
+                    since: message.timestamp,
+                });
+                setChangingState(message.device, true);
+            }
+        }
+
         function handleSensorStatusChange(message: SensorStatusMessage) {
             if ("state" in message) {
                 patchSensor(message.sensor, {
@@ -96,17 +107,6 @@ export default function useNotification() {
             }
         }
 
-        function handleDeviceChange(message: DeviceChangeMessage) {
-            if (setChangingState) {
-                patchDevice(message.device, {
-                    type: "State",
-                    state: DeviceState.Unknown,
-                    since: message.timestamp,
-                });
-                setChangingState(message.device, true);
-            }
-        }
-
         function handleCapabilityChange(message: CapabilityStatusMessage) {
             patchDevice(message.device, {
                 type: "Capability",
@@ -119,18 +119,18 @@ export default function useNotification() {
         if (user) {
             api.addConfigChangeListener(handleConfigChange);
             api.addDeviceListener(handleDeviceStatusChange);
+            api.addDeviceChangeListener(handleDeviceChange);
             api.addSensorListener(handleSensorStatusChange);
             api.addBatteryListener(handleBatteryChange);
-            api.addDeviceChangeListener(handleDeviceChange);
             api.addCapabilityListener(handleCapabilityChange);
 
             // remove the listeners
             return () => {
                 api.removeConfigChangeListener(handleConfigChange);
                 api.removeDeviceListener(handleDeviceStatusChange);
+                api.removeDeviceChangeListener(handleDeviceChange);
                 api.removeSensorListener(handleSensorStatusChange);
                 api.removeBatteryListener(handleBatteryChange);
-                api.removeDeviceChangeListener(handleDeviceChange);
                 api.removeCapabilityListener(handleCapabilityChange);
             };
         }
