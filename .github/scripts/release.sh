@@ -19,7 +19,7 @@ then
     exit 0
 fi
 
-# donwload helm chart releaser
+# download helm chart releaser
 echo "Downloading Chart Releaser"
 curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/v1.5.0/chart-releaser_1.5.0_linux_amd64.tar.gz"
 tar -xzf cr.tar.gz

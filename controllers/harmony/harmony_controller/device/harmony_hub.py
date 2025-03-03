@@ -19,6 +19,7 @@ class Activity(NamedTuple):
 
 
 class HarmonyHubDevice(Device, PollableMixin):
+    # pylint: disable=too-many-ancestors
     __POWER_OFF_ID = -1
 
     # pylint: disable=too-many-arguments
@@ -29,8 +30,8 @@ class HarmonyHubDevice(Device, PollableMixin):
         mqtt_client: MQTTClient,
         device_manager: DeviceManager,
         harmony_client: HarmonyClient,
-        ip: str = None,
-        hostname: str = None,
+        ip: str | None = None,
+        hostname: str | None = None,
         **kwargs
     ):
         Device.__init__(
@@ -66,7 +67,10 @@ class HarmonyHubDevice(Device, PollableMixin):
             self.__update_to_unknown()
 
     async def _turn_on(self):
-        pass
+        '''
+        The hub has no native "on" state, as it's an activity which should be turned on,
+        making the hub appear on.
+        '''
 
     async def _turn_off(self):
         # pylint: disable=broad-except

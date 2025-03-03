@@ -1,10 +1,9 @@
-# create a common base image with updated setuptools
-FROM python:3.11.8-slim-bookworm AS base-image
-RUN pip3 install --prefer-binary setuptools==69.0.3
+# create a common base image
+FROM python:3.11.11-slim-bookworm AS base-image
 
 # create a base image for building
 FROM base-image AS build-base-image
-RUN pip3 install --prefer-binary poetry==1.7.1
+RUN pip3 install --prefer-binary poetry==2.1.1
 RUN poetry config virtualenvs.in-project true
 
 # build the common library
@@ -36,8 +35,8 @@ ENV TZ="UTC"
 # ensure the controller can run ping
 RUN apt-get update \
     && apt-get install -y libcap2-bin \
-    && apt-get clean -y
-RUN setcap cap_net_raw+ep /usr/local/bin/python3.11
+    && apt-get clean -y \
+    && setcap cap_net_raw+ep /usr/local/bin/python3.11
 
 RUN adduser --disabled-password powerpi
 USER powerpi
@@ -50,4 +49,4 @@ COPY --chown=powerpi controllers/network/pyproject.toml LICENSE ./
 COPY --chown=powerpi controllers/network/network_controller ./network_controller/
 
 # start the application once the container is ready
-CMD python -m network_controller
+CMD ["python", "-m", "network_controller"]

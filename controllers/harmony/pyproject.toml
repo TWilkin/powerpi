@@ -1,18 +1,21 @@
-[tool.poetry]
+[project]
 name = "harmony_controller"
 version = "0.4.8"
 description = "PowerPi Logitech Harmony Controller"
 license = "GPL-3.0-only"
-authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
+authors = [
+    {name = "TWilkin", email = "TWilkin@users.noreply.github.com"}
+]
 repository = "https://github.com/TWilkin/powerpi.git"
 readme = "README.md"
 
-[tool.poetry.dependencies]
-python = "^3.11"
-aioharmony = "~=0.2.10"
-async-cache = "~=1.1.1"
-asyncio-atexit = "~=1.0.1"
-lazy = "~=1.6"
+requires-python = ">=3.11,<4.0"
+dependencies = [
+    "aioharmony (~=0.4.1)",
+    "async-cache (~=1.1.1)",
+    "asyncio-atexit (~=1.0.1)",
+    "lazy (~=1.6)"
+]
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}
@@ -20,10 +23,13 @@ powerpi-common = {path = "../../common/python", develop = true}
 [tool.poetry.group.test.dependencies]
 powerpi-common-test = {path = "../../common/pytest", develop = true}
 
+[tool.poetry]
+requires-poetry = ">=2.0"
+
 [tool.pytest.ini_options]
 addopts = "-v --cov=harmony_controller"
 markers = ["first"]
 
 [build-system]
-requires = ["poetry-core>=1.1.0"]
+requires = ["poetry-core>=2.0"]
 build-backend = "poetry.core.masonry.api"

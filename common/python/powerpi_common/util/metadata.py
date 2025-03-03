@@ -7,7 +7,7 @@ def get_metadata():
     content = Path('pyproject.toml').read_text(encoding='utf-8')
     metadata = toml.loads(content)
 
-    return metadata['tool']['poetry']
+    return metadata['project']
 
 
 def get_name():

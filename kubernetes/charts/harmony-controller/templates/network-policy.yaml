@@ -4,7 +4,7 @@
     "Local" (dict 
         "Direction" "egress"
         "Cidr" .Values.localCIDR
-        "Port" 5222
+        "Port" 8088
     )
 }}
 {{- include "powerpi.network-policy" (merge (dict "Params" $data) .) -}}
