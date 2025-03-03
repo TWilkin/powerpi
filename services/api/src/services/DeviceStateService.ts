@@ -1,9 +1,11 @@
 import { ConfigRetrieverService, IDevice, MqttService, isDefined } from "@powerpi/common";
 import { AdditionalState, Device, DeviceState } from "@powerpi/common-api";
 import { Service } from "@tsed/common";
+import { omit } from "underscore";
 import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
 import { CapabilityMessage } from "./listeners/CapabilityStateListener";
+import { ChangeMessage } from "./listeners/DeviceChangeListener";
 import DeviceStateListener from "./listeners/DeviceStateListener";
 
 @Service()
@@ -51,6 +53,19 @@ export default class DeviceStateService extends DeviceStateListener {
                 device.state,
                 timestamp,
                 device.additionalState,
+            );
+        }
+    }
+
+    onDeviceChangeMessage(deviceName: string, message: ChangeMessage) {
+        const device = this.getDevice(deviceName);
+
+        if (device) {
+            this.socket.onDeviceChangeMessage(
+                device.name,
+                message.state,
+                omit(message, "state", "timestamp"),
+                message.timestamp,
             );
         }
     }
@@ -131,7 +146,7 @@ export default class DeviceStateService extends DeviceStateListener {
     }
 
     /** The options a device should have when it's first loaded. */
-    private initialiseDevice = (device: IDevice): Device => ({
+    private readonly initialiseDevice = (device: IDevice): Device => ({
         ...this.defaultDevice(device),
         display_name: device.displayName,
         state: DeviceState.Unknown,
@@ -142,7 +157,7 @@ export default class DeviceStateService extends DeviceStateListener {
     });
 
     /** The device options with values for any that have defaults. */
-    private defaultDevice = (device: IDevice) => ({
+    private readonly defaultDevice = (device: IDevice) => ({
         ...device,
         visible: device.visible ?? true,
     });

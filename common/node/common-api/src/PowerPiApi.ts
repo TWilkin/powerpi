@@ -6,7 +6,7 @@ import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityS
 import Config from "./Config";
 import { ConfigStatusCallback, ConfigStatusMessage } from "./ConfigStatus";
 import Device from "./Device";
-import DeviceChangeMessage from "./DeviceChangeMessage";
+import ChangeMessage, { DeviceChangeCallback, DeviceChangeMessage } from "./DeviceChangeMessage";
 import DeviceState from "./DeviceState";
 import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
 import { Floorplan } from "./Floorplan";
@@ -28,6 +28,7 @@ export default class PowerPiApi {
         sensor: SensorStatusCallback[];
         battery: BatteryStatusCallback[];
         capability: CapabilityStatusCallback[];
+        change: DeviceChangeCallback[];
         config: ConfigStatusCallback[];
     };
 
@@ -43,6 +44,7 @@ export default class PowerPiApi {
             sensor: [],
             battery: [],
             capability: [],
+            change: [],
             config: [],
         };
 
@@ -95,7 +97,7 @@ export default class PowerPiApi {
         state?: DeviceState,
         additionalState?: AdditionalState,
     ) {
-        let message: DeviceChangeMessage = {};
+        let message: ChangeMessage = {};
 
         if (state) {
             message["state"] = state;
@@ -128,6 +130,11 @@ export default class PowerPiApi {
         this.listeners.capability.push(callback);
     }
 
+    public addDeviceChangeListener(callback: DeviceChangeCallback) {
+        this.connectSocketIO();
+        this.listeners.change.push(callback);
+    }
+
     public addConfigChangeListener(callback: ConfigStatusCallback) {
         this.connectSocketIO();
         this.listeners.config.push(callback);
@@ -149,6 +156,10 @@ export default class PowerPiApi {
         this.listeners.capability = this.listeners.capability.filter(
             (listener) => listener === callback,
         );
+    }
+
+    public removeDeviceChangeListener(callback: DeviceChangeCallback) {
+        this.listeners.change = this.listeners.change.filter((listener) => listener === callback);
     }
 
     public removeConfigChangeListener(callback: ConfigStatusCallback) {
@@ -174,6 +185,9 @@ export default class PowerPiApi {
 
     private readonly onCapabilityMessage = (message: CapabilityStatusMessage) =>
         this.listeners.capability.forEach((listener) => listener(message));
+
+    private readonly onDeviceChangeMessage = (message: DeviceChangeMessage) =>
+        this.listeners.change.forEach((listener) => listener(message));
 
     private readonly onConfigMessage = (message: ConfigStatusMessage) =>
         this.listeners.config.forEach((listener) => listener(message));
@@ -211,6 +225,7 @@ export default class PowerPiApi {
             this.socket.on(SocketIONamespace.Sensor, this.onSensorMessage);
             this.socket.on(SocketIONamespace.Battery, this.onBatteryMessage);
             this.socket.on(SocketIONamespace.Capability, this.onCapabilityMessage);
+            this.socket.on(SocketIONamespace.Change, this.onDeviceChangeMessage);
             this.socket.on(SocketIONamespace.Config, this.onConfigMessage);
         }
     }

@@ -1,5 +1,5 @@
 import { MqttService, OutgoingMessage } from "@powerpi/common";
-import { DeviceChangeMessage } from "@powerpi/common-api";
+import { ChangeMessage } from "@powerpi/common-api";
 import { BodyParams, Controller, Get, PathParams, Post, Res } from "@tsed/common";
 import { Required } from "@tsed/schema";
 import { Response } from "express";
@@ -36,7 +36,7 @@ export default class DeviceController {
     @Authorize()
     async change(
         @PathParams("device") device: string,
-        @Required() @BodyParams() body: DeviceChangeMessage,
+        @Required() @BodyParams() body: ChangeMessage,
         @Res() response: Response,
     ) {
         // fail if there is no message or it contains disallowed keys

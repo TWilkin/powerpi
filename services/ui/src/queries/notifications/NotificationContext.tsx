@@ -13,9 +13,9 @@ type NotificationContextType = {
 
 export const NotificationContext = createContext<NotificationContextType>({});
 
-type NotificationContextProvider = PropsWithChildren<unknown>;
+type NotificationContextProviderProps = PropsWithChildren<unknown>;
 
-export const NotificationContextProvider = ({ children }: NotificationContextProvider) => {
+export const NotificationContextProvider = ({ children }: NotificationContextProviderProps) => {
     const [changingState, setChangingState] = useState<ChangingStateType>({});
 
     const handleChangingState = useCallback((device: string, changing: boolean) => {

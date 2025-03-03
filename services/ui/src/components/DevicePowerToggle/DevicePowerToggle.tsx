@@ -63,15 +63,9 @@ const DevicePowerToggle = ({ device, ...props }: DevicePowerToggleProps) => {
                 };
 
             case DeviceState.Off:
+            case DeviceState.Unknown:
                 return {
                     checked: false,
-                    label: t(`common.${key} on`, { device: device.display_name }),
-                };
-
-            case DeviceState.Unknown:
-            default:
-                return {
-                    checked: undefined,
                     label: t(`common.${key} on`, { device: device.display_name }),
                 };
         }
