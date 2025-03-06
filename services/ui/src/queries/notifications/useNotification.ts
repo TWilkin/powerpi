@@ -54,12 +54,13 @@ export default function useNotification() {
         }
 
         function handleDeviceChange(message: DeviceChangeMessage) {
+            patchDevice(message.device, {
+                type: "State",
+                state: DeviceState.Unknown,
+                since: message.timestamp,
+            });
+
             if (setChangingState) {
-                patchDevice(message.device, {
-                    type: "State",
-                    state: DeviceState.Unknown,
-                    since: message.timestamp,
-                });
                 setChangingState(message.device, true);
             }
         }
