@@ -5,7 +5,7 @@ import {
     MqttConsumer,
     MqttService,
 } from "@powerpi/common";
-import { DeviceState } from "@powerpi/common-api";
+import { ChangeMessage, DeviceState } from "@powerpi/common-api";
 import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
 import ApiSocketService from "./ApiSocketService";
 import ConfigService from "./ConfigService";
@@ -133,51 +133,87 @@ describe("DeviceStateService", () => {
         expect(device.categories).toStrictEqual(["Light", "Something"]);
     });
 
-    describe("onDeviceStateMessage", () =>
-        [undefined, 1234].forEach((timestamp) =>
-            test(`timestamp: ${timestamp}`, () => {
-                const device = subject!.devices[0];
-                expect(device.state).toBe("unknown");
+    describe("onDeviceStateMessage", () => {
+        const timestampCases: (undefined | number)[] = [undefined, 1234];
+
+        test.each(timestampCases)("timestamp: %p", (timestamp) => {
+            const device = subject!.devices[0];
+            expect(device.state).toBe("unknown");
+            expect(device.since).toBe(-1);
+            expect(device.additionalState).toBeUndefined();
+
+            const consumer = getConsumer<StateMessage>("status");
+
+            consumer?.message("device", "HallwayLight", "status", {
+                state: DeviceState.On,
+                timestamp: timestamp,
+                brightness: 50,
+                temperature: 2000,
+            });
+
+            expect(device.state).toBe("on");
+            expect(device.additionalState).toBeDefined();
+            expect(device.additionalState?.brightness).toBe(50);
+            expect(device.additionalState?.temperature).toBe(2000);
+
+            if (timestamp) {
+                expect(device.since).toBe(1234);
+            } else {
                 expect(device.since).toBe(-1);
-                expect(device.additionalState).toBeUndefined();
+            }
 
-                const consumer = getConsumer<StateMessage>("status");
+            verify(
+                mockedApiSocketService.onDeviceStateMessage(
+                    "HallwayLight",
+                    DeviceState.On,
+                    timestamp,
+                    anything(),
+                ),
+            ).once();
 
-                consumer?.message("device", "HallwayLight", "status", {
-                    state: DeviceState.On,
-                    timestamp: timestamp,
-                    brightness: 50,
-                    temperature: 2000,
-                });
+            const payload = capture(mockedApiSocketService.onDeviceStateMessage);
 
-                expect(device.state).toBe("on");
-                expect(device.additionalState).toBeDefined();
-                expect(device.additionalState?.brightness).toBe(50);
-                expect(device.additionalState?.temperature).toBe(2000);
+            expect(payload.first()[3]).toStrictEqual({
+                brightness: 50,
+                temperature: 2000,
+            });
+        });
+    });
 
-                if (timestamp) {
-                    expect(device.since).toBe(1234);
-                } else {
-                    expect(device.since).toBe(-1);
-                }
+    test("onDeviceChangeMessage", () => {
+        const device = subject!.devices[0];
+        expect(device.state).toBe("unknown");
+        expect(device.since).toBe(-1);
+        expect(device.additionalState).toBeUndefined();
 
-                verify(
-                    mockedApiSocketService.onDeviceStateMessage(
-                        "HallwayLight",
-                        DeviceState.On,
-                        timestamp,
-                        anything(),
-                    ),
-                ).once();
+        const consumer = getConsumer<ChangeMessage & Message>("change");
 
-                const payload = capture(mockedApiSocketService.onDeviceStateMessage);
+        consumer?.message("device", "HallwayLight", "change", {
+            state: DeviceState.On,
+            brightness: 50,
+            temperature: 2000,
+        });
 
-                expect(payload.first()[3]).toStrictEqual({
-                    brightness: 50,
-                    temperature: 2000,
-                });
-            }),
-        ));
+        expect(device.state).toBe("unknown");
+        expect(device.since).toBe(-1);
+        expect(device.additionalState).toBeUndefined();
+
+        verify(
+            mockedApiSocketService.onDeviceChangeMessage(
+                "HallwayLight",
+                DeviceState.On,
+                anything(),
+                anything(),
+            ),
+        ).once();
+
+        const payload = capture(mockedApiSocketService.onDeviceChangeMessage);
+
+        expect(payload.first()[2]).toStrictEqual({
+            brightness: 50,
+            temperature: 2000,
+        });
+    });
 
     describe("onBatteryMessage", () => {
         [true, false, undefined].forEach((charging) =>
