@@ -1,5 +1,5 @@
-import AdditionalState from "./AdditionalState";
-import DeviceState from "./DeviceState";
+import AdditionalState from "./AdditionalState.js";
+import DeviceState from "./DeviceState.js";
 
 export interface DeviceStatusMessage {
     device: string;

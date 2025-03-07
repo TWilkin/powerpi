@@ -1,6 +1,6 @@
-import BaseDevice from "./BaseDevice";
-import Battery from "./Battery";
-import { Metric, MetricNumericType, MetricStateType } from "./Metric";
+import BaseDevice from "./BaseDevice.js";
+import Battery from "./Battery.js";
+import { Metric, MetricNumericType, MetricStateType } from "./Metric.js";
 
 export type SensorNumericValue = {
     value?: number;

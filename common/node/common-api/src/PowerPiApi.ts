@@ -1,20 +1,20 @@
 import axios, { AxiosInstance } from "axios";
 import { connect, Socket } from "socket.io-client";
-import AdditionalState from "./AdditionalState";
-import { BatteryStatusCallback, BatteryStatusMessage } from "./BatteryStatus";
-import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityStatus";
-import Config from "./Config";
-import { ConfigStatusCallback, ConfigStatusMessage } from "./ConfigStatus";
-import Device from "./Device";
-import ChangeMessage, { DeviceChangeCallback, DeviceChangeMessage } from "./DeviceChangeMessage";
-import DeviceState from "./DeviceState";
-import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
-import { Floorplan } from "./Floorplan";
-import History from "./History";
-import PaginationResponse from "./Pagination";
-import Sensor from "./Sensor";
-import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus";
-import SocketIONamespace from "./SocketIONamespace";
+import AdditionalState from "./AdditionalState.js";
+import { BatteryStatusCallback, BatteryStatusMessage } from "./BatteryStatus.js";
+import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityStatus.js";
+import Config from "./Config.js";
+import { ConfigStatusCallback, ConfigStatusMessage } from "./ConfigStatus.js";
+import Device from "./Device.js";
+import ChangeMessage, { DeviceChangeCallback, DeviceChangeMessage } from "./DeviceChangeMessage.js";
+import DeviceState from "./DeviceState.js";
+import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus.js";
+import { Floorplan } from "./Floorplan.js";
+import History from "./History.js";
+import PaginationResponse from "./Pagination.js";
+import Sensor from "./Sensor.js";
+import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus.js";
+import SocketIONamespace from "./SocketIONamespace.js";
 
 type ErrorHandler = (error: { response: { status: number } }) => void;
 
