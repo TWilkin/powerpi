@@ -1,5 +1,5 @@
 import { ConfigFileType, IDeviceConfigFile, LoggerService } from "@powerpi/common";
-import "@powerpi/common-test/jest-globals";
+import "@powerpi/common-test/vi-globals";
 import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
 import ConfigPublishService from "./ConfigPublishService.js";
 import ConfigService from "./ConfigService.js";
@@ -25,7 +25,7 @@ describe("GitHubConfigService", () => {
     let subject: GitHubConfigService | undefined;
 
     beforeEach(() => {
-        jest.spyOn(process, "exit").mockImplementation(() => {
+        vi.spyOn(process, "exit").mockImplementation(() => {
             throw new ProcessExitCalled();
         });
 
@@ -52,7 +52,7 @@ describe("GitHubConfigService", () => {
     describe("start", () => {
         describe("daemon", () => {
             test("on", async () => {
-                jest.useFakeTimers();
+                vi.useFakeTimers();
 
                 when(mockedConfigServiceArgumentService.options).thenReturn({ daemon: true });
 
@@ -65,7 +65,7 @@ describe("GitHubConfigService", () => {
                 expect(logs.last()).toContainLogMessage("Scheduling to run every 300 seconds");
                 resetCalls(mockedLoggerService);
 
-                await jest.advanceTimersByTimeAsync(300 * 1000 + 10);
+                await vi.advanceTimersByTimeAsync(300 * 1000 + 10);
 
                 logs = capture(mockedLoggerService.info);
 

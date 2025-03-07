@@ -208,7 +208,7 @@ describe("Virtual Devices", () => {
                 { state: "hue", goodValues: [0, 240, 360], badValues: [-1, 23.23, 361, "e"] },
                 { state: "saturation", goodValues: [0, 20.23, 100], badValues: [-1, 101, "e"] },
             ].forEach(({ state, goodValues, badValues }) =>
-                describe(state, () => {
+                describe(`${state}`, () => {
                     goodValues.forEach((value) =>
                         test(`Good data ${value}`, () =>
                             testValid({

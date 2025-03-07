@@ -10,7 +10,7 @@ describe("ConfigService", () => {
     let subject: ConfigService | undefined;
 
     beforeEach(() => {
-        jest.resetModules();
+        vi.resetModules();
         process.env = { ...oldEnv };
 
         subject = new ConfigService(instance(mockedFileService));

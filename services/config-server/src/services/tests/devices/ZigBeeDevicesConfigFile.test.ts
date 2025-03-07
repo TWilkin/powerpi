@@ -130,7 +130,7 @@ describe("ZigBee Devices", () => {
             }));
 
         const invalidMetrics = ["ready", 1, true];
-        test.each(invalidMetrics)("Bad metric $metric", (metric) =>
+        test.each(invalidMetrics)("Bad metric %s", (metric) =>
             testInvalid({
                 sensors: [
                     {

@@ -16,10 +16,10 @@
     "scripts": {
         "build": "tsc",
         "clean": "rm -rf dist",
-        "coverage": "jest --coverage",
+        "coverage": "vitest run --coverage",
         "start:dev": "ts-node src/index.ts",
         "start:prd": "node dist/src/index.js",
-        "test": "jest"
+        "test": "vitest"
     },
     "dependencies": {
         "@octokit/rest": "^20.0.1",

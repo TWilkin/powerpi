@@ -10,7 +10,7 @@ describe("HandlerFactory", () => {
     let subject: HandlerFactory | undefined;
 
     beforeEach(() => {
-        jest.spyOn(Container, "get").mockImplementation(() => instance(mockedDeviceHandler));
+        vi.spyOn(Container, "get").mockImplementation(() => instance(mockedDeviceHandler));
         subject = new HandlerFactory();
     });
 
@@ -18,7 +18,7 @@ describe("HandlerFactory", () => {
         Object.values(ConfigFileType)
             .filter((fileType) => fileType !== ConfigFileType.Devices)
             .forEach((fileType) =>
-                test(fileType, () => expect(subject?.build(fileType)).toBeUndefined()),
+                test(`${fileType}`, () => expect(subject?.build(fileType)).toBeUndefined()),
             );
 
         test("devices", () => {

@@ -3,9 +3,9 @@ import { instance, mock, when } from "ts-mockito";
 import ConfigService from "./ConfigService.js";
 import OctokitService, { NoUserError } from "./OctokitService.js";
 
-jest.mock("@octokit/rest", () => {
+vi.mock("@octokit/rest", () => {
     return {
-        Octokit: jest.fn().mockImplementation(() => ({
+        Octokit: vi.fn().mockImplementation(() => ({
             rest: {
                 repos: {
                     getContent: () => ({
@@ -23,7 +23,7 @@ describe("OctokitService", () => {
     let subject: OctokitService | undefined;
 
     beforeEach(() => {
-        jest.mocked(Octokit).mockClear();
+        vi.mocked(Octokit).mockClear();
 
         when(mockedConfigService.gitHubUser).thenReturn("user");
         when(mockedConfigService.repo).thenReturn("repo");
@@ -35,12 +35,12 @@ describe("OctokitService", () => {
     });
 
     describe("getContent", () => {
-        test("no user", () => {
+        test("no user", async () => {
             when(mockedConfigService.gitHubUser).thenReturn(undefined);
 
             const action = () => subject?.getContent();
 
-            expect(action).rejects.toThrow(NoUserError);
+            await expect(action).rejects.toThrow(NoUserError);
         });
 
         [undefined, "devices.json"].forEach((fileName) =>

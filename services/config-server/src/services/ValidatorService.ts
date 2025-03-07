@@ -1,8 +1,8 @@
 import { ConfigFileType, LoggerService } from "@powerpi/common";
-import { Ajv, AnySchema } from "ajv";
 import addFormats from "ajv-formats";
 import { Service } from "typedi";
 import loadSchema from "../schema/index.js";
+import { Ajv, AnySchema } from "./Ajv.cjs";
 
 @Service()
 export default class ValidatorService {
