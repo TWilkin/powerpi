@@ -1,14 +1,14 @@
 import { ConfigFileType, IDeviceConfigFile, LoggerService } from "@powerpi/common";
 import "@powerpi/common-test/jest-globals";
 import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
-import ConfigPublishService from "./ConfigPublishService";
-import ConfigService from "./ConfigService";
-import ConfigServiceArgumentService from "./ConfigServiceArgumentService";
-import GitHubConfigService from "./GitHubConfigService";
-import OctokitService from "./OctokitService";
-import ValidatorService from "./ValidatorService";
-import HandlerFactory from "./handlers/HandlerFactory";
-import IHandler from "./handlers/IHandler";
+import ConfigPublishService from "./ConfigPublishService.js";
+import ConfigService from "./ConfigService.js";
+import ConfigServiceArgumentService from "./ConfigServiceArgumentService.js";
+import GitHubConfigService from "./GitHubConfigService.js";
+import OctokitService from "./OctokitService.js";
+import ValidatorService from "./ValidatorService.js";
+import HandlerFactory from "./handlers/HandlerFactory.js";
+import IHandler from "./handlers/IHandler.js";
 
 type OctokitContent = Awaited<ReturnType<OctokitService["getContent"]>>;
 

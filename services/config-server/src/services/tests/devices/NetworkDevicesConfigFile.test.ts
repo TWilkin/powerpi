@@ -1,4 +1,4 @@
-import commonDeviceTests from "./commonDeviceTests";
+import commonDeviceTests from "./commonDeviceTests.js";
 
 describe("Network Devices", () => {
     describe("Computer", () => {
@@ -48,7 +48,7 @@ describe("Network Devices", () => {
                             ip,
                         },
                     ],
-                }))
+                })),
         );
 
         ["test", "00:11:22:33:44:55:66", "00:11:22:33:44:GG"].forEach((mac) =>
@@ -62,7 +62,7 @@ describe("Network Devices", () => {
                             hostname: "computer.example.com",
                         },
                     ],
-                }))
+                })),
         );
 
         test("No hostname or IP", () =>
@@ -88,7 +88,7 @@ describe("Network Devices", () => {
                             delay,
                         },
                     ],
-                }))
+                })),
         );
     });
 });

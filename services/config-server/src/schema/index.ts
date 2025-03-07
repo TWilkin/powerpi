@@ -1,7 +1,7 @@
-import loadCommonSchema from "./common";
-import loadConfigSchema from "./config";
-import loadDevicesSchema from "./devices";
-import loadSchedulesSchema from "./schedules";
+import loadCommonSchema from "./common/index.js";
+import loadConfigSchema from "./config/index.js";
+import loadDevicesSchema from "./devices/index.js";
+import loadSchedulesSchema from "./schedules/index.js";
 
 export default function loadSchema() {
     return {

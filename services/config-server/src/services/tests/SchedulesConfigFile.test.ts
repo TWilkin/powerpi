@@ -1,10 +1,10 @@
 import { ConfigFileType, DeviceInternalSchedule } from "@powerpi/common";
-import ValidatorService from "../ValidatorService";
+import ValidatorService from "../ValidatorService.js";
 import {
     testInvalid as _testInvalid,
     testValid as _testValid,
     setupValidator,
-} from "./setupValidator";
+} from "./setupValidator.js";
 
 describe("Schedules", () => {
     let subject: ValidatorService | undefined;

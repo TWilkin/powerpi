@@ -1,12 +1,12 @@
 import { ConfigFileType, LoggerService } from "@powerpi/common";
 import { Service } from "typedi";
 import yaml from "yaml";
-import ConfigPublishService from "./ConfigPublishService";
-import ConfigService from "./ConfigService";
-import ConfigServiceArgumentService from "./ConfigServiceArgumentService";
-import OctokitService from "./OctokitService";
-import ValidatorService, { ValidationException } from "./ValidatorService";
-import HandlerFactory from "./handlers/HandlerFactory";
+import ConfigPublishService from "./ConfigPublishService.js";
+import ConfigService from "./ConfigService.js";
+import ConfigServiceArgumentService from "./ConfigServiceArgumentService.js";
+import OctokitService from "./OctokitService.js";
+import ValidatorService, { ValidationException } from "./ValidatorService.js";
+import HandlerFactory from "./handlers/HandlerFactory.js";
 
 @Service()
 export default class GitHubConfigService {

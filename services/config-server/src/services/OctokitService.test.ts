@@ -1,7 +1,7 @@
 import octokit, { Octokit } from "@octokit/rest";
 import { instance, mock, when } from "ts-mockito";
-import ConfigService from "./ConfigService";
-import OctokitService, { NoUserError } from "./OctokitService";
+import ConfigService from "./ConfigService.js";
+import OctokitService, { NoUserError } from "./OctokitService.js";
 
 jest.mock("@octokit/rest", () => {
     return {

@@ -1,8 +1,8 @@
 import { ConfigFileType } from "@powerpi/common";
 import { instance, mock } from "ts-mockito";
-import Container from "../../../src/container";
-import DeviceHandler from "../../../src/services/handlers/DeviceHandler";
-import HandlerFactory from "../../../src/services/handlers/HandlerFactory";
+import Container from "../../container.js";
+import DeviceHandler from "./DeviceHandler.js";
+import HandlerFactory from "./HandlerFactory.js";
 
 const mockedDeviceHandler = mock<DeviceHandler>();
 

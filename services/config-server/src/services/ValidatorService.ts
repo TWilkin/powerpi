@@ -1,8 +1,8 @@
 import { ConfigFileType, LoggerService } from "@powerpi/common";
+import { Ajv, AnySchema } from "ajv";
 import addFormats from "ajv-formats";
-import Ajv, { AnySchema } from "ajv/dist/2020";
 import { Service } from "typedi";
-import loadSchema from "../schema";
+import loadSchema from "../schema/index.js";
 
 @Service()
 export default class ValidatorService {
@@ -10,7 +10,7 @@ export default class ValidatorService {
 
     constructor(private readonly logger: LoggerService) {
         this.ajv = new Ajv();
-        addFormats(this.ajv);
+        addFormats.default(this.ajv);
     }
 
     public async initialise() {

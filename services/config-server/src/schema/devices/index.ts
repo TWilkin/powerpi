@@ -1,16 +1,16 @@
-import * as BaseDevice from "./BaseDevice.schema.json";
-import loadEnergenieSchema from "./energenie";
-import loadHarmonySchema from "./harmony";
-import loadLIFXSchema from "./lifx";
-import * as MeterSensor from "./MeterSensor.schema.json";
-import * as Metric from "./Metric.schema.json";
-import loadNetworkSchema from "./network";
-import * as PollableDevice from "./PollableDevice.schema.json";
-import * as PowerPiSensor from "./PowerPiSensor.schema.json";
-import * as Sensor from "./Sensor.schema.json";
-import loadSnapcastSchema from "./snapcast";
-import loadVirtualSchema from "./virtual";
-import loadZigBeeSchema from "./zigbee";
+import * as BaseDevice from "./BaseDevice.schema.json" with { type: "json" };
+import loadEnergenieSchema from "./energenie/index.js";
+import loadHarmonySchema from "./harmony/index.js";
+import loadLIFXSchema from "./lifx/index.js";
+import * as MeterSensor from "./MeterSensor.schema.json" with { type: "json" };
+import * as Metric from "./Metric.schema.json" with { type: "json" };
+import loadNetworkSchema from "./network/index.js";
+import * as PollableDevice from "./PollableDevice.schema.json" with { type: "json" };
+import * as PowerPiSensor from "./PowerPiSensor.schema.json" with { type: "json" };
+import * as Sensor from "./Sensor.schema.json" with { type: "json" };
+import loadSnapcastSchema from "./snapcast/index.js";
+import loadVirtualSchema from "./virtual/index.js";
+import loadZigBeeSchema from "./zigbee/index.js";
 
 export default function loadDevicesSchema() {
     return {

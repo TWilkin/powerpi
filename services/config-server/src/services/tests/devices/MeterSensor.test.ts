@@ -1,4 +1,4 @@
-import commonSensorTests from "./commonSensorTests";
+import commonSensorTests from "./commonSensorTests.js";
 
 describe("Meter Sensor", () => {
     const { testInvalid } = commonSensorTests({

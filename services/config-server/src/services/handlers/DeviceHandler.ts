@@ -2,8 +2,8 @@ import { IDeviceConfigFile, ISensorConfig } from "@powerpi/common";
 import { createHash } from "crypto";
 import { Service } from "typedi";
 import { chain as _ } from "underscore";
-import ConfigPublishService from "../ConfigPublishService";
-import IHandler from "./IHandler";
+import ConfigPublishService from "../ConfigPublishService.js";
+import IHandler from "./IHandler.js";
 
 @Service()
 export default class DeviceHandler implements IHandler<IDeviceConfigFile> {

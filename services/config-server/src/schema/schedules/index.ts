@@ -1,6 +1,6 @@
-import * as DeviceInternalSchedule from "./DeviceIntervalSchedule.json";
-import * as DeviceSchedule from "./DeviceSchedule.json";
-import * as DeviceSingleSchedule from "./DeviceSingleSchedule.json";
+import * as DeviceInternalSchedule from "./DeviceIntervalSchedule.json" with { type: "json" };
+import * as DeviceSchedule from "./DeviceSchedule.json" with { type: "json" };
+import * as DeviceSingleSchedule from "./DeviceSingleSchedule.json" with { type: "json" };
 
 export default function loadSchedulesSchema() {
     return {
