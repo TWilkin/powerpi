@@ -204,6 +204,7 @@
         "jest.disabledWorkspaceFolders": [
             "PowerPi",
             "Common API",
+            "Common Node",
             "Common Node Test",
             "Common Python",
             "Common Python Test",

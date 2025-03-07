@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { ConfigRetrieverService } from "./ConfigRetrieverService.js";
 import { ConfigFileType, ConfigService } from "./ConfigService.js";
 import FileService from "./FileService.js";
@@ -13,7 +14,7 @@ describe("ConfigRetrieverService", () => {
         const logger = new LoggerService(config);
         const mqtt = new MqttService(config, logger);
 
-        jest.spyOn(MqttService.prototype, "subscribe").mockImplementation(
+        vi.spyOn(MqttService.prototype, "subscribe").mockImplementation(
             (_) => new Promise((resolve) => resolve()),
         );
 
@@ -22,39 +23,35 @@ describe("ConfigRetrieverService", () => {
 
     describe("start", () => {
         test("no wait", async () => {
-            jest.spyOn(ConfigService.prototype, "configIsNeeded", "get").mockReturnValue(false);
+            vi.spyOn(ConfigService.prototype, "configIsNeeded", "get").mockReturnValue(false);
 
             await subject.start();
         });
 
         test("timeout", async () => {
-            jest.useFakeTimers();
+            vi.useFakeTimers();
 
-            jest.spyOn(ConfigService.prototype, "configIsNeeded", "get").mockReturnValue(true);
+            vi.spyOn(ConfigService.prototype, "configIsNeeded", "get").mockReturnValue(true);
 
-            jest.spyOn(ConfigService.prototype, "isPopulated", "get").mockReturnValue(false);
+            vi.spyOn(ConfigService.prototype, "isPopulated", "get").mockReturnValue(false);
 
-            jest.spyOn(ConfigService.prototype, "configWaitTime", "get").mockReturnValue(2);
+            vi.spyOn(ConfigService.prototype, "configWaitTime", "get").mockReturnValue(2);
 
-            jest.advanceTimersByTimeAsync(2 * 1000);
+            vi.advanceTimersByTimeAsync(2 * 1000);
 
             await expect(subject.start).rejects.toThrow();
         });
 
         test("success", async () => {
-            jest.spyOn(ConfigService.prototype, "configIsNeeded", "get").mockReturnValue(true);
+            vi.spyOn(ConfigService.prototype, "configIsNeeded", "get").mockReturnValue(true);
 
-            jest.spyOn(ConfigService.prototype, "isPopulated", "get").mockReturnValue(true);
+            vi.spyOn(ConfigService.prototype, "isPopulated", "get").mockReturnValue(true);
 
             await subject.start();
         });
     });
 
     describe("message", () => {
-        const setConfig = jest.spyOn(ConfigService.prototype, "setConfig");
-
-        beforeEach(() => setConfig.mockClear());
-
         [
             [true, false, false],
             [false, true, false],
@@ -63,13 +60,15 @@ describe("ConfigRetrieverService", () => {
             const [isNeeded, usedConfig, hasConfig] = options;
 
             test(`not required ${isNeeded} ${usedConfig} ${hasConfig}`, () => {
+                const setConfig = vi.spyOn(ConfigService.prototype, "setConfig");
+
                 const listener = {
-                    onConfigChange: jest.fn(),
+                    onConfigChange: vi.fn(),
                 };
 
                 subject.addListener(ConfigFileType.Users, listener);
 
-                jest.spyOn(ConfigService.prototype, "configIsNeeded", "get").mockReturnValue(
+                vi.spyOn(ConfigService.prototype, "configIsNeeded", "get").mockReturnValue(
                     isNeeded,
                 );
 
@@ -77,10 +76,10 @@ describe("ConfigRetrieverService", () => {
                 if (usedConfig) {
                     used.push(ConfigFileType.Users);
                 }
-                jest.spyOn(ConfigService.prototype, "getUsedConfig").mockReturnValue(used);
+                vi.spyOn(ConfigService.prototype, "getUsedConfig").mockReturnValue(used);
 
                 if (hasConfig) {
-                    jest.spyOn(ConfigService.prototype, "getConfig").mockReturnValue({
+                    vi.spyOn(ConfigService.prototype, "getConfig").mockReturnValue({
                         data: [],
                         checksum: "checky",
                     });
@@ -102,7 +101,7 @@ describe("ConfigRetrieverService", () => {
     describe("listeners", () => {
         test("add and remove", () => {
             const listener = {
-                onConfigChange: jest.fn(),
+                onConfigChange: vi.fn(),
             };
 
             subject.addListener(ConfigFileType.Users, listener);
