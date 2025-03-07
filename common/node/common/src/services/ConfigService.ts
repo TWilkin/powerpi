@@ -1,5 +1,5 @@
 import fs from "fs";
-import Container, { Service } from "typedi";
+import { Container, Service } from "typedi";
 import {
     Device,
     IDevice,
@@ -9,9 +9,9 @@ import {
     ISensor,
     IUserConfigFile,
     Sensor,
-} from "../models";
-import FileService from "./FileService";
-import { IntervalParserService } from "./IntervalParserService";
+} from "../models/index.js";
+import FileService from "./FileService.js";
+import { IntervalParserService } from "./IntervalParserService.js";
 
 export enum ConfigFileType {
     Devices = "devices",

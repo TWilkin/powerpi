@@ -1,2 +1,2 @@
-export { default as isDefined } from "./isDefined";
-export { default as sleep } from "./sleep";
+export { default as isDefined } from "./isDefined.js";
+export { default as sleep } from "./sleep.js";

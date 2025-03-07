@@ -1,16 +1,16 @@
 import { Service } from "typedi";
-import { ConfigRetrieverService } from "./ConfigRetrieverService";
-import { LoggerService } from "./LoggerService";
-import { MqttService } from "./MqttService";
+import { ConfigRetrieverService } from "./ConfigRetrieverService.js";
+import { LoggerService } from "./LoggerService.js";
+import { MqttService } from "./MqttService.js";
 
 type AppStart = () => void | Promise<void>;
 
 @Service()
 export class PowerPiService {
     constructor(
-        private mqtt: MqttService,
-        private configRetriever: ConfigRetrieverService,
-        private logger: LoggerService,
+        private readonly mqtt: MqttService,
+        private readonly configRetriever: ConfigRetrieverService,
+        private readonly logger: LoggerService,
     ) {}
 
     public async start(appStart: AppStart) {

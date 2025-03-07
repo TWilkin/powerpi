@@ -1,7 +1,7 @@
-export * from "./ConfigRetrieverService";
-export * from "./ConfigService";
-export { default as FileService } from "./FileService";
-export * from "./IntervalParserService";
-export * from "./LoggerService";
-export * from "./MqttService";
-export * from "./PowerPiService";
+export * from "./ConfigRetrieverService.js";
+export * from "./ConfigService.js";
+export { default as FileService } from "./FileService.js";
+export * from "./IntervalParserService.js";
+export * from "./LoggerService.js";
+export * from "./MqttService.js";
+export * from "./PowerPiService.js";
