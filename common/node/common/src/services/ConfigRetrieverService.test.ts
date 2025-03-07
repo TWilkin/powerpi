@@ -1,5 +1,8 @@
-import { ConfigFileType, ConfigService, FileService, LoggerService, MqttService } from "../../src";
-import { ConfigRetrieverService } from "../../src/services/ConfigRetrieverService";
+import { ConfigRetrieverService } from "./ConfigRetrieverService.js";
+import { ConfigFileType, ConfigService } from "./ConfigService.js";
+import FileService from "./FileService.js";
+import { LoggerService } from "./LoggerService.js";
+import { MqttService } from "./MqttService.js";
 
 describe("ConfigRetrieverService", () => {
     let subject: ConfigRetrieverService;
