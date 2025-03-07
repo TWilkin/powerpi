@@ -6,7 +6,7 @@ interface Message {
 }
 
 export class MockLoggerService {
-    private messages: Message[];
+    private readonly messages: Message[];
 
     constructor() {
         this.messages = [];

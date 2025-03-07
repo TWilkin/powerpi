@@ -2,6 +2,7 @@
     "name": "@powerpi/common-test",
     "version": "0.0.13",
     "description": "PowerPi Common Typescript Testing library",
+    "type": "module",
     "private": true,
     "license": "GPL-3.0-only",
     "author": "TWilkin",

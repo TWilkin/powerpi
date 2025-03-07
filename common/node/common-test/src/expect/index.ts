@@ -1,1 +1,1 @@
-export { default as toContainLogMessage } from "./toContainLogMessage";
+export { default as toContainLogMessage } from "./toContainLogMessage.js";
