@@ -1,4 +1,4 @@
-import octokit, { Octokit } from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import { instance, mock, when } from "ts-mockito";
 import ConfigService from "./ConfigService.js";
 import OctokitService, { NoUserError } from "./OctokitService.js";
@@ -47,7 +47,7 @@ describe("OctokitService", () => {
             test(`gets content '${fileName}'`, async () => {
                 const result = await subject?.getContent(fileName);
 
-                expect(octokit.Octokit).toHaveBeenCalledTimes(1);
+                expect(Octokit).toHaveBeenCalledTimes(1);
 
                 expect(result).not.toBeNull();
                 expect(result).toBe("I am file");
@@ -58,7 +58,7 @@ describe("OctokitService", () => {
             await subject?.getContent("devices.json");
             await subject?.getContent("devices.json");
 
-            expect(octokit.Octokit).toHaveBeenCalledTimes(1);
+            expect(Octokit).toHaveBeenCalledTimes(1);
         });
     });
 
