@@ -1,7 +1,7 @@
 import { FileService, LoggerService, MqttService } from "@powerpi/common";
 import { Service } from "typedi";
-import ConfigService from "./ConfigService";
-import DbService from "./DbService";
+import ConfigService from "./ConfigService.js";
+import DbService from "./DbService.js";
 
 @Service()
 export default class HealthService {
@@ -10,7 +10,7 @@ export default class HealthService {
         private readonly fs: FileService,
         private readonly db: DbService,
         private readonly mqtt: MqttService,
-        private readonly logger: LoggerService
+        private readonly logger: LoggerService,
     ) {}
 
     public async start(interval = 10) {
