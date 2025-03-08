@@ -71,18 +71,5 @@
         "@types/underscore": "^1.11.6",
         "ts-node": "^10.8.1",
         "typescript": "^5.1.6"
-    },
-    "jest": {
-        "preset": "ts-jest",
-        "testEnvironment": "node",
-        "collectCoverage": false,
-        "collectCoverageFrom": [
-            "src/**/*.ts",
-            "!**/node_modules/**",
-            "!**/*.test.ts"
-        ],
-        "coverageReporters": [
-            "text"
-        ]
     }
 }
