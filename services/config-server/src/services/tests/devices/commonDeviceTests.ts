@@ -34,6 +34,12 @@ export default function commonDeviceTests(validFile: object) {
         testInvalid({ sensors: [], ...validFile, devices: [device] });
     });
 
+    test("Invalid name", () => {
+        const device = { ...getDevice(validFile), name: "Invalid Name" };
+
+        testInvalid({ sensors: [], ...validFile, devices: [device] });
+    });
+
     test("Location", () => {
         const device = getDevice(validFile);
 
