@@ -1,5 +1,4 @@
 import { ConfigFileType, IDeviceConfigFile, LoggerService } from "@powerpi/common";
-import "@powerpi/common-test/vi-globals";
 import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
 import ConfigPublishService from "./ConfigPublishService.js";
 import ConfigService from "./ConfigService.js";

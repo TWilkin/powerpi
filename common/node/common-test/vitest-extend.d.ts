@@ -1,7 +1,7 @@
 import "vitest";
 
 interface CustomMatches<R = unknown> {
-    toContainLogMessage: () => R;
+    toContainLogMessage: (expected: string) => R;
 }
 
 declare module "vitest" {
