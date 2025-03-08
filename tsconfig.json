@@ -14,8 +14,7 @@
         "forceConsistentCasingInFileNames": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "resolveJsonModule": true,
-        "types": ["vitest/globals"]
+        "resolveJsonModule": true
     },
     "include": ["**/src"],
     "exclude": ["**/node_modules"]

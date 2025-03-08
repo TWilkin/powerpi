@@ -19,7 +19,8 @@
     },
     "files": [
         "dist/src",
-        "vite.d.ts"
+        "vitest-extend.js",
+        "vitest-extend.d.ts"
     ],
     "devDependencies": {
         "@types/node": "^20.4.9",
