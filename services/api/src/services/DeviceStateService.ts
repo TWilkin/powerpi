@@ -2,11 +2,11 @@ import { ConfigRetrieverService, IDevice, MqttService, isDefined } from "@powerp
 import { AdditionalState, Device, DeviceState } from "@powerpi/common-api";
 import { Service } from "@tsed/common";
 import { omit } from "underscore";
-import ApiSocketService from "./ApiSocketService";
-import ConfigService from "./ConfigService";
-import { CapabilityMessage } from "./listeners/CapabilityStateListener";
-import { ChangeMessage } from "./listeners/DeviceChangeListener";
-import DeviceStateListener from "./listeners/DeviceStateListener";
+import ApiSocketService from "./ApiSocketService.js";
+import ConfigService from "./ConfigService.js";
+import { CapabilityMessage } from "./listeners/CapabilityStateListener.js";
+import { ChangeMessage } from "./listeners/DeviceChangeListener.js";
+import DeviceStateListener from "./listeners/DeviceStateListener.js";
 
 @Service()
 export default class DeviceStateService extends DeviceStateListener {

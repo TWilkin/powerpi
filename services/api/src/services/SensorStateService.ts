@@ -1,9 +1,9 @@
 import { ConfigRetrieverService, ISensor, MqttService, isDefined } from "@powerpi/common";
 import { Sensor } from "@powerpi/common-api";
 import { Service } from "@tsed/di";
-import ApiSocketService from "./ApiSocketService";
-import ConfigService from "./ConfigService";
-import SensorStateListener from "./listeners/SensorStateListener";
+import ApiSocketService from "./ApiSocketService.js";
+import ConfigService from "./ConfigService.js";
+import SensorStateListener from "./listeners/SensorStateListener.js";
 
 @Service()
 export default class SensorStateService extends SensorStateListener {

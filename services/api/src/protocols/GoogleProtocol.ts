@@ -1,8 +1,8 @@
 import { $log } from "@tsed/logger";
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { Strategy, StrategyOptions } from "passport-google-oauth20";
-import ConfigService from "../services/ConfigService";
-import UserService from "../services/UserService";
+import ConfigService from "../services/ConfigService.js";
+import UserService from "../services/UserService.js";
 
 interface GoogleStrategy {
     _oauth2: {

@@ -13,11 +13,11 @@ import {
 import { Authenticate, Authorize } from "@tsed/passport";
 import crypto from "crypto";
 import { Session as ExpressSession } from "express-session";
-import HttpStatus from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import passport from "passport";
-import ConfigService from "../services/ConfigService";
-import JwtService from "../services/JwtService";
-import UserService from "../services/UserService";
+import ConfigService from "../services/ConfigService.js";
+import JwtService from "../services/JwtService.js";
+import UserService from "../services/UserService.js";
 
 export interface AuthSession extends ExpressSession {
     redirectUri: string;
@@ -55,7 +55,7 @@ export default class AuthController {
             );
 
             if (credentials?.clientId !== clientId) {
-                response.status(HttpStatus.FORBIDDEN).send();
+                response.status(StatusCodes.FORBIDDEN).send();
                 return;
             }
         }
@@ -104,7 +104,7 @@ export default class AuthController {
     async googleToken(@BodyParams("code") code: string, @Res() response: Res) {
         const user = this.userService.popUser(code);
         if (!user) {
-            response.status(HttpStatus.FORBIDDEN).send();
+            response.status(StatusCodes.FORBIDDEN).send();
             return;
         }
 

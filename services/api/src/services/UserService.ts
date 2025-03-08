@@ -1,7 +1,7 @@
 import { ConfigFileType, ConfigRetrieverService } from "@powerpi/common";
 import { Service } from "@tsed/common";
-import User from "../models/User";
-import ConfigService from "./ConfigService";
+import User from "../models/User.js";
+import ConfigService from "./ConfigService.js";
 
 @Service()
 export default class UserService {

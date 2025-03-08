@@ -3,10 +3,10 @@ import { ChangeMessage } from "@powerpi/common-api";
 import { BodyParams, Controller, Get, PathParams, Post, Res } from "@tsed/common";
 import { Required } from "@tsed/schema";
 import { Response } from "express";
-import HttpStatus from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 import _ from "underscore";
-import Authorize from "../middleware/AuthorizeMiddleware";
-import DeviceStateService from "../services/DeviceStateService";
+import Authorize from "../middleware/AuthorizeMiddleware.js";
+import DeviceStateService from "../services/DeviceStateService.js";
 
 @Controller("/device")
 export default class DeviceController {
@@ -44,13 +44,13 @@ export default class DeviceController {
             !body ||
             _(Object.keys(body)).difference(DeviceController.allowedChangeMessageKeys).length > 0
         ) {
-            response.sendStatus(HttpStatus.BAD_REQUEST);
+            response.sendStatus(StatusCodes.BAD_REQUEST);
             return;
         }
 
         // check if the device exists
         if (!this.deviceService.devices.find((d) => d.name === device)) {
-            response.sendStatus(HttpStatus.NOT_FOUND);
+            response.sendStatus(StatusCodes.NOT_FOUND);
             return;
         }
 
@@ -62,6 +62,6 @@ export default class DeviceController {
         // publish to MQTT
         await this.mqttService.publish("device", device, "change", message);
 
-        response.sendStatus(HttpStatus.CREATED);
+        response.sendStatus(StatusCodes.CREATED);
     }
 }

@@ -1,10 +1,10 @@
 import { Req } from "@tsed/common";
 import { Arg, OnInstall, OnVerify, Protocol } from "@tsed/passport";
 import { ExtractJwt, SecretOrKeyProvider, Strategy, StrategyOptions } from "passport-jwt";
-import Container from "../Container";
-import ConfigService from "../services/ConfigService";
-import JwtService from "../services/JwtService";
-import UserService from "../services/UserService";
+import Container from "../Container.js";
+import ConfigService from "../services/ConfigService.js";
+import JwtService from "../services/JwtService.js";
+import UserService from "../services/UserService.js";
 
 interface JWT {
     sub: string;

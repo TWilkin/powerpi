@@ -4,10 +4,10 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import session from "express-session";
 import "reflect-metadata";
-import * as controllers from "./controllers";
-import * as protocols from "./protocols";
-import * as services from "./services";
-import ConfigService from "./services/ConfigService";
+import * as controllers from "./controllers/index.js";
+import * as protocols from "./protocols/index.js";
+import ConfigService from "./services/ConfigService.js";
+import * as services from "./services/index.js";
 
 @Configuration({
     rootDir: __dirname,
@@ -22,8 +22,8 @@ import ConfigService from "./services/ConfigService";
 })
 export default class Server {
     constructor(
-        private config: ConfigService,
-        private app: PlatformApplication,
+        private readonly config: ConfigService,
+        private readonly app: PlatformApplication,
     ) {}
 
     public async $beforeRoutesInit() {

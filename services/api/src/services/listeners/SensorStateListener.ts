@@ -5,7 +5,7 @@ import {
     MqttConsumer,
     MqttService,
 } from "@powerpi/common";
-import BatteryStateListener from "./BatteryStateListener";
+import BatteryStateListener from "./BatteryStateListener.js";
 
 export interface EventMessage extends Message {
     state?: string;
