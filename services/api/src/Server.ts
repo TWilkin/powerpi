@@ -9,6 +9,8 @@ import * as protocols from "./protocols/index.js";
 import ConfigService from "./services/ConfigService.js";
 import * as services from "./services/index.js";
 
+const __dirname = import.meta.dirname;
+
 @Configuration({
     rootDir: __dirname,
     httpPort: 3000,
