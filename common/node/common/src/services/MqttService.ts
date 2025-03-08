@@ -1,8 +1,10 @@
-import { AsyncMqttClient, connectAsync, IClientPublishOptions } from "async-mqtt";
+import mqtt, { AsyncMqttClient, IClientPublishOptions } from "async-mqtt";
 import os from "os";
 import { Service } from "typedi";
 import { ConfigService } from "./ConfigService.js";
 import { LoggerService } from "./LoggerService.js";
+
+const { connectAsync } = mqtt;
 
 export interface Message {
     timestamp?: number;
