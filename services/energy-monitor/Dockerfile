@@ -39,7 +39,8 @@ COPY --from=build-common-image --chown=node:node /home/node/app/common/node/comm
 
 # install the dependencies
 COPY --from=build-service-image --chown=node:node /home/node/app/services/energy-monitor/package.json ./services/energy-monitor/
-RUN yarn workspace @powerpi/energy-monitor install --production --frozen-lockfile
+RUN yarn workspace @powerpi/energy-monitor install --production --frozen-lockfile \
+    && yarn cache clean
 
 # copy the built application
 COPY --from=build-service-image --chown=node:node /home/node/app/services/energy-monitor/dist/ ./services/energy-monitor/dist/

@@ -73,7 +73,8 @@ COPY --from=build-common-image --chown=node:node /home/node/app/common/node/comm
 
 # install the dependencies
 COPY --from=build-service-image --chown=node:node /home/node/app/services/voice-assistant/package.json ./services/voice-assistant/
-RUN yarn workspace @powerpi/voice-assistant install --production --frozen-lockfile
+RUN yarn workspace @powerpi/voice-assistant install --production --frozen-lockfile \
+    && yarn cache clean
 
 # copy the built application
 COPY --from=build-service-image --chown=node:node /home/node/app/services/voice-assistant/dist/ ./services/voice-assistant/dist/

@@ -54,7 +54,8 @@ COPY --from=build-common-image --chown=node:node /home/node/app/common/node/comm
 
 # install the dependencies
 COPY --from=build-service-image --chown=node:node /home/node/app/services/persistence/package.json ./services/persistence/
-RUN yarn workspace @powerpi/persistence install --production --frozen-lockfile
+RUN yarn workspace @powerpi/persistence install --production --frozen-lockfile \
+    && yarn cache clean
 
 # copy the built application
 COPY --from=build-service-image --chown=node:node /home/node/app/services/persistence/dist/ ./services/persistence/dist/

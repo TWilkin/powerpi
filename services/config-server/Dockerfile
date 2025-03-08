@@ -55,7 +55,8 @@ COPY --from=build-common-image --chown=node:node /home/node/app/common/node/comm
 
 # install the dependencies
 COPY --from=build-service-image --chown=node:node /home/node/app/services/config-server/package.json ./services/config-server/
-RUN yarn workspace @powerpi/config-server install --production --frozen-lockfile
+RUN yarn workspace @powerpi/config-server install --production --frozen-lockfile \
+    && yarn cache clean
 
 # copy the built application
 COPY --from=build-service-image --chown=node:node /home/node/app/services/config-server/dist/ ./services/config-server/dist/
