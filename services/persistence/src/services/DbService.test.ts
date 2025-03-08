@@ -1,13 +1,13 @@
 import { FileService } from "@powerpi/common";
-import ConfigService from "../../src/services/ConfigService";
-import DbService from "../../src/services/DbService";
+import ConfigService from "./ConfigService.js";
+import DbService from "./DbService.js";
 
-jest.mock("sequelize-typescript", () => ({
-    ...jest.requireActual("sequelize-typescript"),
-    Sequelize: jest.fn().mockImplementation(() => ({
-        addModels: jest.fn(),
-        sync: jest.fn(),
-        query: jest
+vi.mock("sequelize-typescript", async () => ({
+    ...(await vi.importActual("sequelize-typescript")),
+    Sequelize: vi.fn().mockImplementation(() => ({
+        addModels: vi.fn(),
+        sync: vi.fn(),
+        query: vi
             .fn()
             .mockReturnValueOnce(Promise.resolve([[{ value: 1 }], null]))
             .mockReturnValueOnce(Promise.resolve([[], null])),
@@ -21,8 +21,8 @@ describe("DbService", () => {
         const fs = new FileService();
         const config = new ConfigService(fs);
 
-        jest.spyOn(ConfigService.prototype, "databaseURI", "get").mockReturnValue(
-            Promise.resolve("uri")
+        vi.spyOn(ConfigService.prototype, "databaseURI", "get").mockReturnValue(
+            Promise.resolve("uri"),
         );
 
         subject = new DbService(config);

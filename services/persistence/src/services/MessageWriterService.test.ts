@@ -1,10 +1,10 @@
 import { FileService, LoggerService, MqttService } from "@powerpi/common";
 import { MockLoggerService } from "@powerpi/common-test";
-import MqttModel from "../../src/models/mqtt.model";
-import ConfigService from "../../src/services/ConfigService";
-import MessageWriterService from "../../src/services/MessageWriterService";
+import MqttModel from "../models/mqtt.model.js";
+import ConfigService from "./ConfigService.js";
+import MessageWriterService from "./MessageWriterService.js";
 
-jest.mock("../../src/models/mqtt.model");
+vi.mock("../../src/models/mqtt.model");
 
 describe("MessageWriterService", () => {
     let subject: MessageWriterService;
@@ -16,12 +16,12 @@ describe("MessageWriterService", () => {
 
         subject = new MessageWriterService(new MqttService(config, logger), logger);
 
-        jest.resetAllMocks();
+        vi.resetAllMocks();
     });
 
     describe("message", () => {
-        const mockRecord = jest.fn().mockReturnValue(Promise.resolve());
-        const mockBuild = jest.fn().mockReturnValue(mockRecord);
+        const mockRecord = vi.fn().mockReturnValue(Promise.resolve());
+        const mockBuild = vi.fn().mockReturnValue(mockRecord);
 
         MqttModel.build = mockBuild;
 

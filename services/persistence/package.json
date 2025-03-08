@@ -15,10 +15,11 @@
     "types": "./dist/src/index.d.ts",
     "scripts": {
         "build": "tsc",
-        "clean": "rm -rf dist build",
+        "clean": "rm -rf dist",
+        "coverage": "vitest run --coverage",
         "start:dev": "ts-node src/index.ts",
         "start:prd": "node dist/src/index.js",
-        "test": "jest"
+        "test": "vitest"
     },
     "dependencies": {
         "@powerpi/common": "^0.2.2",
