@@ -7,12 +7,12 @@ import {
 } from "@powerpi/common";
 import { ChangeMessage, DeviceState } from "@powerpi/common-api";
 import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
-import ApiSocketService from "./ApiSocketService";
-import ConfigService from "./ConfigService";
-import DeviceStateService from "./DeviceStateService";
-import { BatteryMessage } from "./listeners/BatteryStateListener";
-import { CapabilityMessage } from "./listeners/CapabilityStateListener";
-import { StateMessage } from "./listeners/DeviceStateListener";
+import ApiSocketService from "./ApiSocketService.js";
+import ConfigService from "./ConfigService.js";
+import DeviceStateService from "./DeviceStateService.js";
+import { BatteryMessage } from "./listeners/BatteryStateListener.js";
+import { CapabilityMessage } from "./listeners/CapabilityStateListener.js";
+import { StateMessage } from "./listeners/DeviceStateListener.js";
 
 const mockedConfigService = mock<ConfigService>();
 const mockedConfigRetrieverService = mock<ConfigRetrieverService>();

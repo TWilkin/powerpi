@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { instance, mock, resetCalls, verify, when } from "ts-mockito";
-import ConfigService from "./ConfigService";
-import JwtService from "./JwtService";
+import ConfigService from "./ConfigService.js";
+import JwtService from "./JwtService.js";
 
 const mockedConfigService = mock<ConfigService>();
 
@@ -24,7 +24,7 @@ describe("JwtService", () => {
     test("issuer", () => expect(subject?.issuer).toBe("http://myapp.com"));
 
     test("createJWT", async () => {
-        const spy = jest.spyOn(jwt, "sign").mockImplementation(() => "this is a token");
+        const spy = vi.spyOn(jwt, "sign").mockImplementation(() => "this is a token");
 
         const result = await subject?.createJWT(
             { email: "someone@gmail.com", subject: "my subject" },
@@ -50,7 +50,7 @@ describe("JwtService", () => {
     test("parse", async () => {
         const token = { email: "someone@gmail.com" };
 
-        const spy = jest.spyOn(jwt, "verify").mockImplementation(() => token);
+        const spy = vi.spyOn(jwt, "verify").mockImplementation(() => token);
 
         const result = await subject?.parse("this is a token");
 

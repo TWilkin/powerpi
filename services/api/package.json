@@ -16,10 +16,10 @@
     "scripts": {
         "build": "tsc",
         "clean": "rm -rf dist",
-        "coverage": "jest --coverage",
+        "coverage": "vitest run --coverage",
         "start:dev": "ts-node src/app.ts",
         "start:prd": "node dist/src/app.js",
-        "test": "jest"
+        "test": "vitest"
     },
     "dependencies": {
         "@powerpi/common": "^0.2.2",

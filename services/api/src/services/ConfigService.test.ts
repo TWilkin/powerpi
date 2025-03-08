@@ -1,6 +1,6 @@
 import { FileService } from "@powerpi/common";
 import { instance, mock, when } from "ts-mockito";
-import ConfigService from "../../src/services/ConfigService";
+import ConfigService from "./ConfigService.js";
 
 const mockedFileService = mock<FileService>();
 
@@ -10,7 +10,7 @@ describe("ConfigService", () => {
     let subject: ConfigService | undefined;
 
     beforeEach(() => {
-        jest.resetModules();
+        vi.resetModules();
         process.env = { ...oldEnv };
 
         subject = new ConfigService(instance(mockedFileService));

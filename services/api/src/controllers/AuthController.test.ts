@@ -11,8 +11,8 @@ import {
     verify,
     when,
 } from "ts-mockito";
-import { ConfigService, JwtService, UserService } from "../services";
-import AuthController, { AuthSession } from "./AuthController";
+import { ConfigService, JwtService, UserService } from "../services/index.js";
+import AuthController, { AuthSession } from "./AuthController.js";
 
 const mockedConfigService = mock<ConfigService>();
 const mockedJwtService = mock<JwtService>();
@@ -39,7 +39,7 @@ describe("AuthController", () => {
     describe("google", () => {
         describe("clientId", () => {
             test("success", async () => {
-                const passportSpy = jest.spyOn(passport, "authenticate");
+                const passportSpy = vi.spyOn(passport, "authenticate");
 
                 when(mockedConfigService.getAuthConfig()).thenResolve([
                     {
@@ -187,8 +187,8 @@ describe("AuthController", () => {
                     expected: "http://place.com?something=else&code=1234",
                 },
             ].forEach(({ redirectUri, expected }) =>
-                test(redirectUri, async () => {
-                    jest.spyOn(crypto, "randomBytes").mockImplementation((_) => "1234");
+                test(`${redirectUri}`, async () => {
+                    vi.spyOn(crypto, "randomBytes").mockImplementation((_) => "1234");
 
                     await subject?.googleCallback(
                         { email: "user@user.com", role: "USER" },
