@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "@powerpi/common": "^0.2.2",
-        "axios": "^1.6.0",
+        "axios": "^1.8.2",
         "dateformat": "^4.6.3",
         "ts-command-line-args": "2.5.1",
         "typedi": "^0.10.0"
