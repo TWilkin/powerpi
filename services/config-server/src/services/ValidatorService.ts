@@ -1,23 +1,19 @@
 import { ConfigFileType, LoggerService } from "@powerpi/common";
-import { Ajv, AnySchema } from "ajv";
 import addFormats from "ajv-formats";
+import { Ajv2020, AnySchema } from "ajv/dist/2020.js";
 import { Service } from "typedi";
 import loadSchema from "../schema/index.js";
 
 @Service()
 export default class ValidatorService {
-    private ajv: Ajv | null;
+    private readonly ajv: Ajv2020;
 
     constructor(private readonly logger: LoggerService) {
-        this.ajv = null;
+        this.ajv = new Ajv2020();
+        addFormats.default(this.ajv);
     }
 
     public async initialise() {
-        const ajv = await import("ajv/dist/2020");
-        this.ajv = new ajv.Ajv2020();
-
-        addFormats.default(this.ajv!);
-
         const { common, devices, schedules, config } = loadSchema();
 
         this.addSchema(common);
@@ -31,7 +27,7 @@ export default class ValidatorService {
             await this.initialise();
         }
 
-        const validator = this.ajv!.getSchema(fileType);
+        const validator = this.ajv.getSchema(fileType);
 
         if (validator) {
             if (validator(file)) {
@@ -56,7 +52,7 @@ export default class ValidatorService {
 
             const currentSchema = schema[key];
 
-            this.ajv!.addSchema(currentSchema, type);
+            this.ajv.addSchema(currentSchema, type);
         }
     }
 }
