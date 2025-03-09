@@ -24,9 +24,10 @@
     ],
     "devDependencies": {
         "@types/node": "^20.4.9",
+        "@vitest/coverage-v8": "^3.0.8",
         "ts-mockito": "^2.6.1",
         "typescript": "^5.6.3",
-        "vitest": "^2.1.9"
+        "vitest": "^3.0.8"
     },
     "dependencies": {
         "@powerpi/common": "^0.2.2"
