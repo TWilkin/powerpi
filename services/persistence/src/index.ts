@@ -1,8 +1,8 @@
 import { MqttService } from "@powerpi/common";
-import Container from "./Container";
-import DbService from "./services/DbService";
-import HealthService from "./services/HealthService";
-import MessageWriterService from "./services/MessageWriterService";
+import Container from "./Container.js";
+import DbService from "./services/DbService.js";
+import HealthService from "./services/HealthService.js";
+import MessageWriterService from "./services/MessageWriterService.js";
 
 async function start() {
     const db = Container.get(DbService);

@@ -1,10 +1,10 @@
 import { PowerPiApi } from "@powerpi/common-api";
 import { Service } from "typedi";
-import ConfigService from "./ConfigService";
+import ConfigService from "./ConfigService.js";
 
 @Service()
 export default class ApiService {
-    private api: PowerPiApi;
+    private readonly api: PowerPiApi;
     private success: boolean;
 
     constructor(config: ConfigService) {

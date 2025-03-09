@@ -1,8 +1,8 @@
-import AdditionalState from "./AdditionalState";
-import BaseDevice from "./BaseDevice";
-import Battery from "./Battery";
-import Capability from "./Capability";
-import DeviceState from "./DeviceState";
+import AdditionalState from "./AdditionalState.js";
+import BaseDevice from "./BaseDevice.js";
+import Battery from "./Battery.js";
+import Capability from "./Capability.js";
+import DeviceState from "./DeviceState.js";
 
 export default interface Device extends BaseDevice, Battery {
     state: DeviceState;

@@ -2,7 +2,7 @@ import { ConfigFileType, ConfigRetrieverService } from "@powerpi/common";
 import { DeviceState } from "@powerpi/common-api";
 import { Namespace } from "socket.io";
 import { anyString, anything, capture, instance, mock, resetCalls, verify } from "ts-mockito";
-import ApiSocketService from "./ApiSocketService";
+import ApiSocketService from "./ApiSocketService.js";
 
 const mockedNamespace = mock<Namespace>();
 

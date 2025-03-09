@@ -1,7 +1,7 @@
 import { ConfigFileType, ConfigRetrieverService } from "@powerpi/common";
 import { capture, instance, mock, resetCalls, when } from "ts-mockito";
-import ConfigService from "./ConfigService";
-import UserService from "./UserService";
+import ConfigService from "./ConfigService.js";
+import UserService from "./UserService.js";
 
 const mockedConfigService = mock<ConfigService>();
 const mockedConfigRetrieverService = mock<ConfigRetrieverService>();

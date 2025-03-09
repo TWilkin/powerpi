@@ -1,4 +1,4 @@
-import Capability from "./Capability";
+import Capability from "./Capability.js";
 
 export interface CapabilityStatusMessage {
     device: string;

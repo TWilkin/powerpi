@@ -1,10 +1,10 @@
 import { ExpressJs, Request, Response, Webhook } from "@jovotech/server-express";
 import { LoggerService, PowerPiService } from "@powerpi/common";
-import HttpStatus from "http-status-codes";
-import app from "./app";
-import Container from "./container";
-import ConfigService from "./services/ConfigService";
-import HealthService from "./services/HealthService";
+import { StatusCodes } from "http-status-codes";
+import app from "./app.js";
+import Container from "./container.js";
+import ConfigService from "./services/ConfigService.js";
+import HealthService from "./services/HealthService.js";
 
 async function start() {
     const config = Container.get(ConfigService);
@@ -31,10 +31,8 @@ async function start() {
 
         const status = health.execute();
 
-        response
-            .status(status ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR)
-            .send(status);
-    })
+        response.status(status ? StatusCodes.OK : StatusCodes.INTERNAL_SERVER_ERROR).send(status);
+    });
 }
 
 const service = Container.get(PowerPiService);

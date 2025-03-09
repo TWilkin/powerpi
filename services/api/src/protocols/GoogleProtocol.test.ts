@@ -1,9 +1,8 @@
-import GoogleProtocol from "./GoogleProtocol";
-
 import { Strategy } from "passport-google-oauth20";
 import { instance, mock, when } from "ts-mockito";
-import { ConfigService } from "../services";
-import UserService from "../services/UserService";
+import { ConfigService } from "../services/index.js";
+import UserService from "../services/UserService.js";
+import GoogleProtocol from "./GoogleProtocol.js";
 
 const mockedConfigService = mock<ConfigService>();
 const mockedUserService = mock<UserService>();
@@ -71,7 +70,7 @@ describe("GoogleProtocol", () => {
 
             const action = () => subject?.$onInstall({} as Strategy);
 
-            expect(action).rejects.toThrow();
+            await expect(action).rejects.toThrow();
         });
 
         test("client", async () => {

@@ -1,7 +1,7 @@
 import { LoggerService, MqttService } from "@powerpi/common";
-import Container from "./container";
-import EnergyMonitorArgumentsService from "./services/EnergyMonitorArgumentService";
-import EnergyMonitorService from "./services/EnergyMonitorService";
+import Container from "./container.js";
+import EnergyMonitorArgumentsService from "./services/EnergyMonitorArgumentService.js";
+import EnergyMonitorService from "./services/EnergyMonitorService.js";
 
 function start() {
     const args = Container.get(EnergyMonitorArgumentsService);

@@ -1,2 +1,2 @@
-export * from "./MockConfig";
-export * from "./MockLoggerService";
+export * from "./MockConfig.js";
+export * from "./MockLoggerService.js";

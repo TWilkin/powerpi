@@ -1,7 +1,6 @@
 **/*.egg-info/
 **/.pytest_cache/
 **/**pycache**/
-**/sensors/
 **/build/
 **/db/
 **/dist/
@@ -28,4 +27,5 @@
 **/.pylintrc
 **/Dockerfile
 **/_.md
+sensors/
 services/shutdown/

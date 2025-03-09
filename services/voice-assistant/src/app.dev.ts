@@ -1,5 +1,5 @@
 import { FileDb } from "@jovotech/db-filedb";
-import app from "./app";
+import app from "./app.js";
 
 app.configure({
     plugins: [
@@ -9,4 +9,4 @@ app.configure({
     ],
 });
 
-export * from "./index";
+export * from "./index.js";

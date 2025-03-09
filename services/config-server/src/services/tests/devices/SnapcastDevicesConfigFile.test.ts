@@ -1,4 +1,4 @@
-import commonDeviceTests from "./commonDeviceTests";
+import commonDeviceTests from "./commonDeviceTests.js";
 
 describe("Snapcast Devices", () => {
     describe("Client", () => {

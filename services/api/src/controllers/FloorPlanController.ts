@@ -1,6 +1,6 @@
 import { Controller, Get } from "@tsed/common";
-import Authorize from "../middleware/AuthorizeMiddleware";
-import ConfigService from "../services/ConfigService";
+import Authorize from "../middleware/AuthorizeMiddleware.js";
+import ConfigService from "../services/ConfigService.js";
 
 @Controller("/floorPlan")
 export default class FloorPlanController {

@@ -1,8 +1,8 @@
 import { PowerPiService } from "@powerpi/common";
 import { $log } from "@tsed/common";
 import { PlatformExpress } from "@tsed/platform-express";
-import Container from "./Container";
-import Server from "./Server";
+import Container from "./Container.js";
+import Server from "./Server.js";
 
 async function bootstrap() {
     try {

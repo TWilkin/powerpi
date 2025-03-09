@@ -1,4 +1,4 @@
-import { IDeviceConfig } from "./IConfigFile";
+import { IDeviceConfig } from "./IConfigFile.js";
 
 export interface IDevice extends IDeviceConfig {
     displayName: string;

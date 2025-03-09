@@ -1,7 +1,7 @@
 import { Service } from "@tsed/common";
 import jwt, { SignOptions } from "jsonwebtoken";
-import User from "../models/User";
-import ConfigService from "./ConfigService";
+import User from "../models/User.js";
+import ConfigService from "./ConfigService.js";
 
 interface Token {
     email: string;

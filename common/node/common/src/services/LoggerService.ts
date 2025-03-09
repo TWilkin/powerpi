@@ -1,7 +1,7 @@
 import dateFormat from "dateformat";
 import logger from "loglevel";
 import { Service } from "typedi";
-import { ConfigService } from "./ConfigService";
+import { ConfigService } from "./ConfigService.js";
 
 export type LogParameter = string | number | Date;
 export type LogErrorParameter = LogParameter | Error | unknown;
@@ -10,9 +10,9 @@ export type LogLevel = "DEBUG" | "INFO" | "WARN" | "ERROR";
 
 @Service()
 export class LoggerService {
-    private static timestampFormat = "yyyy-mm-dd HH:MM:ss";
+    private static readonly timestampFormat = "yyyy-mm-dd HH:MM:ss";
 
-    public constructor(private config: ConfigService) {
+    public constructor(private readonly config: ConfigService) {
         logger.setLevel(config.logLevel);
 
         this.info(`
@@ -27,6 +27,7 @@ __________                         __________.__
     }
 
     public debug(...args: LogParameter[]) {
+        // eslint-disable-next-line testing-library/no-debugging-utils
         logger.debug(this.label("DEBUG"), ...args);
     }
 

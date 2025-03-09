@@ -6,9 +6,9 @@ import {
     MqttService,
 } from "@powerpi/common";
 import { AdditionalState, DeviceState } from "@powerpi/common-api";
-import BatteryStateListener, { BatteryMessage } from "./BatteryStateListener";
-import CapabilityStateListener, { CapabilityMessage } from "./CapabilityStateListener";
-import DeviceChangeListener, { ChangeMessage } from "./DeviceChangeListener";
+import BatteryStateListener, { BatteryMessage } from "./BatteryStateListener.js";
+import CapabilityStateListener, { CapabilityMessage } from "./CapabilityStateListener.js";
+import DeviceChangeListener, { ChangeMessage } from "./DeviceChangeListener.js";
 
 export interface StateMessage extends Message, AdditionalState {
     state: DeviceState;

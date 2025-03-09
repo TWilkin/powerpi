@@ -1,7 +1,7 @@
 import { IFloorplanConfigFile } from "@powerpi/common";
 import { instance, mock, when } from "ts-mockito";
-import { ConfigService } from "../services";
-import FloorPlanController from "./FloorPlanController";
+import { ConfigService } from "../services/index.js";
+import FloorPlanController from "./FloorPlanController.js";
 
 const mockedConfigService = mock<ConfigService>();
 

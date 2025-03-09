@@ -1,7 +1,9 @@
 import { $log, Service } from "@tsed/common";
-import { Pool, PoolClient, QueryResultRow } from "pg";
-import Message from "../models/Message";
-import ConfigService from "./ConfigService";
+import pg, { PoolClient, Pool as PoolType, QueryResultRow } from "pg";
+import Message from "../models/Message.js";
+import ConfigService from "./ConfigService.js";
+
+const { Pool } = pg;
 
 enum DatabaseOperator {
     Equal = "=",
@@ -27,7 +29,7 @@ type DatabaseQueryParam = DatabaseQueryValueParam | DatabaseQueryBetweenParam;
 
 @Service()
 export default class DatabaseService {
-    private pool: Pool | undefined;
+    private pool: PoolType | undefined;
 
     constructor(private readonly config: ConfigService) {
         this.pool = undefined;
@@ -183,8 +185,8 @@ export default class DatabaseService {
             limit !== undefined && skip !== undefined
                 ? `LIMIT ${limit} OFFSET ${skip}`
                 : limit !== undefined
-                ? `LIMIT ${limit}`
-                : "";
+                  ? `LIMIT ${limit}`
+                  : "";
 
         const sql = `${start} ${whereClause} ${end} ${limitClause}`.trim();
 

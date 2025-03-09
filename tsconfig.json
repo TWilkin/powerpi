@@ -3,7 +3,8 @@
     "display": "Node 16",
     "compilerOptions": {
         "lib": ["es2019", "es2020.promise", "es2020.bigint", "es2021.string", "es2022", "dom"],
-        "module": "commonjs",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
         "target": "es2019",
         "sourceMap": true,
         "declaration": true,

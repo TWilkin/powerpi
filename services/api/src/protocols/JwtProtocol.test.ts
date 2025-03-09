@@ -1,11 +1,11 @@
 import { Req } from "@tsed/common";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { instance, mock, when } from "ts-mockito";
-import Container from "../Container";
-import { ConfigService } from "../services";
-import JwtService from "../services/JwtService";
-import UserService from "../services/UserService";
-import JwtProtocol, { getSecret, getToken } from "./JwtProtocol";
+import Container from "../Container.js";
+import { ConfigService } from "../services/index.js";
+import JwtService from "../services/JwtService.js";
+import UserService from "../services/UserService.js";
+import JwtProtocol, { getSecret, getToken } from "./JwtProtocol.js";
 
 const mockedJwtService = mock<JwtService>();
 const mockedUserService = mock<UserService>();
@@ -69,16 +69,14 @@ describe("JwtProtocol", () => {
 });
 
 describe("getSecret", () => {
-    jest.spyOn(Container, "get").mockImplementation((_) => instance(mockedConfigService));
+    vi.spyOn(Container, "get").mockImplementation((_) => instance(mockedConfigService));
 
-    test("no secret", (done) => {
+    test("no secret", () => {
         when(mockedConfigService.getJWTSecret()).thenReject(new Error());
 
         function callback(error: string | null, secret: string | Buffer | undefined) {
             expect(error).toBeDefined();
             expect(secret).toBeUndefined();
-
-            done();
         }
 
         getSecret(instance(mockedRequest), "str", callback);
@@ -86,14 +84,12 @@ describe("getSecret", () => {
         expect.assertions(2);
     });
 
-    test("secret", (done) => {
+    test("secret", () => {
         when(mockedConfigService.getJWTSecret()).thenResolve("a secret");
 
         function callback(error: string | null, secret: string | Buffer | undefined) {
             expect(error).toBeNull();
             expect(secret).toBe("a secret");
-
-            done();
         }
 
         getSecret(instance(mockedRequest), "str", callback);
@@ -104,13 +100,13 @@ describe("getSecret", () => {
 
 describe("getToken", () => {
     test("no token, no cookie", () => {
-        jest.spyOn(ExtractJwt, "fromAuthHeaderAsBearerToken").mockImplementation(() => (_) => null);
+        vi.spyOn(ExtractJwt, "fromAuthHeaderAsBearerToken").mockImplementation(() => (_) => null);
 
         expect(getToken(instance(mockedRequest))).toBeNull();
     });
 
     test("no token, cookie", () => {
-        jest.spyOn(ExtractJwt, "fromAuthHeaderAsBearerToken").mockImplementation(() => (_) => null);
+        vi.spyOn(ExtractJwt, "fromAuthHeaderAsBearerToken").mockImplementation(() => (_) => null);
 
         when(mockedRequest.cookies).thenReturn({ jwt: "jwt from cookie" });
 
@@ -118,7 +114,7 @@ describe("getToken", () => {
     });
 
     test("token", () => {
-        jest.spyOn(ExtractJwt, "fromAuthHeaderAsBearerToken").mockImplementation(
+        vi.spyOn(ExtractJwt, "fromAuthHeaderAsBearerToken").mockImplementation(
             () => (_) => "my jwt",
         );
 

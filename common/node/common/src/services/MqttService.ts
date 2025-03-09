@@ -1,8 +1,10 @@
-import { AsyncMqttClient, connectAsync, IClientPublishOptions } from "async-mqtt";
+import mqtt, { AsyncMqttClient, IClientPublishOptions } from "async-mqtt";
 import os from "os";
 import { Service } from "typedi";
-import { ConfigService } from "./ConfigService";
-import { LoggerService } from "./LoggerService";
+import { ConfigService } from "./ConfigService.js";
+import { LoggerService } from "./LoggerService.js";
+
+const { connectAsync } = mqtt;
 
 export interface Message {
     timestamp?: number;
@@ -21,8 +23,8 @@ export class MqttService {
     private consumers: { [key: string]: MqttConsumer[] };
 
     constructor(
-        private config: ConfigService,
-        private logger: LoggerService,
+        private readonly config: ConfigService,
+        private readonly logger: LoggerService,
     ) {
         this.consumers = {};
     }

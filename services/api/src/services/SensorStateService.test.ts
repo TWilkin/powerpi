@@ -6,11 +6,11 @@ import {
     MqttService,
 } from "@powerpi/common";
 import { capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
-import ApiSocketService from "./ApiSocketService";
-import ConfigService from "./ConfigService";
-import SensorStateService from "./SensorStateService";
-import { BatteryMessage } from "./listeners/BatteryStateListener";
-import { EventMessage } from "./listeners/SensorStateListener";
+import ApiSocketService from "./ApiSocketService.js";
+import ConfigService from "./ConfigService.js";
+import SensorStateService from "./SensorStateService.js";
+import { BatteryMessage } from "./listeners/BatteryStateListener.js";
+import { EventMessage } from "./listeners/SensorStateListener.js";
 
 const mockedConfigService = mock<ConfigService>();
 const mockedConfigRetrieverService = mock<ConfigRetrieverService>();

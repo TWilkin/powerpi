@@ -1,4 +1,4 @@
-import { ISensorConfig } from "./IConfigFile";
+import { ISensorConfig } from "./IConfigFile.js";
 
 export interface ISensor extends ISensorConfig {
     displayName: string;

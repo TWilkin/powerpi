@@ -2,9 +2,9 @@ import { DeviceState } from "@powerpi/common-api";
 import { Response } from "@tsed/common";
 import { QueryResult } from "pg";
 import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
-import Message from "../models/Message";
-import { DatabaseService } from "../services";
-import HistoryController from "./HistoryController";
+import Message from "../models/Message.js";
+import { DatabaseService } from "../services/index.js";
+import HistoryController from "./HistoryController.js";
 
 const mockedDatabaseService = mock<DatabaseService>();
 const mockedResponse = mock<Response>();

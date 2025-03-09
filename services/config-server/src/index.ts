@@ -1,8 +1,8 @@
 import { LoggerService, PowerPiService } from "@powerpi/common";
-import Container from "./container";
-import ConfigServiceArgumentService from "./services/ConfigServiceArgumentService";
-import GitHubConfigService from "./services/GitHubConfigService";
-import ValidatorService from "./services/ValidatorService";
+import Container from "./container.js";
+import ConfigServiceArgumentService from "./services/ConfigServiceArgumentService.js";
+import GitHubConfigService from "./services/GitHubConfigService.js";
+import ValidatorService from "./services/ValidatorService.js";
 
 async function start() {
     const args = Container.get(ConfigServiceArgumentService);

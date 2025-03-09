@@ -30,6 +30,7 @@ COPY --from=build-common-image /home/node/app/common/node/common/package.json ./
 COPY --from=build-common-image /home/node/app/common/node/common/dist/ ./common/node/common/dist/
 COPY --from=build-common-test-image /home/node/app/common/node/common-test/package.json ./common/node/common-test/
 COPY --from=build-common-test-image /home/node/app/common/node/common-test/dist/ ./common/node/common-test/dist/
+COPY --from=build-common-test-image /home/node/app/common/node/common-test/vitest-extend.* ./common/node/common-test/
 RUN mkdir -p /home/node/app/services/persistence
 COPY package.json yarn.lock tsconfig.json ./
 COPY services/persistence/package.json ./services/persistence/
@@ -54,7 +55,8 @@ COPY --from=build-common-image --chown=node:node /home/node/app/common/node/comm
 
 # install the dependencies
 COPY --from=build-service-image --chown=node:node /home/node/app/services/persistence/package.json ./services/persistence/
-RUN yarn workspace @powerpi/persistence install --production --frozen-lockfile
+RUN yarn workspace @powerpi/persistence install --production --frozen-lockfile \
+    && yarn cache clean
 
 # copy the built application
 COPY --from=build-service-image --chown=node:node /home/node/app/services/persistence/dist/ ./services/persistence/dist/

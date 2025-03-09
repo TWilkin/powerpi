@@ -3,7 +3,9 @@
     "compilerOptions": {
         "rootDir": ".",
         "outDir": "dist",
-        "jsx": "react-jsx"
+        "jsx": "react-jsx",
+        "module": "CommonJS",
+        "moduleResolution": null
     },
     "include": ["vite-config.ts", "src", "test-setup.ts"],
     "exclude": ["dist", "node_modules"]

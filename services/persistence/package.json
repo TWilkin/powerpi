@@ -3,6 +3,7 @@
     "version": "0.2.10",
     "description": "PowerPi database persistence service",
     "private": true,
+    "type": "module",
     "license": "GPL-3.0-only",
     "author": "TWilkin",
     "repository": {
@@ -14,10 +15,11 @@
     "types": "./dist/src/index.d.ts",
     "scripts": {
         "build": "tsc",
-        "clean": "rm -rf dist build",
-        "start:dev": "ts-node src/index.ts",
+        "clean": "rm -rf dist",
+        "coverage": "vitest run --coverage",
+        "start:dev": "node --import=../../register.mjs src/index.ts",
         "start:prd": "node dist/src/index.js",
-        "test": "jest"
+        "test": "vitest"
     },
     "dependencies": {
         "@powerpi/common": "^0.2.2",
@@ -35,7 +37,7 @@
         "@types/node": "^20.4.9",
         "@types/underscore": "^1.11.6",
         "@types/validator": "^13.11.1",
-        "ts-node": "^10.9.1",
+        "ts-node": "^10.9.2",
         "typescript": "^5.1.6"
     }
 }

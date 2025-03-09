@@ -4,5 +4,5 @@
     "title": "DeviceState",
     "description": "The possible device states in PowerPi",
     "type": "string",
-    "enum": ["on", "off"]
+    "pattern": "^(on|off)$"
 }
