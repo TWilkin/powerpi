@@ -14,10 +14,10 @@
     "scripts": {
         "build": "yarn localise && tsc && vite build",
         "clean": "rm -r dist",
-        "start": "vite",
-        "test": "vitest",
         "coverage": "vitest run --coverage",
-        "localise": "i18next-resources-for-ts interface -i ./public/locales/en-GB -o ./src/@types/resources.d.ts"
+        "localise": "i18next-resources-for-ts interface -i ./public/locales/en-GB -o ./src/@types/resources.d.ts",
+        "start": "vite",
+        "test": "vitest"
     },
     "devDependencies": {
         "@testing-library/dom": "^10.4.0",

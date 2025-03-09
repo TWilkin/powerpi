@@ -4,6 +4,11 @@
         "outDir": "dist",
         "types": ["vitest/globals", "@powerpi/common-test/vitest-extend.d.ts"]
     },
+    "ts-node": {
+        "experimentalSpecifierResolution": "node",
+        "transpileOnly": true,
+        "esm": true
+    },
     "include": ["src"],
     "exclude": ["dist", "node_modules"]
 }

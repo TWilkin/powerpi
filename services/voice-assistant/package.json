@@ -19,7 +19,7 @@
         "test": "jest",
         "clean": "rm -rf dist build",
         "start:debug": "tsc-watch --onSuccess \"node ./dist/src/app.dev.js --jovo-webhook\" --noClear",
-        "start:dev": "ts-node src/index.ts",
+        "start:dev": "node --import=../../register.mjs src/index.ts",
         "start:prd": "node dist/src/index.js"
     },
     "dependencies": {
@@ -38,7 +38,7 @@
         "@jovotech/filebuilder": "^0.0.4",
         "@powerpi/common-test": "^0.0.13",
         "@types/express": "^4.17.11",
-        "ts-node": "^10.9.1",
+        "ts-node": "^10.9.2",
         "tsc-watch": "^6.0.4"
     }
 }

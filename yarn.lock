@@ -7637,7 +7637,7 @@ ts-mockito@^2.6.1:
   dependencies:
     lodash "^4.17.5"
 
-ts-node@^10.8.1, ts-node@^10.8.2, ts-node@^10.9.1:
+ts-node@^10.9.2:
   version "10.9.2"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-10.9.2.tgz#70f021c9e185bccdca820e26dc413805c101c71f"
   integrity sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==

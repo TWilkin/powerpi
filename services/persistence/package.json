@@ -17,7 +17,7 @@
         "build": "tsc",
         "clean": "rm -rf dist",
         "coverage": "vitest run --coverage",
-        "start:dev": "ts-node src/index.ts",
+        "start:dev": "node --import=../../register.mjs src/index.ts",
         "start:prd": "node dist/src/index.js",
         "test": "vitest"
     },
@@ -37,7 +37,7 @@
         "@types/node": "^20.4.9",
         "@types/underscore": "^1.11.6",
         "@types/validator": "^13.11.1",
-        "ts-node": "^10.9.1",
+        "ts-node": "^10.9.2",
         "typescript": "^5.1.6"
     }
 }
