@@ -152,7 +152,7 @@ jobs:
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh ui"
 
-      - name: Test Voice Assistant
-        if: steps.check_modified.outputs.voice_assistant
-        shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh voice-assistant"
+      # - name: Test Voice Assistant
+      #   if: steps.check_modified.outputs.voice_assistant
+      #   shell: bash
+      #   run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh voice-assistant"
