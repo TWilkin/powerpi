@@ -1,6 +1,6 @@
 import { BaseComponent, Component, Global } from "@jovotech/framework";
-import DevicePowerComponent from "./DevicePowerComponent";
-import LoginComponent from "./LoginComponent";
+import DevicePowerComponent from "./DevicePowerComponent.js";
+import LoginComponent from "./LoginComponent.js";
 
 @Global()
 @Component()

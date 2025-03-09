@@ -1,7 +1,7 @@
 import { ConfigService as CommonConfigService, ConfigFileType } from "@powerpi/common";
 import { Service } from "typedi";
-import Container from "../container";
-import app = require("../../package.json");
+import app from "../../package.json" with { type: "json" };
+import Container from "../container.js";
 
 @Service()
 export default class ConfigService extends CommonConfigService {
