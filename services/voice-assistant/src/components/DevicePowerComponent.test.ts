@@ -1,8 +1,9 @@
+import { jest } from "@jest/globals";
 import { InputType, TestSuite } from "@jovotech/framework";
 import { AlexaPlatform, AlexaUser } from "@jovotech/platform-alexa";
 import { mockDeviceFile } from "@powerpi/common-test";
-import app from "../../src/app";
-import ApiService from "../../src/services/ApiService";
+import app from "../app.js";
+import ApiService from "../services/ApiService.js";
 
 describe("Alexa", () => {
     const testSuite = new TestSuite({
@@ -21,7 +22,7 @@ describe("Alexa", () => {
 
         expect(response.response.outputSpeech?.ssml).toBeDefined();
         expect(response.response.outputSpeech?.ssml).toMatch(
-            "<speak>What would you like to do?</speak>"
+            "<speak>What would you like to do?</speak>",
         );
     });
 
@@ -34,7 +35,7 @@ describe("Alexa", () => {
 
         expect(response.response.outputSpeech?.ssml).toBeDefined();
         expect(response.response.outputSpeech?.ssml).toMatch(
-            "<speak>I couldn't find that device, try again</speak>"
+            "<speak>I couldn't find that device, try again</speak>",
         );
     });
 
@@ -59,7 +60,7 @@ describe("Alexa", () => {
 
         expect(response.response.outputSpeech?.ssml).toBeDefined();
         expect(response.response.outputSpeech?.ssml).toMatch(
-            "<speak>I couldn't find device lights, try again</speak>"
+            "<speak>I couldn't find device lights, try again</speak>",
         );
     });
 
@@ -92,7 +93,7 @@ describe("Alexa", () => {
 
         expect(response.response.outputSpeech?.ssml).toBeDefined();
         expect(response.response.outputSpeech?.ssml).toMatch(
-            "<speak>I'm sorry, I was unable to make the request to Power Pi.</speak>"
+            "<speak>I'm sorry, I was unable to make the request to Power Pi.</speak>",
         );
     });
 
