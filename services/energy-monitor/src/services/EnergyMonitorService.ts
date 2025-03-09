@@ -1,9 +1,9 @@
 import { LoggerService, MqttService } from "@powerpi/common";
 import { Service } from "typedi";
-import N3rgyData, { N3rgyDataPoint } from "../models/N3rgyData";
-import ConfigService from "./ConfigService";
-import EnergyMonitorArgumentsService from "./EnergyMonitorArgumentService";
-import N3rgyService, { EnergyType } from "./N3rgyService";
+import N3rgyData, { N3rgyDataPoint } from "../models/N3rgyData.js";
+import ConfigService from "./ConfigService.js";
+import EnergyMonitorArgumentsService from "./EnergyMonitorArgumentService.js";
+import N3rgyService, { EnergyType } from "./N3rgyService.js";
 
 @Service()
 export default class EnergyMonitorService {
@@ -17,7 +17,7 @@ export default class EnergyMonitorService {
         private readonly mqtt: MqttService,
         private readonly config: ConfigService,
         private readonly args: EnergyMonitorArgumentsService,
-        private readonly logger: LoggerService
+        private readonly logger: LoggerService,
     ) {
         this.lastUpdate = {};
     }
@@ -48,7 +48,7 @@ export default class EnergyMonitorService {
             energyType,
             start,
             end,
-            this.logger
+            this.logger,
         );
 
         let rows = 0;
@@ -80,7 +80,7 @@ export default class EnergyMonitorService {
                         "Removed",
                         removed,
                         "values greater than threshold of",
-                        threshold
+                        threshold,
                     );
                 }
             }
@@ -112,7 +112,7 @@ export default class EnergyMonitorService {
             date.getUTCDate(),
             0,
             0,
-            0
+            0,
         );
 
         return new Date(timestamp);
@@ -176,7 +176,7 @@ async function* getData(
     energyType: EnergyType,
     start: Date,
     end: Date,
-    logger: LoggerService
+    logger: LoggerService,
 ) {
     const chunks = chunkDates(start, end);
     logger.info("Split", energyType, "interval into", chunks.length - 1, "chunk(s)");

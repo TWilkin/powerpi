@@ -3,6 +3,7 @@
     "version": "1.0.8",
     "description": "PowerPi n3rgy energy usage retrieval service",
     "private": true,
+    "type": "module",
     "license": "GPL-3.0-only",
     "author": "TWilkin",
     "repository": {
@@ -15,7 +16,7 @@
     "scripts": {
         "build": "tsc",
         "clean": "rm -rf dist",
-        "start:dev": "ts-node src/index.ts",
+        "start:dev": "node --import=../../register.mjs src/index.ts",
         "start:prd": "node dist/src/index.js"
     },
     "dependencies": {
