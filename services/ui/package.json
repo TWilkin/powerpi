@@ -30,7 +30,7 @@
         "@types/react-dom": "^19.0.0",
         "@types/underscore": "^1.13.0",
         "@vitejs/plugin-react": "^4.3.3",
-        "@vitest/coverage-v8": "^2.1.4",
+        "@vitest/coverage-v8": "^3.0.8",
         "autoprefixer": "^10.4.20",
         "eslint-plugin-i18next": "^6.1.0",
         "i18next-resources-for-ts": "^1.5.0",
@@ -39,7 +39,7 @@
         "tailwindcss": "^3.4.14",
         "typescript": "^5.6.3",
         "vite": "^5.4.12",
-        "vitest": "^2.1.9"
+        "vitest": "^3.0.8"
     },
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^6.6.0",
