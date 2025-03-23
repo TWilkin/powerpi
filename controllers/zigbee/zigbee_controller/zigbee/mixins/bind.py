@@ -2,8 +2,8 @@ from abc import ABC
 from asyncio import ensure_future
 from typing import List
 
+from zigpy.device import Device
 from zigpy.types import EUI64
-from zigpy.typing import DeviceType
 from zigpy.zcl.clusters import Cluster
 from zigpy.zcl.foundation import Status
 
@@ -48,7 +48,7 @@ class ZigbeeBindMixin(ABC):
         if len(remaining) == 0:
             return
 
-        def on_device_initialised(device: DeviceType):
+        def on_device_initialised(device: Device):
             self.log_info('Device initialised, %s', device)
             nonlocal remaining
 
@@ -56,7 +56,9 @@ class ZigbeeBindMixin(ABC):
 
             if ieee == self.ieee and device.nwk == self.nwk:
                 self.log_info(
-                    'Device initialised, binding remaining clusters, %s', device)
+                    'Device initialised, binding remaining clusters, %s', device
+                )
+
                 ensure_future(self._bind(remaining))
 
         self._zigbee_controller.add_listener(
