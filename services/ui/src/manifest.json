@@ -1,5 +1,9 @@
 {
+    "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+
+    "id": "powerpi",
     "name": "PowerPi Home Automation",
+    "description": "PowerPi Home Automation",
     "short_name": "PowerPi",
     "start_url": "/",
     "display": "standalone",
