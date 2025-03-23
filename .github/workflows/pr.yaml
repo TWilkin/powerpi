@@ -56,7 +56,7 @@ jobs:
         if: steps.check_modified.outputs.go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.22.2
+          go-version: 1.24.1
 
       # test the common libraries
       - name: Test PowerPi Node Common
