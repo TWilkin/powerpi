@@ -18,8 +18,25 @@ class DeviceAnnounceListener(ZigBeeListener):
 
 
 class DeviceJoinListener(ZigBeeListener):
+    '''
+    Listener for when a device first connects.
+    '''
+
     def __init__(self, method: Callable[[DeviceType], None]):
         ZigBeeListener.__init__(self, method)
 
     def device_joined(self, device: DeviceType):
+        self._listener(device)
+
+
+class DeviceInitialisedListener(ZigBeeListener):
+    '''
+    Listener for when a device is fully initialised, when it first connects, 
+    or reconnects to the network.
+    '''
+
+    def __init__(self, method: Callable[[DeviceType], None]):
+        ZigBeeListener.__init__(self, method)
+
+    def device_initialized(self, device: DeviceType):
         self._listener(device)

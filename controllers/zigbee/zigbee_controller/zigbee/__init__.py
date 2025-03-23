@@ -3,4 +3,4 @@ from .cluster_listener import (ClusterAttributeListener,
                                ClusterGeneralCommandListener)
 from .constants import OnOff, OpenClose
 from .device import ZigbeeMixin
-from .zigbee_listener import DeviceAnnounceListener, DeviceJoinListener
+from .zigbee_listener import DeviceAnnounceListener, DeviceJoinListener, DeviceInitialisedListener
