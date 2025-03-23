@@ -1,8 +1,8 @@
 import axios from "axios";
 import dateFormat from "dateformat";
 import { Service } from "typedi";
-import N3rgyData from "../models/N3rgyData";
-import ConfigService from "./ConfigService";
+import N3rgyData from "../models/N3rgyData.js";
+import ConfigService from "./ConfigService.js";
 
 export enum EnergyType {
     Electricity = "electricity",
@@ -11,9 +11,9 @@ export enum EnergyType {
 
 @Service()
 export default class N3rgyService {
-    private static dateFormatString = "yyyymmddHHMM";
+    private static readonly dateFormatString = "yyyymmddHHMM";
 
-    constructor(private config: ConfigService) {}
+    constructor(private readonly config: ConfigService) {}
 
     public getElecticity = (start: Date, end: Date) => this.get(EnergyType.Electricity, start, end);
 

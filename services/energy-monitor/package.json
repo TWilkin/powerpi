@@ -1,8 +1,9 @@
 {
     "name": "@powerpi/energy-monitor",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "PowerPi n3rgy energy usage retrieval service",
     "private": true,
+    "type": "module",
     "license": "GPL-3.0-only",
     "author": "TWilkin",
     "repository": {
@@ -15,12 +16,12 @@
     "scripts": {
         "build": "tsc",
         "clean": "rm -rf dist",
-        "start:dev": "ts-node src/index.ts",
+        "start:dev": "node --import=../../register.mjs src/index.ts",
         "start:prd": "node dist/src/index.js"
     },
     "dependencies": {
         "@powerpi/common": "^0.2.2",
-        "axios": "^1.6.0",
+        "axios": "^1.8.2",
         "dateformat": "^4.6.3",
         "ts-command-line-args": "2.5.1",
         "typedi": "^0.10.0"
@@ -28,7 +29,7 @@
     "devDependencies": {
         "@types/dateformat": "^5.0.0",
         "@types/node": "^20.4.9",
-        "ts-node": "^10.8.1",
+        "ts-node": "^10.9.2",
         "typescript": "^5.1.6"
     }
 }

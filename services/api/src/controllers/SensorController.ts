@@ -1,7 +1,7 @@
 import { Controller, Get } from "@tsed/common";
 import _ from "underscore";
-import Authorize from "../middleware/AuthorizeMiddleware";
-import SensorStateService from "../services/SensorStateService";
+import Authorize from "../middleware/AuthorizeMiddleware.js";
+import SensorStateService from "../services/SensorStateService.js";
 
 @Controller("/sensor")
 export default class SensorController {

@@ -1,7 +1,7 @@
 import { Device, IFloorplanConfigFile, Sensor } from "@powerpi/common";
 import { instance, mock, when } from "ts-mockito";
-import { ConfigService } from "../services";
-import ConfigController from "./ConfigController";
+import { ConfigService } from "../services/index.js";
+import ConfigController from "./ConfigController.js";
 
 const mockedConfigService = mock<ConfigService>();
 

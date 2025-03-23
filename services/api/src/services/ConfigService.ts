@@ -1,9 +1,9 @@
 import { ConfigService as CommonConfigService, ConfigFileType } from "@powerpi/common";
 import { Injectable, ProviderScope, ProviderType } from "@tsed/common";
 import { Service } from "typedi";
-import app from "../../package.json";
-import Container from "../Container";
-import AuthConfig from "../models/AuthConfig";
+import app from "../../package.json" with { type: "json" };
+import Container from "../Container.js";
+import AuthConfig from "../models/AuthConfig.js";
 
 @Service()
 @Injectable({

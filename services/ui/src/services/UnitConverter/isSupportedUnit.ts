@@ -31,6 +31,7 @@ const supportedUnits = {
     "metres cubed": "m3",
     "cubic feet": "cf",
     "hundred cubic feet": "hcf",
+    "thousand cubic feet": "Mcf",
 } as const;
 
 /** The labels of the supported units. */

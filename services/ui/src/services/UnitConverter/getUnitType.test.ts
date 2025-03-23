@@ -24,6 +24,7 @@ describe("getUnitType", () => {
         { type: "nope", unit: "m3", expected: "volume" },
         { type: "nope", unit: "cf", expected: "volume" },
         { type: "nope", unit: "hcf", expected: "volume" },
+        { type: "nope", unit: "Mcf", expected: "volume" },
         { type: "nope", unit: "nope", expected: undefined },
     ];
     test.each(cases)(

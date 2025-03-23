@@ -1,5 +1,5 @@
-import commonDeviceTests from "./commonDeviceTests";
-import commonSensorTests from "./commonSensorTests";
+import commonDeviceTests from "./commonDeviceTests.js";
+import commonSensorTests from "./commonSensorTests.js";
 
 function commonZigBeeTests(validFile: object, sensor = false) {
     const { getDevice, testValid, testInvalid } = sensor
@@ -130,7 +130,7 @@ describe("ZigBee Devices", () => {
             }));
 
         const invalidMetrics = ["ready", 1, true];
-        test.each(invalidMetrics)("Bad metric $metric", (metric) =>
+        test.each(invalidMetrics)("Bad metric %s", (metric) =>
             testInvalid({
                 sensors: [
                     {

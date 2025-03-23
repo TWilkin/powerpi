@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
 from apscheduler.triggers.date import DateTrigger
+from cron_converter import Cron
 from powerpi_common.condition import ConditionParser, Expression
 import pytz
 
@@ -31,54 +32,72 @@ class ExpectedTime:
 class TestDeviceSingleSchedule:
     __expected_topic = 'device/SomeDevice/change'
 
-    @pytest.mark.parametrize('at,days,now,expected', [
+    @pytest.mark.parametrize('schedule,now,timezone,expected', [
         (
-            '09:00:00', None, None, ExpectedTime(2, 9, 0)
+            '0 9 * * *', None, None, ExpectedTime(2, 9, 0)
         ),
         (
-            '18:30:00', None, None, ExpectedTime(1, 18, 30)
+            '30 18 * * *', None, None, ExpectedTime(1, 18, 30)
         ),
         (
-            '09:00:00', ['Tuesday'], None, ExpectedTime(7, 9, 0)
+            '0 9 * * 2', None, None, ExpectedTime(7, 9, 0)
         ),
         # day light savings
         # before change over (summer time)
         (
-            '09:00:00', None, datetime(2023, 10, 27, 9, 0, 1),
-            ExpectedTime(28, 8, 0)
+            '0 9 * * *', datetime(2023, 10, 27, 9, 0, 1), None,
+            ExpectedTime(28, 9 - 1, 0)
         ),
         # after change over (summer -> winter time)
         (
-            '09:00:00', None, datetime(2023, 10, 28, 9, 0, 1),
-            ExpectedTime(29, 9, 0)
+            '0 9 * * *', datetime(2023, 10, 28, 9, 0, 1), None,
+            ExpectedTime(29, 9 - 0, 0)
+        ),
+        (
+            '0 9 * * *',
+            datetime(2025, 11, 1, 9 + 4, 0, 1),
+            'America/New_York',
+            ExpectedTime(2, 9 + 5, 0)
         ),
         # other way
-        # before change over (winter time)
+        # before change over(winter time)
         (
-            '09:00:00', None, datetime(2024, 3, 29, 9, 0, 1),
-            ExpectedTime(30, 9, 0)
+            '0 9 * * *', datetime(2024, 3, 29, 9, 0, 1), None,
+            ExpectedTime(30, 9 - 0, 0)
         ),
         # after change over (winter -> summer time)
         (
-            '09:00:00', None, datetime(2024, 3, 30, 9, 0, 1),
-            ExpectedTime(31, 8, 0)
+            '0 9 * * *',
+            datetime(2024, 3, 30, 9, 0, 1),
+            None,
+            ExpectedTime(31, 9 - 1, 0)
+        ),
+        (
+            '0 9 * * *',
+            datetime(2025, 3, 8, 9 + 5, 0, 1),
+            'America/New_York',
+            ExpectedTime(9, 9 + 4, 0)
         ),
     ])
     def test_start(
         self,
         subject_builder: SubjectBuilder,
         add_job: AddJobType,
-        at: str,
-        days: List[str] | None,
+        schedule: str,
         now: datetime | None,
-        expected: ExpectedTime
+        timezone: str,
+        expected: ExpectedTime,
+        scheduler_config
     ):
         # pylint: disable=too-many-arguments
 
+        type(scheduler_config).timezone = PropertyMock(
+            return_value='Europe/London' if timezone is None else timezone
+        )
+
         subject = subject_builder({
             'device': 'SomeDevice',
-            'at': at,
-            'days': days
+            'schedule': schedule
         })
 
         with patch_datetime(
@@ -112,7 +131,7 @@ class TestDeviceSingleSchedule:
     ):
         subject = subject_builder({
             'device': 'SomeDevice',
-            'at': '09:00:00',
+            'schedule': '0 9 * * *',
             'condition': condition
         })
 
@@ -149,7 +168,7 @@ class TestDeviceSingleSchedule:
         with patch_datetime(datetime(2023, 3, 1, 9, 1, tzinfo=pytz.UTC)):
             subject = subject_builder({
                 'device': 'SomeDevice',
-                'at': '09:00:00',
+                'schedule': '0 9 * * *',
                 **config
             })
 
@@ -182,7 +201,8 @@ class TestDeviceSingleSchedule:
         powerpi_mqtt_client,
         powerpi_scheduler,
         powerpi_variable_manager,
-        condition_parser_factory
+        condition_parser_factory,
+        cron_factory
     ) -> SubjectBuilder:
         # pylint: disable=too-many-arguments
 
@@ -198,6 +218,7 @@ class TestDeviceSingleSchedule:
                 powerpi_scheduler,
                 powerpi_variable_manager,
                 condition_parser_factory,
+                cron_factory,
                 **schedule
             )
 
@@ -226,6 +247,10 @@ class TestDeviceSingleSchedule:
             powerpi_variable_manager
         )
 
+    @pytest.fixture
+    def cron_factory(self):
+        return Cron
+
 
 @contextmanager
 def patch_datetime(mock_now: datetime):
@@ -235,8 +260,8 @@ def patch_datetime(mock_now: datetime):
 
         return mock_now.astimezone(pytz.UTC)
 
-    with patch('scheduler.services.device_single_schedule.datetime') as mock_datetime:
-        mock_datetime.combine = datetime.combine
+    with patch('scheduler.services.device_schedule.datetime') as mock_datetime:
         mock_datetime.now = now
+        mock_datetime.combine = datetime.combine
 
         yield mock_datetime

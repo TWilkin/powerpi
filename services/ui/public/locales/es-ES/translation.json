@@ -1,0 +1,156 @@
+{
+    "navigation": {
+        "home": "Casa",
+        "devices": "Aparato",
+        "history": "Historia",
+        "settings": "Ajustes"
+    },
+    "pages": {
+        "error": {
+            "an unexpected error has occurred": "Se ha producido un error inesperado.",
+            "unknown error": "Error desconocido"
+        },
+        "login": {
+            "login with": "Iniciar sesión con {{protocol}}"
+        },
+        "home": {
+            "unknown": "Piso \"{{value}}\" no existe en el plan de piso.",
+            "empty": "No hai plan de piso.",
+            "more devices": "Hai {{count, number}} mas aparatos escondidos."
+        },
+        "devices": {
+            "search for devices": "Busque aparatos",
+            "empty": "No hai aparatos.",
+            "filtered_one": "{{count, number}} aparato filtrado.",
+            "filtered_other": "{{count, number}} aparatos filtrados.",
+            "filters": {
+                "types": "Tipos",
+                "locations": "Zona",
+                "visibility": {
+                    "label": "Visiblidad",
+                    "option": "Solo muestra aparatos visibles"
+                }
+            }
+        },
+        "history": {
+            "headings": {
+                "type": "Tipo",
+                "entity": "Objeto",
+                "action": "Acción",
+                "when": "Tiempo",
+                "message": "Mensaje"
+            },
+            "empty": "No hai historia.",
+            "filtered_one": "{{count, number}} mensaje filtrado.",
+            "filtered_other": "{{count, number}} mensajes filtrados.",
+            "filters": {
+                "path": "Ruta",
+                "types": "Tipos",
+                "entities": "Objetos",
+                "actions": "Acciones"
+            }
+        },
+        "settings": {
+            "language": "Idioma",
+            "units": "Unidades"
+        }
+    },
+    "common": {
+        "loading": "Cargando",
+        "close": "Cerrar",
+        "clear search": "Borrar busqueda",
+        "clear filters": "Borrar Filtros",
+        "open filter": "abrir filtros",
+        "close filter": "cerrar filtros",
+        "all": "Todos",
+        "unspecified": "No especificado",
+        "never": "nunca",
+        "datetime": {
+            "date": "{{time, datetime(dateStyle: long; timeStyle: long;}}",
+            "relative": {
+                "second": "{{time, relativetime(seconds)}}",
+                "minute": "{{time, relativetime(minutes)}}",
+                "hour": "{{time, relativetime(hours)}}",
+                "day": "{{time, relativetime(days)}}",
+                "week": "{{time, relativetime(weeks)}}",
+                "month": "{{time, relativetime(months)}}",
+                "year": "{{time, relativetime(years)}}"
+            }
+        },
+        "power on": "Prender {{device}}",
+        "power off": "Apagar {{device}}",
+        "lock on": "Desbloquear {{device}}",
+        "lock off": "Bloquear {{device}}",
+        "history link": "Mostrar historia para {{device}}",
+        "capability": {
+            "button": "Mostrar habilidades {{device}}",
+            "brightness": "Ajustar el brillo para {{device}}",
+            "colour temperature": "Ajustar la temperature del color para {{device}}",
+            "stream": "Reproducir la transmisión en {{device}}"
+        },
+        "units": {
+            "values": {
+                "percentage": "{{value, number}}%",
+                "milliampere": "{{value, number}} mA",
+                "ampere": "{{value, number}} A",
+                "millivolt": "{{value, number}} mV",
+                "volt": "{{value, number}} V",
+                "watt hours": "{{value, number}} Wh",
+                "kilowatt hours": "{{value, number}} kWh",
+                "watt": "{{value, number}} W",
+                "kilowatt": "{{value, number}} kW",
+                "joule": "{{value, number}} J",
+                "kilojoule": "{{value, number}} kJ",
+                "celsius": "{{value, number}} °C",
+                "kelvin": "{{value, number}} K",
+                "fahrenheit": "{{value, number}} F",
+                "metres cubed": "{{value, number}} m\u00B3",
+                "cubic feet": "{{value, number}} cf",
+                "hundred cubic feet": "{{value, number}} hcf",
+                "thousand cubic feet": "{{value, number}} Mcf",
+                "unrecognised": "{{value, number}} {{unit}}"
+            },
+            "labels": {
+                "percentage": "Porcentage",
+                "milliampere": "Milliamperio",
+                "ampere": "Amperio",
+                "millivolt": "Millivoltio",
+                "volt": "Voltio",
+                "watt hours": "Vatio horas",
+                "kilowatt hours": "Kilovatio horas",
+                "watt": "Vatio",
+                "kilowatt": "Kilovatio",
+                "joule": "Julio",
+                "kilojoule": "Kilojulio",
+                "celsius": "Celsius",
+                "kelvin": "Kelvin",
+                "fahrenheit": "Fahrenheit",
+                "metres cubed": "Metros cúbicos",
+                "cubic feet": "Pies cúbicos",
+                "hundred cubic feet": "Cien pies cúbicos",
+                "thousand cubic feet": "Mil pies cúbicos"
+            }
+        },
+        "sensors": {
+            "labels": {
+                "door": "Puerta",
+                "current": "Corriente",
+                "electricalPotential": "Potencial eléctrico",
+                "electricity": "Electricidad",
+                "gas": "Gas",
+                "humidity": "Humedad",
+                "motion": "Movimiento",
+                "power": "Poder",
+                "switch": "Switch",
+                "temperature": "Temperatura",
+                "window": "Ventana"
+            },
+            "states": {
+                "detected": "detectado",
+                "undetected": "no detectado",
+                "open": "abierta",
+                "close": "cerrada"
+            }
+        }
+    }
+}

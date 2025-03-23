@@ -14,15 +14,15 @@ The Docker container can be built utilising _buildx_ as described in the [projec
 
 This service expects the following environment variables to be set before it will start successfully. When using kubernetes these are already configured in the helm chart, however when running locally for testing we need to define these:
 
--   **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
--   **GITHUB_USER** - The user name of the GitHub user that owns the repository containing the configuration files.
--   **GITHUB_SECRET_FILE** - The path to the secret containing the GitHub user token.
--   **REPO** - The repository under the _GITHUB_USER_ the contains the configuration (default _powerpi-config_).
--   **BRANCH** - The branch of the repository containing the configuration (default _main_).
--   **FILE_PATH** - The path in the repostiory contraining the configuration (default _""_).
--   **POLL_FREQUENCY** - The frequency at which to check GitHub for updated configuration files in seconds (default _300_).
--   **SCHEDULER_ENABLED** - Whether the _scheduler_ service is enabled, and therefore the config file should be downloaded for it (default _true_).
--   **EVENTS_ENABLED** - Whether the _event_ service is enabled, and therefore the config file should be downloaded for it (default _true_).
+- **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
+- **GITHUB_USER** - The user name of the GitHub user that owns the repository containing the configuration files.
+- **GITHUB_SECRET_FILE** - The path to the secret containing the GitHub user token.
+- **REPO** - The repository under the _GITHUB_USER_ the contains the configuration (default _powerpi-config_).
+- **BRANCH** - The branch of the repository containing the configuration (default _main_).
+- **FILE_PATH** - The path in the repostiory contraining the configuration (default _""_).
+- **POLL_FREQUENCY** - The frequency at which to check GitHub for updated configuration files in seconds (default _300_).
+- **SCHEDULER_ENABLED** - Whether the _scheduler_ service is enabled, and therefore the config file should be downloaded for it (default _true_).
+- **EVENTS_ENABLED** - Whether the _event_ service is enabled, and therefore the config file should be downloaded for it (default _true_).
 
 ### Configuration Files
 
@@ -161,12 +161,18 @@ The _schedules.json_ file contains the scheduled events that _scheduler_ uses to
     "timezone": "Europe/London",
     "schedules": [
         {
-            // increase the brightness of MyDevices between 8am and 9am from 0 to 1000 in 60s intervals and turn the device on
+            // increase the brightness of MyDevice every 5 minutes set the brightness to 50%
             "device": "MyDevices",
-            "days": ["Saturday", "Sunday"],
-            "between": ["08:00:00", "09:00:00"],
+            "schedule": "*/2 * * * *",
+            "brightness": 50
+        },
+        {
+            // increase the brightness of MyDevice between 8am and 9am from 0% to 100% in 60s intervals and turn the device on
+            "device": "MyDevice",
+            "schedule": "0 8 * * 6,7",
+            "duration": 3600, // seconds
             "interval": 60, // seconds
-            "brightness": [0, 1000],
+            "brightness": [0, 100],
             "power": true
         }
     ]

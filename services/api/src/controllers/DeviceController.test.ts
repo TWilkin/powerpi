@@ -1,9 +1,9 @@
 import { MqttService } from "@powerpi/common";
-import { Device, DeviceChangeMessage, DeviceState } from "@powerpi/common-api";
+import { ChangeMessage, Device, DeviceState } from "@powerpi/common-api";
 import { Response } from "express";
 import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
-import { DeviceStateService } from "../services";
-import DeviceController from "./DeviceController";
+import { DeviceStateService } from "../services/index.js";
+import DeviceController from "./DeviceController.js";
 
 const mockedDeviceStateService = mock<DeviceStateService>();
 const mockedMqttService = mock<MqttService>();
@@ -60,12 +60,8 @@ describe("DeviceController", () => {
         );
 
         [undefined, { nope: true, state: DeviceState.Off }].forEach((data) =>
-            test(`bad data: ${data}`, async () => {
-                await subject?.change(
-                    "thing",
-                    data as DeviceChangeMessage,
-                    instance(mockedResponse),
-                );
+            test(`bad data: ${JSON.stringify(data)}`, async () => {
+                await subject?.change("thing", data as ChangeMessage, instance(mockedResponse));
 
                 verify(
                     mockedMqttService.publish(anything(), anything(), anything(), anything()),

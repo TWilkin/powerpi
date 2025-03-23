@@ -1,6 +1,6 @@
-import { IFloorplan } from "./IFloorplan";
-import { ISchedule } from "./ISchedule";
-import { IUser } from "./IUser";
+import { IFloorplan } from "./IFloorplan.js";
+import { ISchedule } from "./ISchedule.js";
+import { IUser } from "./IUser.js";
 
 export interface IDeviceConfig {
     name: string;

@@ -1,9 +1,9 @@
 import { BaseComponent, Component, Intents } from "@jovotech/framework";
 import { DeviceState } from "@powerpi/common-api";
-import Container from "../container";
-import ApiService from "../services/ApiService";
-import DeviceService from "../services/DeviceService";
-import ErrorComponent from "./ErrorComponent";
+import Container from "../container.js";
+import ApiService from "../services/ApiService.js";
+import DeviceService from "../services/DeviceService.js";
+import ErrorComponent from "./ErrorComponent.js";
 
 @Component()
 export default class DevicePowerComponent extends BaseComponent {

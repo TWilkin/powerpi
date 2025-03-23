@@ -1,8 +1,9 @@
+import { jest } from "@jest/globals";
 import { InputType, TestSuite } from "@jovotech/framework";
 import { AlexaPlatform, AlexaUser } from "@jovotech/platform-alexa";
 import { mockDeviceFile } from "@powerpi/common-test";
-import app from "../../src/app";
-import DeviceService from "../../src/services/DeviceService";
+import app from "../app.js";
+import DeviceService from "../services/DeviceService.js";
 
 describe("Alexa", () => {
     const testSuite = new TestSuite({
@@ -19,7 +20,7 @@ describe("Alexa", () => {
 
         expect(response.response.outputSpeech?.ssml).toBeDefined();
         expect(response.response.outputSpeech?.ssml).toMatch(
-            "<speak>Please login to your Power Pi account through the Alexa app.</speak>"
+            "<speak>Please login to your Power Pi account through the Alexa app.</speak>",
         );
     });
 
@@ -38,7 +39,7 @@ describe("Alexa", () => {
 
         expect(response.response.outputSpeech?.ssml).toBeDefined();
         expect(response.response.outputSpeech?.ssml).not.toMatch(
-            "<speak>Please login to your Power Pi account through the Alexa app.</speak>"
+            "<speak>Please login to your Power Pi account through the Alexa app.</speak>",
         );
     });
 });

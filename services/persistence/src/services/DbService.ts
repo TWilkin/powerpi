@@ -2,9 +2,9 @@ import { LoggerService } from "@powerpi/common";
 import { Sequelize } from "sequelize-typescript";
 import { Service } from "typedi";
 import _ from "underscore";
-import Container from "../Container";
-import MqttModel from "../models/mqtt.model";
-import ConfigService from "./ConfigService";
+import Container from "../Container.js";
+import MqttModel from "../models/mqtt.model.js";
+import ConfigService from "./ConfigService.js";
 
 @Service()
 export default class DbService {
@@ -12,7 +12,7 @@ export default class DbService {
 
     private sequelize: Sequelize | undefined;
 
-    constructor(private config: ConfigService) {
+    constructor(private readonly config: ConfigService) {
         this.logger = Container.get(LoggerService);
     }
 

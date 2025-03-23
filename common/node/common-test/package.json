@@ -2,6 +2,7 @@
     "name": "@powerpi/common-test",
     "version": "0.0.13",
     "description": "PowerPi Common Typescript Testing library",
+    "type": "module",
     "private": true,
     "license": "GPL-3.0-only",
     "author": "TWilkin",
@@ -18,18 +19,15 @@
     },
     "files": [
         "dist/src",
-        "jest-globals.d.ts",
-        "jest-globals.js"
+        "vitest-extend.js",
+        "vitest-extend.d.ts"
     ],
     "devDependencies": {
-        "@jest/globals": "^29.7.0",
-        "@types/jest": "^29.5.3",
         "@types/node": "^20.4.9",
-        "jest": "^29.6.2",
-        "jest-environment-jsdom": "^29.6.2",
-        "ts-jest": "^29.1.1",
+        "@vitest/coverage-v8": "^3.0.8",
         "ts-mockito": "^2.6.1",
-        "typescript": "^5.1.6"
+        "typescript": "^5.6.3",
+        "vitest": "^3.0.8"
     },
     "dependencies": {
         "@powerpi/common": "^0.2.2"

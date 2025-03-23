@@ -1,4 +1,4 @@
-import { TFunction } from "i18next";
+import i18next, { TFunction } from "i18next";
 import { PropsWithChildren, useEffect, useMemo, useReducer } from "react";
 import { useTranslation } from "react-i18next";
 import UserSettingsContext, { UpdateSettingsAction, UserSettingsType } from "./UserSettingsContext";
@@ -22,10 +22,22 @@ const UserSettingsContextProvider = ({ children }: UserSettingsContextProviderPr
 
     // handle a language change
     useEffect(() => {
-        if (settings.language) {
+        if (settings.language !== i18n.language) {
             i18n.changeLanguage(settings.language);
         }
     }, [i18n, settings.language]);
+
+    useEffect(() => {
+        function handleLanguageChange() {
+            dispatch({ type: "Reinitialise", defaults: buildInitialiser(t)() });
+        }
+
+        i18next.on("languageChanged", handleLanguageChange);
+
+        return () => {
+            i18next.off("languageChanged", handleLanguageChange);
+        };
+    }, [t]);
 
     return <UserSettingsContext.Provider value={context}>{children}</UserSettingsContext.Provider>;
 };
@@ -40,6 +52,9 @@ function reducer(state: UserSettingsType, action: UpdateSettingsAction) {
 
         case "Unit":
             return update({ units: { ...state.units, [action.unitType]: action.unit } });
+
+        case "Reinitialise":
+            return update({ ...action.defaults });
 
         default:
             throw Error("Unknown action");

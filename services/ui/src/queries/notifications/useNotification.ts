@@ -3,6 +3,8 @@ import {
     CapabilityStatusMessage,
     ConfigFileType,
     ConfigStatusMessage,
+    DeviceChangeMessage,
+    DeviceState,
     DeviceStatusMessage,
     SensorStatusMessage,
 } from "@powerpi/common-api";
@@ -38,7 +40,7 @@ export default function useNotification() {
             }
         }
 
-        async function handleDeviceStatusChange(message: DeviceStatusMessage) {
+        function handleDeviceStatusChange(message: DeviceStatusMessage) {
             patchDevice(message.device, {
                 type: "State",
                 state: message.state,
@@ -51,7 +53,19 @@ export default function useNotification() {
             }
         }
 
-        async function handleSensorStatusChange(message: SensorStatusMessage) {
+        function handleDeviceChange(message: DeviceChangeMessage) {
+            patchDevice(message.device, {
+                type: "State",
+                state: DeviceState.Unknown,
+                since: message.timestamp,
+            });
+
+            if (setChangingState) {
+                setChangingState(message.device, true);
+            }
+        }
+
+        function handleSensorStatusChange(message: SensorStatusMessage) {
             if ("state" in message) {
                 patchSensor(message.sensor, {
                     type: "State",
@@ -76,7 +90,7 @@ export default function useNotification() {
             }
         }
 
-        async function handleBatteryChange(message: BatteryStatusMessage) {
+        function handleBatteryChange(message: BatteryStatusMessage) {
             if ("device" in message) {
                 patchDevice(message.device, {
                     type: "Battery",
@@ -94,7 +108,7 @@ export default function useNotification() {
             }
         }
 
-        async function handleCapabilityChange(message: CapabilityStatusMessage) {
+        function handleCapabilityChange(message: CapabilityStatusMessage) {
             patchDevice(message.device, {
                 type: "Capability",
                 capability: message.capability,
@@ -106,6 +120,7 @@ export default function useNotification() {
         if (user) {
             api.addConfigChangeListener(handleConfigChange);
             api.addDeviceListener(handleDeviceStatusChange);
+            api.addDeviceChangeListener(handleDeviceChange);
             api.addSensorListener(handleSensorStatusChange);
             api.addBatteryListener(handleBatteryChange);
             api.addCapabilityListener(handleCapabilityChange);
@@ -114,6 +129,7 @@ export default function useNotification() {
             return () => {
                 api.removeConfigChangeListener(handleConfigChange);
                 api.removeDeviceListener(handleDeviceStatusChange);
+                api.removeDeviceChangeListener(handleDeviceChange);
                 api.removeSensorListener(handleSensorStatusChange);
                 api.removeBatteryListener(handleBatteryChange);
                 api.removeCapabilityListener(handleCapabilityChange);

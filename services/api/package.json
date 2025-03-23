@@ -3,6 +3,7 @@
     "version": "1.2.0",
     "description": "PowerPi API",
     "private": true,
+    "type": "module",
     "license": "GPL-3.0-only",
     "author": "TWilkin",
     "repository": {
@@ -15,10 +16,10 @@
     "scripts": {
         "build": "tsc",
         "clean": "rm -rf dist",
-        "coverage": "jest --coverage",
-        "start:dev": "ts-node src/app.ts",
+        "coverage": "vitest run --coverage",
+        "start:dev": "node --import=../../register.mjs src/app.ts",
         "start:prd": "node dist/src/app.js",
-        "test": "jest"
+        "test": "vitest"
     },
     "dependencies": {
         "@powerpi/common": "^0.2.2",
@@ -68,20 +69,7 @@
         "@types/passport-jwt": "^3.0.8",
         "@types/pg": "^8.6.6",
         "@types/underscore": "^1.11.6",
-        "ts-node": "^10.8.1",
+        "ts-node": "^10.9.2",
         "typescript": "^5.1.6"
-    },
-    "jest": {
-        "preset": "ts-jest",
-        "testEnvironment": "node",
-        "collectCoverage": false,
-        "collectCoverageFrom": [
-            "src/**/*.ts",
-            "!**/node_modules/**",
-            "!**/*.test.ts"
-        ],
-        "coverageReporters": [
-            "text"
-        ]
     }
 }

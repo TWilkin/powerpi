@@ -1,22 +1,12 @@
-export enum Weekday {
-    Sunday,
-    Monday,
-    Tuesday,
-    Wednesday,
-    Thursday,
-    Friday,
-    Saturday,
-}
-
 type DeviceSchedule = {
     device?: string;
     devices?: string[];
-    days?: Weekday[];
+    schedule: string;
     power?: boolean;
 };
 
 export type DeviceInternalSchedule = DeviceSchedule & {
-    between: string[];
+    duration: number;
     interval: number;
     force?: boolean;
     hue?: number[];
@@ -26,7 +16,6 @@ export type DeviceInternalSchedule = DeviceSchedule & {
 };
 
 export type DeviceSingleSchedule = DeviceSchedule & {
-    at: string;
     hue?: number;
     saturation?: number;
     brightness?: number;

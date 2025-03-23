@@ -1,14 +1,13 @@
 import { ConfigFileType, IDeviceConfigFile, LoggerService } from "@powerpi/common";
-import "@powerpi/common-test/jest-globals";
 import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
-import ConfigPublishService from "./ConfigPublishService";
-import ConfigService from "./ConfigService";
-import ConfigServiceArgumentService from "./ConfigServiceArgumentService";
-import GitHubConfigService from "./GitHubConfigService";
-import OctokitService from "./OctokitService";
-import ValidatorService from "./ValidatorService";
-import HandlerFactory from "./handlers/HandlerFactory";
-import IHandler from "./handlers/IHandler";
+import ConfigPublishService from "./ConfigPublishService.js";
+import ConfigService from "./ConfigService.js";
+import ConfigServiceArgumentService from "./ConfigServiceArgumentService.js";
+import GitHubConfigService from "./GitHubConfigService.js";
+import OctokitService from "./OctokitService.js";
+import ValidatorService from "./ValidatorService.js";
+import HandlerFactory from "./handlers/HandlerFactory.js";
+import IHandler from "./handlers/IHandler.js";
 
 type OctokitContent = Awaited<ReturnType<OctokitService["getContent"]>>;
 
@@ -25,7 +24,7 @@ describe("GitHubConfigService", () => {
     let subject: GitHubConfigService | undefined;
 
     beforeEach(() => {
-        jest.spyOn(process, "exit").mockImplementation(() => {
+        vi.spyOn(process, "exit").mockImplementation(() => {
             throw new ProcessExitCalled();
         });
 
@@ -52,7 +51,7 @@ describe("GitHubConfigService", () => {
     describe("start", () => {
         describe("daemon", () => {
             test("on", async () => {
-                jest.useFakeTimers();
+                vi.useFakeTimers();
 
                 when(mockedConfigServiceArgumentService.options).thenReturn({ daemon: true });
 
@@ -65,7 +64,7 @@ describe("GitHubConfigService", () => {
                 expect(logs.last()).toContainLogMessage("Scheduling to run every 300 seconds");
                 resetCalls(mockedLoggerService);
 
-                await jest.advanceTimersByTimeAsync(300 * 1000 + 10);
+                await vi.advanceTimersByTimeAsync(300 * 1000 + 10);
 
                 logs = capture(mockedLoggerService.info);
 

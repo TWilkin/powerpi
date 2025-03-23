@@ -1,6 +1,6 @@
 import { Arg, OnVerify, Protocol } from "@tsed/passport";
 import { BasicStrategy, BasicStrategyOptions } from "passport-http";
-import ConfigService from "../services/ConfigService";
+import ConfigService from "../services/ConfigService.js";
 
 @Protocol<BasicStrategyOptions>({
     name: "client_credentials",

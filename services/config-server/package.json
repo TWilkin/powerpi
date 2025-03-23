@@ -3,6 +3,7 @@
     "version": "1.1.8",
     "description": "PowerPi config retrieval from GitHub pushing to message queue",
     "private": true,
+    "type": "module",
     "license": "GPL-3.0-only",
     "author": "TWilkin",
     "repository": {
@@ -15,16 +16,16 @@
     "scripts": {
         "build": "tsc",
         "clean": "rm -rf dist",
-        "coverage": "jest --coverage",
-        "start:dev": "ts-node src/index.ts",
+        "coverage": "vitest run --coverage",
+        "start:dev": "node --import=../../register.mjs src/index.ts",
         "start:prd": "node dist/src/index.js",
-        "test": "jest"
+        "test": "vitest"
     },
     "dependencies": {
         "@octokit/rest": "^20.0.1",
         "@powerpi/common": "^0.2.2",
-        "ajv": "^8.11.0",
-        "ajv-formats": "2.1.1",
+        "ajv": "^8.17.1",
+        "ajv-formats": "3.0.1",
         "ts-command-line-args": "^2.5.1",
         "typedi": "^0.10.0",
         "underscore": "^1.13.4",
@@ -34,21 +35,7 @@
         "@powerpi/common-test": "^0.0.13",
         "@types/node": "^20.4.9",
         "@types/underscore": "^1.11.6",
-        "ts-node": "^10.8.2",
+        "ts-node": "^10.9.2",
         "typescript": "^5.1.6"
-    },
-    "jest": {
-        "preset": "ts-jest",
-        "testEnvironment": "node",
-        "collectCoverage": false,
-        "collectCoverageFrom": [
-            "src/**/*.ts",
-            "!**/node_modules/**",
-            "!**/test/**",
-            "!**/*.test.ts"
-        ],
-        "coverageReporters": [
-            "text"
-        ]
     }
 }

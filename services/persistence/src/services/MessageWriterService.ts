@@ -1,10 +1,13 @@
 import { LoggerService, Message, MqttConsumer, MqttService } from "@powerpi/common";
 import { Service } from "typedi";
-import MqttModel from "../models/mqtt.model";
+import MqttModel from "../models/mqtt.model.js";
 
 @Service()
 export default class MessageWriterService implements MqttConsumer {
-    constructor(private readonly mqtt: MqttService, private readonly logger: LoggerService) {}
+    constructor(
+        private readonly mqtt: MqttService,
+        private readonly logger: LoggerService,
+    ) {}
 
     public async start() {
         await this.mqtt.subscribe(this);

@@ -1,7 +1,7 @@
 import { Sensor } from "@powerpi/common-api";
 import { instance, mock, when } from "ts-mockito";
-import { SensorStateService } from "../services";
-import SensorController from "./SensorController";
+import { SensorStateService } from "../services/index.js";
+import SensorController from "./SensorController.js";
 
 const mockedSensorStateService = mock<SensorStateService>();
 

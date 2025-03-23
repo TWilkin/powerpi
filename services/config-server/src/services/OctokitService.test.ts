@@ -1,11 +1,11 @@
-import octokit, { Octokit } from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import { instance, mock, when } from "ts-mockito";
-import ConfigService from "./ConfigService";
-import OctokitService, { NoUserError } from "./OctokitService";
+import ConfigService from "./ConfigService.js";
+import OctokitService, { NoUserError } from "./OctokitService.js";
 
-jest.mock("@octokit/rest", () => {
+vi.mock("@octokit/rest", () => {
     return {
-        Octokit: jest.fn().mockImplementation(() => ({
+        Octokit: vi.fn().mockImplementation(() => ({
             rest: {
                 repos: {
                     getContent: () => ({
@@ -23,7 +23,7 @@ describe("OctokitService", () => {
     let subject: OctokitService | undefined;
 
     beforeEach(() => {
-        jest.mocked(Octokit).mockClear();
+        vi.mocked(Octokit).mockClear();
 
         when(mockedConfigService.gitHubUser).thenReturn("user");
         when(mockedConfigService.repo).thenReturn("repo");
@@ -35,19 +35,19 @@ describe("OctokitService", () => {
     });
 
     describe("getContent", () => {
-        test("no user", () => {
+        test("no user", async () => {
             when(mockedConfigService.gitHubUser).thenReturn(undefined);
 
             const action = () => subject?.getContent();
 
-            expect(action).rejects.toThrow(NoUserError);
+            await expect(action).rejects.toThrow(NoUserError);
         });
 
         [undefined, "devices.json"].forEach((fileName) =>
             test(`gets content '${fileName}'`, async () => {
                 const result = await subject?.getContent(fileName);
 
-                expect(octokit.Octokit).toHaveBeenCalledTimes(1);
+                expect(Octokit).toHaveBeenCalledTimes(1);
 
                 expect(result).not.toBeNull();
                 expect(result).toBe("I am file");
@@ -58,7 +58,7 @@ describe("OctokitService", () => {
             await subject?.getContent("devices.json");
             await subject?.getContent("devices.json");
 
-            expect(octokit.Octokit).toHaveBeenCalledTimes(1);
+            expect(Octokit).toHaveBeenCalledTimes(1);
         });
     });
 

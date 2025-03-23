@@ -1,11 +1,11 @@
-import ApiSocketService from "./ApiSocketService";
-import ConfigService from "./ConfigService";
-import DatabaseService from "./DatabaseService";
-import DeviceStateService from "./DeviceStateService";
-import JwtService from "./JwtService";
-import SensorStateService from "./SensorStateService";
-import UserService from "./UserService";
-import "./common";
+import ApiSocketService from "./ApiSocketService.js";
+import ConfigService from "./ConfigService.js";
+import DatabaseService from "./DatabaseService.js";
+import DeviceStateService from "./DeviceStateService.js";
+import JwtService from "./JwtService.js";
+import SensorStateService from "./SensorStateService.js";
+import UserService from "./UserService.js";
+import "./common.js";
 
 export {
     ApiSocketService,

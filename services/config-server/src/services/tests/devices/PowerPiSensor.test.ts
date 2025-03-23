@@ -1,4 +1,4 @@
-import commonSensorTests from "./commonSensorTests";
+import commonSensorTests from "./commonSensorTests.js";
 
 describe("PowerPi Sensor", () => {
     const { testInvalid } = commonSensorTests({

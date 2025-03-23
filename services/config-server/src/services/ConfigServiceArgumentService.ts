@@ -1,7 +1,7 @@
 import { parse } from "ts-command-line-args";
 import { Service } from "typedi";
-import ConfigServiceArguments from "../models/ConfigServiceArguments";
-import ConfigService from "./ConfigService";
+import ConfigServiceArguments from "../models/ConfigServiceArguments.js";
+import ConfigService from "./ConfigService.js";
 
 @Service()
 export default class ConfigServiceArgumentService {
@@ -39,7 +39,7 @@ export default class ConfigServiceArgumentService {
                         header: `${this.config.service} v${this.config.version}`,
                     },
                 ],
-            }
+            },
         );
     }
 }

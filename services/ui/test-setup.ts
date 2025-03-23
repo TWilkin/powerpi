@@ -9,9 +9,11 @@ beforeAll(() => {
     // setup i18next with en-GB translation
     i18n.use(initReactI18next).init({
         lng: "en-GB",
+        supportedLngs: ["en-GB", "en-US"],
         debug: false,
         resources: {
             "en-GB": { translation, defaults },
+            "en-US": { translation, defaults },
         },
         interpolation: {
             escapeValue: false,

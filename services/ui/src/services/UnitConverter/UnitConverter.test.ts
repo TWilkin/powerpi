@@ -62,6 +62,7 @@ describe("UnitConverter", () => {
             expect(result).toContainEqual({ unit: "m3", key: "metres cubed" });
             expect(result).toContainEqual({ unit: "kWh", key: "kilowatt hours" });
             expect(result).toContainEqual({ unit: "hcf", key: "hundred cubic feet" });
+            expect(result).toContainEqual({ unit: "Mcf", key: "thousand cubic feet" });
             expect(result).toContainEqual({ unit: "cf", key: "cubic feet" });
         });
     });
@@ -104,16 +105,22 @@ describe("UnitConverter", () => {
         test("m3 -> hcf", () => check("volume", { value: 100, unit: "m3" }, "cf", 3531.47));
 
         test("cf -> hcf", () => check("volume", { value: 123, unit: "cf" }, "hcf", 1.23));
+        test("cf -> Mcf", () => check("volume", { value: 5_000, unit: "cf" }, "Mcf", 5));
         test("cf -> m3", () => check("volume", { value: 5_000, unit: "cf" }, "m3", 141.584));
 
         test("hcf -> cf", () => check("volume", { value: 50, unit: "hcf" }, "cf", 5_000));
+        test("hcf -> Mcf", () => check("volume", { value: 50, unit: "hcf" }, "Mcf", 5));
         test("hcf -> m3", () => check("volume", { value: 50, unit: "hcf" }, "m3", 141.584));
+
+        test("Mcf -> cf", () => check("volume", { value: 25, unit: "Mcf" }, "cf", 25_000));
+        test("Mcf -> hcf", () => check("volume", { value: 25, unit: "Mcf" }, "hcf", 250));
 
         test("getConverters", () => {
             const result = UnitConverter.getConverters("volume");
 
             expect(result).toContainEqual({ unit: "m3", key: "metres cubed" });
             expect(result).toContainEqual({ unit: "hcf", key: "hundred cubic feet" });
+            expect(result).toContainEqual({ unit: "Mcf", key: "thousand cubic feet" });
             expect(result).toContainEqual({ unit: "cf", key: "cubic feet" });
         });
     });

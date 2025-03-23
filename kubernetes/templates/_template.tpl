@@ -58,16 +58,15 @@ template:
     {{- end }}
 
     {{- if and .Values.global.useCluster (gt (.Params.Replicas | default 1) 1) }}
-    affinity:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-        - labelSelector:
-            matchExpressions:
-            - key: app.kubernetes.io/name
-              operator: In
-              values:
-              - {{ .Chart.Name }}
-          topologyKey: kubenertes.io/hostname
+    topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: {{ .Chart.Name }}
+      matchLabelKeys:
+      - pod-template-hash
     {{- end -}}
 
     {{- if eq (empty .Params.PriorityClassName) false }}
@@ -163,6 +162,11 @@ template:
       - name: USERS_FILE
         value: /var/run/config/powerpi_config/users.json
       {{- end }}
+      {{- end }}
+
+      {{- if .Values.logLevel }}
+      - name: LOG_LEVEL
+        value: {{ .Values.logLevel }}
       {{- end }}
       
       {{- range $element := .Params.Env }}

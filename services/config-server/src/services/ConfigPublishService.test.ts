@@ -1,6 +1,6 @@
 import { ConfigFileType, LoggerService, MqttService } from "@powerpi/common";
 import { anything, capture, instance, mock, resetCalls, verify } from "ts-mockito";
-import ConfigPublishService from "./ConfigPublishService";
+import ConfigPublishService from "./ConfigPublishService.js";
 
 const mockedMqttService = mock<MqttService>();
 const mockedLoggerService = mock<LoggerService>();

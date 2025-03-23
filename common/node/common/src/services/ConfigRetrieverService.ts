@@ -1,8 +1,8 @@
 import { Service } from "typedi";
-import { sleep } from "../util";
-import { ConfigFileType, ConfigService } from "./ConfigService";
-import { LoggerService } from "./LoggerService";
-import { Message, MqttConsumer, MqttService } from "./MqttService";
+import { sleep } from "../util/index.js";
+import { ConfigFileType, ConfigService } from "./ConfigService.js";
+import { LoggerService } from "./LoggerService.js";
+import { Message, MqttConsumer, MqttService } from "./MqttService.js";
 
 interface ConfigMessage extends Message {
     payload: object;
@@ -22,9 +22,9 @@ export class ConfigRetrieverService implements MqttConsumer<ConfigMessage> {
     private listeners: { [key in ConfigFileType]?: ConfigChangeListener[] };
 
     constructor(
-        private config: ConfigService,
-        private mqtt: MqttService,
-        private logger: LoggerService,
+        private readonly config: ConfigService,
+        private readonly mqtt: MqttService,
+        private readonly logger: LoggerService,
     ) {
         this.listeners = {};
     }

@@ -1,16 +1,19 @@
-[tool.poetry]
+[project]
 name = "energenie_controller"
-version = "0.3.4"
+version = "0.3.5"
 description = "PowerPi Energenie Controller"
 license = "GPL-3.0-only"
-authors = ["TWilkin <4322355+TWilkin@users.noreply.github.com>"]
+authors = [
+    {name = "TWilkin", email = "TWilkin@users.noreply.github.com"}
+]
 repository = "https://github.com/TWilkin/powerpi.git"
 readme = "README.md"
 
-[tool.poetry.dependencies]
-python = "^3.11"
-energenie = "~=1.0.1"
-pyenergenie = {git = "https://github.com/whaleygeek/pyenergenie.git", rev = "c9cae74e27e7997af566ee4ee783e2529e25c580"}
+requires-python = ">=3.11,<4.0"
+dependencies = [
+    "energenie (~=1.0.1)",
+    "pyenergenie @ git+https://github.com/whaleygeek/pyenergenie.git@c9cae74"
+]
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}
@@ -18,9 +21,12 @@ powerpi-common = {path = "../../common/python", develop = true}
 [tool.poetry.group.test.dependencies]
 powerpi-common-test = {path = "../../common/pytest", develop = true}
 
+[tool.poetry]
+requires-poetry = ">=2.0"
+
 [tool.pytest.ini_options]
 addopts = "-v --cov=energenie_controller"
 
 [build-system]
-requires = ["poetry-core>=1.1.0"]
+requires = ["poetry-core>=2.0"]
 build-backend = "poetry.core.masonry.api"

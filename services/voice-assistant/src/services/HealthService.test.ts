@@ -1,7 +1,8 @@
+import { jest } from "@jest/globals";
 import { FileService, LoggerService, MqttService } from "@powerpi/common";
 import { MockLoggerService } from "@powerpi/common-test";
-import ConfigService from "../../src/services/ConfigService";
-import HealthService from "../../src/services/HealthService";
+import ConfigService from "./ConfigService.js";
+import HealthService from "./HealthService.js";
 
 describe("HealthService", () => {
     let subject: HealthService;
@@ -10,10 +11,7 @@ describe("HealthService", () => {
         const config = new ConfigService(new FileService());
         const logger = new MockLoggerService() as unknown as LoggerService;
 
-        subject = new HealthService(
-            new MqttService(config, logger),
-            logger
-        );
+        subject = new HealthService(new MqttService(config, logger), logger);
     });
 
     describe("execute", () => {

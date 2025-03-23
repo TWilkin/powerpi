@@ -1,7 +1,7 @@
 import { ConfigService as CommonConfigService } from "@powerpi/common";
 import { Service } from "typedi";
-import Container from "../container";
-import app from "../../package.json";
+import app from "../../package.json" with { type: "json" };
+import Container from "../container.js";
 
 @Service()
 export default class ConfigService extends CommonConfigService {
@@ -22,7 +22,7 @@ export default class ConfigService extends CommonConfigService {
     }
 
     get ihdId() {
-        return this.getSecret("IHD").then((id) => id.replace(/-|:/g, "").toUpperCase());
+        return this.getSecret("IHD").then((id) => id.replace(/[-|]:/g, "").toUpperCase());
     }
 
     get n3rgyApiBase() {

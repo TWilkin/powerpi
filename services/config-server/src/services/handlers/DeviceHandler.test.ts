@@ -1,7 +1,7 @@
 import { ISensor } from "@powerpi/common";
 import { anyString, anything, instance, mock, verify } from "ts-mockito";
-import ConfigPublishService from "../../../src/services/ConfigPublishService";
-import DeviceHandler from "../../../src/services/handlers/DeviceHandler";
+import ConfigPublishService from "../ConfigPublishService.js";
+import DeviceHandler from "./DeviceHandler.js";
 
 const mockedConfigPublishService = mock<ConfigPublishService>();
 

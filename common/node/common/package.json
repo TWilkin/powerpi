@@ -3,6 +3,7 @@
     "version": "0.2.2",
     "description": "PowerPi Common Typescript library",
     "private": true,
+    "type": "module",
     "license": "GPL-3.0-only",
     "author": "TWilkin",
     "repository": {
@@ -14,8 +15,8 @@
     "types": "dist/src/index.d.ts",
     "scripts": {
         "build": "tsc && cp src/health.sh dist/",
-        "test": "jest",
-        "coverage": "jest --coverage"
+        "coverage": "vitest run --coverage",
+        "test": "vitest"
     },
     "files": [
         "dist/src",
@@ -24,7 +25,8 @@
     "devDependencies": {
         "@types/dateformat": "^5.0.0",
         "@types/node": "^20.4.9",
-        "typescript": "^5.1.6"
+        "typescript": "^5.1.6",
+        "vitest": "^3.0.8"
     },
     "dependencies": {
         "async-mqtt": "^2.6.1",

@@ -1,10 +1,10 @@
 import { ConfigFileType, IDeviceConfigFile } from "@powerpi/common";
-import ValidatorService from "../../ValidatorService";
+import ValidatorService from "../../ValidatorService.js";
 import {
     testInvalid as _testInvalid,
     testValid as _testValid,
     setupValidator,
-} from "../setupValidator";
+} from "../setupValidator.js";
 
 export default function commonDeviceTests(validFile: object) {
     let subject: ValidatorService | undefined;
@@ -30,6 +30,12 @@ export default function commonDeviceTests(validFile: object) {
     test("No name", () => {
         const device = { ...getDevice(validFile) };
         delete device.name;
+
+        testInvalid({ sensors: [], ...validFile, devices: [device] });
+    });
+
+    test("Invalid name", () => {
+        const device = { ...getDevice(validFile), name: "Invalid Name" };
 
         testInvalid({ sensors: [], ...validFile, devices: [device] });
     });

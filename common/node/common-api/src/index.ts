@@ -1,29 +1,29 @@
-import AdditionalState from "./AdditionalState";
-import BaseDevice from "./BaseDevice";
-import Battery from "./Battery";
-import { BatteryStatusMessage } from "./BatteryStatus";
-import Capability from "./Capability";
-import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityStatus";
-import Config from "./Config";
-import { ConfigFileType, ConfigStatusCallback, ConfigStatusMessage } from "./ConfigStatus";
-import Device from "./Device";
-import DeviceChangeMessage from "./DeviceChangeMessage";
-import DeviceState from "./DeviceState";
-import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus";
-import { Floor, Floorplan, Point, PolygonRoom, RectangleRoom, Room } from "./Floorplan";
-import History from "./History";
-import { Metric, MetricNumericType, MetricStateType, MetricValue } from "./Metric";
-import PaginationResponse from "./Pagination";
-import PowerPiApi from "./PowerPiApi";
+import AdditionalState from "./AdditionalState.js";
+import BaseDevice from "./BaseDevice.js";
+import Battery from "./Battery.js";
+import { BatteryStatusMessage } from "./BatteryStatus.js";
+import Capability from "./Capability.js";
+import { CapabilityStatusCallback, CapabilityStatusMessage } from "./CapabilityStatus.js";
+import Config from "./Config.js";
+import { ConfigFileType, ConfigStatusCallback, ConfigStatusMessage } from "./ConfigStatus.js";
+import Device from "./Device.js";
+import ChangeMessage, { DeviceChangeCallback, DeviceChangeMessage } from "./DeviceChangeMessage.js";
+import DeviceState from "./DeviceState.js";
+import { DeviceStatusCallback, DeviceStatusMessage } from "./DeviceStatus.js";
+import { Floor, Floorplan, Point, PolygonRoom, RectangleRoom, Room } from "./Floorplan.js";
+import History from "./History.js";
+import { Metric, MetricNumericType, MetricStateType, MetricValue } from "./Metric.js";
+import PaginationResponse from "./Pagination.js";
+import PowerPiApi from "./PowerPiApi.js";
 import Sensor, {
     SensorData,
     SensorNumericData,
     SensorNumericValue,
     SensorStateData,
     SensorStateValue,
-} from "./Sensor";
-import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus";
-import SocketIONamespace from "./SocketIONamespace";
+} from "./Sensor.js";
+import { SensorStatusCallback, SensorStatusMessage } from "./SensorStatus.js";
+import SocketIONamespace from "./SocketIONamespace.js";
 
 export {
     AdditionalState,
@@ -33,11 +33,13 @@ export {
     Capability,
     CapabilityStatusCallback,
     CapabilityStatusMessage,
+    ChangeMessage,
     Config,
     ConfigFileType,
     ConfigStatusCallback,
     ConfigStatusMessage,
     Device,
+    DeviceChangeCallback,
     DeviceChangeMessage,
     DeviceState,
     DeviceStatusCallback,

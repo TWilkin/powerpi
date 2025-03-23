@@ -1,7 +1,7 @@
 import { $log, Controller, Get, QueryParams, Res, Response } from "@tsed/common";
-import HttpStatus from "http-status-codes";
-import Authorize from "../middleware/AuthorizeMiddleware";
-import DatabaseService from "../services/DatabaseService";
+import { StatusCodes } from "http-status-codes";
+import Authorize from "../middleware/AuthorizeMiddleware.js";
+import DatabaseService from "../services/DatabaseService.js";
 
 type QueryFunction<TResult> = () => Promise<TResult | undefined>;
 
@@ -116,7 +116,7 @@ export default class HistoryController {
         } catch (error) {
             $log.error("Failed to query database.", error);
 
-            response.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            response.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
         }
     }
 }

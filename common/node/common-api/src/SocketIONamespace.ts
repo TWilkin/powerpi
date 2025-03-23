@@ -4,5 +4,6 @@ enum SocketIONamespace {
     Battery = "battery",
     Capability = "capability",
     Config = "config",
+    Change = "change",
 }
 export default SocketIONamespace;

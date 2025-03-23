@@ -1,6 +1,6 @@
 import { instance, mock, when } from "ts-mockito";
-import { ConfigService } from "../services";
-import ClientCredentialsProtocol from "./ClientCredentialsProtocol";
+import { ConfigService } from "../services/index.js";
+import ClientCredentialsProtocol from "./ClientCredentialsProtocol.js";
 
 const mockedConfigService = mock<ConfigService>();
 

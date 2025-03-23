@@ -1,7 +1,7 @@
 import { Octokit } from "@octokit/rest";
 import path from "path";
 import { Service } from "typedi";
-import ConfigService from "./ConfigService";
+import ConfigService from "./ConfigService.js";
 
 @Service()
 export default class OctokitService {

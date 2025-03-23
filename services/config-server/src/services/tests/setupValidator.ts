@@ -1,6 +1,6 @@
 import { ConfigFileType, LoggerService } from "@powerpi/common";
 import { MockLoggerService } from "@powerpi/common-test";
-import ValidatorService, { ValidationException } from "../ValidatorService";
+import ValidatorService, { ValidationException } from "../ValidatorService.js";
 
 export function setupValidator() {
     const logger = new MockLoggerService() as unknown as LoggerService;

@@ -1,3 +1,4 @@
+from cron_converter import Cron
 from dependency_injector import containers, providers
 from powerpi_common.container import Container as CommonContainer
 
@@ -31,6 +32,10 @@ class ApplicationContainer(containers.DeclarativeContainer):
         config=config
     )
 
+    cron_factory = providers.Factory(
+        Cron
+    )
+
     device_interval_schedule = providers.Factory(
         DeviceIntervalSchedule,
         config=config,
@@ -38,7 +43,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
         mqtt_client=common.mqtt_client,
         scheduler=common.scheduler,
         variable_manager=common.variable.variable_manager,
-        condition_parser_factory=common.condition.condition_parser.provider
+        condition_parser_factory=common.condition.condition_parser.provider,
+        cron_factory=cron_factory.provider
     )
 
     device_single_schedule = providers.Factory(
@@ -48,7 +54,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
         mqtt_client=common.mqtt_client,
         scheduler=common.scheduler,
         variable_manager=common.variable.variable_manager,
-        condition_parser_factory=common.condition.condition_parser.provider
+        condition_parser_factory=common.condition.condition_parser.provider,
+        cron_factory=cron_factory.provider
     )
 
     device_schedule_factory = providers.Factory(

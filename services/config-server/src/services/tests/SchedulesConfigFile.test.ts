@@ -1,10 +1,10 @@
-import { ConfigFileType, DeviceInternalSchedule, DeviceSingleSchedule } from "@powerpi/common";
-import ValidatorService from "../ValidatorService";
+import { ConfigFileType, DeviceInternalSchedule } from "@powerpi/common";
+import ValidatorService from "../ValidatorService.js";
 import {
     testInvalid as _testInvalid,
     testValid as _testValid,
     setupValidator,
-} from "./setupValidator";
+} from "./setupValidator.js";
 
 describe("Schedules", () => {
     let subject: ValidatorService | undefined;
@@ -24,15 +24,16 @@ describe("Schedules", () => {
             schedules: [
                 {
                     device: "BedroomLight",
-                    between: ["01:00:00", "01:59:59"],
+                    schedule: "0 1 * * *",
+                    duration: 3600,
                     interval: 60,
                     brightness: [10.1, 99.99],
                     temperature: [2000, 4000],
                 },
                 {
                     device: "HallwayLight",
-                    days: ["Wednesday"],
-                    between: ["22:00:00", "23:59:59"],
+                    schedule: "0 22 * * 3",
+                    duration: 3600,
                     interval: 600,
                     hue: [0, 100],
                     saturation: [0, 100],
@@ -40,7 +41,8 @@ describe("Schedules", () => {
                 },
                 {
                     devices: ["BedroomLight", "HallwayLight"],
-                    between: ["01:00:00", "01:59:59"],
+                    schedule: "0 1 * * *",
+                    duration: 3600,
                     interval: 60,
                     condition: {
                         when: [{ equals: [{ var: "device.OfficeLight.state" }, "on"] }],
@@ -48,6 +50,11 @@ describe("Schedules", () => {
                     brightness: [0, 100],
                     temperature: [2000, 4000],
                     scene: "movie",
+                },
+                {
+                    device: "BedroomLight",
+                    schedule: "0 9 * * 3",
+                    brightness: 50,
                 },
             ],
         }));
@@ -58,7 +65,7 @@ describe("Schedules", () => {
         testInvalid({ timezone: "Europe/London", schedules: [], something: "else" }));
 
     describe("DeviceIntervalSchedule", () => {
-        const props: (keyof DeviceInternalSchedule)[] = ["device", "between", "interval"];
+        const props: (keyof DeviceInternalSchedule)[] = ["device", "duration", "interval"];
         test.each(props)("No %p", (prop) => {
             const file = {
                 timezone: "Europe/London",
@@ -66,8 +73,8 @@ describe("Schedules", () => {
                     {
                         device: "BedroomLight",
                         devices: undefined,
-                        days: ["Wednesday"],
-                        between: ["01:00:00", "01:59:59"],
+                        schedule: "0 1 * * 3",
+                        duration: 3600,
                         interval: 60,
                         brightness: [0, 100],
                         temperature: [2000, 4000],
@@ -91,7 +98,8 @@ describe("Schedules", () => {
                     schedules: [
                         {
                             device: "BedroomLight",
-                            between: ["01:00:00", "01:59:59"],
+                            schedule: "0 1 * * *",
+                            duration: 3600,
                             interval: 60,
                             [prop]: [100, 200, 300],
                         },
@@ -106,7 +114,8 @@ describe("Schedules", () => {
                     {
                         device: "BedroomLight",
                         devices: ["BedroomLight", "HallwayLight"],
-                        between: ["01:00:00", "01:59:59"],
+                        schedule: "0 1 * * *",
+                        duration: 3600,
                         interval: 60,
                     },
                 ],
@@ -118,108 +127,61 @@ describe("Schedules", () => {
                 schedules: [
                     {
                         device: "BedroomLight",
-                        between: ["01:00:00", "01:59:59"],
+                        schedule: "0 1 * * *",
+                        duration: 3600,
                         interval: 60,
                         something: "else",
-                    },
-                ],
-            }));
-    });
-
-    describe("Between", () => {
-        test("Too few", () =>
-            testInvalid({
-                timezone: "Europe/London",
-                schedules: [
-                    {
-                        device: "BedroomLight",
-                        between: ["01:01:01"],
-                        interval: 60,
-                    },
-                ],
-            }));
-
-        ["01:01:01", "11:11:11", "23:59:59"].forEach((time) => {
-            test(`Good time ${time}`, () =>
-                testValid({
-                    timezone: "Europe/London",
-                    schedules: [
-                        {
-                            device: "BedroomLight",
-                            between: [time, time],
-                            interval: 60,
-                        },
-                    ],
-                }));
-        });
-
-        ["24:00:00", "11:60:00", "11:11:60", "00/00/00", "blah"].forEach((time) => {
-            test(`Bad time ${time}`, () =>
-                testInvalid({
-                    timezone: "Europe/London",
-                    schedules: [
-                        {
-                            device: "BedroomLight",
-                            between: [time, time],
-                            interval: 60,
-                        },
-                    ],
-                }));
-        });
-    });
-
-    describe("Days", () => {
-        test("Good", () =>
-            testValid({
-                timezone: "Europe/London",
-                schedules: [
-                    {
-                        device: "BedroomLight",
-                        days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-                        between: ["01:00:00", "01:59:59"],
-                        interval: 60,
-                    },
-                ],
-            }));
-
-        test("Bad", () =>
-            testInvalid({
-                timezone: "Europe/London",
-                schedules: [
-                    {
-                        device: "BedroomLight",
-                        days: ["McWednesday"],
-                        between: ["01:00:00", "01:59:59"],
-                        interval: 60,
                     },
                 ],
             }));
     });
 
     describe("DeviceSingleSchedule", () => {
-        const props: (keyof DeviceSingleSchedule)[] = ["device", "at"];
-        test.each(props)("No %p", (prop) => {
-            const file = {
+        test("No device", () => {
+            testInvalid({
                 timezone: "Europe/London",
                 schedules: [
                     {
-                        device: "BedroomLight",
                         devices: undefined,
-                        days: ["Wednesday"],
-                        at: "09:00:00",
+                        schedule: "0 9 * * 3",
                         brightness: 50,
                         hue: 180,
                         saturation: 75,
                         temperature: 2_000,
                         power: true,
-                        force: true,
                     },
                 ],
-            };
+            });
+        });
 
-            delete file.schedules[0][prop];
+        describe("schedule", () => {
+            const goodSchedule = ["* * * * *", "*/2 * * * *", "* * * * 1-5", "* * * * 5,7"];
+            test.each(goodSchedule)("good %p", (schedule) =>
+                testValid({
+                    timezone: "Europe/London",
+                    schedules: [
+                        {
+                            device: "BedroomLight",
+                            schedule,
+                            brightness: 100,
+                        },
+                    ],
+                }),
+            );
 
-            testInvalid(file);
+            const badSchedule = [null, "", "* * * *", "A * * * *", "* * * * * *"];
+            test.each(badSchedule)("bad %p", (schedule) =>
+                testInvalid({
+                    timezone: "Europe/London",
+                    schedules: [
+                        {
+                            device: "BedroomLight",
+                            schedule,
+                            brightness: 100,
+                        },
+                    ],
+                }),
+            );
         });
 
         test("Other properties", () =>
@@ -228,40 +190,11 @@ describe("Schedules", () => {
                 schedules: [
                     {
                         device: "BedroomLight",
-                        between: ["01:00:00", "01:59:59"],
-                        interval: 60,
+                        schedule: "0 9 * * 3",
                         something: "else",
                     },
                 ],
             }));
-    });
-
-    describe("at", () => {
-        const good = ["01:01:01", "11:11:11", "23:59:59"];
-        test.each(good)("Good time %p", (time) =>
-            testValid({
-                timezone: "Europe/London",
-                schedules: [
-                    {
-                        device: "BedroomLight",
-                        at: time,
-                    },
-                ],
-            }),
-        );
-
-        const bad = ["24:00:00", "11:60:00", "11:11:60", "00/00/00", "blah"];
-        test.each(bad)("Bad time %p", (time) =>
-            testInvalid({
-                timezone: "Europe/London",
-                schedules: [
-                    {
-                        device: "BedroomLight",
-                        at: time,
-                    },
-                ],
-            }),
-        );
     });
 
     test("hue", () =>
@@ -270,7 +203,7 @@ describe("Schedules", () => {
             schedules: [
                 {
                     device: "BedroomLight",
-                    at: "09:00:00",
+                    schedule: "0 9 * * *",
                     hue: 180,
                 },
             ],
@@ -282,7 +215,7 @@ describe("Schedules", () => {
             schedules: [
                 {
                     device: "BedroomLight",
-                    at: "09:00:00",
+                    schedule: "0 9 * * *",
                     saturation: 50,
                 },
             ],
@@ -294,7 +227,7 @@ describe("Schedules", () => {
             schedules: [
                 {
                     device: "BedroomLight",
-                    at: "09:00:00",
+                    schedule: "0 9 * * *",
                     brightness: 75,
                 },
             ],
@@ -306,7 +239,7 @@ describe("Schedules", () => {
             schedules: [
                 {
                     device: "BedroomLight",
-                    at: "09:00:00",
+                    schedule: "0 9 * * *",
                     temperature: 2000,
                 },
             ],

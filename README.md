@@ -6,38 +6,38 @@ This project was devised to utilise open, reverse engineered or free home automa
 
 ### Supported IoT Hardware
 
--   [Amazon Alexa](https://developer.amazon.com/en-GB/alexa/devices)
--   [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories)
--   [LIFX](https://www.lifx.com/)
--   [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html)
--   [NodeMCU](https://en.wikipedia.org/wiki/NodeMCU)
--   [ZigBee](https://en.wikipedia.org/wiki/Zigbee)
+- [Amazon Alexa](https://developer.amazon.com/en-GB/alexa/devices)
+- [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories)
+- [LIFX](https://www.lifx.com/)
+- [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html)
+- [NodeMCU](https://en.wikipedia.org/wiki/NodeMCU)
+- [ZigBee](https://en.wikipedia.org/wiki/Zigbee)
 
 ### Supported Services
 
--   [N3rgy](http://www.n3rgy.com/)
--   [Snapcast](https://github.com/badaix/snapcast)
+- [N3rgy](http://www.n3rgy.com/)
+- [Snapcast](https://github.com/badaix/snapcast)
 
 ## Getting Started
 
 The project is split into the following services, each of which have their own _README_ describing the configuration interface they support as well as how to modify and test them.
 
--   [**api**](services/api/README.md) - API
--   [**config-server**](services/config-server/README.md) - Retrieve configuration files from GitHub.
--   **controllers**:
-    -   [**energenie**](controllers/energenie/README.md) - Allows control of [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories) devices using the ENER314 or ENER314-RT Pi module.
-    -   [**harmony**](controllers/harmony/README.md) - Allows control of [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html) Smart Hub devices.
-    -   [**lifx**](controllers/lifx/README.md) - Allows control of [LIFX](https://www.lifx.com/) light devices.
-    -   [**network**](controllers/network/README.md) - Allows control of LAN (Local Area Network) devices.
-    -   [**snapcast**](controllers/snapcast/README.md) - Allows control of [Snapcast](https://github.com/badaix/snapcast) clients and servers.
-    -   [**virtual**](controllers/virtual/README.md) - Allows control of other devices by using virtual devices such as groups, delays, mutexes etc.
-    -   [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
--   [**energy-monitor**](services/energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
--   [**event**](services/event/README.md) - Allows custom actions to be taken when events appear in the message queue.
--   [**persistence**](services/persistence/README.md) - Service for writing all the messages that appear in the MQTT message queue to a database.
--   [**scheduler**](services/scheduler/README.md) - Schedule based control of light devices, e.g. brightness, colour, temperature etc.
--   [**ui**](services/ui/README.md) - NGINX hosting the UI.
--   [**voice-assistant**](services/voice-assistant/README.md) - Integration with Amazon Alexa skill to receive voice commands.
+- [**api**](services/api/README.md) - API
+- [**config-server**](services/config-server/README.md) - Retrieve configuration files from GitHub.
+- **controllers**:
+    - [**energenie**](controllers/energenie/README.md) - Allows control of [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories) devices using the ENER314 or ENER314-RT Pi module.
+    - [**harmony**](controllers/harmony/README.md) - Allows control of [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html) Smart Hub devices.
+    - [**lifx**](controllers/lifx/README.md) - Allows control of [LIFX](https://www.lifx.com/) light devices.
+    - [**network**](controllers/network/README.md) - Allows control of LAN (Local Area Network) devices.
+    - [**snapcast**](controllers/snapcast/README.md) - Allows control of [Snapcast](https://github.com/badaix/snapcast) clients and servers.
+    - [**virtual**](controllers/virtual/README.md) - Allows control of other devices by using virtual devices such as groups, delays, mutexes etc.
+    - [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
+- [**energy-monitor**](services/energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
+- [**event**](services/event/README.md) - Allows custom actions to be taken when events appear in the message queue.
+- [**persistence**](services/persistence/README.md) - Service for writing all the messages that appear in the MQTT message queue to a database.
+- [**scheduler**](services/scheduler/README.md) - Schedule based control of light devices, e.g. brightness, colour, temperature etc.
+- [**ui**](services/ui/README.md) - NGINX hosting the UI.
+- [**voice-assistant**](services/voice-assistant/README.md) - Integration with Amazon Alexa skill to receive voice commands.
 
 The project includes a [_shutdown_](services/shutdown/README.md) service which allows a computer to be remotely shutdown by message queue events generated by PowerPi.
 
@@ -67,13 +67,13 @@ Deploying the services is simply a matter of deploying the stack using Kubernete
 
 The instructions for deploying the stack using Kubernetes can be found as follows:
 
--   [Kubernetes](kubernetes/README.md)
+- [Kubernetes](kubernetes/README.md)
 
 ## Authors
 
--   **Tom Wilkin** - Most of what you see - [TWilkin](https://github.com/TWilkin)
--   **Paul Sandwell** - Testing, feedback and some excellent ideas - [peasandwell](https://github.com/peasandwell)
--   **Camila Neyra** - Some excellent ideas, specifically floorplans, and putting up with my incessant home automation talk.
+- **Tom Wilkin** - Most of what you see - [TWilkin](https://github.com/TWilkin)
+- **Paul Sandwell** - Testing, feedback and some excellent ideas - [peasandwell](https://github.com/peasandwell)
+- **Camila Neyra** - Some excellent ideas, specifically floorplans; the translation into Spanish and putting up with my incessant home automation talk.
 
 See also the list of [contributors](https://github.com/TWilkin/powerpi/contributors) who participated in this project.
 

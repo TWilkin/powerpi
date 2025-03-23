@@ -22,6 +22,7 @@ describe("isSupportedUnit", () => {
         { unit: "m3", expected: true },
         { unit: "cf", expected: true },
         { unit: "hcf", expected: true },
+        { unit: "Mcf", expected: true },
         { unit: "?", expected: false },
     ];
     test.each(cases)("$unit => $expected", ({ unit, expected }) => {
@@ -48,6 +49,7 @@ describe("isSupportedUnitLabel", () => {
         { label: "metres cubed", expected: true },
         { label: "cubic feet", expected: true },
         { label: "hundred cubic feet", expected: true },
+        { label: "thousand cubic feet", expected: true },
         { label: "?", expected: false },
     ];
     test.each(cases)("$label => $expected", ({ label, expected }) => {
