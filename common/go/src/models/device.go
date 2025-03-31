@@ -6,3 +6,7 @@ const (
 	On  DeviceState = "on"
 	Off DeviceState = "off"
 )
+
+type AdditionalState struct {
+	Brightness *int `json:"brightness"`
+}

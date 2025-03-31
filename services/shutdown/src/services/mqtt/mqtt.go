@@ -12,12 +12,12 @@ import (
 	"powerpi/shutdown/services/flags"
 )
 
-type mqttMessageAction func(IMqttClient, models.DeviceState, additional.AdditionalState)
+type mqttMessageAction func(IMqttClient, models.DeviceState, models.AdditionalState)
 
 type IMqttClient interface {
 	Connect(string, int, *string, *string, flags.Config)
 
-	PublishState(models.DeviceState, additional.AdditionalState)
+	PublishState(models.DeviceState, models.AdditionalState)
 }
 
 type mqttClient struct {
@@ -110,7 +110,7 @@ func (client mqttClient) publish(topic string, message interface{}) {
 
 func (client mqttClient) PublishState(
 	state models.DeviceState,
-	additionalState additional.AdditionalState,
+	additionalState models.AdditionalState,
 ) {
 	topic := client.topic("status")
 
@@ -172,7 +172,7 @@ func (client mqttClient) onMessageReceived(message MQTT.Message) {
 	}
 
 	// retrieve any supported additional state
-	var additionalState additional.AdditionalState
+	var additionalState models.AdditionalState
 	additionalState.Brightness = payload.Brightness
 
 	// call the action

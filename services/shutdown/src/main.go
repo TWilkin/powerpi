@@ -47,7 +47,7 @@ func main() {
 	signal.Notify(channel, os.Interrupt, syscall.SIGTERM)
 
 	// connect to MQTT
-	callback := func(client mqtt.IMqttClient, state models.DeviceState, additionalState additional.AdditionalState) {
+	callback := func(client mqtt.IMqttClient, state models.DeviceState, additionalState models.AdditionalState) {
 		updateState(services.Additional.AdditionalStateService, client, config, state, additionalState, startTime)
 	}
 	client := services.Mqtt.MqttClientFactory(hostname, callback)
@@ -62,7 +62,7 @@ func updateState(
 	client mqtt.IMqttClient,
 	config flags.Config,
 	state models.DeviceState,
-	additionalState additional.AdditionalState,
+	additionalState models.AdditionalState,
 	startTime time.Time,
 ) {
 	// update any additional state

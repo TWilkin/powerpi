@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"powerpi/common/models"
-	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/additional_test"
 	"powerpi/shutdown/services/flags"
 	"powerpi/shutdown/services/mqtt_test"
@@ -18,34 +17,34 @@ func TestUpdateState(t *testing.T) {
 	var tests = []struct {
 		name                    string
 		state                   models.DeviceState
-		additionalState         additional.AdditionalState
+		additionalState         models.AdditionalState
 		compare                 bool
 		expectedCompare         bool
 		expectedState           *models.DeviceState
-		expectedAdditionalState *additional.AdditionalState
+		expectedAdditionalState *models.AdditionalState
 	}{
 		{
 			"publishes state",
 			models.Off,
-			additional.AdditionalState{Brightness: utils.ToPtr(50)},
+			models.AdditionalState{Brightness: utils.ToPtr(50)},
 			true,
 			false,
 			utils.ToPtr(models.Off),
-			&additional.AdditionalState{Brightness: utils.ToPtr(50)},
+			&models.AdditionalState{Brightness: utils.ToPtr(50)},
 		},
 		{
 			"publishes additional state",
 			models.On,
-			additional.AdditionalState{Brightness: utils.ToPtr(40)},
+			models.AdditionalState{Brightness: utils.ToPtr(40)},
 			false,
 			true,
 			utils.ToPtr(models.On),
-			&additional.AdditionalState{Brightness: utils.ToPtr(40)},
+			&models.AdditionalState{Brightness: utils.ToPtr(40)},
 		},
 		{
 			"does not publish",
 			models.On,
-			additional.AdditionalState{Brightness: utils.ToPtr(50)},
+			models.AdditionalState{Brightness: utils.ToPtr(50)},
 			true,
 			true,
 			nil,
@@ -61,15 +60,15 @@ func TestUpdateState(t *testing.T) {
 			startTime := time.Now()
 
 			additionalStateService.On("GetAdditionalState").Return(
-				additional.AdditionalState{Brightness: utils.ToPtr(50)},
+				models.AdditionalState{Brightness: utils.ToPtr(50)},
 			).Once()
 			additionalStateService.On("SetAdditionalState", test.additionalState).Return()
 
 			if test.expectedCompare {
 				additionalStateService.On(
 					"CompareAdditionalState",
-					mock.AnythingOfType("additional.AdditionalState"),
-					mock.AnythingOfType("additional.AdditionalState"),
+					mock.AnythingOfType("models.AdditionalState"),
+					mock.AnythingOfType("models.AdditionalState"),
 				).Return(test.compare)
 			}
 
@@ -81,7 +80,7 @@ func TestUpdateState(t *testing.T) {
 				client.On(
 					"PublishState",
 					*test.expectedState,
-					mock.MatchedBy(func(state additional.AdditionalState) bool {
+					mock.MatchedBy(func(state models.AdditionalState) bool {
 						return utils.NilOrEqual(
 							state.Brightness,
 							test.expectedAdditionalState.Brightness,

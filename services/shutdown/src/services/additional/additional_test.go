@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"powerpi/common/models"
 	"powerpi/shutdown/services/flags"
 	"powerpi/shutdown/utils"
 )
@@ -25,13 +26,13 @@ func TestGetAdditionalState(t *testing.T) {
 	var tests = []struct {
 		name     string
 		config   flags.AdditionalStateConfig
-		expected AdditionalState
+		expected models.AdditionalState
 	}{
-		{"empty config", flags.AdditionalStateConfig{}, AdditionalState{}},
+		{"empty config", flags.AdditionalStateConfig{}, models.AdditionalState{}},
 		{
 			"brightness config",
 			flags.AdditionalStateConfig{Brightness: flags.BrightnessConfig{Device: "test"}},
-			AdditionalState{Brightness: utils.ToPtr(50)},
+			models.AdditionalState{Brightness: utils.ToPtr(50)},
 		},
 	}
 
@@ -64,7 +65,7 @@ func TestSetAdditionalState(t *testing.T) {
 			mockBrightness := MockBrightnessService{0}
 			subject := New(test.config, &mockBrightness)
 
-			subject.SetAdditionalState(AdditionalState{Brightness: utils.ToPtr(50)})
+			subject.SetAdditionalState(models.AdditionalState{Brightness: utils.ToPtr(50)})
 
 			assert.Equal(t, mockBrightness.brightness, test.expected)
 		})
@@ -74,32 +75,32 @@ func TestSetAdditionalState(t *testing.T) {
 func TestCompareAdditionalState(t *testing.T) {
 	var tests = []struct {
 		name     string
-		state1   AdditionalState
-		state2   AdditionalState
+		state1   models.AdditionalState
+		state2   models.AdditionalState
 		expected bool
 	}{
 		{
 			"brightness match",
-			AdditionalState{Brightness: utils.ToPtr(50)},
-			AdditionalState{Brightness: utils.ToPtr(50)},
+			models.AdditionalState{Brightness: utils.ToPtr(50)},
+			models.AdditionalState{Brightness: utils.ToPtr(50)},
 			true,
 		},
 		{
 			"brightness nil match",
-			AdditionalState{Brightness: nil},
-			AdditionalState{Brightness: nil},
+			models.AdditionalState{Brightness: nil},
+			models.AdditionalState{Brightness: nil},
 			true,
 		},
 		{
 			"brightness mismatch",
-			AdditionalState{Brightness: utils.ToPtr(51)},
-			AdditionalState{Brightness: utils.ToPtr(50)},
+			models.AdditionalState{Brightness: utils.ToPtr(51)},
+			models.AdditionalState{Brightness: utils.ToPtr(50)},
 			false,
 		},
 		{
 			"brightness nil mismatch",
-			AdditionalState{Brightness: nil},
-			AdditionalState{Brightness: utils.ToPtr(50)},
+			models.AdditionalState{Brightness: nil},
+			models.AdditionalState{Brightness: utils.ToPtr(50)},
 			false,
 		},
 	}

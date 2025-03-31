@@ -11,7 +11,6 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"powerpi/common/models"
-	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/additional_test"
 	"powerpi/shutdown/services/clock_test"
 	"powerpi/shutdown/services/flags"
@@ -88,12 +87,12 @@ func TestPublishState(t *testing.T) {
 	var tests = []struct {
 		name            string
 		state           models.DeviceState
-		additionalState additional.AdditionalState
+		additionalState models.AdditionalState
 		expected        string
 	}{
-		{"off", models.Off, additional.AdditionalState{}, "\"state\":\"off\""},
-		{"on", models.On, additional.AdditionalState{}, "\"state\":\"on\""},
-		{"off with brightness", models.Off, additional.AdditionalState{Brightness: utils.ToPtr(50)}, "\"brightness\":50"},
+		{"off", models.Off, models.AdditionalState{}, "\"state\":\"off\""},
+		{"on", models.On, models.AdditionalState{}, "\"state\":\"on\""},
+		{"off with brightness", models.Off, models.AdditionalState{Brightness: utils.ToPtr(50)}, "\"brightness\":50"},
 	}
 
 	for _, test := range tests {
@@ -201,7 +200,7 @@ func TestOnConnect(t *testing.T) {
 	token.On("Error").Return(nil)
 	client.On("Subscribe", "powerpi/device/MyDevice/change", byte(2), mock.Anything).Return(token)
 
-	additionalService.On("GetAdditionalState").Return(additional.AdditionalState{})
+	additionalService.On("GetAdditionalState").Return(models.AdditionalState{})
 
 	subject.onConnect(flags.Config{AdditionalState: flags.AdditionalStateConfig{Brightness: flags.BrightnessConfig{Device: "/device", Min: 0, Max: 100}}})
 }
@@ -212,28 +211,28 @@ func TestOnMessageReceived(t *testing.T) {
 		payload            string
 		timestamp          *time.Time
 		expectedState      *models.DeviceState
-		expectedAdditional *additional.AdditionalState
+		expectedAdditional *models.AdditionalState
 	}{
 		{
 			"on",
 			"{\"state\":\"on\", %s}",
 			nil,
 			utils.ToPtr(models.On),
-			&additional.AdditionalState{},
+			&models.AdditionalState{},
 		},
 		{
 			"off",
 			"{\"state\":\"off\", %s}",
 			nil,
 			utils.ToPtr(models.Off),
-			&additional.AdditionalState{},
+			&models.AdditionalState{},
 		},
 		{
 			"brightness",
 			"{\"state\":\"off\", \"brightness\":50, %s}",
 			nil,
 			utils.ToPtr(models.Off),
-			&additional.AdditionalState{Brightness: utils.ToPtr(50)},
+			&models.AdditionalState{Brightness: utils.ToPtr(50)},
 		},
 		{
 			"too old",
@@ -249,11 +248,11 @@ func TestOnMessageReceived(t *testing.T) {
 			config := flags.MqttConfig{TopicBase: "powerpi"}
 
 			var receivedState *models.DeviceState
-			var receivedAdditionalState *additional.AdditionalState
+			var receivedAdditionalState *models.AdditionalState
 			action := func(
 				client IMqttClient,
 				state models.DeviceState,
-				additionalState additional.AdditionalState,
+				additionalState models.AdditionalState,
 			) {
 				receivedState = &state
 				receivedAdditionalState = &additionalState

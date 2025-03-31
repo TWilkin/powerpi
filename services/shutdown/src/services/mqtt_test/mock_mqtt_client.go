@@ -4,7 +4,6 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"powerpi/common/models"
-	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/flags"
 )
 
@@ -24,7 +23,7 @@ func (client *MockMqttClient) Connect(
 
 func (client *MockMqttClient) PublishState(
 	state models.DeviceState,
-	additionalState additional.AdditionalState,
+	additionalState models.AdditionalState,
 ) {
 	client.Called(state, additionalState)
 }
