@@ -1,15 +1,16 @@
 import asyncio
+from asyncio import ensure_future
 
 from powerpi_common.config import Config
 from powerpi_common.device import Device
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+from zigpy.device import Device as ZigbeeDevice
 from zigpy.types import EUI64
-from zigpy.typing import DeviceType
 
 from zigbee_controller.device.zigbee_controller import ZigbeeController
-from zigbee_controller.zigbee import DeviceJoinListener
+from zigbee_controller.zigbee import DeviceJoinListener, ZigbeeGroups
 
 
 # pylint: disable=too-many-ancestors
@@ -51,8 +52,12 @@ class ZigbeePairingDevice(Device, InitialisableMixin):
 
         await self.turn_off()
 
-    def on_device_join(self, device: DeviceType):
+    def on_device_join(self, device: ZigbeeDevice):
         self.log_info('New device joined network')
+
+        # ensure device is in our group
+        group = ZigbeeGroups.controller
+        ensure_future(device.add_to_group(group.group_id, group.name))
 
         topic = f'device/{self.name}/join'
 

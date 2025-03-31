@@ -2,8 +2,8 @@ import os
 
 import zigpy
 from powerpi_common.logger import Logger, LogMixin
+from zigpy.device import Device as ZigpyDevice
 from zigpy.types import EUI64
-from zigpy.typing import DeviceType
 from zigpy_znp.zigbee.application import ControllerApplication
 
 from zigbee_controller.config import ZigbeeConfig
@@ -18,7 +18,7 @@ class ZigbeeController(LogMixin):
 
         self.__controller: ControllerApplication | None = None
 
-    def get_device(self, ieee: EUI64, nwk: int) -> DeviceType:
+    def get_device(self, ieee: EUI64, nwk: int) -> ZigpyDevice:
         return self.__controller.get_device(ieee, nwk)
 
     async def startup(self):
@@ -36,6 +36,9 @@ class ZigbeeController(LogMixin):
             self.log_error('Could not initialise ZigBee device')
             self.log_exception(ex)
             os._exit(-1)
+
+        for group in self.__controller.groups:
+            self.log_info(f'Controller Group: {group}')
 
     async def shutdown(self):
         self.log_info('Shutting down ZigBee device')
