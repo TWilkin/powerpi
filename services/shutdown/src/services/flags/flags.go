@@ -2,22 +2,16 @@ package flags
 
 import (
 	"flag"
+
+	"powerpi/common/config"
 )
 
 type Config struct {
-	Mqtt            MqttConfig
+	Mqtt            config.MqttConfig
 	AdditionalState AdditionalStateConfig
 
 	AllowQuickShutdown bool
 	Mock               bool
-}
-
-type MqttConfig struct {
-	Host         string
-	Port         int
-	User         string
-	PasswordFile string
-	TopicBase    string
 }
 
 type AdditionalStateConfig struct {

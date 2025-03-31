@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
+	"powerpi/common/config"
 	"powerpi/common/models"
 	"powerpi/shutdown/services/additional_test"
 	"powerpi/shutdown/services/clock_test"
@@ -51,7 +52,7 @@ func TestConnect(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			config := flags.MqttConfig{TopicBase: "powerpi"}
+			config := config.MqttConfig{TopicBase: "powerpi"}
 			factory := &mqtt_test.MockFactory{}
 			subject := newClient(config, factory, nil, clock_test.MockClock{}, "MyDevice", nil)
 
@@ -97,7 +98,7 @@ func TestPublishState(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			config := flags.MqttConfig{TopicBase: "powerpi"}
+			config := config.MqttConfig{TopicBase: "powerpi"}
 			subject := newClient(config, nil, nil, clock_test.MockClock{}, "MyDevice", nil)
 
 			client := &mqtt_test.MockPahoMqttClient{}
@@ -142,7 +143,7 @@ func TestPublishCapability(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			config := flags.MqttConfig{TopicBase: "powerpi"}
+			config := config.MqttConfig{TopicBase: "powerpi"}
 			subject := newClient(config, nil, nil, clock_test.MockClock{}, "MyDevice", nil)
 
 			client := &mqtt_test.MockPahoMqttClient{}
@@ -171,7 +172,7 @@ func TestPublishCapability(t *testing.T) {
 
 func TestOnConnect(t *testing.T) {
 	additionalService := &additional_test.MockAdditionalStateService{}
-	config := flags.MqttConfig{TopicBase: "powerpi"}
+	config := config.MqttConfig{TopicBase: "powerpi"}
 	subject := newClient(config, nil, additionalService, clock_test.MockClock{}, "MyDevice", nil)
 
 	client := &mqtt_test.MockPahoMqttClient{}
@@ -245,7 +246,7 @@ func TestOnMessageReceived(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			config := flags.MqttConfig{TopicBase: "powerpi"}
+			config := config.MqttConfig{TopicBase: "powerpi"}
 
 			var receivedState *models.DeviceState
 			var receivedAdditionalState *models.AdditionalState

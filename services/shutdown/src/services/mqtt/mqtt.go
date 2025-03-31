@@ -6,6 +6,7 @@ import (
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 
+	"powerpi/common/config"
 	"powerpi/common/models"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/clock"
@@ -42,7 +43,7 @@ type capabilityMessage struct {
 }
 
 func newClient(
-	config flags.MqttConfig,
+	config config.MqttConfig,
 	factory MqttClientFactory,
 	additionalState additional.AdditionalStateService,
 	clock clock.Clock,

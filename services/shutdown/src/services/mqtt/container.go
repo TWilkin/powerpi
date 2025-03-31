@@ -1,16 +1,16 @@
 package mqtt
 
 import (
+	"powerpi/common/config"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/clock"
-	"powerpi/shutdown/services/flags"
 )
 
 type MqttContainer struct {
 	MqttClientFactory func(string, mqttMessageAction) IMqttClient
 }
 
-func SetupServices(config flags.MqttConfig, additionalState additional.AdditionalStateService, clock clock.Clock) MqttContainer {
+func SetupServices(config config.MqttConfig, additionalState additional.AdditionalStateService, clock clock.Clock) MqttContainer {
 	factory := mqttClientFactory{}
 
 	return MqttContainer{
