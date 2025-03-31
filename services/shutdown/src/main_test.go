@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"powerpi/shutdown/models"
+	"powerpi/common/models"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/additional_test"
 	"powerpi/shutdown/services/flags"

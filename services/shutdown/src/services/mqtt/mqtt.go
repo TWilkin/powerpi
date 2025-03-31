@@ -6,7 +6,7 @@ import (
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 
-	"powerpi/shutdown/models"
+	"powerpi/common/models"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/clock"
 	"powerpi/shutdown/services/flags"

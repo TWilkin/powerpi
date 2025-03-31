@@ -3,7 +3,7 @@ package mqtt_test
 import (
 	"github.com/stretchr/testify/mock"
 
-	"powerpi/shutdown/models"
+	"powerpi/common/models"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/flags"
 )

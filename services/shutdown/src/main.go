@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"powerpi/shutdown/models"
+	"powerpi/common/models"
 	"powerpi/shutdown/services"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/flags"
