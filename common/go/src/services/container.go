@@ -7,7 +7,8 @@ import (
 )
 
 type ICommonContainer interface {
-	MqttService() mqtt.IMqttClient
+	MqttClient() mqtt.IMqttService
+	MqttFactory() mqtt.MqttClientFactory
 }
 
 type commonContainer struct {
@@ -17,19 +18,19 @@ type commonContainer struct {
 func NewCommonContainer() *commonContainer {
 	container := dig.New()
 
-	err := container.Provide(mqtt.NewMqttClient)
+	container.Provide(mqtt.NewMqttService)
 
-	if err != nil {
-		panic(err)
-	}
+	container.Provide(func() mqtt.MqttClientFactory {
+		return mqtt.NewMqttClientFactory()
+	})
 
 	return &commonContainer{container}
 }
 
-func (container commonContainer) MqttService() mqtt.IMqttClient {
-	var mqttService *mqtt.IMqttClient
+func (container commonContainer) MqttService() mqtt.IMqttService {
+	var mqttService *mqtt.IMqttService
 
-	err := container.container.Invoke(func(service *mqtt.IMqttClient) {
+	err := container.container.Invoke(func(service *mqtt.IMqttService) {
 		mqttService = service
 	})
 
