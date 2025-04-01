@@ -7,7 +7,7 @@ import (
 )
 
 type ICommonContainer interface {
-	MqttClient() mqtt.IMqttService
+	MqttClient() mqtt.MqttService
 	MqttFactory() mqtt.MqttClientFactory
 }
 
@@ -27,10 +27,10 @@ func NewCommonContainer() *commonContainer {
 	return &commonContainer{container}
 }
 
-func (container commonContainer) MqttService() mqtt.IMqttService {
-	var mqttService *mqtt.IMqttService
+func (container commonContainer) MqttService() mqtt.MqttService {
+	var mqttService *mqtt.MqttService
 
-	err := container.container.Invoke(func(service *mqtt.IMqttService) {
+	err := container.container.Invoke(func(service *mqtt.MqttService) {
 		mqttService = service
 	})
 
