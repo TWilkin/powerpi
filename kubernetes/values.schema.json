@@ -119,6 +119,12 @@
                 "storageClass": {
                     "description": "When defined will use the specified StorageClass instead of using local storage",
                     "type": "string"
+                },
+
+                "mosquittoHostName": {
+                    "description": "The external host name to use for mosquitto when using sensors and a ClusterIssuer",
+                    "type": "string",
+                    "pattern": "^\\w+(\\.\\w+)+$"
                 }
             },
             "required": ["externalHostName"],
@@ -266,11 +272,6 @@
             "properties": {
                 "component": {
                     "const": "message-queue"
-                },
-                "hostName": {
-                    "description": "The external host name to use for mosquitto when using sensors and a ClusterIssuer",
-                    "type": "string",
-                    "pattern": "^\\w+(\\.\\w+)+$"
                 },
                 "storageClass": {
                     "description": "When defined will use the specified StorageClass instead of using local storage",
