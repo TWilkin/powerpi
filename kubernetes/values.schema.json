@@ -119,6 +119,12 @@
                 "storageClass": {
                     "description": "When defined will use the specified StorageClass instead of using local storage",
                     "type": "string"
+                },
+
+                "mosquittoHostName": {
+                    "description": "The external host name to use for mosquitto when using sensors and a ClusterIssuer",
+                    "type": "string",
+                    "pattern": "^\\w+(\\.\\w+)+$"
                 }
             },
             "required": ["externalHostName"],
@@ -267,11 +273,6 @@
                 "component": {
                     "const": "message-queue"
                 },
-                "hostName": {
-                    "description": "The external host name to use for mosquitto when using sensors and a ClusterIssuer",
-                    "type": "string",
-                    "pattern": "^\\w+(\\.\\w+)+$"
-                },
                 "storageClass": {
                     "description": "When defined will use the specified StorageClass instead of using local storage",
                     "type": "string"
@@ -283,7 +284,7 @@
         "network-controller": {
             "description": "The configuration for the PowerPi Network controller Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/controller" }],
+            "allOf": [{ "$ref": "#/$defs/controller" }, { "$ref": "#/$defs/local-network" }],
             "unevaluatedProperties": false
         },
 
