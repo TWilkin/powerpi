@@ -65,26 +65,33 @@ mosquitto:
   # the IP address range of internal networks, used to restrict access from outside to mosquitto
   localCIDR:
     - 10.0.0.0/8
-    - 192.168.0.0/16
     - 172.16.0.0/20
+    - 192.168.0.0/16
 
 harmony-controller:
   # the IP address range of internal networks, used to restrict access only to the Harmony Hub(s)
   localCIDR:
     - 10.0.0.0/8
-    - 192.168.0.0/16
     - 172.16.0.0/20
+    - 192.168.0.0/16
 
 lifx-controller:
   # the IP address range of internal networks, used to restrict access only to the LIFX device(s)
   localCIDR:
     - 10.0.0.0/8
-    - 192.168.0.0/16
     - 172.16.0.0/20
+    - 192.168.0.0/16
+
+network-controller:
+  # the IP of internal networks, used to restrict access only to the internal broadcast address
+  localCIDR:
+    - 10.0.0.0/8
+    - 172.16.0.0/20
+    - 192.168.0.0/16
 
 snapcast-controller:
   # the IP address range of internal networks, used to restrict access only to the Snapcast server(s)
   localCIDR:
     - 10.0.0.0/8
-    - 192.168.0.0/16
     - 172.16.0.0/20
+    - 192.168.0.0/16

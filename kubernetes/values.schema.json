@@ -283,7 +283,7 @@
         "network-controller": {
             "description": "The configuration for the PowerPi Network controller Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/controller" }],
+            "allOf": [{ "$ref": "#/$defs/controller" }, { "$ref": "#/$defs/local-network" }],
             "unevaluatedProperties": false
         },
 
