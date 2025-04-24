@@ -1,7 +1,7 @@
 {{- if or (eq .Values.global.energenie true) (eq .Values.global.zigbee true) }}
 {{- $data := dict
   "Kind" "DaemonSet"
-  "Image" "registry.gitlab.com/arm-research/smarter/smarter-device-manager"
+  "Image" "ghcr.io/smarter-project/smarter-device-manager"
   "ImageTag" (print "v" (.Values.imageTag | default .Chart.AppVersion))
   "Role" "agent"
   "PriorityClassName" "powerpi-critical"
