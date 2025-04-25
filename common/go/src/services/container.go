@@ -8,7 +8,7 @@ import (
 )
 
 type CommonContainer interface {
-	MqttClient() mqtt.MqttService
+	MqttService() mqtt.MqttService
 }
 
 type commonContainer struct {
