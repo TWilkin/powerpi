@@ -3,12 +3,12 @@ package container
 import (
 	"go.uber.org/dig"
 
+	"powerpi/common/services/clock"
 	"powerpi/common/services/mqtt"
 )
 
-type ICommonContainer interface {
+type CommonContainer interface {
 	MqttClient() mqtt.MqttService
-	MqttFactory() mqtt.MqttClientFactory
 }
 
 type commonContainer struct {
@@ -17,6 +17,8 @@ type commonContainer struct {
 
 func NewCommonContainer() *commonContainer {
 	container := dig.New()
+
+	container.Provide(clock.NewClockService)
 
 	container.Provide(mqtt.NewMqttService)
 

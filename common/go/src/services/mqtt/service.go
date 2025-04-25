@@ -10,6 +10,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
 	"powerpi/common/config"
+	"powerpi/common/services/clock"
 )
 
 type Message struct {
@@ -25,14 +26,18 @@ type MqttService interface {
 }
 
 type mqttService struct {
-	factory        MqttClientFactory
+	// services
+	factory MqttClientFactory
+	clock   clock.ClockService
+
+	// state
 	client         mqtt.Client
 	topicBase      string
 	commandChannel chan os.Signal
 }
 
-func NewMqttService(config config.MqttConfig, factory mqttClientFactory) *mqttService {
-	service := &mqttService{factory, nil, config.TopicBase, make(chan os.Signal, 1)}
+func NewMqttService(config config.MqttConfig, factory mqttClientFactory, clock clock.ClockService) *mqttService {
+	service := &mqttService{factory, clock, nil, config.TopicBase, make(chan os.Signal, 1)}
 
 	signal.Notify(service.commandChannel, os.Interrupt, syscall.SIGTERM)
 
@@ -92,6 +97,11 @@ func (service mqttService) Join() {
 func (service mqttService) Publish(typ string, entity string, action string, message Message) {
 	topic := service.topic(typ, entity, action)
 
+	// if the message has no timestamp, set it to now
+	if message.Timestamp == 0 {
+		message.Timestamp = service.clock.Now().Unix() * 1000
+	}
+
 	payload, err := json.Marshal(message)
 	if err != nil {
 		fmt.Printf("Could not encode JSON message: %s\n", err)
@@ -112,10 +122,20 @@ func (service mqttService) Subscribe(typ string, entity string, action string, n
 	topic := service.topic(typ, entity, action)
 
 	token := service.client.Subscribe(topic, 2, func(_ mqtt.Client, message mqtt.Message) {
+		data := []byte(message.Payload())
+		fmt.Printf("Received %s: %s\n", message.Topic(), data)
+
 		payload := newMessage()
 
-		if err := json.Unmarshal(message.Payload(), &payload); err != nil {
+		if err := json.Unmarshal(data, &payload); err != nil {
 			fmt.Printf("Could not decode JSON message: %s\n", err)
+			return
+		}
+
+		// check if the message is old
+		twoMinsAgo := service.clock.Now().Unix() - 2*60
+		if twoMinsAgo >= (payload.Timestamp / 1000) {
+			fmt.Println("Ignoring old message")
 			return
 		}
 
