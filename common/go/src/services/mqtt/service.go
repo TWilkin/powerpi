@@ -21,7 +21,7 @@ type MqttService interface {
 	Join()
 
 	Publish(typ string, entity string, action string, message Message)
-	Subscribe(typ string, entity string, action string, channel chan<- Message)
+	Subscribe(typ string, entity string, action string, newMessage func() Message, channel chan<- Message)
 }
 
 type mqttService struct {
@@ -108,11 +108,12 @@ func (service mqttService) Publish(typ string, entity string, action string, mes
 	}
 }
 
-func (service mqttService) Subscribe(typ string, entity string, action string, channel chan<- Message) {
+func (service mqttService) Subscribe(typ string, entity string, action string, newMessage func() Message, channel chan<- Message) {
 	topic := service.topic(typ, entity, action)
 
 	token := service.client.Subscribe(topic, 2, func(_ mqtt.Client, message mqtt.Message) {
-		var payload Message
+		payload := newMessage()
+
 		if err := json.Unmarshal(message.Payload(), &payload); err != nil {
 			fmt.Printf("Could not decode JSON message: %s\n", err)
 			return
