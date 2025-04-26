@@ -36,7 +36,7 @@ type mqttService struct {
 	commandChannel chan os.Signal
 }
 
-func NewMqttService(config config.MqttConfig, factory mqttClientFactory, clock clock.ClockService) *mqttService {
+func NewMqttService(config config.MqttConfig, factory MqttClientFactory, clock clock.ClockService) *mqttService {
 	service := &mqttService{factory, clock, nil, config.TopicBase, make(chan os.Signal, 1)}
 
 	signal.Notify(service.commandChannel, os.Interrupt, syscall.SIGTERM)
