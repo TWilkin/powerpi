@@ -10,3 +10,7 @@ const (
 type AdditionalState struct {
 	Brightness *int `json:"brightness,omitempty"`
 }
+
+type Capability struct {
+	Brightness bool `json:"brightness,omitempty"`
+}

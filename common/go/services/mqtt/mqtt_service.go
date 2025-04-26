@@ -128,6 +128,17 @@ func (service mqttService) PublishDeviceState(device string, state models.Device
 	Publish(service, "device", device, "status", &message)
 }
 
+func (service mqttService) PublishCapability(device string, capability models.Capability) {
+	if capability.Brightness {
+
+		message := CapabilityMessage{
+			Capability: capability,
+		}
+
+		Publish(service, "device", device, "capability", &message)
+	}
+}
+
 func Subscribe[TMessage mqttMessage](service mqttService, typ string, entity string, action string, channel chan<- TMessage) {
 	topic := service.topic(typ, entity, action)
 

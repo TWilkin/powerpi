@@ -25,3 +25,8 @@ type DeviceMessage struct {
 
 	State models.DeviceState `json:"state"`
 }
+
+type CapabilityMessage struct {
+	BaseMqttMessage
+	models.Capability
+}

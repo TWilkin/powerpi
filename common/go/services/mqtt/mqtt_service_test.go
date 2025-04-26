@@ -184,6 +184,63 @@ func TestPublishDeviceState(t *testing.T) {
 	}
 }
 
+func TestPublishCapability(t *testing.T) {
+	var tests = []struct {
+		name       string
+		capability models.Capability
+		expected   *string
+	}{
+		{
+			"brightness on",
+			models.Capability{
+				Brightness: true,
+			},
+			utils.ToPtr("\"brightness\":true"),
+		},
+		{
+			"brightness off",
+			models.Capability{
+				Brightness: false,
+			},
+			nil,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := &MockPahoMqttClient{}
+
+			subject := &mqttService{
+				client:    client,
+				clock:     clock.MockClockService{},
+				topicBase: "powerpi",
+			}
+
+			token := &MockMqttClientToken{}
+			token.On("Wait").Return(true)
+			token.On("Error").Return(nil)
+
+			if test.expected != nil {
+				client.On(
+					"Publish",
+					"powerpi/device/MyDevice/capability",
+					byte(2),
+					true,
+					mock.MatchedBy(func(payload []byte) bool {
+						return strings.Contains(string(payload), *test.expected)
+					}),
+				).Return(token)
+
+				subject.PublishCapability("MyDevice", test.capability)
+
+				client.AssertExpectations(t)
+			} else {
+				client.AssertNotCalled(t, "Publish")
+			}
+		})
+	}
+}
+
 func TestSubscribe(t *testing.T) {
 	var tests = []struct {
 		name               string
