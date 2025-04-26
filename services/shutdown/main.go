@@ -5,16 +5,14 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"os/signal"
 	"strings"
-	"syscall"
 	"time"
 
 	"powerpi/common/models"
+	"powerpi/common/services/mqtt"
 	"powerpi/shutdown/services"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/flags"
-	"powerpi/shutdown/services/mqtt"
 )
 
 var Version = "development"
@@ -37,30 +35,35 @@ func main() {
 	}
 
 	// setup the services
-	services := services.SetupServices(config)
+	container := services.NewShutdownContainer()
 
 	// read the password from the file (if set)
 	password := getPassword(config.Mqtt.PasswordFile)
 
-	// make the channel
-	channel := make(chan os.Signal, 1)
-	signal.Notify(channel, os.Interrupt, syscall.SIGTERM)
-
 	// connect to MQTT
-	callback := func(client mqtt.IMqttClient, state models.DeviceState, additionalState models.AdditionalState) {
-		updateState(services.Additional.AdditionalStateService, client, config, state, additionalState, startTime)
-	}
-	client := services.Mqtt.MqttClientFactory(hostname, callback)
-	client.Connect(config.Mqtt.Host, config.Mqtt.Port, &config.Mqtt.User, password, config)
+	mqttService := container.Common.MqttService()
+	mqttService.Connect(config.Mqtt.Host, config.Mqtt.Port, &config.Mqtt.User, password, "shutdown")
 
-	// join the channel
-	<-channel
+	// subscribe to the change event
+	channel := make(chan *mqtt.DeviceMessage, 1)
+	mqttService.SubscribeDeviceChange(hostname, channel)
+
+	// get the additional state service
+	additionalStateService := container.AdditionalStateService()
+
+	// loop waiting for messages
+	for {
+		message := <-channel
+
+		updateState(additionalStateService, mqttService, config, hostname, message.State, message.AdditionalState, startTime)
+	}
 }
 
 func updateState(
 	additionalStateService additional.AdditionalStateService,
-	client mqtt.IMqttClient,
+	mqttService mqtt.MqttService,
 	config flags.Config,
+	hostname string,
 	state models.DeviceState,
 	additionalState models.AdditionalState,
 	startTime time.Time,
@@ -76,7 +79,8 @@ func updateState(
 
 	// publish the state message if necessary
 	if newState != models.On || !additionalStateService.CompareAdditionalState(currentAdditionalState, additionalState) {
-		client.PublishState(newState, additionalStateService.GetAdditionalState())
+		currentAdditionalState = additionalStateService.GetAdditionalState()
+		mqttService.PublishDeviceState(hostname, newState, &currentAdditionalState)
 	}
 
 	if state == "off" {

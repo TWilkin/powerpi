@@ -15,11 +15,19 @@ import (
 )
 
 type MqttService interface {
-	Connect(string, int, *string, *string)
+	Connect(
+		host string,
+		port int,
+		user *string,
+		password *string,
+		clientIdPrefix string,
+	)
 	Join()
 
 	PublishDeviceState(device string, state models.DeviceState, additionalState *models.AdditionalState)
 	PublishCapability(device string, capability models.Capability)
+
+	SubscribeDeviceChange(device string, channel chan<- *DeviceMessage)
 }
 
 type mqttService struct {
@@ -168,6 +176,10 @@ func Subscribe[TMessage mqttMessage](service mqttService, typ string, entity str
 	if token.Error() != nil {
 		panic(token.Error())
 	}
+}
+
+func (service mqttService) SubscribeDeviceChange(device string, channel chan<- *DeviceMessage) {
+	Subscribe(service, "device", device, "change", channel)
 }
 
 func (service mqttService) process() {

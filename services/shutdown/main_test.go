@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"powerpi/common/models"
+	"powerpi/common/services/mqtt"
 	"powerpi/shutdown/services/additional_test"
 	"powerpi/shutdown/services/flags"
-	"powerpi/shutdown/services/mqtt_test"
 	"powerpi/shutdown/utils"
 
 	"github.com/stretchr/testify/mock"
@@ -55,9 +55,10 @@ func TestUpdateState(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			additionalStateService := &additional_test.MockAdditionalStateService{}
-			client := &mqtt_test.MockMqttClient{}
+			mqttService := &mqtt.MockMqttService{}
 			config := flags.Config{Mock: true}
 			startTime := time.Now()
+			hostname := "test-hostname"
 
 			additionalStateService.On("GetAdditionalState").Return(
 				models.AdditionalState{Brightness: utils.ToPtr(50)},
@@ -77,10 +78,11 @@ func TestUpdateState(t *testing.T) {
 					test.additionalState,
 				).Once()
 
-				client.On(
-					"PublishState",
+				mqttService.On(
+					"PublishDeviceState",
+					hostname,
 					*test.expectedState,
-					mock.MatchedBy(func(state models.AdditionalState) bool {
+					mock.MatchedBy(func(state *models.AdditionalState) bool {
 						return utils.NilOrEqual(
 							state.Brightness,
 							test.expectedAdditionalState.Brightness,
@@ -91,15 +93,16 @@ func TestUpdateState(t *testing.T) {
 
 			updateState(
 				additionalStateService,
-				client,
+				mqttService,
 				config,
+				hostname,
 				test.state,
 				test.additionalState,
 				startTime,
 			)
 
 			additionalStateService.AssertExpectations(t)
-			client.AssertExpectations(t)
+			mqttService.AssertExpectations(t)
 		})
 	}
 }

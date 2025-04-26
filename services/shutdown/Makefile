@@ -9,7 +9,7 @@ TARGET_ARCH?=arm64
 # the version of the shutdown service
 VERSION=0.2.0
 
-SOURCES := $(shell find ./src -name "*.go") 
+SOURCES := $(shell find ./ -name "*.go") 
 
 all: compile
 

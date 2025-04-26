@@ -1,27 +1,45 @@
 package services
 
 import (
+	"powerpi/common/services"
 	"powerpi/shutdown/services/additional"
-	"powerpi/shutdown/services/clock"
-	"powerpi/shutdown/services/flags"
-	"powerpi/shutdown/services/mqtt"
+	"powerpi/shutdown/services/additional/brightness"
+
+	"go.uber.org/dig"
 )
 
-type Container struct {
-	Config     flags.Config
-	Clock      clock.Clock
-	Additional additional.AdditionalContainer
-	Mqtt       mqtt.MqttContainer
+type ShutdownContainer interface {
+	AdditionalStateService() additional.AdditionalStateService
 }
 
-func SetupServices(config flags.Config) Container {
-	additionalContainer := additional.SetupServices(config.AdditionalState)
-	clock := clock.RealClock{}
+type shutdownContainer struct {
+	container *dig.Container
 
-	return Container{
-		config,
-		clock,
-		additionalContainer,
-		mqtt.SetupServices(config.Mqtt, additionalContainer.AdditionalStateService, clock),
+	Common services.CommonContainer
+}
+
+func NewShutdownContainer() *shutdownContainer {
+	container := dig.New()
+
+	container.Provide(brightness.New)
+	container.Provide(additional.New)
+
+	return &shutdownContainer{
+		container: container,
+		Common:    services.NewCommonContainer(),
 	}
+}
+
+func (container shutdownContainer) AdditionalStateService() additional.AdditionalStateService {
+	var additionalStateService *additional.AdditionalStateService
+
+	err := container.container.Invoke(func(service *additional.AdditionalStateService) {
+		additionalStateService = service
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	return *additionalStateService
 }
