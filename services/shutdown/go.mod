@@ -18,4 +18,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace powerpi/common => ../../../common/go
+replace powerpi/common => ../../common/go

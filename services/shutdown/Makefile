@@ -15,15 +15,15 @@ all: compile
 
 $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH): $(SOURCES)
 	mkdir -p $(TARGET_DIR)
-	cd src; env GOOS=$(TARGET_OS) GOARCH=$(TARGET_ARCH) go build -o $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH) -ldflags="-X 'main.Version=v$(VERSION)'"
+	env GOOS=$(TARGET_OS) GOARCH=$(TARGET_ARCH) go build -o $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH) -ldflags="-X 'main.Version=v$(VERSION)'"
 
 compile: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
 
 test: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
-	cd src; go test ./...
+	go test ./...
 
 coverage: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
-	cd src; go test -coverprofile=powerpi_shutdown.coverage ./...
+	go test -coverprofile=powerpi_shutdown.coverage ./...
 
 clean:
 	go clean
