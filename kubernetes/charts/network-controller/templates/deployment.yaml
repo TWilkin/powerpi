@@ -1,6 +1,14 @@
+{{- $ssl := eq (include "powerpi.mosquitto-ssl" .) "true" -}}
+
 {{- 
     $data := dict
     "HostNetwork" (true | quote)
+    "Env" (list
+        (dict
+            "Name" "MQTT_ADDRESS"
+            "Value" (ternary (print "mqtts://" .Values.global.mosquittoHostName ":8883") "mqtt://mosquitto:1883" $ssl)
+        )
+    )
 -}}
 
 {{- include "powerpi.controller" (merge (dict "Params" $data) . ) -}}

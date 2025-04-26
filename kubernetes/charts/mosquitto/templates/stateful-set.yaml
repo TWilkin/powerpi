@@ -1,9 +1,4 @@
-{{- $ssl := and 
-  (eq .Values.global.useSSL true) 
-  (eq .Values.global.useSensors true) 
-  (not (eq .Values.global.clusterIssuer nil)) 
-  (not (eq .Values.hostName nil))
--}}
+{{- $ssl := eq (include "powerpi.mosquitto-ssl" .) "true" -}}
 
 {{- $needsNodeSelector := include "powerpi.persistent-volume-node-selector" . -}}
 {{- $nodeSelector := ternary (list
