@@ -4,6 +4,7 @@ import (
 	"go.uber.org/dig"
 
 	"powerpi/common/services/clock"
+	"powerpi/common/services/config"
 	"powerpi/common/services/mqtt"
 )
 
@@ -19,6 +20,7 @@ func NewCommonContainer() *commonContainer {
 	container := dig.New()
 
 	container.Provide(clock.NewClockService)
+	container.Provide(config.NewConfigService)
 
 	container.Provide(mqtt.NewMqttService)
 
