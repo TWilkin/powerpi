@@ -55,7 +55,7 @@ func TestConnect(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			config := config.MqttConfig{TopicBase: "powerpi"}
-			factory := MockMqttClientFactory{}
+			factory := &MockMqttClientFactory{}
 
 			client := &MockPahoMqttClient{}
 			factory.On("BuildClient", mock.MatchedBy(func(options *mqtt.ClientOptions) bool {
