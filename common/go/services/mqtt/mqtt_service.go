@@ -10,6 +10,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
 	"powerpi/common/config"
+	"powerpi/common/models"
 	"powerpi/common/services/clock"
 )
 
@@ -112,6 +113,19 @@ func Publish[TMessage mqttMessage](service mqttService, typ string, entity strin
 	if token.Error() != nil {
 		panic(token.Error())
 	}
+}
+
+func (service mqttService) PublishDeviceState(device string, state models.DeviceState, additionalState *models.AdditionalState) {
+	if additionalState == nil {
+		additionalState = &models.AdditionalState{}
+	}
+
+	message := DeviceMessage{
+		State:           state,
+		AdditionalState: *additionalState,
+	}
+
+	Publish(service, "device", device, "status", &message)
 }
 
 func Subscribe[TMessage mqttMessage](service mqttService, typ string, entity string, action string, channel chan<- TMessage) {

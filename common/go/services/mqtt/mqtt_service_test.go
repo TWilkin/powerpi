@@ -141,6 +141,49 @@ func TestPublish(t *testing.T) {
 	}
 }
 
+func TestPublishDeviceState(t *testing.T) {
+	var tests = []struct {
+		name            string
+		state           models.DeviceState
+		additionalState *models.AdditionalState
+		expected        string
+	}{
+		{"off", models.Off, nil, "\"state\":\"off\""},
+		{"on", models.On, &models.AdditionalState{}, "\"state\":\"on\""},
+		{"off with brightness", models.Off, &models.AdditionalState{Brightness: utils.ToPtr(50)}, "\"brightness\":50"},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			client := &MockPahoMqttClient{}
+
+			subject := &mqttService{
+				client:    client,
+				clock:     clock.MockClockService{},
+				topicBase: "powerpi",
+			}
+
+			token := &MockMqttClientToken{}
+			token.On("Wait").Return(true)
+			token.On("Error").Return(nil)
+
+			client.On(
+				"Publish",
+				"powerpi/device/MyDevice/status",
+				byte(2),
+				true,
+				mock.MatchedBy(func(payload []byte) bool {
+					return strings.Contains(string(payload), test.expected)
+				}),
+			).Return(token)
+
+			subject.PublishDeviceState("MyDevice", test.state, test.additionalState)
+
+			client.AssertExpectations(t)
+		})
+	}
+}
+
 func TestSubscribe(t *testing.T) {
 	var tests = []struct {
 		name               string

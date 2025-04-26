@@ -8,5 +8,5 @@ const (
 )
 
 type AdditionalState struct {
-	Brightness *int `json:"brightness"`
+	Brightness *int `json:"brightness,omitempty"`
 }

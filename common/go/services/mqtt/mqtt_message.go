@@ -1,5 +1,7 @@
 package mqtt
 
+import "powerpi/common/models"
+
 type mqttMessage interface {
 	GetTimestamp() int64
 	SetTimestamp(value int64)
@@ -15,4 +17,11 @@ func (message *BaseMqttMessage) GetTimestamp() int64 {
 
 func (message *BaseMqttMessage) SetTimestamp(value int64) {
 	message.Timestamp = value
+}
+
+type DeviceMessage struct {
+	BaseMqttMessage
+	models.AdditionalState
+
+	State models.DeviceState `json:"state"`
 }
