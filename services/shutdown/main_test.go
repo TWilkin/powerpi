@@ -6,9 +6,9 @@ import (
 
 	"powerpi/common/models"
 	"powerpi/common/services/mqtt"
+	"powerpi/common/utils"
 	"powerpi/shutdown/services/additional_test"
 	"powerpi/shutdown/services/flags"
-	"powerpi/shutdown/utils"
 
 	"github.com/stretchr/testify/mock"
 )

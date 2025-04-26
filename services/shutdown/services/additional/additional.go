@@ -2,10 +2,10 @@ package additional
 
 import (
 	"powerpi/common/models"
+	"powerpi/common/utils"
 
 	"powerpi/shutdown/services/additional/brightness"
 	"powerpi/shutdown/services/flags"
-	"powerpi/shutdown/utils"
 )
 
 type AdditionalStateService interface {

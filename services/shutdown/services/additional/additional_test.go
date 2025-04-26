@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"powerpi/common/models"
+	"powerpi/common/utils"
 	"powerpi/shutdown/services/flags"
-	"powerpi/shutdown/utils"
 )
 
 type MockBrightnessService struct {
