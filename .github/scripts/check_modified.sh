@@ -34,6 +34,14 @@ do
         continue
     fi
 
+    # updating go common requires testing everything using it
+    if [[ $file == common/go/* ]]
+    then
+        include_project "go_common" "golang"
+
+        include_project "shutdown" "golang"
+    fi
+
     # updating node common requires testing everything using it
     if [[ $file == common/node/common/* || $file == yarn.lock ]]
     then
@@ -94,7 +102,7 @@ do
     check_file $file "services/event" "event" "python"
     check_file $file "services/persistence" "persistence" "nodejs"
     check_file $file "services/scheduler" "scheduler" "python"
-    check_file $file "services/shutdown" "shutdown" "go"
+    check_file $file "services/shutdown" "shutdown" "golang"
     check_file $file "services/ui" "ui" "nodejs"
     check_file $file "services/voice-assistant" "voice_assistant" "nodejs"
 done < files.txt
