@@ -114,14 +114,14 @@ func Publish[TMessage mqttMessage](service mqttService, typ string, entity strin
 	}
 }
 
-func (service mqttService) Subscribe(typ string, entity string, action string, newMessage func() mqttMessage, channel chan<- mqttMessage) {
+func Subscribe[TMessage mqttMessage](service mqttService, typ string, entity string, action string, channel chan<- TMessage) {
 	topic := service.topic(typ, entity, action)
 
 	token := service.client.Subscribe(topic, 2, func(_ mqtt.Client, message mqtt.Message) {
 		data := []byte(message.Payload())
 		fmt.Printf("Received %s: %s\n", message.Topic(), data)
 
-		payload := newMessage()
+		payload := *new(TMessage)
 
 		if err := json.Unmarshal(data, &payload); err != nil {
 			fmt.Printf("Could not decode JSON message: %s\n", err)

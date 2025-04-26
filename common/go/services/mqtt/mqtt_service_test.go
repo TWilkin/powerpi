@@ -205,11 +205,9 @@ func TestSubscribe(t *testing.T) {
 				}),
 			).Return(token)
 
-			channel := make(chan mqttMessage, 1)
+			channel := make(chan *TestMessage, 1)
 
-			subject.Subscribe("device", "MyDevice", "change", func() mqttMessage {
-				return &TestMessage{}
-			}, channel)
+			Subscribe(subject, "device", "MyDevice", "change", channel)
 
 			timestamp := time.Date(2025, 2, 22, 0, 2, 0, 0, time.UTC)
 			if test.timestamp != nil {
