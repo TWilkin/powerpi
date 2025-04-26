@@ -13,16 +13,12 @@ import (
 	"powerpi/common/services/clock"
 )
 
-type Message struct {
-	Timestamp int64 `json:"timestamp"`
-}
-
 type MqttService interface {
 	Connect(string, int, *string, *string)
 	Join()
 
-	Publish(typ string, entity string, action string, message Message)
-	Subscribe(typ string, entity string, action string, newMessage func() Message, channel chan<- Message)
+	Publish(typ string, entity string, action string, message mqttMessage)
+	Subscribe(typ string, entity string, action string, newMessage func() mqttMessage, channel chan<- mqttMessage)
 }
 
 type mqttService struct {
@@ -94,12 +90,12 @@ func (service mqttService) Join() {
 	<-service.commandChannel
 }
 
-func (service mqttService) Publish(typ string, entity string, action string, message Message) {
+func Publish[TMessage mqttMessage](service mqttService, typ string, entity string, action string, message TMessage) {
 	topic := service.topic(typ, entity, action)
 
 	// if the message has no timestamp, set it to now
-	if message.Timestamp == 0 {
-		message.Timestamp = service.clock.Now().Unix() * 1000
+	if message.GetTimestamp() == 0 {
+		message.SetTimestamp(service.clock.Now().Unix() * 1000)
 	}
 
 	payload, err := json.Marshal(message)
@@ -118,7 +114,7 @@ func (service mqttService) Publish(typ string, entity string, action string, mes
 	}
 }
 
-func (service mqttService) Subscribe(typ string, entity string, action string, newMessage func() Message, channel chan<- Message) {
+func (service mqttService) Subscribe(typ string, entity string, action string, newMessage func() mqttMessage, channel chan<- mqttMessage) {
 	topic := service.topic(typ, entity, action)
 
 	token := service.client.Subscribe(topic, 2, func(_ mqtt.Client, message mqtt.Message) {
@@ -134,7 +130,7 @@ func (service mqttService) Subscribe(typ string, entity string, action string, n
 
 		// check if the message is old
 		twoMinsAgo := service.clock.Now().Unix() - 2*60
-		if twoMinsAgo >= (payload.Timestamp / 1000) {
+		if twoMinsAgo >= (payload.GetTimestamp() / 1000) {
 			fmt.Println("Ignoring old message")
 			return
 		}
