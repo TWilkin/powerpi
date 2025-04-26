@@ -1,4 +1,4 @@
-package container
+package services
 
 import (
 	"go.uber.org/dig"
@@ -9,6 +9,7 @@ import (
 )
 
 type CommonContainer interface {
+	ConfigService() config.ConfigService
 	MqttService() mqtt.MqttService
 }
 
@@ -29,6 +30,20 @@ func NewCommonContainer() *commonContainer {
 	})
 
 	return &commonContainer{container}
+}
+
+func (container commonContainer) ConfigService() config.ConfigService {
+	var configService *config.ConfigService
+
+	err := container.container.Invoke(func(service *config.ConfigService) {
+		configService = service
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	return *configService
 }
 
 func (container commonContainer) MqttService() mqtt.MqttService {

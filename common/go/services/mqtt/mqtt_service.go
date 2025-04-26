@@ -18,8 +18,8 @@ type MqttService interface {
 	Connect(string, int, *string, *string)
 	Join()
 
-	Publish(typ string, entity string, action string, message mqttMessage)
-	Subscribe(typ string, entity string, action string, newMessage func() mqttMessage, channel chan<- mqttMessage)
+	PublishDeviceState(device string, state models.DeviceState, additionalState *models.AdditionalState)
+	PublishCapability(device string, capability models.Capability)
 }
 
 type mqttService struct {
