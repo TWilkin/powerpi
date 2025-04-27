@@ -9,6 +9,8 @@ import (
 )
 
 type CommonContainer interface {
+	Container() *dig.Container
+
 	ConfigService() config.ConfigService
 	MqttService() mqtt.MqttService
 }
@@ -30,6 +32,10 @@ func NewCommonContainer() *commonContainer {
 	})
 
 	return &commonContainer{container}
+}
+
+func (container commonContainer) Container() *dig.Container {
+	return container.container
 }
 
 func (container commonContainer) ConfigService() config.ConfigService {

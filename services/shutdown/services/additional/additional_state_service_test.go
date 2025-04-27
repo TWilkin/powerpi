@@ -8,19 +8,19 @@ import (
 	"powerpi/common/models"
 	"powerpi/common/utils"
 	"powerpi/shutdown/services/additional/brightness"
-	"powerpi/shutdown/services/flags"
+	"powerpi/shutdown/services/config"
 )
 
 func TestGetAdditionalState(t *testing.T) {
 	var tests = []struct {
 		name     string
-		config   flags.AdditionalStateConfig
+		config   config.AdditionalStateConfig
 		expected models.AdditionalState
 	}{
-		{"empty config", flags.AdditionalStateConfig{}, models.AdditionalState{}},
+		{"empty config", config.AdditionalStateConfig{}, models.AdditionalState{}},
 		{
 			"brightness config",
-			flags.AdditionalStateConfig{Brightness: flags.BrightnessConfig{Device: "test"}},
+			config.AdditionalStateConfig{Brightness: config.BrightnessConfig{Device: "test"}},
 			models.AdditionalState{Brightness: utils.ToPtr(50)},
 		},
 	}
@@ -39,13 +39,13 @@ func TestGetAdditionalState(t *testing.T) {
 func TestSetAdditionalState(t *testing.T) {
 	var tests = []struct {
 		name     string
-		config   flags.AdditionalStateConfig
+		config   config.AdditionalStateConfig
 		expected int
 	}{
-		{"empty config", flags.AdditionalStateConfig{}, 0},
+		{"empty config", config.AdditionalStateConfig{}, 0},
 		{
 			"brightness config",
-			flags.AdditionalStateConfig{Brightness: flags.BrightnessConfig{Device: "test"}}, 50,
+			config.AdditionalStateConfig{Brightness: config.BrightnessConfig{Device: "test"}}, 50,
 		},
 	}
 

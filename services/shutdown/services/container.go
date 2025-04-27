@@ -1,39 +1,37 @@
 package services
 
 import (
-	"go.uber.org/dig"
-
 	"powerpi/common/services"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/additional/brightness"
+	"powerpi/shutdown/services/config"
 )
 
 type ShutdownContainer interface {
 	AdditionalStateService() additional.AdditionalStateService
+	ConfigService() config.ConfigService
 }
 
 type shutdownContainer struct {
-	container *dig.Container
-
-	Common services.CommonContainer
+	services.CommonContainer
 }
 
 func NewShutdownContainer() *shutdownContainer {
-	container := dig.New()
-
-	container.Provide(brightness.NewBrightnessService)
-	container.Provide(additional.NewAdditionalStateService)
-
-	return &shutdownContainer{
-		container: container,
-		Common:    services.NewCommonContainer(),
+	container := &shutdownContainer{
+		CommonContainer: *services.NewCommonContainer(),
 	}
+
+	container.Container().Provide(brightness.NewBrightnessService)
+	container.Container().Provide(additional.NewAdditionalStateService)
+	container.Container().Provide(config.NewConfigService)
+
+	return container
 }
 
 func (container shutdownContainer) AdditionalStateService() additional.AdditionalStateService {
 	var additionalStateService *additional.AdditionalStateService
 
-	err := container.container.Invoke(func(service *additional.AdditionalStateService) {
+	err := container.Container().Invoke(func(service *additional.AdditionalStateService) {
 		additionalStateService = service
 	})
 
@@ -42,4 +40,18 @@ func (container shutdownContainer) AdditionalStateService() additional.Additiona
 	}
 
 	return *additionalStateService
+}
+
+func (container shutdownContainer) ConfigService() config.ConfigService {
+	var configService *config.ConfigService
+
+	err := container.Container().Invoke(func(service *config.ConfigService) {
+		configService = service
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	return *configService
 }

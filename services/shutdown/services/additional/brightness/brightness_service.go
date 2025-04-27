@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"powerpi/shutdown/services/flags"
+	"powerpi/shutdown/services/config"
 )
 
 type BrightnessService interface {
@@ -16,10 +16,10 @@ type BrightnessService interface {
 }
 
 type brightnessService struct {
-	config flags.BrightnessConfig
+	config config.BrightnessConfig
 }
 
-func NewBrightnessService(config flags.BrightnessConfig) brightnessService {
+func NewBrightnessService(config config.BrightnessConfig) brightnessService {
 	return brightnessService{config}
 }
 

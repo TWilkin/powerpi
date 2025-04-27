@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"powerpi/shutdown/services/flags"
+	"powerpi/shutdown/services/config"
 )
 
 func TestGetBrightness(t *testing.T) {
@@ -30,7 +30,7 @@ func TestGetBrightness(t *testing.T) {
 
 			os.WriteFile(file, []byte(test.brightness), 0777)
 
-			config := flags.BrightnessConfig{Device: file, Min: test.min, Max: test.max}
+			config := config.BrightnessConfig{Device: file, Min: test.min, Max: test.max}
 
 			result := NewBrightnessService(config).GetBrightness()
 
@@ -58,7 +58,7 @@ func TestSetBrightness(t *testing.T) {
 			dir := t.TempDir()
 			file := dir + "/brightness"
 
-			config := flags.BrightnessConfig{Device: file, Min: test.min, Max: test.max}
+			config := config.BrightnessConfig{Device: file, Min: test.min, Max: test.max}
 
 			NewBrightnessService(config).SetBrightness(test.brightness)
 			result, _ := os.ReadFile(file)

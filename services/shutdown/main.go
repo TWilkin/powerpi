@@ -12,7 +12,7 @@ import (
 	"powerpi/common/services/mqtt"
 	"powerpi/shutdown/services"
 	"powerpi/shutdown/services/additional"
-	"powerpi/shutdown/services/flags"
+	"powerpi/shutdown/services/config"
 )
 
 var Version = "development"
@@ -20,8 +20,12 @@ var Version = "development"
 func main() {
 	fmt.Printf("PowerPi Shutdown Service %s\n", Version)
 
+	// setup the services
+	container := services.NewShutdownContainer()
+
 	// use command line args
-	config := flags.ParseFlags()
+	config := container.ConfigService()
+	config.Parse(os.Args[1:])
 
 	// capture the start time, or clear it if we're not allowing quick shutdown
 	var startTime = time.Now()
@@ -34,14 +38,11 @@ func main() {
 		panic(err)
 	}
 
-	// setup the services
-	container := services.NewShutdownContainer()
-
 	// read the password from the file (if set)
 	password := getPassword(config.Mqtt.PasswordFile)
 
 	// connect to MQTT
-	mqttService := container.Common.MqttService()
+	mqttService := container.MqttService()
 	mqttService.Connect(config.Mqtt.Host, config.Mqtt.Port, &config.Mqtt.User, password, "shutdown")
 
 	// subscribe to the change event
@@ -62,7 +63,7 @@ func main() {
 func updateState(
 	additionalStateService additional.AdditionalStateService,
 	mqttService mqtt.MqttService,
-	config flags.Config,
+	config config.ConfigService,
 	hostname string,
 	state models.DeviceState,
 	additionalState models.AdditionalState,
