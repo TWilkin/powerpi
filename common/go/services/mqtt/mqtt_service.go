@@ -176,6 +176,7 @@ func publish[TMessage mqttMessage](service mqttService, typ string, entity strin
 
 func subscribe[TMessage mqttMessage](service mqttService, typ string, entity string, action string, channel chan<- TMessage) {
 	topic := service.topic(typ, entity, action)
+	fmt.Printf("Subscribing to %s\n", topic)
 
 	token := service.client.Subscribe(topic, 2, func(_ mqtt.Client, message mqtt.Message) {
 		data := []byte(message.Payload())

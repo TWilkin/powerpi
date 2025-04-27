@@ -46,6 +46,6 @@ func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagS
 	}
 }
 
-func (service configService) MqttConfig() config.MqttConfig {
+func (service *configService) MqttConfig() config.MqttConfig {
 	return service.mqtt
 }

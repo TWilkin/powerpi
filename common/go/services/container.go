@@ -10,6 +10,8 @@ import (
 
 type CommonContainer interface {
 	Container() *dig.Container
+
+	SetConfigService(configService config.ConfigService)
 }
 
 type commonContainer struct {
@@ -20,7 +22,6 @@ func NewCommonContainer() CommonContainer {
 	container := dig.New()
 
 	container.Provide(clock.NewClockService)
-	container.Provide(config.NewConfigService)
 
 	container.Provide(mqtt.NewMqttService)
 
@@ -33,6 +34,16 @@ func NewCommonContainer() CommonContainer {
 
 func (container commonContainer) Container() *dig.Container {
 	return container.container
+}
+
+func (container commonContainer) SetConfigService(configService config.ConfigService) {
+	err := container.container.Provide(func() config.ConfigService {
+		return configService
+	})
+
+	if err != nil {
+		panic(err)
+	}
 }
 
 func GetService[TService any, TContainer CommonContainer](container TContainer) TService {

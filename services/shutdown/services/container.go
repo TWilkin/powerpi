@@ -24,6 +24,9 @@ func NewShutdownContainer() ShutdownContainer {
 	container.Container().Provide(additional.NewAdditionalStateService)
 	container.Container().Provide(config.NewConfigService)
 
+	// Override the common config service with the shutdown config service
+	container.SetConfigService(GetService[config.ConfigService](container))
+
 	return container
 }
 
