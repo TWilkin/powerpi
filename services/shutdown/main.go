@@ -25,7 +25,7 @@ func main() {
 
 	// use command line args
 	config := container.ConfigService()
-	config.Parse(os.Args[1:])
+	config.Parse(os.Args)
 
 	// capture the start time, or clear it if we're not allowing quick shutdown
 	var startTime = time.Now()

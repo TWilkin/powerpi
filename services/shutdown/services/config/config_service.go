@@ -1,7 +1,7 @@
 package config
 
 import (
-	"flag"
+	"github.com/spf13/pflag"
 
 	"powerpi/common/services/config"
 )
@@ -36,23 +36,23 @@ func NewConfigService() *ConfigService {
 }
 
 func (service *ConfigService) Parse(args []string) {
-	flagSet := flag.NewFlagSet("", flag.ContinueOnError)
+	flagSet := pflag.NewFlagSet("shutdown", pflag.ExitOnError)
 
 	// additional state
 	// brightness
-	flag.StringVar(
+	flagSet.StringVar(
 		&service.AdditionalState.Brightness.Device,
 		"brightnessDevice",
 		"",
 		"The path to the device to use for controller brightness, e.g. \"/sys/class/backlight/10-0045/brightness\" for a Pi Touch Display 2",
 	)
-	flag.Float64Var(
+	flagSet.Float64Var(
 		&service.AdditionalState.Brightness.Min,
 		"brightnessMin",
 		0.0,
 		"The minimum value supported for the brightness setting, e.g. 0 for a Pi Touch Display 2",
 	)
-	flag.Float64Var(
+	flagSet.Float64Var(
 		&service.AdditionalState.Brightness.Max,
 		"brightnessMax",
 		100.0,
@@ -60,18 +60,13 @@ func (service *ConfigService) Parse(args []string) {
 	)
 
 	// others
-	flag.BoolVar(
+	flagSet.BoolVar(
 		&service.AllowQuickShutdown,
 		"allowQuickShutdown",
 		false,
 		"If true allow a message within 2 minutes of service starting to initiate a shutdown",
 	)
-	flag.BoolVar(&service.Mock, "mock", false, "Whether to actually shutdown or not")
+	flagSet.BoolVar(&service.Mock, "mock", false, "Whether to actually shutdown or not")
 
-	service.ConfigService.Parse(args)
-
-	err := flagSet.Parse(args)
-	if err != nil {
-		panic(err)
-	}
+	service.ConfigService.Parse(args, *flagSet)
 }

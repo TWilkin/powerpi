@@ -14,7 +14,7 @@ func TestParse(t *testing.T) {
 	}{
 		{
 			"default values",
-			[]string{},
+			[]string{"my service"},
 			config.MqttConfig{
 				Host:         "localhost",
 				Port:         1883,
@@ -26,6 +26,7 @@ func TestParse(t *testing.T) {
 		{
 			"overridden values",
 			[]string{
+				"my service",
 				"--host", "mqtt-host",
 				"--port", "8883",
 				"--user", "user",

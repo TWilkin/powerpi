@@ -1,13 +1,13 @@
 package config
 
 import (
-	"flag"
+	"github.com/spf13/pflag"
 
 	"powerpi/common/config"
 )
 
 type ConfigService interface {
-	Parse(args []string)
+	Parse(args []string, flags ...pflag.FlagSet)
 
 	MqttConfig() config.MqttConfig
 }
@@ -24,17 +24,25 @@ func NewConfigService() ConfigService {
 	return service
 }
 
-func (service *configService) Parse(args []string) {
-	flagSet := flag.NewFlagSet("", flag.ContinueOnError)
-
+func (service *configService) Parse(args []string, flags ...pflag.FlagSet) {
 	// MQTT
-	flagSet.StringVar(&service.mqtt.Host, "host", "localhost", "The hostname of the MQTT broker")
-	flagSet.IntVar(&service.mqtt.Port, "port", 1883, "The port number for the MQTT broker")
-	flagSet.StringVar(&service.mqtt.User, "user", "device", "The username for the MQTT broker")
-	flagSet.StringVar(&service.mqtt.PasswordFile, "password", "undefined", "The path to the password file")
-	flagSet.StringVar(&service.mqtt.TopicBase, "topic", "powerpi", "The topic base for the MQTT broker")
+	mqtt := pflag.NewFlagSet("mqtt", pflag.ExitOnError)
+	mqtt.StringVar(&service.mqtt.Host, "host", "localhost", "The hostname of the MQTT broker")
+	mqtt.IntVar(&service.mqtt.Port, "port", 1883, "The port number for the MQTT broker")
+	mqtt.StringVar(&service.mqtt.User, "user", "device", "The username for the MQTT broker")
+	mqtt.StringVar(&service.mqtt.PasswordFile, "password", "undefined", "The path to the password file")
+	mqtt.StringVar(&service.mqtt.TopicBase, "topic", "powerpi", "The topic base for the MQTT broker")
 
-	err := flagSet.Parse(args)
+	name := args[0]
+	params := args[1:]
+
+	combined := pflag.NewFlagSet(name, pflag.ExitOnError)
+	combined.AddFlagSet(mqtt)
+	for _, flag := range flags {
+		combined.AddFlagSet(&flag)
+	}
+
+	err := combined.Parse(params)
 	if err != nil {
 		panic(err)
 	}

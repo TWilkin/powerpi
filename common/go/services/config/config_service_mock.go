@@ -1,12 +1,16 @@
 package config
 
-import "powerpi/common/config"
+import (
+	"github.com/spf13/pflag"
+
+	"powerpi/common/config"
+)
 
 type MockConfigService struct {
 	Mqtt config.MqttConfig
 }
 
-func (config MockConfigService) Parse(args []string) {
+func (config MockConfigService) Parse(args []string, flags ...pflag.FlagSet) {
 	// Mock implementation of Parse method
 }
 
