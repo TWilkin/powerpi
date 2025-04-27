@@ -21,7 +21,7 @@ type additionalStateService struct {
 	brightness brightness.BrightnessService
 }
 
-func New(
+func NewAdditionalStateService(
 	config flags.AdditionalStateConfig,
 	brightness brightness.BrightnessService,
 ) additionalStateService {

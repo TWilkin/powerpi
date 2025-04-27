@@ -7,20 +7,9 @@ import (
 
 	"powerpi/common/models"
 	"powerpi/common/utils"
+	"powerpi/shutdown/services/additional/brightness"
 	"powerpi/shutdown/services/flags"
 )
-
-type MockBrightnessService struct {
-	brightness int
-}
-
-func (service MockBrightnessService) GetBrightness() int {
-	return 50
-}
-
-func (service *MockBrightnessService) SetBrightness(value int) {
-	service.brightness = value
-}
 
 func TestGetAdditionalState(t *testing.T) {
 	var tests = []struct {
@@ -38,7 +27,7 @@ func TestGetAdditionalState(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			subject := New(test.config, &MockBrightnessService{50})
+			subject := NewAdditionalStateService(test.config, &brightness.MockBrightnessService{Brightness: 50})
 
 			result := subject.GetAdditionalState()
 
@@ -62,12 +51,12 @@ func TestSetAdditionalState(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			mockBrightness := MockBrightnessService{0}
-			subject := New(test.config, &mockBrightness)
+			mockBrightness := brightness.MockBrightnessService{Brightness: 0}
+			subject := NewAdditionalStateService(test.config, &mockBrightness)
 
 			subject.SetAdditionalState(models.AdditionalState{Brightness: utils.ToPtr(50)})
 
-			assert.Equal(t, mockBrightness.brightness, test.expected)
+			assert.Equal(t, mockBrightness.Brightness, test.expected)
 		})
 	}
 }

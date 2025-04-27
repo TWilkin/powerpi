@@ -1,11 +1,11 @@
 package services
 
 import (
+	"go.uber.org/dig"
+
 	"powerpi/common/services"
 	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/additional/brightness"
-
-	"go.uber.org/dig"
 )
 
 type ShutdownContainer interface {
@@ -21,8 +21,8 @@ type shutdownContainer struct {
 func NewShutdownContainer() *shutdownContainer {
 	container := dig.New()
 
-	container.Provide(brightness.New)
-	container.Provide(additional.New)
+	container.Provide(brightness.NewBrightnessService)
+	container.Provide(additional.NewAdditionalStateService)
 
 	return &shutdownContainer{
 		container: container,

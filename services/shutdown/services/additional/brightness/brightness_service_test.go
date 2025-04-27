@@ -32,7 +32,7 @@ func TestGetBrightness(t *testing.T) {
 
 			config := flags.BrightnessConfig{Device: file, Min: test.min, Max: test.max}
 
-			result := New(config).GetBrightness()
+			result := NewBrightnessService(config).GetBrightness()
 
 			assert.Equal(t, result, test.expected)
 		})
@@ -60,7 +60,7 @@ func TestSetBrightness(t *testing.T) {
 
 			config := flags.BrightnessConfig{Device: file, Min: test.min, Max: test.max}
 
-			New(config).SetBrightness(test.brightness)
+			NewBrightnessService(config).SetBrightness(test.brightness)
 			result, _ := os.ReadFile(file)
 
 			assert.Equal(t, string(result), test.expected)

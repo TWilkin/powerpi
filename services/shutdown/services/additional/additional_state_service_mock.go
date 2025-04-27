@@ -1,4 +1,4 @@
-package additional_test
+package additional
 
 import (
 	"github.com/stretchr/testify/mock"

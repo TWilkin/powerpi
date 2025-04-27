@@ -4,13 +4,13 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/mock"
+
 	"powerpi/common/models"
 	"powerpi/common/services/mqtt"
 	"powerpi/common/utils"
-	"powerpi/shutdown/services/additional_test"
+	"powerpi/shutdown/services/additional"
 	"powerpi/shutdown/services/flags"
-
-	"github.com/stretchr/testify/mock"
 )
 
 func TestUpdateState(t *testing.T) {
@@ -54,7 +54,7 @@ func TestUpdateState(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			additionalStateService := &additional_test.MockAdditionalStateService{}
+			additionalStateService := &additional.MockAdditionalStateService{}
 			mqttService := &mqtt.MockMqttService{}
 			config := flags.Config{Mock: true}
 			startTime := time.Now()

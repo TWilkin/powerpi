@@ -19,7 +19,7 @@ type brightnessService struct {
 	config flags.BrightnessConfig
 }
 
-func New(config flags.BrightnessConfig) brightnessService {
+func NewBrightnessService(config flags.BrightnessConfig) brightnessService {
 	return brightnessService{config}
 }
 
