@@ -56,10 +56,8 @@ func TestConnect(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			config := configService.ConfigService{
-				Mqtt: config.MqttConfig{
-					TopicBase: "powerpi",
-				},
+			config := configService.MockConfigService{
+				Mqtt: config.MqttConfig{TopicBase: "powerpi"},
 			}
 			factory := &MockMqttClientFactory{}
 

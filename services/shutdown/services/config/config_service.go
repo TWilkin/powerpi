@@ -31,7 +31,7 @@ type ConfigService struct {
 
 func NewConfigService() *ConfigService {
 	return &ConfigService{
-		ConfigService: *config.NewConfigService(),
+		ConfigService: config.NewConfigService(),
 	}
 }
 

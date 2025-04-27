@@ -49,20 +49,22 @@ func TestParse(t *testing.T) {
 
 			service.Parse(test.args)
 
-			if service.Mqtt.Host != test.expected.Host {
-				t.Errorf("Expected host to be '%s', got '%s'", test.expected.Host, service.Mqtt.Host)
+			mqttConfig := service.MqttConfig()
+
+			if mqttConfig.Host != test.expected.Host {
+				t.Errorf("Expected host to be '%s', got '%s'", test.expected.Host, mqttConfig.Host)
 			}
-			if service.Mqtt.Port != test.expected.Port {
-				t.Errorf("Expected port to be %d, got %d", test.expected.Port, service.Mqtt.Port)
+			if mqttConfig.Port != test.expected.Port {
+				t.Errorf("Expected port to be %d, got %d", test.expected.Port, mqttConfig.Port)
 			}
-			if service.Mqtt.User != test.expected.User {
-				t.Errorf("Expected user to be '%s', got '%s'", test.expected.User, service.Mqtt.User)
+			if mqttConfig.User != test.expected.User {
+				t.Errorf("Expected user to be '%s', got '%s'", test.expected.User, mqttConfig.User)
 			}
-			if service.Mqtt.PasswordFile != test.expected.PasswordFile {
-				t.Errorf("Expected password file to be '%s', got '%s'", test.expected.PasswordFile, service.Mqtt.PasswordFile)
+			if mqttConfig.PasswordFile != test.expected.PasswordFile {
+				t.Errorf("Expected password file to be '%s', got '%s'", test.expected.PasswordFile, mqttConfig.PasswordFile)
 			}
-			if service.Mqtt.TopicBase != test.expected.TopicBase {
-				t.Errorf("Expected topic base to be '%s', got '%s'", test.expected.TopicBase, service.Mqtt.TopicBase)
+			if mqttConfig.TopicBase != test.expected.TopicBase {
+				t.Errorf("Expected topic base to be '%s', got '%s'", test.expected.TopicBase, mqttConfig.TopicBase)
 			}
 		})
 	}

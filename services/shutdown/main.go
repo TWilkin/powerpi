@@ -39,11 +39,12 @@ func main() {
 	}
 
 	// read the password from the file (if set)
-	password := getPassword(config.Mqtt.PasswordFile)
+	mqttConfig := config.MqttConfig()
+	password := getPassword(mqttConfig.PasswordFile)
 
 	// connect to MQTT
 	mqttService := container.MqttService()
-	mqttService.Connect(config.Mqtt.Host, config.Mqtt.Port, &config.Mqtt.User, password, "shutdown")
+	mqttService.Connect(mqttConfig.Host, mqttConfig.Port, &mqttConfig.User, password, "shutdown")
 
 	// subscribe to the change event
 	channel := make(chan *mqtt.DeviceMessage, 1)
