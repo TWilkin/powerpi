@@ -9,8 +9,8 @@ import (
 	"powerpi/common/models"
 	"powerpi/common/services/mqtt"
 	"powerpi/common/utils"
+	"powerpi/shutdown/config"
 	"powerpi/shutdown/services/additional"
-	"powerpi/shutdown/services/config"
 )
 
 func TestUpdateState(t *testing.T) {
@@ -56,7 +56,7 @@ func TestUpdateState(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			additionalStateService := &additional.MockAdditionalStateService{}
 			mqttService := &mqtt.MockMqttService{}
-			config := config.ConfigService{Mock: true}
+			config := config.Config{Mock: true}
 			startTime := time.Now()
 			hostname := "test-hostname"
 

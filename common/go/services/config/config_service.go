@@ -7,7 +7,7 @@ import (
 )
 
 type ConfigService interface {
-	Parse(args []string, flags ...pflag.FlagSet)
+	ParseWithFlags(args []string, flags ...pflag.FlagSet)
 
 	MqttConfig() config.MqttConfig
 }
@@ -17,14 +17,12 @@ type configService struct {
 }
 
 func NewConfigService() ConfigService {
-	service := &configService{
+	return &configService{
 		mqtt: config.MqttConfig{},
 	}
-
-	return service
 }
 
-func (service *configService) Parse(args []string, flags ...pflag.FlagSet) {
+func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagSet) {
 	// MQTT
 	mqtt := pflag.NewFlagSet("mqtt", pflag.ExitOnError)
 	mqtt.StringVar(&service.mqtt.Host, "host", "localhost", "The hostname of the MQTT broker")

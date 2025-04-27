@@ -3,57 +3,50 @@ package config
 import (
 	"github.com/spf13/pflag"
 
-	"powerpi/common/services/config"
+	commonConfig "powerpi/common/config"
+	commonConfigService "powerpi/common/services/config"
+	"powerpi/shutdown/config"
 )
 
-type AdditionalStateConfig struct {
-	Brightness BrightnessConfig
-}
+type ConfigService interface {
+	commonConfigService.ConfigService
 
-type BrightnessConfig struct {
-	Device string
-	Min    float64
-	Max    float64
-}
-
-type configService interface {
 	Parse(args []string)
+
+	Config() config.Config
 }
 
-type ConfigService struct {
-	config.ConfigService
+type configService struct {
+	commonConfigService.ConfigService
 
-	AdditionalState AdditionalStateConfig
-
-	AllowQuickShutdown bool
-	Mock               bool
+	config config.Config
 }
 
-func NewConfigService() *ConfigService {
-	return &ConfigService{
-		ConfigService: config.NewConfigService(),
+func NewConfigService() ConfigService {
+	return &configService{
+		ConfigService: commonConfigService.NewConfigService(),
 	}
 }
 
-func (service *ConfigService) Parse(args []string) {
+func (service *configService) Parse(args []string) {
 	flagSet := pflag.NewFlagSet("shutdown", pflag.ExitOnError)
 
 	// additional state
 	// brightness
 	flagSet.StringVar(
-		&service.AdditionalState.Brightness.Device,
+		&service.config.AdditionalState.Brightness.Device,
 		"brightnessDevice",
 		"",
 		"The path to the device to use for controller brightness, e.g. \"/sys/class/backlight/10-0045/brightness\" for a Pi Touch Display 2",
 	)
 	flagSet.Float64Var(
-		&service.AdditionalState.Brightness.Min,
+		&service.config.AdditionalState.Brightness.Min,
 		"brightnessMin",
 		0.0,
 		"The minimum value supported for the brightness setting, e.g. 0 for a Pi Touch Display 2",
 	)
 	flagSet.Float64Var(
-		&service.AdditionalState.Brightness.Max,
+		&service.config.AdditionalState.Brightness.Max,
 		"brightnessMax",
 		100.0,
 		"The maximum value supported for the brightness setting, e.g. 31 for a Pi Touch Display 2",
@@ -61,12 +54,20 @@ func (service *ConfigService) Parse(args []string) {
 
 	// others
 	flagSet.BoolVar(
-		&service.AllowQuickShutdown,
+		&service.config.AllowQuickShutdown,
 		"allowQuickShutdown",
 		false,
 		"If true allow a message within 2 minutes of service starting to initiate a shutdown",
 	)
-	flagSet.BoolVar(&service.Mock, "mock", false, "Whether to actually shutdown or not")
+	flagSet.BoolVar(&service.config.Mock, "mock", false, "Whether to actually shutdown or not")
 
-	service.ConfigService.Parse(args, *flagSet)
+	service.ConfigService.ParseWithFlags(args, *flagSet)
+}
+
+func (service configService) Config() config.Config {
+	return service.config
+}
+
+func (service configService) MqttConfig() commonConfig.MqttConfig {
+	return service.ConfigService.MqttConfig()
 }

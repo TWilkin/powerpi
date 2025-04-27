@@ -10,9 +10,9 @@ import (
 
 	"powerpi/common/models"
 	"powerpi/common/services/mqtt"
+	"powerpi/shutdown/config"
 	"powerpi/shutdown/services"
 	"powerpi/shutdown/services/additional"
-	"powerpi/shutdown/services/config"
 )
 
 var Version = "development"
@@ -24,8 +24,9 @@ func main() {
 	container := services.NewShutdownContainer()
 
 	// use command line args
-	config := container.ConfigService()
-	config.Parse(os.Args)
+	configService := container.ConfigService()
+	configService.Parse(os.Args)
+	config := configService.Config()
 
 	// capture the start time, or clear it if we're not allowing quick shutdown
 	var startTime = time.Now()
@@ -39,7 +40,7 @@ func main() {
 	}
 
 	// read the password from the file (if set)
-	mqttConfig := config.MqttConfig()
+	mqttConfig := configService.MqttConfig()
 	password := getPassword(mqttConfig.PasswordFile)
 
 	// connect to MQTT
@@ -64,7 +65,7 @@ func main() {
 func updateState(
 	additionalStateService additional.AdditionalStateService,
 	mqttService mqtt.MqttService,
-	config config.ConfigService,
+	config config.Config,
 	hostname string,
 	state models.DeviceState,
 	additionalState models.AdditionalState,

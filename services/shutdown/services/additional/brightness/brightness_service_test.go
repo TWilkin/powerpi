@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"powerpi/shutdown/services/config"
+	"powerpi/shutdown/config"
 )
 
 func TestGetBrightness(t *testing.T) {

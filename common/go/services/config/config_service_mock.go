@@ -10,8 +10,8 @@ type MockConfigService struct {
 	Mqtt config.MqttConfig
 }
 
-func (config MockConfigService) Parse(args []string, flags ...pflag.FlagSet) {
-	// Mock implementation of Parse method
+func (config MockConfigService) ParseWithFlags(args []string, flags ...pflag.FlagSet) {
+	// Mock implementation of ParseWithFlags method
 }
 
 func (config MockConfigService) MqttConfig() config.MqttConfig {

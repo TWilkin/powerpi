@@ -7,8 +7,8 @@ import (
 
 	"powerpi/common/models"
 	"powerpi/common/utils"
+	"powerpi/shutdown/config"
 	"powerpi/shutdown/services/additional/brightness"
-	"powerpi/shutdown/services/config"
 )
 
 func TestGetAdditionalState(t *testing.T) {

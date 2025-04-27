@@ -6,7 +6,7 @@ import (
 	"powerpi/common/config"
 )
 
-func TestParse(t *testing.T) {
+func TestParseWithFlags(t *testing.T) {
 	var tests = []struct {
 		name     string
 		args     []string
@@ -48,7 +48,7 @@ func TestParse(t *testing.T) {
 
 			service := NewConfigService()
 
-			service.Parse(test.args)
+			service.ParseWithFlags(test.args)
 
 			mqttConfig := service.MqttConfig()
 

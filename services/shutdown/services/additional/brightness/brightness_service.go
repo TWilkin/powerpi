@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"powerpi/shutdown/services/config"
+	"powerpi/shutdown/config"
 )
 
 type BrightnessService interface {
