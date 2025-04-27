@@ -2,10 +2,6 @@ package mqtt
 
 import (
 	"fmt"
-	"powerpi/common/config"
-	"powerpi/common/models"
-	"powerpi/common/services/clock"
-	"powerpi/common/utils"
 	"strings"
 	"testing"
 	"time"
@@ -13,6 +9,12 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+
+	"powerpi/common/config"
+	"powerpi/common/models"
+	"powerpi/common/services/clock"
+	configService "powerpi/common/services/config"
+	"powerpi/common/utils"
 )
 
 type TestMessage struct {
@@ -54,7 +56,11 @@ func TestConnect(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			config := config.MqttConfig{TopicBase: "powerpi"}
+			config := configService.ConfigService{
+				Mqtt: config.MqttConfig{
+					TopicBase: "powerpi",
+				},
+			}
 			factory := &MockMqttClientFactory{}
 
 			client := &MockPahoMqttClient{}

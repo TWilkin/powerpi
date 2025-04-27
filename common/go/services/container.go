@@ -39,9 +39,9 @@ func (container commonContainer) Container() *dig.Container {
 }
 
 func (container commonContainer) ConfigService() config.ConfigService {
-	var configService *config.ConfigService
+	var configService config.ConfigService
 
-	err := container.container.Invoke(func(service *config.ConfigService) {
+	err := container.container.Invoke(func(service config.ConfigService) {
 		configService = service
 	})
 
@@ -49,13 +49,13 @@ func (container commonContainer) ConfigService() config.ConfigService {
 		panic(err)
 	}
 
-	return *configService
+	return configService
 }
 
 func (container commonContainer) MqttService() mqtt.MqttService {
-	var mqttService *mqtt.MqttService
+	var mqttService mqtt.MqttService
 
-	err := container.container.Invoke(func(service *mqtt.MqttService) {
+	err := container.container.Invoke(func(service mqtt.MqttService) {
 		mqttService = service
 	})
 
@@ -63,5 +63,5 @@ func (container commonContainer) MqttService() mqtt.MqttService {
 		panic(err)
 	}
 
-	return *mqttService
+	return mqttService
 }

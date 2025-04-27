@@ -9,9 +9,9 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
-	"powerpi/common/config"
 	"powerpi/common/models"
 	"powerpi/common/services/clock"
+	"powerpi/common/services/config"
 )
 
 type MqttService interface {
@@ -41,8 +41,8 @@ type mqttService struct {
 	commandChannel chan os.Signal
 }
 
-func NewMqttService(config config.MqttConfig, factory MqttClientFactory, clock clock.ClockService) *mqttService {
-	service := &mqttService{factory, clock, nil, config.TopicBase, make(chan os.Signal, 1)}
+func NewMqttService(config config.ConfigService, factory MqttClientFactory, clock clock.ClockService) MqttService {
+	service := &mqttService{factory, clock, nil, config.Mqtt.TopicBase, make(chan os.Signal, 1)}
 
 	signal.Notify(service.commandChannel, os.Interrupt, syscall.SIGTERM)
 
