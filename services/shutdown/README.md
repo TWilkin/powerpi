@@ -6,7 +6,7 @@ The service also supports limited additional state as follows.
 
 - Writing a brightness value to a file to adjust the brightness of an LED/Display (e.g. [Raspberry Pi Touch Display 2](https://www.raspberrypi.com/products/touch-display-2/))
 
-The service is built using Go.
+The service is built using Go, it is dependant on a local common library [_common_](../../common/go/README.md).
 
 ## Building
 
