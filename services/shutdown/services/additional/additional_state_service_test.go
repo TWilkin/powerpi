@@ -9,6 +9,7 @@ import (
 	"powerpi/common/utils"
 	"powerpi/shutdown/config"
 	"powerpi/shutdown/services/additional/brightness"
+	configService "powerpi/shutdown/services/config"
 )
 
 func TestGetAdditionalState(t *testing.T) {
@@ -27,7 +28,13 @@ func TestGetAdditionalState(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			subject := NewAdditionalStateService(test.config, &brightness.MockBrightnessService{Brightness: 50})
+			configService := configService.MockConfigService{
+				TestConfig: config.Config{
+					AdditionalState: test.config,
+				},
+			}
+
+			subject := NewAdditionalStateService(configService, &brightness.MockBrightnessService{Brightness: 50})
 
 			result := subject.GetAdditionalState()
 
@@ -51,8 +58,14 @@ func TestSetAdditionalState(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
+			configService := configService.MockConfigService{
+				TestConfig: config.Config{
+					AdditionalState: test.config,
+				},
+			}
+
 			mockBrightness := brightness.MockBrightnessService{Brightness: 0}
-			subject := NewAdditionalStateService(test.config, &mockBrightness)
+			subject := NewAdditionalStateService(configService, &mockBrightness)
 
 			subject.SetAdditionalState(models.AdditionalState{Brightness: utils.ToPtr(50)})
 

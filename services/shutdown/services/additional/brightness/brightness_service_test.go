@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"powerpi/shutdown/config"
+	configService "powerpi/shutdown/services/config"
 )
 
 func TestGetBrightness(t *testing.T) {
@@ -30,9 +31,19 @@ func TestGetBrightness(t *testing.T) {
 
 			os.WriteFile(file, []byte(test.brightness), 0777)
 
-			config := config.BrightnessConfig{Device: file, Min: test.min, Max: test.max}
+			configService := configService.MockConfigService{
+				TestConfig: config.Config{
+					AdditionalState: config.AdditionalStateConfig{
+						Brightness: config.BrightnessConfig{
+							Device: file,
+							Min:    test.min,
+							Max:    test.max,
+						},
+					},
+				},
+			}
 
-			result := NewBrightnessService(config).GetBrightness()
+			result := NewBrightnessService(configService).GetBrightness()
 
 			assert.Equal(t, result, test.expected)
 		})
@@ -58,9 +69,19 @@ func TestSetBrightness(t *testing.T) {
 			dir := t.TempDir()
 			file := dir + "/brightness"
 
-			config := config.BrightnessConfig{Device: file, Min: test.min, Max: test.max}
+			configService := configService.MockConfigService{
+				TestConfig: config.Config{
+					AdditionalState: config.AdditionalStateConfig{
+						Brightness: config.BrightnessConfig{
+							Device: file,
+							Min:    test.min,
+							Max:    test.max,
+						},
+					},
+				},
+			}
 
-			NewBrightnessService(config).SetBrightness(test.brightness)
+			NewBrightnessService(configService).SetBrightness(test.brightness)
 			result, _ := os.ReadFile(file)
 
 			assert.Equal(t, string(result), test.expected)

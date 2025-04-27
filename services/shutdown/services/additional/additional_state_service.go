@@ -6,6 +6,7 @@ import (
 
 	"powerpi/shutdown/config"
 	"powerpi/shutdown/services/additional/brightness"
+	configService "powerpi/shutdown/services/config"
 )
 
 type AdditionalStateService interface {
@@ -22,10 +23,10 @@ type additionalStateService struct {
 }
 
 func NewAdditionalStateService(
-	config config.AdditionalStateConfig,
+	configService configService.ConfigService,
 	brightness brightness.BrightnessService,
-) additionalStateService {
-	return additionalStateService{config, brightness}
+) AdditionalStateService {
+	return additionalStateService{configService.Config().AdditionalState, brightness}
 }
 
 func (service additionalStateService) GetAdditionalState() models.AdditionalState {
