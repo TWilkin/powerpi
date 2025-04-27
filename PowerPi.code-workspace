@@ -212,6 +212,7 @@
             "Common Node Test",
             "Common Python",
             "Common Python Test",
+            "Common Go",
             "API",
             "Config Server",
             "Energy Monitor",
