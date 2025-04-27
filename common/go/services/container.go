@@ -10,9 +10,6 @@ import (
 
 type CommonContainer interface {
 	Container() *dig.Container
-
-	ConfigService() config.ConfigService
-	MqttService() mqtt.MqttService
 }
 
 type commonContainer struct {
@@ -38,30 +35,16 @@ func (container commonContainer) Container() *dig.Container {
 	return container.container
 }
 
-func (container commonContainer) ConfigService() config.ConfigService {
-	var configService config.ConfigService
+func GetService[TService any, TContainer CommonContainer](container TContainer) TService {
+	var service TService
 
-	err := container.container.Invoke(func(service config.ConfigService) {
-		configService = service
+	err := container.Container().Invoke(func(newService TService) {
+		service = newService
 	})
 
 	if err != nil {
 		panic(err)
 	}
 
-	return configService
-}
-
-func (container commonContainer) MqttService() mqtt.MqttService {
-	var mqttService mqtt.MqttService
-
-	err := container.container.Invoke(func(service mqtt.MqttService) {
-		mqttService = service
-	})
-
-	if err != nil {
-		panic(err)
-	}
-
-	return mqttService
+	return service
 }

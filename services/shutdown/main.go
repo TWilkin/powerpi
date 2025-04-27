@@ -13,6 +13,7 @@ import (
 	"powerpi/shutdown/config"
 	"powerpi/shutdown/services"
 	"powerpi/shutdown/services/additional"
+	configService "powerpi/shutdown/services/config"
 )
 
 var Version = "development"
@@ -24,7 +25,7 @@ func main() {
 	container := services.NewShutdownContainer()
 
 	// use command line args
-	configService := container.ShutdownConfigService()
+	configService := services.GetService[configService.ConfigService](container)
 	configService.Parse(os.Args)
 	config := configService.Config()
 
@@ -44,7 +45,7 @@ func main() {
 	password := getPassword(mqttConfig.PasswordFile)
 
 	// connect to MQTT
-	mqttService := container.MqttService()
+	mqttService := services.GetService[mqtt.MqttService](container)
 	mqttService.Connect(mqttConfig.Host, mqttConfig.Port, &mqttConfig.User, password, "shutdown")
 
 	// subscribe to the change event
@@ -52,7 +53,7 @@ func main() {
 	mqttService.SubscribeDeviceChange(hostname, channel)
 
 	// get the additional state service
-	additionalStateService := container.AdditionalStateService()
+	additionalStateService := services.GetService[additional.AdditionalStateService](container)
 
 	// loop waiting for messages
 	for {
