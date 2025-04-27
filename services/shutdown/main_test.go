@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"powerpi/common/models"
+	"powerpi/common/services/clock"
 	"powerpi/common/services/mqtt"
 	"powerpi/common/utils"
 	"powerpi/shutdown/config"
@@ -18,6 +19,7 @@ func TestUpdateState(t *testing.T) {
 		name                    string
 		state                   models.DeviceState
 		additionalState         models.AdditionalState
+		startTimeOffset         time.Duration
 		compare                 bool
 		expectedCompare         bool
 		expectedState           *models.DeviceState
@@ -27,6 +29,7 @@ func TestUpdateState(t *testing.T) {
 			"publishes state",
 			models.Off,
 			models.AdditionalState{Brightness: utils.ToPtr(50)},
+			-5 * time.Minute,
 			true,
 			false,
 			utils.ToPtr(models.Off),
@@ -36,6 +39,7 @@ func TestUpdateState(t *testing.T) {
 			"publishes additional state",
 			models.On,
 			models.AdditionalState{Brightness: utils.ToPtr(40)},
+			-5 * time.Minute,
 			false,
 			true,
 			utils.ToPtr(models.On),
@@ -45,10 +49,31 @@ func TestUpdateState(t *testing.T) {
 			"does not publish",
 			models.On,
 			models.AdditionalState{Brightness: utils.ToPtr(50)},
+			-5 * time.Minute,
 			true,
 			true,
 			nil,
 			nil,
+		},
+		{
+			"does not publish, quick start",
+			models.Off,
+			models.AdditionalState{Brightness: utils.ToPtr(50)},
+			-1 * time.Minute,
+			true,
+			true,
+			nil,
+			nil,
+		},
+		{
+			"publishes additional state, quick start",
+			models.Off,
+			models.AdditionalState{Brightness: utils.ToPtr(40)},
+			-1 * time.Minute,
+			false,
+			true,
+			utils.ToPtr(models.On),
+			&models.AdditionalState{Brightness: utils.ToPtr(40)},
 		},
 	}
 
@@ -56,8 +81,9 @@ func TestUpdateState(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			additionalStateService := &additional.MockAdditionalStateService{}
 			mqttService := &mqtt.MockMqttService{}
-			config := config.Config{Mock: true}
-			startTime := time.Now()
+			clockService := &clock.MockClockService{}
+			config := config.Config{Mock: true, AllowQuickShutdown: false}
+			startTime := clockService.Now().Add(test.startTimeOffset)
 			hostname := "test-hostname"
 
 			additionalStateService.On("GetAdditionalState").Return(
@@ -94,6 +120,7 @@ func TestUpdateState(t *testing.T) {
 			updateState(
 				additionalStateService,
 				mqttService,
+				clockService,
 				config,
 				hostname,
 				test.state,

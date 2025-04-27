@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"powerpi/common/models"
+	"powerpi/common/services/clock"
 	"powerpi/common/services/mqtt"
 	"powerpi/shutdown/config"
 	"powerpi/shutdown/services"
@@ -59,10 +60,11 @@ func main() {
 	mqttService.SubscribeDeviceChange(hostname, channel)
 
 	// loop waiting for messages
+	clockService := services.GetService[clock.ClockService](container)
 	for {
 		message := <-channel
 
-		updateState(additionalStateService, mqttService, config, hostname, message.State, message.AdditionalState, startTime)
+		updateState(additionalStateService, mqttService, clockService, config, hostname, message.State, message.AdditionalState, startTime)
 	}
 }
 
@@ -90,6 +92,7 @@ func publishState(
 func updateState(
 	additionalStateService additional.AdditionalStateService,
 	mqttService mqtt.MqttService,
+	clockService clock.ClockService,
 	config config.Config,
 	hostname string,
 	state models.DeviceState,
@@ -103,6 +106,12 @@ func updateState(
 	newState := models.On
 	if state == "off" {
 		newState = models.Off
+
+		// don't shutdown if the service has only just started
+		if !config.AllowQuickShutdown && clockService.Now().Unix()-startTime.Unix() <= 2*60 {
+			fmt.Println("Ignoring off command as service recently started")
+			newState = models.On
+		}
 	}
 
 	// publish the state message if necessary
@@ -111,13 +120,7 @@ func updateState(
 		mqttService.PublishDeviceState(hostname, newState, &currentAdditionalState)
 	}
 
-	if state == "off" {
-		// don't shutdown if the service has only just started
-		if (time.Now().Unix() - startTime.Unix()) <= 2*60 {
-			fmt.Println("Ignoring message as service recently started")
-			return
-		}
-
+	if newState == models.Off {
 		// wait to make sure the publish message is sent
 		time.Sleep(time.Second)
 
@@ -130,8 +133,6 @@ func updateState(
 				fmt.Println("Failed to shutdown:", err)
 			}
 		}
-	} else {
-		fmt.Println("Ignoring message as it was not an off command")
 	}
 }
 
