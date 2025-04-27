@@ -140,7 +140,7 @@ func TestPublish(t *testing.T) {
 				message.SetTimestamp(test.timestamp)
 			}
 
-			Publish(*subject, "device", "MyDevice", "status", &message)
+			publish(*subject, "device", "MyDevice", "status", &message)
 		})
 	}
 }
@@ -311,7 +311,7 @@ func TestSubscribe(t *testing.T) {
 
 			channel := make(chan *TestMessage, 1)
 
-			Subscribe(subject, "device", "MyDevice", "change", channel)
+			subscribe(subject, "device", "MyDevice", "change", channel)
 
 			timestamp := time.Date(2025, 2, 22, 0, 2, 0, 0, time.UTC)
 			if test.timestamp != nil {

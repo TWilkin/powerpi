@@ -51,7 +51,7 @@ func NewMqttService(config config.ConfigService, factory MqttClientFactory, cloc
 	return service
 }
 
-func (client mqttService) Connect(
+func (service *mqttService) Connect(
 	host string,
 	port int,
 	user *string,
@@ -88,18 +88,69 @@ func (client mqttService) Connect(
 		logUser = *user
 	}
 	fmt.Printf("Connecting to MQTT at %s as %s\n", address, logUser)
-	client.client = client.factory.BuildClient(options)
+	service.client = service.factory.BuildClient(options)
 
-	if token := client.client.Connect(); token.Wait() && token.Error() != nil {
+	token := service.client.Connect()
+
+	token.Wait()
+	if token.Error() != nil {
 		panic(token.Error())
 	}
+
+	fmt.Printf("Connected to MQTT\n")
 }
 
 func (service mqttService) Join() {
 	<-service.commandChannel
 }
 
-func Publish[TMessage mqttMessage](service mqttService, typ string, entity string, action string, message TMessage) {
+func (service mqttService) PublishDeviceState(device string, state models.DeviceState, additionalState *models.AdditionalState) {
+	if additionalState == nil {
+		additionalState = &models.AdditionalState{}
+	}
+
+	message := DeviceMessage{
+		State:           state,
+		AdditionalState: *additionalState,
+	}
+
+	publish(service, "device", device, "status", &message)
+}
+
+func (service mqttService) PublishCapability(device string, capability models.Capability) {
+	if capability.Brightness {
+
+		message := CapabilityMessage{
+			Capability: capability,
+		}
+
+		publish(service, "device", device, "capability", &message)
+	}
+}
+
+func (service mqttService) SubscribeDeviceChange(device string, channel chan<- *DeviceMessage) {
+	subscribe(service, "device", device, "change", channel)
+}
+
+func (service mqttService) process() {
+	for {
+		select {
+		case <-service.commandChannel:
+			fmt.Println("Received shutdown signal, disconnecting from MQTT")
+			service.client.Disconnect(1000)
+			fmt.Println("Disconnected from MQTT")
+
+			close(service.commandChannel)
+			return
+		}
+	}
+}
+
+func (service mqttService) topic(typ string, entity string, action string) string {
+	return fmt.Sprintf("%s/%s/%s/%s", service.topicBase, typ, entity, action)
+}
+
+func publish[TMessage mqttMessage](service mqttService, typ string, entity string, action string, message TMessage) {
 	topic := service.topic(typ, entity, action)
 
 	// if the message has no timestamp, set it to now
@@ -123,31 +174,7 @@ func Publish[TMessage mqttMessage](service mqttService, typ string, entity strin
 	}
 }
 
-func (service mqttService) PublishDeviceState(device string, state models.DeviceState, additionalState *models.AdditionalState) {
-	if additionalState == nil {
-		additionalState = &models.AdditionalState{}
-	}
-
-	message := DeviceMessage{
-		State:           state,
-		AdditionalState: *additionalState,
-	}
-
-	Publish(service, "device", device, "status", &message)
-}
-
-func (service mqttService) PublishCapability(device string, capability models.Capability) {
-	if capability.Brightness {
-
-		message := CapabilityMessage{
-			Capability: capability,
-		}
-
-		Publish(service, "device", device, "capability", &message)
-	}
-}
-
-func Subscribe[TMessage mqttMessage](service mqttService, typ string, entity string, action string, channel chan<- TMessage) {
+func subscribe[TMessage mqttMessage](service mqttService, typ string, entity string, action string, channel chan<- TMessage) {
 	topic := service.topic(typ, entity, action)
 
 	token := service.client.Subscribe(topic, 2, func(_ mqtt.Client, message mqtt.Message) {
@@ -176,26 +203,4 @@ func Subscribe[TMessage mqttMessage](service mqttService, typ string, entity str
 	if token.Error() != nil {
 		panic(token.Error())
 	}
-}
-
-func (service mqttService) SubscribeDeviceChange(device string, channel chan<- *DeviceMessage) {
-	Subscribe(service, "device", device, "change", channel)
-}
-
-func (service mqttService) process() {
-	for {
-		select {
-		case <-service.commandChannel:
-			fmt.Println("Received shutdown signal, disconnecting from MQTT")
-			service.client.Disconnect(1000)
-			fmt.Println("Disconnected from MQTT")
-
-			close(service.commandChannel)
-			return
-		}
-	}
-}
-
-func (service mqttService) topic(typ string, entity string, action string) string {
-	return fmt.Sprintf("%s/%s/%s/%s", service.topicBase, typ, entity, action)
 }
