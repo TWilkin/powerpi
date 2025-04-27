@@ -19,7 +19,7 @@ type commonContainer struct {
 	container *dig.Container
 }
 
-func NewCommonContainer() *commonContainer {
+func NewCommonContainer() CommonContainer {
 	container := dig.New()
 
 	container.Provide(clock.NewClockService)
@@ -31,7 +31,7 @@ func NewCommonContainer() *commonContainer {
 		return mqtt.NewMqttClientFactory()
 	})
 
-	return &commonContainer{container}
+	return commonContainer{container}
 }
 
 func (container commonContainer) Container() *dig.Container {

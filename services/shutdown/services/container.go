@@ -8,17 +8,19 @@ import (
 )
 
 type ShutdownContainer interface {
+	services.CommonContainer
+
 	AdditionalStateService() additional.AdditionalStateService
-	ConfigService() config.ConfigService
+	ShutdownConfigService() config.ConfigService
 }
 
 type shutdownContainer struct {
 	services.CommonContainer
 }
 
-func NewShutdownContainer() *shutdownContainer {
+func NewShutdownContainer() ShutdownContainer {
 	container := &shutdownContainer{
-		CommonContainer: *services.NewCommonContainer(),
+		CommonContainer: services.NewCommonContainer(),
 	}
 
 	container.Container().Provide(brightness.NewBrightnessService)
@@ -42,10 +44,10 @@ func (container shutdownContainer) AdditionalStateService() additional.Additiona
 	return *additionalStateService
 }
 
-func (container shutdownContainer) ConfigService() config.ConfigService {
-	var configService *config.ConfigService
+func (container shutdownContainer) ShutdownConfigService() config.ConfigService {
+	var configService config.ConfigService
 
-	err := container.Container().Invoke(func(service *config.ConfigService) {
+	err := container.Container().Invoke(func(service config.ConfigService) {
 		configService = service
 	})
 
@@ -53,5 +55,5 @@ func (container shutdownContainer) ConfigService() config.ConfigService {
 		panic(err)
 	}
 
-	return *configService
+	return configService
 }

@@ -24,7 +24,7 @@ func main() {
 	container := services.NewShutdownContainer()
 
 	// use command line args
-	configService := container.ConfigService()
+	configService := container.ShutdownConfigService()
 	configService.Parse(os.Args)
 	config := configService.Config()
 
