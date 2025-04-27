@@ -37,7 +37,9 @@ func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagS
 	combined := pflag.NewFlagSet(name, pflag.ExitOnError)
 	combined.AddFlagSet(mqtt)
 	for _, flag := range flags {
-		combined.AddFlagSet(&flag)
+		flagCopy := flag
+
+		combined.AddFlagSet(&flagCopy)
 	}
 
 	err := combined.Parse(params)
