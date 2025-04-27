@@ -40,6 +40,9 @@ func main() {
 		panic(err)
 	}
 
+	// get the additional state service
+	additionalStateService := services.GetService[additional.AdditionalStateService](container)
+
 	// read the password from the file (if set)
 	mqttConfig := configService.MqttConfig()
 	password := getPassword(mqttConfig.PasswordFile)
@@ -48,18 +51,39 @@ func main() {
 	mqttService := services.GetService[mqtt.MqttService](container)
 	mqttService.Connect(mqttConfig.Host, mqttConfig.Port, &mqttConfig.User, password, "shutdown")
 
+	// publish the initial state
+	publishState(mqttService, additionalStateService, hostname, config)
+
 	// subscribe to the change event
 	channel := make(chan *mqtt.DeviceMessage, 1)
 	mqttService.SubscribeDeviceChange(hostname, channel)
-
-	// get the additional state service
-	additionalStateService := services.GetService[additional.AdditionalStateService](container)
 
 	// loop waiting for messages
 	for {
 		message := <-channel
 
 		updateState(additionalStateService, mqttService, config, hostname, message.State, message.AdditionalState, startTime)
+	}
+}
+
+func publishState(
+	mqttService mqtt.MqttService,
+	additionalStateService additional.AdditionalStateService,
+	hostname string,
+	config config.Config,
+) {
+	// publish the initial state
+	currentAdditionalState := additionalStateService.GetAdditionalState()
+
+	mqttService.PublishDeviceState(hostname, models.On, &currentAdditionalState)
+
+	// publish the capabilities
+	if len(config.AdditionalState.Brightness.Device) > 0 {
+		capabilities := models.Capability{
+			Brightness: true,
+		}
+
+		mqttService.PublishCapability(hostname, capabilities)
 	}
 }
 
