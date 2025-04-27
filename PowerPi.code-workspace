@@ -26,6 +26,10 @@
             "name": "Common Python Test",
             "path": "common/pytest",
         },
+        {
+            "name": "Common Go",
+            "path": "common/go",
+        },
 
         // Services
         {
@@ -208,6 +212,7 @@
             "Common Node Test",
             "Common Python",
             "Common Python Test",
+            "Common Go",
             "API",
             "Config Server",
             "Energy Monitor",
