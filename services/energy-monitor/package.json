@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/energy-monitor",
-    "version": "1.0.8",
+    "version": "2.0.0",
     "description": "PowerPi n3rgy energy usage retrieval service",
     "private": true,
     "type": "module",
