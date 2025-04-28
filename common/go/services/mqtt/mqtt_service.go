@@ -5,23 +5,19 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
 	"powerpi/common/models"
 	"powerpi/common/services/clock"
-	"powerpi/common/services/config"
+	configService "powerpi/common/services/config"
+	"powerpi/common/utils"
 )
 
 type MqttService interface {
-	Connect(
-		host string,
-		port int,
-		user *string,
-		password *string,
-		clientIdPrefix string,
-	)
+	Connect(clientIdPrefix string)
 	Join()
 
 	PublishDeviceState(device string, state models.DeviceState, additionalState *models.AdditionalState)
@@ -33,16 +29,16 @@ type MqttService interface {
 type mqttService struct {
 	// services
 	factory MqttClientFactory
+	config  configService.ConfigService
 	clock   clock.ClockService
 
 	// state
 	client         mqtt.Client
-	topicBase      string
 	commandChannel chan os.Signal
 }
 
-func NewMqttService(config config.ConfigService, factory MqttClientFactory, clock clock.ClockService) MqttService {
-	service := &mqttService{factory, clock, nil, config.MqttConfig().TopicBase, make(chan os.Signal, 1)}
+func NewMqttService(config configService.ConfigService, factory MqttClientFactory, clock clock.ClockService) MqttService {
+	service := &mqttService{factory, config, clock, nil, make(chan os.Signal, 1)}
 
 	signal.Notify(service.commandChannel, os.Interrupt, syscall.SIGTERM)
 
@@ -51,24 +47,20 @@ func NewMqttService(config config.ConfigService, factory MqttClientFactory, cloc
 	return service
 }
 
-func (service *mqttService) Connect(
-	host string,
-	port int,
-	user *string,
-	password *string,
-	clientIdPrefix string,
-) {
+func (service *mqttService) Connect(clientIdPrefix string) {
 	hostname, err := os.Hostname()
 	if err != nil {
 		panic(err)
 	}
 
+	config := service.config.MqttConfig()
+
 	protocol := "tcp"
-	if port == 8883 {
+	if config.Port == 8883 {
 		protocol = "tcps"
 	}
 
-	address := fmt.Sprintf("%s://%s:%d", protocol, host, port)
+	address := fmt.Sprintf("%s://%s:%d", protocol, config.Host, config.Port)
 	clientId := fmt.Sprintf("%s-%s", clientIdPrefix, hostname)
 
 	options := mqtt.NewClientOptions()
@@ -76,7 +68,9 @@ func (service *mqttService) Connect(
 	options.SetClientID(clientId)
 	options.SetCleanSession(true)
 
-	if user != nil && password != nil {
+	user := utils.ToPtr(strings.Trim(config.User, " "))
+	password := service.config.GetMqttPassword()
+	if user != nil && *user != "" && password != nil {
 		options.SetUsername(*user)
 		options.SetPassword(*password)
 	} else {
@@ -147,7 +141,7 @@ func (service mqttService) process() {
 }
 
 func (service mqttService) topic(typ string, entity string, action string) string {
-	return fmt.Sprintf("%s/%s/%s/%s", service.topicBase, typ, entity, action)
+	return fmt.Sprintf("%s/%s/%s/%s", service.config.MqttConfig().TopicBase, typ, entity, action)
 }
 
 func publish[TMessage mqttMessage](service mqttService, typ string, entity string, action string, message TMessage) {

@@ -10,14 +10,8 @@ type MockMqttService struct {
 	mock.Mock
 }
 
-func (service *MockMqttService) Connect(
-	host string,
-	port int,
-	user *string,
-	password *string,
-	clientIdPrefix string,
-) {
-	service.Called(host, port, user, password)
+func (service *MockMqttService) Connect(clientIdPrefix string) {
+	service.Called(clientIdPrefix)
 }
 
 func (service *MockMqttService) Join() {
@@ -32,8 +26,7 @@ func (service *MockMqttService) PublishDeviceState(
 	service.Called(device, state, additionalState)
 }
 
-func (service *MockMqttService) PublishCapability(device string, capability models.Capability,
-) {
+func (service *MockMqttService) PublishCapability(device string, capability models.Capability) {
 	service.Called(device, capability)
 }
 

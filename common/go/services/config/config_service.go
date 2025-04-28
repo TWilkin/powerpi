@@ -1,6 +1,10 @@
 package config
 
 import (
+	"log"
+	"os"
+	"strings"
+
 	"github.com/spf13/pflag"
 
 	"powerpi/common/config"
@@ -10,6 +14,7 @@ type ConfigService interface {
 	ParseWithFlags(args []string, flags ...pflag.FlagSet)
 
 	MqttConfig() config.MqttConfig
+	GetMqttPassword() *string
 }
 
 type configService struct {
@@ -50,4 +55,35 @@ func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagS
 
 func (service *configService) MqttConfig() config.MqttConfig {
 	return service.mqtt
+}
+
+func (service *configService) GetMqttPassword() *string {
+	passwordFile := service.mqtt.PasswordFile
+
+	var password *string
+	password = nil
+
+	if passwordFile != "undefined" {
+		// check the password file permissions
+		info, err := os.Stat(passwordFile)
+		if err != nil {
+			panic(err)
+		}
+
+		permissions := info.Mode().Perm()
+		if permissions != 0o600 {
+			log.Fatalf("Incorrect permissions (0%o), must be 0600 on '%s'", permissions, passwordFile)
+		}
+
+		data, err := os.ReadFile(passwordFile)
+		if err != nil {
+			panic(err)
+		}
+
+		str := string(data)
+		str = strings.TrimSpace(str)
+		password = &str
+	}
+
+	return password
 }

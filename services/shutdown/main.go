@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
-	"strings"
 	"time"
 
 	"powerpi/common/models"
@@ -44,13 +42,9 @@ func main() {
 	// get the additional state service
 	additionalStateService := services.GetService[additional.AdditionalStateService](container)
 
-	// read the password from the file (if set)
-	mqttConfig := configService.MqttConfig()
-	password := getPassword(mqttConfig.PasswordFile)
-
 	// connect to MQTT
 	mqttService := services.GetService[mqtt.MqttService](container)
-	mqttService.Connect(mqttConfig.Host, mqttConfig.Port, &mqttConfig.User, password, "shutdown")
+	mqttService.Connect("shutdown")
 
 	// publish the initial state
 	publishState(mqttService, additionalStateService, hostname, config)
@@ -134,33 +128,4 @@ func updateState(
 			}
 		}
 	}
-}
-
-func getPassword(passwordFile string) *string {
-	var password *string
-	password = nil
-
-	if passwordFile != "undefined" {
-		// check the password file permissions
-		info, err := os.Stat(passwordFile)
-		if err != nil {
-			panic(err)
-		}
-
-		permissions := info.Mode().Perm()
-		if permissions != 0o600 {
-			log.Fatalf("Incorrect permissions (0%o), must be 0600 on '%s'", permissions, passwordFile)
-		}
-
-		data, err := os.ReadFile(passwordFile)
-		if err != nil {
-			panic(err)
-		}
-
-		str := string(data)
-		str = strings.TrimSpace(str)
-		password = &str
-	}
-
-	return password
 }

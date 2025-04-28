@@ -56,9 +56,6 @@ func TestConnect(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			config := configService.MockConfigService{
-				Mqtt: config.MqttConfig{TopicBase: "powerpi"},
-			}
 			factory := &MockMqttClientFactory{}
 
 			client := &MockPahoMqttClient{}
@@ -74,18 +71,26 @@ func TestConnect(t *testing.T) {
 			token.On("Error").Return(nil)
 			client.On("Connect").Return(token)
 
-			var user *string = &test.username
-			if test.username == "" {
-				user = nil
-			}
-
 			var password *string = &test.password
 			if test.password == "" {
 				password = nil
 			}
 
-			subject := NewMqttService(config, factory, clock.MockClockService{})
-			subject.Connect("mqtt-host", test.port, user, password, "test-client")
+			config := config.MqttConfig{
+				Host:         "mqtt-host",
+				Port:         test.port,
+				User:         test.username,
+				PasswordFile: "some file",
+				TopicBase:    "powerpi",
+			}
+
+			configService := &configService.MockConfigService{}
+
+			configService.On("MqttConfig").Return(config)
+			configService.On("GetMqttPassword").Return(password)
+
+			subject := NewMqttService(configService, factory, clock.MockClockService{})
+			subject.Connect("test-client")
 		})
 	}
 }
@@ -112,10 +117,15 @@ func TestPublish(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			client := &MockPahoMqttClient{}
 
+			configService := &configService.MockConfigService{}
+
+			config := config.MqttConfig{TopicBase: "powerpi"}
+			configService.On("MqttConfig").Return(config)
+
 			subject := &mqttService{
-				client:    client,
-				clock:     clock.MockClockService{},
-				topicBase: "powerpi",
+				client: client,
+				config: configService,
+				clock:  clock.MockClockService{},
 			}
 
 			token := &MockMqttClientToken{}
@@ -161,10 +171,15 @@ func TestPublishDeviceState(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			client := &MockPahoMqttClient{}
 
+			configService := &configService.MockConfigService{}
+
+			config := config.MqttConfig{TopicBase: "powerpi"}
+			configService.On("MqttConfig").Return(config)
+
 			subject := &mqttService{
-				client:    client,
-				clock:     clock.MockClockService{},
-				topicBase: "powerpi",
+				client: client,
+				config: configService,
+				clock:  clock.MockClockService{},
 			}
 
 			token := &MockMqttClientToken{}
@@ -214,10 +229,15 @@ func TestPublishCapability(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			client := &MockPahoMqttClient{}
 
+			configService := &configService.MockConfigService{}
+
+			config := config.MqttConfig{TopicBase: "powerpi"}
+			configService.On("MqttConfig").Return(config)
+
 			subject := &mqttService{
-				client:    client,
-				clock:     clock.MockClockService{},
-				topicBase: "powerpi",
+				client: client,
+				config: configService,
+				clock:  clock.MockClockService{},
 			}
 
 			token := &MockMqttClientToken{}
@@ -287,10 +307,15 @@ func TestSubscribe(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			client := &MockPahoMqttClient{}
 
+			configService := &configService.MockConfigService{}
+
+			config := config.MqttConfig{TopicBase: "powerpi"}
+			configService.On("MqttConfig").Return(config)
+
 			subject := mqttService{
-				client:    client,
-				clock:     clock.MockClockService{},
-				topicBase: "powerpi",
+				client: client,
+				config: configService,
+				clock:  clock.MockClockService{},
 			}
 
 			token := &MockMqttClientToken{}

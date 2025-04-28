@@ -2,18 +2,26 @@ package config
 
 import (
 	"github.com/spf13/pflag"
+	"github.com/stretchr/testify/mock"
 
 	"powerpi/common/config"
 )
 
 type MockConfigService struct {
-	Mqtt config.MqttConfig
+	mock.Mock
 }
 
-func (config MockConfigService) ParseWithFlags(args []string, flags ...pflag.FlagSet) {
-	// Mock implementation of ParseWithFlags method
+func (service *MockConfigService) ParseWithFlags(args []string, flags ...pflag.FlagSet) {
+	service.Called(args, flags)
 }
 
-func (config MockConfigService) MqttConfig() config.MqttConfig {
-	return config.Mqtt
+func (service *MockConfigService) MqttConfig() config.MqttConfig {
+	args := service.Called()
+
+	return args.Get(0).(config.MqttConfig)
+}
+
+func (service *MockConfigService) GetMqttPassword() *string {
+	args := service.Called()
+	return args.Get(0).(*string)
 }
