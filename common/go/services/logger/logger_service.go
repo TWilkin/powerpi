@@ -1,27 +1,30 @@
 package logger
 
 import (
-	"log"
-	"os"
+	"log/slog"
 )
 
 type LoggerService interface {
 	Start(service string, version string)
-	Info(message string)
+
+	Info(message string, args ...any)
+	Warn(message string, args ...any)
 }
 
 type loggerService struct {
-	logger *log.Logger
+	logger *slog.Logger
 }
 
 func NewLoggerService() LoggerService {
-	logger := log.New(os.Stdout, "PowerPi ", log.LstdFlags)
+	logger := slog.New(&textHandler{})
+
+	slog.SetDefault(logger)
 
 	return &loggerService{logger: logger}
 }
 
 func (log *loggerService) Start(service string, version string) {
-	log.logger.Print(`
+	log.logger.Info(`
 __________                         __________.__ 
 \______   \______  _  __ __________\______   \__|
  |     ___/  _ \ \/ \/ // __ \_  __ \     ___/  |
@@ -29,10 +32,14 @@ __________                         __________.__
  |____|   \____/ \/\_/  \___  >__|  |____|   |__|
                             \/
 	`)
-	log.logger.Printf("%s %s\n", service, version)
+	log.logger.Info("Started", "service", service, "version", version)
 
 }
 
-func (log *loggerService) Info(message string) {
-	log.logger.Println(message)
+func (log *loggerService) Info(message string, args ...any) {
+	log.logger.Info(message, args...)
+}
+
+func (log *loggerService) Warn(message string, args ...any) {
+	log.logger.Warn(message, args...)
 }

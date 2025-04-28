@@ -14,6 +14,7 @@ import (
 	"powerpi/common/models"
 	"powerpi/common/services/clock"
 	configService "powerpi/common/services/config"
+	"powerpi/common/services/logger"
 	"powerpi/common/utils"
 )
 
@@ -89,7 +90,7 @@ func TestConnect(t *testing.T) {
 			configService.On("MqttConfig").Return(config)
 			configService.On("GetMqttPassword").Return(password)
 
-			subject := NewMqttService(configService, factory, clock.MockClockService{})
+			subject := NewMqttService(configService, factory, clock.MockClockService{}, logger.NewLoggerService())
 			subject.Connect("test-client")
 		})
 	}
@@ -126,6 +127,7 @@ func TestPublish(t *testing.T) {
 				client: client,
 				config: configService,
 				clock:  clock.MockClockService{},
+				logger: logger.SetupMockLoggerService(),
 			}
 
 			token := &MockMqttClientToken{}
@@ -180,6 +182,7 @@ func TestPublishDeviceState(t *testing.T) {
 				client: client,
 				config: configService,
 				clock:  clock.MockClockService{},
+				logger: logger.SetupMockLoggerService(),
 			}
 
 			token := &MockMqttClientToken{}
@@ -238,6 +241,7 @@ func TestPublishCapability(t *testing.T) {
 				client: client,
 				config: configService,
 				clock:  clock.MockClockService{},
+				logger: logger.SetupMockLoggerService(),
 			}
 
 			token := &MockMqttClientToken{}
@@ -316,6 +320,7 @@ func TestSubscribe(t *testing.T) {
 				client: client,
 				config: configService,
 				clock:  clock.MockClockService{},
+				logger: logger.SetupMockLoggerService(),
 			}
 
 			token := &MockMqttClientToken{}

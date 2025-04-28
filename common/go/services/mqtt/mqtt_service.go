@@ -13,6 +13,7 @@ import (
 	"powerpi/common/models"
 	"powerpi/common/services/clock"
 	configService "powerpi/common/services/config"
+	"powerpi/common/services/logger"
 	"powerpi/common/utils"
 )
 
@@ -31,14 +32,15 @@ type mqttService struct {
 	factory MqttClientFactory
 	config  configService.ConfigService
 	clock   clock.ClockService
+	logger  logger.LoggerService
 
 	// state
 	client         mqtt.Client
 	commandChannel chan os.Signal
 }
 
-func NewMqttService(config configService.ConfigService, factory MqttClientFactory, clock clock.ClockService) MqttService {
-	service := &mqttService{factory, config, clock, nil, make(chan os.Signal, 1)}
+func NewMqttService(config configService.ConfigService, factory MqttClientFactory, clock clock.ClockService, logger logger.LoggerService) MqttService {
+	service := &mqttService{factory, config, clock, logger, nil, make(chan os.Signal, 1)}
 
 	signal.Notify(service.commandChannel, os.Interrupt, syscall.SIGTERM)
 
@@ -81,7 +83,7 @@ func (service *mqttService) Connect(clientIdPrefix string) {
 	if user != nil {
 		logUser = *user
 	}
-	fmt.Printf("Connecting to MQTT at %s as %s\n", address, logUser)
+	service.logger.Info("Connecting to MQTT", "host", address, "user", logUser)
 	service.client = service.factory.BuildClient(options)
 
 	token := service.client.Connect()
@@ -91,7 +93,7 @@ func (service *mqttService) Connect(clientIdPrefix string) {
 		panic(token.Error())
 	}
 
-	fmt.Printf("Connected to MQTT\n")
+	service.logger.Info("Connected to MQTT")
 }
 
 func (service mqttService) Join() {
@@ -130,9 +132,9 @@ func (service mqttService) process() {
 	for {
 		select {
 		case <-service.commandChannel:
-			fmt.Println("Received shutdown signal, disconnecting from MQTT")
+			service.logger.Info("Received shutdown signal, disconnecting from MQTT")
 			service.client.Disconnect(1000)
-			fmt.Println("Disconnected from MQTT")
+			service.logger.Info("Disconnected from MQTT")
 
 			close(service.commandChannel)
 			return
@@ -154,11 +156,11 @@ func publish[TMessage mqttMessage](service mqttService, typ string, entity strin
 
 	payload, err := json.Marshal(message)
 	if err != nil {
-		fmt.Printf("Could not encode JSON message: %s\n", err)
+		service.logger.Warn("Could not encode JSON message", "error", err)
 		return
 	}
 
-	fmt.Printf("Publishing %s: %s\n", topic, payload)
+	service.logger.Info("Publishing", "topic", topic, "payload", payload)
 	token := service.client.Publish(topic, 2, true, payload)
 
 	token.Wait()
@@ -170,23 +172,23 @@ func publish[TMessage mqttMessage](service mqttService, typ string, entity strin
 
 func subscribe[TMessage mqttMessage](service mqttService, typ string, entity string, action string, channel chan<- TMessage) {
 	topic := service.topic(typ, entity, action)
-	fmt.Printf("Subscribing to %s\n", topic)
+	service.logger.Info("Subscribing to", "topic", topic)
 
 	token := service.client.Subscribe(topic, 2, func(_ mqtt.Client, message mqtt.Message) {
 		data := []byte(message.Payload())
-		fmt.Printf("Received %s: %s\n", message.Topic(), data)
+		service.logger.Info("Received", "topic", message.Topic(), "payload", data)
 
 		payload := *new(TMessage)
 
 		if err := json.Unmarshal(data, &payload); err != nil {
-			fmt.Printf("Could not decode JSON message: %s\n", err)
+			service.logger.Warn("Could not decode JSON message", "error", err)
 			return
 		}
 
 		// check if the message is old
 		twoMinsAgo := service.clock.Now().Unix() - 2*60
 		if twoMinsAgo >= (payload.GetTimestamp() / 1000) {
-			fmt.Println("Ignoring old message")
+			service.logger.Info("Ignoring old message")
 			return
 		}
 
