@@ -1,15 +1,28 @@
 package main
 
 import (
-	"powerpi/common/services"
+	"os"
+
+	configService "powerpi/common/services/config"
 	"powerpi/common/services/logger"
+	"powerpi/common/services/mqtt"
+	"powerpi/energy-monitor/services"
 )
 
 var Version = "development"
 
 func main() {
-	container := services.NewCommonContainer()
+	// setup the services
+	container := services.NewEnergyMonitorContainer()
 	logger := services.GetService[logger.LoggerService](container)
 
 	logger.Start("Energy Monitor", Version)
+
+	// use command line args
+	configService := services.GetService[configService.ConfigService](container)
+	configService.ParseWithFlags(os.Args)
+
+	// connect to MQTT
+	mqttService := services.GetService[mqtt.MqttService](container)
+	mqttService.Connect("energy-monitor")
 }
