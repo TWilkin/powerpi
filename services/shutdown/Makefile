@@ -16,7 +16,7 @@ all: compile
 
 $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH): $(LIBRARY_SOURCES) $(SOURCES)
 	mkdir -p $(TARGET_DIR)
-	env GOOS=$(TARGET_OS) GOARCH=$(TARGET_ARCH) go build -o $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH) -ldflags="-X 'main.Version=v$(VERSION)'"
+	env GOOS=$(TARGET_OS) GOARCH=$(TARGET_ARCH) go build -ldflags="-X 'main.Version=v$(VERSION)'" -o $@
 
 compile: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
 
