@@ -10,10 +10,18 @@ import (
 	"time"
 )
 
-type textHandler struct{}
+type textHandler struct {
+	level slog.Leveler
+}
+
+func NewTextHandler(level slog.Leveler) *textHandler {
+	return &textHandler{
+		level: level,
+	}
+}
 
 func (handler *textHandler) Enabled(context context.Context, level slog.Level) bool {
-	return true
+	return level >= handler.level.Level()
 }
 
 func (handler *textHandler) Handle(context context.Context, record slog.Record) error {

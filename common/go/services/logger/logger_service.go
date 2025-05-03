@@ -7,6 +7,7 @@ import (
 type LoggerService interface {
 	Start(service string, version string)
 
+	Debug(message string, args ...any)
 	Info(message string, args ...any)
 	Warn(message string, args ...any)
 	Error(message string, args ...any)
@@ -17,7 +18,7 @@ type loggerService struct {
 }
 
 func NewLoggerService() LoggerService {
-	logger := slog.New(&textHandler{})
+	logger := slog.New(&textHandler{level: slog.LevelInfo})
 
 	slog.SetDefault(logger)
 
@@ -35,6 +36,10 @@ __________                         __________.__
 	`)
 	log.logger.Info("Started", "service", service, "version", version)
 
+}
+
+func (log *loggerService) Debug(message string, args ...any) {
+	log.logger.Debug(message, args...)
 }
 
 func (log *loggerService) Info(message string, args ...any) {
