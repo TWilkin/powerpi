@@ -19,6 +19,13 @@ func (message *BaseMqttMessage) SetTimestamp(value int64) {
 	message.Timestamp = value
 }
 
+type ConfigMessage struct {
+	BaseMqttMessage
+
+	Payload  string `json:"payload"`
+	Checksum string `json:"checksum"`
+}
+
 type DeviceMessage struct {
 	BaseMqttMessage
 	models.AdditionalState

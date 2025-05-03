@@ -5,6 +5,7 @@ import (
 
 	"powerpi/common/services/clock"
 	"powerpi/common/services/config"
+	configRetriever "powerpi/common/services/config_retriever"
 	"powerpi/common/services/logger"
 	"powerpi/common/services/mqtt"
 )
@@ -23,6 +24,7 @@ func NewCommonContainer() CommonContainer {
 	container := dig.New()
 
 	container.Provide(clock.NewClockService)
+	container.Provide(configRetriever.NewConfigRetriever)
 	container.Provide(logger.NewLoggerService)
 
 	container.Provide(mqtt.NewMqttService)

@@ -30,6 +30,10 @@ func (service *MockMqttService) PublishCapability(device string, capability mode
 	service.Called(device, capability)
 }
 
+func (service *MockMqttService) SubscribeConfigChange(config models.ConfigType, channel chan<- *ConfigMessage) {
+	service.Called(config, channel)
+}
+
 func (service *MockMqttService) SubscribeDeviceChange(device string, channel chan<- *DeviceMessage) {
 	service.Called(device, channel)
 }

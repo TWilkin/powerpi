@@ -9,6 +9,7 @@ type LoggerService interface {
 
 	Info(message string, args ...any)
 	Warn(message string, args ...any)
+	Error(message string, args ...any)
 }
 
 type loggerService struct {
@@ -42,4 +43,8 @@ func (log *loggerService) Info(message string, args ...any) {
 
 func (log *loggerService) Warn(message string, args ...any) {
 	log.logger.Warn(message, args...)
+}
+
+func (log *loggerService) Error(message string, args ...any) {
+	log.logger.Error(message, args...)
 }

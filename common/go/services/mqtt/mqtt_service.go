@@ -24,6 +24,7 @@ type MqttService interface {
 	PublishDeviceState(device string, state models.DeviceState, additionalState *models.AdditionalState)
 	PublishCapability(device string, capability models.Capability)
 
+	SubscribeConfigChange(config models.ConfigType, channel chan<- *ConfigMessage)
 	SubscribeDeviceChange(device string, channel chan<- *DeviceMessage)
 }
 
@@ -122,6 +123,10 @@ func (service mqttService) PublishCapability(device string, capability models.Ca
 
 		publish(service, "device", device, "capability", &message)
 	}
+}
+
+func (service mqttService) SubscribeConfigChange(config models.ConfigType, channel chan<- *ConfigMessage) {
+	subscribe(service, "config", string(config), "change", channel)
 }
 
 func (service mqttService) SubscribeDeviceChange(device string, channel chan<- *DeviceMessage) {
