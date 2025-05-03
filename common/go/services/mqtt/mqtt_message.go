@@ -22,7 +22,7 @@ func (message *BaseMqttMessage) SetTimestamp(value int64) {
 type ConfigMessage struct {
 	BaseMqttMessage
 
-	Payload  string `json:"payload"`
+	Payload  any    `json:"payload"`
 	Checksum string `json:"checksum"`
 }
 

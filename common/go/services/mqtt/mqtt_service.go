@@ -126,11 +126,11 @@ func (service mqttService) PublishCapability(device string, capability models.Ca
 }
 
 func (service mqttService) SubscribeConfigChange(config models.ConfigType, channel chan<- *ConfigMessage) {
-	subscribe(service, "config", string(config), "change", channel)
+	subscribe(service, "config", string(config), "change", true, channel)
 }
 
 func (service mqttService) SubscribeDeviceChange(device string, channel chan<- *DeviceMessage) {
-	subscribe(service, "device", device, "change", channel)
+	subscribe(service, "device", device, "change", false, channel)
 }
 
 func (service mqttService) process() {
@@ -175,13 +175,13 @@ func publish[TMessage mqttMessage](service mqttService, typ string, entity strin
 	}
 }
 
-func subscribe[TMessage mqttMessage](service mqttService, typ string, entity string, action string, channel chan<- TMessage) {
+func subscribe[TMessage mqttMessage](service mqttService, typ string, entity string, action string, allowOld bool, channel chan<- TMessage) {
 	topic := service.topic(typ, entity, action)
 	service.logger.Info("Subscribing to", "topic", topic)
 
 	token := service.client.Subscribe(topic, 2, func(_ mqtt.Client, message mqtt.Message) {
 		data := []byte(message.Payload())
-		service.logger.Info("Received", "topic", message.Topic(), "payload", data)
+		service.logger.Info("Received", "topic", message.Topic())
 
 		payload := *new(TMessage)
 
@@ -190,9 +190,11 @@ func subscribe[TMessage mqttMessage](service mqttService, typ string, entity str
 			return
 		}
 
+		service.logger.Debug("Decoded message", "payload", payload)
+
 		// check if the message is old
 		twoMinsAgo := service.clock.Now().Unix() - 2*60
-		if twoMinsAgo >= (payload.GetTimestamp() / 1000) {
+		if !allowOld && twoMinsAgo >= (payload.GetTimestamp()/1000) {
 			service.logger.Info("Ignoring old message")
 			return
 		}

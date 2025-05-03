@@ -341,7 +341,7 @@ func TestSubscribe(t *testing.T) {
 
 			channel := make(chan *TestMessage, 1)
 
-			subscribe(subject, "device", "MyDevice", "change", channel)
+			subscribe(subject, "device", "MyDevice", "change", false, channel)
 
 			timestamp := time.Date(2025, 2, 22, 0, 2, 0, 0, time.UTC)
 			if test.timestamp != nil {
