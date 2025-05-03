@@ -4,6 +4,7 @@ import (
 	"os"
 
 	configService "powerpi/common/services/config"
+	configRetriever "powerpi/common/services/config_retriever"
 	"powerpi/common/services/logger"
 	"powerpi/common/services/mqtt"
 	"powerpi/energy-monitor/services"
@@ -25,4 +26,8 @@ func main() {
 	// connect to MQTT
 	mqttService := services.GetService[mqtt.MqttService](container)
 	mqttService.Connect("energy-monitor")
+
+	// retrieve the config
+	configRetriever := services.GetService[configRetriever.ConfigRetriever](container)
+	configRetriever.GetConfig()
 }
