@@ -1,4 +1,7 @@
 {{- define "powerpi.service" }}
+
+{{- $type := .Params.Type | default "ClusterIP" -}}
+
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,13 +10,13 @@ metadata:
 spec:
   selector:
   {{- include "powerpi.selector" (merge (dict "Params" (dict "Name" .Chart.Name)) .) | indent 2 }}
-  type: {{ .Params.Type | default "ClusterIP" }}
+  type: {{ $type }}
   ports:
   - name: {{ .Params.PortName | default "http" }}
     protocol: TCP
     port: {{ .Params.Port | default 80 }}
     targetPort: {{ .Params.PortName | default "http" }}
-  {{- if and (.Params.Type eq "LoadBalancer") (not (empty .Params.LoadBalancerIP)) }}
+  {{- if and (eq $type "LoadBalancer") (not (empty .Params.LoadBalancerIP)) }}
   loadBalancerIP: {{ .Params.LoadBalancerIP }}
   {{- end }}
 {{- end }}
