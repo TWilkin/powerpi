@@ -13,4 +13,7 @@ spec:
     protocol: TCP
     port: {{ .Params.Port | default 80 }}
     targetPort: {{ .Params.PortName | default "http" }}
+  {{- if and (.Params.Type eq "LoadBalancer") (not (empty .Params.LoadBalancerIP)) }}
+  loadBalancerIP: {{ .Params.LoadBalancerIP }}
+  {{- end }}
 {{- end }}
