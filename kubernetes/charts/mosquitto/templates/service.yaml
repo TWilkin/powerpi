@@ -17,6 +17,7 @@
   "Type" "LoadBalancer"
   "PortName" "mqtts"
   "Port" 8883
+  "LoadBalancerIP" .Values.loadBalancerIP
 -}}
 
 {{- include "powerpi.service" (merge (dict "Params" $data) .) -}}

@@ -276,6 +276,11 @@
                 "storageClass": {
                     "description": "When defined will use the specified StorageClass instead of using local storage",
                     "type": "string"
+                },
+                "loadBalancerIP": {
+                    "description": "The IP address to use for the LoadBalancer service",
+                    "type": "string",
+                    "format": "ipv4"
                 }
             },
             "unevaluatedProperties": false
