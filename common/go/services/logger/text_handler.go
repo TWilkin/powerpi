@@ -85,11 +85,14 @@ func sourceFileAndLine(pc uintptr) (string, int) {
 		return "unknown", 0
 	}
 
-	fn := runtime.FuncForPC(pc)
-	if fn == nil {
+	pcs := make([]uintptr, 1)
+	runtime.Callers(6, pcs)
+
+	frames := runtime.CallersFrames(pcs)
+	if frames == nil {
 		return "unknown", 0
 	}
 
-	file, line := fn.FileLine(pc)
-	return filepath.Base(file), line
+	frame, _ := frames.Next()
+	return filepath.Base(frame.File), frame.Line
 }
