@@ -8,6 +8,7 @@ import (
 	configRetriever "powerpi/common/services/config_retriever"
 	"powerpi/common/services/logger"
 	"powerpi/common/services/mqtt"
+	"powerpi/common/services/mqtt/messagequeue"
 )
 
 type CommonContainer interface {
@@ -28,6 +29,8 @@ func NewCommonContainer() CommonContainer {
 	container.Provide(logger.NewLoggerService)
 
 	container.Provide(mqtt.NewMqttService)
+	container.Provide(messagequeue.NewDeviceMessageService)
+	container.Provide(messagequeue.NewConfigMessageService)
 
 	container.Provide(func() mqtt.MqttClientFactory {
 		return mqtt.NewMqttClientFactory()

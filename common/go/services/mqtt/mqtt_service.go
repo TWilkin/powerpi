@@ -10,7 +10,6 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
-	"powerpi/common/models"
 	"powerpi/common/services/clock"
 	configService "powerpi/common/services/config"
 	"powerpi/common/services/logger"
@@ -21,11 +20,11 @@ type MqttService interface {
 	Connect(clientIdPrefix string)
 	Join()
 
-	PublishDeviceState(device string, state models.DeviceState, additionalState *models.AdditionalState)
-	PublishCapability(device string, capability models.Capability)
+	topic(typ string, entity string, action string) string
 
-	SubscribeConfigChange(config models.ConfigType, channel chan<- *ConfigMessage)
-	SubscribeDeviceChange(device string, channel chan<- *DeviceMessage)
+	getClock() clock.ClockService
+	getLogger() logger.LoggerService
+	getClient() mqtt.Client
 }
 
 type mqttService struct {
@@ -101,38 +100,6 @@ func (service mqttService) Join() {
 	<-service.commandChannel
 }
 
-func (service mqttService) PublishDeviceState(device string, state models.DeviceState, additionalState *models.AdditionalState) {
-	if additionalState == nil {
-		additionalState = &models.AdditionalState{}
-	}
-
-	message := DeviceMessage{
-		State:           state,
-		AdditionalState: *additionalState,
-	}
-
-	publish(service, "device", device, "status", &message)
-}
-
-func (service mqttService) PublishCapability(device string, capability models.Capability) {
-	if capability.Brightness {
-
-		message := CapabilityMessage{
-			Capability: capability,
-		}
-
-		publish(service, "device", device, "capability", &message)
-	}
-}
-
-func (service mqttService) SubscribeConfigChange(config models.ConfigType, channel chan<- *ConfigMessage) {
-	subscribe(service, "config", string(config), "change", true, channel)
-}
-
-func (service mqttService) SubscribeDeviceChange(device string, channel chan<- *DeviceMessage) {
-	subscribe(service, "device", device, "change", false, channel)
-}
-
 func (service mqttService) process() {
 	for {
 		select {
@@ -151,22 +118,34 @@ func (service mqttService) topic(typ string, entity string, action string) strin
 	return fmt.Sprintf("%s/%s/%s/%s", service.config.MqttConfig().TopicBase, typ, entity, action)
 }
 
-func publish[TMessage mqttMessage](service mqttService, typ string, entity string, action string, message TMessage) {
+func (service mqttService) getClock() clock.ClockService {
+	return service.clock
+}
+
+func (service mqttService) getLogger() logger.LoggerService {
+	return service.logger
+}
+
+func (service mqttService) getClient() mqtt.Client {
+	return service.client
+}
+
+func Publish[TMessage mqttMessage](service MqttService, typ string, entity string, action string, message TMessage) {
 	topic := service.topic(typ, entity, action)
 
 	// if the message has no timestamp, set it to now
 	if message.GetTimestamp() == 0 {
-		message.SetTimestamp(service.clock.Now().Unix() * 1000)
+		message.SetTimestamp(service.getClock().Now().Unix() * 1000)
 	}
 
 	payload, err := json.Marshal(message)
 	if err != nil {
-		service.logger.Warn("Could not encode JSON message", "error", err)
+		service.getLogger().Warn("Could not encode JSON message", "error", err)
 		return
 	}
 
-	service.logger.Info("Publishing", "topic", topic, "payload", payload)
-	token := service.client.Publish(topic, 2, true, payload)
+	service.getLogger().Info("Publishing", "topic", topic, "payload", payload)
+	token := service.getClient().Publish(topic, 2, true, payload)
 
 	token.Wait()
 
@@ -175,27 +154,27 @@ func publish[TMessage mqttMessage](service mqttService, typ string, entity strin
 	}
 }
 
-func subscribe[TMessage mqttMessage](service mqttService, typ string, entity string, action string, allowOld bool, channel chan<- TMessage) {
+func Subscribe[TMessage mqttMessage](service MqttService, typ string, entity string, action string, allowOld bool, channel chan<- TMessage) {
 	topic := service.topic(typ, entity, action)
-	service.logger.Info("Subscribing to", "topic", topic)
+	service.getLogger().Info("Subscribing to", "topic", topic)
 
-	token := service.client.Subscribe(topic, 2, func(_ mqtt.Client, message mqtt.Message) {
+	token := service.getClient().Subscribe(topic, 2, func(_ mqtt.Client, message mqtt.Message) {
 		data := []byte(message.Payload())
-		service.logger.Info("Received", "topic", message.Topic())
+		service.getLogger().Info("Received", "topic", message.Topic())
 
 		payload := *new(TMessage)
 
 		if err := json.Unmarshal(data, &payload); err != nil {
-			service.logger.Warn("Could not decode JSON message", "error", err)
+			service.getLogger().Warn("Could not decode JSON message", "error", err)
 			return
 		}
 
-		service.logger.Debug("Decoded message", "payload", payload)
+		service.getLogger().Debug("Decoded message", "payload", payload)
 
 		// check if the message is old
-		twoMinsAgo := service.clock.Now().Unix() - 2*60
+		twoMinsAgo := service.getClock().Now().Unix() - 2*60
 		if !allowOld && twoMinsAgo >= (payload.GetTimestamp()/1000) {
-			service.logger.Info("Ignoring old message")
+			service.getLogger().Info("Ignoring old message")
 			return
 		}
 
