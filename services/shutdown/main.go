@@ -9,6 +9,7 @@ import (
 	"powerpi/common/models"
 	"powerpi/common/services/clock"
 	"powerpi/common/services/mqtt"
+	"powerpi/common/services/mqtt/messagequeue"
 	"powerpi/shutdown/config"
 	"powerpi/shutdown/services"
 	"powerpi/shutdown/services/additional"
@@ -45,25 +46,26 @@ func main() {
 	// connect to MQTT
 	mqttService := services.GetService[mqtt.MqttService](container)
 	mqttService.Connect("shutdown")
+	deviceService := services.GetService[messagequeue.DeviceMessageService](container)
 
 	// publish the initial state
-	publishState(mqttService, additionalStateService, hostname, config)
+	publishState(deviceService, additionalStateService, hostname, config)
 
 	// subscribe to the change event
-	channel := make(chan *mqtt.DeviceMessage, 1)
-	mqttService.SubscribeDeviceChange(hostname, channel)
+	channel := make(chan *messagequeue.DeviceMessage, 1)
+	deviceService.SubscribeChange(hostname, channel)
 
 	// loop waiting for messages
 	clockService := services.GetService[clock.ClockService](container)
 	for {
 		message := <-channel
 
-		updateState(additionalStateService, mqttService, clockService, config, hostname, message.State, message.AdditionalState, startTime)
+		updateState(additionalStateService, deviceService, clockService, config, hostname, message.State, message.AdditionalState, startTime)
 	}
 }
 
 func publishState(
-	mqttService mqtt.MqttService,
+	deviceService messagequeue.DeviceMessageService,
 	additionalStateService additional.AdditionalStateService,
 	hostname string,
 	config config.Config,
@@ -71,7 +73,7 @@ func publishState(
 	// publish the initial state
 	currentAdditionalState := additionalStateService.GetAdditionalState()
 
-	mqttService.PublishDeviceState(hostname, models.On, &currentAdditionalState)
+	deviceService.PublishState(hostname, models.On, &currentAdditionalState)
 
 	// publish the capabilities
 	if len(config.AdditionalState.Brightness.Device) > 0 {
@@ -79,13 +81,13 @@ func publishState(
 			Brightness: true,
 		}
 
-		mqttService.PublishCapability(hostname, capabilities)
+		deviceService.PublishCapability(hostname, capabilities)
 	}
 }
 
 func updateState(
 	additionalStateService additional.AdditionalStateService,
-	mqttService mqtt.MqttService,
+	deviceService messagequeue.DeviceMessageService,
 	clockService clock.ClockService,
 	config config.Config,
 	hostname string,
@@ -111,7 +113,7 @@ func updateState(
 	// publish the state message if necessary
 	if newState != models.On || !additionalStateService.CompareAdditionalState(currentAdditionalState, additionalState) {
 		currentAdditionalState = additionalStateService.GetAdditionalState()
-		mqttService.PublishDeviceState(hostname, newState, &currentAdditionalState)
+		deviceService.PublishState(hostname, newState, &currentAdditionalState)
 	}
 
 	if newState == models.Off {

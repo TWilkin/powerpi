@@ -8,7 +8,7 @@ import (
 
 	"powerpi/common/models"
 	"powerpi/common/services/clock"
-	"powerpi/common/services/mqtt"
+	"powerpi/common/services/mqtt/messagequeue"
 	"powerpi/common/utils"
 	"powerpi/shutdown/config"
 	"powerpi/shutdown/services/additional"
@@ -80,7 +80,7 @@ func TestUpdateState(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			additionalStateService := &additional.MockAdditionalStateService{}
-			mqttService := &mqtt.MockMqttService{}
+			deviceService := &messagequeue.MockDeviceMessageService{}
 			clockService := &clock.MockClockService{}
 			config := config.Config{Mock: true, AllowQuickShutdown: false}
 			startTime := clockService.Now().Add(test.startTimeOffset)
@@ -104,8 +104,8 @@ func TestUpdateState(t *testing.T) {
 					test.additionalState,
 				).Once()
 
-				mqttService.On(
-					"PublishDeviceState",
+				deviceService.On(
+					"PublishState",
 					hostname,
 					*test.expectedState,
 					mock.MatchedBy(func(state *models.AdditionalState) bool {
@@ -119,7 +119,7 @@ func TestUpdateState(t *testing.T) {
 
 			updateState(
 				additionalStateService,
-				mqttService,
+				deviceService,
 				clockService,
 				config,
 				hostname,
@@ -129,7 +129,7 @@ func TestUpdateState(t *testing.T) {
 			)
 
 			additionalStateService.AssertExpectations(t)
-			mqttService.AssertExpectations(t)
+			deviceService.AssertExpectations(t)
 		})
 	}
 }
