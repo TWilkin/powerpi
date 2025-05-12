@@ -29,5 +29,5 @@ func main() {
 
 	// retrieve the config
 	configRetriever := services.GetService[configRetriever.ConfigRetriever](container)
-	configRetriever.GetConfig()
+	configRetriever.WaitForConfig()
 }

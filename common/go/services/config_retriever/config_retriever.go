@@ -1,61 +1,69 @@
-package config
+package configretriever
 
 import (
-	"powerpi/common/services/config"
-	"powerpi/common/services/logger"
-	"powerpi/common/services/mqtt"
 	"sync"
 	"time"
+
+	"powerpi/common/models"
+	"powerpi/common/services/config"
+	"powerpi/common/services/logger"
+	"powerpi/common/services/mqtt/messagequeue"
 )
 
 type ConfigRetriever interface {
-	GetConfig()
+	WaitForConfig()
 }
 
 type configRetriever struct {
-	configService config.ConfigService
-	mqttService   mqtt.MqttService
-	logger        logger.LoggerService
+	configService  config.ConfigService
+	messageService messagequeue.ConfigMessageService
+	logger         logger.LoggerService
 }
 
-func NewConfigRetriever(configService config.ConfigService, mqttService mqtt.MqttService, logger logger.LoggerService) ConfigRetriever {
-	return &configRetriever{configService: configService, mqttService: mqttService, logger: logger}
+func NewConfigRetriever(configService config.ConfigService, messageService messagequeue.ConfigMessageService, logger logger.LoggerService) ConfigRetriever {
+	return &configRetriever{configService: configService, messageService: messageService, logger: logger}
 }
 
-func (retriever *configRetriever) GetConfig() {
+func (retriever *configRetriever) WaitForConfig() {
 	requiredConfigType := retriever.configService.RequiredConfig()
+	if len(requiredConfigType) == 0 {
+		retriever.logger.Info("No required config to retrieve")
+		return
+	}
 
-	var wait sync.WaitGroup
-	wait.Add(len(requiredConfigType))
+	var group sync.WaitGroup
+	group.Add(len(requiredConfigType))
 
 	var mutex sync.Mutex
 
-	go func() {
-		defer wait.Done()
+	waitForConfig := func(configType models.ConfigType) {
+		defer group.Done()
 
-		for _, configType := range requiredConfigType {
-			// Subscribe to the config change for this type
-			channel := make(chan *mqtt.ConfigMessage)
-			retriever.mqttService.SubscribeConfigChange(configType, channel)
+		// Subscribe to the config change for this type
+		channel := make(chan *messagequeue.ConfigMessage)
+		retriever.messageService.SubscribeChange(configType, channel)
 
-			select {
-			case message := <-channel:
-				retriever.logger.Info("Received config change for", "configType", configType)
+		select {
+		case message := <-channel:
+			retriever.logger.Info("Received config change for", "configType", configType)
 
-				// Process the message
-				mutex.Lock()
-				retriever.configService.SetConfig(configType, message.Payload, message.Checksum)
-				mutex.Unlock()
+			// Process the message
+			mutex.Lock()
+			retriever.configService.SetConfig(configType, message.Payload, message.Checksum)
+			mutex.Unlock()
 
-			case <-time.After(2 * time.Minute):
-				retriever.logger.Error("Timeout waiting for config", "configType", configType)
-			}
-
-			close(channel)
+		case <-time.After(2 * time.Minute):
+			retriever.logger.Error("Timeout waiting for config", "configType", configType)
 		}
-	}()
 
-	wait.Wait()
+		close(channel)
+	}
+
+	for _, configType := range requiredConfigType {
+		go waitForConfig(configType)
+	}
+
+	group.Wait()
 
 	retriever.logger.Info("All required config retrieved")
 }
