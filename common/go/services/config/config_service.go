@@ -19,7 +19,7 @@ type ConfigService interface {
 
 	RequiredConfig() []models.ConfigType
 	GetConfig(configType models.ConfigType) models.Config
-	SetConfig(configType models.ConfigType, data any, checksum string)
+	SetConfig(configType models.ConfigType, data map[string]any, checksum string)
 }
 
 type configService struct {
@@ -109,7 +109,7 @@ func (service *configService) GetConfig(configType models.ConfigType) models.Con
 	return config
 }
 
-func (service *configService) SetConfig(configType models.ConfigType, data any, checksum string) {
+func (service *configService) SetConfig(configType models.ConfigType, data map[string]any, checksum string) {
 	if service.configMap == nil {
 		service.configMap = make(map[models.ConfigType]models.Config)
 	}

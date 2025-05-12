@@ -36,6 +36,6 @@ func (service *MockConfigService) GetConfig(configType models.ConfigType) models
 	return args.Get(0).(models.Config)
 }
 
-func (service *MockConfigService) SetConfig(configType models.ConfigType, data any, checksum string) {
+func (service *MockConfigService) SetConfig(configType models.ConfigType, data map[string]any, checksum string) {
 	service.Called(configType, data, checksum)
 }

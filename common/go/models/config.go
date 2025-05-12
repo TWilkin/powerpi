@@ -10,6 +10,6 @@ const (
 )
 
 type Config struct {
-	Data     any
+	Data     map[string]any
 	Checksum string
 }

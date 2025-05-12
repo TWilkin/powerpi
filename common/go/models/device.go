@@ -1,5 +1,13 @@
 package models
 
+type BaseDevice struct {
+	Name string `json:"name"`
+}
+
+type Device struct {
+	BaseDevice
+}
+
 type DeviceState string
 
 const (

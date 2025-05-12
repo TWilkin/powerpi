@@ -8,8 +8,8 @@ import (
 type ConfigMessage struct {
 	mqtt.BaseMqttMessage
 
-	Payload  any    `json:"payload"`
-	Checksum string `json:"checksum"`
+	Payload  map[string]any `json:"payload"`
+	Checksum string         `json:"checksum"`
 }
 
 type ConfigMessageService interface {
