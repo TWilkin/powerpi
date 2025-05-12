@@ -8,6 +8,7 @@ import (
 	"powerpi/common/services/logger"
 	"powerpi/common/services/mqtt"
 	"powerpi/energy-monitor/services"
+	"powerpi/energy-monitor/services/meter"
 )
 
 var Version = "development"
@@ -30,4 +31,8 @@ func main() {
 	// retrieve the config
 	configRetriever := services.GetService[configRetriever.ConfigRetriever](container)
 	configRetriever.WaitForConfig()
+
+	// start the meter manager
+	meterManager := services.GetService[meter.MeterManager](container)
+	meterManager.Start()
 }

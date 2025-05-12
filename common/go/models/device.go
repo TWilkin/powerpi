@@ -1,7 +1,11 @@
 package models
 
 type BaseDevice struct {
-	Name string `json:"name"`
+	Name        string `json:"name"`
+	DisplayName string `json:"display_name"`
+	Type        string `json:"type"`
+	Location    string `json:"location"`
+	Visible     bool   `json:"visible"`
 }
 
 type Device struct {
