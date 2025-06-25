@@ -59,6 +59,24 @@ func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagS
 	if err != nil {
 		panic(err)
 	}
+
+	// MQTT environment overrides
+	service.environmentOverride(combined, "host", "MQTT_HOST") // TODO merge these into MQTT_ADDRESS like other services
+	service.environmentOverride(combined, "port", "MQTT_PORT")
+	service.environmentOverride(combined, "user", "MQTT_USER")
+	service.environmentOverride(combined, "password", "MQTT_SECRET_FILE")
+	service.environmentOverride(combined, "topic", "TOPIC_BASE")
+}
+
+func (service *configService) environmentOverride(flagSet *pflag.FlagSet, flag string, envKey string) {
+	if flagSet.Lookup(flag).Changed {
+		return
+	}
+
+	envValue, exists := os.LookupEnv(envKey)
+	if exists && envValue != "" {
+		flagSet.Set(flag, envValue)
+	}
 }
 
 func (service *configService) MqttConfig() config.MqttConfig {
