@@ -1,7 +1,6 @@
 package config
 
 import (
-	"log"
 	"os"
 	"strings"
 
@@ -9,6 +8,7 @@ import (
 
 	"powerpi/common/config"
 	"powerpi/common/models"
+	"powerpi/common/services/logger"
 )
 
 type ConfigService interface {
@@ -23,19 +23,25 @@ type ConfigService interface {
 }
 
 type configService struct {
-	mqtt config.MqttConfig
+	mqtt   config.MqttConfig
+	logger logger.LoggerService
 
 	// config map
 	configMap map[models.ConfigType]models.Config
 }
 
-func NewConfigService() ConfigService {
+func NewConfigService(logger logger.LoggerService) ConfigService {
 	return &configService{
-		mqtt: config.MqttConfig{},
+		mqtt:   config.MqttConfig{},
+		logger: logger,
 	}
 }
 
 func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagSet) {
+	// built-in flags
+	builtIn := pflag.NewFlagSet("built-in", pflag.ExitOnError)
+	builtIn.String("log-level", "INFO", "The log level for the application")
+
 	// MQTT
 	mqtt := pflag.NewFlagSet("mqtt", pflag.ExitOnError)
 	mqtt.StringVar(&service.mqtt.Host, "host", "localhost", "The hostname of the MQTT broker")
@@ -48,6 +54,7 @@ func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagS
 	params := args[1:]
 
 	combined := pflag.NewFlagSet(name, pflag.ExitOnError)
+	combined.AddFlagSet(builtIn)
 	combined.AddFlagSet(mqtt)
 	for _, flag := range flags {
 		flagCopy := flag
@@ -60,12 +67,18 @@ func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagS
 		panic(err)
 	}
 
+	// built-in environment overrides
+	service.environmentOverride(builtIn, "log-level", "LOG_LEVEL")
+
 	// MQTT environment overrides
 	service.environmentOverride(combined, "host", "MQTT_HOST") // TODO merge these into MQTT_ADDRESS like other services
 	service.environmentOverride(combined, "port", "MQTT_PORT")
 	service.environmentOverride(combined, "user", "MQTT_USER")
 	service.environmentOverride(combined, "password", "MQTT_SECRET_FILE")
 	service.environmentOverride(combined, "topic", "TOPIC_BASE")
+
+	// set the log level
+	service.logger.SetLevel(combined.Lookup("log-level").Value.String())
 }
 
 func (service *configService) environmentOverride(flagSet *pflag.FlagSet, flag string, envKey string) {
@@ -98,7 +111,7 @@ func (service *configService) GetMqttPassword() *string {
 
 		permissions := info.Mode().Perm()
 		if permissions != 0o600 {
-			log.Fatalf("Incorrect permissions (0%o), must be 0600 on '%s'", permissions, passwordFile)
+			service.logger.Error("Incorrect permissions (0%o), must be 0600 on '%s'", permissions, passwordFile)
 		}
 
 		data, err := os.ReadFile(passwordFile)

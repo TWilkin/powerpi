@@ -3,6 +3,7 @@ package config
 import (
 	"powerpi/common/models"
 	commonConfigService "powerpi/common/services/config"
+	"powerpi/common/services/logger"
 )
 
 type ConfigService interface {
@@ -15,9 +16,9 @@ type configService struct {
 	commonConfigService.ConfigService
 }
 
-func NewConfigService() ConfigService {
+func NewConfigService(logger logger.LoggerService) ConfigService {
 	return &configService{
-		ConfigService: commonConfigService.NewConfigService(),
+		ConfigService: commonConfigService.NewConfigService(logger),
 	}
 }
 

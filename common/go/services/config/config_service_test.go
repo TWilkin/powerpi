@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"powerpi/common/config"
+	"powerpi/common/services/logger"
 )
 
 func TestParseWithFlags(t *testing.T) {
@@ -72,7 +73,7 @@ func TestParseWithFlags(t *testing.T) {
 				t.Setenv(key, value)
 			}
 
-			service := NewConfigService()
+			service := NewConfigService(logger.SetupMockLoggerService())
 
 			service.ParseWithFlags(test.args)
 
