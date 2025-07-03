@@ -6,6 +6,7 @@ import (
 	"powerpi/common/services/logger"
 	"powerpi/energy-monitor/models"
 	"powerpi/energy-monitor/services/config"
+	energyRetrieverFactory "powerpi/energy-monitor/services/energyretriever/energyretrieverfactory"
 )
 
 type MeterManager interface {
@@ -15,14 +16,16 @@ type MeterManager interface {
 type meterManager struct {
 	configService config.ConfigService
 	logger        logger.LoggerService
+	factory       energyRetrieverFactory.EnergyRetrieverFactory
 
 	meters []models.MeterSensor
 }
 
-func NewMeterManager(configService config.ConfigService, logger logger.LoggerService) MeterManager {
+func NewMeterManager(configService config.ConfigService, logger logger.LoggerService, factory energyRetrieverFactory.EnergyRetrieverFactory) MeterManager {
 	return &meterManager{
 		configService: configService,
 		logger:        logger,
+		factory:       factory,
 		meters:        make([]models.MeterSensor, 0),
 	}
 }
@@ -49,6 +52,16 @@ func (manager *meterManager) Start() {
 		manager.logger.Info("Found meter sensor(s)", "count", len(manager.meters))
 	} else {
 		manager.logger.Error("Expected sensors to be a list", "sensors", sensors)
+	}
+
+	// Initialise energy retrievers for each meter
+	for _, meter := range manager.meters {
+		retriever := manager.factory.BuildRetriever(meter)
+		if retriever != nil {
+			retriever.Read()
+		} else {
+			manager.logger.Error("Failed to create energy retriever for meter", "meter", meter.Name)
+		}
 	}
 }
 

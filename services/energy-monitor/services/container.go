@@ -3,6 +3,7 @@ package services
 import (
 	"powerpi/common/services"
 	"powerpi/energy-monitor/services/config"
+	energyRetrieverFactory "powerpi/energy-monitor/services/energyretriever/energyretrieverfactory"
 	"powerpi/energy-monitor/services/meter"
 )
 
@@ -21,6 +22,7 @@ func NewEnergyMonitorContainer() EnergyMonitorContainer {
 
 	container.Container().Provide(config.NewConfigService)
 	container.Container().Provide(meter.NewMeterManager)
+	container.Container().Provide(energyRetrieverFactory.NewEnergyRetrieverFactory)
 
 	// Override the common config service with the shutdown config service
 	container.SetConfigService(GetService[config.ConfigService](container))
