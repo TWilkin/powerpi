@@ -2,11 +2,10 @@ package octopus
 
 import (
 	"fmt"
-	"net/url"
-	"path"
 
 	"powerpi/common/services/logger"
 	"powerpi/common/services/mqtt"
+	"powerpi/common/utils"
 	"powerpi/energy-monitor/models"
 	energyRetriever "powerpi/energy-monitor/services/energyretriever"
 )
@@ -42,7 +41,8 @@ func (retriever *OctopusEnergyRetriever) Read() {
 func (retriever *OctopusEnergyRetriever) ReadSerialNumber() (string, error) {
 	retriever.Logger.Info("Reading account data from Octopus")
 
-	url, err := retriever.generateURL(
+	url, err := utils.GenerateURL(
+		baseURL,
 		[]string{"accounts", retriever.Meter.Account},
 		nil)
 	if err != nil {
@@ -66,7 +66,8 @@ func (retriever *OctopusEnergyRetriever) readConsumption(serialNumber string) {
 		meterId = retriever.Meter.MPRN
 	}
 
-	url, err := retriever.generateURL(
+	url, err := utils.GenerateURL(
+		baseURL,
 		[]string{fmt.Sprintf("%s-meter-points", meterType), meterId, "meters", serialNumber, "consumption"},
 		map[string]string{
 			"page_size":   "100",
@@ -80,22 +81,4 @@ func (retriever *OctopusEnergyRetriever) readConsumption(serialNumber string) {
 	}
 
 	retriever.Logger.Info("Generated URL for consumption data", "url", url)
-}
-
-// TODO put this in a helper in common
-func (retriever *OctopusEnergyRetriever) generateURL(paths []string, params map[string]string) (string, error) {
-	url, err := url.Parse(baseURL)
-	if err != nil {
-		return "", err
-	}
-
-	url.Path = path.Join(append([]string{url.Path}, paths...)...)
-
-	query := url.Query()
-	for key, value := range params {
-		query.Set(key, value)
-	}
-	url.RawQuery = query.Encode()
-
-	return url.String(), nil
 }
