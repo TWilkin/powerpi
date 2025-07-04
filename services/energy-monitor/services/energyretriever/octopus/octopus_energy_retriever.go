@@ -30,22 +30,41 @@ func NewOctopusEnergyRetriever(mqttService mqtt.MqttService, logger logger.Logge
 func (retriever *OctopusEnergyRetriever) Read() {
 	retriever.Logger.Info("Reading energy data from Octopus meter", "meter", retriever.Meter.Name)
 
-	retriever.readConsumption()
+	serialNumber, err := retriever.ReadSerialNumber()
+	if err != nil {
+		retriever.Logger.Error("Failed to read serial number", "error", err)
+		return
+	}
+
+	retriever.readConsumption(serialNumber)
 }
 
-func (retriever *OctopusEnergyRetriever) readConsumption() {
+func (retriever *OctopusEnergyRetriever) ReadSerialNumber() (string, error) {
+	retriever.Logger.Info("Reading account data from Octopus")
+
+	url, err := retriever.generateURL(
+		[]string{"accounts", retriever.Meter.Account},
+		nil)
+	if err != nil {
+		return "", err
+	}
+
+	retriever.Logger.Info("Generated URL for account data", "url", url)
+	return "serial-number", nil
+}
+
+func (retriever *OctopusEnergyRetriever) readConsumption(serialNumber string) {
 	// identify the type of meter
 	var meterType string
+	var meterId string
 	_, success := retriever.Meter.Metrics[models.MeterMetricElectricity]
 	if success {
 		meterType = "electricity"
+		meterId = retriever.Meter.MPAN
 	} else {
 		meterType = "gas"
+		meterId = retriever.Meter.MPRN
 	}
-
-	// the electricity MPAN or gas MPRN
-	meterId := "mpan-or-mprn"
-	serialNumber := "sn"
 
 	url, err := retriever.generateURL(
 		[]string{fmt.Sprintf("%s-meter-points", meterType), meterId, "meters", serialNumber, "consumption"},
