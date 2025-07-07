@@ -10,6 +10,11 @@
         }
     ],
     "properties": {
+        "mpan": {
+            "description": "The MPAN (Meter Point Administration Number) of the electricity meter",
+            "type": "string",
+            "pattern": "^S\\d{21}$"
+        },
         "metrics": {
             "description": "The list of metrics to enable for this meter",
             "type": "object",
@@ -23,6 +28,6 @@
             "additionalProperties": false
         }
     },
-    "required": ["metrics"],
+    "required": ["mpan", "metrics"],
     "unevaluatedProperties": false
 }

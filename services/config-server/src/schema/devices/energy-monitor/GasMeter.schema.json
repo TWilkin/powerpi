@@ -10,6 +10,11 @@
         }
     ],
     "properties": {
+        "mprn": {
+            "description": "The MPRN (Meter Point Reference Number) of the gas meter",
+            "type": "string",
+            "pattern": "^\\d{6,10}$"
+        },
         "metrics": {
             "description": "The list of metrics to enable for this meter",
             "type": "object",
@@ -23,6 +28,6 @@
             "additionalProperties": false
         }
     },
-    "required": ["metrics"],
+    "required": ["mprn", "metrics"],
     "unevaluatedProperties": false
 }
