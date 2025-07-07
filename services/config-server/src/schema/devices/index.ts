@@ -45,8 +45,10 @@ export default function loadDevicesSchema() {
         // the zigbee controller devices
         ...loadZigBeeSchema(),
 
-        // PowerPi sensors
+        // the energy monitor sensors
         ...loadEnergyMonitorSchema(),
+
+        // PowerPi sensors
         PowerPiSensor,
     };
 }
