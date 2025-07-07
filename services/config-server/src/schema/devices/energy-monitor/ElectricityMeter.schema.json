@@ -1,0 +1,28 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energy-monitor/ElectricityMeter.schema.json",
+    "title": "ElectricityMeter",
+    "description": "A sensor that emits electricity meter readings using the energy-monitor service",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Sensor.schema.json"
+        }
+    ],
+    "properties": {
+        "metrics": {
+            "description": "The list of metrics to enable for this meter",
+            "type": "object",
+            "properties": {
+                "electricity": {
+                    "description": "Whether to capture the electricity usage reported by the sensor",
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                }
+            },
+            "required": ["electricity"],
+            "additionalProperties": false
+        }
+    },
+    "required": ["metrics"],
+    "unevaluatedProperties": false
+}

@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energy-monitor/MeterSensor.schema.json",
-    "title": "MeterSensor",
-    "description": "A sensor that emits meter readings using the energy-monitor service",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energy-monitor/GasMeter.schema.json",
+    "title": "GasMeter",
+    "description": "A sensor that emits gas meter readings using the energy-monitor service",
     "type": "object",
     "allOf": [
         {
@@ -10,23 +10,16 @@
         }
     ],
     "properties": {
-        "type": {
-            "const": "meter"
-        },
         "metrics": {
             "description": "The list of metrics to enable for this meter",
             "type": "object",
             "properties": {
-                "electricity": {
-                    "description": "Whether to capture the electricity usage reported by the sensor",
-                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
-                },
                 "gas": {
                     "description": "Whether to capture the gas usage reported by the sensor",
                     "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
                 }
             },
-            "anyOf": [{ "required": ["electricity"] }, { "required": ["gas"] }],
+            "required": ["gas"],
             "additionalProperties": false
         }
     },
