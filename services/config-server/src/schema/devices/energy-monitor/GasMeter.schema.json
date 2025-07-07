@@ -28,6 +28,5 @@
             "additionalProperties": false
         }
     },
-    "required": ["mprn", "metrics"],
-    "unevaluatedProperties": false
+    "required": ["mprn", "metrics"]
 }

@@ -28,6 +28,5 @@
             "additionalProperties": false
         }
     },
-    "required": ["mpan", "metrics"],
-    "unevaluatedProperties": false
+    "required": ["mpan", "metrics"]
 }
