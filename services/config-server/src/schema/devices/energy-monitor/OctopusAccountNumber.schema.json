@@ -1,0 +1,8 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energy-monitor/OctopusAccountNumber.schema.json",
+    "title": "An Octopus Account Number",
+    "description": "The Octopus account number associated with this meter",
+    "type": "string",
+    "pattern": "^[A-Z]-[A-Z]{4}\\d{4}$"
+}

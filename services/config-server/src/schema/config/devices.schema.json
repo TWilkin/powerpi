@@ -82,6 +82,12 @@
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PowerPiSensor.schema.json"
                     },
                     {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energy-monitor/OctopusElectricityMeter.schema.json"
+                    },
+                    {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energy-monitor/OctopusGasMeter.schema.json"
+                    },
+                    {
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/AqaraDoorWindow.schema.json"
                     },
                     {
