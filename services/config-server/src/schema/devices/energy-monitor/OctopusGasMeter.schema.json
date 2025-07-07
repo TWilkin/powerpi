@@ -1,7 +1,7 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energy-monitor/OctopusGasMeter.schema.json",
-    "title": "OctopusElectricityMeter",
+    "title": "OctopusGasMeter",
     "description": "A sensor that emits gas meter readings using the Octopus API via the energy-monitor service",
     "type": "object",
     "allOf": [
