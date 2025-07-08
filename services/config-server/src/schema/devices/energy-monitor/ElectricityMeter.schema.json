@@ -13,7 +13,7 @@
         "mpan": {
             "description": "The MPAN (Meter Point Administration Number) of the electricity meter",
             "type": "string",
-            "pattern": "^S\\d{20}$"
+            "pattern": "^\\d{13}$"
         },
         "metrics": {
             "description": "The list of metrics to enable for this meter",
