@@ -10,15 +10,15 @@ import (
 	energyRetriever "powerpi/energy-monitor/services/energyretriever"
 )
 
-type OctopusEnergyRetriever struct {
-	*energyRetriever.BaseEnergyRetriever
+type OctopusEnergyRetriever[TMeter models.OctopusMeterSensor] struct {
+	*energyRetriever.BaseEnergyRetriever[TMeter]
 }
 
 const baseURL = "https://api.octopus.energy/v1"
 
-func NewOctopusEnergyRetriever(mqttService mqtt.MqttService, logger logger.LoggerService, meter models.MeterSensor) *OctopusEnergyRetriever {
-	return &OctopusEnergyRetriever{
-		BaseEnergyRetriever: &energyRetriever.BaseEnergyRetriever{
+func NewOctopusEnergyRetriever[TMeter models.OctopusMeterSensor](mqttService mqtt.MqttService, logger logger.LoggerService, meter TMeter) *OctopusEnergyRetriever[TMeter] {
+	return &OctopusEnergyRetriever[TMeter]{
+		BaseEnergyRetriever: &energyRetriever.BaseEnergyRetriever[TMeter]{
 			MqttService: mqttService,
 			Logger:      logger,
 			Meter:       meter,
@@ -26,8 +26,8 @@ func NewOctopusEnergyRetriever(mqttService mqtt.MqttService, logger logger.Logge
 	}
 }
 
-func (retriever *OctopusEnergyRetriever) Read() {
-	retriever.Logger.Info("Reading energy data from Octopus meter", "meter", retriever.Meter.Name)
+func (retriever *OctopusEnergyRetriever[TMeter]) Read() {
+	retriever.Logger.Info("Reading energy data from Octopus meter", "meter", retriever.Meter.GetName())
 
 	serialNumber, err := retriever.ReadSerialNumber()
 	if err != nil {
@@ -38,12 +38,12 @@ func (retriever *OctopusEnergyRetriever) Read() {
 	retriever.readConsumption(serialNumber)
 }
 
-func (retriever *OctopusEnergyRetriever) ReadSerialNumber() (string, error) {
+func (retriever *OctopusEnergyRetriever[TMeter]) ReadSerialNumber() (string, error) {
 	retriever.Logger.Info("Reading account data from Octopus")
 
 	url, err := utils.GenerateURL(
 		baseURL,
-		[]string{"accounts", retriever.Meter.Account},
+		[]string{"accounts", retriever.Meter.GetAccount()},
 		nil)
 	if err != nil {
 		return "", err
@@ -53,18 +53,17 @@ func (retriever *OctopusEnergyRetriever) ReadSerialNumber() (string, error) {
 	return "serial-number", nil
 }
 
-func (retriever *OctopusEnergyRetriever) readConsumption(serialNumber string) {
+func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption(serialNumber string) {
 	// identify the type of meter
 	var meterType string
 	var meterId string
-	_, success := retriever.Meter.Metrics[models.MeterMetricElectricity]
+	_, success := retriever.Meter.GetMetrics()[models.MeterMetricElectricity]
 	if success {
 		meterType = "electricity"
-		meterId = retriever.Meter.MPAN
 	} else {
 		meterType = "gas"
-		meterId = retriever.Meter.MPRN
 	}
+	meterId = fmt.Sprintf("%d", retriever.Meter.GetId())
 
 	url, err := utils.GenerateURL(
 		baseURL,

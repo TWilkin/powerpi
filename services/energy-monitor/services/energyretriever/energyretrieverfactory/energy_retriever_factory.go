@@ -25,5 +25,10 @@ func NewEnergyRetrieverFactory(mqttService mqtt.MqttService, logger logger.Logge
 }
 
 func (factory *energyRetrieverFactory) BuildRetriever(meter models.MeterSensor) energyRetriever.EnergyRetriever {
-	return octopus.NewOctopusEnergyRetriever(factory.mqttService, factory.logger, meter)
+	if octopusMeter, success := meter.(models.OctopusMeterSensor); success {
+		return octopus.NewOctopusEnergyRetriever(factory.mqttService, factory.logger, octopusMeter)
+	}
+
+	factory.logger.Warn("Unsupported meter type for energy retrieval: %T", meter)
+	return nil
 }

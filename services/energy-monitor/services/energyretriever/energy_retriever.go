@@ -10,9 +10,9 @@ type EnergyRetriever interface {
 	Read()
 }
 
-type BaseEnergyRetriever struct {
+type BaseEnergyRetriever[TMeter models.MeterSensor] struct {
 	MqttService mqtt.MqttService
 	Logger      logger.LoggerService
 
-	Meter models.MeterSensor
+	Meter TMeter
 }

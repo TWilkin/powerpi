@@ -2,6 +2,8 @@ package meter
 
 import (
 	"encoding/json"
+	"strings"
+
 	commonModels "powerpi/common/models"
 	"powerpi/common/services/logger"
 	"powerpi/energy-monitor/models"
@@ -37,13 +39,9 @@ func (manager *meterManager) Start() {
 	if sensorsList, ok := sensors.([]interface{}); ok {
 		for _, sensor := range sensorsList {
 			if sensorMap, ok := sensor.(map[string]interface{}); ok {
-				if sensorType, ok := sensorMap["type"].(string); ok && sensorType == "meter" {
-					manager.logger.Info("Found meter sensor", "sensor", sensorMap["name"])
-
-					meter := manager.readSensor(sensorMap)
-
-					if meter != nil {
-						manager.meters = append(manager.meters, *meter)
+				if sensorType, ok := sensorMap["type"].(string); ok && strings.HasSuffix(sensorType, "meter") {
+					if meter := manager.readSensor(sensorType, sensorMap); meter != nil {
+						manager.meters = append(manager.meters, meter)
 					}
 				}
 			}
@@ -60,24 +58,38 @@ func (manager *meterManager) Start() {
 		if retriever != nil {
 			retriever.Read()
 		} else {
-			manager.logger.Error("Failed to create energy retriever for meter", "meter", meter.Name)
+			manager.logger.Error("Failed to create energy retriever for meter", "meter", meter.GetName())
 		}
 	}
 }
 
-func (manager *meterManager) readSensor(sensorMap map[string]interface{}) *models.MeterSensor {
+func (manager *meterManager) readSensor(sensorType string, sensorMap map[string]interface{}) models.MeterSensor {
 	jsonData, err := json.Marshal(sensorMap)
 	if err != nil {
 		manager.logger.Error("Failed to marshal sensor data", "error", err)
 		return nil
 	}
 
-	var meterSensor models.MeterSensor
-	err = json.Unmarshal(jsonData, &meterSensor)
-	if err != nil {
-		manager.logger.Error("Failed to unmarshal sensor data", "error", err)
-		return nil
+	switch sensorType {
+	case "octopus_electricity_meter":
+		var sensor models.OctopusElectricityMeterSensor
+		err = json.Unmarshal(jsonData, &sensor)
+		if err != nil {
+			manager.logger.Error("Failed to unmarshal Octopus electricity meter sensor", "error", err)
+			return nil
+		}
+		return &sensor
+
+	case "octopus_gas_meter":
+		var sensor models.OctopusGasMeterSensor
+		err = json.Unmarshal(jsonData, &sensor)
+		if err != nil {
+			manager.logger.Error("Failed to unmarshal Octopus gas meter sensor", "error", err)
+			return nil
+		}
+		return &sensor
 	}
 
-	return &meterSensor
+	manager.logger.Error("Unsupported sensor", "sensor", sensorType)
+	return nil
 }
