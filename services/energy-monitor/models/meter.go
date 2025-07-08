@@ -12,7 +12,7 @@ const (
 type MeterSensor interface {
 	GetName() string
 	GetMetrics() map[MeterMetric]models.MetricValue
-	GetId() int64
+	GetId() string
 }
 
 type meterSensor struct {
@@ -31,18 +31,18 @@ func (sensor *meterSensor) GetMetrics() map[MeterMetric]models.MetricValue {
 
 type ElectricityMeterSensor struct {
 	meterSensor
-	MPAN int64 `json:"mpan"` // Electricity Meter Point Administration Number
+	MPAN string `json:"mpan"` // Electricity Meter Point Administration Number
 }
 
-func (sensor ElectricityMeterSensor) GetId() int64 {
+func (sensor ElectricityMeterSensor) GetId() string {
 	return sensor.MPAN
 }
 
 type GasMeterSensor struct {
 	meterSensor
-	MPRN int64 `json:"mprn"` // Gas Meter Point Reference Number
+	MPRN string `json:"mprn"` // Gas Meter Point Reference Number
 }
 
-func (sensor GasMeterSensor) GetId() int64 {
+func (sensor GasMeterSensor) GetId() string {
 	return sensor.MPRN
 }

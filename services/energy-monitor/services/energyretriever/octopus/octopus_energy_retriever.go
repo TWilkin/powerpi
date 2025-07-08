@@ -63,7 +63,7 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption(serialNumber st
 	} else {
 		meterType = "gas"
 	}
-	meterId = fmt.Sprintf("%d", retriever.Meter.GetId())
+	meterId = retriever.Meter.GetId()
 
 	url, err := utils.GenerateURL(
 		baseURL,
