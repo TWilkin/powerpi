@@ -48,16 +48,22 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 	var meterType string
 	_, success := retriever.Meter.GetMetrics()[models.MeterMetricElectricity]
 	if success {
-		meterType = "electricity"
+		meterType = string(models.MeterMetricElectricity)
 	} else {
-		meterType = "gas"
+		_, success := retriever.Meter.GetMetrics()[models.MeterMetricGas]
+		if success {
+			meterType = string(models.MeterMetricGas)
+		} else {
+			retriever.Logger.Error("Unsupported meter type for consumption retrieval", "meter", retriever.Meter.GetName())
+			return
+		}
 	}
 
 	url, err := utils.GenerateURL(
 		baseURL,
 		[]string{fmt.Sprintf("%s-meter-points", meterType), retriever.Meter.GetId(), "meters", retriever.Meter.GetSerialNumber(), "consumption"},
 		map[string]string{
-			"page_size":   "100",
+			"page_size":   "2",
 			"period_from": "2025-07-01T00:00:00",
 			"period_to":   "2025-07-02T00:00:00",
 		},
@@ -78,4 +84,15 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 	}
 
 	retriever.Logger.Info("Successfully retrieved consumption data", "count", data.Count)
+
+	// TODO work out gas units based on the meter type
+	// TODO publish the data at the correct point in time
+	for _, result := range data.Results {
+		retriever.EventMessageService.PublishValue(
+			retriever.Meter.GetName(),
+			meterType,
+			result.Consumption,
+			"kWh",
+		)
+	}
 }
