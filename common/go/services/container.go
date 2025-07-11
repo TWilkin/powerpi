@@ -9,7 +9,7 @@ import (
 	"powerpi/common/services/http"
 	"powerpi/common/services/logger"
 	"powerpi/common/services/mqtt"
-	"powerpi/common/services/mqtt/messagequeue"
+	messageQueue "powerpi/common/services/mqtt/messagequeue"
 )
 
 type CommonContainer interface {
@@ -34,8 +34,9 @@ func NewCommonContainer() CommonContainer {
 	})
 
 	container.Provide(mqtt.NewMqttService)
-	container.Provide(messagequeue.NewDeviceMessageService)
-	container.Provide(messagequeue.NewConfigMessageService)
+	container.Provide(messageQueue.NewDeviceMessageService)
+	container.Provide(messageQueue.NewConfigMessageService)
+	container.Provide(messageQueue.NewEventMessageService)
 
 	container.Provide(func() mqtt.MqttClientFactory {
 		return mqtt.NewMqttClientFactory()
