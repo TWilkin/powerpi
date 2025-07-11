@@ -3,6 +3,7 @@ package config
 import (
 	"testing"
 
+	"powerpi/common/services/logger"
 	"powerpi/shutdown/config"
 )
 
@@ -54,7 +55,7 @@ func TestParse(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 
-			service := NewConfigService()
+			service := NewConfigService(logger.SetupMockLoggerService())
 
 			service.Parse(test.args)
 
