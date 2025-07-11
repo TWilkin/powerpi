@@ -2,15 +2,15 @@ package models
 
 type OctopusMeterSensor interface {
 	MeterSensor
-	GetAccount() string
+	GetSerialNumber() string
 }
 
 type octopusMeterSensor struct {
-	Account string `json:"account"` // Octopus account id for the meter
+	SerialNumber string `json:"serial_number"`
 }
 
-func (sensor *octopusMeterSensor) GetAccount() string {
-	return sensor.Account
+func (sensor *octopusMeterSensor) GetSerialNumber() string {
+	return sensor.SerialNumber
 }
 
 type OctopusElectricityMeterSensor struct {

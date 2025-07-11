@@ -29,45 +29,22 @@ func NewOctopusEnergyRetriever[TMeter models.OctopusMeterSensor](mqttService mqt
 func (retriever *OctopusEnergyRetriever[TMeter]) Read() {
 	retriever.Logger.Info("Reading energy data from Octopus meter", "meter", retriever.Meter.GetName())
 
-	serialNumber, err := retriever.ReadSerialNumber()
-	if err != nil {
-		retriever.Logger.Error("Failed to read serial number", "error", err)
-		return
-	}
-
-	retriever.readConsumption(serialNumber)
+	retriever.readConsumption()
 }
 
-func (retriever *OctopusEnergyRetriever[TMeter]) ReadSerialNumber() (string, error) {
-	retriever.Logger.Info("Reading account data from Octopus")
-
-	url, err := utils.GenerateURL(
-		baseURL,
-		[]string{"accounts", retriever.Meter.GetAccount()},
-		nil)
-	if err != nil {
-		return "", err
-	}
-
-	retriever.Logger.Info("Generated URL for account data", "url", url)
-	return "serial-number", nil
-}
-
-func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption(serialNumber string) {
+func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 	// identify the type of meter
 	var meterType string
-	var meterId string
 	_, success := retriever.Meter.GetMetrics()[models.MeterMetricElectricity]
 	if success {
 		meterType = "electricity"
 	} else {
 		meterType = "gas"
 	}
-	meterId = retriever.Meter.GetId()
 
 	url, err := utils.GenerateURL(
 		baseURL,
-		[]string{fmt.Sprintf("%s-meter-points", meterType), meterId, "meters", serialNumber, "consumption"},
+		[]string{fmt.Sprintf("%s-meter-points", meterType), retriever.Meter.GetId(), "meters", retriever.Meter.GetSerialNumber(), "consumption"},
 		map[string]string{
 			"page_size":   "100",
 			"period_from": "2025-07-01T00:00:00",
