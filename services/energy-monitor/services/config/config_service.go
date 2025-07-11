@@ -32,12 +32,15 @@ func NewConfigService(logger logger.LoggerService) ConfigService {
 }
 
 func (service *configService) Parse(args []string) {
-	flagSet := pflag.NewFlagSet("shutdown", pflag.ExitOnError)
+	flagSet := pflag.NewFlagSet("energy-monitor", pflag.ExitOnError)
 
 	// Octopus specific flags
 	flagSet.StringVar(&service.octopus.ApiKeyFile, "octopusApiKey", "undefined", "The path to the Octopus API key file")
 
 	service.ConfigService.ParseWithFlags(args, *flagSet)
+
+	service.logger.Info("here")
+	service.EnvironmentOverride(flagSet, "octopusApiKey", "OCTOPUS_API_KEY_FILE")
 }
 
 func (service *configService) RequiredConfig() []models.ConfigType {

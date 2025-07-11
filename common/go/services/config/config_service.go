@@ -13,6 +13,7 @@ import (
 
 type ConfigService interface {
 	ParseWithFlags(args []string, flags ...pflag.FlagSet)
+	EnvironmentOverride(flagSet *pflag.FlagSet, flag string, envKey string)
 	ReadPasswordFile(filePath string) (*string, error)
 
 	MqttConfig() config.MqttConfig
@@ -69,20 +70,20 @@ func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagS
 	}
 
 	// built-in environment overrides
-	service.environmentOverride(builtIn, "log-level", "LOG_LEVEL")
+	service.EnvironmentOverride(builtIn, "log-level", "LOG_LEVEL")
 
 	// MQTT environment overrides
-	service.environmentOverride(combined, "host", "MQTT_HOST") // TODO merge these into MQTT_ADDRESS like other services
-	service.environmentOverride(combined, "port", "MQTT_PORT")
-	service.environmentOverride(combined, "user", "MQTT_USER")
-	service.environmentOverride(combined, "password", "MQTT_SECRET_FILE")
-	service.environmentOverride(combined, "topic", "TOPIC_BASE")
+	service.EnvironmentOverride(combined, "host", "MQTT_HOST") // TODO merge these into MQTT_ADDRESS like other services
+	service.EnvironmentOverride(combined, "port", "MQTT_PORT")
+	service.EnvironmentOverride(combined, "user", "MQTT_USER")
+	service.EnvironmentOverride(combined, "password", "MQTT_SECRET_FILE")
+	service.EnvironmentOverride(combined, "topic", "TOPIC_BASE")
 
 	// set the log level
 	service.logger.SetLevel(combined.Lookup("log-level").Value.String())
 }
 
-func (service *configService) environmentOverride(flagSet *pflag.FlagSet, flag string, envKey string) {
+func (service *configService) EnvironmentOverride(flagSet *pflag.FlagSet, flag string, envKey string) {
 	if flagSet.Lookup(flag).Changed {
 		return
 	}
@@ -105,7 +106,7 @@ func (service *configService) ReadPasswordFile(passwordFile string) (*string, er
 
 		permissions := info.Mode().Perm()
 		if permissions != 0o600 {
-			service.logger.Error("Incorrect permissions (0%o), must be 0600 on '%s'", permissions, passwordFile)
+			service.logger.Warn("Open permissions on password file", "file", passwordFile, "permission", permissions)
 		}
 
 		data, err := os.ReadFile(passwordFile)
