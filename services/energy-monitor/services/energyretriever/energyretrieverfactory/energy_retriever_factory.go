@@ -16,14 +16,20 @@ type EnergyRetrieverFactory interface {
 
 type energyRetrieverFactory struct {
 	eventMessageService messageQueue.EventMessageService
+	httpClientFactory   http.HTTPClientFactory
 	config              config.ConfigService
 	logger              logger.LoggerService
-	httpClientFactory   http.HTTPClientFactory
 }
 
-func NewEnergyRetrieverFactory(eventMessageService messageQueue.EventMessageService, config config.ConfigService, logger logger.LoggerService) EnergyRetrieverFactory {
+func NewEnergyRetrieverFactory(
+	eventMessageService messageQueue.EventMessageService,
+	httpClientFactory http.HTTPClientFactory,
+	config config.ConfigService,
+	logger logger.LoggerService,
+) EnergyRetrieverFactory {
 	return &energyRetrieverFactory{
 		eventMessageService: eventMessageService,
+		httpClientFactory:   httpClientFactory,
 		config:              config,
 		logger:              logger,
 	}
@@ -31,7 +37,13 @@ func NewEnergyRetrieverFactory(eventMessageService messageQueue.EventMessageServ
 
 func (factory *energyRetrieverFactory) BuildRetriever(meter models.MeterSensor) energyRetriever.EnergyRetriever {
 	if octopusMeter, success := meter.(models.OctopusMeterSensor); success {
-		return octopus.NewOctopusEnergyRetriever(factory.eventMessageService, factory.config, factory.logger, factory.httpClientFactory, octopusMeter)
+		return octopus.NewOctopusEnergyRetriever(
+			factory.eventMessageService,
+			factory.httpClientFactory,
+			factory.config,
+			factory.logger,
+			octopusMeter,
+		)
 	}
 
 	factory.logger.Warn("Unsupported meter type for energy retrieval: %T", meter)

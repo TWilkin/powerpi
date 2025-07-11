@@ -14,15 +14,16 @@ import (
 
 type OctopusEnergyRetriever[TMeter models.OctopusMeterSensor] struct {
 	*energyRetriever.BaseEnergyRetriever[TMeter]
+	httpClientFactory http.HTTPClientFactory
 }
 
 const baseURL = "https://api.octopus.energy/v1"
 
 func NewOctopusEnergyRetriever[TMeter models.OctopusMeterSensor](
 	eventMessageService messageQueue.EventMessageService,
+	httpClientFactory http.HTTPClientFactory,
 	config config.ConfigService,
 	logger logger.LoggerService,
-	httpClientFactory http.HTTPClientFactory,
 	meter TMeter,
 ) *OctopusEnergyRetriever[TMeter] {
 	return &OctopusEnergyRetriever[TMeter]{
@@ -32,6 +33,7 @@ func NewOctopusEnergyRetriever[TMeter models.OctopusMeterSensor](
 			Logger:              logger,
 			Meter:               meter,
 		},
+		httpClientFactory: httpClientFactory,
 	}
 }
 
@@ -66,7 +68,7 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 	}
 	retriever.Logger.Debug("Generated URL for consumption data", "url", url)
 
-	client := http.NewHTTPClient()
+	client := retriever.httpClientFactory.BuildClient()
 	client.SetBasicAuth(*retriever.Config.GetOctopusAPIKey(), "")
 
 	data, err := http.Get[ConsumptionResponse](client, url)

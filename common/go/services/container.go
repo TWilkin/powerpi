@@ -24,13 +24,15 @@ type commonContainer struct {
 
 func NewCommonContainer() CommonContainer {
 	container := dig.New()
+	commonContainer := commonContainer{container}
 
 	container.Provide(clock.NewClockService)
 	container.Provide(configRetriever.NewConfigRetriever)
 	container.Provide(logger.NewLoggerService)
 
 	container.Provide(func() http.HTTPClientFactory {
-		return http.NewHTTPClientFactory()
+		logger := GetService[logger.LoggerService](commonContainer)
+		return http.NewHTTPClientFactory(logger)
 	})
 
 	container.Provide(mqtt.NewMqttService)
@@ -42,7 +44,7 @@ func NewCommonContainer() CommonContainer {
 		return mqtt.NewMqttClientFactory()
 	})
 
-	return commonContainer{container}
+	return commonContainer
 }
 
 func (container commonContainer) Container() *dig.Container {

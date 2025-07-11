@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"powerpi/common/services/logger"
 )
 
 type HTTPClient interface {
+	getLogger() logger.LoggerService
+
 	SetBasicAuth(username string, password string)
 
 	Get(url string) (*http.Response, error)
@@ -14,17 +17,23 @@ type HTTPClient interface {
 
 type httpClient struct {
 	client *http.Client
+	logger logger.LoggerService
 
 	username *string
 	password *string
 }
 
-func NewHTTPClient() HTTPClient {
+func NewHTTPClient(logger logger.LoggerService) HTTPClient {
 	return &httpClient{
 		client:   http.DefaultClient,
+		logger:   logger,
 		username: nil,
 		password: nil,
 	}
+}
+
+func (client *httpClient) getLogger() logger.LoggerService {
+	return client.logger
 }
 
 func (client *httpClient) SetBasicAuth(username string, password string) {
@@ -74,6 +83,8 @@ func Get[TResponse any](client HTTPClient, url string) (*TResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	client.getLogger().Debug("Received response", "url", url, "status", response.Status, "body", string(body))
 
 	var result TResponse
 	err = json.Unmarshal(body, &result)

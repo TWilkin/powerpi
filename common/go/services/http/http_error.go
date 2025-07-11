@@ -5,7 +5,6 @@ import "fmt"
 type HTTPError struct {
 	StatusCode int
 	Status     string
-	Body       string
 }
 
 func (error *HTTPError) Error() string {

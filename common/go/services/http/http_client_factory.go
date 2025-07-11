@@ -1,9 +1,21 @@
 package http
 
-type HTTPClientFactory func() HTTPClient
+import "powerpi/common/services/logger"
 
-func NewHTTPClientFactory() HTTPClientFactory {
-	return func() HTTPClient {
-		return NewHTTPClient()
+type HTTPClientFactory interface {
+	BuildClient() HTTPClient
+}
+
+type httpClientFactory struct {
+	logger logger.LoggerService
+}
+
+func NewHTTPClientFactory(logger logger.LoggerService) HTTPClientFactory {
+	return httpClientFactory{
+		logger: logger,
 	}
+}
+
+func (factory httpClientFactory) BuildClient() HTTPClient {
+	return NewHTTPClient(factory.logger)
 }
