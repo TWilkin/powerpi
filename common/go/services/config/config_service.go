@@ -13,6 +13,7 @@ import (
 
 type ConfigService interface {
 	ParseWithFlags(args []string, flags ...pflag.FlagSet)
+	ReadPasswordFile(filePath string) (*string, error)
 
 	MqttConfig() config.MqttConfig
 	GetMqttPassword() *string
@@ -92,21 +93,14 @@ func (service *configService) environmentOverride(flagSet *pflag.FlagSet, flag s
 	}
 }
 
-func (service *configService) MqttConfig() config.MqttConfig {
-	return service.mqtt
-}
-
-func (service *configService) GetMqttPassword() *string {
-	passwordFile := service.mqtt.PasswordFile
-
+func (service *configService) ReadPasswordFile(passwordFile string) (*string, error) {
 	var password *string
-	password = nil
 
 	if passwordFile != "undefined" {
 		// check the password file permissions
 		info, err := os.Stat(passwordFile)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		permissions := info.Mode().Perm()
@@ -116,12 +110,26 @@ func (service *configService) GetMqttPassword() *string {
 
 		data, err := os.ReadFile(passwordFile)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		str := string(data)
 		str = strings.TrimSpace(str)
 		password = &str
+	}
+
+	return password, nil
+}
+
+func (service *configService) MqttConfig() config.MqttConfig {
+	return service.mqtt
+}
+
+func (service *configService) GetMqttPassword() *string {
+	password, err := service.ReadPasswordFile(service.mqtt.PasswordFile)
+	if err != nil {
+		service.logger.Error("Failed to read MQTT password file", "error", err)
+		panic(err)
 	}
 
 	return password
