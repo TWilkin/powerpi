@@ -7,6 +7,7 @@ import (
 	"powerpi/common/services/mqtt"
 	"powerpi/common/utils"
 	"powerpi/energy-monitor/models"
+	"powerpi/energy-monitor/services/config"
 	energyRetriever "powerpi/energy-monitor/services/energyretriever"
 )
 
@@ -16,10 +17,16 @@ type OctopusEnergyRetriever[TMeter models.OctopusMeterSensor] struct {
 
 const baseURL = "https://api.octopus.energy/v1"
 
-func NewOctopusEnergyRetriever[TMeter models.OctopusMeterSensor](mqttService mqtt.MqttService, logger logger.LoggerService, meter TMeter) *OctopusEnergyRetriever[TMeter] {
+func NewOctopusEnergyRetriever[TMeter models.OctopusMeterSensor](
+	mqttService mqtt.MqttService,
+	config config.ConfigService,
+	logger logger.LoggerService,
+	meter TMeter,
+) *OctopusEnergyRetriever[TMeter] {
 	return &OctopusEnergyRetriever[TMeter]{
 		BaseEnergyRetriever: &energyRetriever.BaseEnergyRetriever[TMeter]{
 			MqttService: mqttService,
+			Config:      config,
 			Logger:      logger,
 			Meter:       meter,
 		},
@@ -57,4 +64,6 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 	}
 
 	retriever.Logger.Info("Generated URL for consumption data", "url", url)
+
+	retriever.Config.GetOctopusAPIKey()
 }
