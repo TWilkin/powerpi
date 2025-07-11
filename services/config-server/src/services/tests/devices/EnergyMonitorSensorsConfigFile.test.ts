@@ -7,7 +7,7 @@ describe("Octopus Electricity Meter Sensor", () => {
                 type: "octopus_electricity_meter",
                 name: "Sensor",
                 metrics: { electricity: "visible" },
-                account: "A-AAAA1234",
+                serial_number: "SN-123",
                 mpan: "1234567890123",
                 location: "Hallway",
             },
@@ -21,7 +21,7 @@ describe("Octopus Electricity Meter Sensor", () => {
                     {
                         type: "octopus_electricity_meter",
                         name: "Sensor",
-                        account: "A-AAAA1234",
+                        serial_number: "SN-123",
                         mpan: "1234567890123",
                         location: "Hallway",
                     },
@@ -34,7 +34,7 @@ describe("Octopus Electricity Meter Sensor", () => {
                     {
                         type: "octopus_electricity_meter",
                         name: "Sensor",
-                        account: "A-AAAA1234",
+                        serial_number: "SN-123",
                         mpan: "1234567890123",
                         location: "Hallway",
                         metrics: {},
@@ -48,7 +48,7 @@ describe("Octopus Electricity Meter Sensor", () => {
                     {
                         type: "octopus_electricity_meter",
                         name: "Sensor",
-                        account: "A-AAAA1234",
+                        serial_number: "SN-123",
                         mpan: "1234567890123",
                         location: "Hallway",
                         metrics: {
@@ -64,7 +64,7 @@ describe("Octopus Electricity Meter Sensor", () => {
                     {
                         type: "octopus_electricity_meter",
                         name: "Sensor",
-                        account: "A-AAAA1234",
+                        serial_number: "SN-123",
                         mpan: "1234567890123",
                         location: "Hallway",
                         metrics: {
@@ -75,7 +75,7 @@ describe("Octopus Electricity Meter Sensor", () => {
             }));
     });
 
-    describe("Account", () => {
+    describe("Serial Number", () => {
         test("Missing", () =>
             testInvalid({
                 sensors: [
@@ -89,7 +89,7 @@ describe("Octopus Electricity Meter Sensor", () => {
                 ],
             }));
 
-        test.each(["", 12345])("Empty or invalid account number %s", (account) =>
+        test.each([null, undefined, 12345])("Empty or invalid serial number %s", (serialNumber) =>
             testInvalid({
                 sensors: [
                     {
@@ -98,7 +98,7 @@ describe("Octopus Electricity Meter Sensor", () => {
                         metrics: { electricity: "visible" },
                         mpan: "1234567890123",
                         location: "Hallway",
-                        account,
+                        serial_number: serialNumber,
                     },
                 ],
             }),
@@ -112,7 +112,7 @@ describe("Octopus Electricity Meter Sensor", () => {
                     {
                         type: "octopus_electricity_meter",
                         name: "Sensor",
-                        account: "A-AAAA1234",
+                        serial_number: "SN-123",
                         location: "Hallway",
                         metrics: { electricity: "visible" },
                     },
@@ -126,7 +126,7 @@ describe("Octopus Electricity Meter Sensor", () => {
                         type: "octopus_electricity_meter",
                         name: "Sensor",
                         metrics: { electricity: "visible" },
-                        account: "A-AAAA1234",
+                        serial_number: "SN-123",
                         location: "Hallway",
                         mpan,
                     },
@@ -143,7 +143,7 @@ describe("Octopus Gas Meter Sensor", () => {
                 type: "octopus_gas_meter",
                 name: "Sensor",
                 metrics: { gas: "visible" },
-                account: "A-AAAA1234",
+                serial_number: "SN-123",
                 mprn: "123456",
                 location: "Hallway",
             },
@@ -157,7 +157,7 @@ describe("Octopus Gas Meter Sensor", () => {
                     {
                         type: "octopus_gas_meter",
                         name: "Sensor",
-                        account: "A-AAAA1234",
+                        serial_number: "SN-123",
                         mprn: "123456",
                         location: "Hallway",
                     },
@@ -170,7 +170,7 @@ describe("Octopus Gas Meter Sensor", () => {
                     {
                         type: "octopus_gas_meter",
                         name: "Sensor",
-                        account: "A-AAAA1234",
+                        serial_number: "SN-123",
                         mprn: "123456",
                         location: "Hallway",
                         metrics: {},
@@ -184,7 +184,7 @@ describe("Octopus Gas Meter Sensor", () => {
                     {
                         type: "octopus_gas_meter",
                         name: "Sensor",
-                        account: "A-AAAA1234",
+                        serial_number: "SN-123",
                         mprn: "123456",
                         location: "Hallway",
                         metrics: {
@@ -200,7 +200,7 @@ describe("Octopus Gas Meter Sensor", () => {
                     {
                         type: "octopus_gas_meter",
                         name: "Sensor",
-                        account: "A-AAAA1234",
+                        serial_number: "SN-123",
                         mprn: "123456",
                         location: "Hallway",
                         metrics: {
@@ -211,7 +211,7 @@ describe("Octopus Gas Meter Sensor", () => {
             }));
     });
 
-    describe("Account", () => {
+    describe("Serial Number", () => {
         test("Missing", () =>
             testInvalid({
                 sensors: [
@@ -225,7 +225,7 @@ describe("Octopus Gas Meter Sensor", () => {
                 ],
             }));
 
-        test.each(["", 12345])("Empty or invalid account number %s", (account) =>
+        test.each([null, undefined, 12345])("Empty or invalid serial number %s", (serialNumber) =>
             testInvalid({
                 sensors: [
                     {
@@ -234,7 +234,7 @@ describe("Octopus Gas Meter Sensor", () => {
                         metrics: { gas: "visible" },
                         mprn: "123456",
                         location: "Hallway",
-                        account,
+                        serial_number: serialNumber,
                     },
                 ],
             }),
@@ -248,7 +248,7 @@ describe("Octopus Gas Meter Sensor", () => {
                     {
                         type: "octopus_gas_meter",
                         name: "Sensor",
-                        account: "A-AAAA1234",
+                        serial_number: "SN-123",
                         location: "Hallway",
                         metrics: { gas: "visible" },
                     },
@@ -262,7 +262,7 @@ describe("Octopus Gas Meter Sensor", () => {
                         type: "octopus_gas_meter",
                         name: "Sensor",
                         metrics: { gas: "visible" },
-                        account: "A-AAAA1234",
+                        serial_number: "SN-123",
                         location: "Hallway",
                         mprn,
                     },

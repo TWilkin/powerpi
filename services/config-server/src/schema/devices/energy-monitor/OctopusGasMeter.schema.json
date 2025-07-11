@@ -13,11 +13,11 @@
         "type": {
             "const": "octopus_gas_meter"
         },
-        "account": {
-            "description": "The Octopus account number associated with this gas meter",
-            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energy-monitor/OctopusAccountNumber.schema.json"
+        "serial_number": {
+            "description": "The serial number associated with this gas meter",
+            "type": "string"
         }
     },
-    "required": ["account"],
+    "required": ["serial_number"],
     "unevaluatedProperties": false
 }
