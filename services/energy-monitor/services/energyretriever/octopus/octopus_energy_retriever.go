@@ -1,11 +1,9 @@
 package octopus
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 
+	"powerpi/common/services/http"
 	"powerpi/common/services/logger"
 	"powerpi/common/services/mqtt"
 	"powerpi/common/utils"
@@ -24,6 +22,7 @@ func NewOctopusEnergyRetriever[TMeter models.OctopusMeterSensor](
 	mqttService mqtt.MqttService,
 	config config.ConfigService,
 	logger logger.LoggerService,
+	httpClientFactory http.HTTPClientFactory,
 	meter TMeter,
 ) *OctopusEnergyRetriever[TMeter] {
 	return &OctopusEnergyRetriever[TMeter]{
@@ -67,36 +66,12 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 	}
 	retriever.Logger.Debug("Generated URL for consumption data", "url", url)
 
-	request, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		retriever.Logger.Error("Failed to create HTTP request for consumption data", "error", err)
-		return
-	}
+	client := http.NewHTTPClient()
+	client.SetBasicAuth(*retriever.Config.GetOctopusAPIKey(), "")
 
-	apiKey := retriever.Config.GetOctopusAPIKey()
-	request.SetBasicAuth(*apiKey, "")
-
-	response, err := http.DefaultClient.Do(request)
+	data, err := http.Get[ConsumptionResponse](client, url)
 	if err != nil {
-		retriever.Logger.Error("Failed to fetch consumption data from Octopus API", "error", err)
-		return
-	}
-
-	defer response.Body.Close()
-	if response.StatusCode != http.StatusOK {
-		retriever.Logger.Error("Received non-OK response from Octopus API", "status", response.Status)
-		return
-	}
-
-	var data ConsumptionResponse
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		retriever.Logger.Error("Failed to read response body", "error", err)
-		return
-	}
-	err = json.Unmarshal(body, &data)
-	if err != nil {
-		retriever.Logger.Error("Failed to unmarshal consumption data", "error", err, "body", string(body))
+		retriever.Logger.Error("Failed to request consumption data", "error", err)
 		return
 	}
 

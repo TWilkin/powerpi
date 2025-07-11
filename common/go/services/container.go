@@ -6,6 +6,7 @@ import (
 	"powerpi/common/services/clock"
 	"powerpi/common/services/config"
 	configRetriever "powerpi/common/services/config_retriever"
+	"powerpi/common/services/http"
 	"powerpi/common/services/logger"
 	"powerpi/common/services/mqtt"
 	"powerpi/common/services/mqtt/messagequeue"
@@ -27,6 +28,10 @@ func NewCommonContainer() CommonContainer {
 	container.Provide(clock.NewClockService)
 	container.Provide(configRetriever.NewConfigRetriever)
 	container.Provide(logger.NewLoggerService)
+
+	container.Provide(func() http.HTTPClientFactory {
+		return http.NewHTTPClientFactory()
+	})
 
 	container.Provide(mqtt.NewMqttService)
 	container.Provide(messagequeue.NewDeviceMessageService)
