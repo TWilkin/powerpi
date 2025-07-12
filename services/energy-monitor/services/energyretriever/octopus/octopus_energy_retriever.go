@@ -61,6 +61,7 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 			"page_size":   "100",
 			"period_from": retriever.GetStartDate().Format(time.RFC3339),
 			"period_to":   time.Now().Format(time.RFC3339),
+			"order_by":    "period",
 		},
 	)
 	if err != nil {
