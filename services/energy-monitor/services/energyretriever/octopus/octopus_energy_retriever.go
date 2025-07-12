@@ -86,13 +86,16 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 	retriever.Logger.Info("Successfully retrieved consumption data", "count", data.Count)
 
 	// TODO work out gas units based on the meter type
-	// TODO publish the data at the correct point in time
 	for _, result := range data.Results {
-		retriever.EventMessageService.PublishValue(
+
+		timestamp := result.IntervalEnd.Unix() * 1000
+
+		retriever.EventMessageService.PublishValueWithTime(
 			retriever.Meter.GetName(),
 			meterType,
 			result.Consumption,
 			"kWh",
+			&timestamp,
 		)
 	}
 }
