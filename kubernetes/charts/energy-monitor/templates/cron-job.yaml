@@ -1,10 +1,7 @@
 {{- $data := dict
   "Schedule" (.Values.schedule | default "5 5 * * *")
-  "Command" (list "yarn")
+  "Command" (list "./powerpi_energy_monitor")
   "Args" (list 
-    "workspace"
-    "@powerpi/energy-monitor"
-    "start:prd"
     (print "--history=" (.Values.history | default 30))
   )
   "MqttSecret" "mosquitto-sensor-secret"
