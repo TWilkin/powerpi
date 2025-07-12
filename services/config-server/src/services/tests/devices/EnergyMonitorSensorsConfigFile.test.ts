@@ -137,13 +137,14 @@ describe("Octopus Electricity Meter Sensor", () => {
 });
 
 describe("Octopus Gas Meter Sensor", () => {
-    const { testInvalid } = commonSensorTests({
+    const { testValid, testInvalid } = commonSensorTests({
         sensors: [
             {
                 type: "octopus_gas_meter",
                 name: "Sensor",
                 metrics: { gas: "visible" },
                 serial_number: "SN-123",
+                generation: "SMETS2",
                 mprn: "123456",
                 location: "Hallway",
             },
@@ -158,6 +159,7 @@ describe("Octopus Gas Meter Sensor", () => {
                         type: "octopus_gas_meter",
                         name: "Sensor",
                         serial_number: "SN-123",
+                        generation: "SMETS2",
                         mprn: "123456",
                         location: "Hallway",
                     },
@@ -171,6 +173,7 @@ describe("Octopus Gas Meter Sensor", () => {
                         type: "octopus_gas_meter",
                         name: "Sensor",
                         serial_number: "SN-123",
+                        generation: "SMETS2",
                         mprn: "123456",
                         location: "Hallway",
                         metrics: {},
@@ -185,6 +188,7 @@ describe("Octopus Gas Meter Sensor", () => {
                         type: "octopus_gas_meter",
                         name: "Sensor",
                         serial_number: "SN-123",
+                        generation: "SMETS2",
                         mprn: "123456",
                         location: "Hallway",
                         metrics: {
@@ -201,6 +205,7 @@ describe("Octopus Gas Meter Sensor", () => {
                         type: "octopus_gas_meter",
                         name: "Sensor",
                         serial_number: "SN-123",
+                        generation: "SMETS2",
                         mprn: "123456",
                         location: "Hallway",
                         metrics: {
@@ -218,6 +223,7 @@ describe("Octopus Gas Meter Sensor", () => {
                     {
                         type: "octopus_gas_meter",
                         name: "Sensor",
+                        generation: "SMETS2",
                         mprn: "123456",
                         location: "Hallway",
                         metrics: { gas: "visible" },
@@ -232,12 +238,49 @@ describe("Octopus Gas Meter Sensor", () => {
                         type: "octopus_gas_meter",
                         name: "Sensor",
                         metrics: { gas: "visible" },
+                        generation: "SMETS2",
                         mprn: "123456",
                         location: "Hallway",
                         serial_number: serialNumber,
                     },
                 ],
             }),
+        );
+    });
+
+    describe("Generation", () => {
+        test.each(["SMETS1", "SMETS2"])("Valid generation %s", (generation) =>
+            testValid({
+                sensors: [
+                    {
+                        type: "octopus_gas_meter",
+                        name: "Sensor",
+                        metrics: { gas: "visible" },
+                        serial_number: "SN-123",
+                        mprn: "123456",
+                        location: "Hallway",
+                        generation,
+                    },
+                ],
+            }),
+        );
+
+        test.each([null, undefined, "SMETS0", 12345])(
+            "Empty or invalid generation %s",
+            (generation) =>
+                testInvalid({
+                    sensors: [
+                        {
+                            type: "octopus_gas_meter",
+                            name: "Sensor",
+                            metrics: { gas: "visible" },
+                            serial_number: "SN-123",
+                            mprn: "123456",
+                            location: "Hallway",
+                            generation,
+                        },
+                    ],
+                }),
         );
     });
 
@@ -249,6 +292,7 @@ describe("Octopus Gas Meter Sensor", () => {
                         type: "octopus_gas_meter",
                         name: "Sensor",
                         serial_number: "SN-123",
+                        generation: "SMETS2",
                         location: "Hallway",
                         metrics: { gas: "visible" },
                     },
@@ -263,6 +307,7 @@ describe("Octopus Gas Meter Sensor", () => {
                         name: "Sensor",
                         metrics: { gas: "visible" },
                         serial_number: "SN-123",
+                        generation: "SMETS2",
                         location: "Hallway",
                         mprn,
                     },

@@ -16,8 +16,13 @@
         "serial_number": {
             "description": "The serial number associated with this gas meter",
             "type": "string"
+        },
+        "generation": {
+            "description": "The generation of the gas meter, used to determine the unit of measurement",
+            "type": "string",
+            "enum": ["SMETS1", "SMETS2"]
         }
     },
-    "required": ["serial_number"],
+    "required": ["serial_number", "generation"],
     "unevaluatedProperties": false
 }
