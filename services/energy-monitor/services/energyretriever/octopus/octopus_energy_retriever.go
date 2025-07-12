@@ -90,7 +90,7 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 		// TODO work out gas units based on the meter type
 		for _, result := range data.Results {
 
-			timestamp := result.IntervalEnd.Unix() * 1000
+			timestamp := result.IntervalEnd.UnixMilli()
 
 			retriever.EventMessageService.PublishValueWithTime(
 				retriever.Meter.GetName(),
