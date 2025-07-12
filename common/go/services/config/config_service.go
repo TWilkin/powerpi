@@ -1,6 +1,7 @@
 package config
 
 import (
+	"net/url"
 	"os"
 	"strings"
 
@@ -46,7 +47,7 @@ func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagS
 
 	// MQTT
 	mqtt := pflag.NewFlagSet("mqtt", pflag.ExitOnError)
-	mqtt.StringVar(&service.mqtt.Host, "host", "localhost", "The hostname of the MQTT broker")
+	mqtt.StringVar(&service.mqtt.Host, "host", "mosquitto", "The hostname of the MQTT broker")
 	mqtt.IntVar(&service.mqtt.Port, "port", 1883, "The port number for the MQTT broker")
 	mqtt.StringVar(&service.mqtt.User, "user", "device", "The username for the MQTT broker")
 	mqtt.StringVar(&service.mqtt.PasswordFile, "password", "undefined", "The path to the password file")
@@ -73,8 +74,9 @@ func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagS
 	service.EnvironmentOverride(builtIn, "log-level", "LOG_LEVEL")
 
 	// MQTT environment overrides
-	service.EnvironmentOverride(combined, "host", "MQTT_HOST") // TODO merge these into MQTT_ADDRESS like other services
+	service.EnvironmentOverride(combined, "host", "MQTT_HOST")
 	service.EnvironmentOverride(combined, "port", "MQTT_PORT")
+	service.readMQTTAddress(combined, "MQTT_ADDRESS")
 	service.EnvironmentOverride(combined, "user", "MQTT_USER")
 	service.EnvironmentOverride(combined, "password", "MQTT_SECRET_FILE")
 	service.EnvironmentOverride(combined, "topic", "TOPIC_BASE")
@@ -160,4 +162,25 @@ func (service *configService) SetConfig(configType models.ConfigType, data map[s
 	}
 
 	service.configMap[configType] = config
+}
+
+func (service *configService) readMQTTAddress(flagSet *pflag.FlagSet, envKey string) {
+	if flagSet.Lookup("host").Changed || flagSet.Lookup("port").Changed {
+		return
+	}
+
+	envValue, exists := os.LookupEnv(envKey)
+	if exists && envValue != "" {
+		url, err := url.Parse(envValue)
+		if err != nil {
+			service.logger.Error("Failed to parse MQTT address", "error", err)
+			return
+		}
+
+		flagSet.Set("host", url.Hostname())
+		if port := url.Port(); port != "" {
+			flagSet.Set("port", port)
+		}
+	}
+
 }
