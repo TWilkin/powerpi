@@ -144,7 +144,7 @@ func Publish[TMessage mqttMessage](service MqttService, typ string, entity strin
 		return
 	}
 
-	service.getLogger().Info("Publishing", "topic", topic, "payload", payload)
+	service.getLogger().Info("Publishing", "topic", topic, "payload", string(payload))
 	token := service.getClient().Publish(topic, 2, true, payload)
 
 	token.Wait()
