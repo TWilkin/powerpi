@@ -22,6 +22,7 @@ type DeviceMessageService interface {
 	PublishCapability(device string, capability models.Capability)
 
 	SubscribeChange(device string, channel chan<- *DeviceMessage)
+	UnsubscribeChange(device string)
 }
 
 type deviceMessageService struct {
@@ -60,4 +61,8 @@ func (service deviceMessageService) PublishCapability(device string, capability 
 
 func (service deviceMessageService) SubscribeChange(device string, channel chan<- *DeviceMessage) {
 	mqtt.Subscribe(service.mqttService, "device", device, "change", false, channel)
+}
+
+func (service deviceMessageService) UnsubscribeChange(device string) {
+	service.mqttService.Unsubscribe("device", device, "change")
 }

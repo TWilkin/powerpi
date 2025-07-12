@@ -41,15 +41,18 @@ func (retriever *BaseEnergyRetriever[TMeter]) GetMeterType() string {
 }
 
 func (retriever *BaseEnergyRetriever[TMeter]) GetStartDate() time.Time {
+	meterName := retriever.Meter.GetName()
+	meterType := retriever.GetMeterType()
+
 	// First let's see if there is a last published event
 	channel := make(chan *messagequeue.EventMessage)
+	retriever.EventMessageService.SubscribeValue(meterName, meterType, channel)
+	defer retriever.EventMessageService.UnsubscribeValue(meterName, meterType)
 	defer close(channel)
-
-	retriever.EventMessageService.SubscribeValue(retriever.Meter.GetName(), retriever.GetMeterType(), channel)
 
 	select {
 	case message := <-channel:
-		retriever.Logger.Info("Received event for", "meter", retriever.Meter.GetName(), "message", message)
+		retriever.Logger.Info("Received event for", "meter", meterName, "message", message)
 
 		timestamp := message.GetTimestamp()
 		nanoseconds := (timestamp % 1000) * 1_000_000

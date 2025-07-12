@@ -14,6 +14,7 @@ type ConfigMessage struct {
 
 type ConfigMessageService interface {
 	SubscribeChange(config models.ConfigType, channel chan<- *ConfigMessage)
+	UnsubscribeChange(config models.ConfigType)
 }
 
 type configMessageService struct {
@@ -28,4 +29,8 @@ func NewConfigMessageService(mqttService mqtt.MqttService) ConfigMessageService 
 
 func (service configMessageService) SubscribeChange(config models.ConfigType, channel chan<- *ConfigMessage) {
 	mqtt.Subscribe(service.mqttService, "config", string(config), "change", true, channel)
+}
+
+func (service configMessageService) UnsubscribeChange(config models.ConfigType) {
+	service.mqttService.Unsubscribe("config", string(config), "change")
 }

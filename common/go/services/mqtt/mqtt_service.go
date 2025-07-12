@@ -19,6 +19,7 @@ import (
 type MqttService interface {
 	Connect(clientIdPrefix string)
 	Join()
+	Unsubscribe(typ string, entity string, action string)
 
 	topic(typ string, entity string, action string) string
 
@@ -98,6 +99,18 @@ func (service *mqttService) Connect(clientIdPrefix string) {
 
 func (service mqttService) Join() {
 	<-service.commandChannel
+}
+
+func (service mqttService) Unsubscribe(typ string, entity string, action string) {
+	topic := service.topic(typ, entity, action)
+	service.logger.Info("Unsubscribing from", "topic", topic)
+
+	token := service.client.Unsubscribe(topic)
+	token.Wait()
+
+	if token.Error() != nil {
+		panic(token.Error())
+	}
 }
 
 func (service mqttService) process() {
