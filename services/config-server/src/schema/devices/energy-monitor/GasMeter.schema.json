@@ -1,0 +1,32 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energy-monitor/GasMeter.schema.json",
+    "title": "GasMeter",
+    "description": "A sensor that emits gas meter readings using the energy-monitor service",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Sensor.schema.json"
+        }
+    ],
+    "properties": {
+        "mprn": {
+            "description": "The MPRN (Meter Point Reference Number) of the gas meter",
+            "type": "string",
+            "pattern": "^\\d{6,10}$"
+        },
+        "metrics": {
+            "description": "The list of metrics to enable for this meter",
+            "type": "object",
+            "properties": {
+                "gas": {
+                    "description": "Whether to capture the gas usage reported by the sensor",
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                }
+            },
+            "required": ["gas"],
+            "additionalProperties": false
+        }
+    },
+    "required": ["mprn", "metrics"]
+}

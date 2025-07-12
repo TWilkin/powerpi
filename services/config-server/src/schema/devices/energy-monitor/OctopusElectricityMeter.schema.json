@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energy-monitor/OctopusElectricityMeter.schema.json",
+    "title": "OctopusElectricityMeter",
+    "description": "A sensor that emits electricity meter readings using the Octopus API via the energy-monitor service",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energy-monitor/ElectricityMeter.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "octopus_electricity_meter"
+        },
+        "serial_number": {
+            "description": "The serial number associated with this electricity meter",
+            "type": "string"
+        }
+    },
+    "required": ["serial_number"],
+    "unevaluatedProperties": false
+}
