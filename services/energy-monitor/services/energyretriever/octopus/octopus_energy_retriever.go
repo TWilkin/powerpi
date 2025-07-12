@@ -63,7 +63,7 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 		baseURL,
 		[]string{fmt.Sprintf("%s-meter-points", meterType), retriever.Meter.GetId(), "meters", retriever.Meter.GetSerialNumber(), "consumption"},
 		map[string]string{
-			"page_size":   "2",
+			"page_size":   "10",
 			"period_from": "2025-07-01T00:00:00",
 			"period_to":   "2025-07-02T00:00:00",
 		},
@@ -77,25 +77,33 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 	client := retriever.httpClientFactory.BuildClient()
 	client.SetBasicAuth(*retriever.Config.GetOctopusAPIKey(), "")
 
-	data, err := http.Get[ConsumptionResponse](client, url)
-	if err != nil {
-		retriever.Logger.Error("Failed to request consumption data", "error", err)
-		return
-	}
+	for {
+		data, err := http.Get[ConsumptionResponse](client, url)
+		if err != nil {
+			retriever.Logger.Error("Failed to request consumption data", "error", err)
+			break
+		}
 
-	retriever.Logger.Info("Successfully retrieved consumption data", "count", data.Count)
+		retriever.Logger.Info("Successfully retrieved consumption data", "count", data.Count)
 
-	// TODO work out gas units based on the meter type
-	for _, result := range data.Results {
+		// TODO work out gas units based on the meter type
+		for _, result := range data.Results {
 
-		timestamp := result.IntervalEnd.Unix() * 1000
+			timestamp := result.IntervalEnd.Unix() * 1000
 
-		retriever.EventMessageService.PublishValueWithTime(
-			retriever.Meter.GetName(),
-			meterType,
-			result.Consumption,
-			"kWh",
-			&timestamp,
-		)
+			retriever.EventMessageService.PublishValueWithTime(
+				retriever.Meter.GetName(),
+				meterType,
+				result.Consumption,
+				"kWh",
+				&timestamp,
+			)
+		}
+
+		if data.Next != nil {
+			break
+		}
+
+		url = *data.Next
 	}
 }

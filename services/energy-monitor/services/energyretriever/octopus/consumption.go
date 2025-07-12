@@ -5,6 +5,7 @@ import "time"
 type ConsumptionResponse struct {
 	Count   int                 `json:"count"`
 	Results []ConsumptionResult `json:"results"`
+	Next    *string             `json:"next"`
 }
 
 type ConsumptionResult struct {
