@@ -10,7 +10,7 @@ all: compile
 
 $(TARGET_DIR)/powerpi_energy_monitor: $(LIBRARY_SOURCES) $(SOURCES)
 	mkdir -p $(TARGET_DIR)
-	go build -tags netgo -ldflags '-extldflags "-static"' -ldflags="-X 'main.Version=v$(VERSION)'" -o $@
+	env GOOS=$(GOOS) GOARCH=$(GOARCH) go build -tags netgo -ldflags '-extldflags "-static"' -ldflags="-X 'main.Version=v$(VERSION)'" -o $@
 
 compile: $(TARGET_DIR)/powerpi_energy_monitor
 
