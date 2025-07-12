@@ -2,6 +2,7 @@ package octopus
 
 import (
 	"fmt"
+	"time"
 
 	"powerpi/common/services/http"
 	"powerpi/common/services/logger"
@@ -98,6 +99,8 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 				"kWh",
 				&timestamp,
 			)
+
+			time.Sleep(time.Duration(retriever.Config.GetEnergyMonitorConfig().MessageWriteDelay) * time.Millisecond)
 		}
 
 		if data.Next != nil {
