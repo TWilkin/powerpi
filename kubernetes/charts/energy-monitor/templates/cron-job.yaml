@@ -10,11 +10,11 @@
   "MqttSecret" "mosquitto-sensor-secret"
   "Secret" (list
     (dict
-      "Name" "ihd-secret"
+      "Name" "octopus-api-secret"
       "Env" (list
         (dict
-          "Name" "IHD_SECRET_FILE"
-          "SubPath" "ihd"
+          "Name" "OCTOPUS_API_KEY_FILE"
+          "SubPath" "key"
         )
       )
     )
