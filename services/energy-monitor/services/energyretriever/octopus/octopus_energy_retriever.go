@@ -73,16 +73,8 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 
 	// Identify the unit based on the meter type
 	unit := "kWh"
-	if meterType == string(models.MeterMetricGas) {
-		gasMeter, success := any(retriever.Meter).(models.OctopusGasMeterSensor)
-		if success {
-			if strings.EqualFold(gasMeter.GetGeneration(), "SMETS2") {
-				unit = "m3"
-			}
-		} else {
-			retriever.Logger.Error("Could not determine gas meter generation")
-			return
-		}
+	if meterType == string(models.MeterMetricGas) && strings.EqualFold(retriever.Meter.GetGeneration(), "SMETS2") {
+		unit = "m3"
 	}
 
 	for {
