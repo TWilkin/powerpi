@@ -1,6 +1,8 @@
 package energyretriever
 
 import (
+	"time"
+
 	"powerpi/common/services/logger"
 	"powerpi/common/services/mqtt/messagequeue"
 	"powerpi/energy-monitor/models"
@@ -8,7 +10,9 @@ import (
 )
 
 type EnergyRetriever interface {
+	GetMeterType() string
 	Read()
+	PublishValue(value float64, unit string, timestamp int64)
 }
 
 type BaseEnergyRetriever[TMeter models.MeterSensor] struct {
@@ -17,4 +21,34 @@ type BaseEnergyRetriever[TMeter models.MeterSensor] struct {
 	Logger              logger.LoggerService
 
 	Meter TMeter
+}
+
+func (retriever *BaseEnergyRetriever[TMeter]) GetMeterType() string {
+	var meterType string
+
+	_, success := retriever.Meter.GetMetrics()[models.MeterMetricElectricity]
+	if success {
+		meterType = string(models.MeterMetricElectricity)
+	} else {
+		_, success := retriever.Meter.GetMetrics()[models.MeterMetricGas]
+		if success {
+			meterType = string(models.MeterMetricGas)
+		} else {
+			retriever.Logger.Error("Unsupported meter type for consumption retrieval", "meter", retriever.Meter.GetName())
+		}
+	}
+
+	return meterType
+}
+
+func (retriever *BaseEnergyRetriever[TMeter]) PublishValue(value float64, unit string, timestamp int64) {
+	retriever.EventMessageService.PublishValueWithTime(
+		retriever.Meter.GetName(),
+		retriever.GetMeterType(),
+		value,
+		unit,
+		&timestamp,
+	)
+
+	time.Sleep(time.Duration(retriever.Config.GetEnergyMonitorConfig().MessageWriteDelay) * time.Millisecond)
 }

@@ -2,7 +2,6 @@ package octopus
 
 import (
 	"fmt"
-	"time"
 
 	"powerpi/common/services/http"
 	"powerpi/common/services/logger"
@@ -45,24 +44,15 @@ func (retriever *OctopusEnergyRetriever[TMeter]) Read() {
 }
 
 func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
-	// identify the type of meter
-	var meterType string
-	_, success := retriever.Meter.GetMetrics()[models.MeterMetricElectricity]
-	if success {
-		meterType = string(models.MeterMetricElectricity)
-	} else {
-		_, success := retriever.Meter.GetMetrics()[models.MeterMetricGas]
-		if success {
-			meterType = string(models.MeterMetricGas)
-		} else {
-			retriever.Logger.Error("Unsupported meter type for consumption retrieval", "meter", retriever.Meter.GetName())
-			return
-		}
-	}
-
 	url, err := utils.GenerateURL(
 		baseURL,
-		[]string{fmt.Sprintf("%s-meter-points", meterType), retriever.Meter.GetId(), "meters", retriever.Meter.GetSerialNumber(), "consumption"},
+		[]string{
+			fmt.Sprintf("%s-meter-points", retriever.GetMeterType()),
+			retriever.Meter.GetId(),
+			"meters",
+			retriever.Meter.GetSerialNumber(),
+			"consumption",
+		},
 		map[string]string{
 			"page_size":   "10",
 			"period_from": "2025-07-01T00:00:00",
@@ -89,21 +79,14 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 
 		// TODO work out gas units based on the meter type
 		for _, result := range data.Results {
-
-			timestamp := result.IntervalEnd.UnixMilli()
-
-			retriever.EventMessageService.PublishValueWithTime(
-				retriever.Meter.GetName(),
-				meterType,
+			retriever.PublishValue(
 				result.Consumption,
 				"kWh",
-				&timestamp,
+				result.IntervalEnd.UnixMilli(),
 			)
-
-			time.Sleep(time.Duration(retriever.Config.GetEnergyMonitorConfig().MessageWriteDelay) * time.Millisecond)
 		}
 
-		if data.Next != nil {
+		if data.Next == nil {
 			break
 		}
 
