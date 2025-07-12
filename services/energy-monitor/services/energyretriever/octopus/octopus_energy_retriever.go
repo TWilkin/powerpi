@@ -3,6 +3,7 @@ package octopus
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"powerpi/common/services/http"
 	"powerpi/common/services/logger"
@@ -57,9 +58,9 @@ func (retriever *OctopusEnergyRetriever[TMeter]) readConsumption() {
 			"consumption",
 		},
 		map[string]string{
-			"page_size":   "10",
-			"period_from": "2025-07-01T00:00:00",
-			"period_to":   "2025-07-02T00:00:00",
+			"page_size":   "100",
+			"period_from": retriever.GetStartDate().Format(time.RFC3339),
+			"period_to":   time.Now().Format(time.RFC3339),
 		},
 	)
 	if err != nil {

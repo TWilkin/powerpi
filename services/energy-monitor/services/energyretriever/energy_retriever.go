@@ -11,6 +11,8 @@ import (
 
 type EnergyRetriever interface {
 	GetMeterType() string
+	GetStartDate() time.Time
+
 	Read()
 	PublishValue(value float64, unit string, timestamp int64)
 }
@@ -36,6 +38,18 @@ func (retriever *BaseEnergyRetriever[TMeter]) GetMeterType() string {
 
 	retriever.Logger.Error("Unsupported meter type for consumption retrieval", "meter", retriever.Meter.GetName())
 	panic("Unsupported meter type for consumption retrieval")
+}
+
+func (retriever *BaseEnergyRetriever[TMeter]) GetStartDate() time.Time {
+	days := retriever.Config.GetEnergyMonitorConfig().History
+	days *= -1
+
+	now := time.Now()
+	startDate := now.AddDate(0, 0, days)
+
+	// TODO use the last published event if available
+
+	return startDate
 }
 
 func (retriever *BaseEnergyRetriever[TMeter]) PublishValue(value float64, unit string, timestamp int64) {

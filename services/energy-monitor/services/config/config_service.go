@@ -45,6 +45,12 @@ func (service *configService) Parse(args []string) {
 		100,
 		"The number of milliseconds to wait between publishing each message, to ensure we don't overwhelm the message queue.",
 	)
+	flagSet.IntVar(
+		&service.energyMonitor.History,
+		"history",
+		30,
+		"The number of days to collect data for.",
+	)
 
 	// Octopus specific flags
 	flagSet.StringVar(&service.octopus.ApiKeyFile, "octopusApiKey", "undefined", "The path to the Octopus API key file")
