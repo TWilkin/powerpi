@@ -24,21 +24,18 @@ type BaseEnergyRetriever[TMeter models.MeterSensor] struct {
 }
 
 func (retriever *BaseEnergyRetriever[TMeter]) GetMeterType() string {
-	var meterType string
-
 	_, success := retriever.Meter.GetMetrics()[models.MeterMetricElectricity]
 	if success {
-		meterType = string(models.MeterMetricElectricity)
-	} else {
-		_, success := retriever.Meter.GetMetrics()[models.MeterMetricGas]
-		if success {
-			meterType = string(models.MeterMetricGas)
-		} else {
-			retriever.Logger.Error("Unsupported meter type for consumption retrieval", "meter", retriever.Meter.GetName())
-		}
+		return string(models.MeterMetricElectricity)
 	}
 
-	return meterType
+	_, success = retriever.Meter.GetMetrics()[models.MeterMetricGas]
+	if success {
+		return string(models.MeterMetricGas)
+	}
+
+	retriever.Logger.Error("Unsupported meter type for consumption retrieval", "meter", retriever.Meter.GetName())
+	panic("Unsupported meter type for consumption retrieval")
 }
 
 func (retriever *BaseEnergyRetriever[TMeter]) PublishValue(value float64, unit string, timestamp int64) {
