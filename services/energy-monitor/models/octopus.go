@@ -7,6 +7,7 @@ type OctopusMeterSensor interface {
 
 type octopusMeterSensor struct {
 	SerialNumber string `json:"serial_number"`
+	Generation   string `json:"generation"` // SMETS1 or SMETS2
 }
 
 func (sensor *octopusMeterSensor) GetSerialNumber() string {
@@ -29,4 +30,8 @@ type OctopusGasMeterSensor struct {
 
 func (sensor *OctopusGasMeterSensor) GetName() string {
 	return sensor.Name
+}
+
+func (sensor *OctopusGasMeterSensor) GetGeneration() string {
+	return sensor.Generation
 }
