@@ -41,15 +41,29 @@ func (retriever *BaseEnergyRetriever[TMeter]) GetMeterType() string {
 }
 
 func (retriever *BaseEnergyRetriever[TMeter]) GetStartDate() time.Time {
+	// First let's see if there is a last published event
+	channel := make(chan *messagequeue.EventMessage)
+	defer close(channel)
+
+	retriever.EventMessageService.SubscribeValue(retriever.Meter.GetName(), retriever.GetMeterType(), channel)
+
+	select {
+	case message := <-channel:
+		retriever.Logger.Info("Received event for", "meter", retriever.Meter.GetName(), "message", message)
+
+		timestamp := message.GetTimestamp()
+		nanoseconds := (timestamp % 1000) * 1_000_000
+		return time.Unix(timestamp/1000, nanoseconds)
+
+	case <-time.After(30 * time.Second):
+		retriever.Logger.Info("Timeout waiting for messages")
+	}
+
+	// If no last published event, use the configured start date
+	retriever.Logger.Info("No last published event found, using configured start date")
 	days := retriever.Config.GetEnergyMonitorConfig().History
-	days *= -1
 
-	now := time.Now()
-	startDate := now.AddDate(0, 0, days)
-
-	// TODO use the last published event if available
-
-	return startDate
+	return time.Now().AddDate(0, 0, -days)
 }
 
 func (retriever *BaseEnergyRetriever[TMeter]) PublishValue(value float64, unit string, timestamp int64) {

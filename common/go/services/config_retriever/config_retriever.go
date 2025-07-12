@@ -41,6 +41,7 @@ func (retriever *configRetriever) WaitForConfig() {
 
 		// Subscribe to the config change for this type
 		channel := make(chan *messagequeue.ConfigMessage)
+		defer close(channel)
 		retriever.messageService.SubscribeChange(configType, channel)
 
 		select {
@@ -55,8 +56,6 @@ func (retriever *configRetriever) WaitForConfig() {
 		case <-time.After(2 * time.Minute):
 			retriever.logger.Error("Timeout waiting for config", "configType", configType)
 		}
-
-		close(channel)
 	}
 
 	for _, configType := range requiredConfigType {

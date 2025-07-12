@@ -13,8 +13,9 @@ type EventMessage struct {
 
 type EventMessageService interface {
 	PublishValue(sensor string, action string, value float64, unit string)
-
 	PublishValueWithTime(sensor string, action string, value float64, unit string, timestamp *int64)
+
+	SubscribeValue(sensor string, action string, channel chan<- *EventMessage)
 }
 
 type eventMessageService struct {
@@ -48,4 +49,8 @@ func (service eventMessageService) PublishValueWithTime(
 	}
 
 	mqtt.Publish(service.mqttService, "event", sensor, action, &message)
+}
+
+func (service eventMessageService) SubscribeValue(sensor string, action string, channel chan<- *EventMessage) {
+	mqtt.Subscribe(service.mqttService, "event", sensor, action, true, channel)
 }
