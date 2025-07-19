@@ -20,6 +20,10 @@ func (service *MockMqttService) Join() {
 	service.Called()
 }
 
+func (service *MockMqttService) Unsubscribe(typ string, entity string, action string) {
+	service.Called(typ, entity, action)
+}
+
 func (service *MockMqttService) topic(typ string, entity string, action string) string {
 	args := service.Called(typ, entity, action)
 	return args.String(0)

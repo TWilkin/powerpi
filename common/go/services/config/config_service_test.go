@@ -19,7 +19,7 @@ func TestParseWithFlags(t *testing.T) {
 			[]string{"my service"},
 			map[string]string{},
 			config.MqttConfig{
-				Host:         "localhost",
+				Host:         "mosquitto",
 				Port:         1883,
 				User:         "device",
 				PasswordFile: "undefined",

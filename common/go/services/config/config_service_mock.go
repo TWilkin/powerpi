@@ -16,6 +16,15 @@ func (service *MockConfigService) ParseWithFlags(args []string, flags ...pflag.F
 	service.Called(args, flags)
 }
 
+func (service *MockConfigService) EnvironmentOverride(flagSet *pflag.FlagSet, flag string, envKey string) {
+	service.Called(flagSet, flag, envKey)
+}
+
+func (service *MockConfigService) ReadPasswordFile(filePath string) (*string, error) {
+	args := service.Called(filePath)
+	return args.Get(0).(*string), args.Error(1)
+}
+
 func (service *MockConfigService) MqttConfig() config.MqttConfig {
 	args := service.Called()
 	return args.Get(0).(config.MqttConfig)
