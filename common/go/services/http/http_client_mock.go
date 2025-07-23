@@ -30,8 +30,22 @@ func SetupMockHTTPClient() *MockHTTPClient {
 	mockClient := &MockHTTPClient{}
 
 	mockClient.On("getLogger").Return(logger.SetupMockLoggerService())
-	mockClient.On("SetBasicAuth", mock.Anything, mock.Anything)
+	mockClient.On("SetBasicAuth", mock.Anything, mock.Anything).Return()
 	mockClient.On("Get", mock.Anything).Return(&http.Response{}, nil)
+
+	return mockClient
+}
+
+func SetupMockHTTPClientWithResponse(response *http.Response, err error) *MockHTTPClient {
+	mockClient := &MockHTTPClient{}
+
+	mockClient.On("SetBasicAuth", mock.Anything, mock.Anything).Return()
+	mockClient.On("Get", mock.Anything).Return(response, err)
+	
+	// Only set up getLogger expectation if we expect successful response processing
+	if err == nil && response != nil {
+		mockClient.On("getLogger").Return(logger.SetupMockLoggerService())
+	}
 
 	return mockClient
 }
