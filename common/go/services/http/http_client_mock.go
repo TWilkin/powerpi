@@ -4,10 +4,17 @@ import (
 	"net/http"
 
 	"github.com/stretchr/testify/mock"
+
+	"powerpi/common/services/logger"
 )
 
 type MockHTTPClient struct {
 	mock.Mock
+}
+
+func (client *MockHTTPClient) getLogger() logger.LoggerService {
+	args := client.Called()
+	return args.Get(0).(logger.LoggerService)
 }
 
 func (client *MockHTTPClient) SetBasicAuth(username string, password string) {
@@ -22,6 +29,7 @@ func (client *MockHTTPClient) Get(url string) (*http.Response, error) {
 func SetupMockHTTPClient() *MockHTTPClient {
 	mockClient := &MockHTTPClient{}
 
+	mockClient.On("getLogger").Return(logger.SetupMockLoggerService())
 	mockClient.On("SetBasicAuth", mock.Anything, mock.Anything)
 	mockClient.On("Get", mock.Anything).Return(&http.Response{}, nil)
 
