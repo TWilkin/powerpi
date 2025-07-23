@@ -25,3 +25,7 @@ func (service *MockDeviceMessageService) PublishCapability(device string, capabi
 func (service *MockDeviceMessageService) SubscribeChange(device string, channel chan<- *DeviceMessage) {
 	service.Called(device, channel)
 }
+
+func (service *MockDeviceMessageService) UnsubscribeChange(device string) {
+	service.Called(device)
+}

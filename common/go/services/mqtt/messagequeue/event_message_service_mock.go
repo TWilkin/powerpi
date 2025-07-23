@@ -16,3 +16,7 @@ func (service *MockEventMessageService) PublishValue(
 ) {
 	service.Called(sensor, action, value, unit)
 }
+
+func (service *MockEventMessageService) UnsubscribeValue(sensor string, action string) {
+	service.Called(sensor, action)
+}
