@@ -4,6 +4,21 @@ import { volume } from "./volume";
 
 const calorific = 38; // MJ/m3
 
+const modifiedEnergy = energy.map((converter) => {
+    // Add a conversion from kWh to m3, but only for the gas energy converter
+    if (converter.unit === "kWh") {
+        return {
+            ...converter,
+            convert: {
+                ...converter.convert,
+                m3: (value: number) => (value * 3.6) / (calorific * 1.02264),
+            },
+        };
+    }
+
+    return converter;
+});
+
 export const gas: ConverterDefinition[] = [
     {
         unit: "m3",
@@ -15,5 +30,5 @@ export const gas: ConverterDefinition[] = [
     // we need the volume converters too
     ...volume,
     // and the energy converters
-    ...energy,
+    ...modifiedEnergy,
 ];

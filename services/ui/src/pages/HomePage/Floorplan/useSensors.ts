@@ -28,6 +28,8 @@ function* expandMetrics(sensor: Sensor, t: ReturnType<typeof useTranslation>["t"
                 switch (metric) {
                     case "current":
                     case "door":
+                    case "electricity":
+                    case "gas":
                     case "humidity":
                     case "motion":
                     case "power":
