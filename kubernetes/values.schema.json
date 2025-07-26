@@ -112,7 +112,7 @@
                 },
 
                 "energyMonitor": {
-                    "description": "Whether to include N3rgy energy monitoring support",
+                    "description": "Whether to include energy monitoring support",
                     "type": "boolean"
                 },
 

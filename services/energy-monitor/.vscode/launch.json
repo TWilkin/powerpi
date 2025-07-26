@@ -3,11 +3,9 @@
     "configurations": [
         {
             "name": "Energy Monitor",
-            "type": "node",
+            "type": "go",
             "request": "launch",
-            "runtimeExecutable": "yarn",
-            "runtimeArgs": ["start:dev"],
-            "resolveSourceMapLocations": ["**", "!**/node_modules/**"],
+            "program": "${workspaceFolder}",
             "presentation": {
                 "group": "Services"
             }

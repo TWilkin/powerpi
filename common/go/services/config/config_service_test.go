@@ -4,19 +4,22 @@ import (
 	"testing"
 
 	"powerpi/common/config"
+	"powerpi/common/services/logger"
 )
 
 func TestParseWithFlags(t *testing.T) {
 	var tests = []struct {
-		name     string
-		args     []string
-		expected config.MqttConfig
+		name        string
+		args        []string
+		environment map[string]string
+		expected    config.MqttConfig
 	}{
 		{
 			"default values",
 			[]string{"my service"},
+			map[string]string{},
 			config.MqttConfig{
-				Host:         "localhost",
+				Host:         "mosquitto",
 				Port:         1883,
 				User:         "device",
 				PasswordFile: "undefined",
@@ -33,6 +36,27 @@ func TestParseWithFlags(t *testing.T) {
 				"--password", "password",
 				"--topic", "custom-topic",
 			},
+			map[string]string{},
+			config.MqttConfig{
+				Host:         "mqtt-host",
+				Port:         8883,
+				User:         "user",
+				PasswordFile: "password",
+				TopicBase:    "custom-topic",
+			},
+		},
+		{
+			"environment overridden values",
+			[]string{
+				"my service",
+			},
+			map[string]string{
+				"MQTT_HOST":        "mqtt-host",
+				"MQTT_PORT":        "8883",
+				"MQTT_USER":        "user",
+				"MQTT_SECRET_FILE": "password",
+				"TOPIC_BASE":       "custom-topic",
+			},
 			config.MqttConfig{
 				Host:         "mqtt-host",
 				Port:         8883,
@@ -45,8 +69,11 @@ func TestParseWithFlags(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
+			for key, value := range test.environment {
+				t.Setenv(key, value)
+			}
 
-			service := NewConfigService()
+			service := NewConfigService(logger.SetupMockLoggerService())
 
 			service.ParseWithFlags(test.args)
 

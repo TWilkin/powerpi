@@ -1,49 +1,35 @@
-# build the common library
-FROM --platform=$BUILDPLATFORM node:23.6.1-alpine3.20 AS build-common-image
-LABEL description="Node.js builder for common library"
-WORKDIR /home/node/app
-RUN mkdir -p /home/node/app/common/node/common
-COPY package.json yarn.lock tsconfig.json ./
-COPY common/node/common/package.json ./common/node/common/
-RUN yarn workspace @powerpi/common install --frozen-lockfile
-COPY common/node/common ./common/node/common/
-RUN yarn workspace @powerpi/common build
+FROM --platform=$BUILDPLATFORM golang:1.24.2-alpine3.21 AS build-image
+LABEL description="Go builder for energy-monitor service"
 
-# build the service
-FROM --platform=$BUILDPLATFORM node:23.6.1-alpine3.20 AS build-service-image
-LABEL description="Node.js builder for energy-monitor service"
+ARG TARGETPLATFORM
+ENV GOOS=linux
+ENV GOARCH=${TARGETPLATFORM##*/}
+
+RUN apk add --no-cache make
 WORKDIR /home/node/app
-COPY --from=build-common-image /home/node/app/common/node/common/package.json ./common/node/common/
-COPY --from=build-common-image /home/node/app/common/node/common/dist/ ./common/node/common/dist/
-RUN mkdir -p /home/node/app/services/energy-monitor
-COPY package.json yarn.lock tsconfig.json ./
-COPY services/energy-monitor/package.json ./services/energy-monitor/
-RUN yarn workspace @powerpi/energy-monitor install --frozen-lockfile
+RUN mkdir -p /home/node/app/common/go \
+    /home/node/app/services/energy-monitor
+COPY common/go/go.mod common/go/go.sum ./common/go/
+COPY services/energy-monitor/go.mod services/energy-monitor/go.sum ./services/energy-monitor/
+WORKDIR /home/node/app/services/energy-monitor
+RUN go mod download
+WORKDIR /home/node/app
+COPY common/go ./common/go/
 COPY services/energy-monitor ./services/energy-monitor/
-RUN yarn workspace @powerpi/energy-monitor build
+WORKDIR /home/node/app/services/energy-monitor
+RUN make clean; \
+    make GOOS=$GOOS GOARCH=$GOARCH
 
 # service image
-FROM node:23.6.1-alpine3.20 AS run-image
-LABEL description="PowerPi energy-monitor N3rgy usage retrieval service"
+FROM alpine:3.21 AS run-image
+LABEL description="PowerPi energy-monitor usage retrieval service"
 
 # use non-root account
-USER node
-RUN mkdir -p /home/node/app/common/node/common/dist \
-    /home/node/app/services/energy-monitor
+RUN adduser --disabled-password powerpi
+USER powerpi
 
-# copy the built common libraries
 WORKDIR /home/node/app
-COPY --chown=node:node package.json yarn.lock LICENSE ./
-COPY --from=build-common-image --chown=node:node /home/node/app/common/node/common/package.json ./common/node/common/
-COPY --from=build-common-image --chown=node:node /home/node/app/common/node/common/dist/ ./common/node/common/dist/
-
-# install the dependencies
-COPY --from=build-service-image --chown=node:node /home/node/app/services/energy-monitor/package.json ./services/energy-monitor/
-RUN yarn workspace @powerpi/energy-monitor install --production --frozen-lockfile \
-    && yarn cache clean
-
-# copy the built application
-COPY --from=build-service-image --chown=node:node /home/node/app/services/energy-monitor/dist/ ./services/energy-monitor/dist/
+COPY --from=build-image --chown=powerpi /home/node/app/services/energy-monitor/bin/powerpi_energy_monitor .
 
 # start the application once the container is ready
-CMD ["yarn", "workspace", "@powerpi/energy-monitor", "start:prd", "--daemon"]
+CMD ["./powerpi_energy_monitor"]

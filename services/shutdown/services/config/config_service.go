@@ -5,6 +5,7 @@ import (
 
 	commonConfig "powerpi/common/config"
 	commonConfigService "powerpi/common/services/config"
+	"powerpi/common/services/logger"
 	"powerpi/shutdown/config"
 )
 
@@ -22,9 +23,9 @@ type configService struct {
 	config config.Config
 }
 
-func NewConfigService() ConfigService {
+func NewConfigService(logger logger.LoggerService) ConfigService {
 	return &configService{
-		ConfigService: commonConfigService.NewConfigService(),
+		ConfigService: commonConfigService.NewConfigService(logger),
 	}
 }
 

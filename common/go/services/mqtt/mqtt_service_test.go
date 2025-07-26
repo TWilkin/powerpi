@@ -14,6 +14,7 @@ import (
 	"powerpi/common/models"
 	"powerpi/common/services/clock"
 	configService "powerpi/common/services/config"
+	"powerpi/common/services/logger"
 	"powerpi/common/utils"
 )
 
@@ -56,9 +57,6 @@ func TestConnect(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			config := configService.MockConfigService{
-				Mqtt: config.MqttConfig{TopicBase: "powerpi"},
-			}
 			factory := &MockMqttClientFactory{}
 
 			client := &MockPahoMqttClient{}
@@ -74,20 +72,40 @@ func TestConnect(t *testing.T) {
 			token.On("Error").Return(nil)
 			client.On("Connect").Return(token)
 
-			var user *string = &test.username
-			if test.username == "" {
-				user = nil
-			}
-
 			var password *string = &test.password
 			if test.password == "" {
 				password = nil
 			}
 
-			subject := NewMqttService(config, factory, clock.MockClockService{})
-			subject.Connect("mqtt-host", test.port, user, password, "test-client")
+			config := config.MqttConfig{
+				Host:         "mqtt-host",
+				Port:         test.port,
+				User:         test.username,
+				PasswordFile: "some file",
+				TopicBase:    "powerpi",
+			}
+
+			configService := &configService.MockConfigService{}
+
+			configService.On("MqttConfig").Return(config)
+			configService.On("GetMqttPassword").Return(password)
+
+			subject := NewMqttService(configService, factory, clock.MockClockService{}, logger.SetupMockLoggerService())
+			subject.Connect("test-client")
 		})
 	}
+}
+
+func connect(subject MqttService, configService *configService.MockConfigService, client *MockPahoMqttClient) {
+	password := "password"
+	configService.On("GetMqttPassword").Return(&password)
+
+	token := &MockMqttClientToken{}
+	token.On("Wait").Return(true)
+	token.On("Error").Return(nil)
+	client.On("Connect").Return(token)
+
+	subject.Connect("test-client")
 }
 
 func TestPublish(t *testing.T) {
@@ -110,13 +128,18 @@ func TestPublish(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			client := &MockPahoMqttClient{}
+			factory := &MockMqttClientFactory{}
 
-			subject := &mqttService{
-				client:    client,
-				clock:     clock.MockClockService{},
-				topicBase: "powerpi",
-			}
+			client := &MockPahoMqttClient{}
+			factory.On("BuildClient", mock.Anything).Return(client)
+
+			configService := &configService.MockConfigService{}
+
+			config := config.MqttConfig{TopicBase: "powerpi"}
+			configService.On("MqttConfig").Return(config)
+
+			subject := NewMqttService(configService, factory, clock.MockClockService{}, logger.SetupMockLoggerService())
+			connect(subject, configService, client)
 
 			token := &MockMqttClientToken{}
 			token.On("Wait").Return(true)
@@ -140,107 +163,7 @@ func TestPublish(t *testing.T) {
 				message.SetTimestamp(test.timestamp)
 			}
 
-			publish(*subject, "device", "MyDevice", "status", &message)
-		})
-	}
-}
-
-func TestPublishDeviceState(t *testing.T) {
-	var tests = []struct {
-		name            string
-		state           models.DeviceState
-		additionalState *models.AdditionalState
-		expected        string
-	}{
-		{"off", models.Off, nil, "\"state\":\"off\""},
-		{"on", models.On, &models.AdditionalState{}, "\"state\":\"on\""},
-		{"off with brightness", models.Off, &models.AdditionalState{Brightness: utils.ToPtr(50)}, "\"brightness\":50"},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			client := &MockPahoMqttClient{}
-
-			subject := &mqttService{
-				client:    client,
-				clock:     clock.MockClockService{},
-				topicBase: "powerpi",
-			}
-
-			token := &MockMqttClientToken{}
-			token.On("Wait").Return(true)
-			token.On("Error").Return(nil)
-
-			client.On(
-				"Publish",
-				"powerpi/device/MyDevice/status",
-				byte(2),
-				true,
-				mock.MatchedBy(func(payload []byte) bool {
-					return strings.Contains(string(payload), test.expected)
-				}),
-			).Return(token)
-
-			subject.PublishDeviceState("MyDevice", test.state, test.additionalState)
-
-			client.AssertExpectations(t)
-		})
-	}
-}
-
-func TestPublishCapability(t *testing.T) {
-	var tests = []struct {
-		name       string
-		capability models.Capability
-		expected   *string
-	}{
-		{
-			"brightness on",
-			models.Capability{
-				Brightness: true,
-			},
-			utils.ToPtr("\"brightness\":true"),
-		},
-		{
-			"brightness off",
-			models.Capability{
-				Brightness: false,
-			},
-			nil,
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			client := &MockPahoMqttClient{}
-
-			subject := &mqttService{
-				client:    client,
-				clock:     clock.MockClockService{},
-				topicBase: "powerpi",
-			}
-
-			token := &MockMqttClientToken{}
-			token.On("Wait").Return(true)
-			token.On("Error").Return(nil)
-
-			if test.expected != nil {
-				client.On(
-					"Publish",
-					"powerpi/device/MyDevice/capability",
-					byte(2),
-					true,
-					mock.MatchedBy(func(payload []byte) bool {
-						return strings.Contains(string(payload), *test.expected)
-					}),
-				).Return(token)
-
-				subject.PublishCapability("MyDevice", test.capability)
-
-				client.AssertExpectations(t)
-			} else {
-				client.AssertNotCalled(t, "Publish")
-			}
+			Publish(subject, "device", "MyDevice", "status", &message)
 		})
 	}
 }
@@ -285,13 +208,18 @@ func TestSubscribe(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			client := &MockPahoMqttClient{}
+			factory := &MockMqttClientFactory{}
 
-			subject := mqttService{
-				client:    client,
-				clock:     clock.MockClockService{},
-				topicBase: "powerpi",
-			}
+			client := &MockPahoMqttClient{}
+			factory.On("BuildClient", mock.Anything).Return(client)
+
+			configService := &configService.MockConfigService{}
+
+			config := config.MqttConfig{TopicBase: "powerpi"}
+			configService.On("MqttConfig").Return(config)
+
+			subject := NewMqttService(configService, factory, clock.MockClockService{}, logger.SetupMockLoggerService())
+			connect(subject, configService, client)
 
 			token := &MockMqttClientToken{}
 			token.On("Wait").Return(true)
@@ -311,7 +239,7 @@ func TestSubscribe(t *testing.T) {
 
 			channel := make(chan *TestMessage, 1)
 
-			subscribe(subject, "device", "MyDevice", "change", channel)
+			Subscribe(subject, "device", "MyDevice", "change", false, channel)
 
 			timestamp := time.Date(2025, 2, 22, 0, 2, 0, 0, time.UTC)
 			if test.timestamp != nil {
@@ -324,7 +252,7 @@ func TestSubscribe(t *testing.T) {
 			message.On("Topic").Return("powerpi/device/MyDevice/change")
 			message.On("Payload").Return([]byte(payload))
 
-			messageCallback(subject.client, message)
+			messageCallback(client, message)
 
 			if test.expectedState == nil {
 				// For "too old" case we expect no message to be received
@@ -350,7 +278,6 @@ func TestSubscribe(t *testing.T) {
 				State:      *test.expectedState,
 				Brightness: test.expectedAdditional.Brightness,
 			})
-
 		})
 	}
 }

@@ -2,18 +2,49 @@ package config
 
 import (
 	"github.com/spf13/pflag"
+	"github.com/stretchr/testify/mock"
 
 	"powerpi/common/config"
+	"powerpi/common/models"
 )
 
 type MockConfigService struct {
-	Mqtt config.MqttConfig
+	mock.Mock
 }
 
-func (config MockConfigService) ParseWithFlags(args []string, flags ...pflag.FlagSet) {
-	// Mock implementation of ParseWithFlags method
+func (service *MockConfigService) ParseWithFlags(args []string, flags ...pflag.FlagSet) {
+	service.Called(args, flags)
 }
 
-func (config MockConfigService) MqttConfig() config.MqttConfig {
-	return config.Mqtt
+func (service *MockConfigService) EnvironmentOverride(flagSet *pflag.FlagSet, flag string, envKey string) {
+	service.Called(flagSet, flag, envKey)
+}
+
+func (service *MockConfigService) ReadPasswordFile(filePath string) (*string, error) {
+	args := service.Called(filePath)
+	return args.Get(0).(*string), args.Error(1)
+}
+
+func (service *MockConfigService) MqttConfig() config.MqttConfig {
+	args := service.Called()
+	return args.Get(0).(config.MqttConfig)
+}
+
+func (service *MockConfigService) GetMqttPassword() *string {
+	args := service.Called()
+	return args.Get(0).(*string)
+}
+
+func (service *MockConfigService) RequiredConfig() []models.ConfigType {
+	args := service.Called()
+	return args.Get(0).([]models.ConfigType)
+}
+
+func (service *MockConfigService) GetConfig(configType models.ConfigType) models.Config {
+	args := service.Called(configType)
+	return args.Get(0).(models.Config)
+}
+
+func (service *MockConfigService) SetConfig(configType models.ConfigType, data map[string]any, checksum string) {
+	service.Called(configType, data, checksum)
 }

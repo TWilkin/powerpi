@@ -14,7 +14,6 @@
             "common/node/common-test",
             "services/api",
             "services/config-server",
-            "services/energy-monitor",
             "services/persistence",
             "services/ui",
             "services/voice-assistant"
@@ -26,7 +25,6 @@
         "build:common-test": "yarn workspace @powerpi/common-test build",
         "build:api": "yarn workspace @powerpi/api build",
         "build:config-server": "yarn workspace @powerpi/config-server build",
-        "build:energy-monitor": "yarn workspace @powerpi/energy-monitor build",
         "build:lib": "yarn build:common; yarn build:common-api; yarn build:common-test",
         "build:persistence": "yarn workspace @powerpi/persistence build",
         "build:ui": "yarn workspace @powerpi/ui build",
@@ -37,7 +35,6 @@
         "prettier": "prettier --write .",
         "start:api": "yarn workspace @powerpi/api start:dev",
         "start:config-server": "yarn workspace @powerpi/config-server start:dev",
-        "start:energy-monitor": "yarn workspace @powerpi/energy-monitor start:dev",
         "start:persistence": "yarn workspace @powerpi/persistence start:dev",
         "start:ui": "yarn workspace @powerpi/ui start",
         "start:voice-assistant": "yarn workspace @powerpi/voice-assistant start:debug",
