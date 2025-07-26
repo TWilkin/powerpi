@@ -130,6 +130,12 @@ jobs:
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh config-server"
 
+      - name: Test Energy Monitor Service
+        if: steps.check_modified.outputs.energy_monitor
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_go.sh event"
+        working-directory: services/energy-monitor
+
       - name: Test Event Service
         if: steps.check_modified.outputs.event
         shell: bash
