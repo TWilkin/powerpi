@@ -1,8 +1,8 @@
 import * as BaseDevice from "./BaseDevice.schema.json" with { type: "json" };
 import loadEnergenieSchema from "./energenie/index.js";
+import loadEnergyMonitorSchema from "./energy-monitor/index.js";
 import loadHarmonySchema from "./harmony/index.js";
 import loadLIFXSchema from "./lifx/index.js";
-import * as MeterSensor from "./MeterSensor.schema.json" with { type: "json" };
 import * as Metric from "./Metric.schema.json" with { type: "json" };
 import loadNetworkSchema from "./network/index.js";
 import * as PollableDevice from "./PollableDevice.schema.json" with { type: "json" };
@@ -45,8 +45,10 @@ export default function loadDevicesSchema() {
         // the zigbee controller devices
         ...loadZigBeeSchema(),
 
+        // the energy monitor sensors
+        ...loadEnergyMonitorSchema(),
+
         // PowerPi sensors
-        MeterSensor,
         PowerPiSensor,
     };
 }

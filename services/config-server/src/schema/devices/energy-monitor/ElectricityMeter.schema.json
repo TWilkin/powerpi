@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/MeterSensor.schema.json",
-    "title": "MeterSensor",
-    "description": "A sensor that emits meter readings using the energy-monitor service",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/energy-monitor/ElectricityMeter.schema.json",
+    "title": "ElectricityMeter",
+    "description": "A sensor that emits electricity meter readings using the energy-monitor service",
     "type": "object",
     "allOf": [
         {
@@ -10,8 +10,10 @@
         }
     ],
     "properties": {
-        "type": {
-            "const": "meter"
+        "mpan": {
+            "description": "The MPAN (Meter Point Administration Number) of the electricity meter",
+            "type": "string",
+            "pattern": "^\\d{13}$"
         },
         "metrics": {
             "description": "The list of metrics to enable for this meter",
@@ -20,16 +22,11 @@
                 "electricity": {
                     "description": "Whether to capture the electricity usage reported by the sensor",
                     "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
-                },
-                "gas": {
-                    "description": "Whether to capture the gas usage reported by the sensor",
-                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
                 }
             },
-            "anyOf": [{ "required": ["electricity"] }, { "required": ["gas"] }],
+            "required": ["electricity"],
             "additionalProperties": false
         }
     },
-    "required": ["metrics"],
-    "unevaluatedProperties": false
+    "required": ["mpan", "metrics"]
 }
