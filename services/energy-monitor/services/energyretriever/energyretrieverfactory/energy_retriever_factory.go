@@ -46,6 +46,6 @@ func (factory *energyRetrieverFactory) BuildRetriever(meter models.MeterSensor) 
 		)
 	}
 
-	factory.logger.Warn("Unsupported meter type for energy retrieval: %T", meter)
+	factory.logger.Warn("Unsupported meter type for energy retrieval", "type", fmt.Sprintf("%T", meter))
 	return nil
 }
