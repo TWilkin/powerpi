@@ -49,7 +49,7 @@ func (service *configService) Parse(args []string) {
 		&service.energyMonitor.History,
 		"history",
 		30,
-		"The number of days to collect data for.",
+		"The number of days to collect data for, when there is no existing data in the message queue.",
 	)
 
 	// Octopus specific flags

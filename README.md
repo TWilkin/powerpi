@@ -15,7 +15,7 @@ This project was devised to utilise open, reverse engineered or free home automa
 
 ### Supported Services
 
-- [N3rgy](http://www.n3rgy.com/)
+- [Octopus](https://developer.octopus.energy/rest/guides/endpoints)
 - [Snapcast](https://github.com/badaix/snapcast)
 
 ## Getting Started
@@ -32,7 +32,7 @@ The project is split into the following services, each of which have their own _
     - [**snapcast**](controllers/snapcast/README.md) - Allows control of [Snapcast](https://github.com/badaix/snapcast) clients and servers.
     - [**virtual**](controllers/virtual/README.md) - Allows control of other devices by using virtual devices such as groups, delays, mutexes etc.
     - [**zigbee**](controllers/zigbee/README.md) - Allows control of [ZigBee](https://en.wikipedia.org/wiki/Zigbee) devices and sensors.
-- [**energy-monitor**](services/energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK smart meter submissions via [N3rgy](http://www.n3rgy.com/).
+- [**energy-monitor**](services/energy-monitor/README.md) - Retrieve electricity and gas consumption in 30-minute blocks from UK energy provider [Octopus](https://developer.octopus.energy/rest/guides/endpoints).
 - [**event**](services/event/README.md) - Allows custom actions to be taken when events appear in the message queue.
 - [**persistence**](services/persistence/README.md) - Service for writing all the messages that appear in the MQTT message queue to a database.
 - [**scheduler**](services/scheduler/README.md) - Schedule based control of light devices, e.g. brightness, colour, temperature etc.
