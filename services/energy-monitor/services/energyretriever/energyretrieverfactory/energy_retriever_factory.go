@@ -1,6 +1,8 @@
 package energyretrieverfactory
 
 import (
+	"fmt"
+
 	"powerpi/common/services/http"
 	"powerpi/common/services/logger"
 	messageQueue "powerpi/common/services/mqtt/messagequeue"
