@@ -47,11 +47,11 @@ mosquitto:
     hostName: powerpi.mydomain.com
 ```
 
--   **global**:
-    -   **clusterIssuer** - The name of a [`ClusterIssuer`](https://cert-manager.io/docs/concepts/issuer/) deployed in Kubernetes that should be used for retrieving SSL certificates, default is _null_.
-    -   **storageClass** - The name of a [`StorageClass`](https://kubernetes.io/docs/concepts/storage/storage-classes/) deployed in Kuberenetes that should be used when creating persistent storage for services that require this, default is _null_ which will use a custom hostpath class. Can be defined per service instead of globally if different classes are required per service. Effective for `mosquitto`, `database` and [`zigbee-controller`](../controllers/zigbee/README.md) services.
--   **mosquitto**:
-    -   **hostName** - The hostname to utilise in SSL certificates for outside (i.e. sensors/`shutdown` service) cluster connections to MQTT. Requires the global `clusterIssuer` option to be set. Default is _null_.
+- **global**:
+    - **clusterIssuer** - The name of a [`ClusterIssuer`](https://cert-manager.io/docs/concepts/issuer/) deployed in Kubernetes that should be used for retrieving SSL certificates, default is _null_.
+    - **storageClass** - The name of a [`StorageClass`](https://kubernetes.io/docs/concepts/storage/storage-classes/) deployed in Kuberenetes that should be used when creating persistent storage for services that require this, default is _null_ which will use a custom hostpath class. Can be defined per service instead of globally if different classes are required per service. Effective for `mosquitto`, `database` and [`zigbee-controller`](../controllers/zigbee/README.md) services.
+- **mosquitto**:
+    - **hostName** - The hostname to utilise in SSL certificates for outside (i.e. sensors/`shutdown` service) cluster connections to MQTT. Requires the global `clusterIssuer` option to be set. Default is _null_.
 
 ## Deploying
 
@@ -81,7 +81,7 @@ microk8s helm upgrade --install --namespace powerpi -f __OVERRIDE__ powerpi powe
 
 The deployment expects the following secrets to already exist, they are described as follows and can be created with this command where _SECRET_NAME_ is the name of the specific secret and _/path/to/secret/file_ is the file containing that secret:
 
--   **google-auth-secret** - The Google OAuth secret used for login authentication in the API, UI and _voice-assistant_.
+- **google-auth-secret** - The Google OAuth secret used for login authentication in the API, UI and _voice-assistant_.
 
 ```bash
 microk8s kubectl create secret generic google-auth-secret --namespace powerpi \
@@ -89,14 +89,14 @@ microk8s kubectl create secret generic google-auth-secret --namespace powerpi \
     --from-file=secret=./__SECRET_NAME__
 ```
 
--   **ihd-secret** - The MAC address of your smart energy meter IHD (In Home Device) for use with _energy-monitor_.
+- **octopus-api-secret** - The Octopus API key for use with _energy-monitor_.
 
 ```bash
-microk8s kubectl create secret generic ihd-secret --namespace powerpi \
-    --from-file=ihd=./__SECRET_NAME__
+microk8s kubectl create secret generic octopus-api-secret --namespace powerpi \
+    --from-file=key=./__SECRET_NAME__
 ```
 
--   **github-secret** - A GitHub personal access token which allows _config-server_ to retrieve configuration files from a GitHub repository.
+- **github-secret** - A GitHub personal access token which allows _config-server_ to retrieve configuration files from a GitHub repository.
 
 ```bash
 microk8s kubectl create secret generic github-secret --namespace powerpi \
@@ -114,4 +114,4 @@ microk8s kubectl label node NODE_NAME powerpi-storage=true
 
 The following service also utilises labels, if you wish to use this apply their labels as well:
 
--   [`energenie-controller`](../controllers/energenie/README.md#kubernetes) - ENER314/ENER314-RT Pi controller
+- [`energenie-controller`](../controllers/energenie/README.md#kubernetes) - ENER314/ENER314-RT Pi controller
