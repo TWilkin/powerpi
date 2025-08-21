@@ -1,6 +1,5 @@
 import classNames from "classnames";
-import { PropsWithChildren } from "react";
-import { buttonStyles } from "../Button";
+import { PropsWithChildren, useCallback, useState } from "react";
 import { CommonHeaderLinkProps } from "./CommonHeaderLink";
 import HeaderLinkBody from "./HeaderLinkBody";
 
@@ -10,22 +9,30 @@ type HeaderLinkProps = CommonHeaderLinkProps &
         small?: boolean;
     }>;
 
-const headerLinkClasses = classNames(
-    "relative h-full flex flex-row justify-center items-center gap-sm grow text-2xl",
-    buttonStyles("default"),
-    // when the link is the current route
-    "aria-current-page:bg-bg-selected",
-);
-
 /** Component for one of the main header navigation links. */
-const HeaderLink = ({ route, icon, text, small = false }: HeaderLinkProps) => (
-    <div className={classNames("h-20", { grow: !small })}>
-        <HeaderLinkBody
-            route={route}
-            icon={icon}
-            text={small ? text : undefined}
-            className={headerLinkClasses}
-        />
-    </div>
-);
+const HeaderLink = ({ route, icon, text, small = false, children }: HeaderLinkProps) => {
+    const [showSubMenu, setShowSubMenu] = useState(false);
+
+    const handleHover = useCallback(() => {
+        if (!children) {
+            // no action if it doesn't have a submenu
+            return;
+        }
+
+        setShowSubMenu(true);
+    }, [children]);
+
+    return (
+        <div className={classNames("h-20", { grow: !small })}>
+            <HeaderLinkBody
+                route={route}
+                icon={icon}
+                text={small ? undefined : text}
+                onMouseEnter={handleHover}
+            />
+
+            {showSubMenu && <div className="relative flex flex-col z-50">{children}</div>}
+        </div>
+    );
+};
 export default HeaderLink;
