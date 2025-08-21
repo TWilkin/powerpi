@@ -21,12 +21,13 @@ type HeaderLinkBodyProps = Omit<
         text?: CommonHeaderLinkProps["text"];
     };
 
-const HeaderLinkBody = ({ route, icon, text, ...props }: HeaderLinkBodyProps) => (
+const HeaderLinkBody = ({ route, icon, text, ref, ...props }: HeaderLinkBodyProps) => (
     <NavLink
         {...props}
         to={RouteBuilder.build(route)}
         className={headerLinkBodyClasses}
         aria-label={text}
+        ref={ref}
     >
         {icon && <Icon icon={icon} className="text-3xl md:text-2xl" />}
 

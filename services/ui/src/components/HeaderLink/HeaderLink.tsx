@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { PropsWithChildren, useCallback, useState } from "react";
+import useOnClickOutside from "../../hooks/useOnClickOutside";
 import { CommonHeaderLinkProps } from "./CommonHeaderLink";
 import HeaderLinkBody from "./HeaderLinkBody";
 
@@ -13,25 +14,36 @@ type HeaderLinkProps = CommonHeaderLinkProps &
 const HeaderLink = ({ route, icon, text, small = false, children }: HeaderLinkProps) => {
     const [showSubMenu, setShowSubMenu] = useState(false);
 
-    const handleHover = useCallback(() => {
-        if (!children) {
-            // no action if it doesn't have a submenu
-            return;
-        }
+    const toggleSubMenu = useCallback((newState: boolean) => {
+        const isTouchDevice = window.matchMedia("(hover: none)").matches;
 
-        setShowSubMenu(true);
-    }, [children]);
+        if (isTouchDevice) {
+            setShowSubMenu(newState);
+        }
+    }, []);
+
+    const handleClick = useCallback(() => toggleSubMenu(true), [toggleSubMenu]);
+
+    const ref = useOnClickOutside<HTMLAnchorElement>(() => toggleSubMenu(false));
 
     return (
-        <div className={classNames("h-20", { grow: !small })}>
+        <div className={classNames("h-20 group", { grow: !small })}>
             <HeaderLinkBody
                 route={route}
                 icon={icon}
                 text={small ? undefined : text}
-                onMouseEnter={handleHover}
+                onClick={handleClick}
+                ref={ref}
             />
 
-            {showSubMenu && <div className="relative flex flex-col z-50">{children}</div>}
+            <div
+                className={classNames("relative flex-col z-50", {
+                    flex: showSubMenu,
+                    "hidden group-hover:flex": !showSubMenu,
+                })}
+            >
+                {children}
+            </div>
         </div>
     );
 };
