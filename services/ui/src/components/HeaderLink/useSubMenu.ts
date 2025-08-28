@@ -47,12 +47,13 @@ export default function useSubMenu(hasChildren: boolean) {
     const openSubMenu = useCallback(() => {
         setShowSubMenu(true);
 
-        setTimeout(() => focusFirst(), 0);
+        setTimeout(focusFirst, 0);
     }, [focusFirst]);
 
     const closeSubMenu = useCallback(() => {
         setShowSubMenu(false);
         setActiveSubMenuIndex(null);
+
         ref.current?.focus();
     }, [ref]);
 
