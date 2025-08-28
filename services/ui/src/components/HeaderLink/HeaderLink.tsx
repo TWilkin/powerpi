@@ -19,7 +19,7 @@ const HeaderLink = ({ route, icon, text, small = false, children }: HeaderLinkPr
     const linkId = useId();
 
     return (
-        <div className={classNames("h-20 group", { grow: !small })}>
+        <div className={classNames("relative h-20 group", { grow: !small })}>
             <HeaderLinkBody
                 id={linkId}
                 route={route}
@@ -35,7 +35,7 @@ const HeaderLink = ({ route, icon, text, small = false, children }: HeaderLinkPr
             {children != null && (
                 <div
                     id={subMenuId}
-                    className={classNames("relative flex-col z-50", {
+                    className={classNames("absolute top-full left-0 min-w-full flex-col z-50", {
                         flex: showSubMenu,
                         "hidden group-hover:flex": !showSubMenu,
                     })}
