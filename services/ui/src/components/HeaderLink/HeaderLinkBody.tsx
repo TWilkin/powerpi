@@ -31,7 +31,7 @@ const HeaderLinkBody = ({ route, icon, text, ref, ...props }: HeaderLinkBodyProp
     >
         {icon && <Icon icon={icon} className="text-3xl md:text-2xl" />}
 
-        {text && <span className="hidden md:block">{text}</span>}
+        {text && <span className={classNames("md:block", { hidden: icon != null })}>{text}</span>}
     </NavLink>
 );
 export default HeaderLinkBody;
