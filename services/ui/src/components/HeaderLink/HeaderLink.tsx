@@ -27,6 +27,7 @@ const HeaderLink = ({ route, icon, text, small = false, children }: HeaderLinkPr
                 text={small ? undefined : text}
                 onClick={handleClick}
                 onKeyDown={handleKeyDown}
+                aria-label={text}
                 aria-haspopup={children ? "menu" : undefined}
                 aria-expanded={children ? showSubMenu : undefined}
                 ref={ref}

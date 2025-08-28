@@ -22,13 +22,7 @@ type HeaderLinkBodyProps = Omit<
     };
 
 const HeaderLinkBody = ({ route, icon, text, ref, ...props }: HeaderLinkBodyProps) => (
-    <NavLink
-        {...props}
-        to={RouteBuilder.build(route)}
-        className={headerLinkBodyClasses}
-        aria-label={text}
-        ref={ref}
-    >
+    <NavLink {...props} to={RouteBuilder.build(route)} className={headerLinkBodyClasses} ref={ref}>
         {icon && <Icon icon={icon} className="text-3xl md:text-2xl" />}
 
         {text && <span className={classNames("md:block", { hidden: icon != null })}>{text}</span>}
