@@ -1,8 +1,9 @@
 import classNames from "classnames";
-import { PropsWithChildren, useCallback, useState } from "react";
-import useOnClickOutside from "../../hooks/useOnClickOutside";
+import { PropsWithChildren, useId } from "react";
 import { CommonHeaderLinkProps } from "./CommonHeaderLink";
 import HeaderLinkBody from "./HeaderLinkBody";
+import HeaderSubMenuContext from "./HeaderSubMenuContext";
+import useSubMenu from "./useSubMenu";
 
 type HeaderLinkProps = CommonHeaderLinkProps &
     PropsWithChildren<{
@@ -12,38 +13,40 @@ type HeaderLinkProps = CommonHeaderLinkProps &
 
 /** Component for one of the main header navigation links. */
 const HeaderLink = ({ route, icon, text, small = false, children }: HeaderLinkProps) => {
-    const [showSubMenu, setShowSubMenu] = useState(false);
+    const { subMenuId, context, showSubMenu, handleClick, handleKeyDown, ref } =
+        useSubMenu(!!children);
 
-    const toggleSubMenu = useCallback((newState: boolean) => {
-        const isTouchDevice = window.matchMedia("(hover: none)").matches;
-
-        if (isTouchDevice) {
-            setShowSubMenu(newState);
-        }
-    }, []);
-
-    const handleClick = useCallback(() => toggleSubMenu(true), [toggleSubMenu]);
-
-    const ref = useOnClickOutside<HTMLAnchorElement>(() => toggleSubMenu(false));
+    const linkId = useId();
 
     return (
         <div className={classNames("h-20 group", { grow: !small })}>
             <HeaderLinkBody
+                id={linkId}
                 route={route}
                 icon={icon}
                 text={small ? undefined : text}
                 onClick={handleClick}
+                onKeyDown={handleKeyDown}
+                aria-haspopup={children ? "menu" : undefined}
+                aria-expanded={children ? showSubMenu : undefined}
                 ref={ref}
             />
 
-            <div
-                className={classNames("relative flex-col z-50", {
-                    flex: showSubMenu,
-                    "hidden group-hover:flex": !showSubMenu,
-                })}
-            >
-                {children}
-            </div>
+            {children != null && (
+                <div
+                    id={subMenuId}
+                    className={classNames("relative flex-col z-50", {
+                        flex: showSubMenu,
+                        "hidden group-hover:flex": !showSubMenu,
+                    })}
+                    role="menu"
+                    aria-labelledby={linkId}
+                >
+                    <HeaderSubMenuContext.Provider value={context}>
+                        {children}
+                    </HeaderSubMenuContext.Provider>
+                </div>
+            )}
         </div>
     );
 };
