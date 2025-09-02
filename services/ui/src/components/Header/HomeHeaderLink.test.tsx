@@ -25,8 +25,8 @@ describe("HomeHeaderLink", () => {
         const link = screen.getByRole("link");
         expect(link).toBeInTheDocument();
         expect(link).toHaveTextContent("Home");
-        expect(link).toHaveAttribute("aria-haspopup", "menu");
-        expect(link).toHaveAttribute("aria-expanded", "false");
+        expect(link).not.toHaveAttribute("aria-haspopup", "menu");
+        expect(link).not.toHaveAttribute("aria-expanded", "false");
 
         const icon = within(link).getByRole("img", { hidden: true });
         expect(icon).toBeInTheDocument();
@@ -49,10 +49,8 @@ describe("HomeHeaderLink", () => {
         expect(link).toBeInTheDocument();
         expect(link).toHaveTextContent("Home");
 
-        const subLinks = screen.getAllByRole("menuitem");
-        expect(subLinks).toHaveLength(1);
-        expect(subLinks[0]).toBeInTheDocument();
-        expect(subLinks[0]).toHaveTextContent("ground");
+        const subLinks = screen.queryAllByRole("menuitem");
+        expect(subLinks).toHaveLength(0);
     });
 
     test("renders with multiple floors", () => {
@@ -66,6 +64,12 @@ describe("HomeHeaderLink", () => {
         });
 
         render(<HomeHeaderLink />, { wrapper: MemoryRouter });
+
+        const link = screen.getByRole("link");
+        expect(link).toBeInTheDocument();
+        expect(link).toHaveTextContent("Home");
+        expect(link).toHaveAttribute("aria-haspopup", "menu");
+        expect(link).toHaveAttribute("aria-expanded", "false");
 
         const subLinks = screen.getAllByRole("menuitem");
         expect(subLinks).toHaveLength(2);

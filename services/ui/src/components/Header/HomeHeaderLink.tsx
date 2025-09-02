@@ -11,13 +11,14 @@ const HomeHeaderLink = () => {
 
     return (
         <HeaderLink route={Route.Home} icon="home" text={t("navigation.home")}>
-            {floorplan.floors.map((floor) => (
-                <HeaderLink.SubLink
-                    key={floor.name}
-                    route={RouteBuilder.build(Route.Root, Route.Home, floor.name)}
-                    text={floor.display_name ?? floor.name}
-                />
-            ))}
+            {floorplan.floors.length > 1 &&
+                floorplan.floors.map((floor) => (
+                    <HeaderLink.SubLink
+                        key={floor.name}
+                        route={RouteBuilder.build(Route.Root, Route.Home, floor.name)}
+                        text={floor.display_name ?? floor.name}
+                    />
+                ))}
         </HeaderLink>
     );
 };
