@@ -25,6 +25,10 @@ export default function useSubMenu(hasChildren: boolean) {
 
     const focus = useCallback(
         (index: number) => {
+            if (subMenuRefs.length === 0) {
+                return;
+            }
+
             setActiveSubMenuIndex(index);
             subMenuRefs[index]?.current?.focus();
         },
@@ -32,14 +36,17 @@ export default function useSubMenu(hasChildren: boolean) {
     );
 
     const focusNext = useCallback(
-        () => focus((activeSubMenuIndex ?? -1) + 1),
-        [activeSubMenuIndex, focus],
-    );
-
-    const focusPrevious = useCallback(
-        () => focus(((activeSubMenuIndex ?? 0) - 1 + subMenuRefs.length) % subMenuRefs.length),
+        () => focus(((activeSubMenuIndex ?? -1) + 1) % subMenuRefs.length),
         [activeSubMenuIndex, focus, subMenuRefs.length],
     );
+
+    const focusPrevious = useCallback(() => {
+        if (subMenuRefs.length === 0) {
+            return;
+        }
+
+        focus(((activeSubMenuIndex ?? 0) - 1 + subMenuRefs.length) % subMenuRefs.length);
+    }, [activeSubMenuIndex, focus, subMenuRefs.length]);
 
     const focusFirst = useCallback(() => focus(0), [focus]);
     const focusLast = useCallback(() => focus(subMenuRefs.length - 1), [focus, subMenuRefs.length]);
