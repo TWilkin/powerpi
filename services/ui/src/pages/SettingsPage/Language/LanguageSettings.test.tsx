@@ -30,7 +30,7 @@ describe("LanguageSettings", () => {
 
         await userEvent.type(combobox, "english");
 
-        const options = within(group).getAllByRole("option");
+        const options = screen.getAllByRole("option");
         expect(options).toHaveLength(2);
 
         expect(options[0]).toHaveAccessibleName("English (UK)");
