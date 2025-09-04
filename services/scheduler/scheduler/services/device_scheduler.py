@@ -40,11 +40,17 @@ class DeviceScheduler(LogMixin):
             schedule_devices = [schedule['device']] if 'device' in schedule \
                 else schedule['devices']
 
+            schedule_params = schedule.copy()
+            if 'device' in schedule_params:
+                del schedule_params['device']
+            if 'devices' in schedule_params:
+                del schedule_params['devices']
+
             for schedule_device in schedule_devices:
                 if schedule_device in devices:
                     device_schedule: DeviceSchedule = self.__device_schedule_factory.build(
                         device=schedule_device,
-                        device_schedule=schedule
+                        device_schedule=schedule_params
                     )
 
                     if device_schedule is not None:
