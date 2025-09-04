@@ -12,7 +12,7 @@ type TooltipProps = PropsWithChildren<
  * Use alongside the @see useTooltip hook.
  */
 const Tooltip = ({ className, children, ...props }: TooltipProps) => {
-    const { tooltipHost } = usePortalHost();
+    const { tooltipHost, getElementByHostId } = usePortalHost();
 
     return (
         <>
@@ -27,7 +27,7 @@ const Tooltip = ({ className, children, ...props }: TooltipProps) => {
                 >
                     {children}
                 </ReactTooltip>,
-                document.getElementById(tooltipHost) ?? document.body,
+                getElementByHostId(tooltipHost),
             )}
         </>
     );

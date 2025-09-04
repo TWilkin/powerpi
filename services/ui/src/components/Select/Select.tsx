@@ -34,7 +34,7 @@ const Select = <TValueType,>({
     onChange,
     ...props
 }: SelectProps<TValueType>) => {
-    const { dropdownHost } = usePortalHost();
+    const { dropdownHost, getElementByHostId } = usePortalHost();
 
     const currentValue = useMemo(
         () => options.find((option) => option.value === value),
@@ -90,7 +90,7 @@ const Select = <TValueType,>({
                     menu: () => "mt-2 rounded border border-outline",
                     menuList: () => "scrollbar-thin",
                 }}
-                menuPortalTarget={document.getElementById(dropdownHost) ?? document.body}
+                menuPortalTarget={getElementByHostId(dropdownHost)}
                 aria-label={label}
                 onChange={handleChange}
                 onMenuOpen={handleMenuOpen}
