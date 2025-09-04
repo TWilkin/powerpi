@@ -13,6 +13,23 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("../../routing/useOptionalRoute", () => ({ default: mocks.useOptionalRoute }));
 
+// Mock HomeHeaderLink's useQueryFloorplan
+vi.mock("../../queries/useQueryFloorPlan", () => ({
+    default: () => ({
+        data: {
+            floors: [
+                { name: "ground", display_name: "Ground Floor" },
+                { name: "first", display_name: "First Floor" },
+            ],
+        },
+    }),
+}));
+
+// Mock the click outside hook
+vi.mock("../../hooks/useOnClickOutside", () => ({
+    default: vi.fn(() => ({ current: null })),
+}));
+
 describe("Header", () => {
     test("renders with no optional links", () => {
         mocks.useOptionalRoute.mockReturnValue({ home: false });
@@ -44,6 +61,22 @@ describe("Header", () => {
         expectHome(links[0]);
         expectDevices(links[1]);
         expectSettings(links[2]);
+
+        // Check Home has submenu functionality
+        expect(links[0]).toHaveAttribute("aria-haspopup", "menu");
+        expect(links[0]).toHaveAttribute("aria-expanded", "false");
+
+        // Check submenu items are rendered
+        const menuItems = screen.getAllByRole("menuitem");
+        expect(menuItems).toHaveLength(2);
+        expect(menuItems[0]).toBeInTheDocument();
+        expect(menuItems[0]).toHaveTextContent("Ground Floor");
+        expect(menuItems[1]).toBeInTheDocument();
+        expect(menuItems[1]).toHaveTextContent("First Floor");
+
+        // Check menu container exists
+        const menu = screen.getByRole("menu");
+        expect(menu).toBeInTheDocument();
     });
 
     test("renders with History", () => {

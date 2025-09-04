@@ -1,36 +1,54 @@
 import classNames from "classnames";
-import { NavLink } from "react-router-dom";
-import Route from "../../routing/Route";
-import RouteBuilder from "../../routing/RouteBuilder";
-import { buttonStyles } from "../Button";
-import Icon, { IconType } from "../Icon";
+import { PropsWithChildren, useId } from "react";
+import { CommonHeaderLinkProps } from "./CommonHeaderLink";
+import HeaderLinkBody from "./HeaderLinkBody";
+import HeaderSubMenuContext from "./HeaderSubMenuContext";
+import useSubMenu from "./useSubMenu";
 
-type HeaderLinkProps = {
-    route: Route;
-
-    icon: IconType;
-
-    text: string;
-
-    /** Whether to always show as a small link. */
-    small?: boolean;
-};
-
-const headerLinkClasses = classNames(
-    "relative h-full flex flex-row justify-center items-center gap-sm grow text-2xl",
-    buttonStyles("default"),
-    // when the link is the current route
-    "aria-current-page:bg-bg-selected",
-);
+type HeaderLinkProps = CommonHeaderLinkProps &
+    PropsWithChildren<{
+        /** Whether to always show as a small link. */
+        small?: boolean;
+    }>;
 
 /** Component for one of the main header navigation links. */
-const HeaderLink = ({ route, icon, text, small = false }: HeaderLinkProps) => (
-    <div className={classNames("h-20", { grow: !small })}>
-        <NavLink to={RouteBuilder.build(route)} className={headerLinkClasses} aria-label={text}>
-            <Icon icon={icon} className="text-3xl md:text-2xl" />
+const HeaderLink = ({ route, icon, text, small = false, children }: HeaderLinkProps) => {
+    const { subMenuId, context, showSubMenu, handleClick, handleKeyDown, ref } =
+        useSubMenu(!!children);
 
-            {!small && <span className="hidden md:block">{text}</span>}
-        </NavLink>
-    </div>
-);
+    const linkId = useId();
+
+    return (
+        <div className={classNames("relative h-20 group", { grow: !small })}>
+            <HeaderLinkBody
+                id={linkId}
+                route={route}
+                icon={icon}
+                text={small ? undefined : text}
+                onClick={handleClick}
+                onKeyDown={handleKeyDown}
+                aria-label={text}
+                aria-haspopup={children ? "menu" : undefined}
+                aria-expanded={children ? showSubMenu : undefined}
+                ref={ref}
+            />
+
+            {children != null && (
+                <div
+                    id={subMenuId}
+                    className={classNames("absolute top-full left-0 min-w-full flex-col z-50", {
+                        flex: showSubMenu,
+                        "hidden group-hover:flex": !showSubMenu,
+                    })}
+                    role="menu"
+                    aria-labelledby={linkId}
+                >
+                    <HeaderSubMenuContext.Provider value={context}>
+                        {children}
+                    </HeaderSubMenuContext.Provider>
+                </div>
+            )}
+        </div>
+    );
+};
 export default HeaderLink;
