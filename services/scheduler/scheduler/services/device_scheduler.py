@@ -40,11 +40,10 @@ class DeviceScheduler(LogMixin):
             schedule_devices = [schedule['device']] if 'device' in schedule \
                 else schedule['devices']
 
-            schedule_params = schedule.copy()
-            if 'device' in schedule_params:
-                del schedule_params['device']
-            if 'devices' in schedule_params:
-                del schedule_params['devices']
+            schedule_params = {
+                key: value for key, value in schedule.items()
+                if key not in ('device', 'devices')
+            }
 
             for schedule_device in schedule_devices:
                 if schedule_device in devices:
