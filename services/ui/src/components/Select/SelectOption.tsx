@@ -27,7 +27,7 @@ const SelectOption = <TValueType,>({
                 {
                     "bg-bg-primary": !isSelected && !isFocused,
                     "bg-bg-selected": isSelected && !isFocused,
-                    "bg-bg-hover ring-2 ring-outline z-10": isFocused,
+                    "bg-bg-hover ring-2 ring-outline z-focus": isFocused,
                 },
             )}
         >
