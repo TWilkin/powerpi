@@ -9,6 +9,11 @@ import RouteBuilder from "./RouteBuilder";
 const ProtectedRoute = () => {
     const user = useUser();
 
+    // Skip authentication in development mode
+    if (process.env.NODE_ENV === "development") {
+        return <Outlet />;
+    }
+
     if (!user) {
         return <Navigate to={RouteBuilder.build(Route.Login)} replace />;
     }
