@@ -5,6 +5,8 @@ import usePortalHost from "./usePortalHost";
 
 type PortalHostProps = PropsWithChildren<unknown>;
 
+/** Component including hosts for dialog, drop-down and tooltip portals to enforce correct rendering order.
+ * @see usePortalHost */
 const PortalHost = ({ children }: PortalHostProps) => {
     const { layer } = useContext(PortalHostContext);
 
