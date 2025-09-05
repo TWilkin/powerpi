@@ -1,6 +1,6 @@
 import { act, renderHook, screen, within } from "@testing-library/react";
 import { vi } from "vitest";
-import DialogHost from "./DialogHost";
+import { PortalHost } from "../PortalHost";
 import useDialog from "./useDialog";
 
 const mocks = vi.hoisted(() => ({
@@ -17,7 +17,7 @@ describe("useDialog", () => {
     });
 
     test("opens dialog", () => {
-        const { result } = renderHook(useDialog, { wrapper: DialogHost });
+        const { result } = renderHook(useDialog, { wrapper: PortalHost });
 
         const dialog = screen.getByRole("dialog", { hidden: true });
         expect(dialog).toBeInTheDocument();
@@ -32,7 +32,7 @@ describe("useDialog", () => {
     });
 
     test("closes dialog", () => {
-        const { result } = renderHook(useDialog, { wrapper: DialogHost });
+        const { result } = renderHook(useDialog, { wrapper: PortalHost });
 
         const dialog = screen.getByRole("dialog", { hidden: true });
         expect(dialog).toBeInTheDocument();

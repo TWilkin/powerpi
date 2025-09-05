@@ -1,12 +1,15 @@
 import { render, screen, within } from "@testing-library/react";
+import { PortalHost } from "../PortalHost";
 import Dialog from "./Dialog";
 
 describe("Dialog", () => {
     test("renders", () => {
         render(
-            <Dialog heading="My Dialog" icon={<div>My Icon</div>} open ref={{ current: null }}>
-                My Content
-            </Dialog>,
+            <PortalHost>
+                <Dialog heading="My Dialog" icon={<div>My Icon</div>} open ref={{ current: null }}>
+                    My Content
+                </Dialog>
+            </PortalHost>,
         );
 
         const dialog = screen.getByRole("dialog");
