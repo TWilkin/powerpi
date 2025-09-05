@@ -38,7 +38,7 @@ const HistoryFilter = ({ open, state, clear, dispatch }: HistoryFilterProps) => 
 
     return (
         <SlideAnimation open={open}>
-            <Panel>
+            <Panel scrollable>
                 <FieldSet legend={t("pages.history.filters.path")}>
                     <HistoryPathFilter
                         path="types"

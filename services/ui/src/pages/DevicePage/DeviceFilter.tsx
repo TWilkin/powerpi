@@ -71,7 +71,7 @@ const DeviceFilter = ({ open, state, types, locations, dispatch, clear }: Device
 
     return (
         <SlideAnimation open={open}>
-            <Panel>
+            <Panel scrollable>
                 <FieldSet legend={t("pages.devices.filters.types")} content="checkbox">
                     <CheckBoxGroup
                         options={typeOptions}
