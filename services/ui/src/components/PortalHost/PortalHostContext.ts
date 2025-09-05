@@ -1,13 +1,13 @@
 import { createContext } from "react";
 
 export type PortalHostContextType = {
-    layer: number;
+    layer: number | undefined;
     dropdownHost: string;
     tooltipHost: string;
 };
 
 const PortalHostContext = createContext<PortalHostContextType>({
-    layer: 0,
+    layer: undefined,
     dropdownHost: "dropdown-host",
     tooltipHost: "tooltip-host",
 });

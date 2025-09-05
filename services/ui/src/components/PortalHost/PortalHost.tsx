@@ -12,24 +12,20 @@ const PortalHost = ({ children }: PortalHostProps) => {
     const tooltipHost = useId();
 
     const context = useMemo(
-        () => ({ layer: layer + 1, dropdownHost, tooltipHost }),
+        () => ({ layer: layer == null ? 0 : layer + 1, dropdownHost, tooltipHost }),
         [dropdownHost, layer, tooltipHost],
     );
 
     return (
         <PortalHostContext.Provider value={context}>
-            <PortalHostInner layer={layer}>{children}</PortalHostInner>
+            <PortalHostInner>{children}</PortalHostInner>
         </PortalHostContext.Provider>
     );
 };
 export default PortalHost;
 
-type PortalHostInnerProps = PropsWithChildren<{
-    layer: number;
-}>;
-
-const PortalHostInner = ({ layer, children }: PortalHostInnerProps) => {
-    const { dropdownHost, tooltipHost } = usePortalHost();
+const PortalHostInner = ({ children }: PortalHostProps) => {
+    const { layer, dropdownHost, tooltipHost } = usePortalHost();
 
     const Wrapper = layer === 0 ? DialogHost : Fragment;
 
