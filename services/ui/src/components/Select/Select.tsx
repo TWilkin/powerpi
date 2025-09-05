@@ -3,6 +3,7 @@ import { HTMLAttributes, useCallback, useMemo, useState } from "react";
 import ReactSelect, { SingleValue } from "react-select";
 import _ from "underscore";
 import { inputStyles } from "../Input";
+import { usePortalHost } from "../PortalHost";
 import SelectDropDownIndicator from "./SelectDropDownIndicator";
 import SelectLoadingIndicator from "./SelectLoadingIndicator";
 import SelectOption from "./SelectOption";
@@ -33,6 +34,8 @@ const Select = <TValueType,>({
     onChange,
     ...props
 }: SelectProps<TValueType>) => {
+    const { dropdownHost, getElementByHostId } = usePortalHost();
+
     const currentValue = useMemo(
         () => options.find((option) => option.value === value),
         [options, value],
@@ -87,6 +90,7 @@ const Select = <TValueType,>({
                     menu: () => "mt-2 rounded border border-outline",
                     menuList: () => "scrollbar-thin",
                 }}
+                menuPortalTarget={getElementByHostId(dropdownHost)}
                 aria-label={label}
                 onChange={handleChange}
                 onMenuOpen={handleMenuOpen}
