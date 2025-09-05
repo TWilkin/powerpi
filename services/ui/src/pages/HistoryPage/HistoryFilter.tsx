@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import Button from "../../components/Button";
 import FieldSet from "../../components/FieldSet";
 import Panel from "../../components/Panel";
+import Scrollbar from "../../components/Scrollbar";
 import SlideAnimation, { useSlideAnimation } from "../../components/SlideAnimation";
 import useQueryHistoryActions from "../../queries/useQueryHistoryActions";
 import useQueryHistoryEntities from "../../queries/useQueryHistoryEntities";
@@ -38,37 +39,39 @@ const HistoryFilter = ({ open, state, clear, dispatch }: HistoryFilterProps) => 
 
     return (
         <SlideAnimation open={open}>
-            <Panel scrollable>
-                <FieldSet legend={t("pages.history.filters.path")}>
-                    <HistoryPathFilter
-                        path="types"
-                        value={state.type}
-                        data={types}
-                        isFetching={typesFetching}
-                        onChange={handleTypesChange}
-                    />
+            <Scrollbar direction="y" className="max-h-[40vh]">
+                <Panel>
+                    <FieldSet legend={t("pages.history.filters.path")}>
+                        <HistoryPathFilter
+                            path="types"
+                            value={state.type}
+                            data={types}
+                            isFetching={typesFetching}
+                            onChange={handleTypesChange}
+                        />
 
-                    <HistoryPathFilter
-                        path="entities"
-                        value={state.entity}
-                        data={entities}
-                        isFetching={entitiesFetching}
-                        onChange={handleEntitiesChange}
-                    />
+                        <HistoryPathFilter
+                            path="entities"
+                            value={state.entity}
+                            data={entities}
+                            isFetching={entitiesFetching}
+                            onChange={handleEntitiesChange}
+                        />
 
-                    <HistoryPathFilter
-                        path="actions"
-                        value={state.action}
-                        data={actions}
-                        isFetching={actionsFetching}
-                        onChange={handleActionsChange}
-                    />
-                </FieldSet>
+                        <HistoryPathFilter
+                            path="actions"
+                            value={state.action}
+                            data={actions}
+                            isFetching={actionsFetching}
+                            onChange={handleActionsChange}
+                        />
+                    </FieldSet>
 
-                <Button icon="filter" className="self-start" onClick={clear}>
-                    {t("common.clear filters")}
-                </Button>
-            </Panel>
+                    <Button icon="filter" className="self-start" onClick={clear}>
+                        {t("common.clear filters")}
+                    </Button>
+                </Panel>
+            </Scrollbar>
         </SlideAnimation>
     );
 };

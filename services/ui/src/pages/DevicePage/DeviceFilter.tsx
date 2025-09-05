@@ -7,6 +7,7 @@ import CheckBoxGroup from "../../components/CheckBoxGroup";
 import DeviceIcon from "../../components/DeviceIcon";
 import FieldSet from "../../components/FieldSet";
 import Panel from "../../components/Panel";
+import Scrollbar from "../../components/Scrollbar";
 import SlideAnimation, { useSlideAnimation } from "../../components/SlideAnimation";
 import useLocations from "../../hooks/useLocations";
 import useDeviceFilter from "./useDeviceFilter";
@@ -71,35 +72,40 @@ const DeviceFilter = ({ open, state, types, locations, dispatch, clear }: Device
 
     return (
         <SlideAnimation open={open}>
-            <Panel scrollable>
-                <FieldSet legend={t("pages.devices.filters.types")} content="checkbox">
-                    <CheckBoxGroup
-                        options={typeOptions}
-                        selections={state.types}
-                        onChange={handleTypeSelection}
-                    />
-                </FieldSet>
+            <Scrollbar direction="y" className="max-h-[40vh]">
+                <Panel>
+                    <FieldSet legend={t("pages.devices.filters.types")} content="checkbox">
+                        <CheckBoxGroup
+                            options={typeOptions}
+                            selections={state.types}
+                            onChange={handleTypeSelection}
+                        />
+                    </FieldSet>
 
-                <FieldSet legend={t("pages.devices.filters.locations")} content="checkbox">
-                    <CheckBoxGroup
-                        options={locationOptions}
-                        selections={state.locations}
-                        onChange={handleLocationSelection}
-                    />
-                </FieldSet>
+                    <FieldSet legend={t("pages.devices.filters.locations")} content="checkbox">
+                        <CheckBoxGroup
+                            options={locationOptions}
+                            selections={state.locations}
+                            onChange={handleLocationSelection}
+                        />
+                    </FieldSet>
 
-                <FieldSet legend={t("pages.devices.filters.visibility.label")} content="checkbox">
-                    <CheckBox
-                        label={t("pages.devices.filters.visibility.option")}
-                        checked={state.visibleOnly}
-                        onChange={handleVisibleChange}
-                    />
-                </FieldSet>
+                    <FieldSet
+                        legend={t("pages.devices.filters.visibility.label")}
+                        content="checkbox"
+                    >
+                        <CheckBox
+                            label={t("pages.devices.filters.visibility.option")}
+                            checked={state.visibleOnly}
+                            onChange={handleVisibleChange}
+                        />
+                    </FieldSet>
 
-                <Button icon="filter" className="self-start" onClick={clear}>
-                    {t("common.clear filters")}
-                </Button>
-            </Panel>
+                    <Button icon="filter" className="self-start" onClick={clear}>
+                        {t("common.clear filters")}
+                    </Button>
+                </Panel>
+            </Scrollbar>
         </SlideAnimation>
     );
 };
