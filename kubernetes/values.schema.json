@@ -1,5 +1,5 @@
 {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$schema": "https://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/kubernetes/values.schema.json",
     "title": "PowerPi Helm Chart",
     "description": "The configuration for the PowerPi Helm deployment",
