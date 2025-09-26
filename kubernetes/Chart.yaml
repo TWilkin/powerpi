@@ -52,5 +52,5 @@ dependencies:
   - name: virtual-controller
     version: 0.2.7
   - name: zigbee-controller
-    version: 0.1.18
+    version: 0.2.0
     condition: global.zigbee
