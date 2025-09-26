@@ -184,18 +184,6 @@ twisted = ["twisted"]
 zookeeper = ["kazoo"]
 
 [[package]]
-name = "async-timeout"
-version = "4.0.3"
-description = "Timeout context manager for asyncio programs"
-optional = false
-python-versions = ">=3.7"
-groups = ["main"]
-files = [
-    {file = "async-timeout-4.0.3.tar.gz", hash = "sha256:4640d96be84d82d02ed59ea2b7105a0f7b33abe8703703cd0ab0bf87c427522f"},
-    {file = "async_timeout-4.0.3-py3-none-any.whl", hash = "sha256:7405140ff1230c310e51dc27b3145b9092d659ce68ff733fb0cefe3ee42be028"},
-]
-
-[[package]]
 name = "attrs"
 version = "23.1.0"
 description = "Classes Without Boilerplate"
@@ -1457,14 +1445,14 @@ propcache = ">=0.2.0"
 
 [[package]]
 name = "zigpy"
-version = "0.76.2"
+version = "0.83.0"
 description = "Library implementing a Zigbee stack"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "zigpy-0.76.2-py3-none-any.whl", hash = "sha256:6ec4e30fb456bc4edee16d318bf876b139d57b42b2841e40ca2fe261d0483c95"},
-    {file = "zigpy-0.76.2.tar.gz", hash = "sha256:bc9de21023f074251d1becf507b073b1578930cf3344f7deb0ddb5aee7d07f6c"},
+    {file = "zigpy-0.83.0-py3-none-any.whl", hash = "sha256:6868fb8eeb86f5f56f2969a25d8d94a07cb59ea0daa9c00923e548996602442d"},
+    {file = "zigpy-0.83.0.tar.gz", hash = "sha256:c699f3f90441b8c9557b553b4282b7d6b519c27e1b4f8893ce877bd965199c06"},
 ]
 
 [package.dependencies]
@@ -1483,26 +1471,25 @@ typing_extensions = "*"
 voluptuous = "*"
 
 [package.extras]
-testing = ["asynctest", "coverage[toml]", "coveralls", "freezegun", "pysqlite3-binary ; platform_system == \"Linux\" and python_version < \"3.12\"", "pytest", "pytest-asyncio", "pytest-cov", "pytest-timeout", "tomli"]
+testing = ["asynctest", "coverage[toml]", "coveralls", "freezegun", "pysqlite3-binary ; platform_system == \"Linux\" and python_version < \"3.12\"", "pytest", "pytest-asyncio (<1.0.0)", "pytest-cov", "pytest-timeout", "tomli"]
 
 [[package]]
 name = "zigpy-znp"
-version = "0.13.1"
+version = "0.14.1"
 description = "A library for zigpy which communicates with TI ZNP radios"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "zigpy_znp-0.13.1-py3-none-any.whl", hash = "sha256:97441a8654fe8c5d0fbc9dce939b825563b1e4ffd0ee81ae3d5813d67d6c3d43"},
-    {file = "zigpy_znp-0.13.1.tar.gz", hash = "sha256:31f20feec96df32a0cb7cdd64f3864f1ac72fc6363087caa7ef52fa61ab7fee1"},
+    {file = "zigpy_znp-0.14.1-py3-none-any.whl", hash = "sha256:12d575d678c16cf0115c859ed6be9283470cb7449a94364324d7e6c57a5e6a62"},
+    {file = "zigpy_znp-0.14.1.tar.gz", hash = "sha256:bfd8cba410542391d00ae3f439ad875c93063e259fed203990cccf84801a4939"},
 ]
 
 [package.dependencies]
-async-timeout = "*"
 coloredlogs = "*"
 jsonschema = "*"
 voluptuous = "*"
-zigpy = ">=0.70.0"
+zigpy = ">=0.78.0"
 
 [package.extras]
 testing = ["pytest (>=7.3.1)", "pytest-asyncio (>=0.21.0)", "pytest-cov (>=4.1.0)", "pytest-mock (>=3.10.0)", "pytest-timeout (>=2.1.0)"]
@@ -1510,4 +1497,4 @@ testing = ["pytest (>=7.3.1)", "pytest-asyncio (>=0.21.0)", "pytest-cov (>=4.1.0
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<4.0"
-content-hash = "6c99cc63da7cef4226da7b0389f709f21fd691eee3a0cc9d13d0406579962c05"
+content-hash = "2345fa2a425529991c7b7c1f0d5bbd311bff34964677dfdc95668c709ec1e791"
