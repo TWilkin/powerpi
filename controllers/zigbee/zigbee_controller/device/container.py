@@ -1,6 +1,7 @@
 from dependency_injector import containers, providers
 from zigbee_controller.config import ZigbeeConfig
 
+from .library_factory import ZigbeeLibraryFactory
 from .zigbee_controller import ZigbeeController
 from .zigbee_light import ZigbeeLight
 from .zigbee_pairing import ZigbeePairingDevice
@@ -18,10 +19,17 @@ class DeviceContainer(containers.DeclarativeContainer):
 
     logger = providers.Dependency()
 
+    library_factory = providers.Factory(
+        ZigbeeLibraryFactory,
+        config=config,
+        logger=logger
+    )
+
     zigbee_controller = providers.Singleton(
         ZigbeeController,
         config=config,
-        logger=logger
+        logger=logger,
+        library_factory=library_factory.provider
     )
 
 

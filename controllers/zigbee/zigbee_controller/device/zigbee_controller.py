@@ -2,17 +2,19 @@ import os
 
 import zigpy
 from powerpi_common.logger import Logger, LogMixin
+from zigpy.application import ControllerApplication
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
-from zigpy_znp.zigbee.application import ControllerApplication
 
 from zigbee_controller.config import ZigbeeConfig
+from zigbee_controller.device.library_factory import ZigbeeLibraryFactory
 
 
 class ZigbeeController(LogMixin):
-    def __init__(self, config: ZigbeeConfig, logger: Logger):
+    def __init__(self, config: ZigbeeConfig, logger: Logger, library_factory: ZigbeeLibraryFactory):
         self.__config = config
         self._logger = logger
+        self.__library_factory = library_factory
 
         self._logger.add_logger(zigpy.__name__)
 
@@ -33,7 +35,8 @@ class ZigbeeController(LogMixin):
 
         # pylint: disable=broad-except,protected-access
         try:
-            self.__controller = await ControllerApplication.new(config, auto_form=True)
+            app_type = self.__library_factory().get_library()
+            self.__controller = await app_type.new(config, auto_form=True)
         except Exception as ex:
             self.log_error('Could not initialise ZigBee device')
             self.log_exception(ex)
