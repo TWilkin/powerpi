@@ -11,6 +11,7 @@ readme = "README.md"
 
 requires-python = ">=3.11,<4.0"
 dependencies = [
+    "bellows (~=0.46.1)",
     "zigpy (~=0.83.0)",
     "zigpy-znp (~=0.14.1)",
 ]
