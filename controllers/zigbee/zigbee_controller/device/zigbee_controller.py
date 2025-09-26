@@ -25,7 +25,9 @@ class ZigbeeController(LogMixin):
         config = {
             'database_path': self.__config.database_path,
             'device': {
-                'path': self.__config.zigbee_device
+                'path': self.__config.zigbee_device,
+                'baudrate': self.__config.baudrate,
+                'flow_control': self.__config.flow_control,
             }
         }
 
