@@ -63,7 +63,7 @@ class Application(LogMixin):
             # start the scheduler
             self.__scheduler.start()
 
-            # intially connect to MQTT
+            # initially connect to MQTT
             await self.__mqtt_client.connect()
 
             # retrieve any config from the queue
