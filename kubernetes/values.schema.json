@@ -375,6 +375,26 @@
                 "storageClass": {
                     "description": "When defined will use the specified StorageClass instead of using local storage",
                     "type": "string"
+                },
+                "device": {
+                    "description": "The device path or socket connection for the ZigBee controller (e.g., '/dev/ttyACM0' for USB or 'socket://host:port' for network)",
+                    "type": "string",
+                    "pattern": "^(/dev/[a-zA-Z0-9]+|socket://[a-zA-Z0-9.-]+:[0-9]+)$"
+                },
+                "library": {
+                    "description": "The ZigBee library to use",
+                    "type": "string",
+                    "enum": ["znp", "bellows"]
+                },
+                "baudrate": {
+                    "description": "The baudrate for the ZigBee device connection",
+                    "type": "integer",
+                    "enum": [300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600]
+                },
+                "flowControl": {
+                    "description": "Flow control setting for the ZigBee device connection",
+                    "type": "string",
+                    "enum": ["software", "hardware"]
                 }
             },
             "unevaluatedProperties": false

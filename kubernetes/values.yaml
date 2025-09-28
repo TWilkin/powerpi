@@ -95,3 +95,8 @@ snapcast-controller:
     - 10.0.0.0/8
     - 172.16.0.0/20
     - 192.168.0.0/16
+
+zigbee-controller:
+  # Device configuration for ZigBee controller
+  # Use "socket://<host>:<port>" for network devices or "/dev/ttyACM0" for USB devices
+  device: "/dev/ttyACM0"
