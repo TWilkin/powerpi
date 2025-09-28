@@ -30,11 +30,13 @@ class ZigbeeController(LogMixin):
             'database_path': self.__config.database_path,
             'device': {
                 'path': self.__config.zigbee_device,
-                'baudrate': self.__config.baudrate,
-                'flow_control': self.__config.flow_control,
             },
-            'backup_enabled': False
         }
+
+        if self.__config.baudrate:
+            config['device']['baudrate'] = self.__config.baudrate
+        if self.__config.flow_control:
+            config['device']['flow_control'] = self.__config.flow_control
 
         try:
             app_type = self.__library_factory().get_library()

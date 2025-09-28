@@ -22,9 +22,9 @@ class ZigbeeConfig(ControllerConfig):
     @property
     def baudrate(self):
         value = os.getenv('ZIGBEE_BAUDRATE')
-        return int(value) if value is not None else 115_200
+        return int(value) if value is not None else None
 
     @property
     def flow_control(self):
         value = os.getenv('ZIGBEE_FLOW_CONTROL')
-        return value.lower() if value is not None else 'software'
+        return value.lower() if value is not None else None
