@@ -18,7 +18,7 @@
 {{- if .Values.baudrate -}}
 {{- $env = append $env (dict
   "Name" "ZIGBEE_BAUDRATE"
-  "Value" (.Values.baudrate | toString)
+  "Value" (.Values.baudrate | quote)
 ) -}}
 {{- end -}}
 
