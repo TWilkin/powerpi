@@ -370,7 +370,7 @@
         "zigbee-controller": {
             "description": "The configuration for the PowerPi ZigBee controller Helm chart",
             "type": "object",
-            "allOf": [{ "$ref": "#/$defs/controller" }],
+            "allOf": [{ "$ref": "#/$defs/controller" }, { "$ref": "#/$defs/local-network" }],
             "properties": {
                 "storageClass": {
                     "description": "When defined will use the specified StorageClass instead of using local storage",
