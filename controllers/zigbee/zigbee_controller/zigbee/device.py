@@ -50,7 +50,7 @@ class ZigbeeMixin(InitialisableMixin):
                 )
 
                 return False
-        except DeliveryError:
+        except (DeliveryError, TimeoutError):
             return False
 
         return True

@@ -3,6 +3,7 @@ from typing import Dict
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
+from zigpy.exceptions import DeliveryError
 from zigpy.zcl.clusters.homeautomation import ElectricalMeasurement
 from zigpy.zcl.clusters import Cluster
 from zigpy.zcl.foundation import Attribute
@@ -107,7 +108,10 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         if len(report_attributes) > 0:
             await self._register_reports(cluster, report_attributes, self.__poll_frequency)
 
-            self.__divisors, _ = await cluster.read_attributes(divisor_attributes)
+            try:
+                self.__divisors, _ = await cluster.read_attributes(divisor_attributes)
+            except (DeliveryError, TimeoutError):
+                pass
 
     def __str__(self):
         return ZigbeeMixin.__str__(self)

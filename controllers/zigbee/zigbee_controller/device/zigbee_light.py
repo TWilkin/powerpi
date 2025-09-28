@@ -178,7 +178,7 @@ class ZigbeeLight(
                 **self.additional_state,
                 **updated_additonal_state
             }
-        except DeliveryError:
+        except (DeliveryError, TimeoutError):
             # we couldn't contact it so set to unknown
             new_state = DeviceStatus.UNKNOWN
             new_additional_state = self.additional_state
@@ -306,7 +306,7 @@ class ZigbeeLight(
 
             # broadcast the capabilities of this device
             self.on_capability_change()
-        except DeliveryError:
+        except (DeliveryError, TimeoutError):
             pass
 
     async def __set_options(self):
@@ -330,7 +330,7 @@ class ZigbeeLight(
                 await cluster.write_attributes({'options': options})
 
             self.__options_set = True
-        except DeliveryError:
+        except (DeliveryError, TimeoutError):
             self.__options_set = False
 
     async def __set_power_state(self, new_state: DeviceStatus):
