@@ -8,6 +8,7 @@ from zigpy.typing import DeviceType
 
 from zigbee_controller.config import ZigbeeConfig
 from .library_factory import ZigbeeLibraryFactory
+from .zigbee_listener import ConnectionLostListener
 
 
 class ZigbeeController(LogMixin):
@@ -44,6 +45,9 @@ class ZigbeeController(LogMixin):
 
             self.__controller = controller
 
+            self.__controller.add_listener(
+                ConnectionLostListener(self.__connection_lost))
+
             self.log_info('ZigBee controller started')
         except Exception as ex:
             self.log_error('Could not initialise ZigBee controller')
@@ -69,6 +73,10 @@ class ZigbeeController(LogMixin):
     def _ensure_controller_running(self):
         if not self.__controller:
             raise ZigbeeControllerNotRunningError()
+
+    def __connection_lost(self, _: Exception):
+        self.log_error('ZigBee connection lost, shutting down')
+        os._exit(-1)
 
 
 class ZigbeeControllerNotRunningError(RuntimeError):
