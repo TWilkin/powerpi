@@ -2,7 +2,7 @@ from unittest.mock import PropertyMock
 
 import pytest
 from pytest_mock import MockerFixture
-from zigbee_controller.device.zigbee_controller import ZigbeeController
+from zigbee_controller.zigbee import ZigbeeController
 from zigpy.endpoint import Endpoint
 from zigpy.typing import DeviceType
 from zigpy.zcl import Cluster

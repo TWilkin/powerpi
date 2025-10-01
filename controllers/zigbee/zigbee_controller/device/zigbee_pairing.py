@@ -8,8 +8,7 @@ from powerpi_common.mqtt import MQTTClient
 from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 
-from zigbee_controller.device.zigbee_controller import ZigbeeController
-from zigbee_controller.zigbee import DeviceJoinListener
+from zigbee_controller.zigbee import DeviceJoinListener, ZigbeeController
 
 
 # pylint: disable=too-many-ancestors

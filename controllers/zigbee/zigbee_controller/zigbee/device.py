@@ -5,7 +5,7 @@ from zigpy.typing import DeviceType
 from zigpy.zcl import Cluster
 from zigpy.zcl.foundation import Status
 
-from zigbee_controller.device import ZigbeeController
+from .zigbee_controller import ZigbeeController
 from .zigbee_listener import ZigBeeListener
 
 

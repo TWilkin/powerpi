@@ -16,8 +16,7 @@ from zigpy.zcl import Cluster
 from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
 from zigpy.zcl.clusters.lighting import Color as ColorCluster
 
-from zigbee_controller.device.zigbee_controller import ZigbeeController
-from zigbee_controller.zigbee import DeviceAnnounceListener, ZigbeeMixin
+from zigbee_controller.zigbee import DeviceAnnounceListener, ZigbeeController, ZigbeeMixin
 from zigbee_controller.zigbee.mixins import ZigbeeOnOffMixin
 
 

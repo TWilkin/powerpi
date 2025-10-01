@@ -7,7 +7,7 @@ from zigpy.types import EUI64
 from zigpy.typing import DeviceType
 
 from zigbee_controller.config import ZigbeeConfig
-from zigbee_controller.device.library_factory import ZigbeeLibraryFactory
+from .library_factory import ZigbeeLibraryFactory
 
 
 class ZigbeeController(LogMixin):

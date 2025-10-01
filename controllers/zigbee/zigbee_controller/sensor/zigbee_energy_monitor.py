@@ -8,9 +8,8 @@ from zigpy.zcl.clusters.homeautomation import ElectricalMeasurement
 from zigpy.zcl.clusters import Cluster
 from zigpy.zcl.foundation import Attribute
 
-from zigbee_controller.device import ZigbeeController
 from zigbee_controller.sensor.metrics import Metric, MetricValue
-from zigbee_controller.zigbee import ZigbeeMixin
+from zigbee_controller.zigbee import ZigbeeController, ZigbeeMixin
 from zigbee_controller.zigbee.mixins import ZigbeeReportMixin
 
 

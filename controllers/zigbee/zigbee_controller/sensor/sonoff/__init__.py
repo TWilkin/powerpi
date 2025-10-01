@@ -12,7 +12,7 @@ def add_sonoff_sensors(container):
         providers.Factory(
             SonoffSwitchSensor,
             logger=container.common.logger,
-            zigbee_controller=container.device.zigbee_controller,
+            zigbee_controller=container.zigbee_controller,
             mqtt_client=container.common.mqtt_client
         )
     )
