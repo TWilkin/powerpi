@@ -2,12 +2,26 @@ from unittest.mock import PropertyMock
 
 import pytest
 from pytest_mock import MockerFixture
-from zigbee_controller.zigbee import ZigbeeController
 from zigpy.endpoint import Endpoint
 from zigpy.typing import DeviceType
 from zigpy.zcl import Cluster
 
+from zigbee_controller.config import ZigbeeConfig
+from zigbee_controller.zigbee import ZigbeeController
+
 # pylint: disable=redefined-outer-name
+
+
+@pytest.fixture
+def zigbee_config(powerpi_config) -> ZigbeeConfig:
+    powerpi_config.database_path = '/var/data/zigbee.db'
+    powerpi_config.zigbee_device = '/dev/ttyACM0'
+
+    powerpi_config.zigbee_library = 'znp'
+    powerpi_config.baudrate = None
+    powerpi_config.flow_control = None
+
+    return powerpi_config
 
 
 @pytest.fixture

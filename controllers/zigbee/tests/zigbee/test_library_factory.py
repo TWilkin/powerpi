@@ -83,11 +83,5 @@ class TestZigbeeLibraryFactory:
             subject.get_library()
 
     @pytest.fixture
-    def zigbee_config(self, powerpi_config) -> ZigbeeConfig:
-        powerpi_config.zigbee_library = 'znp'
-
-        return powerpi_config
-
-    @pytest.fixture
     def subject(self, zigbee_config, powerpi_logger) -> ZigbeeLibraryFactory:
         return ZigbeeLibraryFactory(zigbee_config, powerpi_logger)
