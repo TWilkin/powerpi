@@ -46,5 +46,5 @@ class HealthService(LogMixin):
                 health_file.touch(exist_ok=True)
             else:
                 self.log_warning('MQTT not connected')
-        except:
+        except Exception:
             self.log_exception('Could not perform health check')
