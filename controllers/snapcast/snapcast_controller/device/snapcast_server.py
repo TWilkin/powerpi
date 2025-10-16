@@ -40,7 +40,7 @@ class SnapcastServerDevice(Device, InitialisableMixin, NewPollableMixin, Snapcas
         self.__api = snapcast_api
 
         self.__network_address = ip if ip is not None else hostname
-        self.__port = port if port is not None else 1780
+        self.__port = port if port is not None else 1705
 
         self.__streams: Set[str] = set()
 
