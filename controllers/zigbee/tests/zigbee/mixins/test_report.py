@@ -8,8 +8,7 @@ from pytest_mock import MockerFixture
 from zigpy.zcl.clusters import Cluster
 from zigpy.zcl.foundation import Attribute, GeneralCommand, Status
 
-from zigbee_controller.device import ZigbeeController
-from zigbee_controller.zigbee import ClusterGeneralCommandListener
+from zigbee_controller.zigbee import ClusterGeneralCommandListener, ZigbeeController
 from zigbee_controller.zigbee.mixins import ZigbeeReportMixin
 
 
