@@ -12,58 +12,63 @@ from zigbee_controller.zigbee.zigbee_controller import (
 
 
 class TestZigbeeController:
-    # @pytest.mark.asyncio
-    # @pytest.mark.parametrize('baudrate,flow_control,expected_config', [
-    #     (None, None, {
-    #         'database_path': '/var/data/zigbee.db',
-    #         'device': {'path': '/dev/ttyACM0'}
-    #     }),
-    #     (115200, None, {
-    #         'database_path': '/var/data/zigbee.db',
-    #         'device': {'path': '/dev/ttyACM0', 'baudrate': 115200}
-    #     }),
-    #     (None, 'hardware', {
-    #         'database_path': '/var/data/zigbee.db',
-    #         'device': {'path': '/dev/ttyACM0', 'flow_control': 'hardware'}
-    #     }),
-    #     (9600, 'software', {
-    #         'database_path': '/var/data/zigbee.db',
-    #         'device': {'path': '/dev/ttyACM0', 'baudrate': 9600, 'flow_control': 'software'}
-    #     }),
-    # ])
-    # async def test_startup_config_variations(
-    #     self,
-    #     subject: ZigbeeController,
-    #     zigbee_config: ZigbeeConfig,
-    #     library_factory: MagicMock,
-    #     baudrate: int,
-    #     flow_control: str,
-    #     expected_config: dict
-    # ) -> None:
-    #     # pylint: disable=too-many-arguments, too-many-positional-arguments
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('baudrate,flow_control,expected_config', [
+        (None, None, {
+            'database_path': '/var/data/zigbee.db',
+            'device': {'path': '/dev/ttyACM0'}
+        }),
+        (115200, None, {
+            'database_path': '/var/data/zigbee.db',
+            'device': {'path': '/dev/ttyACM0', 'baudrate': 115200}
+        }),
+        (None, 'hardware', {
+            'database_path': '/var/data/zigbee.db',
+            'device': {'path': '/dev/ttyACM0', 'flow_control': 'hardware'}
+        }),
+        (9600, 'software', {
+            'database_path': '/var/data/zigbee.db',
+            'device': {'path': '/dev/ttyACM0', 'baudrate': 9600, 'flow_control': 'software'}
+        }),
+    ])
+    async def test_startup_config_variations(
+        self,
+        subject: ZigbeeController,
+        zigbee_config: ZigbeeConfig,
+        zigpy_application_class: MagicMock,
+        baudrate: int,
+        flow_control: str,
+        expected_config: dict
+    ) -> None:
+        # pylint: disable=too-many-arguments, too-many-positional-arguments
 
-    #     zigbee_config.baudrate = baudrate
-    #     zigbee_config.flow_control = flow_control
+        zigbee_config.baudrate = baudrate
+        zigbee_config.flow_control = flow_control
 
-    #     await subject.startup()
+        await subject.startup()
 
-    #     library_factory.new.assert_called_once_with(
-    #         expected_config,
-    #         auto_form=True
-    #     )
+        zigpy_application_class.new.assert_called_once_with(
+            expected_config,
+            auto_form=True
+        )
 
-    #     # Verify controller is running by checking public methods work
-    #     subject.add_listener(MagicMock())  # Should not raise
+        # Verify controller is running by checking public methods work
+        subject.add_listener(MagicMock())  # Should not raise
 
     @pytest.mark.asyncio
     async def test_startup_error_exits_process(
         self,
         subject: ZigbeeController,
-        library_factory: MagicMock,
+        zigpy_application_class: MagicMock,
         mocker: MockerFixture
     ) -> None:
-        library_factory.new.side_effect = Exception('Failed to connect')
-        exit_spy = mocker.patch('os._exit')
+        # Make the library class .new() method fail
+        zigpy_application_class.new.side_effect = Exception(
+            'Failed to connect')
+
+        exit_spy = mocker.patch(
+            'zigbee_controller.zigbee.zigbee_controller.os._exit'
+        )
         log_error_spy = mocker.spy(subject, 'log_error')
         log_exception_spy = mocker.spy(subject, 'log_exception')
 
@@ -75,36 +80,39 @@ class TestZigbeeController:
         )
         log_exception_spy.assert_called_once()
 
-    # @pytest.mark.asyncio
-    # async def test_shutdown_cleans_up_controller(
-    #     self,
-    #     subject: ZigbeeController,
-    #     zigbee_controller_instance: MagicMock
-    # ) -> None:
-    #     await subject.startup()
+    @pytest.mark.asyncio
+    async def test_shutdown_cleans_up_controller(
+        self,
+        subject: ZigbeeController,
+        zigpy_controller_instance: MagicMock
+    ) -> None:
+        await subject.startup()
 
-    #     await subject.shutdown()
+        await subject.shutdown()
 
-    #     zigbee_controller_instance.shutdown.assert_called_once()
+        zigpy_controller_instance.shutdown.assert_called_once()
 
-    #     # Verify controller is shut down by checking public methods fail
-    #     with pytest.raises(ZigbeeControllerNotRunningError):
-    #         subject.add_listener(MagicMock())
+        # Verify controller is shut down by checking public methods fail
+        with pytest.raises(ZigbeeControllerNotRunningError):
+            subject.add_listener(MagicMock())
 
     @pytest.mark.asyncio
     async def test_connection_lost_exits_process(
         self,
         subject: ZigbeeController,
-        zigbee_controller_instance: MagicMock,
+        zigpy_controller_instance: MagicMock,
         mocker: MockerFixture
     ) -> None:
-        exit_spy = mocker.patch('os._exit')
+        exit_spy = mocker.patch(
+            'zigbee_controller.zigbee.zigbee_controller.os._exit'
+        )
         log_error_spy = mocker.spy(subject, 'log_error')
 
         await subject.startup()
 
-        # Get the connection lost listener that was added
-        listener = zigbee_controller_instance.add_listener.call_args[0][0]
+        zigpy_controller_instance.add_listener.assert_called_once()
+        listener = zigpy_controller_instance.add_listener.call_args[0][0]
+
         exception = Exception('Connection lost')
         listener.connection_lost(exception)
 
@@ -123,33 +131,42 @@ class TestZigbeeController:
         ):
             subject.add_listener(MagicMock())
 
-    # @pytest.mark.asyncio
-    # async def test_methods_work_when_controller_running(
-    #     self,
-    #     subject: ZigbeeController
-    # ) -> None:
-    #     await subject.startup()
-    #     subject.add_listener(MagicMock())  # Should not raise
+    @pytest.mark.asyncio
+    async def test_methods_work_when_controller_running(
+        self,
+        subject: ZigbeeController
+    ) -> None:
+        await subject.startup()
+        subject.add_listener(MagicMock())  # Should not raise
 
     @pytest.fixture
-    def zigbee_controller_instance(self, mocker: MockerFixture) -> MagicMock:
+    def zigpy_controller_instance(self, mocker: MockerFixture) -> MagicMock:
         instance = mocker.MagicMock()
         instance.shutdown = AsyncMock()
 
         return instance
 
     @pytest.fixture
-    def library_factory(
+    def zigpy_application_class(
         self,
-        zigbee_controller_instance: MagicMock,
+        zigpy_controller_instance: MagicMock,
+        mocker: MockerFixture
+    ) -> MagicMock:
+        library_class = mocker.MagicMock()
+        library_class.new = AsyncMock(return_value=zigpy_controller_instance)
+        return library_class
+
+    @pytest.fixture
+    def library_factory_provider(
+        self,
+        zigpy_application_class: MagicMock,
         mocker: MockerFixture
     ) -> ZigbeeLibraryFactory:
-        library_class = mocker.MagicMock()
-        library_class.new = AsyncMock(return_value=zigbee_controller_instance)
+        inner_factory = mocker.MagicMock()
+        inner_factory.get_library.return_value = zigpy_application_class
 
         factory = mocker.MagicMock(spec=ZigbeeLibraryFactory)
-        factory.get_library.return_value = library_class
-
+        factory.return_value = inner_factory
         return factory
 
     @pytest.fixture
@@ -157,6 +174,6 @@ class TestZigbeeController:
         self,
         zigbee_config: ZigbeeConfig,
         powerpi_logger,
-        library_factory: ZigbeeLibraryFactory
+        library_factory_provider: ZigbeeLibraryFactory
     ) -> ZigbeeController:
-        return ZigbeeController(zigbee_config, powerpi_logger, library_factory)
+        return ZigbeeController(zigbee_config, powerpi_logger, library_factory_provider)
