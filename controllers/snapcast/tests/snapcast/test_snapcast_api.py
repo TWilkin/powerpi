@@ -63,7 +63,7 @@ class TestSnapcastAPI:
 
     @pytest.mark.asyncio
     async def test_disconnect(self, subject: SnapcastAPI, websocket: MagicMock):
-        await subject.connect('some.server', 1780)
+        await subject.connect('some.server', 1705)
         await subject.disconnect()
 
         websocket.close.assert_called_once()
