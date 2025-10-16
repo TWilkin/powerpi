@@ -30,7 +30,7 @@ class TestSnapcastServerDevice(DeviceTestBase, InitialisableMixinTestBase, Polla
         assert subject.network_address == 'Server.home'
 
     def test_port_defaults(self, subject: SnapcastServerDevice):
-        assert subject.port == 1780
+        assert subject.port == 1705
 
     @pytest.mark.parametrize('subject', [(None, 1234)], indirect=['subject'])
     def test_port_set(self, subject: SnapcastServerDevice):
@@ -63,7 +63,7 @@ class TestSnapcastServerDevice(DeviceTestBase, InitialisableMixinTestBase, Polla
     ):
         await subject.initialise()
 
-        snapcast_api.connect.assert_called_once_with('127.0.0.1', 1780)
+        snapcast_api.connect.assert_called_once_with('127.0.0.1', 1705)
         snapcast_api.add_listener.assert_called_once_with(subject)
 
     @pytest.mark.asyncio
