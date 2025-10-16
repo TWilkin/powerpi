@@ -24,7 +24,7 @@
             "format": "ipv4"
         },
         "port": {
-            "description": "The port where the Snapcast server can be found, defaults to 1780",
+            "description": "The port where the Snapcast server can be found, defaults to 1705",
             "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Port.schema.json"
         }
     },
