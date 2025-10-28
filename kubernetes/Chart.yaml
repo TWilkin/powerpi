@@ -50,7 +50,7 @@ dependencies:
     version: 0.0.9
     condition: global.snapcast
   - name: virtual-controller
-    version: 0.2.7
+    version: 0.2.8
   - name: zigbee-controller
     version: 0.2.0
     condition: global.zigbee
