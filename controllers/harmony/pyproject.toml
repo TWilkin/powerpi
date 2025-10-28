@@ -1,6 +1,6 @@
 [project]
 name = "harmony_controller"
-version = "0.4.8"
+version = "0.4.9"
 description = "PowerPi Logitech Harmony Controller"
 license = "GPL-3.0-only"
 authors = [

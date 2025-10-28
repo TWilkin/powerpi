@@ -1,9 +1,10 @@
 # create a common base image
-FROM python:3.11.11-slim-bookworm AS base-image
+FROM python:3.11.14-slim-bookworm AS base-image
+RUN pip install --upgrade pip==25.3
 
 # create a base image for building
 FROM base-image AS build-base-image
-RUN pip3 install --prefer-binary poetry==2.1.1
+RUN pip3 install --prefer-binary poetry==2.2.1
 RUN poetry config virtualenvs.in-project true
 
 FROM build-base-image AS build-base-image-gcc
