@@ -1,7 +1,6 @@
 from dependency_injector import containers, providers
 from zigbee_controller.config import ZigbeeConfig
 
-from .zigbee_controller import ZigbeeController
 from .zigbee_light import ZigbeeLight
 from .zigbee_pairing import ZigbeePairingDevice
 from .zigbee_socket import ZigbeeSocket
@@ -17,12 +16,6 @@ class DeviceContainer(containers.DeclarativeContainer):
     config = providers.Dependency()
 
     logger = providers.Dependency()
-
-    zigbee_controller = providers.Singleton(
-        ZigbeeController,
-        config=config,
-        logger=logger
-    )
 
 
 def add_devices(container):
@@ -42,7 +35,7 @@ def add_devices(container):
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
-            zigbee_controller=container.device.zigbee_controller
+            zigbee_controller=container.zigbee_controller
         )
     )
 
@@ -54,7 +47,7 @@ def add_devices(container):
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
-            controller=container.device.zigbee_controller
+            controller=container.zigbee_controller
         )
     )
 
@@ -66,6 +59,6 @@ def add_devices(container):
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
-            controller=container.device.zigbee_controller
+            controller=container.zigbee_controller
         )
     )

@@ -1,6 +1,6 @@
 [project]
 name = "zigbee_controller"
-version = "0.6.0"
+version = "0.7.0"
 description = "PowerPi ZigBee Controller"
 license = "GPL-3.0-only"
 authors = [
@@ -11,8 +11,9 @@ readme = "README.md"
 
 requires-python = ">=3.11,<4.0"
 dependencies = [
-    "zigpy (~=0.76.2)",
-    "zigpy-znp (~=0.13.1)",
+    "bellows (~=0.46.1)",
+    "zigpy (~=0.83.0)",
+    "zigpy-znp (~=0.14.1)",
 ]
 
 [tool.poetry.group.powerpi.dependencies]

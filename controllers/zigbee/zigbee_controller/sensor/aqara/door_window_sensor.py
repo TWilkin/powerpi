@@ -8,11 +8,10 @@ from zigpy.zcl.clusters.general import Basic
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 from zigpy.zcl.foundation import Attribute, TypeValue
 
-from zigbee_controller.device import ZigbeeController
 from zigbee_controller.sensor.metrics import Metric, MetricValue
 from zigbee_controller.zigbee import (ClusterAttributeListener,
                                       ClusterGeneralCommandListener, OnOff,
-                                      OpenClose, ZigbeeMixin)
+                                      OpenClose, ZigbeeController, ZigbeeMixin)
 
 
 class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):

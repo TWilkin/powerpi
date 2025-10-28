@@ -9,6 +9,14 @@ class ZigBeeListener(ABC):
         self._listener = method
 
 
+class ConnectionLostListener(ZigBeeListener):
+    def __init__(self, method: Callable[[Exception], None]):
+        ZigBeeListener.__init__(self, method)
+
+    def connection_lost(self, exc: Exception):
+        self._listener(exc)
+
+
 class DeviceAnnounceListener(ZigBeeListener):
     def __init__(self, method: Callable[[DeviceType], None]):
         ZigBeeListener.__init__(self, method)

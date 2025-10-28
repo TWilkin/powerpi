@@ -5,7 +5,7 @@ from zigpy.typing import DeviceType
 from zigpy.zcl import Cluster
 from zigpy.zcl.foundation import Status
 
-from zigbee_controller.device import ZigbeeController
+from .zigbee_controller import ZigbeeController
 from .zigbee_listener import ZigBeeListener
 
 
@@ -50,7 +50,7 @@ class ZigbeeMixin(InitialisableMixin):
                 )
 
                 return False
-        except DeliveryError:
+        except (DeliveryError, TimeoutError):
             return False
 
         return True

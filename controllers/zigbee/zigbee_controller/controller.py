@@ -8,7 +8,7 @@ from powerpi_common.mqtt import MQTTClient
 
 from zigbee_controller.__version__ import __app_name__, __version__
 from zigbee_controller.config import ZigbeeConfig
-from zigbee_controller.device import ZigbeeController
+from zigbee_controller.zigbee import ZigbeeController
 
 
 class Controller(CommonController):

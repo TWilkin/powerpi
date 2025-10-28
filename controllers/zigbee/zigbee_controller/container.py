@@ -5,6 +5,7 @@ from zigbee_controller.__version__ import __app_name__, __version__
 from zigbee_controller.config import ZigbeeConfig
 from zigbee_controller.controller import Controller
 from zigbee_controller.device.container import DeviceContainer
+from zigbee_controller.zigbee import ZigbeeController, ZigbeeLibraryFactory
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
@@ -26,6 +27,19 @@ class ApplicationContainer(containers.DeclarativeContainer):
         config=config
     )
 
+    library_factory = providers.Factory(
+        ZigbeeLibraryFactory,
+        config=config,
+        logger=common.logger
+    )
+
+    zigbee_controller = providers.Singleton(
+        ZigbeeController,
+        config=config,
+        logger=common.logger,
+        library_factory=library_factory.provider
+    )
+
     device = providers.Container(
         DeviceContainer,
         config=config,
@@ -42,5 +56,5 @@ class ApplicationContainer(containers.DeclarativeContainer):
         device_status_checker=common.device.device_status_checker,
         scheduler=common.scheduler,
         health=common.health,
-        zigbee_controller=device.zigbee_controller
+        zigbee_controller=zigbee_controller
     )

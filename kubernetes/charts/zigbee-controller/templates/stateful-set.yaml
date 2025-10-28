@@ -1,21 +1,47 @@
+{{- $device := .Values.device | default "/dev/ttyACM0" -}}
+{{- $isSocketDevice := hasPrefix "socket://" $device -}}
+
+{{- $env := list
+  (dict
+    "Name" "ZIGBEE_DEVICE"
+    "Value" $device
+  )
+-}}
+
+{{- if .Values.library -}}
+{{- $env = append $env (dict
+  "Name" "ZIGBEE_LIBRARY"
+  "Value" .Values.library
+) -}}
+{{- end -}}
+
+{{- if .Values.baudrate -}}
+{{- $env = append $env (dict
+  "Name" "ZIGBEE_BAUDRATE"
+  "Value" (.Values.baudrate | quote)
+) -}}
+{{- end -}}
+
+{{- if .Values.flowControl -}}
+{{- $env = append $env (dict
+  "Name" "ZIGBEE_FLOW_CONTROL"
+  "Value" (.Values.flowControl)
+) -}}
+{{- end -}}
+
+{{- $resources := list -}}
+{{- if not $isSocketDevice -}}
+{{- $deviceName := $device | trimPrefix "/dev/" -}}
+{{- $resources = list (dict
+  "Name" (printf "smarter-devices/%s" $deviceName)
+  "Value" 1
+) -}}
+{{- end -}}
+
 {{- $data := dict
   "Kind" "StatefulSet"
-  "Env" (list
-    (dict
-      "Name" "DEVICE_FATAL"
-      "Value" (true | quote)
-    )
-    (dict
-      "Name" "DEVICE"
-      "Value" "/dev/ttyACM0"
-    )
-  )
-  "Resources" (list
-    (dict
-      "Name" "smarter-devices/ttyACM0"
-      "Value" 1
-    )
-  )
+  "Env" $env
+  "Resources" $resources
   "PersistentVolumeClaim" (dict
     "Name" "zigbee-data"
     "Path" "/var/data"

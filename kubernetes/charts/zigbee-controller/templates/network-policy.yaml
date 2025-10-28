@@ -1,0 +1,17 @@
+{{- $device := .Values.device | default "/dev/ttyACM0" -}}
+{{- $isSocketDevice := hasPrefix "socket://" $device -}}
+{{- if $isSocketDevice }}
+{{- $socketUrl := $device | trimPrefix "socket://" -}}
+{{- $hostPort := split ":" $socketUrl -}}
+{{- $port := $hostPort._1 | int -}}
+{{- $data := dict
+    "Name" "zigbee-controller-policy"
+    "Label" .Chart.Name
+    "Local" (dict 
+        "Direction" "egress"
+        "Cidr" .Values.localCIDR
+        "Port" $port
+    )
+}}
+{{- include "powerpi.network-policy" (merge (dict "Params" $data) .) -}}
+{{- end }}
