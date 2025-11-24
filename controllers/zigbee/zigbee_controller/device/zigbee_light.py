@@ -302,11 +302,15 @@ class ZigbeeLight(
                 self.__colour_temp_range = Range(
                     attributes['color_temp_physical_min'], attributes['color_temp_physical_max']
                 )
-
-            # broadcast the capabilities of this device
-            self.on_capability_change()
         except (DeliveryError, TimeoutError):
-            pass
+            return
+        except KeyError:
+            # the ColorCluster doesn't exist if the device doesn't support colour
+            self.__supports_temperature = False
+            self.__supports_colour = False
+
+        # broadcast the capabilities of this device
+        self.on_capability_change()
 
     async def __set_options(self):
         # if we already set the options, don't update
@@ -317,7 +321,7 @@ class ZigbeeLight(
 
         # the options for each cluster
         pairs: List[Tuple[Cluster, bitmap8]] = zip([
-            device[1].in_clusters[ColorCluster.cluster_id],
+            device[1].in_clusters[ColorCluster.cluster_id] if self.__supports_temperature else None,
             device[1].in_clusters[LevelControlCluster.cluster_id]
         ], [
             ColorCluster.Options.Execute_if_off,
@@ -326,7 +330,8 @@ class ZigbeeLight(
 
         try:
             for cluster, options in pairs:
-                await cluster.write_attributes({'options': options})
+                if cluster is not None:
+                    await cluster.write_attributes({'options': options})
 
             self.__options_set = True
         except (DeliveryError, TimeoutError):
