@@ -274,7 +274,7 @@ class ZigbeeLight(
         await self.__set_options()
 
     async def __get_capabilities(self):
-        # if we already have the capabilties don't update
+        # if we already have the capabilities don't update
         if self.__supports_temperature is not None and self.__supports_colour is not None:
             return
 
