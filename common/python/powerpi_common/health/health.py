@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -37,6 +38,10 @@ class HealthService(LogMixin):
         self.__scheduler.add_job(self.run, trigger=interval)
 
     async def run(self):
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(None, self.__run_health_check)
+
+    def __run_health_check(self):
         try:
             if self.__mqtt_client.connected:
                 self.log_debug('MQTT connected')
