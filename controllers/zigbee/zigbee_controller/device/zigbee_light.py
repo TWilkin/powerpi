@@ -321,7 +321,7 @@ class ZigbeeLight(
 
         # the options for each cluster
         pairs: List[Tuple[Cluster, bitmap8]] = zip([
-            device[1].in_clusters[ColorCluster.cluster_id] if self.__supports_temperature else None,
+            device[1].in_clusters[ColorCluster.cluster_id] if (self.__supports_colour or self.__supports_temperature) else None,
             device[1].in_clusters[LevelControlCluster.cluster_id]
         ], [
             ColorCluster.Options.Execute_if_off,
