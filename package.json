@@ -60,10 +60,11 @@
     "resolutions": {
         "@types/mime": ">=3.0.0 <4.0.0",
         "axios": "^1.6.0",
-        "esbuild": "^0.25.0",
-        "express": "^4.21.2",
         "class-transformer": "^0.5.0",
         "cookie": "^0.7.0",
+        "esbuild": "^0.25.0",
+        "express": "^4.21.2",
+        "glob": "^13.0.0",
         "got": "^13.0.0",
         "lodash": "^4.17.21",
         "multer": "^2.0.1",
