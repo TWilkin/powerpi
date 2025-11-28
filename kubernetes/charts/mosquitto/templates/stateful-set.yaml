@@ -46,7 +46,7 @@
     )
     (dict
       "Name" "checksum/mosquitto-cert"
-      "Value" ((lookup "v1" "Secret" .Release.Namespace "mosquitto-cert").data | default "pending" | toString | sha256sum)
+      "Value" ((lookup "v1" "Secret" .Release.Namespace "mosquitto-cert").data | default dict | toString | sha256sum)
     )
   )
   "Ports" $ports
