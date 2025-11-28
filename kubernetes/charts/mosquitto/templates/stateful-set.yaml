@@ -44,6 +44,10 @@
       "Name" "checksum/mosquitto-passwords-secret"
       "Value" (include (print $.Template.BasePath "/secret.yaml") $ | sha256sum)
     )
+    (dict
+      "Name" "checksum/mosquitto-cert"
+      "Value" ((lookup "v1" "Secret" .Release.Namespace "mosquitto-cert").data | default "pending" | toString | sha256sum)
+    )
   )
   "Ports" $ports
   "NodeSelector" $nodeSelector
