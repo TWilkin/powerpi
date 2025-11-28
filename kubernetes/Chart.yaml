@@ -20,7 +20,7 @@ dependencies:
     version: 0.0.3
     condition: global.event
   - name: mosquitto
-    version: 0.3.2
+    version: 0.3.3
   - name: persistence
     version: 0.1.12
     condition: global.persistence
