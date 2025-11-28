@@ -3,4 +3,4 @@ name: mosquitto
 description: A Helm chart for deploying the mosquitto message queue for PowerPi
 type: application
 version: 0.3.3
-appVersion: 2.0.21
+appVersion: 2.0.22
