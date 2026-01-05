@@ -177,6 +177,15 @@ update_service_version() {
         return
     fi
 
+    # check Makefile
+    file="$path/Makefile"
+    if [ -f "$file" ]
+    then
+        sed -i "s/VERSION=.*/VERSION=$version/" $file
+        git add $file
+        return
+    fi
+
     echo "Could not find service"
     help
 }

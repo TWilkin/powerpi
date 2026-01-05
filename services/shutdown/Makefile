@@ -7,7 +7,7 @@ TARGET_OS?=linux
 TARGET_ARCH?=arm64
 
 # the version of the shutdown service
-VERSION=0.2.0
+VERSION=0.2.1
 
 LIBRARY_SOURCES := $(shell find ../../common/go -name "*.go") 
 SOURCES := $(shell find ./ -name "*.go") 
