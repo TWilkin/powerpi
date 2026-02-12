@@ -12,12 +12,6 @@ help() {
     exit
 }
 
-get_version() {
-    local path=$scriptPath/../../kubernetes/charts/$1/Chart.yaml
-
-    appVersion=`yq --raw-output .appVersion $path`
-}
-
 # extract the command line arguments
 while [[ $# -gt 0 ]]
 do
@@ -57,8 +51,8 @@ then
     exit 1
 fi
 
-get_version $service
-version=$appVersion
+get_chart_versions "$scriptPath/../../kubernetes/charts/$service/Chart.yaml"
+version=$CHART_APP_VERSION
 
 name=powerpi-$service
 path=$SERVICE_DIR

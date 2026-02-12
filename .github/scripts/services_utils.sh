@@ -272,6 +272,20 @@ increase_version_number() {
 }
 
 #=============================================================================
+# Chart Version Functions
+#=============================================================================
+
+# Get the app and chart versions from a Chart.yaml file
+# Usage: get_chart_versions "/path/to/Chart.yaml"
+# Sets: CHART_APP_VERSION, CHART_VERSION
+get_chart_versions() {
+    local path=$1
+
+    CHART_APP_VERSION=$(yq -r '.appVersion' "$path")
+    CHART_VERSION=$(yq -r '.version' "$path")
+}
+
+#=============================================================================
 # Source Version Functions
 #=============================================================================
 

@@ -26,9 +26,9 @@ update_release() {
     local commit=$3
 
     # find the helm version
-    get_version $helmPath
-    powerpiVersion=$appVersion
-    helmVersion=$chartVersion
+    get_chart_versions $helmPath
+    powerpiVersion=$CHART_APP_VERSION
+    helmVersion=$CHART_VERSION
     echo "Found v$powerpiVersion of PowerPi"
     echo "Found v$helmVersion of helm chart"
 
@@ -75,13 +75,14 @@ update_version() {
         local subchartPath="$scriptPath/../../kubernetes/charts/$serviceName/Chart.yaml"
 
         # find the service version from the subchart
-        get_version $subchartPath
-        subchartVersion=$chartVersion
+        get_chart_versions $subchartPath
+        appVersion=$CHART_APP_VERSION
+        subchartVersion=$CHART_VERSION
         echo "Found v$appVersion of service $service"
         echo "Found v$subchartVersion of helm subchart $service"
     else
         # find the service version from the source files
-        appVersion=$(get_source_version $appPath)
+        appVersion=$(get_source_version "$appPath")
         echo "Found v$appVersion of service $service"
     fi
 
@@ -110,13 +111,6 @@ update_version() {
         echo "Committing version changes"
         git commit -m "chore: Bump $service to v$appVersion"
     fi
-}
-
-get_version() {
-    local path=$1
-
-    appVersion=`yq .appVersion $path | tr -d \"`
-    chartVersion=`yq .version $path  | tr -d \"`
 }
 
 set_chart_version() {
