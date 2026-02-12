@@ -5,9 +5,10 @@ source "$scriptPath/services_utils.sh"
 
 help() {
     echo "PowerPi buildx script"
-    echo "expects 'bash buildx.sh service repo"
-    echo "  service: one of the PowerPi services"
-    echo "  repo: the local repo"
+    echo ""
+    echo "  -h|--help              Show this help document."
+    echo "  -s|--service service   The name of the service to build."
+    echo "  -r|--repo repo         The local repo to push to."
     exit
 }
 
@@ -17,13 +18,36 @@ get_version() {
     appVersion=`yq --raw-output .appVersion $path`
 }
 
-if [ $# -ne 2 ]
+# extract the command line arguments
+while [[ $# -gt 0 ]]
+do
+    case $1 in
+        -s|--service)
+            service="$2"
+            shift
+            shift
+            ;;
+
+        -r|--repo)
+            repo="$2"
+            shift
+            shift
+            ;;
+
+        -h|--help)
+            help
+            ;;
+
+        -*|--*)
+            help
+            ;;
+    esac
+done
+
+if [ -z "$service" ] || [ -z "$repo" ]
 then
     help
 fi
-
-service=$1
-repo=$2
 
 powerpiPath=$scriptPath/../../
 
