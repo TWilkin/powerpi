@@ -32,11 +32,6 @@ services:
     chartName: scheduler
     type: python
 
-  - name: shutdown
-    directory: services/shutdown
-    chartName: ~
-    type: golang
-
   - name: ui
     directory: services/ui
     chartName: ui
@@ -84,6 +79,11 @@ controllers:
     type: python
 
 sensors:
+  - name: shutdown
+    directory: services/shutdown
+    chartName: ~
+    type: golang
+
   - name: powerpi-sensor
     directory: sensors
     chartName: ~
