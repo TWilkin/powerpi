@@ -1,6 +1,7 @@
 #!/bin/bash
 
 scriptPath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source "$scriptPath/services_utils.sh"
 
 help() {
     echo "PowerPi buildx script"
@@ -45,15 +46,14 @@ version=$appVersion
 
 name=powerpi-$service
 
-path=services/$service
-platform=linux/arm64
-
-if [[ $service == *controller ]]
+if ! get_service_by_chart "$service"
 then
-    split=(${service//-/ })
-
-    path=controllers/${split[0]}
+    echo "Service $service not found in services.yaml"
+    exit 1
 fi
+
+path=$SERVICE_DIR
+platform=linux/arm64
 
 # retrieve the previous image
 image=twilkin/$name:$oldVersion
