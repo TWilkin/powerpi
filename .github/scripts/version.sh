@@ -55,25 +55,15 @@ update_version() {
     local chartPart=$3
     local commit=$4
 
-    local appPath="$scriptPath/../../services/$service"
-    local subchartPath="$scriptPath/../../kubernetes/charts/$service/Chart.yaml"
-
-    local serviceName=$service
-
-    if [ ! -d $appPath ]
-    then
-        echo "Service $service is a controller"
-        serviceName="$service-controller"
-        appPath="$scriptPath/../../controllers/$service"
-        subchartPath="$scriptPath/../../kubernetes/charts/$serviceName/Chart.yaml"
-    fi
-
-    # check the service exists
-    if [ ! -f $subchartPath ]
+    if ! get_service_by_name "$service"
     then
         echo "Cannot find service $service"
         help
     fi
+
+    local appPath="$scriptPath/../../$SERVICE_DIR"
+    local serviceName="$SERVICE_CHART"
+    local subchartPath="$scriptPath/../../kubernetes/charts/$serviceName/Chart.yaml"
 
     # find the service version
     get_version $subchartPath
