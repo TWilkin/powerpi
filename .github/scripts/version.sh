@@ -63,13 +63,27 @@ update_version() {
 
     local appPath="$scriptPath/../../$SERVICE_DIR"
     local serviceName="$SERVICE_CHART"
-    local subchartPath="$scriptPath/../../kubernetes/charts/$serviceName/Chart.yaml"
+    local hasChart=true
 
-    # find the service version
-    get_version $subchartPath
-    subchartVersion=$chartVersion
-    echo "Found v$appVersion of service $service"
-    echo "Found v$subchartVersion of helm subchart $service"
+    if [ "$serviceName" = "null" ] || [ "$serviceName" = "~" ]
+    then
+        hasChart=false
+    fi
+
+    if $hasChart
+    then
+        local subchartPath="$scriptPath/../../kubernetes/charts/$serviceName/Chart.yaml"
+
+        # find the service version from the subchart
+        get_version $subchartPath
+        subchartVersion=$chartVersion
+        echo "Found v$appVersion of service $service"
+        echo "Found v$subchartVersion of helm subchart $service"
+    else
+        # find the service version from the source files
+        appVersion=$(get_source_version $appPath)
+        echo "Found v$appVersion of service $service"
+    fi
 
     # increase the service version
     if [ "$versionType" = "rc" ]
@@ -81,11 +95,14 @@ update_version() {
     echo "Increasing service $service to v$appVersion"
     update_service_version $appPath $appVersion
 
-    # increase the subchart version
-    subchartVersion=$(increase_version_number "$subchartVersion" "$chartPart")
-    echo "Increasing helm subchart $service to v$subchartVersion"
-    set_chart_version $subchartPath $appVersion $subchartVersion
-    set_chart_dependency_version $helmPath $serviceName $subchartVersion
+    if $hasChart
+    then
+        # increase the subchart version
+        subchartVersion=$(increase_version_number "$subchartVersion" "$chartPart")
+        echo "Increasing helm subchart $service to v$subchartVersion"
+        set_chart_version $subchartPath $appVersion $subchartVersion
+        set_chart_dependency_version $helmPath $serviceName $subchartVersion
+    fi
 
     # commit the change if enabled
     if $commit
@@ -123,6 +140,45 @@ set_chart_dependency_version() {
     git add $path
 }
 
+get_source_version() {
+    local path=$1
+
+    # check package.json
+    local file="$path/package.json"
+    if [ -f "$file" ]
+    then
+        jq -r '.version' "$file"
+        return
+    fi
+
+    # check pyproject.toml
+    file="$path/pyproject.toml"
+    if [ -f "$file" ]
+    then
+        grep -oP 'version = "\K[^"]+' "$file"
+        return
+    fi
+
+    # check configure.ac
+    file="$path/configure.ac"
+    if [ -f "$file" ]
+    then
+        grep -oP 'AC_INIT\(\[.*\],\s*\[\K[^\]]+' "$file"
+        return
+    fi
+
+    # check Makefile
+    file="$path/Makefile"
+    if [ -f "$file" ]
+    then
+        grep -oP '^VERSION=\K.*' "$file"
+        return
+    fi
+
+    echo "Could not find version for service"
+    exit 1
+}
+
 update_service_version() {
     local path=$1
     local version=$2
@@ -147,11 +203,20 @@ update_service_version() {
         return
     fi
 
+    # check configure.ac
+    file="$path/configure.ac"
+    if [ -f "$file" ]
+    then
+        sed -i "s/\(AC_INIT(\[.*\], \[\).*\]/\1$version]/" $file
+        git add $file
+        return
+    fi
+
     # check Makefile
     file="$path/Makefile"
     if [ -f "$file" ]
     then
-        sed -i "s/VERSION=.*/VERSION=$version/" $file
+        sed -i "s/^VERSION=.*/VERSION=$version/" $file
         git add $file
         return
     fi

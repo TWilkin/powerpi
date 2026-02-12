@@ -54,7 +54,7 @@ get_service_by_chart() {
 # Usage: get_service_by_name "api" -> sets SERVICE_DIR, SERVICE_CHART, SERVICE_TYPE
 get_service_by_name() {
     local name=$1
-    local result=$(yq -r "(.services + .controllers)[] | select(.name == \"$name\")" "$SERVICES_YAML")
+    local result=$(yq -r "(.services + .controllers + .sensors)[] | select(.name == \"$name\")" "$SERVICES_YAML")
 
     if [ -z "$result" ] || [ "$result" = "null" ]
     then
