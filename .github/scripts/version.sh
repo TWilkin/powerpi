@@ -239,7 +239,7 @@ done
 
 if $release
 then
-    update_release $versionPart $chartVersionPart $commit
+    update_release "$versionPart" "$chartVersionPart" "$commit"
 else
-    update_version $service $versionPart $chartVersionPart $commit
+    update_version "$service" "$versionPart" "$chartVersionPart" "$commit"
 fi
