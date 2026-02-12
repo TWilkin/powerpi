@@ -1,6 +1,8 @@
 #!/bin/bash
 
 scriptPath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source "$scriptPath/services_utils.sh"
+
 helmPath="$scriptPath/../../kubernetes/Chart.yaml"
 
 help() {
@@ -10,6 +12,8 @@ help() {
     echo "  -s|--service service                 The name of the service to version."
     echo "  -v|--version major|minor|patch       The part of the service version to increase, default patch."
     echo "  -k|--chart-version major|minor|patch The part of the chart version to increase."
+    echo "  -t|--type rc|release                 Service version type: rc (default) or release."
+    echo "                                       rc creates a release candidate, release promotes to a full version."
     echo "  -r|--release                         Whether to perform a release."
     echo "                                       -k will be the Helm chart version and -v will be the PowerPi version."
     echo "  -c|--commit                          Whether to commit the version change."
@@ -29,13 +33,11 @@ update_release() {
     echo "Found v$helmVersion of helm chart"
 
     # increase PowerPi version
-    increase_version $powerpiVersion $versionPart
-    powerpiVersion=$newVersion
+    powerpiVersion=$(increase_version_number "$powerpiVersion" "$versionPart")
     echo "Increasing PowerPi to v$powerpiVersion"
 
     # increase the chart version
-    increase_version $helmVersion $chartPart
-    helmVersion=$newVersion
+    helmVersion=$(increase_version_number "$helmVersion" "$chartPart")
     echo "Increasing helm chart to v$helmVersion"
     set_chart_version $helmPath $powerpiVersion $helmVersion
 
@@ -55,7 +57,7 @@ update_version() {
 
     local appPath="$scriptPath/../../services/$service"
     local subchartPath="$scriptPath/../../kubernetes/charts/$service/Chart.yaml"
-    
+
     local serviceName=$service
 
     if [ ! -d $appPath ]
@@ -80,14 +82,17 @@ update_version() {
     echo "Found v$subchartVersion of helm subchart $service"
 
     # increase the service version
-    increase_version $appVersion $versionPart
-    appVersion=$newVersion
+    if [ "$versionType" = "rc" ]
+    then
+        appVersion=$(create_rc_version "$appVersion" "$versionPart")
+    else
+        appVersion=$(increase_version_number "$appVersion" "$versionPart")
+    fi
     echo "Increasing service $service to v$appVersion"
     update_service_version $appPath $appVersion
 
     # increase the subchart version
-    increase_version $subchartVersion $chartPart
-    subchartVersion=$newVersion
+    subchartVersion=$(increase_version_number "$subchartVersion" "$chartPart")
     echo "Increasing helm subchart $service to v$subchartVersion"
     set_chart_version $subchartPath $appVersion $subchartVersion
     set_chart_dependency_version $helmPath $serviceName $subchartVersion
@@ -126,31 +131,6 @@ set_chart_dependency_version() {
     yq -i -y "(.dependencies[] | select(.name == \"$service\").version) = \"$subchartVersion\"" $path
 
     git add $path
-}
-
-increase_version() {
-    local version=$1
-    local versionPart=$2
-
-    IFS="." read -r -a array <<< "$version"
-    major="${array[0]}"
-    minor="${array[1]}"
-    patch="${array[2]}"
-
-    if [ $versionPart = "major" ]
-    then
-        major=$(($major+1))
-        minor=0
-        patch=0
-    elif [ $versionPart = "minor" ]
-    then
-        minor=$(($minor+1))
-        patch=0
-    else
-        patch=$(($patch+1))
-    fi
-
-    newVersion="$major.$minor.$patch"
 }
 
 update_service_version() {
@@ -203,6 +183,7 @@ validate_version_part() {
 # the default values
 service=powerpi
 versionPart=patch
+versionType=rc
 release=false
 commit=false
 
@@ -215,17 +196,23 @@ do
             shift
             shift
             ;;
-        
+
         -v|--version)
             versionPart="$2"
             validate_version_part $service $versionPart
             shift
             shift
             ;;
-        
+
         -k|--chart-version)
             chartVersionPart="$2"
             validate_version_part "$service chart" $chartVersionPart
+            shift
+            shift
+            ;;
+
+        -t|--type)
+            versionType="$2"
             shift
             shift
             ;;
@@ -234,16 +221,16 @@ do
             release=true
             shift
             ;;
-        
+
         -c|--commit)
             commit=true
             shift
             ;;
-        
+
         -h|--help)
             help
             ;;
-        
+
         -*|--*)
             help
             ;;
