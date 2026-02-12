@@ -140,45 +140,6 @@ set_chart_dependency_version() {
     git add $path
 }
 
-get_source_version() {
-    local path=$1
-
-    # check package.json
-    local file="$path/package.json"
-    if [ -f "$file" ]
-    then
-        jq -r '.version' "$file"
-        return
-    fi
-
-    # check pyproject.toml
-    file="$path/pyproject.toml"
-    if [ -f "$file" ]
-    then
-        grep -oP 'version = "\K[^"]+' "$file"
-        return
-    fi
-
-    # check configure.ac
-    file="$path/configure.ac"
-    if [ -f "$file" ]
-    then
-        grep -oP 'AC_INIT\(\[.*\],\s*\[\K[^\]]+' "$file"
-        return
-    fi
-
-    # check Makefile
-    file="$path/Makefile"
-    if [ -f "$file" ]
-    then
-        grep -oP '^VERSION=\K.*' "$file"
-        return
-    fi
-
-    echo "Could not find version for service"
-    exit 1
-}
-
 update_service_version() {
     local path=$1
     local version=$2

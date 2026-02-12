@@ -206,3 +206,47 @@ increase_version_number() {
     _bump_version_part "$bump_part"
     echo "$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH"
 }
+
+#=============================================================================
+# Source Version Functions
+#=============================================================================
+
+# Get the version from a service's source files
+# Usage: get_source_version "/path/to/service" -> prints version string
+get_source_version() {
+    local path=$1
+
+    # check package.json
+    local file="$path/package.json"
+    if [ -f "$file" ]
+    then
+        jq -r '.version' "$file"
+        return
+    fi
+
+    # check pyproject.toml
+    file="$path/pyproject.toml"
+    if [ -f "$file" ]
+    then
+        grep -oP 'version = "\K[^"]+' "$file"
+        return
+    fi
+
+    # check configure.ac
+    file="$path/configure.ac"
+    if [ -f "$file" ]
+    then
+        grep -oP 'AC_INIT\(\[.*\],\s*\[\K[^\]]+' "$file"
+        return
+    fi
+
+    # check Makefile
+    file="$path/Makefile"
+    if [ -f "$file" ]
+    then
+        grep -oP '^VERSION=\K.*' "$file"
+        return
+    fi
+
+    return 1
+}
