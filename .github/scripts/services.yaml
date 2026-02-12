@@ -34,7 +34,7 @@ services:
 
   - name: shutdown
     directory: services/shutdown
-    chartName: shutdown
+    chartName: ~
     type: golang
 
   - name: ui
