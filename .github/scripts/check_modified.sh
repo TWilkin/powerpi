@@ -1,5 +1,8 @@
 #!/bin/bash
 
+scriptPath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source "$scriptPath/services_utils.sh"
+
 include_project() {
     local project=$1
     local type=$2
@@ -34,77 +37,44 @@ do
         continue
     fi
 
-    # updating go common requires testing everything using it
-    if [[ $file == common/go/* ]]
-    then
-        include_project "go_common" "golang"
+    # check if the file matches a common library
+    check_library() {
+        if file_matches_library "$file" "$LIB_NAME"
+        then
+            # include the library itself
+            local lib_output=$(echo "$LIB_NAME" | tr '-' '_')
+            include_project "$lib_output" "$LIB_TYPE"
 
-        include_project "energy_monitor" "golang"
-        include_project "shutdown" "golang"
-    fi
+            # include all dependants
+            include_dependant() {
+                local output_name="$SERVICE_NAME"
+                if [ "$SERVICE_CHART" != "null" ] && [ "$SERVICE_CHART" != "~" ]
+                then
+                    output_name="$SERVICE_CHART"
+                fi
+                output_name=$(echo "$output_name" | tr '-' '_')
 
-    # updating node common requires testing everything using it
-    if [[ $file == common/node/common/* || $file == yarn.lock ]]
-    then
-        include_project "node_common" "nodejs"
+                include_project "$output_name" "$SERVICE_TYPE"
+            }
 
-        include_project "api" "nodejs"
-        include_project "config_server" "nodejs"
-        include_project "persistence" "nodejs"
-        include_project "voice_assistant" "nodejs"
-    fi
+            foreach_dependant "$LIB_NAME" include_dependant
+        fi
+    }
 
-    # updating common-api requires testing everything using it
-    if [[ $file == common/node/common-api/* || $file == yarn.lock ]]
-    then
-        include_project "api" "nodejs"
-        include_project "ui" "nodejs"
-        include_project "voice_assistant" "nodejs"
-    fi
+    foreach_library check_library
 
-    # updating node common-test requires testing everything using it
-    if [[ $file == common/node/common-test/* || $file == yarn.lock ]]
-    then
-        include_project "api" "nodejs"
-        include_project "config_server" "nodejs"
-        include_project "persistence" "nodejs"
-        include_project "voice_assistant" "nodejs"
-    fi
+    # check the services, controllers and sensors
+    check_from_yaml() {
+        local output_name="$SERVICE_NAME"
+        if [ "$SERVICE_CHART" != "null" ] && [ "$SERVICE_CHART" != "~" ]
+        then
+            output_name="$SERVICE_CHART"
+        fi
+        output_name=$(echo "$output_name" | tr '-' '_')
 
-    # updating common python/pytest requires retesting everything using python
-    if [[ $file == common/python/* || $file == common/pytest/* ]]
-    then
-        include_project "python_common" "python"
+        check_file $file "$SERVICE_DIR" "$output_name" "$SERVICE_TYPE"
+    }
 
-        include_project "energenie_controller" "python"
-        include_project "harmony_controller" "python"
-        include_project "lifx_controller" "python"
-        include_project "network_controller" "python"
-        include_project "snapcast_controller" "python"
-        include_project "virtual_controller" "python"
-        include_project "zigbee_controller" "python"
-
-        include_project "event" "python"
-        include_project "scheduler" "python"
-    fi
-
-    # check the controllers
-    check_file $file "controllers/energenie" "energenie_controller" "python"
-    check_file $file "controllers/harmony" "harmony_controller" "python"
-    check_file $file "controllers/lifx" "lifx_controller" "python"
-    check_file $file "controllers/network" "network_controller" "python"
-    check_file $file "controllers/snapcast" "snapcast_controller" "python"
-    check_file $file "controllers/virtual" "virtual_controller" "python"
-    check_file $file "controllers/zigbee" "zigbee_controller" "python"
-
-    # check the services
-    check_file $file "services/api" "api" "nodejs"
-    check_file $file "services/config-server" "config_server" "nodejs"
-    check_file $file "services/energy-monitor" "energy_monitor" "golang"
-    check_file $file "services/event" "event" "python"
-    check_file $file "services/persistence" "persistence" "nodejs"
-    check_file $file "services/scheduler" "scheduler" "python"
-    check_file $file "services/shutdown" "shutdown" "golang"
-    check_file $file "services/ui" "ui" "nodejs"
-    check_file $file "services/voice-assistant" "voice_assistant" "nodejs"
+    foreach_service check_from_yaml
+    foreach_sensor check_from_yaml
 done < files.txt

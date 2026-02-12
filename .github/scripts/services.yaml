@@ -1,88 +1,156 @@
 # PowerPi Services Configuration
 # Used by build scripts to iterate over services/controllers
 
+libraries:
+  - name: go-common
+    paths:
+      - common/go
+    type: golang
+
+  - name: node-common
+    paths:
+      - common/node/common
+      - yarn.lock
+    type: nodejs
+
+  - name: node-common-api
+    paths:
+      - common/node/common-api
+      - yarn.lock
+    type: nodejs
+
+  - name: node-common-test
+    paths:
+      - common/node/common-test
+      - yarn.lock
+    type: nodejs
+
+  - name: python-common
+    paths:
+      - common/python
+      - common/pytest
+    type: python
+
 services:
   - name: api
     directory: services/api
     chartName: api
     type: nodejs
+    dependencies:
+      - node-common
+      - node-common-api
+      - node-common-test
 
   - name: config-server
     directory: services/config-server
     chartName: config-server
     type: nodejs
+    dependencies:
+      - node-common
+      - node-common-test
 
   - name: energy-monitor
     directory: services/energy-monitor
     chartName: energy-monitor
     type: golang
+    dependencies:
+      - go-common
 
   - name: event
     directory: services/event
     chartName: event
     type: python
+    dependencies:
+      - python-common
 
   - name: persistence
     directory: services/persistence
     chartName: persistence
     type: nodejs
+    dependencies:
+      - node-common
+      - node-common-test
 
   - name: scheduler
     directory: services/scheduler
     chartName: scheduler
     type: python
+    dependencies:
+      - python-common
 
   - name: ui
     directory: services/ui
     chartName: ui
     type: nodejs
+    dependencies:
+      - node-common-api
 
   - name: voice-assistant
     directory: services/voice-assistant
     chartName: voice-assistant
     type: nodejs
+    dependencies:
+      - node-common
+      - node-common-api
+      - node-common-test
 
 controllers:
   - name: energenie
     directory: controllers/energenie
     chartName: energenie-controller
     type: python
+    dependencies:
+      - python-common
 
   - name: harmony
     directory: controllers/harmony
     chartName: harmony-controller
     type: python
+    dependencies:
+      - python-common
 
   - name: lifx
     directory: controllers/lifx
     chartName: lifx-controller
     type: python
+    dependencies:
+      - python-common
 
   - name: network
     directory: controllers/network
     chartName: network-controller
     type: python
+    dependencies:
+      - python-common
 
   - name: snapcast
     directory: controllers/snapcast
     chartName: snapcast-controller
     type: python
+    dependencies:
+      - python-common
 
   - name: virtual
     directory: controllers/virtual
     chartName: virtual-controller
     type: python
+    dependencies:
+      - python-common
 
   - name: zigbee
     directory: controllers/zigbee
     chartName: zigbee-controller
     type: python
+    dependencies:
+      - python-common
 
 sensors:
   - name: shutdown
     directory: services/shutdown
     chartName: ~
     type: golang
+    dependencies:
+      - go-common
 
   - name: powerpi-sensor
     directory: sensors

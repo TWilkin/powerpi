@@ -85,7 +85,8 @@ foreach_service() {
     local callback=$1
     local count=$(yq -r '(.services + .controllers) | length' "$SERVICES_YAML")
 
-    for i in $(seq 0 $((count - 1))); do
+    for i in $(seq 0 $((count - 1)))
+    do
         SERVICE_DIR=$(yq -r "(.services + .controllers)[$i].directory" "$SERVICES_YAML")
         SERVICE_NAME=$(yq -r "(.services + .controllers)[$i].name" "$SERVICES_YAML")
         SERVICE_TYPE=$(yq -r "(.services + .controllers)[$i].type" "$SERVICES_YAML")
@@ -100,13 +101,76 @@ foreach_sensor() {
     local callback=$1
     local count=$(yq -r '.sensors | length' "$SERVICES_YAML")
 
-    for i in $(seq 0 $((count - 1))); do
+    for i in $(seq 0 $((count - 1)))
+    do
         SERVICE_DIR=$(yq -r ".sensors[$i].directory" "$SERVICES_YAML")
         SERVICE_NAME=$(yq -r ".sensors[$i].name" "$SERVICES_YAML")
         SERVICE_TYPE=$(yq -r ".sensors[$i].type" "$SERVICES_YAML")
         SERVICE_CHART=$(yq -r ".sensors[$i].chartName" "$SERVICES_YAML")
 
         $callback
+    done
+}
+
+#=============================================================================
+# Library Functions
+#=============================================================================
+
+# Iterate over all libraries, calling a function for each
+# Usage: foreach_library my_function
+# Sets: LIB_NAME, LIB_TYPE
+foreach_library() {
+    local callback=$1
+    local count=$(yq -r '.libraries | length' "$SERVICES_YAML")
+
+    for i in $(seq 0 $((count - 1)))
+    do
+        LIB_NAME=$(yq -r ".libraries[$i].name" "$SERVICES_YAML")
+        LIB_TYPE=$(yq -r ".libraries[$i].type" "$SERVICES_YAML")
+
+        $callback
+    done
+}
+
+# Check if a file matches any path for a given library
+# Usage: file_matches_library "common/go/util.go" "go-common"
+file_matches_library() {
+    local file=$1
+    local lib_name=$2
+
+    local paths=$(yq -r ".libraries[] | select(.name == \"$lib_name\").paths[]" "$SERVICES_YAML")
+
+    while IFS= read -r path
+    do
+        if [[ $file == "$path"/* ]] || [[ $file == "$path" ]]
+        then
+            return 0
+        fi
+    done <<< "$paths"
+
+    return 1
+}
+
+# Iterate over all services/controllers/sensors that depend on a given library
+# Usage: foreach_dependant "go-common" my_function
+# Sets: SERVICE_DIR, SERVICE_NAME, SERVICE_TYPE, SERVICE_CHART
+foreach_dependant() {
+    local lib_name=$1
+    local callback=$2
+    local count=$(yq -r '(.services + .controllers + .sensors) | length' "$SERVICES_YAML")
+
+    for i in $(seq 0 $((count - 1)))
+    do
+        local has_dep=$(yq -r "(.services + .controllers + .sensors)[$i].dependencies // [] | index(\"$lib_name\")" "$SERVICES_YAML")
+        if [ "$has_dep" != "null" ]
+        then
+            SERVICE_DIR=$(yq -r "(.services + .controllers + .sensors)[$i].directory" "$SERVICES_YAML")
+            SERVICE_NAME=$(yq -r "(.services + .controllers + .sensors)[$i].name" "$SERVICES_YAML")
+            SERVICE_TYPE=$(yq -r "(.services + .controllers + .sensors)[$i].type" "$SERVICES_YAML")
+            SERVICE_CHART=$(yq -r "(.services + .controllers + .sensors)[$i].chartName" "$SERVICES_YAML")
+
+            $callback
+        fi
     done
 }
 
