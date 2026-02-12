@@ -1,0 +1,90 @@
+# PowerPi Services Configuration
+# Used by build scripts to iterate over services/controllers
+
+services:
+  - name: api
+    directory: services/api
+    chartName: api
+    type: nodejs
+
+  - name: config-server
+    directory: services/config-server
+    chartName: config-server
+    type: nodejs
+
+  - name: energy-monitor
+    directory: services/energy-monitor
+    chartName: energy-monitor
+    type: golang
+
+  - name: event
+    directory: services/event
+    chartName: event
+    type: python
+
+  - name: persistence
+    directory: services/persistence
+    chartName: persistence
+    type: nodejs
+
+  - name: scheduler
+    directory: services/scheduler
+    chartName: scheduler
+    type: python
+
+  - name: shutdown
+    directory: services/shutdown
+    chartName: shutdown
+    type: golang
+
+  - name: ui
+    directory: services/ui
+    chartName: ui
+    type: nodejs
+
+  - name: voice-assistant
+    directory: services/voice-assistant
+    chartName: voice-assistant
+    type: nodejs
+
+controllers:
+  - name: energenie
+    directory: controllers/energenie
+    chartName: energenie-controller
+    type: python
+
+  - name: harmony
+    directory: controllers/harmony
+    chartName: harmony-controller
+    type: python
+
+  - name: lifx
+    directory: controllers/lifx
+    chartName: lifx-controller
+    type: python
+
+  - name: network
+    directory: controllers/network
+    chartName: network-controller
+    type: python
+
+  - name: snapcast
+    directory: controllers/snapcast
+    chartName: snapcast-controller
+    type: python
+
+  - name: virtual
+    directory: controllers/virtual
+    chartName: virtual-controller
+    type: python
+
+  - name: zigbee
+    directory: controllers/zigbee
+    chartName: zigbee-controller
+    type: python
+
+sensors:
+  - name: powerpi-sensor
+    directory: sensors
+    chartName: ~
+    type: c
