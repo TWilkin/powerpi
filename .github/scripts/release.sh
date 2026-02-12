@@ -19,6 +19,11 @@ then
     exit 0
 fi
 
+# promote RC versions to release
+echo "Promoting RC versions"
+scriptPath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+"$scriptPath/promote_release.sh"
+
 # download helm chart releaser
 echo "Downloading Chart Releaser"
 curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/v1.5.0/chart-releaser_1.5.0_linux_amd64.tar.gz"
