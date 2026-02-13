@@ -7,7 +7,7 @@ source "$scriptPath/services_utils.sh"
 
 # Run check_modified.sh and capture its output
 output_file=$(mktemp)
-GITHUB_OUTPUT="$output_file" bash "$scriptPath/check_modified.sh"
+DIFF_RANGE="origin/main...HEAD" GITHUB_OUTPUT="$output_file" bash "$scriptPath/check_modified.sh"
 
 # Parse check_modified output into a set
 declare -A modified_output

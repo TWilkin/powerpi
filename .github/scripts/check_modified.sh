@@ -7,7 +7,7 @@ include_project() {
     local project=$1
     local type=$2
 
-    echo "Enabling tests for $type project $project"
+    echo "Detected changes in $type project $project"
     echo "$project=true" >> $GITHUB_OUTPUT
     echo "$type=true" >> $GITHUB_OUTPUT
 }
@@ -25,7 +25,7 @@ check_file() {
 }
 
 # iterate through the changed files
-git diff --name-only HEAD^ HEAD > files.txt
+git diff --name-only ${DIFF_RANGE:-HEAD^ HEAD} > files.txt
 while IFS= read -r file
 do
     echo .
