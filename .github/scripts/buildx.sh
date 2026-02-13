@@ -9,6 +9,7 @@ help() {
     echo "  -h|--help              Show this help document."
     echo "  -s|--service service   The name of the service to build."
     echo "  -r|--repo repo         The local repo to push to."
+    echo "  -v|--version version   Override the version (default: read from Chart.yaml)."
     exit
 }
 
@@ -24,6 +25,12 @@ do
 
         -r|--repo)
             repo="$2"
+            shift
+            shift
+            ;;
+
+        -v|--version)
+            version="$2"
             shift
             shift
             ;;
@@ -51,8 +58,11 @@ then
     exit 1
 fi
 
-get_chart_versions "$scriptPath/../../kubernetes/charts/$service/Chart.yaml"
-version=$CHART_APP_VERSION
+if [ -z "$version" ]
+then
+    get_chart_versions "$scriptPath/../../kubernetes/charts/$service/Chart.yaml"
+    version=$CHART_APP_VERSION
+fi
 
 name=powerpi-$service
 path=$SERVICE_DIR

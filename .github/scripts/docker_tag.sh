@@ -10,9 +10,9 @@ help() {
     echo "  -h|--help              Show this help document."
     echo "  -s|--service service   The name of the service to push to Docker Hub."
     echo "  -r|--repo repo         The local repo to pull from."
-    echo "  --release              Retag RC images to release versions."
-    echo "                         If --service is specified, retag only that service."
-    echo "                         Otherwise, retag all services with RC versions."
+    echo "  --release              Promote RC images to release versions."
+    echo "                         If --service is specified, promote only that service."
+    echo "                         Otherwise, promote all services with RC versions."
     exit
 }
 
@@ -31,8 +31,49 @@ tag_and_push() {
     docker push "$remoteCopy"
 }
 
-retag_rc_to_release() {
+# Patch a file inside a Docker image and commit as a new image
+# Usage: patch_image "source:tag" "dest:tag" "/path/in/container" update_callback
+patch_image() {
+    local sourceImage=$1
+    local destImage=$2
+    local containerPath=$3
+    local updateFn=$4
+
+    local container=$(docker create "$sourceImage")
+    local tmpFile=$(mktemp)
+
+    docker cp "$container:$containerPath" "$tmpFile"
+    $updateFn "$tmpFile"
+    docker cp "$tmpFile" "$container:$containerPath"
+
+    docker commit "$container" "$destImage"
+    docker rm "$container"
+    rm -f "$tmpFile"
+}
+
+update_node_version() {
+    local tmpFile=$1
+    local updated=$(mktemp)
+
+    jq --indent 4 ".version = \"$releaseVersion\"" "$tmpFile" > "$updated"
+    mv "$updated" "$tmpFile"
+}
+
+update_python_version() {
+    local tmpFile=$1
+
+    sed -i "s/version = \".*\"/version = \"$releaseVersion\"/" "$tmpFile"
+}
+
+promote_image() {
     local service=$1
+    local repo=$2
+
+    if ! get_service_by_chart "$service"
+    then
+        echo "Service $service not found in services.yaml"
+        return 1
+    fi
 
     get_chart_versions "$scriptPath/../../kubernetes/charts/$service/Chart.yaml"
     local version=$CHART_APP_VERSION
@@ -44,19 +85,39 @@ retag_rc_to_release() {
     fi
 
     local releaseVersion=$(strip_rc_suffix "$version")
-    local rcImage="twilkin/powerpi-$service:$version"
+    local rcImage="$repo/powerpi-$service:$version"
     local releaseImage="twilkin/powerpi-$service:$releaseVersion"
 
-    echo "Retagging $rcImage -> $releaseImage"
+    echo "Promoting $service: $version -> $releaseVersion"
     docker pull "$rcImage"
-    docker tag "$rcImage" "$releaseImage"
+
+    case "$SERVICE_TYPE" in
+        nodejs)
+            patch_image "$rcImage" "$releaseImage" \
+                "/home/node/app/$SERVICE_DIR/package.json" \
+                update_node_version
+            ;;
+
+        python)
+            patch_image "$rcImage" "$releaseImage" \
+                "/usr/src/app/pyproject.toml" \
+                update_python_version
+            ;;
+
+        golang)
+            echo "Rebuilding $service with release version"
+            bash "$scriptPath/buildx.sh" --service "$service" --repo "$repo" --version "$releaseVersion"
+            docker tag "$repo/powerpi-$service:$releaseVersion" "$releaseImage"
+            ;;
+    esac
+
     docker push "$releaseImage"
 }
 
-retag_from_yaml() {
+promote_from_yaml() {
     if [ "$SERVICE_CHART" != "null" ] && [ "$SERVICE_CHART" != "~" ]
     then
-        retag_rc_to_release "$SERVICE_CHART"
+        promote_image "$SERVICE_CHART" "$repo"
     fi
 }
 
@@ -95,11 +156,16 @@ done
 
 if $release
 then
+    if [ -z "$repo" ]
+    then
+        help
+    fi
+
     if [ -n "$service" ]
     then
-        retag_rc_to_release "$service"
+        promote_image "$service" "$repo"
     else
-        foreach_service retag_from_yaml
+        foreach_service promote_from_yaml
     fi
 else
     if [ -z "$service" ] || [ -z "$repo" ]
