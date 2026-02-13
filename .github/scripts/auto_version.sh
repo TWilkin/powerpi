@@ -20,6 +20,13 @@ do
 done < "$output_file"
 rm -f "$output_file"
 
+# Check if yarn.lock specifically changed
+yarn_lock_changed=""
+if git diff origin/main...HEAD --name-only | grep -q '^yarn.lock$'
+then
+    yarn_lock_changed=1
+fi
+
 # Collect affected services for version bumping
 declare -A affected_services
 
@@ -112,7 +119,7 @@ check_service() {
     output_name=$(echo "$output_name" | tr '-' '_')
 
     # Skip Node.js services if yarn.lock changed — yarn why handles those
-    if [ -n "${modified_output[nodejs]}" ] && [ "$SERVICE_TYPE" = "nodejs" ]
+    if [ -n "$yarn_lock_changed" ] && [ "$SERVICE_TYPE" = "nodejs" ]
     then
         return
     fi
@@ -127,11 +134,11 @@ foreach_service check_service
 foreach_sensor check_service
 
 # Handle Node.js services with yarn why for precision
-if [ -n "${modified_output[nodejs]}" ]
+if [ -n "$yarn_lock_changed" ]
 then
     # Extract changed package names from yarn.lock diff
     packages=$(git diff origin/main...HEAD -- yarn.lock \
-        | grep -oP '^\+"(@?[^@"]+)@' \
+        | grep -oP '^\+"\K@?[^@"]+' \
         | sort -u)
 
     for package in $packages
