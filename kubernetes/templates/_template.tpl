@@ -319,6 +319,9 @@ template:
     - name: {{ $element.Name }}
       hostPath:
         path: {{ $element.HostPath | default $element.Path }}
+        {{- if eq (empty $element.Type) false }}
+        type: {{ $element.Type }}
+        {{- end }}
     {{- end }}
 
     {{- if $hasVolumeClaim -}}
