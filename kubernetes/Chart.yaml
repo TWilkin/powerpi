@@ -25,7 +25,7 @@ dependencies:
     version: 0.1.13
     condition: global.persistence
   - name: scheduler
-    version: 0.2.14
+    version: 0.2.15
     condition: global.scheduler
   - name: smarter-device-manager
     version: 0.1.3
