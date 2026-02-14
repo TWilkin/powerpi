@@ -60,7 +60,7 @@ mosquitto:
 
 - **global**:
     - **clusterIssuer** - The name of a [`ClusterIssuer`](https://cert-manager.io/docs/concepts/issuer/) deployed in Kubernetes that should be used for retrieving SSL certificates, default is _null_.
-    - **storageClass** - The name of a [`StorageClass`](https://kubernetes.io/docs/concepts/storage/storage-classes/) deployed in Kuberenetes that should be used when creating persistent storage for services that require this, default is _null_ which will use a custom hostpath class. Can be defined per service instead of globally if different classes are required per service. Effective for `mosquitto`, `database` and [`zigbee-controller`](../controllers/zigbee/README.md) services.
+    - **storageClass** - The name of a [`StorageClass`](https://kubernetes.io/docs/concepts/storage/storage-classes/) deployed in Kubernetes that should be used when creating persistent storage for services that require this, default is _null_ which will use a custom hostpath class. Can be defined per service instead of globally if different classes are required per service. Effective for `mosquitto`, `database` and [[`zigbee-controller`](../controllers/zigbee/README.md)](../controllers/zigbee/README.md) services. See [Storage](#storage) for more details.
 - **mosquitto**:
     - **hostName** - The hostname to utilise in SSL certificates for outside (i.e. sensors/`shutdown` service) cluster connections to MQTT. Requires the global `clusterIssuer` option to be set. Default is _null_.
 
@@ -115,9 +115,15 @@ microk8s kubectl create secret generic github-secret --namespace powerpi \
     --from-file=password=./__SECRET_NAME__
 ```
 
+### Storage
+
+By default, persistent storage uses the `microk8s.io/hostpath` provisioner which stores data locally on the node. This means storage-dependent services (`mosquitto`, `database`, [`zigbee-controller`](../controllers/zigbee/README.md)) are pinned to a specific node using the `powerpi-storage=true` label (see [Add Labels](#add-labels) below). This is simple and works well for single-node deployments, but those services cannot failover to another node.
+
+To enable failover across nodes in a cluster, provide a distributed `StorageClass` via the `storageClass` value (globally or per-service). This removes the need for node affinity labels for storage, allowing Kubernetes to reschedule pods to any node.
+
 ### Add Labels
 
-Several of the services use node labels to identify which node in the cluster have the connected device that they want to use. The following command will add a label to the node `NODE_NAME` which should host the _mosquitto_ and _database_ services, as both require to be on the same node due to their persistent storage configuration.
+Several of the services use node labels to identify which node in the cluster have the connected device that they want to use. The following command will add a label to the node `NODE_NAME` which should host the _mosquitto_ and _database_ services, as both require to be on the same node due to their persistent storage using the default hostpath provisioner.
 
 ```bash
 microk8s kubectl label node NODE_NAME powerpi-storage=true
