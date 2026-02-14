@@ -26,7 +26,7 @@ LABEL description="PowerPi energy-monitor usage retrieval service"
 
 # use non-root account
 RUN adduser --disabled-password --uid 1000 powerpi
-USER 1000 # powerpi
+USER 1000
 
 WORKDIR /home/node/app
 COPY --from=build-image --chown=powerpi /home/node/app/services/energy-monitor/bin/powerpi_energy_monitor .

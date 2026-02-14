@@ -59,7 +59,8 @@ LABEL description="PowerPi API service"
 EXPOSE 3000
 
 # use non-root account
-USER 1000 # node
+# node=1000
+USER 1000
 RUN mkdir -p /home/node/app/common/node/common-api/dist \
     /home/node/app/common/node/common/dist \
     /home/node/app/services/api

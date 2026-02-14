@@ -33,7 +33,7 @@ ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
 
 RUN adduser --disabled-password --uid 1000 powerpi
-USER 1000 # powerpi
+USER 1000
 
 WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/services/event/.venv ./venv

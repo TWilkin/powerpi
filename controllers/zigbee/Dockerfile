@@ -35,7 +35,7 @@ ENV TZ="UTC"
 
 RUN adduser --disabled-password --uid 1000 powerpi \
     && usermod -a -G dialout powerpi
-USER 1000 # powerpi
+USER 1000
 
 WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/zigbee/.venv ./venv
