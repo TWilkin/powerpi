@@ -21,7 +21,7 @@
   "Command" (list "/bin/sh")
   "Args" (list 
     "-c"
-    "pg_dump --host=database --data-only --compress=9 --file=/srv/backup/$(date +%Y-%m-%d-%H-%M)-powerpi.sql.gz"
+    "{ printf 'database:5432:*:*:'; cat $PGPASSWORD_FILE; } > /tmp/.pgpass && chmod 600 /tmp/.pgpass && PGPASSFILE=/tmp/.pgpass pg_dump --host=database --data-only --compress=9 --file=/srv/backup/$(date +%Y-%m-%d-%H-%M)-powerpi.sql.gz"
   )
   "PersistentVolumeClaim" (dict
     "Name" "database-backup-data"
@@ -41,8 +41,8 @@
           "Key" "username"
         )
         (dict
-          "Name" "PGPASSWORD"
-          "Key" "password"
+          "Name" "PGPASSWORD_FILE"
+          "SubPath" "password"
         )
       )
     )
