@@ -27,5 +27,7 @@
 **/.pylintrc
 **/Dockerfile
 **/_.md
+**/.git/
+**/.github/
 sensors/
 services/shutdown/
