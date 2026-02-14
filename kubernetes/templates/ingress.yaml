@@ -3,12 +3,14 @@ kind: Ingress
 metadata:
   name: ingress
   {{- include "powerpi.labels" . }}
-  {{- if eq .Values.global.useSSL true }}
   annotations:
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+    nginx.ingress.kubernetes.io/proxy-body-size: "8k"
+    {{- if eq .Values.global.useSSL true }}
     nginx.ingress.kubernetes.io/hsts: "true"
     nginx.ingress.kubernetes.io/hsts-max-age: "31536000"
     nginx.ingress.kubernetes.io/hsts-include-subdomains: "true"
-  {{- end }}
+    {{- end }}
 spec:
   ingressClassName: public
   {{- if eq .Values.global.useSSL true }}
@@ -54,6 +56,8 @@ metadata:
   {{- include "powerpi.labels" . }}
   annotations:
     {{- if eq .Values.global.useCluster true }}
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+    nginx.ingress.kubernetes.io/proxy-body-size: "8k"
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-name: "route"
     nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
