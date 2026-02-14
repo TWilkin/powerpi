@@ -118,8 +118,8 @@ set_chart_version() {
     local appVersion=$2
     local chartVersion=$3
 
-    yq -i -y ".appVersion = \"$appVersion\"" $path
-    yq -i -y ".version = \"$chartVersion\"" $path
+    yq -i ".appVersion = \"$appVersion\"" $path
+    yq -i ".version = \"$chartVersion\"" $path
 
     git add $path
 }
@@ -129,7 +129,7 @@ set_chart_dependency_version() {
     local service=$2
     local subchartVersion=$3
 
-    yq -i -y "(.dependencies[] | select(.name == \"$service\").version) = \"$subchartVersion\"" $path
+    yq -i "(.dependencies[] | select(.name == \"$service\").version) = \"$subchartVersion\"" $path
 
     git add $path
 }
