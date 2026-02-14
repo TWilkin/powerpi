@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/persistence",
-    "version": "0.2.11",
+    "version": "0.2.12-rc.1",
     "description": "PowerPi database persistence service",
     "private": true,
     "type": "module",
