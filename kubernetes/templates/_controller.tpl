@@ -9,7 +9,12 @@
 ) -}}
 {{- end -}}
 
-{{- $data := (merge 
+{{- $env = append $env (dict
+  "Name" "HEALTH_CHECK_FILE"
+  "Value" "/tmp/powerpi_health"
+) -}}
+
+{{- $data := (merge
   (dict
     "UseConfig" true
     "UseDevicesFile" true
@@ -21,6 +26,8 @@
       "Command" (list
         "/bin/sh"
         "/usr/src/app/venv/lib/python3.11/site-packages/powerpi_common/health.sh"
+        "12"
+        "/tmp/powerpi_health"
       )
       "ReadinessInitialDelay" 10
       "LivenessInitialDelay" 30

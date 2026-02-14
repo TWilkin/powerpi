@@ -7,9 +7,14 @@
 ) (list) (not (empty $needsNodeSelector))
 -}}
 
+{{/* Temporary: official postgres image runs as root. Replace with a custom
+     non-root image in Step 21b to remove these overrides. */}}
 {{- $data := dict
   "Name" "database-backup"
   "Image" "postgres"
+  "RunAsNonRoot" "false"
+  "AllowPrivilegeEscalation" "true"
+  "DropCapabilities" "false"
   "RequestMemory" "50Mi"
   "NodeSelector" $nodeSelector
   "Schedule" (.Values.backupSchedule | default "5 23 * * *")

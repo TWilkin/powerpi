@@ -1,4 +1,15 @@
 {{- $data := dict
+  "RunAsUser" 101
+  "EmptyDirVolumes" (list
+    (dict
+      "Name" "nginx-cache"
+      "Path" "/var/cache/nginx"
+    )
+    (dict
+      "Name" "nginx-run"
+      "Path" "/var/run"
+    )
+  )
   "RequestMemory" "25Mi"
   "LimitMemory" "100Mi"
   "Ports" (list (dict

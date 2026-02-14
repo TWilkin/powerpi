@@ -7,9 +7,16 @@
 ) (list) (not (empty $needsNodeSelector))
 -}}
 
+{{/* Temporary: official postgres image runs as root and uses gosu to switch to the
+     postgres user. It needs full capabilities to chown the data directory and
+     setuid/setgid for the user switch. Replace with a custom non-root image
+     in Step 21b to remove these overrides. */}}
 {{- $data := dict
   "Kind" "StatefulSet"
   "Image" "postgres"
+  "RunAsNonRoot" "false"
+  "AllowPrivilegeEscalation" "true"
+  "DropCapabilities" "false"
   "PriorityClassName" "powerpi-critical"
   "RequestMemory" "50Mi"
   "Ports" (list (dict
@@ -39,6 +46,12 @@
           "SubPath" "password"
         )
       )
+    )
+  )
+  "EmptyDirVolumes" (list
+    (dict
+      "Name" "postgresql-run"
+      "Path" "/var/run/postgresql"
     )
   )
   "Probe" (dict

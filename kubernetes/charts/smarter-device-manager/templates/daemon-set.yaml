@@ -1,4 +1,6 @@
 {{- if or (eq .Values.global.energenie true) (eq .Values.global.zigbee true) }}
+{{/* Required: third-party image runs as root and needs privilege escalation
+     to register device plugins with the kubelet via the device-plugins socket. */}}
 {{- $data := dict
   "Kind" "DaemonSet"
   "Image" "ghcr.io/smarter-project/smarter-device-manager"
@@ -9,6 +11,8 @@
   "RequestMemory" "15Mi"
   "LimitCPU" "100m"
   "LimitMemory" "15Mi"
+  "RunAsNonRoot" "false"
+  "AllowPrivilegeEscalation" "true"
   "Annotations" (list
     (dict
       "Name" "node.kubernetes.io/bootstrap-checkpoint"
