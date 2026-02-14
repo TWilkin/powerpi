@@ -19,6 +19,7 @@
   "NodeSelector" $nodeSelector
   "Schedule" (.Values.backupSchedule | default "5 23 * * *")
   "ActiveDeadlineSeconds" (.Values.backupTimeout | default 300)
+  "ConcurrencyPolicy" "Forbid"
   "Command" (list "/bin/sh")
   "Args" (list 
     "-c"

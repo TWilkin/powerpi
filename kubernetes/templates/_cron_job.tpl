@@ -18,7 +18,7 @@ metadata:
 
 spec:
   schedule: {{ .Params.Schedule | quote }}
-  concurrencyPolicy: Replace
+  concurrencyPolicy: {{ .Params.ConcurrencyPolicy | default "Replace" }}
 
   jobTemplate:
     spec:
