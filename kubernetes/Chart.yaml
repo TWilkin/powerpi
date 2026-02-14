@@ -14,7 +14,7 @@ dependencies:
     version: 0.1.4
     condition: global.persistence
   - name: energy-monitor
-    version: 0.1.11
+    version: 0.1.12
     condition: global.energyMonitor
   - name: event
     version: 0.0.4
