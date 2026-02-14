@@ -35,7 +35,7 @@ dependencies:
     version: 0.3.3
     condition: global.voiceAssistant
   - name: energenie-controller
-    version: 0.1.13
+    version: 0.1.14
     condition: global.energenie
   - name: harmony-controller
     version: 0.1.18
