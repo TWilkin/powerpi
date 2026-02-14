@@ -23,6 +23,11 @@
       "Path" "/etc/nginx/conf.d/default.conf"
       "SubPath" "nginx.conf"
     )
+    (dict
+      "Name" "nginx-config"
+      "Path" "/etc/nginx/security-headers.conf"
+      "SubPath" "security-headers.conf"
+    )
   )
   "Probe" (dict
     "Http" "/health"
