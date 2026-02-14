@@ -36,6 +36,17 @@ When deploying the stack, you'll want to customise some of the options to config
 
 Have a look at the options in [values.yaml](./values.yaml) as these are the options that can be overridden in your own file and provided using the `-f my-override.yaml` file when deploying the stack.
 
+### SSL
+
+Enabling SSL is recommended for security. This requires the `cert-manager` plugin to be enabled (see above), a `ClusterIssuer` to be configured, and the following values to be set:
+
+```yaml
+global:
+    useSSL: true
+    certificateEmail: your-email@example.com
+    clusterIssuer: letsencrypt
+```
+
 Some of the options are outlined below:
 Options in a sublist should be represented in YAML as such:
 

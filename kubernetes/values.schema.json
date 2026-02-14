@@ -32,7 +32,7 @@
                 },
 
                 "useSSL": {
-                    "description": "Whether to use SSL for the UI, API and voice integration",
+                    "description": "Whether to use SSL for the UI, API and voice integration. Recommended for security, see README for setup instructions.",
                     "type": "boolean"
                 },
 
