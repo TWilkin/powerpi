@@ -1,5 +1,6 @@
 {{- $data := dict
-"Schedule" (.Values.schedule | default "*/5 * * * *")
+  "Schedule" (.Values.schedule | default "*/5 * * * *")
+  "ActiveDeadlineSeconds" (.Values.timeout | default 240)
   "Command" (list "yarn")
   "Args" (list 
     "workspace"

@@ -22,6 +22,8 @@ spec:
 
   jobTemplate:
     spec:
+      activeDeadlineSeconds: {{ .Params.ActiveDeadlineSeconds }}
+      
       {{- include "powerpi.template" (merge (dict "Params" $data) . ) | indent 6 }}
 
 {{- end }}

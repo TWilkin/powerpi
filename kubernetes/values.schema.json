@@ -168,6 +168,11 @@
                     "description": "The cron schedule for when the Config Server should run",
                     "type": "string"
                 },
+                "timeout": {
+                    "description": "The maximum runtime in seconds before the job is terminated",
+                    "type": "integer",
+                    "minimum": 120
+                },
                 "path": {
                     "description": "The path in the GitHub repository to the configuration files",
                     "type": "string"
@@ -195,6 +200,11 @@
                 "backupSchedule": {
                     "description": "The cron schedule for when the database backup should run",
                     "type": "string"
+                },
+                "backupTimeout": {
+                    "description": "The maximum runtime in seconds before the backup job is terminated",
+                    "type": "integer",
+                    "minimum": 120
                 },
                 "storageClass": {
                     "description": "When defined will use the specified StorageClass instead of using local storage",
@@ -228,6 +238,11 @@
                 "schedule": {
                     "description": "The cron schedule for when the Energy Monitor service should run",
                     "type": "string"
+                },
+                "timeout": {
+                    "description": "The maximum runtime in seconds before the job is terminated",
+                    "type": "integer",
+                    "minimum": 600
                 },
                 "history": {
                     "description": "How many days to collect data for",
