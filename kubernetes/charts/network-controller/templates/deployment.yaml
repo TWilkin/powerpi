@@ -1,6 +1,7 @@
 {{- $ssl := eq (include "powerpi.mosquitto-ssl" .) "true" -}}
 
-{{/* Required: Wake-on-LAN needs raw layer-2 socket access to send magic packets. */}}
+{{/* Required: Wake-on-LAN needs raw layer-2 socket access to send magic packets,
+     which requires hostNetwork and NET_RAW capability. */}}
 {{-
     $data := dict
     "HostNetwork" (true | quote)
