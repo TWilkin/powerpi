@@ -18,10 +18,12 @@ metadata:
 
 spec:
   schedule: {{ .Params.Schedule | quote }}
-  concurrencyPolicy: Replace
+  concurrencyPolicy: {{ .Params.ConcurrencyPolicy | default "Replace" }}
 
   jobTemplate:
     spec:
+      activeDeadlineSeconds: {{ .Params.ActiveDeadlineSeconds }}
+      
       {{- include "powerpi.template" (merge (dict "Params" $data) . ) | indent 6 }}
 
 {{- end }}

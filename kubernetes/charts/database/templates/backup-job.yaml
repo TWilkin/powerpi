@@ -7,16 +7,23 @@
 ) (list) (not (empty $needsNodeSelector))
 -}}
 
+{{/* Temporary: official postgres image runs as root. Replace with a custom
+     non-root image in Step 21b to remove these overrides. */}}
 {{- $data := dict
   "Name" "database-backup"
   "Image" "postgres"
+  "RunAsNonRoot" "false"
+  "AllowPrivilegeEscalation" "true"
+  "DropCapabilities" "false"
   "RequestMemory" "50Mi"
   "NodeSelector" $nodeSelector
   "Schedule" (.Values.backupSchedule | default "5 23 * * *")
+  "ActiveDeadlineSeconds" (.Values.backupTimeout | default 300)
+  "ConcurrencyPolicy" "Forbid"
   "Command" (list "/bin/sh")
   "Args" (list 
     "-c"
-    "pg_dump --host=database --data-only --compress=9 --file=/srv/backup/$(date +%Y-%m-%d-%H-%M)-powerpi.sql.gz"
+    "{ printf 'database:5432:*:*:'; cat $PGPASSWORD_FILE; } > /tmp/.pgpass && chmod 600 /tmp/.pgpass && PGPASSFILE=/tmp/.pgpass pg_dump --host=database --data-only --compress=9 --file=/srv/backup/$(date +%Y-%m-%d-%H-%M)-powerpi.sql.gz"
   )
   "PersistentVolumeClaim" (dict
     "Name" "database-backup-data"
@@ -36,8 +43,8 @@
           "Key" "username"
         )
         (dict
-          "Name" "PGPASSWORD"
-          "Key" "password"
+          "Name" "PGPASSWORD_FILE"
+          "SubPath" "password"
         )
       )
     )

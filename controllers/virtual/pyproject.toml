@@ -1,6 +1,6 @@
 [project]
 name = "virtual_controller"
-version = "2.2.1"
+version = "2.2.2-rc.1"
 description = "PowerPi Virtual Controller"
 license = "GPL-3.0-only"
 authors = [
@@ -10,6 +10,8 @@ repository = "https://github.com/TWilkin/powerpi.git"
 readme = "README.md"
 
 requires-python = ">=3.11,<4.0"
+
+[tool.poetry.group.main.dependencies]
 
 [tool.poetry.group.powerpi.dependencies]
 powerpi-common = {path = "../../common/python", develop = true}

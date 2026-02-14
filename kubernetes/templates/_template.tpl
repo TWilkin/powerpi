@@ -23,6 +23,7 @@
 {{- $hasVolumeClaimEnv := and $hasVolumeClaim (eq (empty .Params.PersistentVolumeClaim.EnvName) false) }}
 {{- $hasConfig := eq (empty .Params.Config) false }}
 {{- $hasSecret := eq (empty $secrets) false }}
+{{- $hasEmptyDir := eq (empty .Params.EmptyDirVolumes) false }}
 {{- $hasAnnotations := eq (empty .Params.Annotations) false }}
 
 template:
@@ -79,6 +80,21 @@ template:
     dnsPolicy: ClusterFirstWithHostNet
     {{- end }}
 
+    automountServiceAccountToken: false
+
+    securityContext:
+      {{- $runAsNonRoot := eq (.Params.RunAsNonRoot | default "true") "true" }}
+      runAsNonRoot: {{ $runAsNonRoot }}
+      {{- if .Params.RunAsUser }}
+      runAsUser: {{ .Params.RunAsUser }}
+      {{- else if $runAsNonRoot }}
+      runAsUser: 1000
+      {{- else }}
+      runAsUser: 0
+      {{- end }}
+      seccompProfile:
+        type: RuntimeDefault
+
     containers:
     - name: {{ $name }}
 
@@ -89,6 +105,21 @@ template:
       # if we're using another image the tag may change
       imagePullPolicy: Always
       {{- end }}
+
+      securityContext:
+        allowPrivilegeEscalation: {{ eq (.Params.AllowPrivilegeEscalation | default "false") "true" }}
+        readOnlyRootFilesystem: true
+        {{- if eq (.Params.DropCapabilities | default "true") "true" }}
+        capabilities:
+          drop:
+          - ALL
+          {{- if eq (empty .Params.Capabilities) false }}
+          add:
+          {{- range $element := .Params.Capabilities }}
+          - {{ $element }}
+          {{- end }}
+          {{- end }}
+        {{- end }}
 
       {{- if eq (empty .Params.Command) false }}
       command:
@@ -205,7 +236,7 @@ template:
         exec:
           command:
           {{- range $element := .Params.Probe.Command }}
-          - {{ $element }}
+          - {{ $element | quote }}
           {{- end }}
         {{- end }}
         initialDelaySeconds: {{ .Params.Probe.ReadinessInitialDelay }}
@@ -224,17 +255,27 @@ template:
         exec:
           command:
           {{- range $element := .Params.Probe.Command }}
-          - {{ $element }}
+          - {{ $element | quote }}
           {{- end }}
         {{- end }}
         initialDelaySeconds: {{ .Params.Probe.LivenessInitialDelay }}
       {{- end }}
 
-      {{- if or (eq (empty .Params.Volumes) false) $config $hasVolumeClaim $hasConfig $hasSecret }}
       volumeMounts:
+      - name: tmp
+        mountPath: /tmp
+
+      {{- if or (eq (empty .Params.Volumes) false) $config $hasVolumeClaim $hasConfig $hasSecret $hasEmptyDir }}
       {{- range $element := .Params.Volumes }}
       - name: {{ $element.Name }}
         mountPath: {{ $element.MountPath | default $element.Path }}
+      {{- end }}
+
+      {{- if $hasEmptyDir }}
+      {{- range $element := .Params.EmptyDirVolumes }}
+      - name: {{ $element.Name }}
+        mountPath: {{ $element.Path }}
+      {{- end }}
       {{- end }}
 
       {{- if $hasVolumeClaim }}
@@ -271,12 +312,18 @@ template:
 
     restartPolicy: {{ .Params.RestartPolicy | default "Always" }}
 
-    {{- if or (eq (empty .Params.Volumes) false) $config $hasVolumeClaim $hasConfig $hasSecret }}
     volumes:
+    - name: tmp
+      emptyDir: {}
+
+    {{- if or (eq (empty .Params.Volumes) false) $config $hasVolumeClaim $hasConfig $hasSecret $hasEmptyDir }}
     {{- range $element := .Params.Volumes }}
     - name: {{ $element.Name }}
       hostPath:
         path: {{ $element.HostPath | default $element.Path }}
+        {{- if eq (empty $element.Type) false }}
+        type: {{ $element.Type }}
+        {{- end }}
     {{- end }}
 
     {{- if $hasVolumeClaim -}}
@@ -309,6 +356,13 @@ template:
     - name: config
       configMap:
         name: config
+    {{- end }}
+
+    {{- if $hasEmptyDir }}
+    {{- range $element := .Params.EmptyDirVolumes }}
+    - name: {{ $element.Name }}
+      emptyDir: {}
+    {{- end }}
     {{- end }}
 
     {{- end }}

@@ -1,7 +1,7 @@
 TARGET_DIR=$(CURDIR)/bin
 
 # the version of the energy-monitor service
-VERSION=2.0.1
+VERSION=2.0.2-rc.1
 
 LIBRARY_SOURCES := $(shell find ../../common/go -name "*.go") 
 SOURCES := $(shell find ./ -name "*.go") 

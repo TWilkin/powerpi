@@ -6,3 +6,5 @@ metadata:
 data:
   nginx.conf: |-
 {{ .Files.Get "nginx.conf" | indent 4 }}
+  security-headers.conf: |-
+{{ .Files.Get "security-headers.conf" | indent 4 }}

@@ -19,7 +19,7 @@ FROM build-base-image AS build-image
 WORKDIR /opt/powerpi/controllers/virtual
 COPY --from=build-common-image /opt/powerpi/common ./../../common
 COPY controllers/virtual/poetry.lock controllers/virtual/pyproject.toml ./
-RUN poetry install --compile --no-root --no-directory --no-interaction --no-ansi
+RUN poetry install --compile --only main --no-root --no-directory --no-interaction --no-ansi
 
 # install the common library
 COPY --from=build-common-image /opt/powerpi/common/python/dist/*.whl .
@@ -33,8 +33,8 @@ LABEL description="PowerPi Virtual Controller"
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
 
-RUN adduser --disabled-password powerpi
-USER powerpi
+RUN adduser --disabled-password --uid 1000 powerpi
+USER 1000
 
 WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/virtual/.venv ./venv

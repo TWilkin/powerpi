@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/config-server",
-    "version": "1.1.8",
+    "version": "1.1.9-rc.1",
     "description": "PowerPi config retrieval from GitHub pushing to message queue",
     "private": true,
     "type": "module",

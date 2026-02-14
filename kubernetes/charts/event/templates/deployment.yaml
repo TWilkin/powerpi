@@ -3,10 +3,18 @@
   "UseDevicesFile" true
   "UseEventsFile" true
   "MqttSecret" "mosquitto-event-secret"
+  "Env" (list
+    (dict
+      "Name" "HEALTH_CHECK_FILE"
+      "Value" "/tmp/powerpi_health"
+    )
+  )
   "Probe" (dict
     "Command" (list
       "/bin/sh"
       "/usr/src/app/venv/lib/python3.11/site-packages/powerpi_common/health.sh"
+      "12"
+      "/tmp/powerpi_health"
     )
     "ReadinessInitialDelay" 10
     "LivenessInitialDelay" 20

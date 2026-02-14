@@ -1,5 +1,6 @@
 {{- $data := dict
   "Schedule" (.Values.schedule | default "5 5 * * *")
+  "ActiveDeadlineSeconds" (.Values.timeout | default 3600)
   "Command" (list "./powerpi_energy_monitor")
   "Args" (list 
     (print "--history=" (.Values.history | default 30))

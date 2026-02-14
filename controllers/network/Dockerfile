@@ -33,14 +33,8 @@ LABEL description="PowerPi Network Controller"
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
 
-# ensure the controller can run ping
-RUN apt-get update \
-    && apt-get install -y libcap2-bin \
-    && apt-get clean -y \
-    && setcap cap_net_raw+ep /usr/local/bin/python3.11
-
-RUN adduser --disabled-password powerpi
-USER powerpi
+RUN adduser --disabled-password --uid 1000 powerpi
+USER 1000
 
 WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/network/.venv ./venv

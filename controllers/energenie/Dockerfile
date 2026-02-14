@@ -47,9 +47,9 @@ ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
 
 RUN addgroup --gid 993 gpio \
-    && adduser --disabled-password powerpi \
+    && adduser --disabled-password --uid 1000 powerpi \
     && usermod -a -G gpio powerpi
-USER powerpi
+USER 1000
 
 WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/energenie/.venv ./venv

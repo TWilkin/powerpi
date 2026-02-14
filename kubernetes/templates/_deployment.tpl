@@ -31,4 +31,8 @@ spec:
   
   {{- include "powerpi.template" (merge (dict "Params" $data) . ) | indent 2 -}}
 
+{{- if and .Values.global.useCluster (gt $replicas 1) }}
+{{- include "powerpi.pod-disruption-budget" . }}
+{{- end }}
+
 {{- end -}}
