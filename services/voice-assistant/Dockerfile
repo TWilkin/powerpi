@@ -58,7 +58,7 @@ LABEL description="PowerPi voice-assistant Alexa webhook service"
 EXPOSE 3000
 
 # use non-root account
-USER node
+USER 1000 # node
 RUN mkdir -p /home/node/app/common/node/common-api/dist \
     /home/node/app/common/node/common/dist \
     /home/node/app/services/voice-assistant/dist

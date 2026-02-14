@@ -35,7 +35,7 @@ RUN mkdir -p /var/www/powerpi \
     && chown -R nginx:nginx /var/www \
     && touch /var/run/nginx.pid \
     && chown -R nginx:nginx /var/run/nginx.pid
-USER nginx
+USER 101 # nginx
 
 EXPOSE 8080
 

@@ -43,7 +43,7 @@ FROM node:23.6.1-alpine3.20 AS run-image
 LABEL description="PowerPi config-server configuration service"
 
 # use non-root account
-USER node
+USER 1000 # node
 RUN mkdir -p /home/node/app/common/node/common/dist \
     /home/node/app/services/config-server
 

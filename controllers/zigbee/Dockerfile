@@ -33,9 +33,9 @@ LABEL description="PowerPi ZigBee Controller"
 ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
 
-RUN adduser --disabled-password powerpi \
+RUN adduser --disabled-password --uid 1000 powerpi \
     && usermod -a -G dialout powerpi
-USER powerpi
+USER 1000 # powerpi
 
 WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/zigbee/.venv ./venv
