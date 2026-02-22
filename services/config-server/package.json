@@ -24,7 +24,7 @@
     "dependencies": {
         "@octokit/rest": "^20.0.1",
         "@powerpi/common": "^0.2.2",
-        "ajv": "^8.17.1",
+        "ajv": "^8.18.0",
         "ajv-formats": "3.0.1",
         "ts-command-line-args": "^2.5.1",
         "typedi": "^0.10.0",
