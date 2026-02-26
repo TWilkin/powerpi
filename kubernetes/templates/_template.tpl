@@ -92,6 +92,9 @@ template:
       {{- else }}
       runAsUser: 0
       {{- end }}
+      {{- if .Params.FsGroup }}
+      fsGroup: {{ .Params.FsGroup }}
+      {{- end }}
       seccompProfile:
         type: RuntimeDefault
 
