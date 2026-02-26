@@ -1,5 +1,11 @@
 {{- $data := dict
   "MqttSecret" "mosquitto-persistence-secret"
+  "Env" (list
+    (dict
+      "Name" "HEALTH_CHECK_FILE"
+      "Value" "/tmp/powerpi_health"
+    )
+  )
   "Secret" (list
     (dict
       "Name" "database-secret"
@@ -27,6 +33,8 @@
     "Command" (list
       "/bin/sh"
       "/home/node/app/node_modules/@powerpi/common/dist/health.sh"
+      "12"
+      "/tmp/powerpi_health"
     )
     "ReadinessInitialDelay" 10
     "LivenessInitialDelay" 20

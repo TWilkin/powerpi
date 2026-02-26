@@ -1,6 +1,6 @@
 [project]
 name = "snapcast_controller"
-version = "0.0.9"
+version = "0.0.10-rc.1"
 description = "PowerPi Snapcast Controller"
 license = "GPL-3.0-only"
 authors = [

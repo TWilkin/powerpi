@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/voice-assistant",
-    "version": "2.1.3",
+    "version": "2.1.4-rc.1",
     "description": "PowerPi home automation voice assistant service",
     "private": true,
     "type": "module",

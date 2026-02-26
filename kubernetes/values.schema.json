@@ -32,7 +32,7 @@
                 },
 
                 "useSSL": {
-                    "description": "Whether to use SSL for the UI, API and voice integration",
+                    "description": "Whether to use SSL for the UI, API and voice integration. Recommended for security, see README for setup instructions.",
                     "type": "boolean"
                 },
 
@@ -117,7 +117,7 @@
                 },
 
                 "storageClass": {
-                    "description": "When defined will use the specified StorageClass instead of using local storage",
+                    "description": "When defined will use the specified StorageClass instead of using local storage. The default hostpath storage is node-local, requiring node affinity labels. Provide a distributed StorageClass to enable failover across nodes.",
                     "type": "string"
                 },
 
@@ -168,6 +168,11 @@
                     "description": "The cron schedule for when the Config Server should run",
                     "type": "string"
                 },
+                "timeout": {
+                    "description": "The maximum runtime in seconds before the job is terminated",
+                    "type": "integer",
+                    "minimum": 120
+                },
                 "path": {
                     "description": "The path in the GitHub repository to the configuration files",
                     "type": "string"
@@ -195,6 +200,11 @@
                 "backupSchedule": {
                     "description": "The cron schedule for when the database backup should run",
                     "type": "string"
+                },
+                "backupTimeout": {
+                    "description": "The maximum runtime in seconds before the backup job is terminated",
+                    "type": "integer",
+                    "minimum": 120
                 },
                 "storageClass": {
                     "description": "When defined will use the specified StorageClass instead of using local storage",
@@ -228,6 +238,11 @@
                 "schedule": {
                     "description": "The cron schedule for when the Energy Monitor service should run",
                     "type": "string"
+                },
+                "timeout": {
+                    "description": "The maximum runtime in seconds before the job is terminated",
+                    "type": "integer",
+                    "minimum": 600
                 },
                 "history": {
                     "description": "How many days to collect data for",
@@ -274,7 +289,7 @@
                     "const": "message-queue"
                 },
                 "storageClass": {
-                    "description": "When defined will use the specified StorageClass instead of using local storage",
+                    "description": "When defined will use the specified StorageClass instead of using local storage. The default hostpath storage is node-local, requiring node affinity labels. Provide a distributed StorageClass to enable failover across nodes.",
                     "type": "string"
                 },
                 "loadBalancerIP": {
@@ -373,7 +388,7 @@
             "allOf": [{ "$ref": "#/$defs/controller" }, { "$ref": "#/$defs/local-network" }],
             "properties": {
                 "storageClass": {
-                    "description": "When defined will use the specified StorageClass instead of using local storage",
+                    "description": "When defined will use the specified StorageClass instead of using local storage. The default hostpath storage is node-local, requiring node affinity labels. Provide a distributed StorageClass to enable failover across nodes.",
                     "type": "string"
                 },
                 "device": {
@@ -389,7 +404,10 @@
                 "baudrate": {
                     "description": "The baudrate for the ZigBee device connection",
                     "type": "integer",
-                    "enum": [300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400, 460800, 921600]
+                    "enum": [
+                        300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400,
+                        460800, 921600
+                    ]
                 },
                 "flowControl": {
                     "description": "Flow control setting for the ZigBee device connection",

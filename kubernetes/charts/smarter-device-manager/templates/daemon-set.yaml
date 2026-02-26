@@ -1,4 +1,8 @@
 {{- if or (eq .Values.global.energenie true) (eq .Values.global.zigbee true) }}
+{{/* Required: third-party image runs as root and needs privilege escalation
+     to register device plugins with the kubelet via the device-plugins socket.
+     /dev and /sys mounts are required for device discovery — see device-config.yaml
+     for the list of matched devices. Only matched devices are exposed to other pods. */}}
 {{- $data := dict
   "Kind" "DaemonSet"
   "Image" "ghcr.io/smarter-project/smarter-device-manager"
@@ -9,6 +13,8 @@
   "RequestMemory" "15Mi"
   "LimitCPU" "100m"
   "LimitMemory" "15Mi"
+  "RunAsNonRoot" "false"
+  "AllowPrivilegeEscalation" "true"
   "Annotations" (list
     (dict
       "Name" "node.kubernetes.io/bootstrap-checkpoint"
@@ -26,14 +32,17 @@
     (dict
       "Name" "device-plugin"
       "Path" "/var/lib/kubelet/device-plugins"
+      "Type" "Directory"
     )
     (dict
       "Name" "dev-dir"
       "Path" "/dev"
+      "Type" "Directory"
     )
     (dict
       "Name" "sys-dir"
       "Path" "/sys"
+      "Type" "Directory"
     )
   )
 }}

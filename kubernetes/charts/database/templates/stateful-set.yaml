@@ -10,6 +10,8 @@
 {{- $data := dict
   "Kind" "StatefulSet"
   "Image" "postgres"
+  "RunAsUser" 70
+  "FsGroup" 70
   "PriorityClassName" "powerpi-critical"
   "RequestMemory" "50Mi"
   "Ports" (list (dict
@@ -39,6 +41,12 @@
           "SubPath" "password"
         )
       )
+    )
+  )
+  "EmptyDirVolumes" (list
+    (dict
+      "Name" "postgresql-run"
+      "Path" "/var/run/postgresql"
     )
   )
   "Probe" (dict

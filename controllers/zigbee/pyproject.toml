@@ -1,6 +1,6 @@
 [project]
 name = "zigbee_controller"
-version = "0.7.0"
+version = "0.7.1-rc.1"
 description = "PowerPi ZigBee Controller"
 license = "GPL-3.0-only"
 authors = [
