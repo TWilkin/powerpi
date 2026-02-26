@@ -149,8 +149,8 @@ then
         workspaces=$(echo "$why_output" \
             | grep '"list"' \
             | jq -r '.data.items[]' \
-            | grep 'depends on it' \
-            | grep -oP '_project_#@powerpi#\K[^"]+')
+            | grep -oP '_project_#@powerpi#\K[^#]+' \
+            | sort -u) || true
 
         for workspace in $workspaces
         do
