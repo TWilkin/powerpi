@@ -161,8 +161,8 @@ foreach_dependant() {
 
     for i in $(seq 0 $((count - 1)))
     do
-        local has_dep=$(yq -r "(.services + .controllers + .sensors)[$i].dependencies // [] | index(\"$lib_name\")" "$SERVICES_YAML")
-        if [ "$has_dep" != "null" ]
+        local has_dep=$(yq -r "(.services + .controllers + .sensors)[$i].dependencies // [] | contains([\"$lib_name\"])" "$SERVICES_YAML")
+        if [ "$has_dep" = "true" ]
         then
             SERVICE_DIR=$(yq -r "(.services + .controllers + .sensors)[$i].directory" "$SERVICES_YAML")
             SERVICE_NAME=$(yq -r "(.services + .controllers + .sensors)[$i].name" "$SERVICES_YAML")
