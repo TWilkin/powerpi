@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, PropertyMock, call
 import pytest
 from powerpi_common_test.device import DeviceTestBase
 from pytest_mock import MockerFixture
-from zigpy.typing import DeviceType
+from zigpy.device import Device as ZigPyDevice
 
 from zigbee_controller.device.zigbee_pairing import ZigbeePairingDevice
 
@@ -25,7 +25,7 @@ class TestZigbeePairingDevice(DeviceTestBase):
         self,
         subject: ZigbeePairingDevice,
         powerpi_mqtt_producer: MagicMock,
-        device: DeviceType
+        device: ZigPyDevice
     ):
         subject.on_device_join(device)
 

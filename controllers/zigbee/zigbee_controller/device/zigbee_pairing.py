@@ -5,8 +5,8 @@ from powerpi_common.device import Device
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+from zigpy.device import Device as ZigPyDevice
 from zigpy.types import EUI64
-from zigpy.typing import DeviceType
 
 from zigbee_controller.zigbee import DeviceJoinListener, ZigbeeController
 
@@ -50,7 +50,7 @@ class ZigbeePairingDevice(Device, InitialisableMixin):
 
         await self.turn_off()
 
-    def on_device_join(self, device: DeviceType):
+    def on_device_join(self, device: ZigPyDevice):
         self.log_info('New device joined network')
 
         topic = f'device/{self.name}/join'

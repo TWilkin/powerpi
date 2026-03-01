@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Callable
 
-from zigpy.typing import DeviceType
+from zigpy.device import Device as ZigPyDevice
 
 
 class ZigBeeListener(ABC):
@@ -18,16 +18,16 @@ class ConnectionLostListener(ZigBeeListener):
 
 
 class DeviceAnnounceListener(ZigBeeListener):
-    def __init__(self, method: Callable[[DeviceType], None]):
+    def __init__(self, method: Callable[[ZigPyDevice], None]):
         ZigBeeListener.__init__(self, method)
 
-    def device_announce(self, device: DeviceType):
+    def device_announce(self, device: ZigPyDevice):
         self._listener(device)
 
 
 class DeviceJoinListener(ZigBeeListener):
-    def __init__(self, method: Callable[[DeviceType], None]):
+    def __init__(self, method: Callable[[ZigPyDevice], None]):
         ZigBeeListener.__init__(self, method)
 
-    def device_joined(self, device: DeviceType):
+    def device_joined(self, device: ZigPyDevice):
         self._listener(device)

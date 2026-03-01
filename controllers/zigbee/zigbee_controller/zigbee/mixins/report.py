@@ -3,8 +3,8 @@ from asyncio import get_event_loop
 from dataclasses import dataclass
 from typing import List
 
+from zigpy.device import Device as ZigPyDevice
 from zigpy.types import EUI64
-from zigpy.typing import DeviceType
 from zigpy.zcl.clusters import Cluster
 from zigpy.zcl.foundation import Attribute, GeneralCommand, Status, ZCLHeader
 
@@ -70,7 +70,7 @@ class ZigbeeReportMixin(ABC):
                     'Bind failed, likely the device is not on, will try again when it rejoins'
                 )
 
-        def on_device_join(device: DeviceType):
+        def on_device_join(device: ZigPyDevice):
             nonlocal registered
 
             ieee = EUI64(device.ieee)

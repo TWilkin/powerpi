@@ -1,6 +1,6 @@
 from powerpi_common.device import DeviceStatus
+from zigpy.device import Device as ZigPyDevice
 from zigpy.exceptions import DeliveryError
-from zigpy.typing import DeviceType
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 
 
@@ -13,7 +13,7 @@ class ZigbeeOnOffMixin:
     async def _read_status(self):
         '''Retrieve the current status of the ZigBee device.'''
 
-        device: DeviceType = self._zigbee_device
+        device: ZigPyDevice = self._zigbee_device
 
         try:
             cluster: OnOffCluster = device[1].in_clusters[OnOffCluster.cluster_id]

@@ -3,8 +3,8 @@ import os
 import zigpy
 from powerpi_common.logger import Logger, LogMixin
 from zigpy.application import ControllerApplication
+from zigpy.device import Device as ZigPyDevice
 from zigpy.types import EUI64
-from zigpy.typing import DeviceType
 
 from zigbee_controller.config import ZigbeeConfig
 from .library_factory import ZigbeeLibraryFactory
@@ -21,7 +21,7 @@ class ZigbeeController(LogMixin):
 
         self.__controller: ControllerApplication | None = None
 
-    def get_device(self, ieee: EUI64, nwk: int) -> DeviceType:
+    def get_device(self, ieee: EUI64, nwk: int) -> ZigPyDevice:
         self._ensure_controller_running()
 
         return self.__controller.get_device(ieee, nwk)
