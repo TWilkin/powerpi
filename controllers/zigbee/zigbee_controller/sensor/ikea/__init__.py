@@ -8,7 +8,7 @@ def add_ikea_sensors(container):
 
     setattr(
         device_container,
-        'ikea_styrbar',
+        'ikea_styrbar_sensor',
         providers.Factory(
             IKEAStyrbarSensor,
             logger=container.common.logger,
