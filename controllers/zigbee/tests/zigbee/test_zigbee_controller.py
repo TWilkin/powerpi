@@ -4,7 +4,7 @@ import pytest
 from pytest_mock import MockerFixture
 
 from zigbee_controller.config import ZigbeeConfig
-from zigbee_controller.zigbee.library_factory import ZigbeeLibraryFactory
+from zigbee_controller.zigbee.library import ZigbeeLibraryFactory
 from zigbee_controller.zigbee.zigbee_controller import (
     ZigbeeController,
     ZigbeeControllerNotRunningError

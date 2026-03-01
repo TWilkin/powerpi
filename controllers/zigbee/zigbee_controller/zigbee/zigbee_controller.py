@@ -8,7 +8,7 @@ from zigpy.device import Device as ZigPyDevice
 from zigpy.types import EUI64
 
 from zigbee_controller.config import ZigbeeConfig
-from .library_factory import ZigbeeLibraryFactory
+from .library import ZigbeeLibraryFactory, ZigbeeLibrary
 from .zigbee_listener import ConnectionLostListener
 
 
@@ -28,6 +28,7 @@ class ZigbeeController(LogMixin):
         self._logger.add_logger(zigpy.__name__)
 
         self.__controller: ControllerApplication | None = None
+        self.__library: ZigbeeLibrary
 
     @property
     def controller_application(self) -> ControllerApplication:
@@ -52,7 +53,8 @@ class ZigbeeController(LogMixin):
             config['device']['flow_control'] = self.__config.flow_control
 
         try:
-            app_type = self.__library_factory().get_library()
+            self.__library: ZigbeeLibrary = self.__library_factory().get_library()
+            app_type = self.__library.get_application()
             controller: ControllerApplication = await app_type.new(config, auto_form=True)
 
             self.__controller = controller

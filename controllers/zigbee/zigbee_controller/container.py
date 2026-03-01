@@ -5,7 +5,8 @@ from zigbee_controller.__version__ import __app_name__, __version__
 from zigbee_controller.config import ZigbeeConfig
 from zigbee_controller.controller import Controller
 from zigbee_controller.device.container import DeviceContainer
-from zigbee_controller.zigbee import ZigbeeController, ZigbeeLibraryFactory
+from zigbee_controller.zigbee import ZigbeeController
+from zigbee_controller.zigbee.library import ZigbeeLibraryFactory
 
 
 class ApplicationContainer(containers.DeclarativeContainer):
