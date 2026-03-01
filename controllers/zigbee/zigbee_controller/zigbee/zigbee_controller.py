@@ -13,7 +13,13 @@ from .zigbee_listener import ConnectionLostListener
 
 
 class ZigbeeController(LogMixin):
-    def __init__(self, config: ZigbeeConfig, logger: Logger, library_factory: ZigbeeLibraryFactory, device_manager: DeviceManager):
+    def __init__(
+        self,
+        config: ZigbeeConfig,
+        logger: Logger,
+        library_factory: ZigbeeLibraryFactory,
+        device_manager: DeviceManager
+    ):
         self.__config = config
         self._logger = logger
         self.__library_factory = library_factory
