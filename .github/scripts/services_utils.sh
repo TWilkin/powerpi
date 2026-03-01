@@ -234,6 +234,7 @@ _bump_version_part() {
 # Create/increment RC version
 # Usage: create_rc_version "1.2.3" "patch" -> "1.2.4-rc.1"
 #        create_rc_version "1.2.4-rc.1" "patch" -> "1.2.4-rc.2"
+#        create_rc_version "1.2.4-rc.1" "minor" -> "1.3.0-rc.1"
 create_rc_version() {
     local version=$1
     local bump_part="${2:-patch}"
@@ -242,9 +243,26 @@ create_rc_version() {
 
     if $VERSION_IS_RC
     then
-        # Already RC, increment RC number
-        VERSION_RC=$((VERSION_RC + 1))
-        echo "$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH-rc.$VERSION_RC"
+        local needs_new_base=false
+
+        case $bump_part in
+            minor)
+                [ "$VERSION_PATCH" -ne 0 ] && needs_new_base=true
+                ;;
+
+            major)
+                [ "$VERSION_MINOR" -ne 0 ] || [ "$VERSION_PATCH" -ne 0 ] && needs_new_base=true
+                ;;
+        esac
+
+        if $needs_new_base
+        then
+            _bump_version_part "$bump_part"
+            echo "$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH-rc.1"
+        else
+            VERSION_RC=$((VERSION_RC + 1))
+            echo "$VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH-rc.$VERSION_RC"
+        fi
     else
         # Bump version then add -rc.1
         _bump_version_part "$bump_part"
