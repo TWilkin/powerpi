@@ -34,7 +34,7 @@ class DeviceJoinListener(ZigBeeListener):
 
 
 class HandleMessageListener(ZigBeeListener):
-    def __init__(self, method: Callable[[], None]):
+    def __init__(self, method: Callable[[ZigPyDevice], None]):
         ZigBeeListener.__init__(self, method)
 
     def handle_message(
