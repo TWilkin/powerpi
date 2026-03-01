@@ -51,8 +51,6 @@ class ZigbeeController(LogMixin):
 
             self.__controller = controller
 
-            self.__purge_unknown()
-
             self.__controller.add_listener(
                 ConnectionLostListener(self.__connection_lost))
 
@@ -78,15 +76,7 @@ class ZigbeeController(LogMixin):
 
         self.__controller.add_listener(listener)
 
-    def _ensure_controller_running(self):
-        if not self.__controller:
-            raise ZigbeeControllerNotRunningError()
-
-    def __connection_lost(self, _: Exception):
-        self.log_error('ZigBee connection lost, shutting down')
-        os._exit(-1)
-
-    def __purge_unknown(self):
+    def purge_unknown_devices(self):
         self.log_info('Purging unknown devices')
 
         expected_devices = [
@@ -94,7 +84,9 @@ class ZigbeeController(LogMixin):
             if hasattr(device, 'ieee')
         ]
 
-        for ieee in self.__controller.devices.keys():
+        registered_devices = list(self.__controller.devices.keys())
+
+        for ieee in registered_devices:
             self.log_debug(f'Checking device {ieee}')
 
             if ieee == self.__controller.state.node_info.ieee:
@@ -103,7 +95,15 @@ class ZigbeeController(LogMixin):
 
             if ieee not in expected_devices:
                 self.log_info(f'Removing unexpected device {ieee}')
-                self.__controller.pop(ieee, None)
+                self.__controller.devices.pop(ieee, None)
+
+    def _ensure_controller_running(self):
+        if not self.__controller:
+            raise ZigbeeControllerNotRunningError()
+
+    def __connection_lost(self, _: Exception):
+        self.log_error('ZigBee connection lost, shutting down')
+        os._exit(-1)
 
 
 class ZigbeeControllerNotRunningError(RuntimeError):

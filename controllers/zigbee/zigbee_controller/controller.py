@@ -45,3 +45,8 @@ class Controller(CommonController):
 
     async def _cleanup_devices(self):
         await self.__zigbee_controller.shutdown()
+
+    async def _app_start(self):
+        await CommonController._app_start(self)
+
+        self.__zigbee_controller.purge_unknown_devices()
