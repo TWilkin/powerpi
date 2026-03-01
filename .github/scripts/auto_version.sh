@@ -138,7 +138,8 @@ if [ -n "$yarn_lock_changed" ]
 then
     # Extract changed package names from yarn.lock diff
     packages=$(git diff origin/main...HEAD -- yarn.lock \
-        | grep -oP '^\+"?\K@?[^@"]+(?=@)' \
+        | grep '^\+  resolved.*registry.yarnpkg.com' \
+        | grep -oP 'registry.yarnpkg.com/\K.+(?=/-/)' \
         | sort -u)
 
     for package in $packages
