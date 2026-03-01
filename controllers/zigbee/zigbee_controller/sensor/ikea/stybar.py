@@ -36,18 +36,19 @@ class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin):
     ):
         Sensor.__init__(self, mqtt_client, **kwargs)
         ZigbeeMixin.__init__(self, controller, **kwargs)
+        ZigbeeSleepyMixin.__init__(self)
 
         self._logger = logger
 
     async def initialise(self):
         await ZigbeeSleepyMixin.initialise(self)
 
-        # now we can bind the clusters
+    async def _bind_clusters(self):
         device = self._zigbee_device
 
-        await device[1].in_clusters[OnOffCluster.cluster_id].bind()
-        await device[1].in_clusters[LevelControlCluster.cluster_id].bind()
-        await device[1].in_clusters[ScenesCluster.cluster_id].bind()
+        await self._bind_cluster(device[1].in_clusters[OnOffCluster.cluster_id])
+        await self._bind_cluster(device[1].in_clusters[LevelControlCluster.cluster_id])
+        await self._bind_cluster(device[1].in_clusters[ScenesCluster.cluster_id])
 
     def _configure_device(self, device: ZigPyDevice):
         device.node_desc = NodeDescriptor(

@@ -1,10 +1,13 @@
 from abc import abstractmethod
+from asyncio import create_task
 
 from powerpi_common.device.mixin import InitialisableMixin
 from zigpy.device import Device as ZigPyDevice
 from zigpy.endpoint import Status
+from zigpy.exceptions import DeliveryError
+from zigpy.zcl import Cluster
 
-from zigbee_controller.zigbee.zigbee_listener import DeviceJoinListener
+from zigbee_controller.zigbee import DeviceJoinListener, HandleMessageListener
 
 
 class ZigbeeSleepyMixin(InitialisableMixin):
@@ -14,9 +17,16 @@ class ZigbeeSleepyMixin(InitialisableMixin):
     Expected to be used alongside ZigbeeMixin
     '''
 
+    def __init__(self):
+        self.__bound = False
+
     async def initialise(self):
         self._add_zigbee_listener(
             DeviceJoinListener(self.__device_joined)
+        )
+
+        self._add_zigbee_listener(
+            HandleMessageListener(self.__handle_message)
         )
 
     @abstractmethod
@@ -27,6 +37,25 @@ class ZigbeeSleepyMixin(InitialisableMixin):
         Must set device.node_desc, add endpoints with clusters
         '''
         raise NotImplementedError
+
+    @abstractmethod
+    async def _bind_clusters(self):
+        '''
+        Implement this method to manually bind clusters
+        for sleepy devices that cannot complete the interview.
+        Use self._bind_cluster to handle bind failure.
+        '''
+        raise NotImplementedError
+
+    async def _bind_cluster(self, cluster: Cluster):
+        try:
+            await cluster.bind()
+        except (DeliveryError, TimeoutError):
+            self.__bound = False
+
+            self.log_exception(
+                f'Failed to bind cluster {cluster.cluster_id:#04x}'
+            )
 
     def __device_joined(self, device: ZigPyDevice):
         # we immediately cancel initialisation as it's not going to work
@@ -44,3 +73,9 @@ class ZigbeeSleepyMixin(InitialisableMixin):
         self._zigbee_controller.controller_application.device_initialized(
             device
         )
+
+    def __handle_message(self, device: ZigPyDevice):
+        if not self.__bound and device.ieee == self.ieee:
+            self.__bound = True
+
+            _ = create_task(self._bind_clusters())
