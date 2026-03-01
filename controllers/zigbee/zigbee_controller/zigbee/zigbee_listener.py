@@ -46,4 +46,4 @@ class HandleMessageListener(ZigBeeListener):
         dst_ep: int,
         message: bytes,
     ):
-        self._listener()
+        self._listener(device)

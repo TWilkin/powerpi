@@ -36,6 +36,9 @@ class ZigbeeMixin(InitialisableMixin):
     def _add_zigbee_listener(self, listener: ZigBeeListener):
         self._zigbee_device.zdo.add_listener(listener)
 
+    def _add_controller_listener(self, listener: ZigBeeListener):
+        self._zigbee_controller.add_listener(listener)
+
     async def describe(self):
         return await self._zigbee_device.get_node_descriptor()
 

@@ -21,11 +21,11 @@ class ZigbeeSleepyMixin(InitialisableMixin):
         self.__bound = False
 
     async def initialise(self):
-        self._add_zigbee_listener(
+        self._add_controller_listener(
             DeviceJoinListener(self.__device_joined)
         )
 
-        self._add_zigbee_listener(
+        self._add_controller_listener(
             HandleMessageListener(self.__handle_message)
         )
 
@@ -49,11 +49,15 @@ class ZigbeeSleepyMixin(InitialisableMixin):
 
     async def _bind_cluster(self, cluster: Cluster):
         try:
+            self.log_info(
+                f'Attempting to bind cluster {cluster.cluster_id:#04x}'
+            )
+
             await cluster.bind()
         except (DeliveryError, TimeoutError):
             self.__bound = False
 
-            self.log_exception(
+            self.log_error(
                 f'Failed to bind cluster {cluster.cluster_id:#04x}'
             )
 
