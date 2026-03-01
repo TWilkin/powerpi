@@ -2,6 +2,7 @@ import os
 
 import zigpy
 from powerpi_common.logger import Logger, LogMixin
+from powerpi_common.device import DeviceManager
 from zigpy.application import ControllerApplication
 from zigpy.device import Device as ZigPyDevice
 from zigpy.types import EUI64
@@ -12,10 +13,11 @@ from .zigbee_listener import ConnectionLostListener
 
 
 class ZigbeeController(LogMixin):
-    def __init__(self, config: ZigbeeConfig, logger: Logger, library_factory: ZigbeeLibraryFactory):
+    def __init__(self, config: ZigbeeConfig, logger: Logger, library_factory: ZigbeeLibraryFactory, device_manager: DeviceManager):
         self.__config = config
         self._logger = logger
         self.__library_factory = library_factory
+        self.__device_manager = device_manager
 
         self._logger.add_logger(zigpy.__name__)
 
@@ -44,6 +46,8 @@ class ZigbeeController(LogMixin):
             controller: ControllerApplication = await app_type.new(config, auto_form=True)
 
             self.__controller = controller
+
+            self.__purge_unknown()
 
             self.__controller.add_listener(
                 ConnectionLostListener(self.__connection_lost))
@@ -77,6 +81,25 @@ class ZigbeeController(LogMixin):
     def __connection_lost(self, _: Exception):
         self.log_error('ZigBee connection lost, shutting down')
         os._exit(-1)
+
+    def __purge_unknown(self):
+        self.log_info('Purging unknown devices')
+
+        expected_devices = [
+            device.ieee for device in self.__device_manager.devices_and_sensors
+            if hasattr(device, 'ieee')
+        ]
+
+        for ieee in self.__controller.devices.keys():
+            self.log_debug(f'Checking device {ieee}')
+
+            if ieee == self.__controller.state.node_info.ieee:
+                # ignore the coordinator
+                continue
+
+            if ieee not in expected_devices:
+                self.log_info(f'Removing unexpected device {ieee}')
+                self.__controller.pop(ieee, None)
 
 
 class ZigbeeControllerNotRunningError(RuntimeError):

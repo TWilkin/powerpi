@@ -37,7 +37,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
         ZigbeeController,
         config=config,
         logger=common.logger,
-        library_factory=library_factory.provider
+        library_factory=library_factory.provider,
+        device_manager=common.device.device_manager
     )
 
     device = providers.Container(

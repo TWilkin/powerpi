@@ -174,6 +174,7 @@ class TestZigbeeController:
         self,
         zigbee_config: ZigbeeConfig,
         powerpi_logger,
-        library_factory_provider: ZigbeeLibraryFactory
+        library_factory_provider: ZigbeeLibraryFactory,
+        powerpi_device_manager
     ) -> ZigbeeController:
-        return ZigbeeController(zigbee_config, powerpi_logger, library_factory_provider)
+        return ZigbeeController(zigbee_config, powerpi_logger, library_factory_provider, powerpi_device_manager)
