@@ -23,6 +23,10 @@ class ZigbeeController(LogMixin):
 
         self.__controller: ControllerApplication | None = None
 
+    @property
+    def controller_application(self) -> ControllerApplication:
+        return self.__controller
+
     def get_device(self, ieee: EUI64, nwk: int) -> ZigPyDevice:
         self._ensure_controller_running()
 
