@@ -39,7 +39,7 @@ class ZigbeePairingDevice(Device, InitialisableMixin):
 
     async def _turn_on(self):
         # run in a separate task so the off state happens after the on
-        asyncio.create_task(self.pair())
+        _ = asyncio.create_task(self.pair())
 
     async def _turn_off(self):
         await self.__zigbee_controller.pair(0)
@@ -52,6 +52,10 @@ class ZigbeePairingDevice(Device, InitialisableMixin):
 
     def on_device_join(self, device: ZigPyDevice):
         self.log_info('New device joined network')
+
+        # we don't need to do initialisation yet as the device needs to be added
+        # to the config
+        device.cancel_initialization()
 
         topic = f'device/{self.name}/join'
 
