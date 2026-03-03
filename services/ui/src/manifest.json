@@ -1,0 +1,17 @@
+{
+    "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+
+    "id": "powerpi",
+    "name": "PowerPi Home Automation",
+    "description": "PowerPi Home Automation",
+    "short_name": "PowerPi",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "icons": [
+        {
+            "src": "https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6/svgs/solid/plug.svg",
+            "sizes": "any"
+        }
+    ]
+}

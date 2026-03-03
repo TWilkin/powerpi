@@ -63,17 +63,17 @@ class Application(LogMixin):
             # start the scheduler
             self.__scheduler.start()
 
-            # intially connect to MQTT
+            # initially connect to MQTT
             await self.__mqtt_client.connect()
 
             # retrieve any config from the queue
             await self.__config_retriever.start()
 
-            # start any custom parts of this app
-            await self._app_start()
-
             # start the health check
             await self.__health.start()
+
+            # start any custom parts of this app
+            await self._app_start()
 
             # loop forever
             await get_running_loop().create_future()

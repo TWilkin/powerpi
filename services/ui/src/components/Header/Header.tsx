@@ -3,6 +3,7 @@ import Route from "../../routing/Route";
 import useOptionalRoute from "../../routing/useOptionalRoute";
 import HeaderLink from "../HeaderLink";
 import Logo from "../Logo";
+import HomeHeaderLink from "./HomeHeaderLink";
 
 const Header = () => {
     const enabled = useOptionalRoute();
@@ -14,9 +15,7 @@ const Header = () => {
             <nav className="flex flex-row items-center border-b-2 border-border divide-x-2 divide-border">
                 <Logo />
 
-                {enabled?.home && (
-                    <HeaderLink route={Route.Home} icon="home" text={t("navigation.home")} />
-                )}
+                {enabled?.home && <HomeHeaderLink />}
 
                 <HeaderLink route={Route.Device} icon="device" text={t("navigation.devices")} />
 

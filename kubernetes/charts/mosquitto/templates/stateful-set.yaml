@@ -1,9 +1,4 @@
-{{- $ssl := and 
-  (eq .Values.global.useSSL true) 
-  (eq .Values.global.useSensors true) 
-  (not (eq .Values.global.clusterIssuer nil)) 
-  (not (eq .Values.hostName nil))
--}}
+{{- $ssl := eq (include "powerpi.mosquitto-ssl" .) "true" -}}
 
 {{- $needsNodeSelector := include "powerpi.persistent-volume-node-selector" . -}}
 {{- $nodeSelector := ternary (list
@@ -39,15 +34,26 @@
 {{- $data := dict
   "Kind" "StatefulSet"
   "Image" "eclipse-mosquitto"
+  "RunAsUser" 1883
   "PriorityClassName" "powerpi-critical"
   "Command" (list "/bin/sh" "-c")
   "Args" (list
-    "cp /var/run/secrets/mosquitto-passwords-secret/passwords /mosquitto/passwords && mosquitto_passwd -U /mosquitto/passwords && exec /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf"
-  ) 
+    "cd /mosquitto/auth && cp /var/run/secrets/mosquitto-passwords-secret/passwords passwords && chmod 0700 passwords && mosquitto_passwd -U passwords && exec /usr/sbin/mosquitto -c /mosquitto/config/mosquitto.conf"
+  )
+  "EmptyDirVolumes" (list
+    (dict
+      "Name" "mosquitto-auth"
+      "Path" "/mosquitto/auth"
+    )
+  )
   "Annotations" (list
     (dict
       "Name" "checksum/mosquitto-passwords-secret"
       "Value" (include (print $.Template.BasePath "/secret.yaml") $ | sha256sum)
+    )
+    (dict
+      "Name" "checksum/mosquitto-cert"
+      "Value" ((lookup "v1" "Secret" .Release.Namespace "mosquitto-cert").data | default dict | toString | sha256sum)
     )
   )
   "Ports" $ports

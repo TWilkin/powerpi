@@ -20,6 +20,6 @@ def add_sensors(container):
             ZigbeeEnergyMonitorSensor,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
-            zigbee_controller=container.device.zigbee_controller
+            zigbee_controller=container.zigbee_controller
         )
     )

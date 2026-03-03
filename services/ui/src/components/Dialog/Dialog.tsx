@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { DialogHTMLAttributes, ReactNode, RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../Button";
+import { PortalHost } from "../PortalHost";
 
 type DialogProps = {
     icon?: ReactNode;
@@ -30,21 +31,23 @@ const Dialog = ({ icon, heading, children, ref, ...props }: DialogProps) => {
             ref={ref}
         >
             <form method="dialog">
-                <header
-                    className={classNames(
-                        "p flex flex-row gap-4 justify-between items-center",
-                        "bg-bg-primary",
-                        "border-b-2 border-b-outline",
-                    )}
-                >
-                    {icon}
+                <PortalHost>
+                    <header
+                        className={classNames(
+                            "p flex flex-row gap-4 justify-between items-center",
+                            "bg-bg-primary",
+                            "border-b-2 border-b-outline",
+                        )}
+                    >
+                        {icon}
 
-                    <h1 className="font-semibold">{heading}</h1>
+                        <h1 className="font-semibold">{heading}</h1>
 
-                    <Button buttonType="icon" icon="close" aria-label={t("common.close")} />
-                </header>
+                        <Button buttonType="icon" icon="close" aria-label={t("common.close")} />
+                    </header>
 
-                <div className="p">{children}</div>
+                    <div className="p">{children}</div>
+                </PortalHost>
             </form>
         </dialog>
     );

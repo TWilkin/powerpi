@@ -1,9 +1,4 @@
-{{- $ssl := and 
-  (eq .Values.global.useSSL true) 
-  (eq .Values.global.useSensors true) 
-  (not (eq .Values.global.clusterIssuer nil)) 
-  (not (eq .Values.hostName nil))
--}}
+{{- $ssl := eq (include "powerpi.mosquitto-ssl" .) "true" -}}
 
 {{- $type := ternary "LoadBalancer" "ClusterIP" (and .Values.global.useSensors (not $ssl)) -}}
 
@@ -22,6 +17,7 @@
   "Type" "LoadBalancer"
   "PortName" "mqtts"
   "Port" 8883
+  "LoadBalancerIP" .Values.loadBalancerIP
 -}}
 
 {{- include "powerpi.service" (merge (dict "Params" $data) .) -}}

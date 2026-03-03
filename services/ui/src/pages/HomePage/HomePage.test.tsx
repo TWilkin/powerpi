@@ -72,15 +72,6 @@ describe("HomePage", () => {
             wrapper: ({ children }) => <MemoryRouter>{children}</MemoryRouter>,
         });
 
-        const links = screen.getAllByRole("link");
-        expect(links).toHaveLength(2);
-
-        expect(links[0]).toHaveTextContent("Ground");
-        expect(links[0]).toHaveProperty("href", "http://localhost:3000/Ground");
-
-        expect(links[1]).toHaveTextContent("First Floor");
-        expect(links[1]).toHaveProperty("href", "http://localhost:3000/FirstFloor");
-
         expect(screen.getByTestId("floorplan")).toBeInTheDocument();
     });
 });

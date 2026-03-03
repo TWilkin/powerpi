@@ -5,7 +5,7 @@
             "name": "Shutdown",
             "type": "go",
             "request": "launch",
-            "program": "${workspaceFolder}/src",
+            "program": "${workspaceFolder}",
             "args": ["--mock"],
             "presentation": {
                 "group": "Services"

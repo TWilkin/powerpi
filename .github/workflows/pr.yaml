@@ -20,6 +20,13 @@ jobs:
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/check_modified.sh"
 
+      # setup go
+      - name: Install Go
+        if: steps.check_modified.outputs.golang
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.24.1
+
       # setup node.js
       - name: Install Node.js
         if: steps.check_modified.outputs.nodejs
@@ -46,19 +53,18 @@ jobs:
         if: steps.check_modified.outputs.python
         uses: snok/install-poetry@v1
         with:
-          version: 2.1.1
+          version: 2.2.1
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
 
-      # setup go
-      - name: Install Go
-        if: steps.check_modified.outputs.go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.22.2
-
       # test the common libraries
+      - name: Test PowerPi Go Common
+        if: steps.check_modified.outputs.go_common
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_go.sh common"
+        working-directory: common/go
+
       - name: Test PowerPi Node Common
         if: steps.check_modified.outputs.node_common
         shell: bash
@@ -123,6 +129,12 @@ jobs:
         if: steps.check_modified.outputs.config_server
         shell: bash
         run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh config-server"
+
+      - name: Test Energy Monitor Service
+        if: steps.check_modified.outputs.energy_monitor
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_go.sh event"
+        working-directory: services/energy-monitor
 
       - name: Test Event Service
         if: steps.check_modified.outputs.event

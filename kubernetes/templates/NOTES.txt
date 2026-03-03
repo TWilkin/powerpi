@@ -35,11 +35,11 @@ Your release is named "{{ .Release.Name }}":
         --from-literal username=__USERNAME__ \
         --from-file=password=./__SECRET_NAME__
 {{- end }}
-{{- if eq (index .Values "global" "energy-monitor") true }}
+{{- if .Values.global.energyMonitor }}
 
-- For the energy-monitor service (where __SECRET_NAME__ is a replacement for a file containing your IHD (In Home Device) MAC address):
-    $ microk8s kubectl create secret generic ihd-secret --namespace powerpi \
-        --from-file=ihd=./__SECRET_NAME__
+- For the energy-monitor service (where __SECRET_NAME__ is a replacement for a file containing your Octopus API key):
+    $ microk8s kubectl create secret generic octopus-api-secret --namespace powerpi \
+        --from-file=key=./__SECRET_NAME__
 {{- end }}
 
 {{- if .Values.global.useSensors }}

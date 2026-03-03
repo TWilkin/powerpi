@@ -40,11 +40,16 @@ class DeviceScheduler(LogMixin):
             schedule_devices = [schedule['device']] if 'device' in schedule \
                 else schedule['devices']
 
+            schedule_params = {
+                key: value for key, value in schedule.items()
+                if key not in ('device', 'devices')
+            }
+
             for schedule_device in schedule_devices:
                 if schedule_device in devices:
                     device_schedule: DeviceSchedule = self.__device_schedule_factory.build(
                         device=schedule_device,
-                        device_schedule=schedule
+                        device_schedule=schedule_params
                     )
 
                     if device_schedule is not None:

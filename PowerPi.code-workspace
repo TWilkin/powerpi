@@ -26,6 +26,10 @@
             "name": "Common Python Test",
             "path": "common/pytest",
         },
+        {
+            "name": "Common Go",
+            "path": "common/go",
+        },
 
         // Services
         {
@@ -131,6 +135,15 @@
                 },
             },
             {
+                "label": "Build service",
+                "command": "bash ${workspaceFolder}/.github/scripts/buildx.sh --service ${input:service} --repo ${input:repo}",
+                "type": "shell",
+                "presentation": {
+                    "reveal": "always",
+                },
+                "problemMatcher": [],
+            },
+            {
                 "label": "Version service",
                 "command": "bash ${workspaceFolder}/.github/scripts/version.sh --service ${input:service} --version ${input:versionPart} --chart-version ${input:chartVersionPart} --commit",
                 "type": "shell",
@@ -153,6 +166,11 @@
             {
                 "id": "service",
                 "description": "The name of the service",
+                "type": "promptString",
+            },
+            {
+                "id": "repo",
+                "description": "The local Docker registry to push to",
                 "type": "promptString",
             },
             {
@@ -208,6 +226,7 @@
             "Common Node Test",
             "Common Python",
             "Common Python Test",
+            "Common Go",
             "API",
             "Config Server",
             "Energy Monitor",

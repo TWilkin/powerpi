@@ -87,6 +87,12 @@ export default {
             transitionProperty: {
                 grid: "grid-template-rows",
             },
+
+            zIndex: {
+                "focus": "50", 
+                "table-header": "10",
+                "portal-overlay": "50",
+            },
         },
     },
 };

@@ -1,16 +1,33 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ingress
-  {{- include "powerpi.labels" . }}
-spec:
-  ingressClassName: public
+{{- define "powerpi.ingress-annotations" }}
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+    nginx.ingress.kubernetes.io/proxy-body-size: "8k"
+    {{- if eq .Values.global.useSSL true }}
+    nginx.ingress.kubernetes.io/hsts: "true"
+    nginx.ingress.kubernetes.io/hsts-max-age: "31536000"
+    nginx.ingress.kubernetes.io/hsts-include-subdomains: "true"
+    {{- end }}
+{{- end }}
+
+{{- define "powerpi.ingress-tls" }}
   {{- if eq .Values.global.useSSL true }}
   tls:
   - hosts:
     - {{ .Values.global.externalHostName }}
     secretName: main-cert
   {{- end }}
+{{- end }}
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  {{- include "powerpi.labels" . }}
+  annotations:
+    {{- include "powerpi.ingress-annotations" . }}
+spec:
+  ingressClassName: public
+  {{- include "powerpi.ingress-tls" . }}
+
   rules:
   - host: {{ .Values.global.externalHostName }}
     http:
@@ -22,6 +39,7 @@ spec:
             name: api
             port:
               number: 80
+
       {{- if eq .Values.global.voiceAssistant true }}
       - path: /webhook_alexa
         pathType: Prefix
@@ -31,6 +49,7 @@ spec:
             port:
               number: 80
       {{- end }}
+
       - path: /
         pathType: Prefix
         backend:
@@ -47,20 +66,20 @@ metadata:
   name: ingress-ha
   {{- include "powerpi.labels" . }}
   annotations:
-    {{- if eq .Values.global.useCluster true }}
+    {{- include "powerpi.ingress-annotations" . }}
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-name: "route"
     nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
+    nginx.ingress.kubernetes.io/session-cookie-samesite: "Strict"
+    nginx.ingress.kubernetes.io/session-cookie-httponly: "true"
+    {{- if eq .Values.global.useSSL true }}
+    nginx.ingress.kubernetes.io/session-cookie-secure: "true"
     {{- end }}
 spec:
   ingressClassName: public
-  {{- if eq .Values.global.useSSL true }}
-  tls:
-  - hosts:
-    - {{ .Values.global.externalHostName }}
-    secretName: main-cert
-  {{- end }}
+  {{- include "powerpi.ingress-tls" . }}
+
   rules:
   - host: {{ .Values.global.externalHostName }}
     http:
@@ -72,6 +91,7 @@ spec:
             name: api
             port:
               number: 80
+
       - path: /api/socket.io
         pathType: Prefix
         backend:

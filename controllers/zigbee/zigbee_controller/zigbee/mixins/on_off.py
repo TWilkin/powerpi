@@ -20,7 +20,7 @@ class ZigbeeOnOffMixin:
             values, _ = await cluster.read_attributes(['on_off'])
 
             new_state = DeviceStatus.ON if values['on_off'] else DeviceStatus.OFF
-        except DeliveryError:
+        except (DeliveryError, TimeoutError):
             # we couldn't contact it so set to unknown
             new_state = DeviceStatus.UNKNOWN
 

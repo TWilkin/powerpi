@@ -56,6 +56,8 @@ describe("UnitConverter", () => {
 
         test("hcf -> kWh", () => check("gas", { value: 50, unit: "hcf" }, "kWh", 1_528.335));
 
+        test("kWh -> m3", () => check("gas", { value: 1_079.45, unit: "kWh" }, "m3", 100));
+
         test("getConverters", () => {
             const result = UnitConverter.getConverters("gas");
 

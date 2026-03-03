@@ -19,6 +19,10 @@ This controller service currently supports the following ZigBee devices/sensors:
     - [Sonoff ZigBee Wireless Switch](https://sonoff.tech/product/gateway-and-sensors/snzb-01p/) - ZigBee single button switch supporting short, long and double press.
 - [Aqara Door and Window Sensor](https://www.aqara.com/en/door_and_window_sensor.html) - Magnetic door and window sensor supporting open and close events as well as battery life.
 
+As well as the following ZigBee coordinator dongles.
+
+- [Sonoff Dongle Max](https://sonoff.tech/en-uk/products/sonoff-dongle-max-zigbee-thread-poe-dongle-dongle-m) - A network attached ZigBee coordinator.
+
 ## Building
 
 The Docker container can be built utilising _buildx_ as described in the [project documentation](../../README.md#Building).
@@ -30,7 +34,10 @@ The Docker container can be built utilising _buildx_ as described in the [projec
 This service expects the following environment variables to be set before it will start successfully. When using kubernetes these are already configured in the helm chart, however when running locally for testing we need to define these:
 
 - **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
-- **ZIGBEE_DEVICE** - The path to the ZigBee device on the host (default _/dev/ttyACM0_).
+- **ZIGBEE_LIBRARY** - The ZigBee connection library to use, _znp_ for Texas Instrument based USB devices, and _bellows_ for network attached devices. (default _znp_)
+- **ZIGBEE_DEVICE** - The path to the ZigBee device on the host when using USB, or a socket URL when using a network attached device (like the Sonoff Dongle Max) (default _/dev/ttyACM0_).
+- **ZIGBEE_BAUDRATE** - The baud rate (connection speed) to use when communicating with a serial coordinator, use _115200_ for the Sonoff Dongle Max.
+- **ZIGBEE_FLOW_CONTROL** - The flow control system used when communicating with a serial coordinator, use _software_ for the Sonoff Dongle Max.
 - **DATABASE_PATH** - The path to the database which contains the ZigBee network configuration (default _/var/data/zigbee.db_).
 - **USE_CONFIG_FILE** - Use local config files instead of the files downloaded from GitHub by [_config-server_](../../services/config-server/README.md) (default _false_).
 - **DEVICES_FILE** - When _USE_CONFIG_FILE_ is true, load the _devices.json_ from this path.

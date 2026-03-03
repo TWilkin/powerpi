@@ -169,8 +169,23 @@ class TestZigbeeLight(
     async def test_initialise_sets_options(
         self,
         subject: ZigbeeLight,
-        cluster: Cluster
+        cluster: Cluster,
+        mocker: MockerFixture,
     ):
+
+        async def read_attributes(_):
+            return ({
+                'color_capabilities': 0b10001,
+                'color_temp_physical_min': 100,
+                'color_temp_physical_max': 200
+            }, None)
+
+        mocker.patch.object(
+            cluster,
+            'read_attributes',
+            read_attributes
+        )
+
         await subject.initialise()
 
         cluster.write_attributes.assert_has_calls([
@@ -230,11 +245,14 @@ class TestZigbeeLight(
 
         result = await subject.on_additional_state_change(additional_state)
 
+        # Always expect LevelControlCluster options
+        expected_write_calls = [call({'options': 1})]
+
+        # Only expect ColorCluster options if device supports colour or temperature
+        if colour or temperature:
+            expected_write_calls.append(call({'options': 1}))
+
         expected_command_calls = []
-        expected_write_calls = [
-            call({'options': 1}),
-            call({'options': 1})
-        ]
 
         if temperature:
             assert result.get('temperature') \

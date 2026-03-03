@@ -42,6 +42,12 @@ ports:
 {{- define "powerpi.network-policy" -}}
 {{- if .Values.global.useNetworkPolicies -}}
 
+{{- $ssl := and 
+  (eq .Values.global.useSSL true) 
+  (eq .Values.global.useSensors true) 
+  (not (eq .Values.global.clusterIssuer nil))
+-}}
+
 {{- $database := and .Params.Database .Values.global.persistence -}}
 
 {{- $ingress := .Params.Ingress | default list -}}
@@ -61,6 +67,13 @@ ports:
     "Label" "mosquitto"
     "Port" 1883
 ) -}}
+
+{{- if and .Values.global.network $ssl -}}
+{{- $egress = append $egress (dict
+    "Label" "mosquitto"
+    "Port" 8883
+) -}}
+{{- end -}}
 {{- end -}}
 
 {{- if $database -}}

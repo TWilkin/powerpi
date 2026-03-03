@@ -1,83 +1,14 @@
 #!/bin/bash
 
-get_version() {
-    local file=$1
-    local file_regex=$2
-    local version_regex=$3
-
-    local version_str=`grep $file_regex $file | head -n 1`
-    if [[ $version_str =~ $version_regex ]]
-    then
-        version="${BASH_REMATCH[1]}"
-    fi
-}
-
-get_node_version() {
-    local file=$1
-    local file_regex='\"version\":\s*\".*\"'
-    local version_regex="\"version\":\s*\"(.*)\""
-    
-    get_version $file $file_regex $version_regex
-}
-
-get_poetry_version() {
-    local file=$1
-    local file_regex='version\s*=\s*\".*\"'
-    local version_regex="version\s*=\s*\"(.*)\""
-    
-    get_version $file $file_regex $version_regex
-}
-
-get_autoconf_version() {
-    local file=$1
-    local file_regex='AC_INIT(\[.*\],\s*\[.*\])'
-    local version_regex="AC_INIT\(\[.*\],\s*\[(.*)]\)"
-
-    get_version $file $file_regex $version_regex
-}
-
-get_makefile_version() {
-    local file=$1
-    local file_regex='VERSION=\s*.*'
-    local version_regex="VERSION=\s*(.*)"
-
-    get_version $file $file_regex $version_regex
-}
+scriptPath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+source "$scriptPath/services_utils.sh"
 
 tag_service() {
     local directory="$1"
     local name=$2
 
-    version=
     local path="${GITHUB_WORKSPACE}/$directory"
-
-    # check package.json
-    local file="$path/package.json"
-    if [ -f "$file" ]
-    then
-        get_node_version $file
-    fi
-
-    # check pyproject.toml
-    file="$path/pyproject.toml"
-    if [ -f "$file" ]
-    then
-        get_poetry_version $file
-    fi
-
-    # check configure.ac
-    file="$path/configure.ac"
-    if [ -f "$file" ]
-    then
-        get_autoconf_version $file
-    fi
-
-    # check Makefile
-    file="$path/Makefile"
-    if [ -f "$file" ]
-    then
-        get_makefile_version $file
-    fi
+    local version=$(get_source_version "$path")
 
     if [ -z "$version" ]
     then
@@ -109,22 +40,15 @@ git fetch --prune origin +refs/tags/*:refs/tags/*
 
 echo "Looking for changed versions"
 
-tag_service "controllers/energenie" "energenie-controller"
-tag_service "controllers/harmony" "harmony-controller"
-tag_service "controllers/lifx" "lifx-controller"
-tag_service "controllers/network" "network-controller"
-tag_service "controllers/snapcast" "snapcast-controller"
-tag_service "controllers/virtual" "virtual-controller"
-tag_service "controllers/zigbee" "zigbee-controller"
+tag_from_yaml() {
+    local tag_name="$SERVICE_NAME"
+    if [ "$SERVICE_CHART" != "null" ] && [ "$SERVICE_CHART" != "~" ]
+    then
+        tag_name="$SERVICE_CHART"
+    fi
 
-tag_service "sensors" "powerpi-sensor"
+    tag_service "$SERVICE_DIR" "$tag_name"
+}
 
-tag_service "services/api" "api"
-tag_service "services/config-server" "config-server"
-tag_service "services/energy-monitor" "energy-monitor"
-tag_service "services/event" "event"
-tag_service "services/persistence" "persistence"
-tag_service "services/scheduler" "scheduler"
-tag_service "services/shutdown" "shutdown"
-tag_service "services/ui" "ui"
-tag_service "services/voice-assistant" "voice-assistant"
+foreach_service tag_from_yaml
+foreach_sensor tag_from_yaml

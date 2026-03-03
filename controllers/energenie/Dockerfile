@@ -1,9 +1,10 @@
 # create a common base image
-FROM python:3.11.11-slim-bookworm AS base-image
+FROM python:3.11.14-slim-bookworm AS base-image
+RUN pip install --upgrade pip==25.3
 
 # create a base image for building
 FROM base-image AS build-base-image
-RUN pip3 install --prefer-binary poetry==2.1.1
+RUN pip3 install --prefer-binary poetry==2.2.1
 RUN poetry config virtualenvs.in-project true
 
 FROM build-base-image AS build-base-image-gcc
@@ -46,9 +47,9 @@ ENV PATH="/usr/src/app/venv/bin:$PATH"
 ENV TZ="UTC"
 
 RUN addgroup --gid 993 gpio \
-    && adduser --disabled-password powerpi \
+    && adduser --disabled-password --uid 1000 powerpi \
     && usermod -a -G gpio powerpi
-USER powerpi
+USER 1000
 
 WORKDIR /usr/src/app
 COPY --from=build-image --chown=powerpi /opt/powerpi/controllers/energenie/.venv ./venv

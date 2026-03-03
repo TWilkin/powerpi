@@ -1,0 +1,75 @@
+name: Auto Version
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+    branches:
+      - main
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Skip if last commit is from bot
+        id: check_bot
+        run: |
+          author=$(git log -1 --format='%an')
+          if [ "$author" = "PowerPi-bot" ]
+          then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configure git
+        run: |
+          git config user.name PowerPi-bot
+          git config user.email PowerPi-Bot@github.com
+
+      - name: Check for yarn.lock changes
+        if: steps.check_bot.outputs.skip != 'true'
+        id: check_yarn
+        run: |
+          if git diff origin/main...HEAD --name-only | grep -q '^yarn.lock$'
+          then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Node.js
+        if: steps.check_yarn.outputs.changed == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install Node.js dependencies
+        if: steps.check_yarn.outputs.changed == 'true'
+        run: yarn install
+
+      - name: Run auto version
+        if: steps.check_bot.outputs.skip != 'true'
+        id: auto_version
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/auto_version.sh"
+
+      - name: Push version changes
+        if: steps.auto_version.outputs.services != ''
+        run: git push
+
+      - name: Add labels
+        if: steps.auto_version.outputs.services != ''
+        run: |
+          IFS=',' read -ra services <<< "${{ steps.auto_version.outputs.services }}"
+          for service in "${services[@]}"
+          do
+            gh pr edit ${{ github.event.pull_request.number }} --add-label "$service"
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

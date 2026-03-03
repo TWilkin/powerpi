@@ -24,7 +24,8 @@ class TestDeviceScheduler:
             'timezone': 'Europe/London',
             'schedules': [
                 {
-                    'device': 'SomeDevice'
+                    'device': 'SomeDevice',
+                    'something': 'else'
                 }
             ]
         }
@@ -36,7 +37,7 @@ class TestDeviceScheduler:
 
         device_schedule_factory.build.assert_called_once_with(
             device='SomeDevice',
-            device_schedule={'device': 'SomeDevice'}
+            device_schedule={'something': 'else'}
         )
 
     def test_start_multiple_devices(
@@ -57,7 +58,8 @@ class TestDeviceScheduler:
             'timezone': 'Europe/London',
             'schedules': [
                 {
-                    'devices': ['SomeDevice', 'OtherDevice']
+                    'devices': ['SomeDevice', 'OtherDevice'],
+                    'something': 'else'
                 }
             ]
         }
@@ -71,12 +73,12 @@ class TestDeviceScheduler:
 
         assert device_schedule_factory.build.call_args_list[0] == mocker.call(
             device='SomeDevice',
-            device_schedule={'devices': ['SomeDevice', 'OtherDevice']}
+            device_schedule={'something': 'else'}
         )
 
         assert device_schedule_factory.build.call_args_list[1] == mocker.call(
             device='OtherDevice',
-            device_schedule={'devices': ['SomeDevice', 'OtherDevice']}
+            device_schedule={'something': 'else'}
         )
 
     def test_start_no_config(

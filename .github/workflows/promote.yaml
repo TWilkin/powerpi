@@ -1,0 +1,62 @@
+name: Promote Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version part to bump (major/minor/patch)"
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure git
+        run: |
+          git config user.name PowerPi-bot
+          git config user.email PowerPi-Bot@github.com
+
+      - name: Create release branch
+        run: git switch -c release/pending
+
+      - name: Promote RC versions
+        shell: bash
+        run: "${GITHUB_WORKSPACE}/.github/scripts/promote_release.sh"
+
+      - name: Bump release version
+        shell: bash
+        run: >
+          "${GITHUB_WORKSPACE}/.github/scripts/version.sh"
+          --release
+          --version "${{ inputs.version }}"
+          --chart-version "${{ inputs.version }}"
+          --commit
+
+      - name: Get release version
+        id: version
+        run: |
+          version=$(yq -r '.appVersion' kubernetes/Chart.yaml)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Rename release branch
+        run: git branch -m "release/v${{ steps.version.outputs.version }}"
+
+      - name: Push release branch
+        run: git push -u origin "release/v${{ steps.version.outputs.version }}"
+
+      - name: Create pull request
+        run: |
+          gh pr create \
+            --title "Release v${{ steps.version.outputs.version }}" \
+            --body "Promote RC versions and release PowerPi v${{ steps.version.outputs.version }}."
+        env:
+          GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

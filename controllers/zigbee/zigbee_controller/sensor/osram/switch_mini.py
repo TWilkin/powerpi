@@ -12,9 +12,8 @@ from zigpy.zcl.clusters.general import \
     PowerConfiguration as PowerConfigurationCluster
 from zigpy.zcl.clusters.lighting import Color as ColorCluster
 
-from zigbee_controller.device import ZigbeeController
 from zigbee_controller.zigbee import (ClusterAttributeListener,
-                                      ClusterCommandListener, ZigbeeMixin)
+                                      ClusterCommandListener, ZigbeeController, ZigbeeMixin)
 
 
 @unique

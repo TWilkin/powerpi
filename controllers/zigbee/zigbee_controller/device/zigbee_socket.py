@@ -5,8 +5,7 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 
-from zigbee_controller.device.zigbee_controller import ZigbeeController
-from zigbee_controller.zigbee import ZigbeeMixin
+from zigbee_controller.zigbee import ZigbeeController, ZigbeeMixin
 from zigbee_controller.zigbee.mixins import ZigbeeOnOffMixin
 from zigbee_controller.zigbee.constants import OnOff
 
