@@ -1,3 +1,4 @@
+from asyncio import gather
 from enum import StrEnum, unique
 from typing import List, Optional
 
@@ -138,9 +139,17 @@ class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin):
     async def _bind_clusters(self):
         device = self._zigbee_device
 
-        await self._bind_cluster(device[1].out_clusters[OnOffCluster.cluster_id])
-        await self._bind_cluster(device[1].out_clusters[LevelControlCluster.cluster_id])
-        await self._bind_cluster(device[1].out_clusters[ScenesCluster.cluster_id])
+        await gather(
+            self._bind_cluster(
+                device[1].out_clusters[OnOffCluster.cluster_id]
+            ),
+            self._bind_cluster(
+                device[1].out_clusters[LevelControlCluster.cluster_id]
+            ),
+            self._bind_cluster(
+                device[1].out_clusters[ScenesCluster.cluster_id]
+            )
+        )
 
     def _configure_device(self, device: ZigPyDevice):
         device.node_desc = NodeDescriptor(
