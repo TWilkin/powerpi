@@ -16,7 +16,7 @@ class ZigbeeLibrary(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def register_groups(self, app: ControllerApplication, group_id: int):
+    async def register_group(self, controller: ControllerApplication, group_id: int):
         '''
         Use the library API directly to register the specified group.
         '''

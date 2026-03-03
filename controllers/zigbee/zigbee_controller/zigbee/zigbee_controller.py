@@ -62,6 +62,8 @@ class ZigbeeController(LogMixin):
             self.__controller.add_listener(
                 ConnectionLostListener(self.__connection_lost))
 
+            await self.__register_default_groups()
+
             self.log_info('ZigBee controller started')
         except Exception as ex:
             self.log_error('Could not initialise ZigBee controller')
@@ -112,6 +114,13 @@ class ZigbeeController(LogMixin):
     def __connection_lost(self, _: Exception):
         self.log_error('ZigBee connection lost, shutting down')
         os._exit(-1)
+
+    async def __register_default_groups(self):
+        # we register with groups for sleepy devices
+        self.log_info('Joining groups')
+
+        for group_id in [0xFF09]:
+            await self.__library.register_group(self.__controller, group_id)
 
 
 class ZigbeeControllerNotRunningError(RuntimeError):

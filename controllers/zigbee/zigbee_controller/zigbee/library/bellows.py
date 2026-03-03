@@ -11,5 +11,5 @@ class BellowsLibrary(ZigbeeLibrary):
     def get_application(self) -> type[ControllerApplication]:
         return ControllerApplication
 
-    def register_groups(self, app: ControllerApplication, group_id: int):
-        raise NotImplementedError
+    async def register_group(self, controller: ControllerApplication, group_id: int):
+        pass
