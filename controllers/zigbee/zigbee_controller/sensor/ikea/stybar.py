@@ -25,6 +25,26 @@ from zigbee_controller.zigbee import ZigbeeController
 class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin, ZigbeeRemoteMixin):
     '''
     Adds support for the IKEA Styrbar.
+
+    To pair this device with the network you need to use press the pair button under
+    the battery cover 4 times in quick succession.
+
+    Generates the following events on button clicks where NAME is the
+    configured name of the device.
+
+    Single press:
+    /event/NAME/press:{"button": "up", "type": "single"}
+    /event/NAME/press:{"button": "right", "type": "single"}
+    /event/NAME/press:{"button": "down", "type": "single"}
+    /event/NAME/press:{"button": "left", "type": "single"}
+
+    Long press generates an event pair, one when the button is pressed and
+    the other when it's released:
+    /event/NAME/press:{"button": "up", "type": "hold"}
+    /event/NAME/press:{"button": "up", "type": "release"}
+
+    /event/NAME/press:{"button": "down", "type": "hold"}
+    /event/NAME/press:{"button": "down", "type": "release"}
     '''
 
     BUTTON_MAP = {

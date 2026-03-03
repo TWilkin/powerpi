@@ -48,7 +48,7 @@ ButtonMapping = dict[ButtonMapKey, ButtonAction]
 
 class ZigbeeRemoteMixin(InitialisableMixin):
     '''
-    Mixin to use used to setup a Remote/Switch, i.e. a device with a set of buttons that emit
+    Mixin used to setup a ZigBee remote/switch, i.e. a device with a set of buttons that emit
     events.
     Expected to be used alongside ZigbeeMixin
     '''
