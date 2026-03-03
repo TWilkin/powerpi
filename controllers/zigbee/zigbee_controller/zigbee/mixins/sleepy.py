@@ -1,5 +1,6 @@
 from abc import abstractmethod
-from asyncio import create_task
+from asyncio import create_task, gather
+from typing import NamedTuple
 
 from powerpi_common.device.mixin import InitialisableMixin
 from zigpy.device import Device as ZigPyDevice
@@ -10,6 +11,11 @@ from zigpy.zcl import Cluster
 from zigbee_controller.zigbee import DeviceJoinListener, HandleMessageListener
 
 
+class ZigbeeSleepyBindCluster(NamedTuple):
+    endpoint: int
+    cluster_id: int
+
+
 class ZigbeeSleepyMixin(InitialisableMixin):
     '''
     Mixin to cancel initialisation and manually set endpoints and clusters for sleepy devices
@@ -17,8 +23,17 @@ class ZigbeeSleepyMixin(InitialisableMixin):
     Expected to be used alongside ZigbeeMixin
     '''
 
+    BIND_CLUSTERS: list[ZigbeeSleepyBindCluster]
+
     def __init__(self):
         self.__bound = False
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if not hasattr(cls, 'BIND_CLUSTERS'):
+            raise TypeError(
+                f'{cls.__name__} must define BIND_CLUSTERS'
+            )
 
     async def initialise(self):
         self._add_controller_listener(
@@ -38,16 +53,15 @@ class ZigbeeSleepyMixin(InitialisableMixin):
         '''
         raise NotImplementedError
 
-    @abstractmethod
-    async def _bind_clusters(self):
-        '''
-        Implement this method to manually bind clusters
-        for sleepy devices that cannot complete the interview.
-        Use self._bind_cluster to handle bind failure.
-        '''
-        raise NotImplementedError
+    async def __bind_clusters(self):
+        device = self._zigbee_device
 
-    async def _bind_cluster(self, cluster: Cluster):
+        await gather(*(
+            self.__bind_cluster(device[endpoint].out_clusters[cluster_id])
+            for endpoint, cluster_id in self.BIND_CLUSTERS
+        ))
+
+    async def __bind_cluster(self, cluster: Cluster):
         try:
             self.log_info(
                 f'Attempting to bind cluster {cluster.cluster_id:#04x}'
@@ -82,4 +96,4 @@ class ZigbeeSleepyMixin(InitialisableMixin):
         if not self.__bound and device.ieee == self.ieee:
             self.__bound = True
 
-            _ = create_task(self._bind_clusters())
+            _ = create_task(self.__bind_clusters())

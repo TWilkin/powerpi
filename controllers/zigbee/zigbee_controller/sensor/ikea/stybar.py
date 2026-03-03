@@ -1,4 +1,3 @@
-from asyncio import gather
 from enum import StrEnum, unique
 from typing import List, Optional
 
@@ -23,7 +22,7 @@ from zigpy.zdo.types import NodeDescriptor, LogicalType, FrequencyBand, MACCapab
 
 from zigbee_controller.zigbee.cluster_listener import ClusterCommandListener
 from zigbee_controller.zigbee.device import ZigbeeMixin
-from zigbee_controller.zigbee.mixins import ZigbeeSleepyMixin
+from zigbee_controller.zigbee.mixins import ZigbeeSleepyMixin, ZigbeeSleepyBindCluster
 from zigbee_controller.zigbee import ZigbeeController
 
 
@@ -46,6 +45,12 @@ class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin):
     '''
     Adds support for the IKEA Styrbar.
     '''
+
+    BIND_CLUSTERS = [
+        ZigbeeSleepyBindCluster(1, OnOffCluster.cluster_id),
+        ZigbeeSleepyBindCluster(1, LevelControlCluster.cluster_id),
+        ZigbeeSleepyBindCluster(1, ScenesCluster.cluster_id)
+    ]
 
     def __init__(
         self,
@@ -135,21 +140,6 @@ class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin):
         }
 
         self._broadcast('press', message)
-
-    async def _bind_clusters(self):
-        device = self._zigbee_device
-
-        await gather(
-            self._bind_cluster(
-                device[1].out_clusters[OnOffCluster.cluster_id]
-            ),
-            self._bind_cluster(
-                device[1].out_clusters[LevelControlCluster.cluster_id]
-            ),
-            self._bind_cluster(
-                device[1].out_clusters[ScenesCluster.cluster_id]
-            )
-        )
 
     def _configure_device(self, device: ZigPyDevice):
         device.node_desc = NodeDescriptor(
