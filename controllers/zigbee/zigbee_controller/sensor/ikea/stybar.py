@@ -1,3 +1,6 @@
+from enum import StrEnum, unique
+from typing import List, Optional
+
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
@@ -17,9 +20,25 @@ from zigpy.zcl.clusters.general import (
 from zigpy.zcl.clusters.lightlink import LightLink as LightLinkCluster
 from zigpy.zdo.types import NodeDescriptor, LogicalType, FrequencyBand, MACCapabilityFlags
 
+from zigbee_controller.zigbee.cluster_listener import ClusterCommandListener
 from zigbee_controller.zigbee.device import ZigbeeMixin
 from zigbee_controller.zigbee.mixins import ZigbeeSleepyMixin
 from zigbee_controller.zigbee import ZigbeeController
+
+
+@unique
+class Button(StrEnum):
+    UP = 'up'
+    LEFT = 'left'
+    RIGHT = 'right'
+    DOWN = 'down'
+
+
+@unique
+class PressType(StrEnum):
+    SINGLE = 'single'
+    HOLD = 'hold'
+    RELEASE = 'release'
 
 
 class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin):
@@ -42,6 +61,79 @@ class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin):
 
     async def initialise(self):
         await ZigbeeSleepyMixin.initialise(self)
+
+        device = self._zigbee_device
+
+        device[1].out_clusters[OnOffCluster.cluster_id].add_listener(
+            ClusterCommandListener(lambda _, command_id, __: self.on_off_handler(
+                command_id
+            ))
+        )
+
+        device[1].out_clusters[ScenesCluster.cluster_id].add_listener(
+            ClusterCommandListener(lambda _, command_id, args: self.scene_handler(
+                command_id, args
+            ))
+        )
+
+        device[1].out_clusters[LevelControlCluster.cluster_id].add_listener(
+            ClusterCommandListener(lambda _, command_id, __: self.level_handler(
+                command_id
+            ))
+        )
+
+    def on_off_handler(self, command_id: int):
+        button: Optional[Button] = None
+
+        if command_id == 0x00:
+            button = Button.DOWN
+        elif command_id == 0x01:
+            button = Button.UP
+
+        if button:
+            self.button_press_handler(button, PressType.SINGLE)
+
+    def scene_handler(self, command_id: int, args: List[int]):
+        data = args[0]
+        button: Optional[Button] = None
+
+        if data[0] == 0x00:
+            button = Button.RIGHT
+        elif data[0] == 0x01:
+            button = Button.LEFT
+
+        if command_id == 0x07 and button:
+            self.button_press_handler(button, PressType.SINGLE)
+
+    def level_handler(self, command_id: int):
+        button: Optional[Button] = None
+        press_type: Optional[PressType] = None
+
+        if command_id == 0x01:
+            button = Button.DOWN
+            press_type = PressType.HOLD
+        elif command_id == 0x03:
+            button = Button.DOWN
+            press_type = PressType.RELEASE
+        elif command_id == 0x05:
+            button = Button.UP
+            press_type = PressType.HOLD
+        elif command_id == 0x07:
+            button = Button.UP
+            press_type = PressType.RELEASE
+
+        if button:
+            self.button_press_handler(button, press_type)
+
+    def button_press_handler(self, button: Button, press_type: PressType):
+        self.log_info(f'Received {press_type} press of {button}')
+
+        message = {
+            'button': button,
+            'type': press_type
+        }
+
+        self._broadcast('press', message)
 
     async def _bind_clusters(self):
         device = self._zigbee_device
@@ -94,5 +186,5 @@ class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin):
         ]:
             endpoint.add_output_cluster(cluster_id)
 
-        device.model = "Remote Control N2"
-        device.manufacturer = "IKEA of Sweden"
+        device.model = 'Remote Control N2'
+        device.manufacturer = 'IKEA of Sweden'
