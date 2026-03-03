@@ -41,7 +41,7 @@ class ButtonMapKey(NamedTuple):
     command_id: int
 
 
-ButtonAction = Callable[[int, tuple], tuple[Button, PressType]]
+ButtonAction = Callable[[tuple], tuple[Button, PressType]]
 
 ButtonMapping = dict[ButtonMapKey, ButtonAction]
 
@@ -72,19 +72,26 @@ class ZigbeeRemoteMixin(InitialisableMixin):
     async def initialise(self):
         await super().initialise()
 
-        def make_handler(action: ButtonAction):
+        def make_handler(endpoint: int, cluster_id: int):
             def handler(_, command_id: int, args: tuple):
-                button, press_type = action(command_id, args)
+                key = ButtonMapKey(endpoint, cluster_id, command_id)
+                action = self.BUTTON_MAP.get(key)
 
-                self.__button_press_handler(button, press_type)
+                if action:
+                    button, press_type = action(args)
+
+                    self.__button_press_handler(button, press_type)
 
             return handler
 
         device: ZigPyDevice = self._zigbee_device
 
-        for key, action in self.BUTTON_MAP.items():
+        for key in self.BIND_CLUSTERS:
             device[key.endpoint].out_clusters[key.cluster_id].add_listener(
-                ClusterCommandListener(make_handler(action))
+                ClusterCommandListener(make_handler(
+                    key.endpoint,
+                    key.cluster_id
+                ))
             )
 
     def __button_press_handler(self, button: Button, press_type: PressType):
