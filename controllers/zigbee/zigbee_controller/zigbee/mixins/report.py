@@ -6,7 +6,8 @@ from typing import List
 from zigpy.device import Device as ZigPyDevice
 from zigpy.types import EUI64
 from zigpy.zcl.clusters import Cluster
-from zigpy.zcl.foundation import Attribute, GeneralCommand, Status, ZCLHeader
+from zigpy.zcl.foundation import Attribute, GeneralCommand, Status, ZCLAttributeDef, ZCLHeader
+from zigpy.zcl.helpers import ReportingConfig
 
 from zigbee_controller.zigbee import DeviceJoinListener, ClusterGeneralCommandListener
 
@@ -41,15 +42,21 @@ class ZigbeeReportMixin(ABC):
             try:
                 await cluster.bind()
 
-                reports = {}
+                reports: dict[ZCLAttributeDef, ReportingConfig] = {}
                 for attribute in attributes:
-                    reports[attribute] = (frequency, frequency, 0)
+                    attribute_def = getattr(cluster.AttributeDefs, attribute)
+
+                    reports[attribute_def] = ReportingConfig(
+                        min_interval=frequency,
+                        max_interval=frequency,
+                        reportable_change=0
+                    )
 
                 result = await cluster.configure_reporting_multiple(reports)
 
                 success = sum(
-                    1 if record is not None and record.status == Status.SUCCESS else 0
-                    for record in result.status_records
+                    1 for record in result
+                    if record.status == Status.SUCCESS
                 )
                 if success != len(reports):
                     self.log_warning(
