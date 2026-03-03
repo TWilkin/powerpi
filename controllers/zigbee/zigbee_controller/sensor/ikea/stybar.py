@@ -22,7 +22,7 @@ from zigpy.zdo.types import NodeDescriptor, LogicalType, FrequencyBand, MACCapab
 
 from zigbee_controller.zigbee.cluster_listener import ClusterCommandListener
 from zigbee_controller.zigbee.device import ZigbeeMixin
-from zigbee_controller.zigbee.mixins import ZigbeeSleepyMixin, ZigbeeSleepyBindCluster
+from zigbee_controller.zigbee.mixins import ZigbeeSleepyMixin, BindCluster
 from zigbee_controller.zigbee import ZigbeeController
 
 
@@ -47,9 +47,9 @@ class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin):
     '''
 
     BIND_CLUSTERS = [
-        ZigbeeSleepyBindCluster(1, OnOffCluster.cluster_id),
-        ZigbeeSleepyBindCluster(1, LevelControlCluster.cluster_id),
-        ZigbeeSleepyBindCluster(1, ScenesCluster.cluster_id)
+        BindCluster(1, OnOffCluster.cluster_id),
+        BindCluster(1, LevelControlCluster.cluster_id),
+        BindCluster(1, ScenesCluster.cluster_id)
     ]
 
     def __init__(

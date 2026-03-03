@@ -11,7 +11,7 @@ from zigpy.zcl import Cluster
 from zigbee_controller.zigbee import DeviceJoinListener, HandleMessageListener
 
 
-class ZigbeeSleepyBindCluster(NamedTuple):
+class BindCluster(NamedTuple):
     endpoint: int
     cluster_id: int
 
@@ -23,19 +23,22 @@ class ZigbeeSleepyMixin(InitialisableMixin):
     Expected to be used alongside ZigbeeMixin
     '''
 
-    BIND_CLUSTERS: list[ZigbeeSleepyBindCluster]
+    BIND_CLUSTERS: list[BindCluster]
 
     def __init__(self):
         self.__bound = False
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
+
         if not hasattr(cls, 'BIND_CLUSTERS'):
             raise TypeError(
                 f'{cls.__name__} must define BIND_CLUSTERS'
             )
 
     async def initialise(self):
+        await super().initialise()
+
         self._add_controller_listener(
             DeviceJoinListener(self.__device_joined)
         )
