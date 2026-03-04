@@ -61,3 +61,17 @@ def zigbee_in_cluster(mocker: MockerFixture, zigbee_endpoint: Endpoint) -> Clust
     )
 
     return cluster
+
+
+@pytest.fixture
+def zigbee_out_cluster(mocker: MockerFixture, zigbee_endpoint: Endpoint) -> Cluster:
+    cluster = mocker.MagicMock()
+
+    clusters = mocker.MagicMock()
+    clusters.__getitem__.side_effect = lambda _: cluster
+
+    type(zigbee_endpoint).out_clusters = PropertyMock(
+        return_value=clusters
+    )
+
+    return cluster

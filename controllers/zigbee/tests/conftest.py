@@ -6,4 +6,4 @@ from powerpi_common_test.fixture import (powerpi_config, powerpi_logger, powerpi
                                          powerpi_mqtt_producer)
 
 from .fixtures import (zigbee_config, zigbee_controller, zigbee_device, zigbee_endpoint,
-                       zigbee_in_cluster)
+                       zigbee_in_cluster, zigbee_out_cluster)
