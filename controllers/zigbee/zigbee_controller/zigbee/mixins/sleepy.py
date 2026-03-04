@@ -79,21 +79,22 @@ class ZigbeeSleepyMixin(InitialisableMixin):
             )
 
     def __device_joined(self, device: ZigPyDevice):
-        # we immediately cancel initialisation as it's not going to work
-        device.cancel_initialization()
+        if device.ieee == self.ieee:
+            # we immediately cancel initialisation as it's not going to work
+            device.cancel_initialization()
 
-        # then we can setup the endpoints and clusters manually
-        self._configure_device(device)
+            # then we can setup the endpoints and clusters manually
+            self._configure_device(device)
 
-        # we need to set that everything is initialised
-        for endpoint_id, endpoint in device.endpoints.items():
-            if endpoint_id != 0:
-                endpoint.status = Status.ZDO_INIT
+            # we need to set that everything is initialised
+            for endpoint_id, endpoint in device.endpoints.items():
+                if endpoint_id != 0:
+                    endpoint.status = Status.ZDO_INIT
 
-        # once we're done, indicate it's initialised
-        self._zigbee_controller.controller_application.device_initialized(
-            device
-        )
+            # once we're done, indicate it's initialised
+            self._zigbee_controller.controller_application.device_initialized(
+                device
+            )
 
     def __handle_message(self, device: ZigPyDevice):
         if not self.__bound and device.ieee == self.ieee:
