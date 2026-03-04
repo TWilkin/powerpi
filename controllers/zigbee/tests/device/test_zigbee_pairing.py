@@ -29,6 +29,8 @@ class TestZigbeePairingDevice(DeviceTestBase):
     ):
         subject.on_device_join(device)
 
+        device.cancel_initialization.assert_called_once()
+
         topic = 'device/ZigBeePairing/join'
         message = {
             'nwk': '0x0abc',
