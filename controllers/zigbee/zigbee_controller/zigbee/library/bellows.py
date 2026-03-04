@@ -12,4 +12,4 @@ class BellowsLibrary(ZigbeeLibrary):
         return ControllerApplication
 
     async def register_group(self, controller: ControllerApplication, group_id: int):
-        pass
+        await controller._multicast.subscribe(group_id)

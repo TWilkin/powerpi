@@ -119,7 +119,7 @@ class ZigbeeController(LogMixin):
         # we register with groups for sleepy devices
         self.log_info('Joining groups')
 
-        for group_id in [0xFF09]:
+        for group_id in range(0, 19):
             await self.__library.register_group(self.__controller, group_id)
 
 
