@@ -34,17 +34,22 @@ def zigbee_controller(mocker: MockerFixture, zigbee_device: DeviceType) -> Zigbe
 
 
 @pytest.fixture
-def zigbee_device(mocker: MockerFixture) -> DeviceType:
+def zigbee_device(mocker: MockerFixture, zigbee_endpoint: Endpoint) -> DeviceType:
     device = mocker.MagicMock()
+
+    endpoint_0 = mocker.MagicMock()
+    type(device).endpoints = PropertyMock(
+        return_value={0: endpoint_0, 1: zigbee_endpoint}
+    )
+
+    device.__getitem__.side_effect = lambda _: zigbee_endpoint
 
     return device
 
 
 @pytest.fixture
-def zigbee_endpoint(mocker: MockerFixture, zigbee_device: DeviceType) -> Endpoint:
+def zigbee_endpoint(mocker: MockerFixture) -> Endpoint:
     endpoint = mocker.MagicMock()
-
-    zigbee_device.__getitem__.side_effect = lambda _: endpoint
 
     return endpoint
 
