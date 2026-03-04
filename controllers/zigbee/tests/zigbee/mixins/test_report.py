@@ -177,8 +177,6 @@ class TestZigbeeReportMixin:
         return zigbee_in_cluster
 
     def create_report_response(self, statuses: List[Status], mocker: MockerFixture):
-        response = mocker.MagicMock()
-
         records = []
         for status in statuses:
             record = mocker.MagicMock()
@@ -186,9 +184,7 @@ class TestZigbeeReportMixin:
 
             type(record).status = PropertyMock(return_value=status)
 
-        type(response).status_records = PropertyMock(return_value=records)
-
-        return response
+        return records
 
     def create_zcl_header(self, command_id: int, mocker: MockerFixture):
         header = mocker.MagicMock()

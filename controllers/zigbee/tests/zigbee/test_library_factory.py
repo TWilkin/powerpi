@@ -3,14 +3,14 @@ from pytest_mock import MockerFixture
 
 from zigbee_controller.config import ZigbeeConfig
 from zigbee_controller.zigbee.library import ZigbeeLibraryFactory
+from zigbee_controller.zigbee.library.bellows import BellowsLibrary
+from zigbee_controller.zigbee.library.znp import ZNPLibrary
 
 
 class TestZigbeeLibraryFactory:
-    @pytest.mark.parametrize('library_name,expected_module,expected_class,expected_log', [
-        ('znp', 'zigpy_znp.zigbee.application',
-         'ControllerApplication', 'Using ZNP ZigBee library'),
-        ('bellows', 'bellows.zigbee.application',
-         'ControllerApplication', 'Using Bellows ZigBee library'),
+    @pytest.mark.parametrize('library_name,expected_type,expected_log', [
+        ('znp', ZNPLibrary, 'Using ZNP ZigBee library'),
+        ('bellows', BellowsLibrary, 'Using Bellows ZigBee library'),
     ])
     def test_get_library_valid(
         self,
@@ -18,52 +18,38 @@ class TestZigbeeLibraryFactory:
         zigbee_config: ZigbeeConfig,
         mocker: MockerFixture,
         library_name: str,
-        expected_module: str,
-        expected_class: str,
+        expected_type: type,
         expected_log: str
     ) -> None:
         # pylint: disable=too-many-arguments, too-many-positional-arguments
 
         zigbee_config.zigbee_library = library_name
 
-        mock_controller_app = mocker.MagicMock()
-        mocker.patch(f'{expected_module}.{expected_class}',
-                     mock_controller_app)
         log_info_spy = mocker.spy(subject, 'log_info')
 
         result = subject.get_library()
 
-        assert result == mock_controller_app
+        assert isinstance(result, expected_type)
         log_info_spy.assert_called_once_with(expected_log)
 
-    @pytest.mark.parametrize('library_name', [
-        'ZNP',
-        'BELLOWS',
-        'Znp',
-        'Bellows',
+    @pytest.mark.parametrize('library_name,expected_type', [
+        ('ZNP', ZNPLibrary),
+        ('BELLOWS', BellowsLibrary),
+        ('ZnP', ZNPLibrary),
+        ('bellows', BellowsLibrary),
     ])
     def test_get_library_case_insensitive(
         self,
         subject: ZigbeeLibraryFactory,
         zigbee_config: ZigbeeConfig,
-        mocker: MockerFixture,
-        library_name: str
+        library_name: str,
+        expected_type: type
     ) -> None:
         zigbee_config.zigbee_library = library_name
 
-        lower_name = library_name.lower()
-        if lower_name == 'znp':
-            mock_controller_app = mocker.MagicMock()
-            mocker.patch(
-                'zigpy_znp.zigbee.application.ControllerApplication', mock_controller_app)
-        elif lower_name == 'bellows':
-            mock_controller_app = mocker.MagicMock()
-            mocker.patch(
-                'bellows.zigbee.application.ControllerApplication', mock_controller_app)
-
         result = subject.get_library()
 
-        assert result == mock_controller_app
+        assert isinstance(result, expected_type)
 
     @pytest.mark.parametrize('invalid_library', [
         'invalid',
