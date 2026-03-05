@@ -1,5 +1,6 @@
 from enum import StrEnum, unique
-from typing import Callable, NamedTuple
+from time import monotonic
+from typing import Callable, NamedTuple, Optional
 
 from powerpi_common.device.mixin import InitialisableMixin
 from zigpy.device import Device as ZigPyDevice
@@ -56,6 +57,9 @@ class ZigbeeRemoteMixin(InitialisableMixin):
     BUTTON_MAP: ButtonMapping
     BIND_CLUSTERS: list[BindCluster]
 
+    def __init__(self):
+        self.__hold_timers: dict[Button, int] = {}
+
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
 
@@ -97,9 +101,24 @@ class ZigbeeRemoteMixin(InitialisableMixin):
     def __button_press_handler(self, button: Button, press_type: PressType):
         self.log_info(f'Received {press_type} press of {button}')
 
+        # capture the start time for a hold, or the release time
+        interval: Optional[int] = None
+        if press_type == PressType.HOLD:
+            self.__hold_timers[button] = monotonic()
+        elif press_type == PressType.RELEASE:
+            held = self.__hold_timers.pop(button, None)
+
+            if held is not None:
+                released = monotonic()
+                interval = int((released - held) * 1000)
+
         message = {
             'button': button,
             'type': press_type
         }
+
+        if interval is not None:
+            message['value'] = interval
+            message['unit'] = 'ms'
 
         self._broadcast('press', message)

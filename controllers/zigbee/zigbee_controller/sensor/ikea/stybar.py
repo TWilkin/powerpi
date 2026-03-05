@@ -39,12 +39,13 @@ class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin, ZigbeeRemoteMixi
     /event/NAME/press:{"button": "left", "type": "single"}
 
     Long press generates an event pair, one when the button is pressed and
-    the other when it's released:
+    the other when it's released with the latter including the duration of
+    the press:
     /event/NAME/press:{"button": "up", "type": "hold"}
-    /event/NAME/press:{"button": "up", "type": "release"}
+    /event/NAME/press:{"button": "up", "type": "release", "value": 500, "unit": "ms"}
 
     /event/NAME/press:{"button": "down", "type": "hold"}
-    /event/NAME/press:{"button": "down", "type": "release"}
+    /event/NAME/press:{"button": "down", "type": "release", "value": 500, "unit": "ms"}
     '''
 
     BUTTON_MAP = {
@@ -74,6 +75,7 @@ class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin, ZigbeeRemoteMixi
         Sensor.__init__(self, mqtt_client, **kwargs)
         ZigbeeMixin.__init__(self, controller, **kwargs)
         ZigbeeSleepyMixin.__init__(self)
+        ZigbeeRemoteMixin.__init__(self)
 
         self._logger = logger
 
