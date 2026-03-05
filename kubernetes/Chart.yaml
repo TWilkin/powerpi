@@ -41,7 +41,7 @@ dependencies:
     version: 0.1.20
     condition: global.harmony
   - name: lifx-controller
-    version: 0.1.14
+    version: 0.1.15
     condition: global.lifx
   - name: network-controller
     version: 0.1.13
