@@ -12,6 +12,10 @@ class Lexeme(StrEnum):
     LESS_THAN_EQUAL = 'less_than_equal'
     NOT = 'not'
     OR = 'or'
+    ADD = 'add'
+    SUBTRACT = 'subtract'
+    MULTIPLY = 'multiply'
+    DIVIDE = 'divide'
     VAR = 'var'
     WHEN = 'when'
 
@@ -24,3 +28,7 @@ class Lexeme(StrEnum):
     S_LESS_THAN_EQUAL = '<='
     S_NOT = '!'
     S_OR = '|'
+    S_ADD = '+'
+    S_SUBSTRACT = '-'
+    S_MULTIPLY = '*'
+    S_DIVIDE = '/'
