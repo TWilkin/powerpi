@@ -162,8 +162,11 @@ class TestZigbeeController:
         zigpy_application_class: MagicMock,
         mocker: MockerFixture
     ) -> ZigbeeLibraryFactory:
+        library = mocker.MagicMock()
+        library.get_application.return_value = zigpy_application_class
+
         inner_factory = mocker.MagicMock()
-        inner_factory.get_library.return_value = zigpy_application_class
+        inner_factory.get_library.return_value = library
 
         factory = mocker.MagicMock(spec=ZigbeeLibraryFactory)
         factory.return_value = inner_factory
