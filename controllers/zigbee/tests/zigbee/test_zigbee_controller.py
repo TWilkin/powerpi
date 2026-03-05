@@ -4,7 +4,7 @@ import pytest
 from pytest_mock import MockerFixture
 
 from zigbee_controller.config import ZigbeeConfig
-from zigbee_controller.zigbee.library_factory import ZigbeeLibraryFactory
+from zigbee_controller.zigbee.library import ZigbeeLibraryFactory
 from zigbee_controller.zigbee.zigbee_controller import (
     ZigbeeController,
     ZigbeeControllerNotRunningError
@@ -162,8 +162,12 @@ class TestZigbeeController:
         zigpy_application_class: MagicMock,
         mocker: MockerFixture
     ) -> ZigbeeLibraryFactory:
+        library = mocker.MagicMock()
+        library.get_application.return_value = zigpy_application_class
+        library.register_group = AsyncMock()
+
         inner_factory = mocker.MagicMock()
-        inner_factory.get_library.return_value = zigpy_application_class
+        inner_factory.get_library.return_value = library
 
         factory = mocker.MagicMock(spec=ZigbeeLibraryFactory)
         factory.return_value = inner_factory
@@ -174,6 +178,7 @@ class TestZigbeeController:
         self,
         zigbee_config: ZigbeeConfig,
         powerpi_logger,
-        library_factory_provider: ZigbeeLibraryFactory
+        library_factory_provider: ZigbeeLibraryFactory,
+        powerpi_device_manager
     ) -> ZigbeeController:
-        return ZigbeeController(zigbee_config, powerpi_logger, library_factory_provider)
+        return ZigbeeController(zigbee_config, powerpi_logger, library_factory_provider, powerpi_device_manager)

@@ -3,7 +3,7 @@ from unittest.mock import PropertyMock
 import pytest
 from pytest_mock import MockerFixture
 from zigpy.endpoint import Endpoint
-from zigpy.typing import DeviceType
+from zigpy.profiles.zha import DeviceType
 from zigpy.zcl import Cluster
 
 from zigbee_controller.config import ZigbeeConfig
@@ -34,17 +34,22 @@ def zigbee_controller(mocker: MockerFixture, zigbee_device: DeviceType) -> Zigbe
 
 
 @pytest.fixture
-def zigbee_device(mocker: MockerFixture) -> DeviceType:
+def zigbee_device(mocker: MockerFixture, zigbee_endpoint: Endpoint) -> DeviceType:
     device = mocker.MagicMock()
+
+    endpoint_0 = mocker.MagicMock()
+    type(device).endpoints = PropertyMock(
+        return_value={0: endpoint_0, 1: zigbee_endpoint}
+    )
+
+    device.__getitem__.side_effect = lambda _: zigbee_endpoint
 
     return device
 
 
 @pytest.fixture
-def zigbee_endpoint(mocker: MockerFixture, zigbee_device: DeviceType) -> Endpoint:
+def zigbee_endpoint(mocker: MockerFixture) -> Endpoint:
     endpoint = mocker.MagicMock()
-
-    zigbee_device.__getitem__.side_effect = lambda _: endpoint
 
     return endpoint
 
@@ -57,6 +62,20 @@ def zigbee_in_cluster(mocker: MockerFixture, zigbee_endpoint: Endpoint) -> Clust
     clusters.__getitem__.side_effect = lambda _: cluster
 
     type(zigbee_endpoint).in_clusters = PropertyMock(
+        return_value=clusters
+    )
+
+    return cluster
+
+
+@pytest.fixture
+def zigbee_out_cluster(mocker: MockerFixture, zigbee_endpoint: Endpoint) -> Cluster:
+    cluster = mocker.MagicMock()
+
+    clusters = mocker.MagicMock()
+    clusters.__getitem__.side_effect = lambda _: cluster
+
+    type(zigbee_endpoint).out_clusters = PropertyMock(
         return_value=clusters
     )
 

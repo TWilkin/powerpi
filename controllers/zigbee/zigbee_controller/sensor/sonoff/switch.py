@@ -1,29 +1,21 @@
-from enum import StrEnum, unique
-
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 
-from zigbee_controller.zigbee import ClusterCommandListener, ZigbeeController, ZigbeeMixin
+from zigbee_controller.zigbee import ZigbeeController, ZigbeeMixin
+from zigbee_controller.zigbee.mixins import ButtonMapKey, Button, PressType, ZigbeeRemoteMixin
 
 
-@unique
-class PressType(StrEnum):
-    SHORT = 'short'
-    DOUBLE = 'double'
-    LONG = 'long'
-
-
-class SonoffSwitchSensor(Sensor, ZigbeeMixin):
+class SonoffSwitchSensor(Sensor, ZigbeeMixin, ZigbeeRemoteMixin):
     '''
     Adds support for Sonoff Switch.
     '''
 
-    __press_map = {
-        0: PressType.LONG,
-        1: PressType.DOUBLE,
-        2: PressType.SHORT
+    BUTTON_MAP = {
+        ButtonMapKey(1, OnOffCluster.cluster_id, 0x00): lambda _: (Button.BUTTON, PressType.LONG),
+        ButtonMapKey(1, OnOffCluster.cluster_id, 0x01): lambda _: (Button.BUTTON, PressType.DOUBLE),
+        ButtonMapKey(1, OnOffCluster.cluster_id, 0x02): lambda _: (Button.BUTTON, PressType.SHORT),
     }
 
     def __init__(
@@ -37,27 +29,6 @@ class SonoffSwitchSensor(Sensor, ZigbeeMixin):
         ZigbeeMixin.__init__(self, zigbee_controller, **kwargs)
 
         self._logger = logger
-
-    async def initialise(self):
-        device = self._zigbee_device
-
-        device[1].out_clusters[OnOffCluster.cluster_id].add_listener(
-            ClusterCommandListener(lambda _, press_type_int, __: self.button_press_handler(
-                press_type_int
-            ))
-        )
-
-    def button_press_handler(self, press_type_int: int):
-        press_type = self.__press_map[press_type_int]
-
-        self.log_info(f'Received {press_type} press')
-
-        message = {
-            'button': 'button',
-            'type': press_type
-        }
-
-        self._broadcast('press', message)
 
     def __str__(self):
         return ZigbeeMixin.__str__(self)

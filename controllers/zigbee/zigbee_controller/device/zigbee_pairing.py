@@ -5,8 +5,8 @@ from powerpi_common.device import Device
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
+from zigpy.device import Device as ZigPyDevice
 from zigpy.types import EUI64
-from zigpy.typing import DeviceType
 
 from zigbee_controller.zigbee import DeviceJoinListener, ZigbeeController
 
@@ -39,7 +39,7 @@ class ZigbeePairingDevice(Device, InitialisableMixin):
 
     async def _turn_on(self):
         # run in a separate task so the off state happens after the on
-        asyncio.create_task(self.pair())
+        _ = asyncio.create_task(self.pair())
 
     async def _turn_off(self):
         await self.__zigbee_controller.pair(0)
@@ -50,8 +50,12 @@ class ZigbeePairingDevice(Device, InitialisableMixin):
 
         await self.turn_off()
 
-    def on_device_join(self, device: DeviceType):
+    def on_device_join(self, device: ZigPyDevice):
         self.log_info('New device joined network')
+
+        # we don't need to do initialisation yet as the device needs to be added
+        # to the config
+        device.cancel_initialization()
 
         topic = f'device/{self.name}/join'
 

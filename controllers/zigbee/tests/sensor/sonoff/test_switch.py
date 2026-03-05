@@ -1,28 +1,41 @@
-from typing import Tuple
 from unittest.mock import MagicMock
 
 import pytest
 from powerpi_common_test.device.mixin import InitialisableMixinTestBase
 from powerpi_common_test.sensor import SensorTestBase
+from zigpy.zcl import Cluster
 
 from zigbee_controller.sensor.sonoff.switch import SonoffSwitchSensor
 
 
 class TestSonoffSwitchSensor(SensorTestBase, InitialisableMixinTestBase):
-    @pytest.mark.parametrize('press_type', [(0, 'long'), (1, 'double'), (2, 'short')])
-    def test_button_press_handler(
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('command_id,expected_type', [
+        (0x00, 'long'),
+        (0x01, 'double'),
+        (0x02, 'short'),
+    ])
+    async def test_button_press(
         self,
         subject: SonoffSwitchSensor,
         powerpi_mqtt_producer: MagicMock,
-        press_type: Tuple[int, str]
+        zigbee_out_cluster: Cluster,
+        command_id: int,
+        expected_type: str
     ):
-        subject.button_press_handler(press_type[0])
+        await subject.initialise()
+
+        # find the listener registered on the OnOff out_cluster
+        listener = zigbee_out_cluster.add_listener.call_args[0][0]
+
+        # simulate a cluster command
+        listener.cluster_command(0, command_id, ())
 
         topic = 'event/test/press'
 
         message = {
             'button': 'button',
-            'type': press_type[1]
+            'type': expected_type
         }
 
         powerpi_mqtt_producer.assert_called_once()

@@ -9,9 +9,9 @@ from powerpi_common.device.mixin import (AdditionalState, CapabilityMixin,
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util.data import DataType, Range, Ranges, Standardiser
+from zigpy.device import Device as ZigPyDevice
 from zigpy.exceptions import DeliveryError
 from zigpy.types import bitmap8
-from zigpy.typing import DeviceType
 from zigpy.zcl import Cluster
 from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
 from zigpy.zcl.clusters.lighting import Color as ColorCluster
@@ -262,7 +262,7 @@ class ZigbeeLight(
     async def _turn_off(self):
         return await self.__set_power_state(DeviceStatus.OFF)
 
-    def __on_device_announce(self, device: DeviceType):
+    def __on_device_announce(self, device: ZigPyDevice):
         if device.nwk == self.nwk and device.ieee == self.ieee:
             ensure_future(self.__initialise())
 
