@@ -202,12 +202,12 @@ describe("ZigBee Devices", () => {
         });
     });
 
-    describe("Ikea Styrbar Switch Sensor", () => {
+    describe("Ikea Styrbar Sensor", () => {
         commonZigBeeTests(
             {
                 sensors: [
                     {
-                        type: "ikea_styrbar_switch",
+                        type: "ikea_styrbar",
                         name: "Switch",
                         nwk: "0xabcd",
                         ieee: "00:11:22:33:44:55:66:77",

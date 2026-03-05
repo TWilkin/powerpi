@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/IkeaStyrbarSwitch.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/IkeaStyrbar.schema.json",
     "title": "IkeaStyrbarSwitch",
-    "description": "The Ikea Styrbar switch sensor",
+    "description": "The Ikea Styrbar remote sensor",
     "type": "object",
     "allOf": [
         {
@@ -14,7 +14,7 @@
     ],
     "properties": {
         "type": {
-            "const": "ikea_styrbar_switch"
+            "const": "ikea_styrbar"
         }
     },
     "unevaluatedProperties": false
