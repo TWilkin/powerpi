@@ -110,7 +110,7 @@ class ZigbeeRemoteMixin(InitialisableMixin):
 
             if held is not None:
                 released = monotonic()
-                interval = (released - held) * 1000
+                interval = int((released - held) * 1000)
 
         message = {
             'button': button,
