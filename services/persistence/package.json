@@ -29,7 +29,7 @@
         "sequelize": "^6.32.1",
         "sequelize-typescript": "^2.1.6",
         "typedi": "^0.10.0",
-        "underscore": "^1.13.6"
+        "underscore": "^1.13.8"
     },
     "devDependencies": {
         "@powerpi/common-test": "^0.0.13",
