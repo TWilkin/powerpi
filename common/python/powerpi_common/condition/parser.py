@@ -1,3 +1,5 @@
+import operator as operators
+from functools import reduce
 from typing import Callable, Dict, List
 
 from powerpi_common.condition.errors import (InvalidArgumentException,
@@ -173,6 +175,46 @@ class ConditionParser:
             Lexeme.NOT, Lexeme.S_NOT
         )
 
+    def multiplicative_expression(self, expression: Expression):
+        '''
+        Evaluate and return the multiplicative expression in the parameter
+        e.g. {'*': [1, 2]}
+        '''
+        def multiplicative(operator: Lexeme, values: list[int | float]):
+            reduce_operators = {
+                Lexeme.MULTIPLY: operators.mul,
+                Lexeme.S_MULTIPLY: operators.mul,
+                Lexeme.DIVIDE: operators.truediv,
+                Lexeme.S_DIVIDE: operators.truediv
+            }
+
+            return reduce(reduce_operators[operator], values)
+
+        return self.__expression(
+            expression, multiplicative, self.unary_expression, True,
+            Lexeme.ADD, Lexeme.S_ADD, Lexeme.SUBTRACT, Lexeme.S_SUBTRACT
+        )
+
+    def additive_expression(self, expression: Expression):
+        '''
+        Evaluate and return the additive expression in the parameter
+        e.g. {'+': [1, 2]}
+        '''
+        def additive(operator: Lexeme, values: list[int | float]):
+            reduce_operators = {
+                Lexeme.ADD: operators.add,
+                Lexeme.S_ADD: operators.add,
+                Lexeme.SUBTRACT: operators.sub,
+                Lexeme.S_SUBTRACT: operators.sub
+            }
+
+            return reduce(reduce_operators[operator], values)
+
+        return self.__expression(
+            expression, additive, self.multiplicative_expression, True,
+            Lexeme.ADD, Lexeme.S_ADD, Lexeme.SUBTRACT, Lexeme.S_SUBTRACT
+        )
+
     def relational_expression(self, expression: Expression):
         '''
         Evaluate and return the relational expression in the parameter.
@@ -198,7 +240,7 @@ class ConditionParser:
             return switch[operator]
 
         return self.__expression(
-            expression, relation, self.unary_expression, True,
+            expression, relation, self.additive_expression, True,
             Lexeme.GREATER_THAN, Lexeme.S_GREATER_THAN,
             Lexeme.GREATER_THAN_EQUAL, Lexeme.S_GREATER_THAN_EQUAL,
             Lexeme.LESS_THAN, Lexeme.S_LESS_THAN,

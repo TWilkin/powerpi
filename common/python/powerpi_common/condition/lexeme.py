@@ -29,6 +29,6 @@ class Lexeme(StrEnum):
     S_NOT = '!'
     S_OR = '|'
     S_ADD = '+'
-    S_SUBSTRACT = '-'
+    S_SUBTRACT = '-'
     S_MULTIPLY = '*'
     S_DIVIDE = '/'
