@@ -77,20 +77,17 @@ class ConditionParser:
             if len(split) >= 2:
                 identifier_type = split[0]
 
-                if identifier_type == VariableType.DEVICE:
-                    if len(split) == 3:
-                        name, prop = split[1:]
-                        return self.device_identifier(identifier, name, prop)
+                if identifier_type == VariableType.DEVICE and len(split) == 3:
+                    name, prop = split[1:]
+                    return self.device_identifier(identifier, name, prop)
 
-                if identifier_type == VariableType.SENSOR:
-                    if len(split) == 4:
-                        name, action, prop = split[1:]
-                        return self.sensor_identifier(identifier, name, action, prop)
+                if identifier_type == VariableType.SENSOR and len(split) == 4:
+                    name, action, prop = split[1:]
+                    return self.sensor_identifier(identifier, name, action, prop)
 
-                if identifier_type == 'message':
-                    if len(split) == 2:
-                        prop = split[1]
-                        return self.message_identifier(identifier, prop)
+                if identifier_type == 'message' and len(split) == 2:
+                    prop = split[1]
+                    return self.message_identifier(identifier, prop)
 
             raise InvalidIdentifierException(identifier)
 
