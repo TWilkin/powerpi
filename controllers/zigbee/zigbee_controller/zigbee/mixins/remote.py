@@ -106,9 +106,9 @@ class ZigbeeRemoteMixin(InitialisableMixin):
         if press_type == PressType.HOLD:
             self.__hold_timers[button] = monotonic()
         elif press_type == PressType.RELEASE:
-            held = self.__hold_timers.pop(Button, None)
+            held = self.__hold_timers.pop(button, None)
 
-            if held:
+            if held is not None:
                 released = monotonic()
                 interval = (released - held) * 1000
 
