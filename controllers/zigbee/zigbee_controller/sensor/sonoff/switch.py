@@ -27,6 +27,7 @@ class SonoffSwitchSensor(Sensor, ZigbeeMixin, ZigbeeRemoteMixin):
     ):
         Sensor.__init__(self, mqtt_client, **kwargs)
         ZigbeeMixin.__init__(self, zigbee_controller, **kwargs)
+        ZigbeeRemoteMixin.__init__(self)
 
         self._logger = logger
 

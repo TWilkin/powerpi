@@ -74,6 +74,7 @@ class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin, ZigbeeRemoteMixi
         Sensor.__init__(self, mqtt_client, **kwargs)
         ZigbeeMixin.__init__(self, controller, **kwargs)
         ZigbeeSleepyMixin.__init__(self)
+        ZigbeeRemoteMixin.__init__(self)
 
         self._logger = logger
 
