@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/api",
-    "version": "1.2.2-rc.4",
+    "version": "1.2.2-rc.5",
     "description": "PowerPi API",
     "private": true,
     "type": "module",
@@ -52,7 +52,7 @@
         "pg": "^8.11.2",
         "socket.io": "^4.7.2",
         "typedi": "^0.10.0",
-        "underscore": "^1.13.6"
+        "underscore": "^1.13.8"
     },
     "devDependencies": {
         "@powerpi/common-test": "^0.0.13",

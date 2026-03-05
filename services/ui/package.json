@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/ui",
-    "version": "2.0.2-rc.2",
+    "version": "2.0.2-rc.3",
     "type": "module",
     "description": "PowerPi UI",
     "private": true,
@@ -63,7 +63,7 @@
         "react-router-dom": "^6.30.3",
         "react-select": "^5.8.3",
         "react-tooltip": "^5.28.0",
-        "underscore": "^1.13.7",
+        "underscore": "^1.13.8",
         "use-long-press": "^3.2.0"
     }
 }
