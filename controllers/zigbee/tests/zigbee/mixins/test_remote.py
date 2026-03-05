@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 from powerpi_common.logger import LogMixin
 from zigpy.zcl import Cluster
@@ -26,9 +28,14 @@ class ExampleDevice(ZigbeeRemoteMixin, LogMixin):
         ButtonMapKey(2, LevelControlCluster.cluster_id, 0x05): lambda _: (
             Button.MIDDLE, PressType.HOLD
         ),
+        ButtonMapKey(2, LevelControlCluster.cluster_id, 0x06): lambda _: (
+            Button.MIDDLE, PressType.RELEASE
+        ),
     }
 
     def __init__(self, device, controller: ZigbeeController, logger):
+        ZigbeeRemoteMixin.__init__(self)
+
         self.__device = device
         self.__controller = controller
         self._logger = logger
@@ -82,17 +89,49 @@ class TestZigbeeRemoteMixin:
     ):
         await subject.initialise()
 
-        # send the command to all registered listeners as the order is not guaranteed
-        for call in zigbee_out_cluster.add_listener.call_args_list:
-            call.args[0].cluster_command(0, command_id, *args)
+        self.__send_command(zigbee_out_cluster, command_id, args)
 
-            topic = 'press'
-            message = {
-                'button': expected_button,
-                'type': expected_type
-            }
+        topic = 'press'
+        message = {
+            'button': expected_button,
+            'type': expected_type
+        }
 
         assert subject.broadcast_calls == [(topic, message)]
+
+    @pytest.mark.asyncio
+    @patch('zigbee_controller.zigbee.mixins.remote.monotonic', side_effect=[0.0, 0.5])
+    async def test_button_press_hold_and_release(
+        self,
+        _,
+        subject: ExampleDevice,
+        zigbee_out_cluster: Cluster
+    ):
+        await subject.initialise()
+
+        # first we send the hold command
+        self.__send_command(zigbee_out_cluster, 0x05, ())
+
+        message1 = {
+            'button': Button.MIDDLE,
+            'type': PressType.HOLD
+        }
+
+        # then we send the release command
+        self.__send_command(zigbee_out_cluster, 0x06, ())
+
+        message2 = {
+            'button': Button.MIDDLE,
+            'type': PressType.RELEASE,
+            'value': 500,
+            'unit': 'ms'
+        }
+
+        topic = 'press'
+        assert subject.broadcast_calls == [
+            (topic, message1),
+            (topic, message2)
+        ]
 
     @pytest.mark.asyncio
     async def test_unknown_command_ignored(
@@ -115,3 +154,8 @@ class TestZigbeeRemoteMixin:
         powerpi_logger
     ):
         return ExampleDevice(zigbee_device, zigbee_controller, powerpi_logger)
+
+    def __send_command(self, cluster: Cluster, command_id: int, args: tuple):
+        # send the command to all registered listeners as the order is not guaranteed
+        for call in cluster.add_listener.call_args_list:
+            call.args[0].cluster_command(0, command_id, *args)
