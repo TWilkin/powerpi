@@ -1,7 +1,7 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/IkeaStyrbar.schema.json",
-    "title": "IkeaStyrbarSwitch",
+    "title": "IkeaStyrbar",
     "description": "The Ikea Styrbar remote sensor",
     "type": "object",
     "allOf": [
