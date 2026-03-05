@@ -202,6 +202,23 @@ describe("ZigBee Devices", () => {
         });
     });
 
+    describe("Ikea Styrbar Sensor", () => {
+        commonZigBeeTests(
+            {
+                sensors: [
+                    {
+                        type: "ikea_styrbar",
+                        name: "Switch",
+                        nwk: "0xabcd",
+                        ieee: "00:11:22:33:44:55:66:77",
+                        location: "Hallway",
+                    },
+                ],
+            },
+            true,
+        );
+    });
+
     describe("Osram Switch Mini Sensor", () => {
         commonZigBeeTests(
             {
