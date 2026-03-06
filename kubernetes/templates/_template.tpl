@@ -1,3 +1,14 @@
+
+{{- define "powerpi.template-config-map-hash" }}
+{{- $name := .Params.File | trimSuffix ".json" }}
+{{- if eq .Values.global.config true }}
+{{- $configMap := lookup "v1" "ConfigMap" .Release.Namespace (printf "config-%s" $name) }}
+      checksum/config-{{ $name }}: {{ ($configMap.data | default dict) | toJson | sha256sum | quote }}
+{{- else }}
+      checksum/config-{{ $name }}: {{ $.Files.Get (printf "config/%s.json" $name) | sha256sum | quote }}
+{{- end }}
+{{- end }}
+
 {{- define "powerpi.template" }}
 
 {{- $secrets := ternary .Params.Secret list (eq (empty .Params.Secret) false) -}}
@@ -18,7 +29,7 @@
 {{- end -}}
 
 {{- $name := .Params.Name | default .Chart.Name }}
-{{- $config := and .Params.UseConfig (not .Values.global.config) }}
+{{- $config := .Params.UseConfig }}
 {{- $hasVolumeClaim := eq (empty .Params.PersistentVolumeClaim) false }}
 {{- $hasVolumeClaimEnv := and $hasVolumeClaim (eq (empty .Params.PersistentVolumeClaim.EnvName) false) }}
 {{- $hasConfig := eq (empty .Params.Config) false }}
@@ -30,7 +41,6 @@ template:
   metadata:
   {{- include "powerpi.labels.no-version" . | indent 2 }}
 
-    {{- if or $hasAnnotations $config $hasConfig }}
     annotations:
       {{- if $hasAnnotations }}
       {{- range $element := .Params.Annotations }}
@@ -44,11 +54,21 @@ template:
       {{- end }}
       {{- end }}
 
-      {{- if $config }}
-      # this isn't ideal as it'll always restart but helm can't access that config-map template from the parent
-      checksum/config: {{ randAlphaNum 5 | quote }}
+      {{- if .Params.UseDevicesFile }}
+      {{- include "powerpi.template-config-map-hash" (merge (dict "Params" (dict "File" "devices")) $) }}
       {{- end }}
-    {{- end }}
+      {{- if .Params.UseEventsFile }}
+      {{- include "powerpi.template-config-map-hash" (merge (dict "Params" (dict "File" "events")) $) }}
+      {{- end }}
+      {{- if .Params.UseFloorplanFile }}
+      {{- include "powerpi.template-config-map-hash" (merge (dict "Params" (dict "File" "floorplan")) $) }}
+      {{- end }}
+      {{- if .Params.UseSchedulesFile }}
+      {{- include "powerpi.template-config-map-hash" (merge (dict "Params" (dict "File" "schedules")) $) }}
+      {{- end }}
+      {{- if .Params.UseUsersFile }}
+      {{- include "powerpi.template-config-map-hash" (merge (dict "Params" (dict "File" "users")) $) }}
+      {{- end }}
 
   spec:
     {{- if eq (empty .Params.NodeSelector) false }}
