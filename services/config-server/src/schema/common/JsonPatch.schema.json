@@ -34,7 +34,10 @@
                 { "type": ["number"] },
                 { "type": ["integer"] },
                 { "type": ["string"] },
-                { "type": "null" }
+                { "type": "null" },
+                {
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Condition.schema.json"
+                }
             ]
         },
         "add": {

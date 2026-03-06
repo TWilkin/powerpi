@@ -28,7 +28,7 @@
             "additionalProperties": false
         },
         "expression": {
-            "description": "An expression; logical, equality, relational",
+            "description": "An expression; logical, equality, relational, arithmetic",
             "type": "object",
             "properties": {
                 "not": { "$ref": "#/$defs/unary_expression_body" },
@@ -47,7 +47,15 @@
                 "when": { "$ref": "#/$defs/logical_expression_body" },
                 "or": { "$ref": "#/$defs/logical_expression_body" },
                 "|": { "$ref": "#/$defs/logical_expression_body" },
-                "either": { "$ref": "#/$defs/logical_expression_body" }
+                "either": { "$ref": "#/$defs/logical_expression_body" },
+                "add": { "$ref": "#/$defs/arithmetic_expression_body" },
+                "+": { "$ref": "#/$defs/arithmetic_expression_body" },
+                "subtract": { "$ref": "#/$defs/arithmetic_expression_body" },
+                "-": { "$ref": "#/$defs/arithmetic_expression_body" },
+                "multiply": { "$ref": "#/$defs/arithmetic_expression_body" },
+                "*": { "$ref": "#/$defs/arithmetic_expression_body" },
+                "divide": { "$ref": "#/$defs/arithmetic_expression_body" },
+                "/": { "$ref": "#/$defs/arithmetic_expression_body" }
             },
             "additionalProperties": false,
             "oneOf": [
@@ -67,11 +75,19 @@
                 { "required": ["when"] },
                 { "required": ["or"] },
                 { "required": ["|"] },
-                { "required": ["either"] }
+                { "required": ["either"] },
+                { "required": ["add"] },
+                { "required": ["+"] },
+                { "required": ["subtract"] },
+                { "required": ["-"] },
+                { "required": ["multiply"] },
+                { "required": ["*"] },
+                { "required": ["divide"] },
+                { "required": ["/"] }
             ]
         },
         "expression_body": {
-            "description": "The body of an expression; logical, equality, relational",
+            "description": "The body of an expression; logical, equality, relational, arithmetic",
             "type": "array",
             "items": {
                 "oneOf": [
@@ -88,6 +104,12 @@
                 { "$ref": "#/$defs/constant" },
                 { "$ref": "#/$defs/identifier" }
             ]
+        },
+        "arithmetic_expression_body": {
+            "description": "The body of an arithmetic expression: a + b",
+            "type": "array",
+            "minItems": 2,
+            "$ref": "#/$defs/expression_body"
         },
         "comparison_expression_body": {
             "description": "The body of a comparison expression: a >= b",
