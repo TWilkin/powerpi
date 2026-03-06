@@ -96,3 +96,56 @@ def test_action_device_additional_state_with_variable(
         'device/Light/change',
         expected_message
     )
+
+
+def test_action_device_additional_state_with_arithmetic(
+    powerpi_mqtt_client: MQTTClient,
+    powerpi_mqtt_producer: MagicMock,
+    powerpi_variable_manager,
+    mocker: MockerFixture
+):
+    initial_brightness = 15
+
+    device = mocker.MagicMock()
+    type(device).name = PropertyMock(return_value='Light')
+    type(device).additional_state = PropertyMock(return_value={
+        'brightness': initial_brightness,
+        'other': 'untouched'
+    })
+
+    powerpi_variable_manager.get_device = lambda _: device
+
+    multiplier = 0.01
+    patch = [
+        {
+            'op': 'replace',
+            'path': '/brightness',
+            'value': {'+': [
+                {'var': 'device.Light.brightness'},
+                {'*': [
+                    {'var': 'message.value'},
+                    multiplier
+                ]}
+            ]}
+        }
+    ]
+
+    subject = action_device_additional_state(
+        powerpi_mqtt_client, powerpi_variable_manager, None, patch
+    )
+
+    event_message = {
+        'value': 1000
+    }
+
+    subject(device, event_message)
+
+    expected_message = {
+        'brightness': initial_brightness + (event_message['value'] * multiplier),
+        'other': 'untouched'
+    }
+
+    powerpi_mqtt_producer.assert_called_once_with(
+        'device/Light/change',
+        expected_message
+    )

@@ -19,9 +19,9 @@ def action_device_additional_state(
     def wrapper(device: DeviceVariable, message: MQTTMessage):
         current_state = device.additional_state
 
-        parser = ConditionParser(variable_manager)
+        parser = ConditionParser(variable_manager, message)
 
-        # interpret any variables in the values to patch
+        # interpret any variables/operations in the values to patch
         for operation in json_patch:
             operation['value'] = parser.conditional_expression(
                 operation['value']
