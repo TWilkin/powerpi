@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Any
 
 from jsonpatch import JsonPatch
@@ -22,12 +23,13 @@ def action_device_additional_state(
         parser = ConditionParser(variable_manager, message)
 
         # interpret any variables/operations in the values to patch
-        for operation in json_patch:
+        patch = deepcopy(json_patch)
+        for operation in patch:
             operation['value'] = parser.conditional_expression(
                 operation['value']
             )
 
-        patched = json_patch.apply(current_state)
+        patched = patch.apply(current_state)
 
         outgoing = {**patched}
         if scene:
