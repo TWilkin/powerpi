@@ -192,7 +192,8 @@ class ConditionParser:
 
         return self.__expression(
             expression, multiplicative, self.unary_expression, True,
-            Lexeme.ADD, Lexeme.S_ADD, Lexeme.SUBTRACT, Lexeme.S_SUBTRACT
+            Lexeme.MULTIPLY, Lexeme.S_MULTIPLY,
+            Lexeme.DIVIDE, Lexeme.S_DIVIDE
         )
 
     def additive_expression(self, expression: Expression):
@@ -212,7 +213,8 @@ class ConditionParser:
 
         return self.__expression(
             expression, additive, self.multiplicative_expression, True,
-            Lexeme.ADD, Lexeme.S_ADD, Lexeme.SUBTRACT, Lexeme.S_SUBTRACT
+            Lexeme.ADD, Lexeme.S_ADD,
+            Lexeme.SUBTRACT, Lexeme.S_SUBTRACT
         )
 
     def relational_expression(self, expression: Expression):
