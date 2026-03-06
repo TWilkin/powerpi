@@ -40,7 +40,7 @@ def test_action_device_additional_state(
         powerpi_mqtt_client, powerpi_variable_manager, scene, patch
     )
 
-    subject(device)
+    subject(device, {})
 
     expected_message = {
         'scene': scene,
@@ -85,7 +85,7 @@ def test_action_device_additional_state_with_variable(
         powerpi_mqtt_client, powerpi_variable_manager, None, patch
     )
 
-    subject(device)
+    subject(device, {})
 
     expected_message = {
         'brightness': 'untouched',

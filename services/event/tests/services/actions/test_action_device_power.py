@@ -20,7 +20,7 @@ def test_device_power_action(
 
     subject = action_device_power(powerpi_mqtt_client, state)
 
-    subject(device)
+    subject(device, {})
 
     powerpi_mqtt_producer.assert_called_once_with(
         'device/Light/change', {'state': state}
