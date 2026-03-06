@@ -80,7 +80,12 @@ template:
     dnsPolicy: ClusterFirstWithHostNet
     {{- end }}
 
+    {{- if .Params.ServiceAccount }}
+    automountServiceAccountToken: true
+    serviceAccount: {{ .Params.ServiceAccount }}
+    {{- else }}
     automountServiceAccountToken: false
+    {{- end }}
 
     securityContext:
       {{- $runAsNonRoot := eq (.Params.RunAsNonRoot | default "true") "true" }}

@@ -8,6 +8,7 @@
     "start:prd"
   )
   "PriorityClassName" "powerpi-critical"
+  "ServiceAccount" "config-server"
   "MqttSecret" "mosquitto-config-secret"
   "Secret" (list
     (dict

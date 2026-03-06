@@ -1,15 +1,15 @@
 piVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: config-service
+  name: config-server
   {{- include "powerpi.labels" . }}
 
 subjects:
   - kind: ServiceAccount
-    name: config-service
+    name: config-server
     namespace: {{ .Release.Namespace }}
 
 roleRef:
   kind: Role
-  name: config-service
+  name: config-server
   apiGroup: rbac.authorization.k8s.io
