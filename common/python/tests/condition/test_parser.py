@@ -121,6 +121,32 @@ class TestConditionParser:
             subject.unary_expression({'not': [1, 2]})
 
     @pytest.mark.parametrize('operator,values,expected', [
+        ('*', [3, 2], 3 * 2),
+        ('/', [2, 3], 2 / 3),
+        ('multiply', [2, 3], 2 * 3),
+        ('divide', [3, 2], 3 / 2),
+    ])
+    def test_multiplicative_expression_success(
+        self, subject: ConditionParser, operator: str, values: list[int], expected: int
+    ):
+        result = subject.multiplicative_expression({operator: values})
+
+        assert result == expected
+
+    @pytest.mark.parametrize('operator,values,expected', [
+        ('+', [3, 2], 3 + 2),
+        ('-', [2, 3], 2 - 3),
+        ('add', [2, 3], 2 + 3),
+        ('subtract', [3, 2], 3 - 2),
+    ])
+    def test_additive_expression_success(
+        self, subject: ConditionParser, operator: str, values: list[int], expected: int
+    ):
+        result = subject.additive_expression({operator: values})
+
+        assert result == expected
+
+    @pytest.mark.parametrize('operator,values,expected', [
         ('>', [3, 2], True),
         ('>=', [2, 3], False),
         ('<', [2, 3], True),
