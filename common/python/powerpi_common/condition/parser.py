@@ -223,7 +223,7 @@ class ConditionParser:
         Evaluate and return the relational expression in the parameter.
         e.g. {'>=': [1, 2]}
         '''
-        def relation(operator: Lexeme, values: list[bool]):
+        def relation(operator: Lexeme, values: list[Number]):
             if len(values) != 2:
                 raise InvalidArgumentException(operator, values)
 
