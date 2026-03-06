@@ -1,9 +1,19 @@
-{{- if ne .Values.global.config true }}
+{{- define "powerpi.config-map" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: config
+  name: config-{{ .Params.File | base | trimSuffix ".json" }}
   {{- include "powerpi.labels.no-version" . }}
+{{- if eq .Values.global.config true }}
+  annotations:
+    helm.sh/resource-policy: keep
+{{- end }}
 data:
-{{ (.Files.Glob "config/*.json").AsConfig | indent 2 }}
+  {{ base .Params.File }}: |
+{{ .Params.Content | toString | indent 4 }}
+{{- end }}
+
+{{- range $path, $content := .Files.Glob "config/*.json" }}
+---
+{{- include "powerpi.config-map" (merge (dict "Params" (dict "File" $path "Content" $content)) $) }}
 {{- end }}
