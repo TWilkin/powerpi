@@ -1,0 +1,52 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: config-service
+  {{- include "powerpi.labels" . }}
+rules:
+  # we need to be able to update the ConfigMaps with the config from GitHub
+  - apiGroups: 
+    - ""
+    resources:
+    - configmaps
+    verbs:
+    - get
+    - update
+    resourceNames:
+    - config-devices
+    - config-events
+    - config-floorplan
+    - config-schedules
+    - config-users
+
+  # we need to be able to list the Deployments/StatefulSets to see the current ConfigMap hash annotation
+  - apiGroups: 
+    - apps
+    resources:
+    - deployments
+    - statefulsets
+    verbs:
+    - list
+
+  # we need to be able to patch the Deployments/StatefulSets to update the ConfigMap hash annotation
+  - apiGroups:
+    - apps
+    resources: 
+    - deployments
+    - statefulsets
+    verbs:
+    - get
+    - patch
+    resourceNames:
+    - api
+    - energy-monitor
+    - event
+    - scheduler
+    - voice-assistant
+    - energenie-controller
+    - harmony-controller
+    - lifx-controller
+    - network-controller
+    - snapcast-controller
+    - virtual-controller
+    - zigbee-controller
