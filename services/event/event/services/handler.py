@@ -8,6 +8,11 @@ from .actions import Action
 
 
 class EventHandler:
+    '''
+    The EventHandler is the wrapper around an action definition registered against an
+    event listener in the message queue.
+    '''
+
     def __init__(
         self,
         logger: Logger,
@@ -44,7 +49,7 @@ class EventHandler:
     def execute(self, message: MQTTMessage):
         # execute the action if the condition is met
         if self.__check_condition(message):
-            self.__action.execute(self.__device)
+            self.__action.execute(self.__device, message)
             return True
 
         return False
