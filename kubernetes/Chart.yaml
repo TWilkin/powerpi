@@ -17,7 +17,7 @@ dependencies:
     version: 0.1.12
     condition: global.energyMonitor
   - name: event
-    version: 0.0.5
+    version: 0.0.6
     condition: global.event
   - name: mosquitto
     version: 0.3.3
