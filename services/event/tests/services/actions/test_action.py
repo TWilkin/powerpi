@@ -12,10 +12,14 @@ class TestAction:
 
     def test_execute(self, subject: Action, action: MagicMock):
         device = 'my device'
+        message = {
+            'button': 'middle',
+            'type': 'single'
+        }
 
-        subject.execute(device)
+        subject.execute(device, message)
 
-        action.assert_called_once_with(device)
+        action.assert_called_once_with(device, message)
 
     def test_str(self, subject: Action):
         assert f'{subject}' == 'Action(some_action)'

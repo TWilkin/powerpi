@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable
 
 import pytest
 
@@ -21,7 +21,7 @@ class SensorVariableImpl:
         self.value = SensorValue(f'{name}/{action}', f'{action}/{name}')
 
 
-SubjectBuilder = Callable[[Dict[str, Any] | None], ConditionParser]
+SubjectBuilder = Callable[[dict[str, Any] | None], ConditionParser]
 
 
 class TestConditionParser:
@@ -121,6 +121,32 @@ class TestConditionParser:
             subject.unary_expression({'not': [1, 2]})
 
     @pytest.mark.parametrize('operator,values,expected', [
+        ('*', [3, 2], 3 * 2),
+        ('/', [2, 3], 2 / 3),
+        ('multiply', [2, 3], 2 * 3),
+        ('divide', [3, 2], 3 / 2),
+    ])
+    def test_multiplicative_expression_success(
+        self, subject: ConditionParser, operator: str, values: list[int], expected: int
+    ):
+        result = subject.multiplicative_expression({operator: values})
+
+        assert result == expected
+
+    @pytest.mark.parametrize('operator,values,expected', [
+        ('+', [3, 2], 3 + 2),
+        ('-', [2, 3], 2 - 3),
+        ('add', [2, 3], 2 + 3),
+        ('subtract', [3, 2], 3 - 2),
+    ])
+    def test_additive_expression_success(
+        self, subject: ConditionParser, operator: str, values: list[int], expected: int
+    ):
+        result = subject.additive_expression({operator: values})
+
+        assert result == expected
+
+    @pytest.mark.parametrize('operator,values,expected', [
         ('>', [3, 2], True),
         ('>=', [2, 3], False),
         ('<', [2, 3], True),
@@ -131,7 +157,7 @@ class TestConditionParser:
         ('less_than_equal', [3, 2], False),
     ])
     def test_relational_expression_success(
-        self, subject: ConditionParser, operator: str, values: List, expected: bool
+        self, subject: ConditionParser, operator: str, values: list, expected: bool
     ):
         result = subject.relational_expression({operator: values})
 
@@ -143,7 +169,7 @@ class TestConditionParser:
         [1, 2, 3]
     ])
     def test_relational_expression_fail(
-        self, subject: ConditionParser, operator: str, values: List
+        self, subject: ConditionParser, operator: str, values: list
     ):
         with pytest.raises(InvalidArgumentException):
             subject.relational_expression({operator: values})
@@ -159,7 +185,12 @@ class TestConditionParser:
         ([{'not': False}, True], True),
         ([{'=': [1, 1.0]}, 1], True)
     ])
-    def test_equality_expression_success(self, subject: ConditionParser, values: List, expected: bool):
+    def test_equality_expression_success(
+        self,
+        subject: ConditionParser,
+        values: list,
+        expected: bool
+    ):
         result = subject.equality_expression({'equals': values})
 
         assert result is expected
@@ -177,7 +208,7 @@ class TestConditionParser:
         ([True, {'either': [False, True]}], True)
     ])
     def test_logical_and_expression_success(
-        self, subject: ConditionParser, values: List, expected: bool
+        self, subject: ConditionParser, values: list, expected: bool
     ):
         result = subject.logical_and_expression({'and': values})
 
@@ -196,7 +227,7 @@ class TestConditionParser:
         ([{'not': True}, False], False)
     ])
     def test_logical_or_expression_success(
-        self, subject: ConditionParser, values: List, expected: bool
+        self, subject: ConditionParser, values: list, expected: bool
     ):
         result = subject.logical_or_expression({'or': values})
 
@@ -208,7 +239,7 @@ class TestConditionParser:
 
     @pytest.fixture
     def subject_builder(self, powerpi_variable_manager):
-        def build(message: Dict[str, Any] | None = None):
+        def build(message: dict[str, Any] | None = None):
             powerpi_variable_manager.get_device = DeviceVariableImpl
             powerpi_variable_manager.get_sensor = SensorVariableImpl
 

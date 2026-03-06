@@ -38,17 +38,20 @@ class TestEventHandler:
         device: MagicMock,
         condition: bool
     ):
+        message = {
+            'button': 'middle',
+            'type': 'single'
+        }
+
         with patch_expression() as parser:
             parser.return_value = condition
 
-            result = subject.execute({})
+            result = subject.execute(message)
 
             assert result is condition
 
-        print(action.call_args_list)
-
         if condition:
-            action.execute.assert_called_once_with(device)
+            action.execute.assert_called_once_with(device, message)
         else:
             action.execute.assert_not_called()
 

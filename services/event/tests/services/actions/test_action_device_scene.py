@@ -19,7 +19,7 @@ def test_action_device_scene(
 
     subject = action_device_scene(powerpi_mqtt_client, scene)
 
-    subject(device)
+    subject(device, {})
 
     powerpi_mqtt_producer.assert_called_once_with(
         'device/Light/scene', {'scene': scene}

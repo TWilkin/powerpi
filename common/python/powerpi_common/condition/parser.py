@@ -1,4 +1,6 @@
-from typing import Callable, Dict, List
+from operator import add, sub, mul, truediv
+from functools import reduce
+from typing import Callable
 
 from powerpi_common.condition.errors import (InvalidArgumentException,
                                              InvalidIdentifierException,
@@ -7,7 +9,8 @@ from powerpi_common.condition.lexeme import Lexeme
 from powerpi_common.mqtt import MQTTMessage
 from powerpi_common.variable import VariableManager, VariableType
 
-Expression = dict | list | str | float | bool
+Number = int | float
+Expression = dict | list | str | bool | Number
 
 
 class ConditionParser:
@@ -50,14 +53,14 @@ class ConditionParser:
         self.__message = message
 
     @classmethod
-    def constant(cls, constant: str):
+    def constant(cls, constant: str | Number):
         '''
         Evaluate and return the constant in the parameter.
         '''
         if constant is None:
             return None
 
-        if isinstance(constant, (bool, float, int, str)):
+        if isinstance(constant, (bool, str, Number)):
             return constant
 
         raise UnexpectedTokenException(constant)
@@ -67,7 +70,7 @@ class ConditionParser:
         Evaluate and return the value of the identifier in the parameter,
         either a device, sensor or message.
         '''
-        def variable(_, values: List[str]):
+        def variable(_, values: list[str]):
             if len(values) != 1:
                 raise InvalidArgumentException(Lexeme.VAR, values)
 
@@ -77,20 +80,17 @@ class ConditionParser:
             if len(split) >= 2:
                 identifier_type = split[0]
 
-                if identifier_type == VariableType.DEVICE:
-                    if len(split) == 3:
-                        name, prop = split[1:]
-                        return self.device_identifier(identifier, name, prop)
+                if identifier_type == VariableType.DEVICE and len(split) == 3:
+                    name, prop = split[1:]
+                    return self.device_identifier(identifier, name, prop)
 
-                if identifier_type == VariableType.SENSOR:
-                    if len(split) == 4:
-                        name, action, prop = split[1:]
-                        return self.sensor_identifier(identifier, name, action, prop)
+                if identifier_type == VariableType.SENSOR and len(split) == 4:
+                    name, action, prop = split[1:]
+                    return self.sensor_identifier(identifier, name, action, prop)
 
-                if identifier_type == 'message':
-                    if len(split) == 2:
-                        prop = split[1]
-                        return self.message_identifier(identifier, prop)
+                if identifier_type == 'message' and len(split) == 2:
+                    prop = split[1]
+                    return self.message_identifier(identifier, prop)
 
             raise InvalidIdentifierException(identifier)
 
@@ -148,7 +148,7 @@ class ConditionParser:
         except KeyError:
             return None
 
-    def primary_expression(self, value: str):
+    def primary_expression(self, value: Expression):
         '''
         Evaluate and return the primary expression in the parameter,
         either an identifier or a constant.
@@ -165,7 +165,7 @@ class ConditionParser:
         Evaluate and return the unary expression in the parameter.
         e.g. {'not': true}
         '''
-        def invert(_, values: List[bool]):
+        def invert(_, values: list[bool]):
             if len(values) != 1:
                 raise InvalidArgumentException(Lexeme.NOT, values)
             value = values[0]
@@ -176,12 +176,54 @@ class ConditionParser:
             Lexeme.NOT, Lexeme.S_NOT
         )
 
+    def multiplicative_expression(self, expression: Expression):
+        '''
+        Evaluate and return the multiplicative expression in the parameter
+        e.g. {'*': [1, 2]}
+        '''
+        def multiplicative(operator: Lexeme, values: list[Number]):
+            reduce_operators = {
+                Lexeme.MULTIPLY: mul,
+                Lexeme.S_MULTIPLY: mul,
+                Lexeme.DIVIDE: truediv,
+                Lexeme.S_DIVIDE: truediv
+            }
+
+            return reduce(reduce_operators[operator], values)
+
+        return self.__expression(
+            expression, multiplicative, self.unary_expression, True,
+            Lexeme.MULTIPLY, Lexeme.S_MULTIPLY,
+            Lexeme.DIVIDE, Lexeme.S_DIVIDE
+        )
+
+    def additive_expression(self, expression: Expression):
+        '''
+        Evaluate and return the additive expression in the parameter
+        e.g. {'+': [1, 2]}
+        '''
+        def additive(operator: Lexeme, values: list[Number]):
+            reduce_operators = {
+                Lexeme.ADD: add,
+                Lexeme.S_ADD: add,
+                Lexeme.SUBTRACT: sub,
+                Lexeme.S_SUBTRACT: sub
+            }
+
+            return reduce(reduce_operators[operator], values)
+
+        return self.__expression(
+            expression, additive, self.multiplicative_expression, True,
+            Lexeme.ADD, Lexeme.S_ADD,
+            Lexeme.SUBTRACT, Lexeme.S_SUBTRACT
+        )
+
     def relational_expression(self, expression: Expression):
         '''
         Evaluate and return the relational expression in the parameter.
         e.g. {'>=': [1, 2]}
         '''
-        def relation(operator: Lexeme, values: List[bool]):
+        def relation(operator: Lexeme, values: list[Number]):
             if len(values) != 2:
                 raise InvalidArgumentException(operator, values)
 
@@ -201,7 +243,7 @@ class ConditionParser:
             return switch[operator]
 
         return self.__expression(
-            expression, relation, self.unary_expression, True,
+            expression, relation, self.additive_expression, True,
             Lexeme.GREATER_THAN, Lexeme.S_GREATER_THAN,
             Lexeme.GREATER_THAN_EQUAL, Lexeme.S_GREATER_THAN_EQUAL,
             Lexeme.LESS_THAN, Lexeme.S_LESS_THAN,
@@ -213,7 +255,7 @@ class ConditionParser:
         Evaluate and return the equality expression in the parameter.
         e.g. {'equals': [1, 1.0]}
         '''
-        def equals(_, values: List[bool]):
+        def equals(_, values: list[bool]):
             # if the set only has one value, they're all equal
             return len(set(values)) == 1
 
@@ -227,7 +269,7 @@ class ConditionParser:
         Evaluate and return the logical and expression in the parameter.
         e.g. {'when': [True, True]}
         '''
-        def logical_and(_, values: List[bool]):
+        def logical_and(_, values: list[bool]):
             return all(values)
 
         return self.__expression(
@@ -240,7 +282,7 @@ class ConditionParser:
         Evaluate and return the logical or expression in the parameter.
         e.g. {'either': [True, False]}
         '''
-        def logical_or(_, values: List[bool]):
+        def logical_or(_, values: list[bool]):
             return any(values)
 
         return self.__expression(
@@ -258,12 +300,12 @@ class ConditionParser:
     def __expression(
         self,
         expression: Expression,
-        func: Callable[[Lexeme, List[bool]], bool],
+        func: Callable[[Lexeme, list[bool]], bool],
         chain: Callable[[Expression], bool],
         expects_list: bool,
-        *operators: List[Lexeme]
+        *operators: list[Lexeme]
     ):
-        if isinstance(expression, Dict):
+        if isinstance(expression, dict):
             # is one of the operators in the expression
             operator = next(
                 (operator for operator in operators if operator in expression),

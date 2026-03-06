@@ -1,6 +1,6 @@
 [project]
 name = "virtual_controller"
-version = "2.2.2-rc.2"
+version = "2.2.2-rc.3"
 description = "PowerPi Virtual Controller"
 license = "GPL-3.0-only"
 authors = [
