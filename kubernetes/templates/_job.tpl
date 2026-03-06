@@ -15,6 +15,11 @@ kind: {{ ternary "Job" "CronJob" (empty .Params.Schedule) }}
 metadata:
   name: {{ $name }}
   {{- include "powerpi.labels" . }}
+  {{- if .Params.Hook }}
+  annotations:
+    helm.sh/hook: {{ .Params.Hook }}
+    helm.sh/hook-delete-policy: before-hook-creation
+  {{- end }}
 
 spec:
   schedule: {{ .Params.Schedule | quote }}

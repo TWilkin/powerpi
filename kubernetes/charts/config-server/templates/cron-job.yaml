@@ -48,4 +48,8 @@
     )
   )
 -}}
+{{- include "powerpi.job" (merge (dict "Params" $data) . ) }}
+---
+{{- $_ := set $data "Hook" "post-install,post-upgrade" }}
+{{- $_ := unset $data "Schedule" }}
 {{- include "powerpi.job" (merge (dict "Params" $data) . ) -}}
