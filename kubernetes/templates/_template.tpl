@@ -45,8 +45,13 @@ template:
       {{- end }}
 
       {{- if $hasConfig }}
-      {{- range $element := .Params.Config }}
-      checksum/{{ $element.Name }}: {{ include (print $.Template.BasePath "/config-map.yaml") $ | sha256sum }}
+      {{- $names := list }}
+      {{- range $item := .Params.Config }}
+      {{- $names = append $names $item.Name }}
+      {{- end }}
+      {{- $names = $names | uniq }}
+      {{- range $name := $names }}
+      checksum/{{ $name }}: {{ include (print $.Template.BasePath "/config-map.yaml") $ | sha256sum | quote }}
       {{- end }}
       {{- end }}
 
