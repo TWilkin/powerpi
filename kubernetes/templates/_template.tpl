@@ -37,6 +37,7 @@ template:
   metadata:
   {{- include "powerpi.labels.no-version" . | indent 2 }}
 
+    {{- if or $hasAnnotations $config $hasConfig }}
     annotations:
       {{- if $hasAnnotations }}
       {{- range $element := .Params.Annotations }}
@@ -63,6 +64,7 @@ template:
       checksum/config-{{ $name }}: {{ $.Files.Get (printf "config/%s.json" $name) | sha256sum | quote }}
       {{- end }}
       {{- end }}
+    {{- end }}
 
   spec:
     {{- if eq (empty .Params.NodeSelector) false }}
