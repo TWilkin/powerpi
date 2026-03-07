@@ -14,12 +14,16 @@ rules:
     - update
     resourceNames:
     - config-devices
+  {{- if .Values.global.event }}
     - config-events
+  {{- end }}
     - config-floorplan
+  {{- if .Values.global.scheduler }}
     - config-schedules
+  {{- end }}
     - config-users
 
-  # we need to be able to list the Deployments/StatefulSets to see the current ConfigMap hash annotation
+  # we need to be able to list the Deployments/StatefulSets to see the deployed services
   - apiGroups: 
     - apps
     resources:
@@ -39,14 +43,34 @@ rules:
     - patch
     resourceNames:
     - api
+    {{- if .Values.global.energyMonitor }}
     - energy-monitor
+    {{- end }}
+    {{- if .Values.global.event }}
     - event
+    {{- end }}
+    {{- if .Values.global.scheduler }}
     - scheduler
+    {{- end }}
+    {{- if .Values.global.voiceAssistant }}
     - voice-assistant
+    {{- end }}
+    {{- if .Values.global.energenie }}
     - energenie-controller
+    {{- end }}
+    {{- if .Values.global.harmony }}
     - harmony-controller
+    {{- end }}
+    {{- if .Values.global.lifx }}
     - lifx-controller
+    {{- end }}
+    {{- if .Values.global.network }}
     - network-controller
+    {{- end }}
+    {{- if .Values.global.snapcast }}
     - snapcast-controller
+    {{- end }}
     - virtual-controller
+    {{- if .Values.global.zigbee }}
     - zigbee-controller
+    {{- end }}
