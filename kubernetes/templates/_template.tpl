@@ -1,14 +1,3 @@
-
-{{- define "powerpi.template-config-map-hash" }}
-{{- $name := .Params.File | trimSuffix ".json" }}
-{{- if eq .Values.global.config true }}
-{{- $configMap := lookup "v1" "ConfigMap" .Release.Namespace (printf "config-%s" $name) }}
-      checksum/config-{{ $name }}: {{ ($configMap.data | default dict) | toJson | sha256sum | quote }}
-{{- else }}
-      checksum/config-{{ $name }}: {{ $.Files.Get (printf "config/%s.json" $name) | sha256sum | quote }}
-{{- end }}
-{{- end }}
-
 {{- define "powerpi.template" }}
 
 {{- $secrets := ternary .Params.Secret list (eq (empty .Params.Secret) false) -}}
@@ -37,6 +26,13 @@
 {{- $hasEmptyDir := eq (empty .Params.EmptyDirVolumes) false }}
 {{- $hasAnnotations := eq (empty .Params.Annotations) false }}
 
+{{- $configs := list }}
+{{- if .Params.UseDevicesFile }}{{- $configs = append $configs "devices" }}{{- end }}
+{{- if .Params.UseEventsFile }}{{- $configs = append $configs "events" }}{{- end }}
+{{- if .Params.UseFloorplanFile }}{{- $configs = append $configs "floorplan" }}{{- end }}
+{{- if .Params.UseSchedulesFile}}{{- $configs = append $configs "schedules" }}{{- end }}
+{{- if .Params.UseUsersFile }}{{- $configs = append $configs "users" }}{{- end }}
+
 template:
   metadata:
   {{- include "powerpi.labels.no-version" . | indent 2 }}
@@ -54,20 +50,13 @@ template:
       {{- end }}
       {{- end }}
 
-      {{- if .Params.UseDevicesFile }}
-      {{- include "powerpi.template-config-map-hash" (merge (dict "Params" (dict "File" "devices")) $) }}
+      {{- range $name := $configs }}
+      {{- if eq $.Values.global.config true }}
+      {{- $configMap := lookup "v1" "ConfigMap" $.Release.Namespace (printf "config-%s" $name) }}
+      checksum/config-{{ $name }}: {{ ($configMap.data | default dict) | toJson | sha256sum | quote }}
+      {{- else }}
+      checksum/config-{{ $name }}: {{ $.Files.Get (printf "config/%s.json" $name) | sha256sum | quote }}
       {{- end }}
-      {{- if .Params.UseEventsFile }}
-      {{- include "powerpi.template-config-map-hash" (merge (dict "Params" (dict "File" "events")) $) }}
-      {{- end }}
-      {{- if .Params.UseFloorplanFile }}
-      {{- include "powerpi.template-config-map-hash" (merge (dict "Params" (dict "File" "floorplan")) $) }}
-      {{- end }}
-      {{- if .Params.UseSchedulesFile }}
-      {{- include "powerpi.template-config-map-hash" (merge (dict "Params" (dict "File" "schedules")) $) }}
-      {{- end }}
-      {{- if .Params.UseUsersFile }}
-      {{- include "powerpi.template-config-map-hash" (merge (dict "Params" (dict "File" "users")) $) }}
       {{- end }}
 
   spec:
@@ -199,25 +188,9 @@ template:
       {{- if eq .Params.UseConfig true }}
       - name: USE_CONFIG_FILE
         value: "true"
-      {{- if .Params.UseDevicesFile }}
-      - name: DEVICES_FILE
-        value: /var/run/config/powerpi_config/devices.json
-      {{- end }}
-      {{- if .Params.UseEventsFile }}
-      - name: EVENTS_FILE
-        value: /var/run/config/powerpi_config/events.json
-      {{- end }}
-      {{- if .Params.UseFloorplanFile }}
-      - name: FLOORPLAN_FILE
-        value: /var/run/config/powerpi_config/floorplan.json
-      {{- end }}
-      {{- if .Params.UseSchedulesFile }}
-      - name: SCHEDULES_FILE
-        value: /var/run/config/powerpi_config/schedules.json
-      {{- end }}
-      {{- if .Params.UseUsersFile }}
-      - name: USERS_FILE
-        value: /var/run/config/powerpi_config/users.json
+      {{- range $name := $configs }}
+      - name: {{ $name | upper}}_FILE
+        value: /var/run/config/powerpi_config/{{ $name }}.json
       {{- end }}
       {{- end }}
 
@@ -328,39 +301,12 @@ template:
       {{- end }}
       {{- end }}
 
-      {{- if eq .Params.UseConfig true }}
-      {{- if .Params.UseDevicesFile }}
-      - name: config-devices
-        mountPath: /var/run/config/powerpi_config/devices.json
-        subPath: devices.json
+      {{- range $name := $configs }}
+      - name: config-{{ $name }}
+        mountPath: /var/run/config/powerpi_config/{{ $name }}.json
+        subPath: {{ $name }}.json
         readOnly: true
       {{- end }}
-      {{- if .Params.UseEventsFile }}
-      - name: config-events
-        mountPath: /var/run/config/powerpi_config/events.json
-        subPath: events.json
-        readOnly: true
-      {{- end }}
-      {{- if .Params.UseFloorplanFile }}
-      - name: config-floorplan
-        mountPath: /var/run/config/powerpi_config/floorplan.json
-        subPath: floorplan.json
-        readOnly: true
-      {{- end }}
-      {{- if .Params.UseSchedulesFile }}
-      - name: config-schedules
-        mountPath: /var/run/config/powerpi_config/schedules.json
-        subPath: schedules.json
-        readOnly: true
-      {{- end }}
-      {{- if .Params.UseUsersFile }}
-      - name: config-users
-        mountPath: /var/run/config/powerpi_config/users.json
-        subPath: users.json
-        readOnly: true
-      {{- end }}
-      {{- end }}
-
       {{- end }}
 
     restartPolicy: {{ .Params.RestartPolicy | default "Always" }}
@@ -405,32 +351,10 @@ template:
     {{- end }}
     {{- end }}
 
-    {{- if eq .Params.UseConfig true }}
-    {{- if .Params.UseDevicesFile }}
-    - name: config-devices
+    {{- range $name := $configs }}
+    - name: config-{{ $name }}
       configMap:
-        name: config-devices
-    {{- end }}
-    {{- if .Params.UseEventsFile }}
-    - name: config-events
-      configMap:
-        name: config-events
-    {{- end }}
-    {{- if .Params.UseFloorplanFile }}
-    - name: config-floorplan
-      configMap:
-        name: config-floorplan
-    {{- end }}
-    {{- if .Params.UseSchedulesFile }}
-    - name: config-schedules
-      configMap:
-        name: config-schedules
-    {{- end }}
-    {{- if .Params.UseUsersFile }}
-    - name: config-users
-      configMap:
-        name: config-users
-    {{- end }}
+        name: config-{{ $name }}
     {{- end }}
 
     {{- if $hasEmptyDir }}
