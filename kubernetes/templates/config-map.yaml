@@ -13,7 +13,14 @@ data:
 {{ .Params.Content | toString | indent 4 }}
 {{- end }}
 
+{{- $exclude := list }}
+{{- if not .Values.global.event }}{{- $exclude = append $exclude "events" }}{{- end }}
+{{- if not .Values.global.scheduler }}{{- $exclude = append $exclude "schedules" }}{{- end }}
+
 {{- range $path, $content := .Files.Glob "config/*.json" }}
+{{- $name := $path | base | trimSuffix ".json" }}
+{{- if not (has $name $exclude) }}
 ---
 {{- include "powerpi.config-map" (merge (dict "Params" (dict "File" $path "Content" $content)) $) }}
+{{- end }}
 {{- end }}
