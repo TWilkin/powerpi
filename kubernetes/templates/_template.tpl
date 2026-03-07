@@ -196,11 +196,9 @@ template:
       {{- end }}
       {{- end }}
 
-      {{- if $config }}
       {{- if eq .Params.UseConfig true }}
       - name: USE_CONFIG_FILE
         value: "true"
-      {{- end }}
       {{- if .Params.UseDevicesFile }}
       - name: DEVICES_FILE
         value: /var/run/config/powerpi_config/devices.json
@@ -330,10 +328,37 @@ template:
       {{- end }}
       {{- end }}
 
-      {{- if $config }}
-      - name: config
-        mountPath: /var/run/config/powerpi_config
+      {{- if eq .Params.UseConfig true }}
+      {{- if .Params.UseDevicesFile }}
+      - name: config-devices
+        mountPath: /var/run/config/powerpi_config/devices.json
+        subPath: devices.json
         readOnly: true
+      {{- end }}
+      {{- if .Params.UseEventsFile }}
+      - name: config-events
+        mountPath: /var/run/config/powerpi_config/events.json
+        subPath: events.json
+        readOnly: true
+      {{- end }}
+      {{- if .Params.UseFloorplanFile }}
+      - name: config-floorplan
+        mountPath: /var/run/config/powerpi_config/floorplan.json
+        subPath: floorplan.json
+        readOnly: true
+      {{- end }}
+      {{- if .Params.UseSchedulesFile }}
+      - name: config-schedules
+        mountPath: /var/run/config/powerpi_config/schedules.json
+        subPath: schedules.json
+        readOnly: true
+      {{- end }}
+      {{- if .Params.UseUsersFile }}
+      - name: config-users
+        mountPath: /var/run/config/powerpi_config/users.json
+        subPath: users.json
+        readOnly: true
+      {{- end }}
       {{- end }}
 
       {{- end }}
@@ -380,10 +405,32 @@ template:
     {{- end }}
     {{- end }}
 
-    {{- if $config }}
-    - name: config
+    {{- if eq .Params.UseConfig true }}
+    {{- if .Params.UseDevicesFile }}
+    - name: config-devices
       configMap:
-        name: config
+        name: config-devices
+    {{- end }}
+    {{- if .Params.UseEventsFile }}
+    - name: config-events
+      configMap:
+        name: config-events
+    {{- end }}
+    {{- if .Params.UseFloorplanFile }}
+    - name: config-floorplan
+      configMap:
+        name: config-floorplan
+    {{- end }}
+    {{- if .Params.UseSchedulesFile }}
+    - name: config-schedules
+      configMap:
+        name: config-schedules
+    {{- end }}
+    {{- if .Params.UseUsersFile }}
+    - name: config-users
+      configMap:
+        name: config-users
+    {{- end }}
     {{- end }}
 
     {{- if $hasEmptyDir }}
