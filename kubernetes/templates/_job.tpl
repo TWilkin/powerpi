@@ -22,10 +22,12 @@ metadata:
   {{- end }}
 
 spec:
+  {{- if not (empty .Params.Schedule) }}
   schedule: {{ .Params.Schedule | quote }}
   concurrencyPolicy: {{ .Params.ConcurrencyPolicy | default "Replace" }}
+  {{- end }}
 
-  jobTemplate:
+  {{ ternary "template" "jobTemplate" (empty .Params.Schedule) }}:
     spec:
       activeDeadlineSeconds: {{ .Params.ActiveDeadlineSeconds }}
       
