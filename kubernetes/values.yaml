@@ -53,6 +53,9 @@ global:
   # whether to include N3rgy energy monitoring support
   energyMonitor: false
 
+  # whether to use Reloader to watch for ConfigMap and Secret changes. Turn off if you have a cluster-wide reloader instance.
+  reloader: true
+
 config-server:
   # the path to the config files in the GitHub repo
   path: "kubernetes/config"
@@ -105,3 +108,17 @@ zigbee-controller:
     - 10.0.0.0/8
     - 172.16.0.0/20
     - 192.168.0.0/16
+
+# Configuration for Reloader
+reloader:
+  reloader:
+    watchGlobally: false
+
+    deployment:
+      resources:
+        limits:
+          cpu: 20m
+          memory: 32Mi
+        requests:
+          cpu: 5m
+          memory: 16Mi

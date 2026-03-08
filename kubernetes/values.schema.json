@@ -116,6 +116,11 @@
                     "type": "boolean"
                 },
 
+                "reloader": {
+                    "description": "whether to use Reloader to watch for ConfigMap and Secret changes. Turn off if you have a cluster-wide reloader instance.",
+                    "type": "boolean"
+                },
+
                 "storageClass": {
                     "description": "When defined will use the specified StorageClass instead of using local storage. The default hostpath storage is node-local, requiring node affinity labels. Provide a distributed StorageClass to enable failover across nodes.",
                     "type": "string"
@@ -325,6 +330,11 @@
                 }
             },
             "unevaluatedProperties": false
+        },
+
+        "reloader": {
+            "description": "The configuration for the PowerPi Reloader service Helm chart",
+            "type": "object"
         },
 
         "scheduler": {
