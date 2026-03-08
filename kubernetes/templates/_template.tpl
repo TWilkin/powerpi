@@ -37,7 +37,7 @@ template:
   metadata:
   {{- include "powerpi.labels.no-version" . | indent 2 }}
 
-    {{- if or $hasAnnotations $config $hasConfig }}
+    {{- if or $hasAnnotations (and $config (not .Values.global.config)) $hasConfig }}
     annotations:
       {{- if $hasAnnotations }}
       {{- range $element := .Params.Annotations }}
@@ -56,11 +56,8 @@ template:
       {{- end }}
       {{- end }}
 
+      {{- if not .Values.global.config }}
       {{- range $name := $configs }}
-      {{- if $.Values.global.config }}
-      {{- $configMap := lookup "v1" "ConfigMap" $.Release.Namespace (printf "config-%s" $name) }}
-      checksum/config-{{ $name }}: {{ ($configMap.data | default dict) | toJson | sha256sum | quote }}
-      {{- else }}
       checksum/config-{{ $name }}: {{ $.Files.Get (printf "config/%s.json" $name) | sha256sum | quote }}
       {{- end }}
       {{- end }}
