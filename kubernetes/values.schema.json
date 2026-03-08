@@ -130,6 +130,12 @@
                     "description": "The external host name to use for mosquitto when using sensors and a ClusterIssuer",
                     "type": "string",
                     "pattern": "^\\w+(\\.\\w+)+$"
+                },
+
+                "kubernetesClusterIP": {
+                    "description": "The IP address of the Kubernetes cluster IP for the API",
+                    "type": "string",
+                    "format": "ipv4"
                 }
             },
             "required": ["externalHostName"],

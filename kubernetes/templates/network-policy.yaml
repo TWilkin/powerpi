@@ -20,3 +20,14 @@ spec:
     "Mosquitto" true
 }}
 {{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+
+{{ if .Values.global.reloader }}
+---
+# Allow Reloader access to the Kubernetes API
+{{- $data := dict
+    "Name" "reloader-policy"
+    "Label" "reloader"
+    "Kubernetes" true
+}}
+{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+{{- end }}

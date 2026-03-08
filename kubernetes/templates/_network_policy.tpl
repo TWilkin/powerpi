@@ -90,6 +90,13 @@ ports:
 ) -}}
 {{- end -}}
 
+{{- if .Params.Kubernetes -}}
+{{- $egress = append $egress (dict
+    "Cidr" (printf "%s/32" .Values.global.kubernetesClusterIP)
+    "Port" 443
+) -}}
+{{- end -}}
+
 {{- if .Params.External -}}
 {{- $egress = append $egress (dict
     "Cidr" "0.0.0.0/0"
