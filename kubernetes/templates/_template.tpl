@@ -57,7 +57,7 @@ template:
       {{- end }}
 
       {{- if $config }}
-      {{- if .Values.global.config }}
+      {{- if .Values.global.reloader }}
       {{- $prefixed := list }}
       {{- range $configs }}
         {{- $prefixed = append $prefixed (printf "config-%s" .) }}
