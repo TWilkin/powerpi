@@ -27,10 +27,15 @@ spec:
   concurrencyPolicy: {{ .Params.ConcurrencyPolicy | default "Replace" }}
   {{- end }}
 
-  {{ ternary "template" "jobTemplate" (empty .Params.Schedule) }}:
+  {{- if (empty .Params.Schedule) }}
+  activeDeadlineSeconds: {{ .Params.ActiveDeadlineSeconds }}
+  
+  {{- include "powerpi.template" (merge (dict "Params" $data) . ) | indent 2 }}
+  {{- else }}
+  jobTemplate:
     spec:
       activeDeadlineSeconds: {{ .Params.ActiveDeadlineSeconds }}
       
       {{- include "powerpi.template" (merge (dict "Params" $data) . ) | indent 6 }}
-
+  {{- end }}
 {{- end }}
