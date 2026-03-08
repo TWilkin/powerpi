@@ -37,7 +37,7 @@ template:
   metadata:
   {{- include "powerpi.labels.no-version" . | indent 2 }}
 
-    {{- if or $hasAnnotations (and $config (not .Values.global.config)) $hasConfig }}
+    {{- if or $hasAnnotations $config $hasConfig }}
     annotations:
       {{- if $hasAnnotations }}
       {{- range $element := .Params.Annotations }}
@@ -56,9 +56,17 @@ template:
       {{- end }}
       {{- end }}
 
-      {{- if not .Values.global.config }}
+      {{- if $config }}
+      {{- if .Values.global.config }}
+      {{- $prefixed := list }}
+      {{- range $configs }}
+        {{- $prefixed = append $prefixed (printf "config-%s" .) }}
+      {{- end }}
+      configmap.reloader.stakater.com/reload: {{ $prefixed | join "," }}
+      {{- else }}
       {{- range $name := $configs }}
       checksum/config-{{ $name }}: {{ $.Files.Get (printf "config/%s.json" $name) | sha256sum | quote }}
+      {{- end }}
       {{- end }}
       {{- end }}
     {{- end }}
