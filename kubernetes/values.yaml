@@ -111,6 +111,8 @@ zigbee-controller:
 
 # Configuration for Reloader
 reloader:
+  fullnameOverride: reloader
+
   reloader:
     watchGlobally: false
 
