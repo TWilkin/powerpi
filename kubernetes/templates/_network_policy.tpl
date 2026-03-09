@@ -104,8 +104,8 @@ ports:
 
 {{- if .Params.Kubernetes -}}
 {{- $egress = append $egress (dict
-    "Cidr" (printf "%s/32" .Values.global.kubernetesClusterIP)
-    "Port" 443
+    "Cidr" .Values.global.kubernetesClusterCIDR
+    "Port" (.Values.global.kubernetesAPIPort | default "16443")
 ) -}}
 {{- end -}}
 

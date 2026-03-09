@@ -132,10 +132,17 @@
                     "pattern": "^\\w+(\\.\\w+)+$"
                 },
 
-                "kubernetesClusterIP": {
-                    "description": "The IP address of the Kubernetes cluster IP for the API",
+                "kubernetesClusterCIDR": {
+                    "description": "The CIDR address of the Kubernetes cluster for the API",
                     "type": "string",
-                    "format": "ipv4"
+                    "format": "ipv4-cidr"
+                },
+
+                "kubernetesAPIPort": {
+                    "description": "The port number for the Kubernetes API",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
                 }
             },
             "required": ["externalHostName"],
