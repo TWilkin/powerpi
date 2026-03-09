@@ -3,6 +3,7 @@ package services
 import (
 	"powerpi/common/services"
 	"powerpi/config-server/services/config"
+	"powerpi/config-server/services/kubernetes"
 )
 
 type ConfigServerContainer interface {
@@ -19,6 +20,7 @@ func NewConfigServerContainer() ConfigServerContainer {
 	}
 
 	container.Container().Provide(config.NewConfigService)
+	container.Container().Provide(kubernetes.NewConfigMapService)
 
 	// Override the common config service with the shutdown config service
 	container.SetConfigService(GetService[config.ConfigService](container))
