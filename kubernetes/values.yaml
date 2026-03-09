@@ -117,6 +117,9 @@ reloader:
     watchGlobally: false
 
     deployment:
+      livenessProbe:
+        initialDelaySeconds: 120
+
       resources:
         limits:
           cpu: 20m
