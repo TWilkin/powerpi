@@ -32,13 +32,17 @@ func (manager *configManager) Start() {
 	files := []string{"devices", "events", "floorplan", "schedules", "users"}
 
 	for _, file := range files {
-		manager.logger.Info("Checking for config file", file)
-
-		checksum, err := manager.configMap.GetChecksum(ctx, fmt.Sprintf("config-%s", file))
-		if err != nil {
-			continue
-		}
-
-		manager.logger.Info("Comparing checksum", file, checksum)
+		manager.ProcessFile(ctx, file)
 	}
+}
+
+func (manager *configManager) ProcessFile(ctx context.Context, file string) {
+	manager.logger.Info("Checking for config file", "file", file)
+
+	checksum, err := manager.configMap.GetChecksum(ctx, fmt.Sprintf("config-%s", file))
+	if err != nil {
+		manager.logger.Error("Unable to retrieve checksum", "file", file, "err", err)
+	}
+
+	manager.logger.Info("Comparing checksum", "file", file, "checksum", *checksum)
 }
