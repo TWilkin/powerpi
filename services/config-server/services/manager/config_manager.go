@@ -91,9 +91,11 @@ func (manager *configManager) processFile(ctx context.Context, file string) {
 	// validate the file
 	err = manager.validator.Validate(file, content)
 	if err != nil {
-		manager.logger.Error("Validation failed for file", "file", file, "err", err)
+		manager.logger.Error("Validation failed", "file", file, "err", err)
 		return
 	}
+
+	manager.logger.Info("Validation passed", "file", file)
 
 	if *checksum != newChecksum {
 		// write the new data and checksum
