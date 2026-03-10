@@ -70,7 +70,7 @@ func (manager *configManager) processFile(ctx context.Context, file models.FileT
 	configName := fmt.Sprintf("config-%s", file)
 
 	// get the current checksum (if any)
-	checksum, err := manager.configMap.GetChecksum(ctx, configName)
+	checksum, err := manager.readChecksum(ctx, configName)
 	if err != nil {
 		manager.logger.Error("Unable to retrieve checksum", "file", file, "err", err)
 	}
@@ -98,16 +98,33 @@ func (manager *configManager) processFile(ctx context.Context, file models.FileT
 
 	if *checksum != newChecksum {
 		// write the new data and checksum
-		fileName := fmt.Sprintf("%s.json", file)
-		err = manager.configMap.Write(ctx, configName, fileName, content, newChecksum)
+		err = manager.writeConfigMap(ctx, configName, file, content, newChecksum)
 		if err != nil {
-			manager.logger.Error("Failed to write updated ConfigMap", "file", file, "err", err)
+			manager.logger.Error("Failed to write updated ConfigMap", "configMap", configName, "err", err)
+			return
 		}
 
 		manager.logger.Info("Updated ConfigMap", "file", file)
 	} else {
 		manager.logger.Info("Not updating ConfigMap as file is unchanged", "file", file)
 	}
+}
+
+func (manager *configManager) readChecksum(ctx context.Context, configName string) (*string, error) {
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+
+	manager.logger.Info("Reading checksum in ConfigMap", "configMap", configName)
+
+	return manager.configMap.GetChecksum(ctx, configName)
+}
+
+func (manager *configManager) writeConfigMap(ctx context.Context, configName string, file models.FileType, content string, checksum string) error {
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+
+	fileName := fmt.Sprintf("%s.json", file)
+	return manager.configMap.Write(ctx, configName, fileName, content, checksum)
 }
 
 func (manager *configManager) readFile(ctx context.Context, fileName string) (string, error) {
