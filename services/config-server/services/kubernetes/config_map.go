@@ -11,6 +11,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	k8s "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 type ConfigMapService interface {
@@ -27,7 +28,11 @@ type configMapService struct {
 func NewConfigMapService(config config.ConfigService, logger logger.LoggerService) (ConfigMapService, error) {
 	k8sConfig, err := rest.InClusterConfig()
 	if err != nil {
-		return nil, err
+		// fallback to kubeconfig for local development
+		k8sConfig, err = clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	clientset, err := k8s.NewForConfig(k8sConfig)
@@ -52,13 +57,13 @@ func (configMap *configMapService) getConfigMap(ctx context.Context, name string
 func (configMap *configMapService) GetChecksum(ctx context.Context, name string) (*string, error) {
 	definition, err := configMap.getConfigMap(ctx, name)
 	if err != nil {
-		configMap.logger.Warn("Failed to find ConfigMap", name, err)
+		configMap.logger.Warn("Failed to find ConfigMap", "name", name, "err", err)
 		return nil, err
 	}
 
 	checksum, okay := definition.Annotations[fmt.Sprintf("checksum/%s", name)]
 	if !okay {
-		configMap.logger.Info("ConfigMap has no checksum", name)
+		configMap.logger.Info("ConfigMap has no checksum", "name", name)
 	}
 
 	return &checksum, nil
