@@ -39,10 +39,23 @@ func (manager *configManager) Start() {
 func (manager *configManager) ProcessFile(ctx context.Context, file string) {
 	manager.logger.Info("Checking for config file", "file", file)
 
-	checksum, err := manager.configMap.GetChecksum(ctx, fmt.Sprintf("config-%s", file))
+	configName := fmt.Sprintf("config-%s", file)
+
+	// get the current checksum (if any)
+	checksum, err := manager.configMap.GetChecksum(ctx, configName)
 	if err != nil {
 		manager.logger.Error("Unable to retrieve checksum", "file", file, "err", err)
 	}
 
-	manager.logger.Info("Comparing checksum", "file", file, "checksum", *checksum)
+	manager.logger.Info("Read checksum", "file", file, "checksum", *checksum)
+
+	// write the new data and checksum
+	fileName := fmt.Sprintf("%s.json", file)
+	err = manager.configMap.Write(ctx, configName, fileName, "{}", *checksum)
+	if err != nil {
+		manager.logger.Error("Failed to write updated ConfigMap", "file", file, "err", err)
+	}
+
+	manager.logger.Info("Updated ConfigMap", "file", file)
+
 }
