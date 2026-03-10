@@ -11,6 +11,7 @@ import (
 	"powerpi/config-server/services/converter"
 	"powerpi/config-server/services/github"
 	"powerpi/config-server/services/kubernetes"
+	"powerpi/config-server/services/validator"
 )
 
 type ConfigManager interface {
@@ -23,6 +24,7 @@ type configManager struct {
 	configMap kubernetes.ConfigMapService
 	gitHub    github.GitHubService
 	converter converter.ConverterService
+	validator validator.ValidatorService
 }
 
 func NewConfigManager(
@@ -31,6 +33,7 @@ func NewConfigManager(
 	configMap kubernetes.ConfigMapService,
 	gitHub github.GitHubService,
 	converter converter.ConverterService,
+	validator validator.ValidatorService,
 ) ConfigManager {
 	return &configManager{
 		config:    config,
@@ -38,6 +41,7 @@ func NewConfigManager(
 		configMap: configMap,
 		gitHub:    gitHub,
 		converter: converter,
+		validator: validator,
 	}
 }
 
@@ -83,6 +87,13 @@ func (manager *configManager) processFile(ctx context.Context, file string) {
 	newChecksum := fmt.Sprintf("%x", sha256.Sum256([]byte(content)))
 
 	manager.logger.Info("Read file from GitHub", "file", file, "checksum", *&newChecksum)
+
+	// validate the file
+	err = manager.validator.Validate(file, content)
+	if err != nil {
+		manager.logger.Error("Validation failed for file", "file", file, "err", err)
+		return
+	}
 
 	if *checksum != newChecksum {
 		// write the new data and checksum

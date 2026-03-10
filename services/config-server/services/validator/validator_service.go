@@ -3,6 +3,7 @@ package validator
 import (
 	"embed"
 	"fmt"
+	"io/fs"
 	"strings"
 	"sync"
 
@@ -32,46 +33,56 @@ func (validator *validatorService) getCompiler() (*jsonSchema.Compiler, error) {
 	validator.compilerOnce.Do(func() {
 		validator.compiler = jsonSchema.NewCompiler()
 
-		entries, err := validator.schema.ReadDir(".")
+		err := fs.WalkDir(validator.schema, ".", validator.addSchemaDirectory)
 		if err != nil {
 			outerErr = err
-			return
-		}
-
-		// add the whole schema
-		for _, entry := range entries {
-			if entry.IsDir() {
-				continue
-			}
-
-			file, err := validator.schema.Open(entry.Name())
-			if err != nil {
-				outerErr = err
-				return
-			}
-			defer file.Close()
-
-			schema, err := jsonSchema.UnmarshalJSON(file)
-			if err != nil {
-				outerErr = err
-				return
-			}
-
-			err = validator.compiler.AddResource(entry.Name(), schema)
-			if err != nil {
-				outerErr = err
-				return
-			}
 		}
 	})
 
 	return validator.compiler, outerErr
 }
 
-func (validator *validatorService) Validate(file string, content string) error {
-	schemaName := fmt.Sprintf("config/%s.schema.json", file)
+func (validator *validatorService) addSchemaDirectory(path string, directory fs.DirEntry, err error) error {
+	if err != nil || directory.IsDir() {
+		return err
+	}
 
-	schema, err := validator.compiler.Compile(schemaName)
+	file, err := validator.schema.Open(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	schema, err := jsonSchema.UnmarshalJSON(file)
+	if err != nil {
+		return err
+	}
+
+	schemaJson, ok := schema.(map[string]any)
+	if ok {
+		id, ok := schemaJson["$id"].(string)
+		if ok {
+			return validator.compiler.AddResource(id, schema)
+		}
+
+		return fmt.Errorf("Schema %s is missing $id", path)
+	}
+
+	return fmt.Errorf("Schema %s is missing $id", path)
+}
+
+func (validator *validatorService) Validate(file string, content string) error {
+	compiler, err := validator.getCompiler()
+	if err != nil {
+		return err
+	}
+
+	schemaName := fmt.Sprintf(
+		"https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/%s.schema.json",
+		file,
+	)
+
+	schema, err := compiler.Compile(schemaName)
 	if err != nil {
 		return err
 	}
