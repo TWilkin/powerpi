@@ -1,6 +1,8 @@
 package converter
 
-import "sigs.k8s.io/yaml"
+import (
+	yaml "github.com/goccy/go-yaml"
+)
 
 type ConverterService interface {
 	YAMLtoJSON(content string) (string, error)
