@@ -2,7 +2,9 @@ package manager
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
+
 	"powerpi/common/services/logger"
 	"powerpi/config-server/services/kubernetes"
 )
@@ -47,15 +49,25 @@ func (manager *configManager) ProcessFile(ctx context.Context, file string) {
 		manager.logger.Error("Unable to retrieve checksum", "file", file, "err", err)
 	}
 
-	manager.logger.Info("Read checksum", "file", file, "checksum", *checksum)
+	manager.logger.Info("Read current checksum", "file", file, "checksum", *checksum)
 
-	// write the new data and checksum
-	fileName := fmt.Sprintf("%s.json", file)
-	err = manager.configMap.Write(ctx, configName, fileName, "{}", *checksum)
-	if err != nil {
-		manager.logger.Error("Failed to write updated ConfigMap", "file", file, "err", err)
+	// TODO read the new file
+	content := "{}"
+	newChecksum := fmt.Sprintf("%x", sha256.Sum256([]byte(content)))
+
+	manager.logger.Info("Read file from GitHub", "file", file, "checksum", *&newChecksum)
+
+	if *checksum != newChecksum {
+		// write the new data and checksum
+		fileName := fmt.Sprintf("%s.json", file)
+		err = manager.configMap.Write(ctx, configName, fileName, content, newChecksum)
+		if err != nil {
+			manager.logger.Error("Failed to write updated ConfigMap", "file", file, "err", err)
+		}
+
+		manager.logger.Info("Updated ConfigMap", "file", file)
+	} else {
+		manager.logger.Info("Not updating ConfigMap as file is unchanged", "file", file)
 	}
-
-	manager.logger.Info("Updated ConfigMap", "file", file)
 
 }
