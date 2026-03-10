@@ -48,11 +48,11 @@ func (manager *configManager) Start() {
 			continue
 		}
 
-		manager.ProcessFile(ctx, file)
+		manager.processFile(ctx, file)
 	}
 }
 
-func (manager *configManager) ProcessFile(ctx context.Context, file string) {
+func (manager *configManager) processFile(ctx context.Context, file string) {
 	manager.logger.Info("Checking for config file", "file", file)
 
 	configName := fmt.Sprintf("config-%s", file)
