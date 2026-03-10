@@ -1,15 +1,15 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/AqaraDoorWindow.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/zigbee/AqaraDoorWindow.schema.json",
     "title": "AqaraDoorWindow",
     "description": "The Aqara door or window sensor",
     "type": "object",
     "allOf": [
         {
-            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Sensor.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Sensor.schema.json"
         },
         {
-            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeeDevice.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/zigbee/ZigBeeDevice.schema.json"
         }
     ],
     "oneOf": [
@@ -35,7 +35,7 @@
                     "properties": {
                         "door": {
                             "description": "Whether to capture the door open/close state report by the sensor",
-                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Metric.schema.json"
                         }
                     },
                     "required": ["door"],
@@ -55,7 +55,7 @@
                     "properties": {
                         "window": {
                             "description": "Whether to capture the window open/close state report by the sensor",
-                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Metric.schema.json"
                         }
                     },
                     "required": ["window"],

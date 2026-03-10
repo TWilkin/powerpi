@@ -1,12 +1,12 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/users.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/config/users.schema.json",
     "title": "Users",
     "description": "The configuration for the users who are allowed to use PowerPi",
     "type": "object",
     "properties": {
         "$schema": {
-            "const": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/users.schema.json"
+            "const": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/config/users.schema.json"
         },
         "users": {
             "description": "The list of users who can access PowerPi",

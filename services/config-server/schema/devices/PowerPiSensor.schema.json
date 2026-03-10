@@ -1,12 +1,12 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PowerPiSensor.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/PowerPiSensor.schema.json",
     "title": "PowerPiSensor",
     "description": "A PowerPi sensor using the ESP8266 code",
     "type": "object",
     "allOf": [
         {
-            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Sensor.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Sensor.schema.json"
         }
     ],
     "properties": {
@@ -19,15 +19,15 @@
             "properties": {
                 "humidity": {
                     "description": "Whether to capture the humidity reported by the sensor",
-                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Metric.schema.json"
                 },
                 "motion": {
                     "description": "Whether to capture the motion reported by the sensor",
-                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Metric.schema.json"
                 },
                 "temperature": {
                     "description": "Whether to capture the temperature reported by the sensor",
-                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Metric.schema.json"
                 }
             },
             "anyOf": [

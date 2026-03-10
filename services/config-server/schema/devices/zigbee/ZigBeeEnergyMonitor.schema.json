@@ -1,18 +1,18 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeeEnergyMonitor.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/zigbee/ZigBeeEnergyMonitor.schema.json",
     "title": "ZigBeeEnergyMonitor",
     "description": "The ZigBee Energy Monitor sensor",
     "type": "object",
     "allOf": [
         {
-            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Sensor.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Sensor.schema.json"
         },
         {
-            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/PollableDevice.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/PollableDevice.schema.json"
         },
         {
-            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/zigbee/ZigBeeDevice.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/zigbee/ZigBeeDevice.schema.json"
         }
     ],
     "properties": {
@@ -25,15 +25,15 @@
             "properties": {
                 "power": {
                     "description": "Whether to capture the power usage reported by the sensor",
-                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Metric.schema.json"
                 },
                 "current": {
                     "description": "Whether to capture the current reported by the sensor",
-                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Metric.schema.json"
                 },
                 "voltage": {
                     "description": "Whether to capture the voltage reported by the sensor",
-                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/devices/Metric.schema.json"
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Metric.schema.json"
                 }
             },
             "anyOf": [

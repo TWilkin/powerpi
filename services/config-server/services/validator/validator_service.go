@@ -78,7 +78,7 @@ func (validator *validatorService) Validate(file string, content string) error {
 	}
 
 	schemaName := fmt.Sprintf(
-		"https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/%s.schema.json",
+		"https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/config/%s.schema.json",
 		file,
 	)
 

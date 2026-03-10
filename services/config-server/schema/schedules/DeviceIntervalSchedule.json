@@ -1,12 +1,12 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/schedules/DeviceIntervalSchedule.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/schedules/DeviceIntervalSchedule.schema.json",
     "title": "DeviceIntervalSchedule",
     "description": "The configuration for a schedule which changes a device state over an interval",
     "type": "object",
     "allOf": [
         {
-            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/schedules/DeviceSchedule.schema.json"
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/schedules/DeviceSchedule.schema.json"
         }
     ],
     "properties": {
@@ -26,7 +26,7 @@
             "minItems": 2,
             "maxItems": 2,
             "items": {
-                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Hue.schema.json"
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/common/Hue.schema.json"
             }
         },
         "saturation": {
@@ -35,7 +35,7 @@
             "minItems": 2,
             "maxItems": 2,
             "items": {
-                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Percentage.schema.json"
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/common/Percentage.schema.json"
             }
         },
         "brightness": {
@@ -44,7 +44,7 @@
             "minItems": 2,
             "maxItems": 2,
             "items": {
-                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Percentage.schema.json"
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/common/Percentage.schema.json"
             }
         },
         "temperature": {
@@ -53,7 +53,7 @@
             "minItems": 2,
             "maxItems": 2,
             "items": {
-                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/ColourTemperature.schema.json"
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/common/ColourTemperature.schema.json"
             }
         },
         "force": {

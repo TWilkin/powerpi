@@ -1,5 +1,5 @@
 {
-    "$schema": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/schedules.schema.json",
+    "$schema": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/config/schedules.schema.json",
 
     "timezone": "Europe/London",
 

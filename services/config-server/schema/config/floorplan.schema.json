@@ -1,12 +1,12 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/floorplan.schema.json",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/config/floorplan.schema.json",
     "title": "Floorplan",
     "description": "The configuration for the floorplan to show in the UI",
     "type": "object",
     "properties": {
         "$schema": {
-            "const": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/floorplan.schema.json"
+            "const": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/config/floorplan.schema.json"
         },
         "floorplan": {
             "description": "The floorplan",
@@ -21,7 +21,7 @@
                         "properties": {
                             "name": {
                                 "description": "The name of this floor",
-                                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
+                                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/common/Identifier.schema.json"
                             },
                             "display_name": {
                                 "description": "The display name of this floor",
@@ -36,7 +36,7 @@
                                     "properties": {
                                         "name": {
                                             "description": "The name of this room",
-                                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/common/Identifier.schema.json"
+                                            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/common/Identifier.schema.json"
                                         },
                                         "display_name": {
                                             "description": "The display name of this room",
