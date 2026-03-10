@@ -16,6 +16,8 @@ type ConfigService interface {
 	GetGitHubConfig() config.GitHubConfig
 	GetGitHubToken() *string
 
+	GetKubernetesConfig() config.KubernetesConfig
+
 	GetFileConfig() config.FileConfig
 }
 
@@ -23,8 +25,9 @@ type configService struct {
 	commonConfigService.ConfigService
 	logger logger.LoggerService
 
-	gitHub config.GitHubConfig
-	files  config.FileConfig
+	gitHub     config.GitHubConfig
+	kubernetes config.KubernetesConfig
+	files      config.FileConfig
 }
 
 func NewConfigService(logger logger.LoggerService) ConfigService {
@@ -32,8 +35,9 @@ func NewConfigService(logger logger.LoggerService) ConfigService {
 		ConfigService: commonConfigService.NewConfigService(logger),
 		logger:        logger,
 
-		gitHub: config.GitHubConfig{},
-		files:  config.FileConfig{},
+		gitHub:     config.GitHubConfig{},
+		kubernetes: config.KubernetesConfig{},
+		files:      config.FileConfig{},
 	}
 }
 
@@ -47,6 +51,9 @@ func (service *configService) Parse(args []string) {
 	flagSet.StringVar(&service.gitHub.Branch, "branch", "undefined", "The GitHub repository branch to read from")
 	flagSet.StringVar(&service.gitHub.Path, "path", "undefined", "The path within the GitHub repository and branch to read from")
 
+	// Kubernetes flags
+	flagSet.StringVar(&service.kubernetes.Namespace, "namespace", "powerpi", "The kubernetes namespace to read/write the ConfigMaps from/to")
+
 	// File type flags
 	flagSet.BoolVar(&service.files.Events, "events", true, "Whether the events file is enabled")
 	flagSet.BoolVar(&service.files.Scheduler, "scheduler", true, "Whether the scheduler file is enabled")
@@ -59,12 +66,18 @@ func (service *configService) Parse(args []string) {
 	service.EnvironmentOverride(flagSet, "branch", "BRANCH")
 	service.EnvironmentOverride(flagSet, "path", "FILE_PATH")
 
+	service.EnvironmentOverride(flagSet, "namespace", "NAMESPACE")
+
 	service.EnvironmentOverride(flagSet, "events", "EVENTS_ENABLED")
 	service.EnvironmentOverride(flagSet, "scheduler", "SCHEDULER_ENABLED")
 }
 
 func (service *configService) GetGitHubConfig() config.GitHubConfig {
 	return service.gitHub
+}
+
+func (service *configService) GetKubernetesConfig() config.KubernetesConfig {
+	return service.kubernetes
 }
 
 func (service *configService) GetGitHubToken() *string {

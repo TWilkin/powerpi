@@ -8,6 +8,10 @@ type GitHubConfig struct {
 	Path      string
 }
 
+type KubernetesConfig struct {
+	Namespace string
+}
+
 type FileConfig struct {
 	Events    bool
 	Scheduler bool
