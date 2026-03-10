@@ -8,10 +8,9 @@ import (
 
 	"powerpi/common/services/logger"
 	"powerpi/config-server/services/config"
+	"powerpi/config-server/services/converter"
 	"powerpi/config-server/services/github"
 	"powerpi/config-server/services/kubernetes"
-
-	"sigs.k8s.io/yaml"
 )
 
 type ConfigManager interface {
@@ -23,6 +22,7 @@ type configManager struct {
 	logger    logger.LoggerService
 	configMap kubernetes.ConfigMapService
 	gitHub    github.GitHubService
+	converter converter.ConverterService
 }
 
 func NewConfigManager(
@@ -30,12 +30,14 @@ func NewConfigManager(
 	logger logger.LoggerService,
 	configMap kubernetes.ConfigMapService,
 	gitHub github.GitHubService,
+	converter converter.ConverterService,
 ) ConfigManager {
 	return &configManager{
 		config:    config,
 		logger:    logger,
 		configMap: configMap,
 		gitHub:    gitHub,
+		converter: converter,
 	}
 }
 
@@ -115,12 +117,14 @@ func (manager *configManager) readConfigFile(ctx context.Context, file string) (
 
 	if content != "" {
 		// we have YAML so we need to convert
-		json, err := yaml.YAMLToJSON([]byte(content))
+		manager.logger.Info("Converting YAML to JSON", "file", fileName)
+
+		json, err := manager.converter.YAMLtoJSON(content)
 		if err != nil {
 			manager.logger.Info("Failed to convert from YAML", "file", fileName)
 			return "", err
 		}
-		return string(json), nil
+		return json, nil
 	}
 
 	fileName = fmt.Sprintf("%s.json", fileName)
