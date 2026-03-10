@@ -3,6 +3,7 @@ package services
 import (
 	"powerpi/common/services"
 	"powerpi/config-server/services/config"
+	"powerpi/config-server/services/github"
 	"powerpi/config-server/services/kubernetes"
 	"powerpi/config-server/services/manager"
 )
@@ -21,6 +22,7 @@ func NewConfigServerContainer() ConfigServerContainer {
 	}
 
 	container.Container().Provide(config.NewConfigService)
+	container.Container().Provide(github.NewGitHubService)
 	container.Container().Provide(kubernetes.NewConfigMapService)
 	container.Container().Provide(manager.NewConfigManager)
 

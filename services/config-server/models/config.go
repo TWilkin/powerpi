@@ -4,7 +4,7 @@ type GitHubConfig struct {
 	UserId    string
 	TokenFile string
 	Repo      string
-	Branch    string
+	Ref       string
 	Path      string
 }
 
