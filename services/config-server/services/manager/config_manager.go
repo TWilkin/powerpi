@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"powerpi/common/services/logger"
+	"powerpi/config-server/services/config"
 	"powerpi/config-server/services/kubernetes"
 )
 
@@ -14,15 +15,18 @@ type ConfigManager interface {
 }
 
 type configManager struct {
+	config    config.ConfigService
 	logger    logger.LoggerService
 	configMap kubernetes.ConfigMapService
 }
 
 func NewConfigManager(
+	config config.ConfigService,
 	logger logger.LoggerService,
 	configMap kubernetes.ConfigMapService,
 ) ConfigManager {
 	return &configManager{
+		config:    config,
 		logger:    logger,
 		configMap: configMap,
 	}
@@ -34,6 +38,16 @@ func (manager *configManager) Start() {
 	files := []string{"devices", "events", "floorplan", "schedules", "users"}
 
 	for _, file := range files {
+		if file == "events" && !manager.config.GetFileConfig().Events {
+			// ignore the events file when disabled
+			continue
+		}
+
+		if file == "schedules" && !manager.config.GetFileConfig().Scheduler {
+			// ignore the schedules file when disabled
+			continue
+		}
+
 		manager.ProcessFile(ctx, file)
 	}
 }
