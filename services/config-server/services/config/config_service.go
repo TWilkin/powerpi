@@ -5,7 +5,7 @@ import (
 
 	commonConfigService "powerpi/common/services/config"
 	"powerpi/common/services/logger"
-	config "powerpi/config-server/models"
+	"powerpi/config-server/models"
 )
 
 type ConfigService interface {
@@ -13,21 +13,21 @@ type ConfigService interface {
 
 	Parse(args []string)
 
-	GetGitHubConfig() config.GitHubConfig
+	GetGitHubConfig() models.GitHubConfig
 	GetGitHubToken() *string
 
-	GetKubernetesConfig() config.KubernetesConfig
+	GetKubernetesConfig() models.KubernetesConfig
 
-	GetFileConfig() config.FileConfig
+	GetFileConfig() models.FileConfig
 }
 
 type configService struct {
 	commonConfigService.ConfigService
 	logger logger.LoggerService
 
-	gitHub     config.GitHubConfig
-	kubernetes config.KubernetesConfig
-	files      config.FileConfig
+	gitHub     models.GitHubConfig
+	kubernetes models.KubernetesConfig
+	files      models.FileConfig
 }
 
 func NewConfigService(logger logger.LoggerService) ConfigService {
@@ -35,9 +35,9 @@ func NewConfigService(logger logger.LoggerService) ConfigService {
 		ConfigService: commonConfigService.NewConfigService(logger),
 		logger:        logger,
 
-		gitHub:     config.GitHubConfig{},
-		kubernetes: config.KubernetesConfig{},
-		files:      config.FileConfig{},
+		gitHub:     models.GitHubConfig{},
+		kubernetes: models.KubernetesConfig{},
+		files:      models.FileConfig{},
 	}
 }
 
@@ -72,11 +72,11 @@ func (service *configService) Parse(args []string) {
 	service.EnvironmentOverride(flagSet, "scheduler", "SCHEDULER_ENABLED")
 }
 
-func (service *configService) GetGitHubConfig() config.GitHubConfig {
+func (service *configService) GetGitHubConfig() models.GitHubConfig {
 	return service.gitHub
 }
 
-func (service *configService) GetKubernetesConfig() config.KubernetesConfig {
+func (service *configService) GetKubernetesConfig() models.KubernetesConfig {
 	return service.kubernetes
 }
 
@@ -90,6 +90,6 @@ func (service *configService) GetGitHubToken() *string {
 	return token
 }
 
-func (service *configService) GetFileConfig() config.FileConfig {
+func (service *configService) GetFileConfig() models.FileConfig {
 	return service.files
 }

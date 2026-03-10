@@ -1,4 +1,4 @@
-package config
+package models
 
 type GitHubConfig struct {
 	UserId    string

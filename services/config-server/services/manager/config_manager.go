@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"powerpi/common/services/logger"
+	"powerpi/config-server/models"
 	"powerpi/config-server/services/config"
 	"powerpi/config-server/services/converter"
 	"powerpi/config-server/services/github"
@@ -48,9 +49,7 @@ func NewConfigManager(
 func (manager *configManager) Start() {
 	ctx := context.Background()
 
-	files := []string{"devices", "events", "floorplan", "schedules", "users"}
-
-	for _, file := range files {
+	for _, file := range models.FileTypes {
 		if file == "events" && !manager.config.GetFileConfig().Events {
 			// ignore the events file when disabled
 			continue
@@ -65,7 +64,7 @@ func (manager *configManager) Start() {
 	}
 }
 
-func (manager *configManager) processFile(ctx context.Context, file string) {
+func (manager *configManager) processFile(ctx context.Context, file models.FileType) {
 	manager.logger.Info("Checking for config file", "file", file)
 
 	configName := fmt.Sprintf("config-%s", file)
@@ -120,7 +119,7 @@ func (manager *configManager) readFile(ctx context.Context, fileName string) (st
 	return manager.gitHub.GetFile(ctx, fileName)
 }
 
-func (manager *configManager) readConfigFile(ctx context.Context, file string) (string, error) {
+func (manager *configManager) readConfigFile(ctx context.Context, file models.FileType) (string, error) {
 	// first we try YAML
 	fileName := fmt.Sprintf("%s.yaml", file)
 	content, err := manager.readFile(ctx, fileName)
@@ -141,6 +140,6 @@ func (manager *configManager) readConfigFile(ctx context.Context, file string) (
 	}
 
 	fileName = fmt.Sprintf("%s.json", fileName)
-	return manager.readFile(ctx, file)
+	return manager.readFile(ctx, fileName)
 
 }

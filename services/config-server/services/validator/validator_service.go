@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 	"io/fs"
+	"powerpi/config-server/models"
 	"strings"
 	"sync"
 
@@ -11,7 +12,7 @@ import (
 )
 
 type ValidatorService interface {
-	Validate(file string, content string) error
+	Validate(file models.FileType, content string) error
 }
 
 type validatorService struct {
@@ -71,7 +72,7 @@ func (validator *validatorService) addSchemaDirectory(path string, directory fs.
 	return fmt.Errorf("Schema %s is missing $id", path)
 }
 
-func (validator *validatorService) Validate(file string, content string) error {
+func (validator *validatorService) Validate(file models.FileType, content string) error {
 	compiler, err := validator.getCompiler()
 	if err != nil {
 		return err
