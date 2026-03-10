@@ -47,7 +47,7 @@ func (service *configService) Parse(args []string) {
 	// GitHub flags
 	flagSet.StringVar(&service.gitHub.UserId, "github-user", "undefined", "The GitHub user id to authenticate as")
 	flagSet.StringVar(&service.gitHub.TokenFile, "github-token", "undefined", "The path to GitHub user token file to authenticate with")
-	flagSet.StringVar(&service.gitHub.Repo, "repo", "undefined", "The GitHub repository to read from")
+	flagSet.StringVar(&service.gitHub.Repo, "repo", "powerpi-config", "The GitHub repository to read from")
 	flagSet.StringVar(&service.gitHub.Ref, "ref", "main", "The GitHub repository branch or tag to read from")
 	flagSet.StringVar(&service.gitHub.Path, "path", "undefined", "The path within the GitHub repository and branch to read from")
 

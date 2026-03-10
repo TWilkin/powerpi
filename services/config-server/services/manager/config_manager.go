@@ -4,10 +4,14 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"time"
 
 	"powerpi/common/services/logger"
 	"powerpi/config-server/services/config"
+	"powerpi/config-server/services/github"
 	"powerpi/config-server/services/kubernetes"
+
+	"sigs.k8s.io/yaml"
 )
 
 type ConfigManager interface {
@@ -18,17 +22,20 @@ type configManager struct {
 	config    config.ConfigService
 	logger    logger.LoggerService
 	configMap kubernetes.ConfigMapService
+	gitHub    github.GitHubService
 }
 
 func NewConfigManager(
 	config config.ConfigService,
 	logger logger.LoggerService,
 	configMap kubernetes.ConfigMapService,
+	gitHub github.GitHubService,
 ) ConfigManager {
 	return &configManager{
 		config:    config,
 		logger:    logger,
 		configMap: configMap,
+		gitHub:    gitHub,
 	}
 }
 
@@ -65,8 +72,12 @@ func (manager *configManager) processFile(ctx context.Context, file string) {
 
 	manager.logger.Info("Read current checksum", "file", file, "checksum", *checksum)
 
-	// TODO read the new file
-	content := "{}"
+	content, err := manager.readConfigFile(ctx, file)
+	if err != nil || content == "" {
+		// without any content we don't want to continue
+		manager.logger.Error("Unable to retrieve file from GitHub", "file", file, "err", err)
+		return
+	}
 	newChecksum := fmt.Sprintf("%x", sha256.Sum256([]byte(content)))
 
 	manager.logger.Info("Read file from GitHub", "file", file, "checksum", *&newChecksum)
@@ -83,5 +94,36 @@ func (manager *configManager) processFile(ctx context.Context, file string) {
 	} else {
 		manager.logger.Info("Not updating ConfigMap as file is unchanged", "file", file)
 	}
+}
+
+func (manager *configManager) readFile(ctx context.Context, fileName string) (string, error) {
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+
+	manager.logger.Info("Reading file from GitHub", "file", fileName)
+
+	return manager.gitHub.GetFile(ctx, fileName)
+}
+
+func (manager *configManager) readConfigFile(ctx context.Context, file string) (string, error) {
+	// first we try YAML
+	fileName := fmt.Sprintf("%s.yaml", file)
+	content, err := manager.readFile(ctx, fileName)
+	if err != nil {
+		return content, err
+	}
+
+	if content != "" {
+		// we have YAML so we need to convert
+		json, err := yaml.YAMLToJSON([]byte(content))
+		if err != nil {
+			manager.logger.Info("Failed to convert from YAML", "file", fileName)
+			return "", err
+		}
+		return string(json), nil
+	}
+
+	fileName = fmt.Sprintf("%s.json", fileName)
+	return manager.readFile(ctx, file)
 
 }

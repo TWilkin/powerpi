@@ -43,7 +43,13 @@ func (gitHubService *gitHubService) GetFile(ctx context.Context, fileName string
 	file, _, _, err := client.Repositories.GetContents(ctx, ghConfig.UserId, ghConfig.Repo, path, options)
 	if err != nil {
 		if ghErr, ok := err.(*gh.ErrorResponse); ok && ghErr.Response.StatusCode == 404 {
-			gitHubService.logger.Info("File not found", "file", fileName)
+			gitHubService.logger.Info(
+				"File not found",
+				"owner", ghConfig.UserId,
+				"repo", ghConfig.Repo,
+				"ref", ghConfig.Ref,
+				"path", path,
+			)
 			return "", nil
 		}
 
