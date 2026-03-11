@@ -3,8 +3,8 @@ package energyretrieverfactory
 import (
 	"github.com/stretchr/testify/mock"
 
-	"powerpi/energy-monitor/models"
-	energyRetriever "powerpi/energy-monitor/services/energyretriever"
+	"github.com/TWilkin/powerpi/energy-monitor/models"
+	energyRetriever "github.com/TWilkin/powerpi/energy-monitor/services/energyretriever"
 )
 
 type MockEnergyRetrieverFactory struct {

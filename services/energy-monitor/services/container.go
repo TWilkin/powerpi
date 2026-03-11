@@ -1,10 +1,10 @@
 package services
 
 import (
-	"powerpi/common/services"
-	"powerpi/energy-monitor/services/config"
-	energyRetrieverFactory "powerpi/energy-monitor/services/energyretriever/energyretrieverfactory"
-	"powerpi/energy-monitor/services/meter"
+	"github.com/TWilkin/powerpi/common/services"
+	"github.com/TWilkin/powerpi/energy-monitor/services/config"
+	energyRetrieverFactory "github.com/TWilkin/powerpi/energy-monitor/services/energyretriever/energyretrieverfactory"
+	"github.com/TWilkin/powerpi/energy-monitor/services/meter"
 )
 
 type EnergyMonitorContainer interface {

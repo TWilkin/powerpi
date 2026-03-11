@@ -1,11 +1,11 @@
-module powerpi/energy-monitor
+module github.com/TWilkin/powerpi/energy-monitor
 
 go 1.24.1
 
 require (
+	github.com/TWilkin/powerpi/common v0.0.0
 	github.com/spf13/pflag v1.0.6
 	github.com/stretchr/testify v1.10.0
-	powerpi/common v0.0.0
 )
 
 require (
@@ -20,4 +20,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace powerpi/common => ../../common/go
+replace github.com/TWilkin/powerpi/common => ../../common/go

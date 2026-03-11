@@ -3,10 +3,10 @@ package energyretriever
 import (
 	"time"
 
-	"powerpi/common/services/logger"
-	"powerpi/common/services/mqtt/messagequeue"
-	"powerpi/energy-monitor/models"
-	"powerpi/energy-monitor/services/config"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
+	"github.com/TWilkin/powerpi/energy-monitor/models"
+	"github.com/TWilkin/powerpi/energy-monitor/services/config"
 )
 
 type EnergyRetriever interface {
