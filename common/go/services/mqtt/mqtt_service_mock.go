@@ -4,8 +4,8 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/stretchr/testify/mock"
 
-	"powerpi/common/services/clock"
-	"powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/clock"
+	"github.com/TWilkin/powerpi/common/services/logger"
 )
 
 type MockMqttService struct {

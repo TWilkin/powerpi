@@ -10,12 +10,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"powerpi/common/config"
-	"powerpi/common/models"
-	"powerpi/common/services/clock"
-	configService "powerpi/common/services/config"
-	"powerpi/common/services/logger"
-	"powerpi/common/utils"
+	"github.com/TWilkin/powerpi/common/config"
+	"github.com/TWilkin/powerpi/common/models"
+	"github.com/TWilkin/powerpi/common/services/clock"
+	configService "github.com/TWilkin/powerpi/common/services/config"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/utils"
 )
 
 type TestMessage struct {

@@ -1,6 +1,6 @@
 package http
 
-import "powerpi/common/services/logger"
+import "github.com/TWilkin/powerpi/common/services/logger"
 
 type HTTPClientFactory interface {
 	BuildClient() HTTPClient

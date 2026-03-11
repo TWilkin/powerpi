@@ -1,4 +1,4 @@
-module powerpi/common
+module github.com/TWilkin/powerpi/common
 
 go 1.24.1
 

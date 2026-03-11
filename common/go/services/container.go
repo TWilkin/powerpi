@@ -3,13 +3,13 @@ package services
 import (
 	"go.uber.org/dig"
 
-	"powerpi/common/services/clock"
-	"powerpi/common/services/config"
-	configRetriever "powerpi/common/services/config_retriever"
-	"powerpi/common/services/http"
-	"powerpi/common/services/logger"
-	"powerpi/common/services/mqtt"
-	messageQueue "powerpi/common/services/mqtt/messagequeue"
+	"github.com/TWilkin/powerpi/common/services/clock"
+	"github.com/TWilkin/powerpi/common/services/config"
+	configRetriever "github.com/TWilkin/powerpi/common/services/config_retriever"
+	"github.com/TWilkin/powerpi/common/services/http"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/mqtt"
+	messageQueue "github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
 )
 
 type CommonContainer interface {
