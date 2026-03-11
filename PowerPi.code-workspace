@@ -253,6 +253,11 @@
             ["Classes \\=([^;]*);", "\"([^\"]*)\""],
             ["Classes \\=([^;]*);", "\\`([^\\`]*)\\`"],
         ],
+        "go.lintTool": "golangci-lint",
+        "go.lintFlags": ["--fast"],
+        "gopls": {
+            "build.expandWorkspaceToModule": false,
+        },
     },
     "extensions": {
         "recommendations": [
