@@ -5,11 +5,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"powerpi/common/models"
-	"powerpi/common/utils"
-	"powerpi/shutdown/config"
-	"powerpi/shutdown/services/additional/brightness"
-	configService "powerpi/shutdown/services/config"
+	"github.com/TWilkin/powerpi/common/models"
+	"github.com/TWilkin/powerpi/common/utils"
+	"github.com/TWilkin/powerpi/shutdown/config"
+	"github.com/TWilkin/powerpi/shutdown/services/additional/brightness"
+	configService "github.com/TWilkin/powerpi/shutdown/services/config"
 )
 
 func TestGetAdditionalState(t *testing.T) {
