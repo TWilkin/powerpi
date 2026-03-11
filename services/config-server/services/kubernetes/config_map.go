@@ -16,7 +16,7 @@ import (
 )
 
 type ConfigMapService interface {
-	GetChecksum(ctx context.Context, name string) (*string, error)
+	GetChecksum(ctx context.Context, name string) (string, error)
 	Write(ctx context.Context, name string, fileName string, content string, checksum string) error
 }
 
@@ -49,25 +49,25 @@ func NewConfigMapService(config config.ConfigService, logger logger.LoggerServic
 	}, nil
 }
 
-func (configMap *configMapService) getConfigMapInterface(ctx context.Context, name string) v1.ConfigMapInterface {
+func (configMap *configMapService) getConfigMapInterface() v1.ConfigMapInterface {
 	return configMap.clientset.
 		CoreV1().
 		ConfigMaps(configMap.config.GetKubernetesConfig().Namespace)
 }
 
 func (configMap *configMapService) getConfigMap(ctx context.Context, name string) (*corev1.ConfigMap, error) {
-	return configMap.getConfigMapInterface(ctx, name).Get(ctx, name, metav1.GetOptions{})
+	return configMap.getConfigMapInterface().Get(ctx, name, metav1.GetOptions{})
 }
 
-func (configMap *configMapService) writeConfigMap(ctx context.Context, name string, definition *corev1.ConfigMap) (*corev1.ConfigMap, error) {
-	return configMap.getConfigMapInterface(ctx, name).Update(ctx, definition, metav1.UpdateOptions{})
+func (configMap *configMapService) writeConfigMap(ctx context.Context, definition *corev1.ConfigMap) (*corev1.ConfigMap, error) {
+	return configMap.getConfigMapInterface().Update(ctx, definition, metav1.UpdateOptions{})
 }
 
-func (configMap *configMapService) GetChecksum(ctx context.Context, name string) (*string, error) {
+func (configMap *configMapService) GetChecksum(ctx context.Context, name string) (string, error) {
 	definition, err := configMap.getConfigMap(ctx, name)
 	if err != nil {
 		configMap.logger.Warn("Failed to find ConfigMap", "name", name, "err", err)
-		return nil, err
+		return "", err
 	}
 
 	checksum, okay := definition.Annotations[fmt.Sprintf("checksum/%s", name)]
@@ -75,7 +75,7 @@ func (configMap *configMapService) GetChecksum(ctx context.Context, name string)
 		configMap.logger.Info("ConfigMap has no checksum", "name", name)
 	}
 
-	return &checksum, nil
+	return checksum, nil
 }
 
 func (configMap *configMapService) Write(ctx context.Context, name string, fileName string, content string, checksum string) error {
@@ -96,6 +96,6 @@ func (configMap *configMapService) Write(ctx context.Context, name string, fileN
 	definition.Data[fileName] = content
 	definition.Annotations[fmt.Sprintf("checksum/%s", name)] = checksum
 
-	_, err = configMap.writeConfigMap(ctx, name, definition)
+	_, err = configMap.writeConfigMap(ctx, definition)
 	return err
 }

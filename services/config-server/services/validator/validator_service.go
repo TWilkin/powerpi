@@ -16,34 +16,35 @@ type ValidatorService interface {
 }
 
 type validatorService struct {
-	schema embed.FS
-
-	compiler     *jsonSchema.Compiler
-	compilerOnce sync.Once
+	schema   embed.FS
+	compiler func() (*jsonSchema.Compiler, error)
 }
 
 func NewValidatorService(schema embed.FS) ValidatorService {
-	return &validatorService{
+	service := &validatorService{
 		schema: schema,
 	}
+
+	service.compiler = sync.OnceValues(service.initialiseCompiler)
+
+	return service
 }
 
-func (validator *validatorService) getCompiler() (*jsonSchema.Compiler, error) {
-	var outerErr error
+func (validator *validatorService) initialiseCompiler() (*jsonSchema.Compiler, error) {
+	compiler := jsonSchema.NewCompiler()
 
-	validator.compilerOnce.Do(func() {
-		validator.compiler = jsonSchema.NewCompiler()
+	err := fs.WalkDir(
+		validator.schema,
+		".",
+		func(path string, directory fs.DirEntry, err error) error {
+			return validator.addSchemaDirectory(compiler, path, directory, err)
+		},
+	)
 
-		err := fs.WalkDir(validator.schema, ".", validator.addSchemaDirectory)
-		if err != nil {
-			outerErr = err
-		}
-	})
-
-	return validator.compiler, outerErr
+	return compiler, err
 }
 
-func (validator *validatorService) addSchemaDirectory(path string, directory fs.DirEntry, err error) error {
+func (validator *validatorService) addSchemaDirectory(compiler *jsonSchema.Compiler, path string, directory fs.DirEntry, err error) error {
 	if err != nil || directory.IsDir() {
 		return err
 	}
@@ -63,7 +64,7 @@ func (validator *validatorService) addSchemaDirectory(path string, directory fs.
 	if ok {
 		id, ok := schemaJson["$id"].(string)
 		if ok {
-			return validator.compiler.AddResource(id, schema)
+			return compiler.AddResource(id, schema)
 		}
 
 		return fmt.Errorf("Schema %s is missing $id", path)
@@ -73,7 +74,7 @@ func (validator *validatorService) addSchemaDirectory(path string, directory fs.
 }
 
 func (validator *validatorService) Validate(file models.FileType, content string) error {
-	compiler, err := validator.getCompiler()
+	compiler, err := validator.compiler()
 	if err != nil {
 		return err
 	}

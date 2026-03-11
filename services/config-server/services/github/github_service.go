@@ -32,7 +32,7 @@ func NewGitHubService(configService config.ConfigService, loggerService logger.L
 }
 
 func (gitHubService *gitHubService) GetFile(ctx context.Context, fileName string) (string, error) {
-	client := gitHubService.getClient(ctx)
+	client := gitHubService.getClient()
 
 	ghConfig := gitHubService.config.GetGitHubConfig()
 
@@ -59,10 +59,10 @@ func (gitHubService *gitHubService) GetFile(ctx context.Context, fileName string
 	return file.GetContent()
 }
 
-func (gitHubService *gitHubService) getClient(ctx context.Context) *gh.Client {
+func (gitHubService *gitHubService) getClient() *gh.Client {
 	gitHubService.clientOnce.Do(func() {
 		tokenSource := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: *gitHubService.config.GetGitHubToken()})
-		httpClient := oauth2.NewClient(ctx, tokenSource)
+		httpClient := oauth2.NewClient(context.Background(), tokenSource)
 		gitHubService.client = gh.NewClient(httpClient)
 
 	})

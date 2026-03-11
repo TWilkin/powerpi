@@ -50,12 +50,12 @@ func (manager *configManager) Start() {
 	ctx := context.Background()
 
 	for _, file := range models.FileTypes {
-		if file == "events" && !manager.config.GetFileConfig().Events {
+		if file == models.Events && !manager.config.GetFileConfig().Events {
 			// ignore the events file when disabled
 			continue
 		}
 
-		if file == "schedules" && !manager.config.GetFileConfig().Scheduler {
+		if file == models.Schedules && !manager.config.GetFileConfig().Scheduler {
 			// ignore the schedules file when disabled
 			continue
 		}
@@ -75,7 +75,7 @@ func (manager *configManager) processFile(ctx context.Context, file models.FileT
 		manager.logger.Error("Unable to retrieve checksum", "file", file, "err", err)
 	}
 
-	manager.logger.Info("Read current checksum", "file", file, "checksum", *checksum)
+	manager.logger.Info("Read current checksum", "file", file, "checksum", checksum)
 
 	content, err := manager.readConfigFile(ctx, file)
 	if err != nil || content == "" {
@@ -85,7 +85,7 @@ func (manager *configManager) processFile(ctx context.Context, file models.FileT
 	}
 	newChecksum := fmt.Sprintf("%x", sha256.Sum256([]byte(content)))
 
-	manager.logger.Info("Read file from GitHub", "file", file, "checksum", *&newChecksum)
+	manager.logger.Info("Read file from GitHub", "file", file, "checksum", newChecksum)
 
 	// validate the file
 	err = manager.validator.Validate(file, content)
@@ -96,7 +96,7 @@ func (manager *configManager) processFile(ctx context.Context, file models.FileT
 
 	manager.logger.Info("Validation passed", "file", file)
 
-	if *checksum != newChecksum {
+	if checksum != newChecksum {
 		// write the new data and checksum
 		err = manager.writeConfigMap(ctx, configName, file, content, newChecksum)
 		if err != nil {
@@ -110,7 +110,7 @@ func (manager *configManager) processFile(ctx context.Context, file models.FileT
 	}
 }
 
-func (manager *configManager) readChecksum(ctx context.Context, configName string) (*string, error) {
+func (manager *configManager) readChecksum(ctx context.Context, configName string) (string, error) {
 	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 
@@ -156,7 +156,7 @@ func (manager *configManager) readConfigFile(ctx context.Context, file models.Fi
 		return json, nil
 	}
 
-	fileName = fmt.Sprintf("%s.json", fileName)
+	fileName = fmt.Sprintf("%s.json", file)
 	return manager.readFile(ctx, fileName)
 
 }

@@ -1,6 +1,8 @@
 package config
 
 import (
+	"os"
+
 	"github.com/spf13/pflag"
 
 	commonConfigService "powerpi/common/services/config"
@@ -84,7 +86,7 @@ func (service *configService) GetGitHubToken() *string {
 	token, err := service.ReadPasswordFile(service.gitHub.TokenFile)
 	if err != nil {
 		service.logger.Error("Failed to read GitHub token key file", "error", err)
-		panic(err)
+		os.Exit(1)
 	}
 
 	return token
