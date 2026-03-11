@@ -1,4 +1,6 @@
 TARGET_DIR=$(CURDIR)/bin
+BINARY=$(TARGET_DIR)/powerpi_config_server
+VERSION_FLAG=-X main.Version=v$(VERSION)
 
 VERSION=2.0.0-rc.1
 
@@ -8,10 +10,11 @@ all: build
 
 compile:
 	mkdir -p $(TARGET_DIR)
-	env GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static" -s -w -X main.Version=v$(VERSION)' -o $(TARGET_DIR)/powerpi_config_server
+	env GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static" -s -w $(VERSION_FLAG)' -o $(BINARY)
 
 build:
-	go build ./...
+	mkdir -p $(TARGET_DIR)
+	go build -ldflags '$(VERSION_FLAG)' -o $(BINARY) .
 
 test:
 	go test ./...
