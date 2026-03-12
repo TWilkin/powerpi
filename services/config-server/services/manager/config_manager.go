@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"time"
 
-	"powerpi/common/services/logger"
-	"powerpi/config-server/models"
-	"powerpi/config-server/services/config"
-	"powerpi/config-server/services/converter"
-	"powerpi/config-server/services/github"
-	"powerpi/config-server/services/kubernetes"
-	"powerpi/config-server/services/validator"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/config-server/models"
+	"github.com/TWilkin/powerpi/config-server/services/config"
+	"github.com/TWilkin/powerpi/config-server/services/converter"
+	"github.com/TWilkin/powerpi/config-server/services/github"
+	"github.com/TWilkin/powerpi/config-server/services/kubernetes"
+	"github.com/TWilkin/powerpi/config-server/services/validator"
 )
 
 type ConfigManager interface {

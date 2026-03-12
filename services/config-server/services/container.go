@@ -3,14 +3,14 @@ package services
 import (
 	"embed"
 
-	"powerpi/common/services"
-	"powerpi/config-server/schema"
-	"powerpi/config-server/services/config"
-	"powerpi/config-server/services/converter"
-	"powerpi/config-server/services/github"
-	"powerpi/config-server/services/kubernetes"
-	"powerpi/config-server/services/manager"
-	"powerpi/config-server/services/validator"
+	"github.com/TWilkin/powerpi/common/services"
+	"github.com/TWilkin/powerpi/config-server/schema"
+	"github.com/TWilkin/powerpi/config-server/services/config"
+	"github.com/TWilkin/powerpi/config-server/services/converter"
+	"github.com/TWilkin/powerpi/config-server/services/github"
+	"github.com/TWilkin/powerpi/config-server/services/kubernetes"
+	"github.com/TWilkin/powerpi/config-server/services/manager"
+	"github.com/TWilkin/powerpi/config-server/services/validator"
 )
 
 type ConfigServerContainer interface {

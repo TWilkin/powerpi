@@ -3,11 +3,11 @@ package main
 import (
 	"os"
 
-	"powerpi/common/services/logger"
-	"powerpi/common/services/mqtt"
-	"powerpi/config-server/services"
-	"powerpi/config-server/services/config"
-	"powerpi/config-server/services/manager"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/mqtt"
+	"github.com/TWilkin/powerpi/config-server/services"
+	"github.com/TWilkin/powerpi/config-server/services/config"
+	"github.com/TWilkin/powerpi/config-server/services/manager"
 )
 
 var Version = "development"

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	"powerpi/common/services/logger"
-	"powerpi/config-server/services/config"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/config-server/services/config"
 
 	gh "github.com/google/go-github/v68/github"
 	"golang.org/x/oauth2"

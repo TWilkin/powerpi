@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"powerpi/common/services/logger"
-	"powerpi/config-server/services/config"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/config-server/services/config"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

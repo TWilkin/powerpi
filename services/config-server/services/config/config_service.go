@@ -5,9 +5,9 @@ import (
 
 	"github.com/spf13/pflag"
 
-	commonConfigService "powerpi/common/services/config"
-	"powerpi/common/services/logger"
-	"powerpi/config-server/models"
+	commonConfigService "github.com/TWilkin/powerpi/common/services/config"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/config-server/models"
 )
 
 type ConfigService interface {

@@ -1,8 +1,9 @@
-module powerpi/config-server
+module github.com/TWilkin/powerpi/config-server
 
 go 1.25.0
 
 require (
+	github.com/TWilkin/powerpi/common v0.0.0
 	github.com/goccy/go-yaml v1.19.2
 	github.com/google/go-github/v68 v68.0.0
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2
@@ -11,7 +12,6 @@ require (
 	k8s.io/api v0.35.2
 	k8s.io/apimachinery v0.35.2
 	k8s.io/client-go v0.35.2
-	powerpi/common v0.0.0
 )
 
 require (
@@ -59,4 +59,4 @@ require (
 	sigs.k8s.io/yaml v1.6.0 // indirect
 )
 
-replace powerpi/common => ../../common/go
+replace github.com/TWilkin/powerpi/common => ../../common/go

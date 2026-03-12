@@ -4,9 +4,10 @@ import (
 	"embed"
 	"fmt"
 	"io/fs"
-	"powerpi/config-server/models"
 	"strings"
 	"sync"
+
+	"github.com/TWilkin/powerpi/config-server/models"
 
 	jsonSchema "github.com/santhosh-tekuri/jsonschema/v6"
 )

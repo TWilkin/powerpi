@@ -2,6 +2,7 @@ go 1.25.8
 
 use (
 	./common/go
+	./services/config-server
 	./services/energy-monitor
 	./services/shutdown
 )
