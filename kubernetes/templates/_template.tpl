@@ -120,6 +120,8 @@ template:
       {{- end }}
       {{- if .Params.FsGroup }}
       fsGroup: {{ .Params.FsGroup }}
+      {{- else if $runAsNonRoot }}
+      fsGroup: {{ .Params.RunAsUser | default "1000" }}
       {{- end }}
       seccompProfile:
         type: RuntimeDefault
@@ -361,6 +363,7 @@ template:
     - name: {{ $element.Name }}
       secret:
         secretName: {{ $element.Name }}
+        defaultMode: 0440
     {{- end }}
     {{- end }}
 
