@@ -26,6 +26,7 @@ type ConfigMessageSubscriber interface {
 }
 
 type ConfigMessagePublisher interface {
+	PublishDeviceConfig(device string, config map[string]any, checksum string)
 	PublishError(config models.ConfigType, error string)
 }
 
@@ -50,6 +51,15 @@ func (service configMessageService) SubscribeChange(config models.ConfigType, ch
 
 func (service configMessageService) UnsubscribeChange(config models.ConfigType) {
 	service.mqttService.Unsubscribe(topicType, string(config), string(models.ActionChange))
+}
+
+func (service configMessageService) PublishDeviceConfig(device string, config map[string]any, checksum string) {
+	message := ConfigMessage{
+		Payload:  config,
+		Checksum: checksum,
+	}
+
+	mqtt.Publish(service.mqttService, topicType, device, string(models.ActionChange), &message)
 }
 
 func (service configMessageService) PublishError(config models.ConfigType, error string) {

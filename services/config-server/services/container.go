@@ -7,6 +7,7 @@ import (
 	"github.com/TWilkin/powerpi/config-server/schema"
 	"github.com/TWilkin/powerpi/config-server/services/config"
 	"github.com/TWilkin/powerpi/config-server/services/converter"
+	"github.com/TWilkin/powerpi/config-server/services/device"
 	"github.com/TWilkin/powerpi/config-server/services/github"
 	"github.com/TWilkin/powerpi/config-server/services/kubernetes"
 	"github.com/TWilkin/powerpi/config-server/services/manager"
@@ -28,6 +29,7 @@ func NewConfigServerContainer() ConfigServerContainer {
 
 	container.Container().Provide(config.NewConfigService)
 	container.Container().Provide(converter.NewConverterService)
+	container.Container().Provide(device.NewDeviceConfigHandler)
 	container.Container().Provide(github.NewGitHubService)
 	container.Container().Provide(kubernetes.NewConfigMapService)
 	container.Container().Provide(manager.NewConfigManager)

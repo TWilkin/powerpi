@@ -12,6 +12,7 @@ import (
 	messageQueue "github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
 	"github.com/TWilkin/powerpi/config-server/services/config"
 	"github.com/TWilkin/powerpi/config-server/services/converter"
+	"github.com/TWilkin/powerpi/config-server/services/device"
 	"github.com/TWilkin/powerpi/config-server/services/github"
 	"github.com/TWilkin/powerpi/config-server/services/kubernetes"
 	"github.com/TWilkin/powerpi/config-server/services/validator"
@@ -22,13 +23,14 @@ type ConfigManager interface {
 }
 
 type configManager struct {
-	config    config.ConfigService
-	logger    logger.LoggerService
-	configMap kubernetes.ConfigMapService
-	gitHub    github.GitHubService
-	converter converter.ConverterService
-	validator validator.ValidatorService
-	publisher messageQueue.ConfigMessagePublisher
+	config        config.ConfigService
+	logger        logger.LoggerService
+	configMap     kubernetes.ConfigMapService
+	gitHub        github.GitHubService
+	converter     converter.ConverterService
+	validator     validator.ValidatorService
+	publisher     messageQueue.ConfigMessagePublisher
+	deviceHandler device.DeviceConfigHandler
 }
 
 func NewConfigManager(
@@ -39,15 +41,17 @@ func NewConfigManager(
 	converter converter.ConverterService,
 	validator validator.ValidatorService,
 	publisher messageQueue.ConfigMessagePublisher,
+	deviceHandler device.DeviceConfigHandler,
 ) ConfigManager {
 	return &configManager{
-		config:    config,
-		logger:    logger,
-		configMap: configMap,
-		gitHub:    gitHub,
-		converter: converter,
-		validator: validator,
-		publisher: publisher,
+		config:        config,
+		logger:        logger,
+		configMap:     configMap,
+		gitHub:        gitHub,
+		converter:     converter,
+		validator:     validator,
+		publisher:     publisher,
+		deviceHandler: deviceHandler,
 	}
 }
 
@@ -107,7 +111,7 @@ func (manager *configManager) processFile(ctx context.Context, file models.Confi
 	manager.logger.Info("Read file from GitHub", "file", file, "checksum", newChecksum)
 
 	// validate the file
-	err = manager.validator.Validate(file, content)
+	json, err := manager.validator.Validate(file, content)
 	if err != nil {
 		manager.logger.Error("Validation failed", "file", file, "err", err)
 
@@ -129,6 +133,10 @@ func (manager *configManager) processFile(ctx context.Context, file models.Confi
 		manager.logger.Info("Updated ConfigMap", "file", file)
 	} else {
 		manager.logger.Info("Not updating ConfigMap as file is unchanged", "file", file)
+	}
+
+	if file == models.ConfigTypeDevices {
+		manager.deviceHandler.Publish(json)
 	}
 
 	return true

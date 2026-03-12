@@ -37,12 +37,13 @@ func NewCommonContainer() CommonContainer {
 
 	container.Provide(mqtt.NewMqttService)
 	container.Provide(messageQueue.NewDeviceMessageService)
-	container.Provide(
-		messageQueue.NewConfigMessageService,
-		dig.As(new(messageQueue.ConfigMessageService)), // TODO remove this when we change model
-		dig.As(new(messageQueue.ConfigMessageSubscriber)),
-		dig.As(new(messageQueue.ConfigMessagePublisher)),
-	)
+	container.Provide(messageQueue.NewConfigMessageService)
+	container.Provide(func(service messageQueue.ConfigMessageService) messageQueue.ConfigMessagePublisher {
+		return service
+	})
+	container.Provide(func(service messageQueue.ConfigMessageService) messageQueue.ConfigMessageSubscriber {
+		return service
+	})
 	container.Provide(messageQueue.NewEventMessageService)
 
 	container.Provide(func() mqtt.MqttClientFactory {

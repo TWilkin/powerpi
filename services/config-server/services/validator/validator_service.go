@@ -13,7 +13,7 @@ import (
 )
 
 type ValidatorService interface {
-	Validate(file models.ConfigType, content string) error
+	Validate(file models.ConfigType, content string) (map[string]any, error)
 }
 
 type validatorService struct {
@@ -74,10 +74,10 @@ func (validator *validatorService) addSchemaDirectory(compiler *jsonSchema.Compi
 	return fmt.Errorf("Schema %s is missing $id", path)
 }
 
-func (validator *validatorService) Validate(file models.ConfigType, content string) error {
+func (validator *validatorService) Validate(file models.ConfigType, content string) (map[string]any, error) {
 	compiler, err := validator.compiler()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	schemaName := fmt.Sprintf(
@@ -87,13 +87,19 @@ func (validator *validatorService) Validate(file models.ConfigType, content stri
 
 	schema, err := compiler.Compile(schemaName)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	configFile, err := jsonSchema.UnmarshalJSON(strings.NewReader(content))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return schema.Validate(configFile)
+	json, ok := configFile.(map[string]any)
+	if !ok {
+		return nil, fmt.Errorf("Expected JSON object")
+	}
+
+	return json, schema.Validate(json)
+
 }
