@@ -28,6 +28,7 @@ LABEL description="PowerPi energy-monitor usage retrieval service"
 USER 1000
 
 WORKDIR /home/node/app
+COPY --from=build-image /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=build-image --chown=powerpi /home/node/app/services/energy-monitor/bin/powerpi_energy_monitor .
 
 # start the application once the container is ready
