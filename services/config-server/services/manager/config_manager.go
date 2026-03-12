@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/TWilkin/powerpi/common/models"
 	"github.com/TWilkin/powerpi/common/services/logger"
-	"github.com/TWilkin/powerpi/config-server/models"
 	"github.com/TWilkin/powerpi/config-server/services/config"
 	"github.com/TWilkin/powerpi/config-server/services/converter"
 	"github.com/TWilkin/powerpi/config-server/services/github"
@@ -49,13 +49,13 @@ func NewConfigManager(
 func (manager *configManager) Start() {
 	ctx := context.Background()
 
-	for _, file := range models.FileTypes {
-		if file == models.Events && !manager.config.GetFileConfig().Events {
+	for _, file := range models.ConfigTypes {
+		if file == models.ConfigTypeEvents && !manager.config.GetFileConfig().Events {
 			// ignore the events file when disabled
 			continue
 		}
 
-		if file == models.Schedules && !manager.config.GetFileConfig().Scheduler {
+		if file == models.ConfigTypeSchedules && !manager.config.GetFileConfig().Scheduler {
 			// ignore the schedules file when disabled
 			continue
 		}
@@ -64,7 +64,7 @@ func (manager *configManager) Start() {
 	}
 }
 
-func (manager *configManager) processFile(ctx context.Context, file models.FileType) {
+func (manager *configManager) processFile(ctx context.Context, file models.ConfigType) {
 	manager.logger.Info("Checking for config file", "file", file)
 
 	configName := fmt.Sprintf("config-%s", file)
@@ -119,7 +119,7 @@ func (manager *configManager) readChecksum(ctx context.Context, configName strin
 	return manager.configMap.GetChecksum(ctx, configName)
 }
 
-func (manager *configManager) writeConfigMap(ctx context.Context, configName string, file models.FileType, content string, checksum string) error {
+func (manager *configManager) writeConfigMap(ctx context.Context, configName string, file models.ConfigType, content string, checksum string) error {
 	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 
@@ -136,7 +136,7 @@ func (manager *configManager) readFile(ctx context.Context, fileName string) (st
 	return manager.gitHub.GetFile(ctx, fileName)
 }
 
-func (manager *configManager) readConfigFile(ctx context.Context, file models.FileType) (string, error) {
+func (manager *configManager) readConfigFile(ctx context.Context, file models.ConfigType) (string, error) {
 	// first we try YAML
 	fileName := fmt.Sprintf("%s.yaml", file)
 	content, err := manager.readFile(ctx, fileName)

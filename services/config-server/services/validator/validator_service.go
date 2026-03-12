@@ -7,13 +7,13 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/TWilkin/powerpi/config-server/models"
+	"github.com/TWilkin/powerpi/common/models"
 
 	jsonSchema "github.com/santhosh-tekuri/jsonschema/v6"
 )
 
 type ValidatorService interface {
-	Validate(file models.FileType, content string) error
+	Validate(file models.ConfigType, content string) error
 }
 
 type validatorService struct {
@@ -74,7 +74,7 @@ func (validator *validatorService) addSchemaDirectory(compiler *jsonSchema.Compi
 	return fmt.Errorf("Schema %s is missing $id", path)
 }
 
-func (validator *validatorService) Validate(file models.FileType, content string) error {
+func (validator *validatorService) Validate(file models.ConfigType, content string) error {
 	compiler, err := validator.compiler()
 	if err != nil {
 		return err
