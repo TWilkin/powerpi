@@ -107,7 +107,7 @@ func (service *configService) ReadPasswordFile(passwordFile string) (*string, er
 		}
 
 		permissions := info.Mode().Perm()
-		if permissions != 0o600 {
+		if permissions&0o177 != 0 {
 			service.logger.Warn("Open permissions on password file", "file", passwordFile, "permission", permissions)
 		}
 
