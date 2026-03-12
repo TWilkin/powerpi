@@ -9,6 +9,7 @@ import (
 
 	"github.com/TWilkin/powerpi/common/models"
 	"github.com/TWilkin/powerpi/common/services/logger"
+	messageQueue "github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
 	"github.com/TWilkin/powerpi/config-server/services/config"
 	"github.com/TWilkin/powerpi/config-server/services/converter"
 	"github.com/TWilkin/powerpi/config-server/services/github"
@@ -27,6 +28,7 @@ type configManager struct {
 	gitHub    github.GitHubService
 	converter converter.ConverterService
 	validator validator.ValidatorService
+	publisher messageQueue.ConfigMessagePublisher
 }
 
 func NewConfigManager(
@@ -36,6 +38,7 @@ func NewConfigManager(
 	gitHub github.GitHubService,
 	converter converter.ConverterService,
 	validator validator.ValidatorService,
+	publisher messageQueue.ConfigMessagePublisher,
 ) ConfigManager {
 	return &configManager{
 		config:    config,
@@ -44,6 +47,7 @@ func NewConfigManager(
 		gitHub:    gitHub,
 		converter: converter,
 		validator: validator,
+		publisher: publisher,
 	}
 }
 
@@ -106,6 +110,9 @@ func (manager *configManager) processFile(ctx context.Context, file models.Confi
 	err = manager.validator.Validate(file, content)
 	if err != nil {
 		manager.logger.Error("Validation failed", "file", file, "err", err)
+
+		manager.publisher.PublishError(file, err.Error())
+
 		return true // validation failure is not an error with the service, where a retry would help
 	}
 
