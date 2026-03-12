@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/TWilkin/powerpi/common/models"
@@ -49,7 +50,12 @@ func NewConfigManager(
 func (manager *configManager) Start() {
 	ctx := context.Background()
 
+	expectedFiles := 0
+	successfulFiles := 0
+
 	for _, file := range models.ConfigTypes {
+		expectedFiles++
+
 		if file == models.ConfigTypeEvents && !manager.config.GetFileConfig().Events {
 			// ignore the events file when disabled
 			continue
@@ -60,11 +66,20 @@ func (manager *configManager) Start() {
 			continue
 		}
 
-		manager.processFile(ctx, file)
+		success := manager.processFile(ctx, file)
+		if success {
+			successfulFiles++
+		}
+	}
+
+	// if we had any failed files, we should error to allow a retry
+	if successfulFiles < expectedFiles {
+		manager.logger.Error("Failed to update config for all files", "success", successfulFiles, "expected", expectedFiles)
+		os.Exit(1)
 	}
 }
 
-func (manager *configManager) processFile(ctx context.Context, file models.ConfigType) {
+func (manager *configManager) processFile(ctx context.Context, file models.ConfigType) bool {
 	manager.logger.Info("Checking for config file", "file", file)
 
 	configName := fmt.Sprintf("config-%s", file)
@@ -81,7 +96,7 @@ func (manager *configManager) processFile(ctx context.Context, file models.Confi
 	if err != nil || content == "" {
 		// without any content we don't want to continue
 		manager.logger.Error("Unable to retrieve file from GitHub", "file", file, "err", err)
-		return
+		return false
 	}
 	newChecksum := fmt.Sprintf("%x", sha256.Sum256([]byte(content)))
 
@@ -91,7 +106,7 @@ func (manager *configManager) processFile(ctx context.Context, file models.Confi
 	err = manager.validator.Validate(file, content)
 	if err != nil {
 		manager.logger.Error("Validation failed", "file", file, "err", err)
-		return
+		return true // validation failure is not an error with the service, where a retry would help
 	}
 
 	manager.logger.Info("Validation passed", "file", file)
@@ -101,13 +116,15 @@ func (manager *configManager) processFile(ctx context.Context, file models.Confi
 		err = manager.writeConfigMap(ctx, configName, file, content, newChecksum)
 		if err != nil {
 			manager.logger.Error("Failed to write updated ConfigMap", "configMap", configName, "err", err)
-			return
+			return false
 		}
 
 		manager.logger.Info("Updated ConfigMap", "file", file)
 	} else {
 		manager.logger.Info("Not updating ConfigMap as file is unchanged", "file", file)
 	}
+
+	return true
 }
 
 func (manager *configManager) readChecksum(ctx context.Context, configName string) (string, error) {
