@@ -12,9 +12,24 @@ type ConfigMessage struct {
 	Checksum string         `json:"checksum"`
 }
 
-type ConfigMessageService interface {
+type ConfigErrorMessage struct {
+	mqtt.BaseMqttMessage
+
+	Message string `json:"message"`
+}
+
+type ConfigMessageSubscriber interface {
 	SubscribeChange(config models.ConfigType, channel chan<- *ConfigMessage)
 	UnsubscribeChange(config models.ConfigType)
+}
+
+type ConfigMessagePublisher interface {
+	PublishError(config models.ConfigType, error string)
+}
+
+type ConfigMessageService interface {
+	ConfigMessageSubscriber
+	ConfigMessagePublisher
 }
 
 type configMessageService struct {
@@ -33,4 +48,12 @@ func (service configMessageService) SubscribeChange(config models.ConfigType, ch
 
 func (service configMessageService) UnsubscribeChange(config models.ConfigType) {
 	service.mqttService.Unsubscribe("config", string(config), "change")
+}
+
+func (service configMessageService) PublishError(config models.ConfigType, error string) {
+	message := ConfigErrorMessage{
+		Message: error,
+	}
+
+	mqtt.Publish(service.mqttService, "config", string(config), "error", &message)
 }
