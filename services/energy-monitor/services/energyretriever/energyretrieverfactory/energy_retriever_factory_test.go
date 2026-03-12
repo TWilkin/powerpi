@@ -3,11 +3,11 @@ package energyretrieverfactory
 import (
 	"testing"
 
-	"powerpi/common/services/http"
-	"powerpi/common/services/logger"
-	messageQueue "powerpi/common/services/mqtt/messagequeue"
-	"powerpi/energy-monitor/models"
-	"powerpi/energy-monitor/services/config"
+	"github.com/TWilkin/powerpi/common/services/http"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	messageQueue "github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
+	"github.com/TWilkin/powerpi/energy-monitor/models"
+	"github.com/TWilkin/powerpi/energy-monitor/services/config"
 )
 
 func TestBuildRetriever(t *testing.T) {

@@ -3,12 +3,12 @@ package main
 import (
 	"os"
 
-	configRetriever "powerpi/common/services/config_retriever"
-	"powerpi/common/services/logger"
-	"powerpi/common/services/mqtt"
-	"powerpi/energy-monitor/services"
-	"powerpi/energy-monitor/services/config"
-	"powerpi/energy-monitor/services/meter"
+	configRetriever "github.com/TWilkin/powerpi/common/services/config_retriever"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/mqtt"
+	"github.com/TWilkin/powerpi/energy-monitor/services"
+	"github.com/TWilkin/powerpi/energy-monitor/services/config"
+	"github.com/TWilkin/powerpi/energy-monitor/services/meter"
 )
 
 var Version = "development"

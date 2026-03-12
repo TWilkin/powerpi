@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/logger"
 )
 
 type HTTPClient interface {

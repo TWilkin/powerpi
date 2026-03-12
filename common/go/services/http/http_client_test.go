@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/logger"
 )
 
 type TestResponse struct {

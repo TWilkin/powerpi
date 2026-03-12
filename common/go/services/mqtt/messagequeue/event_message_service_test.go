@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/mock"
 
-	"powerpi/common/services/clock"
-	"powerpi/common/services/logger"
-	"powerpi/common/services/mqtt"
+	"github.com/TWilkin/powerpi/common/services/clock"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/mqtt"
 )
 
 func TestPublishEventValue(t *testing.T) {

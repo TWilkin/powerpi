@@ -1,8 +1,8 @@
 package config
 
 import (
-	commonConfigService "powerpi/common/services/config"
-	"powerpi/shutdown/config"
+	commonConfigService "github.com/TWilkin/powerpi/common/services/config"
+	"github.com/TWilkin/powerpi/shutdown/config"
 )
 
 type MockConfigService struct {

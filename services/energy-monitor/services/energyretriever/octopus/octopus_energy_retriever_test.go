@@ -13,13 +13,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	commonModels "powerpi/common/models"
-	httpService "powerpi/common/services/http"
-	"powerpi/common/services/logger"
-	messageQueue "powerpi/common/services/mqtt/messagequeue"
-	"powerpi/energy-monitor/config"
-	"powerpi/energy-monitor/models"
-	configService "powerpi/energy-monitor/services/config"
+	commonModels "github.com/TWilkin/powerpi/common/models"
+	httpService "github.com/TWilkin/powerpi/common/services/http"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	messageQueue "github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
+	"github.com/TWilkin/powerpi/energy-monitor/config"
+	"github.com/TWilkin/powerpi/energy-monitor/models"
+	configService "github.com/TWilkin/powerpi/energy-monitor/services/config"
 )
 
 func TestNewOctopusEnergyRetriever(t *testing.T) {

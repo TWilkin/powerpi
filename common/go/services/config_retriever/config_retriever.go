@@ -4,10 +4,10 @@ import (
 	"sync"
 	"time"
 
-	"powerpi/common/models"
-	"powerpi/common/services/config"
-	"powerpi/common/services/logger"
-	"powerpi/common/services/mqtt/messagequeue"
+	"github.com/TWilkin/powerpi/common/models"
+	"github.com/TWilkin/powerpi/common/services/config"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
 )
 
 type ConfigRetriever interface {

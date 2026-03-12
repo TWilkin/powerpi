@@ -1,6 +1,6 @@
 package models
 
-import "powerpi/common/models"
+import "github.com/TWilkin/powerpi/common/models"
 
 type MeterMetric string
 

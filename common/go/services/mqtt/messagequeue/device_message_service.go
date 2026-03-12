@@ -1,8 +1,8 @@
 package messagequeue
 
 import (
-	"powerpi/common/models"
-	"powerpi/common/services/mqtt"
+	"github.com/TWilkin/powerpi/common/models"
+	"github.com/TWilkin/powerpi/common/services/mqtt"
 )
 
 type DeviceMessage struct {

@@ -3,10 +3,10 @@ package config
 import (
 	"github.com/spf13/pflag"
 
-	commonConfig "powerpi/common/config"
-	commonConfigService "powerpi/common/services/config"
-	"powerpi/common/services/logger"
-	"powerpi/shutdown/config"
+	commonConfig "github.com/TWilkin/powerpi/common/config"
+	commonConfigService "github.com/TWilkin/powerpi/common/services/config"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/shutdown/config"
 )
 
 type ConfigService interface {

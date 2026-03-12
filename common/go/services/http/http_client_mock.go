@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/mock"
 
-	"powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/logger"
 )
 
 type MockHTTPClient struct {

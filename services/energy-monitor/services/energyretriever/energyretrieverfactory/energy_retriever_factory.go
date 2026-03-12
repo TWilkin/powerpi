@@ -3,13 +3,13 @@ package energyretrieverfactory
 import (
 	"fmt"
 
-	"powerpi/common/services/http"
-	"powerpi/common/services/logger"
-	messageQueue "powerpi/common/services/mqtt/messagequeue"
-	"powerpi/energy-monitor/models"
-	"powerpi/energy-monitor/services/config"
-	energyRetriever "powerpi/energy-monitor/services/energyretriever"
-	"powerpi/energy-monitor/services/energyretriever/octopus"
+	"github.com/TWilkin/powerpi/common/services/http"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	messageQueue "github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
+	"github.com/TWilkin/powerpi/energy-monitor/models"
+	"github.com/TWilkin/powerpi/energy-monitor/services/config"
+	energyRetriever "github.com/TWilkin/powerpi/energy-monitor/services/energyretriever"
+	"github.com/TWilkin/powerpi/energy-monitor/services/energyretriever/octopus"
 )
 
 type EnergyRetrieverFactory interface {
