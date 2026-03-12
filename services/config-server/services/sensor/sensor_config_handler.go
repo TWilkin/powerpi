@@ -1,4 +1,4 @@
-package device
+package sensor
 
 import (
 	"crypto/sha256"
@@ -9,23 +9,23 @@ import (
 	messageQueue "github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
 )
 
-type DeviceConfigHandler interface {
+type SensorConfigHandler interface {
 	Publish(config map[string]any)
 }
 
-type deviceConfigHandler struct {
+type sensorConfigHandler struct {
 	logger       logger.LoggerService
 	messageQueue messageQueue.ConfigMessageService
 }
 
-func NewDeviceConfigHandler(logger logger.LoggerService, messageQueue messageQueue.ConfigMessageService) DeviceConfigHandler {
-	return &deviceConfigHandler{
+func NewSensorConfigHandler(logger logger.LoggerService, messageQueue messageQueue.ConfigMessageService) SensorConfigHandler {
+	return &sensorConfigHandler{
 		logger:       logger,
 		messageQueue: messageQueue,
 	}
 }
 
-func (handler deviceConfigHandler) Publish(config map[string]any) {
+func (handler sensorConfigHandler) Publish(config map[string]any) {
 	handler.logger.Info("Identifying config for PowerPi sensors")
 
 	// these are the keys we don't want to emit to the sensor

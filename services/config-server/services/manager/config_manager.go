@@ -12,9 +12,9 @@ import (
 	messageQueue "github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
 	"github.com/TWilkin/powerpi/config-server/services/config"
 	"github.com/TWilkin/powerpi/config-server/services/converter"
-	"github.com/TWilkin/powerpi/config-server/services/device"
 	"github.com/TWilkin/powerpi/config-server/services/github"
 	"github.com/TWilkin/powerpi/config-server/services/kubernetes"
+	"github.com/TWilkin/powerpi/config-server/services/sensor"
 	"github.com/TWilkin/powerpi/config-server/services/validator"
 )
 
@@ -30,7 +30,7 @@ type configManager struct {
 	converter     converter.ConverterService
 	validator     validator.ValidatorService
 	publisher     messageQueue.ConfigMessagePublisher
-	deviceHandler device.DeviceConfigHandler
+	sensorHandler sensor.SensorConfigHandler
 }
 
 func NewConfigManager(
@@ -41,7 +41,7 @@ func NewConfigManager(
 	converter converter.ConverterService,
 	validator validator.ValidatorService,
 	publisher messageQueue.ConfigMessagePublisher,
-	deviceHandler device.DeviceConfigHandler,
+	sensorHandler sensor.SensorConfigHandler,
 ) ConfigManager {
 	return &configManager{
 		config:        config,
@@ -51,7 +51,7 @@ func NewConfigManager(
 		converter:     converter,
 		validator:     validator,
 		publisher:     publisher,
-		deviceHandler: deviceHandler,
+		sensorHandler: sensorHandler,
 	}
 }
 
@@ -136,7 +136,7 @@ func (manager *configManager) processFile(ctx context.Context, file models.Confi
 	}
 
 	if file == models.ConfigTypeDevices {
-		manager.deviceHandler.Publish(json)
+		manager.sensorHandler.Publish(json)
 	}
 
 	return true
