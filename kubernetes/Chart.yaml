@@ -26,7 +26,7 @@ dependencies:
     condition: global.persistence
   - name: reloader
     version: 2.2.8
-    repository: https://stakater.github.io/stakater-charts
+    repository: oci://ghcr.io/stakater/charts
     condition: global.reloader
   - name: scheduler
     version: 0.2.17
