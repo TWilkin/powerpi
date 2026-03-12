@@ -76,6 +76,18 @@ microk8s helm repo add powerpi https://twilkin.github.io/powerpi
 microk8s helm upgrade --install --namespace powerpi --create-namespace -f __OVERRIDE__ powerpi powerpi/powerpi
 ```
 
+### From Source
+
+If deploying from a cloned copy of the repository, fetch the chart dependencies first (where _OVERRIDE_ is the path to your overriding YAML configuration file):
+
+```bash
+# Fetch chart dependencies
+microk8s helm dependency build
+
+# Deploy your stack
+microk8s helm upgrade --install --namespace powerpi --create-namespace -f __OVERRIDE__ powerpi .
+```
+
 ## Updating
 
 When changes have been made to PowerPi the images will be updated on [Docker Hub](https://hub.docker.com/u/twilkin); updating is simply a case of downloading the latest version of the helm repository and re-running the deploy step (where _OVERRIDE_ is the path to your overriding YAML configuration file).
