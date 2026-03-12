@@ -5,13 +5,13 @@ import (
 	"strings"
 	"time"
 
-	"powerpi/common/services/http"
-	"powerpi/common/services/logger"
-	messageQueue "powerpi/common/services/mqtt/messagequeue"
-	"powerpi/common/utils"
-	"powerpi/energy-monitor/models"
-	"powerpi/energy-monitor/services/config"
-	energyRetriever "powerpi/energy-monitor/services/energyretriever"
+	"github.com/TWilkin/powerpi/common/services/http"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	messageQueue "github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
+	"github.com/TWilkin/powerpi/common/utils"
+	"github.com/TWilkin/powerpi/energy-monitor/models"
+	"github.com/TWilkin/powerpi/energy-monitor/services/config"
+	energyRetriever "github.com/TWilkin/powerpi/energy-monitor/services/energyretriever"
 )
 
 type OctopusEnergyRetriever[TMeter models.OctopusMeterSensor] struct {

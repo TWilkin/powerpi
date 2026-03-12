@@ -6,12 +6,12 @@ import (
 
 	"github.com/stretchr/testify/mock"
 
-	"powerpi/common/models"
-	"powerpi/common/services/clock"
-	"powerpi/common/services/mqtt/messagequeue"
-	"powerpi/common/utils"
-	"powerpi/shutdown/config"
-	"powerpi/shutdown/services/additional"
+	"github.com/TWilkin/powerpi/common/models"
+	"github.com/TWilkin/powerpi/common/services/clock"
+	"github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
+	"github.com/TWilkin/powerpi/common/utils"
+	"github.com/TWilkin/powerpi/shutdown/config"
+	"github.com/TWilkin/powerpi/shutdown/services/additional"
 )
 
 func TestUpdateState(t *testing.T) {

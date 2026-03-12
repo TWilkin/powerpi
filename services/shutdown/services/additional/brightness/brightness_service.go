@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"powerpi/shutdown/config"
-	configService "powerpi/shutdown/services/config"
+	"github.com/TWilkin/powerpi/shutdown/config"
+	configService "github.com/TWilkin/powerpi/shutdown/services/config"
 )
 
 type BrightnessService interface {

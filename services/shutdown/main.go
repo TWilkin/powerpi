@@ -6,14 +6,14 @@ import (
 	"os/exec"
 	"time"
 
-	"powerpi/common/models"
-	"powerpi/common/services/clock"
-	"powerpi/common/services/mqtt"
-	"powerpi/common/services/mqtt/messagequeue"
-	"powerpi/shutdown/config"
-	"powerpi/shutdown/services"
-	"powerpi/shutdown/services/additional"
-	configService "powerpi/shutdown/services/config"
+	"github.com/TWilkin/powerpi/common/models"
+	"github.com/TWilkin/powerpi/common/services/clock"
+	"github.com/TWilkin/powerpi/common/services/mqtt"
+	"github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
+	"github.com/TWilkin/powerpi/shutdown/config"
+	"github.com/TWilkin/powerpi/shutdown/services"
+	"github.com/TWilkin/powerpi/shutdown/services/additional"
+	configService "github.com/TWilkin/powerpi/shutdown/services/config"
 )
 
 var Version = "development"

@@ -3,9 +3,9 @@ package config
 import (
 	"github.com/stretchr/testify/mock"
 
-	commonModels "powerpi/common/models"
-	commonConfigService "powerpi/common/services/config"
-	"powerpi/energy-monitor/config"
+	commonModels "github.com/TWilkin/powerpi/common/models"
+	commonConfigService "github.com/TWilkin/powerpi/common/services/config"
+	"github.com/TWilkin/powerpi/energy-monitor/config"
 )
 
 type MockConfigService struct {

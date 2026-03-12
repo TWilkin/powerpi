@@ -4,8 +4,8 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/mock"
 
-	"powerpi/common/config"
-	"powerpi/common/models"
+	"github.com/TWilkin/powerpi/common/config"
+	"github.com/TWilkin/powerpi/common/models"
 )
 
 type MockConfigService struct {

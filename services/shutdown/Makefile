@@ -1,4 +1,6 @@
 TARGET_DIR=$(CURDIR)/bin
+BINARY=$(TARGET_DIR)/powerpi_shutdown
+VERSION_FLAG=-X main.Version=v$(VERSION)
 
 # the OS to build for, currently only Linux is supported
 TARGET_OS?=linux
@@ -7,24 +9,25 @@ TARGET_OS?=linux
 TARGET_ARCH?=arm64
 
 # the version of the shutdown service
-VERSION=0.2.1
+VERSION=0.2.2-rc.1
 
-LIBRARY_SOURCES := $(shell find ../../common/go -name "*.go") 
-SOURCES := $(shell find ./ -name "*.go") 
+.PHONY: all build compile test coverage clean
 
-all: compile
+all: build
 
-$(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH): $(LIBRARY_SOURCES) $(SOURCES)
+compile:
 	mkdir -p $(TARGET_DIR)
-	env GOOS=$(TARGET_OS) GOARCH=$(TARGET_ARCH) go build -ldflags="-X 'main.Version=v$(VERSION)'" -o $@
+	env GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags '-s -w $(VERSION_FLAG)' -o $(BINARY)
 
-compile: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
+build:
+	mkdir -p $(TARGET_DIR)
+	go build -ldflags '$(VERSION_FLAG)' -o $(BINARY) .
 
-test: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
+test:
 	go test ./...
 
-coverage: $(TARGET_DIR)/powerpi_shutdown_$(TARGET_OS)_$(TARGET_ARCH)
-	go test -coverprofile=powerpi_shutdown.coverage ./...
+coverage:
+	go test -coverprofile=powerpi_energy_monitor.coverage ./...
 
 clean:
 	go clean

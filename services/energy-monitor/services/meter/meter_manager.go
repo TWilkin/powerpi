@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"strings"
 
-	commonModels "powerpi/common/models"
-	"powerpi/common/services/logger"
-	"powerpi/energy-monitor/models"
-	"powerpi/energy-monitor/services/config"
-	energyRetrieverFactory "powerpi/energy-monitor/services/energyretriever/energyretrieverfactory"
+	commonModels "github.com/TWilkin/powerpi/common/models"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/energy-monitor/models"
+	"github.com/TWilkin/powerpi/energy-monitor/services/config"
+	energyRetrieverFactory "github.com/TWilkin/powerpi/energy-monitor/services/energyretriever/energyretrieverfactory"
 )
 
 type MeterManager interface {

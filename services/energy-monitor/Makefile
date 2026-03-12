@@ -1,23 +1,26 @@
 TARGET_DIR=$(CURDIR)/bin
+BINARY=$(TARGET_DIR)/powerpi_energy_monitor
+VERSION_FLAG=-X main.Version=v$(VERSION)
 
 # the version of the energy-monitor service
-VERSION=2.0.2-rc.1
+VERSION=2.0.2-rc.2
 
-LIBRARY_SOURCES := $(shell find ../../common/go -name "*.go") 
-SOURCES := $(shell find ./ -name "*.go") 
+.PHONY: all build compile test coverage clean
 
-all: compile
+all: build
 
-$(TARGET_DIR)/powerpi_energy_monitor: $(LIBRARY_SOURCES) $(SOURCES)
+compile:
 	mkdir -p $(TARGET_DIR)
-	env GOOS=$(GOOS) GOARCH=$(GOARCH) go build -tags netgo -ldflags '-extldflags "-static"' -ldflags="-X 'main.Version=v$(VERSION)'" -o $@
+	env GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=0 go build -tags netgo -ldflags '-extldflags "-static" -s -w $(VERSION_FLAG)' -o $(BINARY)
 
-compile: $(TARGET_DIR)/powerpi_energy_monitor
+build:
+	mkdir -p $(TARGET_DIR)
+	go build -ldflags '$(VERSION_FLAG)' -o $(BINARY) .
 
-test: $(TARGET_DIR)/powerpi_energy_monitor
+test:
 	go test ./...
 
-coverage: $(TARGET_DIR)/powerpi_energy_monitor
+coverage:
 	go test -coverprofile=powerpi_energy_monitor.coverage ./...
 
 clean:

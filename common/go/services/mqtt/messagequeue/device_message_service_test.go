@@ -10,11 +10,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"powerpi/common/models"
-	"powerpi/common/services/clock"
-	"powerpi/common/services/logger"
-	"powerpi/common/services/mqtt"
-	"powerpi/common/utils"
+	"github.com/TWilkin/powerpi/common/models"
+	"github.com/TWilkin/powerpi/common/services/clock"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/mqtt"
+	"github.com/TWilkin/powerpi/common/utils"
 )
 
 func TestPublishDeviceState(t *testing.T) {

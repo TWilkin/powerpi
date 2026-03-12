@@ -10,10 +10,10 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 
-	"powerpi/common/services/clock"
-	configService "powerpi/common/services/config"
-	"powerpi/common/services/logger"
-	"powerpi/common/utils"
+	"github.com/TWilkin/powerpi/common/services/clock"
+	configService "github.com/TWilkin/powerpi/common/services/config"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/utils"
 )
 
 type MqttService interface {

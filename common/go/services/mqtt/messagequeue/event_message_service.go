@@ -1,7 +1,7 @@
 package messagequeue
 
 import (
-	"powerpi/common/services/mqtt"
+	"github.com/TWilkin/powerpi/common/services/mqtt"
 )
 
 type EventMessage struct {

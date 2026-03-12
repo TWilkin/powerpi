@@ -7,11 +7,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	commonModels "powerpi/common/models"
-	"powerpi/common/services/logger"
-	"powerpi/energy-monitor/services/config"
-	"powerpi/energy-monitor/services/energyretriever"
-	energyRetrieverFactory "powerpi/energy-monitor/services/energyretriever/energyretrieverfactory"
+	commonModels "github.com/TWilkin/powerpi/common/models"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/energy-monitor/services/config"
+	"github.com/TWilkin/powerpi/energy-monitor/services/energyretriever"
+	energyRetrieverFactory "github.com/TWilkin/powerpi/energy-monitor/services/energyretriever/energyretrieverfactory"
 )
 
 func TestNewMeterManager(t *testing.T) {

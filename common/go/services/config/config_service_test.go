@@ -3,8 +3,8 @@ package config
 import (
 	"testing"
 
-	"powerpi/common/config"
-	"powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/config"
+	"github.com/TWilkin/powerpi/common/services/logger"
 )
 
 func TestParseWithFlags(t *testing.T) {

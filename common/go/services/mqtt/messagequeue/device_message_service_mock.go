@@ -3,7 +3,7 @@ package messagequeue
 import (
 	"github.com/stretchr/testify/mock"
 
-	"powerpi/common/models"
+	"github.com/TWilkin/powerpi/common/models"
 )
 
 type MockDeviceMessageService struct {

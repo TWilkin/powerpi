@@ -1,10 +1,10 @@
 package services
 
 import (
-	"powerpi/common/services"
-	"powerpi/shutdown/services/additional"
-	"powerpi/shutdown/services/additional/brightness"
-	"powerpi/shutdown/services/config"
+	"github.com/TWilkin/powerpi/common/services"
+	"github.com/TWilkin/powerpi/shutdown/services/additional"
+	"github.com/TWilkin/powerpi/shutdown/services/additional/brightness"
+	"github.com/TWilkin/powerpi/shutdown/services/config"
 )
 
 type ShutdownContainer interface {
