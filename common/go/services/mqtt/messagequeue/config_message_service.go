@@ -22,7 +22,9 @@ type ConfigErrorMessage struct {
 
 type ConfigMessageSubscriber interface {
 	SubscribeChange(config models.ConfigType, channel chan<- *ConfigMessage)
+	SubscribeChange2(device string, channel chan<- *ConfigMessage) // TODO replaces above
 	UnsubscribeChange(config models.ConfigType)
+	UnsubscribeChange2(device string) // TODO replaces above
 }
 
 type ConfigMessagePublisher interface {
@@ -49,8 +51,16 @@ func (service configMessageService) SubscribeChange(config models.ConfigType, ch
 	mqtt.Subscribe(service.mqttService, topicType, string(config), string(models.ActionChange), true, channel)
 }
 
+func (service configMessageService) SubscribeChange2(device string, channel chan<- *ConfigMessage) {
+	mqtt.Subscribe(service.mqttService, topicType, device, string(models.ActionChange), true, channel)
+}
+
 func (service configMessageService) UnsubscribeChange(config models.ConfigType) {
 	service.mqttService.Unsubscribe(topicType, string(config), string(models.ActionChange))
+}
+
+func (service configMessageService) UnsubscribeChange2(device string) {
+	service.mqttService.Unsubscribe(topicType, device, string(models.ActionChange))
 }
 
 func (service configMessageService) PublishDeviceConfig(device string, config map[string]any, checksum string) {

@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/TWilkin/powerpi/common/services/logger"
 	messageQueue "github.com/TWilkin/powerpi/common/services/mqtt/messagequeue"
@@ -75,8 +76,34 @@ func (handler sensorConfigHandler) Publish(config map[string]any) {
 			continue
 		}
 
-		handler.logger.Info("Publishing updated config for sensor", "sensor", name)
+		changed := handler.compareChecksum(name, checksum)
 
-		handler.messageQueue.PublishDeviceConfig(name, filtered, checksum)
+		if changed {
+			handler.logger.Info("Publishing updated config for sensor", "sensor", name)
+
+			handler.messageQueue.PublishDeviceConfig(name, filtered, checksum)
+		} else {
+			handler.logger.Info("Not publishing config as file is unchanged", "sensor", name)
+		}
 	}
+}
+
+func (handler sensorConfigHandler) compareChecksum(sensor string, checksum string) bool {
+	channel := make(chan *messageQueue.ConfigMessage, 1)
+	handler.messageQueue.SubscribeChange2(sensor, channel)
+
+	defer handler.messageQueue.UnsubscribeChange2(sensor)
+
+	select {
+	case message := <-channel:
+		if message.Checksum == checksum {
+			handler.logger.Info("Read checksum", "sensor", sensor, "checksum", checksum)
+			return false
+		}
+
+	case <-time.After(5 * time.Second):
+		return true
+	}
+
+	return true
 }
