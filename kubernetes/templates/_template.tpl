@@ -18,13 +18,20 @@
 {{- end -}}
 
 {{- $name := .Params.Name | default .Chart.Name }}
-{{- $config := and .Params.UseConfig (not .Values.global.config) }}
+{{- $config := .Params.UseConfig }}
 {{- $hasVolumeClaim := eq (empty .Params.PersistentVolumeClaim) false }}
 {{- $hasVolumeClaimEnv := and $hasVolumeClaim (eq (empty .Params.PersistentVolumeClaim.EnvName) false) }}
 {{- $hasConfig := eq (empty .Params.Config) false }}
 {{- $hasSecret := eq (empty $secrets) false }}
 {{- $hasEmptyDir := eq (empty .Params.EmptyDirVolumes) false }}
 {{- $hasAnnotations := eq (empty .Params.Annotations) false }}
+
+{{- $configs := list }}
+{{- if .Params.UseDevicesFile }}{{- $configs = append $configs "devices" }}{{- end }}
+{{- if .Params.UseEventsFile }}{{- $configs = append $configs "events" }}{{- end }}
+{{- if .Params.UseFloorplanFile }}{{- $configs = append $configs "floorplan" }}{{- end }}
+{{- if .Params.UseSchedulesFile}}{{- $configs = append $configs "schedules" }}{{- end }}
+{{- if .Params.UseUsersFile }}{{- $configs = append $configs "users" }}{{- end }}
 
 template:
   metadata:
@@ -39,14 +46,28 @@ template:
       {{- end }}
 
       {{- if $hasConfig }}
-      {{- range $element := .Params.Config }}
-      checksum/{{ $element.Name }}: {{ include (print $.Template.BasePath "/config-map.yaml") $ | sha256sum }}
+      {{- $names := list }}
+      {{- range $item := .Params.Config }}
+      {{- $names = append $names $item.Name }}
+      {{- end }}
+      {{- $names = $names | uniq }}
+      {{- range $name := $names }}
+      checksum/{{ $name }}: {{ include (print $.Template.BasePath "/config-map.yaml") $ | sha256sum | quote }}
       {{- end }}
       {{- end }}
 
       {{- if $config }}
-      # this isn't ideal as it'll always restart but helm can't access that config-map template from the parent
-      checksum/config: {{ randAlphaNum 5 | quote }}
+      {{- if .Values.global.reloader }}
+      {{- $prefixed := list }}
+      {{- range $configs }}
+        {{- $prefixed = append $prefixed (printf "config-%s" .) }}
+      {{- end }}
+      configmap.reloader.stakater.com/reload: {{ $prefixed | join "," }}
+      {{- else }}
+      {{- range $name := $configs }}
+      checksum/config-{{ $name }}: {{ $.Files.Get (printf "config/%s.json" $name) | sha256sum | quote }}
+      {{- end }}
+      {{- end }}
       {{- end }}
     {{- end }}
 
@@ -80,7 +101,12 @@ template:
     dnsPolicy: ClusterFirstWithHostNet
     {{- end }}
 
+    {{- if .Params.ServiceAccount }}
+    automountServiceAccountToken: true
+    serviceAccount: {{ .Params.ServiceAccount }}
+    {{- else }}
     automountServiceAccountToken: false
+    {{- end }}
 
     securityContext:
       {{- $runAsNonRoot := eq (.Params.RunAsNonRoot | default "true") "true" }}
@@ -94,6 +120,8 @@ template:
       {{- end }}
       {{- if .Params.FsGroup }}
       fsGroup: {{ .Params.FsGroup }}
+      {{- else if $runAsNonRoot }}
+      fsGroup: {{ .Params.RunAsUser | default "1000" }}
       {{- end }}
       seccompProfile:
         type: RuntimeDefault
@@ -171,30 +199,13 @@ template:
       {{- end }}
       {{- end }}
 
-      {{- if $config }}
       {{- if eq .Params.UseConfig true }}
+      # For now we're turning this off until config-server updates the ConfigMaps
       - name: USE_CONFIG_FILE
-        value: "true"
-      {{- end }}
-      {{- if .Params.UseDevicesFile }}
-      - name: DEVICES_FILE
-        value: /var/run/config/powerpi_config/devices.json
-      {{- end }}
-      {{- if .Params.UseEventsFile }}
-      - name: EVENTS_FILE
-        value: /var/run/config/powerpi_config/events.json
-      {{- end }}
-      {{- if .Params.UseFloorplanFile }}
-      - name: FLOORPLAN_FILE
-        value: /var/run/config/powerpi_config/floorplan.json
-      {{- end }}
-      {{- if .Params.UseSchedulesFile }}
-      - name: SCHEDULES_FILE
-        value: /var/run/config/powerpi_config/schedules.json
-      {{- end }}
-      {{- if .Params.UseUsersFile }}
-      - name: USERS_FILE
-        value: /var/run/config/powerpi_config/users.json
+        value: {{ (not .Values.global.config) | quote }}
+      {{- range $name := $configs }}
+      - name: {{ $name | upper}}_FILE
+        value: /var/run/config/powerpi_config/{{ $name }}.json
       {{- end }}
       {{- end }}
 
@@ -305,12 +316,12 @@ template:
       {{- end }}
       {{- end }}
 
-      {{- if $config }}
-      - name: config
-        mountPath: /var/run/config/powerpi_config
+      {{- range $name := $configs }}
+      - name: config-{{ $name }}
+        mountPath: /var/run/config/powerpi_config/{{ $name }}.json
+        subPath: {{ $name }}.json
         readOnly: true
       {{- end }}
-
       {{- end }}
 
     restartPolicy: {{ .Params.RestartPolicy | default "Always" }}
@@ -352,13 +363,14 @@ template:
     - name: {{ $element.Name }}
       secret:
         secretName: {{ $element.Name }}
+        defaultMode: 0440
     {{- end }}
     {{- end }}
 
-    {{- if $config }}
-    - name: config
+    {{- range $name := $configs }}
+    - name: config-{{ $name }}
       configMap:
-        name: config
+        name: config-{{ $name }}
     {{- end }}
 
     {{- if $hasEmptyDir }}

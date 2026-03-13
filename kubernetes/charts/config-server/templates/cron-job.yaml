@@ -2,6 +2,7 @@
   "Schedule" (.Values.schedule | default "*/5 * * * *")
   "ActiveDeadlineSeconds" (.Values.timeout | default 240
   "PriorityClassName" "powerpi-critical"
+  "ServiceAccount" "config-server"
   "MqttSecret" "mosquitto-config-secret"
   "Secret" (list
     (dict
@@ -41,4 +42,8 @@
     )
   )
 -}}
-{{- include "powerpi.cron-job" (merge (dict "Params" $data) . ) -}}
+{{- include "powerpi.job" (merge (dict "Params" $data) . ) }}
+---
+{{- $_ := set $data "Hook" "post-install,post-upgrade" }}
+{{- $_ := unset $data "Schedule" }}
+{{- include "powerpi.job" (merge (dict "Params" $data) . ) -}}

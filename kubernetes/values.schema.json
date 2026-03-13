@@ -116,6 +116,11 @@
                     "type": "boolean"
                 },
 
+                "reloader": {
+                    "description": "whether to use Reloader to watch for ConfigMap and Secret changes. Turn off if you have a cluster-wide reloader instance.",
+                    "type": "boolean"
+                },
+
                 "storageClass": {
                     "description": "When defined will use the specified StorageClass instead of using local storage. The default hostpath storage is node-local, requiring node affinity labels. Provide a distributed StorageClass to enable failover across nodes.",
                     "type": "string"
@@ -125,6 +130,19 @@
                     "description": "The external host name to use for mosquitto when using sensors and a ClusterIssuer",
                     "type": "string",
                     "pattern": "^\\w+(\\.\\w+)+$"
+                },
+
+                "kubernetesClusterCIDR": {
+                    "description": "The CIDR address of the Kubernetes cluster for the API",
+                    "type": "string",
+                    "format": "ipv4-cidr"
+                },
+
+                "kubernetesAPIPort": {
+                    "description": "The port number for the Kubernetes API",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 65535
                 }
             },
             "required": ["externalHostName"],
@@ -325,6 +343,11 @@
                 }
             },
             "unevaluatedProperties": false
+        },
+
+        "reloader": {
+            "description": "The configuration for the PowerPi Reloader service Helm chart",
+            "type": "object"
         },
 
         "scheduler": {
