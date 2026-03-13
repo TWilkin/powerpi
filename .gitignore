@@ -12,4 +12,4 @@
 **/*.log
 **/*.pyc
 **/.tsconfig-build.json
-**/Chart.lock
+**/*.tgz

@@ -5,6 +5,8 @@
   "Args" (list 
     (print "--history=" (.Values.history | default 30))
   )
+  "UseConfig" true
+  "UseDevicesFile" true
   "MqttSecret" "mosquitto-sensor-secret"
   "Secret" (list
     (dict
@@ -19,4 +21,4 @@
   )
 }}
 
-{{- include "powerpi.cron-job" (merge (dict "Params" $data) .) }}
+{{- include "powerpi.job" (merge (dict "Params" $data) .) }}

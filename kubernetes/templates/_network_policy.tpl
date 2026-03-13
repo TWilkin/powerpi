@@ -1,13 +1,21 @@
 {{- define "powerpi.network-policy-part" -}}
 
-{{- if eq (empty .Params.Namespace) false }}
+{{- $hasNamespace := eq (empty .Params.Namespace) false -}}
+{{- $hasPod := eq (and (empty .Params.Label) (empty .Params.Component) (empty .Params.K8sApp)) false -}}
+{{- $hasIP := eq (empty .Params.Cidr) false -}}
+
+{{- if $hasNamespace }}
 - namespaceSelector:
     matchLabels:
       kubernetes.io/metadata.name: {{ .Params.Namespace }}
 {{- end }}
 
-{{- if eq (and (empty .Params.Label) (empty .Params.Component) (empty .Params.K8sApp)) false }}
+{{- if $hasPod }}
+{{- if $hasNamespace }}
+  podSelector:
+{{- else }}
 - podSelector:
+{{- end }}
     matchLabels:
       {{- if eq (empty .Params.Label) false }}
       app.kubernetes.io/name: {{ .Params.Label }}
@@ -20,8 +28,12 @@
       {{- end }}
 {{- end }}
 
-{{- if eq (empty .Params.Cidr) false }}
+{{- if $hasIP }}
+{{- if or $hasNamespace $hasPod }}
+  ipBlock:
+{{- else }}
 - ipBlock:
+{{- end }}
     cidr: {{ .Params.Cidr }}
     {{- if eq (empty .Params.Except) false }}
     except:
@@ -87,6 +99,13 @@ ports:
 {{- $ingress = append $ingress (dict
     "Namespace" "ingress"
     "Port" .Params.IngressController
+) -}}
+{{- end -}}
+
+{{- if .Params.Kubernetes -}}
+{{- $egress = append $egress (dict
+    "Cidr" .Values.global.kubernetesClusterCIDR
+    "Port" (.Values.global.kubernetesAPIPort | default "16443")
 ) -}}
 {{- end -}}
 

@@ -1,0 +1,24 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: config-server
+  {{- include "powerpi.labels" . }}
+rules:
+  # we need to be able to update the ConfigMaps with the config from GitHub
+  - apiGroups: 
+    - ""
+    resources:
+    - configmaps
+    verbs:
+    - get
+    - update
+    resourceNames:
+    - config-devices
+  {{- if .Values.global.event }}
+    - config-events
+  {{- end }}
+    - config-floorplan
+  {{- if .Values.global.scheduler }}
+    - config-schedules
+  {{- end }}
+    - config-users
