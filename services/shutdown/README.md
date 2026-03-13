@@ -115,8 +115,8 @@ The service can be started locally with the following commands.
 
 ```bash
 # From the root of your PowerPi checkout
-cd services/shutdown/src
+cd services/shutdown
 
 # Show the help file which will tell you the command line options, as explained above
-go run powerpi/shutdown --help
+go run github.com/TWilkin/powerpi/shutdown --help
 ```

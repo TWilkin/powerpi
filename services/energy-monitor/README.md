@@ -55,5 +55,5 @@ The service can be started locally with the following commands.
 cd services/energy-monitor/src
 
 # Show the help file which will tell you the command line options, as explained above
-go run powerpi/energy-monitor --help
+go run github.com/TWilkin/powerpi/energy-monitor --help
 ```

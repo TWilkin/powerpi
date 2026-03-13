@@ -2,7 +2,7 @@
 
 PowerPi service which downloads the configuration files from GitHub on an interval, publishing the changed configuration files to the MQTT message queue notifying the other services that configuration has been modified.
 
-The service is built using typescript, with dependencies using yarn workspaces. It is also dependant on a local common library [_@powerpi/common_](../../common/node/common/README.md) and a common testing library [_@powerpi/common-test_](../../common/node/common-test/README.md), all of which need to be compiled before use.
+The service is built using Go, it is dependant on a local common library [_common_](../../common/go/README.md).
 
 ## Building
 
@@ -18,21 +18,20 @@ This service expects the following environment variables to be set before it wil
 - **GITHUB_USER** - The user name of the GitHub user that owns the repository containing the configuration files.
 - **GITHUB_SECRET_FILE** - The path to the secret containing the GitHub user token.
 - **REPO** - The repository under the _GITHUB_USER_ the contains the configuration (default _powerpi-config_).
-- **BRANCH** - The branch of the repository containing the configuration (default _main_).
-- **FILE_PATH** - The path in the repostiory contraining the configuration (default _""_).
-- **POLL_FREQUENCY** - The frequency at which to check GitHub for updated configuration files in seconds (default _300_).
+- **REF** - The tag or branch of the repository containing the configuration (default _main_).
+- **FILE_PATH** - The path in the repostiory constraining the configuration (default _""_).
 - **SCHEDULER_ENABLED** - Whether the _scheduler_ service is enabled, and therefore the config file should be downloaded for it (default _true_).
 - **EVENTS_ENABLED** - Whether the _event_ service is enabled, and therefore the config file should be downloaded for it (default _true_).
 
 ### Configuration Files
 
-This service will download the following files, validate them against the appropriate JSON schema and publish them to the message queue if available, valid and only when they change.
+This service will download the following files, validate them against the appropriate JSON schema and update the Kubernetes ConfigMap, and for PowerPi sensors publish them to the message queue; if the file is available, valid and only when changed.
 
-If a file fails validation, an error message explaining the validation problem will be written to the log and published to the message queue under `/config/error` and the new config file will not be published.
+If a file fails validation, an error message explaining the validation problem will be written to the log and published to the message queue under `/config/%file type*/error`, where _file type_ is the config file, e.g. device and the new config file will not be published.
 
 #### devices.json
 
-The _devices.json_ file contains the list of devices that are added to PowerPi. The controllers use this configuration to define the devices and sensors that each of them support. The file takes the following format using the [devices JSON schema](./src/schema/config/devices.schema.json):
+The _devices.json_ file contains the list of devices that are added to PowerPi. The controllers use this configuration to define the devices and sensors that each of them support. The file takes the following format using the [devices JSON schema](./schema/config/devices.schema.json):
 
 ```json
 {
@@ -83,7 +82,7 @@ The _devices.json_ file contains the list of devices that are added to PowerPi. 
 
 #### events.json
 
-The _events.json_ file contains the mapping of events (from sensors) to actions (affecting devices). The _event_ service uses this configuration to define automated actions triggered by sensor generated events. It supports complex conditional expressions represented in JSON, including boolean logic, relational operators and retrieving the state of other devices and sensors. The file takes the following format using the [events JSON schema](./src/schema/config/events.schema.json):
+The _events.json_ file contains the mapping of events (from sensors) to actions (affecting devices). The _event_ service uses this configuration to define automated actions triggered by sensor generated events. It supports complex conditional expressions represented in JSON, including boolean logic, relational operators and retrieving the state of other devices and sensors. The file takes the following format using the [events JSON schema](./schema/config/events.schema.json):
 
 ```json
 {
@@ -115,7 +114,7 @@ The _events.json_ file contains the mapping of events (from sensors) to actions 
 
 #### floorplan.json
 
-The _floorplan.json_ file contains a floorplan description of the home, which is used to generate a map in the UI showing where sensors are located, allowing selection of a room to see the sensor status for that room. The file takes the following format using the [floorplan JSON schema](./src/schema/config/floorplan.schema.json):
+The _floorplan.json_ file contains a floorplan description of the home, which is used to generate a map in the UI showing where sensors are located, allowing selection of a room to see the sensor status for that room. The file takes the following format using the [floorplan JSON schema](./schema/config/floorplan.schema.json):
 
 ```json
 {
@@ -154,7 +153,7 @@ The _floorplan.json_ file contains a floorplan description of the home, which is
 
 #### schedules.json
 
-The _schedules.json_ file contains the scheduled events that _scheduler_ uses to adjust light brightness, temperature and colour throughout the day. The file takes the following format using the [schedules JSON schema](./src/schema/config/schedules.schema.json):
+The _schedules.json_ file contains the scheduled events that _scheduler_ uses to adjust light brightness, temperature and colour throughout the day. The file takes the following format using the [schedules JSON schema](./schema/config/schedules.schema.json):
 
 ```json
 {
@@ -181,7 +180,7 @@ The _schedules.json_ file contains the scheduled events that _scheduler_ uses to
 
 #### users.json
 
-The _users.json_ file contains the users who are authorised to use the _API_, and therefore the UI and _voice-assistant_ services. The file takes the following format using the [users JSON schema](./src/schema/config/users.schema.json):
+The _users.json_ file contains the users who are authorised to use the _API_, and therefore the UI and _voice-assistant_ services. The file takes the following format using the [users JSON schema](./schema/config/users.schema.json):
 
 ```json
 {
@@ -202,15 +201,10 @@ This service can be tested by executing the following commands.
 
 ```bash
 # From the root of your PowerPi checkout
-# Download the dependencies
-yarn
-
-# Build the common and common testing library
-yarn build:common
-yarn build:common-test
+cd services/config-server
 
 # Run the tests
-yarn test:config-server
+make test
 ```
 
 ## Local Execution
@@ -219,13 +213,8 @@ The service can be started locally with the following commands.
 
 ```bash
 # From the root of your PowerPi checkout
-# Download the dependencies
-yarn
+cd services/config-server/src
 
-# Build the common and common testing library
-yarn build:common
-yarn build:common-test
-
-# Run the service locally
-yarn start:config-server
+# Show the help file which will tell you the command line options, as explained above
+go run github.com/TWilkin/powerpi/config-server --help
 ```
