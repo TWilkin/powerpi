@@ -72,9 +72,9 @@ func (service configMessageService) PublishDeviceConfig(device string, config ma
 	mqtt.Publish(service.mqttService, topicType, device, string(models.ActionChange), &message)
 }
 
-func (service configMessageService) PublishError(config models.ConfigType, error string) {
+func (service configMessageService) PublishError(config models.ConfigType, err string) {
 	message := ConfigErrorMessage{
-		Message: error,
+		Message: err,
 	}
 
 	mqtt.Publish(service.mqttService, topicType, string(config), string(models.ActionError), &message)
