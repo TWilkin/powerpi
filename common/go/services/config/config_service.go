@@ -20,9 +20,7 @@ type ConfigService interface {
 	MqttConfig() config.MqttConfig
 	GetMqttPassword() *string
 
-	RequiredConfig() []models.ConfigType
 	GetConfig(configType models.ConfigType) models.Config
-	SetConfig(configType models.ConfigType, data map[string]any, checksum string)
 }
 
 type configService struct {
@@ -138,10 +136,6 @@ func (service *configService) GetMqttPassword() *string {
 	return password
 }
 
-func (service *configService) RequiredConfig() []models.ConfigType {
-	return []models.ConfigType{}
-}
-
 func (service *configService) GetConfig(configType models.ConfigType) models.Config {
 	config, found := service.configMap[configType]
 	if !found {
@@ -149,19 +143,6 @@ func (service *configService) GetConfig(configType models.ConfigType) models.Con
 	}
 
 	return config
-}
-
-func (service *configService) SetConfig(configType models.ConfigType, data map[string]any, checksum string) {
-	if service.configMap == nil {
-		service.configMap = make(map[models.ConfigType]models.Config)
-	}
-
-	config := models.Config{
-		Data:     data,
-		Checksum: checksum,
-	}
-
-	service.configMap[configType] = config
 }
 
 func (service *configService) readMQTTAddress(flagSet *pflag.FlagSet, envKey string) {

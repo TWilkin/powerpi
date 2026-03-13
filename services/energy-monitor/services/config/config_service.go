@@ -3,7 +3,6 @@ package config
 import (
 	"github.com/spf13/pflag"
 
-	"github.com/TWilkin/powerpi/common/models"
 	commonConfigService "github.com/TWilkin/powerpi/common/services/config"
 	"github.com/TWilkin/powerpi/common/services/logger"
 	"github.com/TWilkin/powerpi/energy-monitor/config"
@@ -60,12 +59,6 @@ func (service *configService) Parse(args []string) {
 	service.EnvironmentOverride(flagSet, "messageWriteDelay", "MESSAGE_WRITE_DELAY")
 
 	service.EnvironmentOverride(flagSet, "octopusApiKey", "OCTOPUS_API_KEY_FILE")
-}
-
-func (service *configService) RequiredConfig() []models.ConfigType {
-	return []models.ConfigType{
-		models.ConfigTypeDevices,
-	}
 }
 
 func (service *configService) GetEnergyMonitorConfig() config.EnergyMonitorConfig {

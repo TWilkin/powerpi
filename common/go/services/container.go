@@ -5,7 +5,6 @@ import (
 
 	"github.com/TWilkin/powerpi/common/services/clock"
 	"github.com/TWilkin/powerpi/common/services/config"
-	configRetriever "github.com/TWilkin/powerpi/common/services/config_retriever"
 	"github.com/TWilkin/powerpi/common/services/http"
 	"github.com/TWilkin/powerpi/common/services/logger"
 	"github.com/TWilkin/powerpi/common/services/mqtt"
@@ -27,7 +26,6 @@ func NewCommonContainer() CommonContainer {
 	commonContainer := commonContainer{container}
 
 	container.Provide(clock.NewClockService)
-	container.Provide(configRetriever.NewConfigRetriever)
 	container.Provide(logger.NewLoggerService)
 
 	container.Provide(func() http.HTTPClientFactory {
