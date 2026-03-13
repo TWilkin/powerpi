@@ -2,7 +2,7 @@ TARGET_DIR=$(CURDIR)/bin
 BINARY=$(TARGET_DIR)/powerpi_config_server
 VERSION_FLAG=-X main.Version=v$(VERSION)
 
-VERSION=2.0.0-rc.1
+VERSION=2.0.0-rc.2
 
 .PHONY: all build compile test coverage clean
 
