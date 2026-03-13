@@ -36,7 +36,7 @@ func NewCommonContainer() CommonContainer {
 	})
 
 	container.Provide(mqtt.NewMqttService)
-	container.Provide(messageQueue.NewDeviceMessageService)
+
 	container.Provide(messageQueue.NewConfigMessageService)
 	container.Provide(func(service messageQueue.ConfigMessageService) messageQueue.ConfigMessagePublisher {
 		return service
@@ -44,7 +44,22 @@ func NewCommonContainer() CommonContainer {
 	container.Provide(func(service messageQueue.ConfigMessageService) messageQueue.ConfigMessageSubscriber {
 		return service
 	})
+
+	container.Provide(messageQueue.NewDeviceMessageService)
+	container.Provide(func(service messageQueue.DeviceMessageService) messageQueue.DeviceMessagePublisher {
+		return service
+	})
+	container.Provide(func(service messageQueue.DeviceMessageService) messageQueue.DeviceMessageSubscriber {
+		return service
+	})
+
 	container.Provide(messageQueue.NewEventMessageService)
+	container.Provide(func(service messageQueue.EventMessageService) messageQueue.EventMessagePublisher {
+		return service
+	})
+	container.Provide(func(service messageQueue.EventMessageService) messageQueue.EventMessageSubscriber {
+		return service
+	})
 
 	container.Provide(func() mqtt.MqttClientFactory {
 		return mqtt.NewMqttClientFactory()
