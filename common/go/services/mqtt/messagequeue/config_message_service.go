@@ -5,8 +5,6 @@ import (
 	"github.com/TWilkin/powerpi/common/services/mqtt"
 )
 
-const topicType = "config"
-
 type ConfigMessage struct {
 	mqtt.BaseMqttMessage
 
@@ -48,19 +46,19 @@ func NewConfigMessageService(mqttService mqtt.MqttService) ConfigMessageService 
 }
 
 func (service configMessageService) SubscribeChange(config models.ConfigType, channel chan<- *ConfigMessage) {
-	mqtt.Subscribe(service.mqttService, topicType, string(config), string(models.ActionChange), true, channel)
+	mqtt.Subscribe(service.mqttService, string(models.TopicConfig), string(config), string(models.ActionChange), true, channel)
 }
 
 func (service configMessageService) SubscribeChange2(device string, channel chan<- *ConfigMessage) {
-	mqtt.Subscribe(service.mqttService, topicType, device, string(models.ActionChange), true, channel)
+	mqtt.Subscribe(service.mqttService, string(models.TopicConfig), device, string(models.ActionChange), true, channel)
 }
 
 func (service configMessageService) UnsubscribeChange(config models.ConfigType) {
-	service.mqttService.Unsubscribe(topicType, string(config), string(models.ActionChange))
+	service.mqttService.Unsubscribe(string(models.TopicConfig), string(config), string(models.ActionChange))
 }
 
 func (service configMessageService) UnsubscribeChange2(device string) {
-	service.mqttService.Unsubscribe(topicType, device, string(models.ActionChange))
+	service.mqttService.Unsubscribe(string(models.TopicConfig), device, string(models.ActionChange))
 }
 
 func (service configMessageService) PublishDeviceConfig(device string, config map[string]any, checksum string) {
@@ -69,7 +67,7 @@ func (service configMessageService) PublishDeviceConfig(device string, config ma
 		Checksum: checksum,
 	}
 
-	mqtt.Publish(service.mqttService, topicType, device, string(models.ActionChange), &message)
+	mqtt.Publish(service.mqttService, string(models.TopicConfig), device, string(models.ActionChange), &message)
 }
 
 func (service configMessageService) PublishError(config models.ConfigType, err string) {
@@ -77,5 +75,5 @@ func (service configMessageService) PublishError(config models.ConfigType, err s
 		Message: err,
 	}
 
-	mqtt.Publish(service.mqttService, topicType, string(config), string(models.ActionError), &message)
+	mqtt.Publish(service.mqttService, string(models.TopicConfig), string(config), string(models.ActionError), &message)
 }

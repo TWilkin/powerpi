@@ -17,12 +17,19 @@ type CapabilityMessage struct {
 	models.Capability
 }
 
-type DeviceMessageService interface {
-	PublishState(device string, state models.DeviceState, additionalState *models.AdditionalState)
-	PublishCapability(device string, capability models.Capability)
-
+type DeviceMessageSubscriber interface {
 	SubscribeChange(device string, channel chan<- *DeviceMessage)
 	UnsubscribeChange(device string)
+}
+
+type DeviceMessagePublisher interface {
+	PublishState(device string, state models.DeviceState, additionalState *models.AdditionalState)
+	PublishCapability(device string, capability models.Capability)
+}
+
+type DeviceMessageService interface {
+	DeviceMessageSubscriber
+	DeviceMessagePublisher
 }
 
 type deviceMessageService struct {
@@ -35,6 +42,14 @@ func NewDeviceMessageService(mqttService mqtt.MqttService) DeviceMessageService 
 	}
 }
 
+func (service deviceMessageService) SubscribeChange(device string, channel chan<- *DeviceMessage) {
+	mqtt.Subscribe(service.mqttService, string(models.TopicDevice), device, string(models.ActionChange), false, channel)
+}
+
+func (service deviceMessageService) UnsubscribeChange(device string) {
+	service.mqttService.Unsubscribe(string(models.TopicDevice), device, string(models.ActionChange))
+}
+
 func (service deviceMessageService) PublishState(device string, state models.DeviceState, additionalState *models.AdditionalState) {
 	if additionalState == nil {
 		additionalState = &models.AdditionalState{}
@@ -45,7 +60,7 @@ func (service deviceMessageService) PublishState(device string, state models.Dev
 		AdditionalState: *additionalState,
 	}
 
-	mqtt.Publish(service.mqttService, "device", device, "status", &message)
+	mqtt.Publish(service.mqttService, string(models.TopicDevice), device, string(models.ActionStatus), &message)
 }
 
 func (service deviceMessageService) PublishCapability(device string, capability models.Capability) {
@@ -55,14 +70,6 @@ func (service deviceMessageService) PublishCapability(device string, capability 
 			Capability: capability,
 		}
 
-		mqtt.Publish(service.mqttService, "device", device, "capability", &message)
+		mqtt.Publish(service.mqttService, string(models.TopicDevice), device, string(models.ActionCapability), &message)
 	}
-}
-
-func (service deviceMessageService) SubscribeChange(device string, channel chan<- *DeviceMessage) {
-	mqtt.Subscribe(service.mqttService, "device", device, "change", false, channel)
-}
-
-func (service deviceMessageService) UnsubscribeChange(device string) {
-	service.mqttService.Unsubscribe("device", device, "change")
 }
