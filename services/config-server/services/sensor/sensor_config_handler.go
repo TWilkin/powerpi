@@ -90,10 +90,10 @@ func (handler sensorConfigHandler) Publish(config map[string]any) {
 
 func (handler sensorConfigHandler) compareChecksum(sensor string, checksum string) bool {
 	channel := make(chan *messageQueue.ConfigMessage, 1)
-	defer close(channel)
-
 	handler.messageQueue.SubscribeChange2(sensor, channel)
+
 	defer handler.messageQueue.UnsubscribeChange2(sensor)
+	defer close(channel)
 
 	select {
 	case message := <-channel:
