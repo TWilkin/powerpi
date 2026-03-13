@@ -5,6 +5,8 @@ import (
 	"github.com/TWilkin/powerpi/common/services/mqtt"
 )
 
+const topicType = "config"
+
 type ConfigMessage struct {
 	mqtt.BaseMqttMessage
 
@@ -12,9 +14,27 @@ type ConfigMessage struct {
 	Checksum string         `json:"checksum"`
 }
 
-type ConfigMessageService interface {
+type ConfigErrorMessage struct {
+	mqtt.BaseMqttMessage
+
+	Message string `json:"message"`
+}
+
+type ConfigMessageSubscriber interface {
 	SubscribeChange(config models.ConfigType, channel chan<- *ConfigMessage)
+	SubscribeChange2(device string, channel chan<- *ConfigMessage) // TODO replaces above
 	UnsubscribeChange(config models.ConfigType)
+	UnsubscribeChange2(device string) // TODO replaces above
+}
+
+type ConfigMessagePublisher interface {
+	PublishDeviceConfig(device string, config map[string]any, checksum string)
+	PublishError(config models.ConfigType, error string)
+}
+
+type ConfigMessageService interface {
+	ConfigMessageSubscriber
+	ConfigMessagePublisher
 }
 
 type configMessageService struct {
@@ -28,9 +48,34 @@ func NewConfigMessageService(mqttService mqtt.MqttService) ConfigMessageService 
 }
 
 func (service configMessageService) SubscribeChange(config models.ConfigType, channel chan<- *ConfigMessage) {
-	mqtt.Subscribe(service.mqttService, "config", string(config), "change", true, channel)
+	mqtt.Subscribe(service.mqttService, topicType, string(config), string(models.ActionChange), true, channel)
+}
+
+func (service configMessageService) SubscribeChange2(device string, channel chan<- *ConfigMessage) {
+	mqtt.Subscribe(service.mqttService, topicType, device, string(models.ActionChange), true, channel)
 }
 
 func (service configMessageService) UnsubscribeChange(config models.ConfigType) {
-	service.mqttService.Unsubscribe("config", string(config), "change")
+	service.mqttService.Unsubscribe(topicType, string(config), string(models.ActionChange))
+}
+
+func (service configMessageService) UnsubscribeChange2(device string) {
+	service.mqttService.Unsubscribe(topicType, device, string(models.ActionChange))
+}
+
+func (service configMessageService) PublishDeviceConfig(device string, config map[string]any, checksum string) {
+	message := ConfigMessage{
+		Payload:  config,
+		Checksum: checksum,
+	}
+
+	mqtt.Publish(service.mqttService, topicType, device, string(models.ActionChange), &message)
+}
+
+func (service configMessageService) PublishError(config models.ConfigType, err string) {
+	message := ConfigErrorMessage{
+		Message: err,
+	}
+
+	mqtt.Publish(service.mqttService, topicType, string(config), string(models.ActionError), &message)
 }

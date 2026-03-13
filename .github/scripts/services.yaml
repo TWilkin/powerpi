@@ -44,10 +44,9 @@ services:
   - name: config-server
     directory: services/config-server
     chartName: config-server
-    type: nodejs
+    type: golang
     dependencies:
-      - node-common
-      - node-common-test
+      - go-common
 
   - name: energy-monitor
     directory: services/energy-monitor

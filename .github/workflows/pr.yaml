@@ -128,12 +128,13 @@ jobs:
       - name: Test Config Server
         if: steps.check_modified.outputs.config_server
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh config-server"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_go.sh config-server"
+        working-directory: services/config-server
 
       - name: Test Energy Monitor Service
         if: steps.check_modified.outputs.energy_monitor
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_go.sh event"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_go.sh energy-monitor"
         working-directory: services/energy-monitor
 
       - name: Test Event Service

@@ -1,5 +1,5 @@
 {
-    "$schema": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/src/schema/config/users.schema.json",
+    "$schema": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/config/users.schema.json",
 
     "users": [{ "email": "test@test.com", "role": "USER" }]
 }

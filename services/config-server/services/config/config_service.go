@@ -1,0 +1,97 @@
+package config
+
+import (
+	"os"
+
+	"github.com/spf13/pflag"
+
+	commonConfigService "github.com/TWilkin/powerpi/common/services/config"
+	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/config-server/models"
+)
+
+type ConfigService interface {
+	commonConfigService.ConfigService
+
+	Parse(args []string)
+
+	GetGitHubConfig() models.GitHubConfig
+	GetGitHubToken() *string
+
+	GetKubernetesConfig() models.KubernetesConfig
+
+	GetFileConfig() models.FileConfig
+}
+
+type configService struct {
+	commonConfigService.ConfigService
+	logger logger.LoggerService
+
+	gitHub     models.GitHubConfig
+	kubernetes models.KubernetesConfig
+	files      models.FileConfig
+}
+
+func NewConfigService(logger logger.LoggerService) ConfigService {
+	return &configService{
+		ConfigService: commonConfigService.NewConfigService(logger),
+		logger:        logger,
+
+		gitHub:     models.GitHubConfig{},
+		kubernetes: models.KubernetesConfig{},
+		files:      models.FileConfig{},
+	}
+}
+
+func (service *configService) Parse(args []string) {
+	flagSet := pflag.NewFlagSet("config-service", pflag.ExitOnError)
+
+	// GitHub flags
+	flagSet.StringVar(&service.gitHub.UserId, "github-user", "undefined", "The GitHub user id to authenticate as")
+	flagSet.StringVar(&service.gitHub.TokenFile, "github-token", "undefined", "The path to GitHub user token file to authenticate with")
+	flagSet.StringVar(&service.gitHub.Repo, "repo", "powerpi-config", "The GitHub repository to read from")
+	flagSet.StringVar(&service.gitHub.Ref, "ref", "main", "The GitHub repository branch or tag to read from")
+	flagSet.StringVar(&service.gitHub.Path, "path", "undefined", "The path within the GitHub repository and branch to read from")
+
+	// Kubernetes flags
+	flagSet.StringVar(&service.kubernetes.Namespace, "namespace", "powerpi", "The kubernetes namespace to read/write the ConfigMaps from/to")
+
+	// File type flags
+	flagSet.BoolVar(&service.files.Events, "events", true, "Whether the events file is enabled")
+	flagSet.BoolVar(&service.files.Scheduler, "scheduler", true, "Whether the scheduler file is enabled")
+
+	service.ConfigService.ParseWithFlags(args, *flagSet)
+
+	service.EnvironmentOverride(flagSet, "github-user", "GITHUB_USER")
+	service.EnvironmentOverride(flagSet, "github-token", "GITHUB_SECRET_FILE")
+	service.EnvironmentOverride(flagSet, "repo", "REPO")
+	service.EnvironmentOverride(flagSet, "ref", "REF")
+	service.EnvironmentOverride(flagSet, "path", "FILE_PATH")
+
+	service.EnvironmentOverride(flagSet, "namespace", "NAMESPACE")
+
+	service.EnvironmentOverride(flagSet, "events", "EVENTS_ENABLED")
+	service.EnvironmentOverride(flagSet, "scheduler", "SCHEDULER_ENABLED")
+}
+
+func (service *configService) GetGitHubConfig() models.GitHubConfig {
+	return service.gitHub
+}
+
+func (service *configService) GetKubernetesConfig() models.KubernetesConfig {
+	return service.kubernetes
+}
+
+func (service *configService) GetGitHubToken() *string {
+	token, err := service.ReadPasswordFile(service.gitHub.TokenFile)
+	if err != nil {
+		service.logger.Error("Failed to read GitHub token key file", "error", err)
+		os.Exit(1)
+	}
+
+	return token
+}
+
+func (service *configService) GetFileConfig() models.FileConfig {
+	return service.files
+}

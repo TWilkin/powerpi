@@ -10,6 +10,14 @@ const (
 	ConfigTypeUsers     ConfigType = "users"
 )
 
+var ConfigTypes = []ConfigType{
+	ConfigTypeDevices,
+	ConfigTypeEvents,
+	ConfigTypeFloorplan,
+	ConfigTypeSchedules,
+	ConfigTypeUsers,
+}
+
 type Config struct {
 	Data     map[string]any
 	Checksum string

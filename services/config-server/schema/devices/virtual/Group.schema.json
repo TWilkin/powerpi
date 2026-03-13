@@ -1,0 +1,30 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/virtual/Group.schema.json",
+    "title": "Group",
+    "description": "The Group device",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/BaseDevice.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/PollableDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "group"
+        },
+        "devices": {
+            "description": "The list of devices that will be turned on or off in sequence",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/common/Identifier.schema.json"
+            }
+        }
+    },
+    "required": ["devices"],
+    "unevaluatedProperties": false
+}

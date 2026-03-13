@@ -13,7 +13,7 @@
             "common/node/common-api",
             "common/node/common-test",
             "services/api",
-            "services/config-server",
+            "services/config-server.old",
             "services/persistence",
             "services/ui",
             "services/voice-assistant"

@@ -1,0 +1,32 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/config/schedules.schema.json",
+    "title": "Schedules",
+    "description": "The configuration for the schedules used by the scheduler service",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "const": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/config/schedules.schema.json"
+        },
+        "timezone": {
+            "description": "The time zone the schedule times are using",
+            "type": "string"
+        },
+        "schedules": {
+            "description": "The schedules for the scheduler service to follow",
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/schedules/DeviceIntervalSchedule.schema.json"
+                    },
+                    {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/schedules/DeviceSingleSchedule.schema.json"
+                    }
+                ]
+            }
+        }
+    },
+    "required": ["timezone", "schedules"],
+    "additionalProperties": false
+}
