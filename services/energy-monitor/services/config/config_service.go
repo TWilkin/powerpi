@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/spf13/pflag"
 
+	"github.com/TWilkin/powerpi/common/models"
 	commonConfigService "github.com/TWilkin/powerpi/common/services/config"
 	"github.com/TWilkin/powerpi/common/services/logger"
 	"github.com/TWilkin/powerpi/energy-monitor/config"
@@ -27,8 +28,12 @@ type configService struct {
 
 func NewConfigService(logger logger.LoggerService) ConfigService {
 	return &configService{
-		ConfigService: commonConfigService.NewConfigService(logger),
-		logger:        logger,
+		ConfigService: commonConfigService.NewConfigService(
+			logger,
+			commonConfigService.WithRequiredConfigFile(models.ConfigTypeDevices),
+		),
+
+		logger: logger,
 
 		energyMonitor: config.EnergyMonitorConfig{},
 		octopus:       config.OctopusConfig{},
