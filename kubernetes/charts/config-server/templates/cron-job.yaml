@@ -29,8 +29,8 @@
       "Value" .Values.path
     )
     (dict
-      "Name" "BRANCH"
-      "Value" .Values.branch
+      "Name" "REF"
+      "Value" .Values.ref
     )
     (dict
       "Name" "SCHEDULER_ENABLED"
