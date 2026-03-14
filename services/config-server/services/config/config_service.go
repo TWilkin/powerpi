@@ -62,8 +62,8 @@ func (service *configService) Parse(args []string) {
 
 	service.ConfigService.ParseWithFlags(args, *flagSet)
 
-	service.EnvironmentOverride(flagSet, "github-user", "GITHUB_USER")
-	service.EnvironmentOverride(flagSet, "github-token", "GITHUB_SECRET_FILE")
+	service.EnvironmentOverride(flagSet, "githubUser", "GITHUB_USER")
+	service.EnvironmentOverride(flagSet, "githubToken", "GITHUB_SECRET_FILE")
 	service.EnvironmentOverride(flagSet, "repo", "REPO")
 	service.EnvironmentOverride(flagSet, "ref", "REF")
 	service.EnvironmentOverride(flagSet, "path", "FILE_PATH")

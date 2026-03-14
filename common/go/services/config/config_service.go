@@ -59,8 +59,9 @@ func NewConfigService(logger logger.LoggerService, options ...ConfigOption) Conf
 
 func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagSet) {
 	// built-in flags
+	const logLevelFlag = "logLevel"
 	builtIn := pflag.NewFlagSet("built-in", pflag.ExitOnError)
-	builtIn.String("log-level", "INFO", "The log level for the application")
+	builtIn.String(logLevelFlag, "INFO", "The log level for the application")
 
 	// Config Files
 	getConfigFileFlag := func(configType models.ConfigType) (string, string) {
@@ -108,7 +109,7 @@ func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagS
 	}
 
 	// built-in environment overrides
-	service.EnvironmentOverride(combined, "log-level", "LOG_LEVEL")
+	service.EnvironmentOverride(combined, logLevelFlag, "LOG_LEVEL")
 
 	// Config file environment overrides
 	for configType := range service.files {
@@ -130,7 +131,7 @@ func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagS
 	service.EnvironmentOverride(combined, "topic", "TOPIC_BASE")
 
 	// set the log level
-	service.logger.SetLevel(combined.Lookup("log-level").Value.String())
+	service.logger.SetLevel(combined.Lookup(logLevelFlag).Value.String())
 
 	// Set the config file paths
 	for configType := range service.files {
