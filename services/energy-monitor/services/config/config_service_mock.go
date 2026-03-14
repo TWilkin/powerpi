@@ -28,7 +28,7 @@ func (service MockConfigService) GetOctopusAPIKey() *string {
 	return service.TestOctopusAPIKey
 }
 
-func (service *MockConfigService) GetConfig(configType commonModels.ConfigType) commonModels.Config {
+func (service *MockConfigService) GetConfig(configType commonModels.ConfigType) (map[string]any, error) {
 	args := service.Called(configType)
-	return args.Get(0).(commonModels.Config)
+	return args.Get(0).(map[string]any), args.Error(1)
 }

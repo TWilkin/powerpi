@@ -29,5 +29,8 @@ func main() {
 
 	// start the meter manager
 	meterManager := services.GetService[meter.MeterManager](container)
-	meterManager.Start()
+	err := meterManager.Start()
+	if err != nil {
+		os.Exit(1)
+	}
 }

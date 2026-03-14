@@ -1,6 +1,8 @@
 package config
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/url"
 	"os"
 	"strings"
@@ -20,15 +22,12 @@ type ConfigService interface {
 	MqttConfig() config.MqttConfig
 	GetMqttPassword() *string
 
-	GetConfig(configType models.ConfigType) models.Config
+	GetConfig(configType models.ConfigType) (map[string]any, error)
 }
 
 type configService struct {
 	mqtt   config.MqttConfig
 	logger logger.LoggerService
-
-	// config map
-	configMap map[models.ConfigType]models.Config
 }
 
 func NewConfigService(logger logger.LoggerService) ConfigService {
@@ -136,13 +135,28 @@ func (service *configService) GetMqttPassword() *string {
 	return password
 }
 
-func (service *configService) GetConfig(configType models.ConfigType) models.Config {
-	config, found := service.configMap[configType]
-	if !found {
-		panic("Config not found")
+func (service *configService) GetConfig(configType models.ConfigType) (map[string]any, error) {
+	envKey := fmt.Sprintf("%s_FILE", strings.ToUpper(string(configType)))
+	service.logger.Info("Using config file", "file", configType, "env", envKey)
+
+	fileName, exists := os.LookupEnv(envKey)
+	if !exists {
+		return nil, fmt.Errorf("Missing environment variable '%s'", envKey)
+	}
+	service.logger.Info("Reading config file", "fileName", fileName)
+
+	data, err := os.ReadFile(fileName)
+	if err != nil {
+		return nil, err
 	}
 
-	return config
+	var config map[string]any
+	err = json.Unmarshal(data, &config)
+	if err != nil {
+		return nil, err
+	}
+
+	return config, nil
 }
 
 func (service *configService) readMQTTAddress(flagSet *pflag.FlagSet, envKey string) {

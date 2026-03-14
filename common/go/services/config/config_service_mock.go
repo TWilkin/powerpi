@@ -40,9 +40,9 @@ func (service *MockConfigService) RequiredConfig() []models.ConfigType {
 	return args.Get(0).([]models.ConfigType)
 }
 
-func (service *MockConfigService) GetConfig(configType models.ConfigType) models.Config {
+func (service *MockConfigService) GetConfig(configType models.ConfigType) (map[string]any, error) {
 	args := service.Called(configType)
-	return args.Get(0).(models.Config)
+	return args.Get(0).(map[string]any), args.Error(1)
 }
 
 func (service *MockConfigService) SetConfig(configType models.ConfigType, data map[string]any, checksum string) {
