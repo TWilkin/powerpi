@@ -1,6 +1,6 @@
 {{- $data := dict
   "Schedule" (.Values.schedule | default "*/5 * * * *")
-  "ActiveDeadlineSeconds" (.Values.timeout | default 240
+  "ActiveDeadlineSeconds" (.Values.timeout | default 240)
   "PriorityClassName" "powerpi-critical"
   "ServiceAccount" "config-server"
   "MqttSecret" "mosquitto-config-secret"
