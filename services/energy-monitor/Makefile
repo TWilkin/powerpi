@@ -3,7 +3,7 @@ BINARY=$(TARGET_DIR)/powerpi_energy_monitor
 VERSION_FLAG=-X main.Version=v$(VERSION)
 
 # the version of the energy-monitor service
-VERSION=2.0.2-rc.4
+VERSION=2.0.2-rc.5
 
 .PHONY: all build compile test coverage clean
 

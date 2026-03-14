@@ -1,6 +1,8 @@
 package config
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/url"
 	"os"
 	"strings"
@@ -20,45 +22,63 @@ type ConfigService interface {
 	MqttConfig() config.MqttConfig
 	GetMqttPassword() *string
 
-	RequiredConfig() []models.ConfigType
-	GetConfig(configType models.ConfigType) models.Config
-	SetConfig(configType models.ConfigType, data map[string]any, checksum string)
+	GetConfig(configType models.ConfigType) (map[string]any, error)
 }
 
 type configService struct {
 	mqtt   config.MqttConfig
 	logger logger.LoggerService
 
-	// config map
-	configMap map[models.ConfigType]models.Config
+	files map[models.ConfigType]string
 }
 
-func NewConfigService(logger logger.LoggerService) ConfigService {
-	return &configService{
-		mqtt:   config.MqttConfig{},
-		logger: logger,
+type ConfigOption func(*configService)
+
+func WithRequiredConfigFile(configs ...models.ConfigType) ConfigOption {
+	return func(service *configService) {
+		for _, configType := range configs {
+			service.files[configType] = ""
+		}
 	}
 }
 
-func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagSet) {
-	// built-in flags
-	builtIn := pflag.NewFlagSet("built-in", pflag.ExitOnError)
-	builtIn.String("log-level", "INFO", "The log level for the application")
+func NewConfigService(logger logger.LoggerService, options ...ConfigOption) ConfigService {
+	service := &configService{
+		mqtt:   config.MqttConfig{},
+		logger: logger,
 
-	// MQTT
-	mqtt := pflag.NewFlagSet("mqtt", pflag.ExitOnError)
-	mqtt.StringVar(&service.mqtt.Host, "host", "mosquitto", "The hostname of the MQTT broker")
-	mqtt.IntVar(&service.mqtt.Port, "port", 1883, "The port number for the MQTT broker")
-	mqtt.StringVar(&service.mqtt.User, "user", "device", "The username for the MQTT broker")
-	mqtt.StringVar(&service.mqtt.PasswordFile, "password", "undefined", "The path to the password file")
-	mqtt.StringVar(&service.mqtt.TopicBase, "topic", "powerpi", "The topic base for the MQTT broker")
+		files: map[models.ConfigType]string{},
+	}
+
+	for _, option := range options {
+		option(service)
+	}
+
+	return service
+}
+
+type flagGroup struct {
+	build       func() *pflag.FlagSet
+	environment func(*pflag.FlagSet)
+	apply       func(*pflag.FlagSet)
+}
+
+func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagSet) {
+	groups := []flagGroup{
+		service.addBuiltInFlags(),
+		service.addConfigFileFlags(),
+		service.addMQTTFlags(),
+	}
 
 	name := args[0]
 	params := args[1:]
 
 	combined := pflag.NewFlagSet(name, pflag.ExitOnError)
-	combined.AddFlagSet(builtIn)
-	combined.AddFlagSet(mqtt)
+
+	for _, group := range groups {
+		combined.AddFlagSet(group.build())
+	}
+
 	for _, flag := range flags {
 		flagCopy := flag
 
@@ -70,19 +90,106 @@ func (service *configService) ParseWithFlags(args []string, flags ...pflag.FlagS
 		panic(err)
 	}
 
-	// built-in environment overrides
-	service.EnvironmentOverride(builtIn, "log-level", "LOG_LEVEL")
+	// override with environment variables
+	for _, group := range groups {
+		group.environment(combined)
+	}
 
-	// MQTT environment overrides
-	service.EnvironmentOverride(combined, "host", "MQTT_HOST")
-	service.EnvironmentOverride(combined, "port", "MQTT_PORT")
-	service.readMQTTAddress(combined, "MQTT_ADDRESS")
-	service.EnvironmentOverride(combined, "user", "MQTT_USER")
-	service.EnvironmentOverride(combined, "password", "MQTT_SECRET_FILE")
-	service.EnvironmentOverride(combined, "topic", "TOPIC_BASE")
+	// apply the configuration
+	for _, group := range groups {
+		if group.apply != nil {
+			group.apply(combined)
+		}
+	}
+}
 
-	// set the log level
-	service.logger.SetLevel(combined.Lookup("log-level").Value.String())
+func (service *configService) addBuiltInFlags() flagGroup {
+	const logLevelFlag = "logLevel"
+
+	build := func() *pflag.FlagSet {
+		builtIn := pflag.NewFlagSet("built-in", pflag.ExitOnError)
+		builtIn.String(logLevelFlag, "INFO", "The log level for the application")
+		return builtIn
+	}
+
+	environment := func(flagSet *pflag.FlagSet) {
+		service.EnvironmentOverride(flagSet, logLevelFlag, "LOG_LEVEL")
+	}
+
+	apply := func(flagSet *pflag.FlagSet) {
+		service.logger.SetLevel(flagSet.Lookup(logLevelFlag).Value.String())
+	}
+
+	return flagGroup{build, environment, apply}
+}
+
+func (service *configService) addMQTTFlags() flagGroup {
+	build := func() *pflag.FlagSet {
+		mqtt := pflag.NewFlagSet("mqtt", pflag.ExitOnError)
+		mqtt.StringVar(&service.mqtt.Host, "host", "mosquitto", "The hostname of the MQTT broker")
+		mqtt.IntVar(&service.mqtt.Port, "port", 1883, "The port number for the MQTT broker")
+		mqtt.StringVar(&service.mqtt.User, "user", "device", "The username for the MQTT broker")
+		mqtt.StringVar(&service.mqtt.PasswordFile, "password", "undefined", "The path to the password file")
+		mqtt.StringVar(&service.mqtt.TopicBase, "topic", "powerpi", "The topic base for the MQTT broker")
+		return mqtt
+	}
+
+	environment := func(flagSet *pflag.FlagSet) {
+		service.EnvironmentOverride(flagSet, "host", "MQTT_HOST")
+		service.EnvironmentOverride(flagSet, "port", "MQTT_PORT")
+		service.readMQTTAddress(flagSet, "MQTT_ADDRESS")
+		service.EnvironmentOverride(flagSet, "user", "MQTT_USER")
+		service.EnvironmentOverride(flagSet, "password", "MQTT_SECRET_FILE")
+		service.EnvironmentOverride(flagSet, "topic", "TOPIC_BASE")
+	}
+
+	return flagGroup{build, environment, nil}
+}
+
+func (service *configService) addConfigFileFlags() flagGroup {
+	getConfigFileFlag := func(configType models.ConfigType) (string, string) {
+		configName := string(configType)
+		configFlag := fmt.Sprintf("%sFile", configName)
+
+		return configName, configFlag
+	}
+
+	build := func() *pflag.FlagSet {
+		configFiles := pflag.NewFlagSet("config", pflag.ExitOnError)
+
+		for configType := range service.files {
+			configName, configFlag := getConfigFileFlag(configType)
+
+			configFiles.String(
+				configFlag,
+				"undefined",
+				fmt.Sprintf("The path to the %s config file", configName),
+			)
+		}
+
+		return configFiles
+	}
+
+	environment := func(flagSet *pflag.FlagSet) {
+		for configType := range service.files {
+			configName, configFlag := getConfigFileFlag(configType)
+
+			service.EnvironmentOverride(
+				flagSet,
+				configFlag,
+				fmt.Sprintf("%s_FILE", strings.ToUpper(configName)),
+			)
+		}
+	}
+
+	apply := func(flagSet *pflag.FlagSet) {
+		for configType := range service.files {
+			_, configFlag := getConfigFileFlag(configType)
+			service.files[configType] = flagSet.Lookup(configFlag).Value.String()
+		}
+	}
+
+	return flagGroup{build, environment, apply}
 }
 
 func (service *configService) EnvironmentOverride(flagSet *pflag.FlagSet, flag string, envKey string) {
@@ -138,30 +245,22 @@ func (service *configService) GetMqttPassword() *string {
 	return password
 }
 
-func (service *configService) RequiredConfig() []models.ConfigType {
-	return []models.ConfigType{}
-}
+func (service *configService) GetConfig(configType models.ConfigType) (map[string]any, error) {
+	fileName := service.files[configType]
+	service.logger.Info("Reading config file", "fileName", fileName)
 
-func (service *configService) GetConfig(configType models.ConfigType) models.Config {
-	config, found := service.configMap[configType]
-	if !found {
-		panic("Config not found")
+	data, err := os.ReadFile(fileName)
+	if err != nil {
+		return nil, err
 	}
 
-	return config
-}
-
-func (service *configService) SetConfig(configType models.ConfigType, data map[string]any, checksum string) {
-	if service.configMap == nil {
-		service.configMap = make(map[models.ConfigType]models.Config)
+	var config map[string]any
+	err = json.Unmarshal(data, &config)
+	if err != nil {
+		return nil, err
 	}
 
-	config := models.Config{
-		Data:     data,
-		Checksum: checksum,
-	}
-
-	service.configMap[configType] = config
+	return config, nil
 }
 
 func (service *configService) readMQTTAddress(flagSet *pflag.FlagSet, envKey string) {

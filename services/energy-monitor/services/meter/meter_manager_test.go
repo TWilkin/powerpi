@@ -188,11 +188,7 @@ func TestMeterManagerStart(t *testing.T) {
 			loggerService := logger.SetupMockLoggerService()
 			factory := &energyRetrieverFactory.MockEnergyRetrieverFactory{}
 
-			testConfig := commonModels.Config{
-				Data: test.configData,
-			}
-
-			configService.On("GetConfig", commonModels.ConfigTypeDevices).Return(testConfig)
+			configService.On("GetConfig", commonModels.ConfigTypeDevices).Return(test.configData, nil)
 			test.setupMocks(configService, factory)
 
 			manager := NewMeterManager(configService, loggerService, factory).(*meterManager)

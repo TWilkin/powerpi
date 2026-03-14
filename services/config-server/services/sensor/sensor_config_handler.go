@@ -93,6 +93,7 @@ func (handler sensorConfigHandler) compareChecksum(sensor string, checksum strin
 	handler.messageQueue.SubscribeChange2(sensor, channel)
 
 	defer handler.messageQueue.UnsubscribeChange2(sensor)
+	defer close(channel)
 
 	select {
 	case message := <-channel:

@@ -28,8 +28,12 @@ type configService struct {
 
 func NewConfigService(logger logger.LoggerService) ConfigService {
 	return &configService{
-		ConfigService: commonConfigService.NewConfigService(logger),
-		logger:        logger,
+		ConfigService: commonConfigService.NewConfigService(
+			logger,
+			commonConfigService.WithRequiredConfigFile(models.ConfigTypeDevices),
+		),
+
+		logger: logger,
 
 		energyMonitor: config.EnergyMonitorConfig{},
 		octopus:       config.OctopusConfig{},
@@ -60,12 +64,6 @@ func (service *configService) Parse(args []string) {
 	service.EnvironmentOverride(flagSet, "messageWriteDelay", "MESSAGE_WRITE_DELAY")
 
 	service.EnvironmentOverride(flagSet, "octopusApiKey", "OCTOPUS_API_KEY_FILE")
-}
-
-func (service *configService) RequiredConfig() []models.ConfigType {
-	return []models.ConfigType{
-		models.ConfigTypeDevices,
-	}
 }
 
 func (service *configService) GetEnergyMonitorConfig() config.EnergyMonitorConfig {

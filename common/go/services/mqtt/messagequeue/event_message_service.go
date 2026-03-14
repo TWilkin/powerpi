@@ -1,6 +1,7 @@
 package messagequeue
 
 import (
+	"github.com/TWilkin/powerpi/common/models"
 	"github.com/TWilkin/powerpi/common/services/mqtt"
 )
 
@@ -11,12 +12,19 @@ type EventMessage struct {
 	Unit  string  `json:"unit"`
 }
 
-type EventMessageService interface {
-	PublishValue(sensor string, action string, value float64, unit string)
-	PublishValueWithTime(sensor string, action string, value float64, unit string, timestamp *int64)
-
+type EventMessageSubscriber interface {
 	SubscribeValue(sensor string, action string, channel chan<- *EventMessage)
 	UnsubscribeValue(sensor string, action string)
+}
+
+type EventMessagePublisher interface {
+	PublishValue(sensor string, action string, value float64, unit string)
+	PublishValueWithTime(sensor string, action string, value float64, unit string, timestamp *int64)
+}
+
+type EventMessageService interface {
+	EventMessageSubscriber
+	EventMessagePublisher
 }
 
 type eventMessageService struct {
@@ -27,6 +35,14 @@ func NewEventMessageService(mqttService mqtt.MqttService) EventMessageService {
 	return &eventMessageService{
 		mqttService: mqttService,
 	}
+}
+
+func (service eventMessageService) SubscribeValue(sensor string, action string, channel chan<- *EventMessage) {
+	mqtt.Subscribe(service.mqttService, string(models.TopicEvent), sensor, action, true, channel)
+}
+
+func (service eventMessageService) UnsubscribeValue(sensor string, action string) {
+	service.mqttService.Unsubscribe(string(models.TopicEvent), sensor, action)
 }
 
 func (service eventMessageService) PublishValue(sensor string, action string, value float64, unit string) {
@@ -49,13 +65,5 @@ func (service eventMessageService) PublishValueWithTime(
 		message.SetTimestamp(*timestamp)
 	}
 
-	mqtt.Publish(service.mqttService, "event", sensor, action, &message)
-}
-
-func (service eventMessageService) SubscribeValue(sensor string, action string, channel chan<- *EventMessage) {
-	mqtt.Subscribe(service.mqttService, "event", sensor, action, true, channel)
-}
-
-func (service eventMessageService) UnsubscribeValue(sensor string, action string) {
-	service.mqttService.Unsubscribe("event", sensor, action)
+	mqtt.Publish(service.mqttService, string(models.TopicEvent), sensor, action, &message)
 }

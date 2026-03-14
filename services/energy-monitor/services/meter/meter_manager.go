@@ -12,7 +12,7 @@ import (
 )
 
 type MeterManager interface {
-	Start()
+	Start() error
 }
 
 type meterManager struct {
@@ -32,10 +32,14 @@ func NewMeterManager(configService config.ConfigService, logger logger.LoggerSer
 	}
 }
 
-func (manager *meterManager) Start() {
-	config := manager.configService.GetConfig(commonModels.ConfigTypeDevices)
+func (manager *meterManager) Start() error {
+	config, err := manager.configService.GetConfig(commonModels.ConfigTypeDevices)
+	if err != nil {
+		manager.logger.Error("Unable to read config file")
+		return err
+	}
 
-	sensors := config.Data["sensors"]
+	sensors := config["sensors"]
 	if sensorsList, ok := sensors.([]interface{}); ok {
 		for _, sensor := range sensorsList {
 			if sensorMap, ok := sensor.(map[string]interface{}); ok {
@@ -61,6 +65,8 @@ func (manager *meterManager) Start() {
 			manager.logger.Error("Failed to create energy retriever for meter", "meter", meter.GetName())
 		}
 	}
+
+	return nil
 }
 
 func (manager *meterManager) readSensor(sensorType string, sensorMap map[string]interface{}) models.MeterSensor {

@@ -55,6 +55,9 @@ func main() {
 	channel := make(chan *messagequeue.DeviceMessage, 1)
 	deviceService.SubscribeChange(hostname, channel)
 
+	defer deviceService.UnsubscribeChange(hostname)
+	defer close(channel)
+
 	// loop waiting for messages
 	clockService := services.GetService[clock.ClockService](container)
 	for {

@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 
-	configRetriever "github.com/TWilkin/powerpi/common/services/config_retriever"
 	"github.com/TWilkin/powerpi/common/services/logger"
 	"github.com/TWilkin/powerpi/common/services/mqtt"
 	"github.com/TWilkin/powerpi/energy-monitor/services"
@@ -28,11 +27,10 @@ func main() {
 	mqttService := services.GetService[mqtt.MqttService](container)
 	mqttService.Connect("energy-monitor")
 
-	// retrieve the config
-	configRetriever := services.GetService[configRetriever.ConfigRetriever](container)
-	configRetriever.WaitForConfig()
-
 	// start the meter manager
 	meterManager := services.GetService[meter.MeterManager](container)
-	meterManager.Start()
+	err := meterManager.Start()
+	if err != nil {
+		os.Exit(1)
+	}
 }

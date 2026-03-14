@@ -17,8 +17,3 @@ var ConfigTypes = []ConfigType{
 	ConfigTypeSchedules,
 	ConfigTypeUsers,
 }
-
-type Config struct {
-	Data     map[string]any
-	Checksum string
-}
