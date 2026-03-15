@@ -195,8 +195,8 @@
                     "description": "The path in the GitHub repository to the configuration files",
                     "type": "string"
                 },
-                "branch": {
-                    "description": "The branch in the GitHub repository to get the configuration files",
+                "ref": {
+                    "description": "The branch or tag in the GitHub repository to get the configuration files",
                     "type": "string"
                 },
                 "repo": {

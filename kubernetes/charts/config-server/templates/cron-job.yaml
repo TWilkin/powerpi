@@ -1,6 +1,6 @@
 {{- $data := dict
   "Schedule" (.Values.schedule | default "*/5 * * * *")
-  "ActiveDeadlineSeconds" (.Values.timeout | default 240
+  "ActiveDeadlineSeconds" (.Values.timeout | default 240)
   "PriorityClassName" "powerpi-critical"
   "ServiceAccount" "config-server"
   "MqttSecret" "mosquitto-config-secret"
@@ -29,8 +29,8 @@
       "Value" .Values.path
     )
     (dict
-      "Name" "BRANCH"
-      "Value" .Values.branch
+      "Name" "REF"
+      "Value" .Values.ref
     )
     (dict
       "Name" "SCHEDULER_ENABLED"
