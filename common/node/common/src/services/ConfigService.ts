@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "node:fs";
 import { Container, Service } from "typedi";
 import {
     Device,
@@ -21,16 +21,19 @@ export enum ConfigFileType {
     Users = "users",
 }
 
+export class ConfigFileException extends Error {
+    constructor(type: ConfigFileType) {
+        super(`Could not read config file ${type}`);
+        this.name = "ConfigFileException";
+    }
+}
+
 @Service()
 export class ConfigService {
     protected interval: IntervalParserService;
 
-    private configs: { [key in ConfigFileType]?: { data: object; checksum: string } };
-
     constructor(protected readonly fs: FileService) {
         this.interval = Container.get(IntervalParserService);
-
-        this.configs = {};
     }
 
     get service() {
@@ -95,54 +98,32 @@ export class ConfigService {
         return this.getEnvInt("CONFIG_WAIT_TIME", 2 * 60);
     }
 
-    get configIsNeeded() {
-        return !this.useConfigFile;
-    }
-
-    get useConfigFile() {
-        return this.getEnvBoolean("USE_CONFIG_FILE", false);
-    }
-
     get devices(): IDevice[] {
-        const file = this.fileOrConfig<IDeviceConfigFile>("DEVICES_FILE", ConfigFileType.Devices);
+        const file = this.readConfig<IDeviceConfigFile>(ConfigFileType.Devices);
 
         return file.devices?.map((device) => Object.assign(new Device(), device)) ?? [];
     }
 
     get sensors(): ISensor[] {
-        const file = this.fileOrConfig<IDeviceConfigFile>("DEVICES_FILE", ConfigFileType.Devices);
+        const file = this.readConfig<IDeviceConfigFile>(ConfigFileType.Devices);
 
         return file.sensors?.map((sensor) => Object.assign(new Sensor(), sensor)) ?? [];
     }
 
     get floorplan() {
-        return this.fileOrConfig<IFloorplanConfigFile>("FLOORPLAN_FILE", ConfigFileType.Floorplan);
+        return this.readConfig<IFloorplanConfigFile>(ConfigFileType.Floorplan);
     }
 
     get schedules() {
-        return this.fileOrConfig<IScheduleConfigFile>("SCHEDULES_FILE", ConfigFileType.Schedules);
+        return this.readConfig<IScheduleConfigFile>(ConfigFileType.Schedules);
     }
 
     get users() {
-        return this.fileOrConfig<IUserConfigFile>("USERS_FILE", ConfigFileType.Users);
+        return this.readConfig<IUserConfigFile>(ConfigFileType.Users);
     }
 
     public get configFileTypes() {
         return Object.values(ConfigFileType);
-    }
-
-    public get isPopulated() {
-        return this.getUsedConfig().every((key) =>
-            Object.keys(this.configs).includes(key.toString()),
-        );
-    }
-
-    public getConfig(type: ConfigFileType) {
-        return this.configs[type];
-    }
-
-    public setConfig(type: ConfigFileType, data: object, checksum: string) {
-        this.configs[type] = { data, checksum };
     }
 
     public getUsedConfig(): ConfigFileType[] {
@@ -156,7 +137,7 @@ export class ConfigService {
     protected getEnvInt(key: string, defaultValue: number) {
         const str = this.getEnv(key, undefined);
         if (str) {
-            return parseInt(str);
+            return Number.parseInt(str);
         }
 
         return defaultValue;
@@ -197,19 +178,15 @@ export class ConfigService {
         return this.getSecret("DB");
     }
 
-    private fileOrConfig<TConfigFile extends object>(
-        key: string,
-        type: ConfigFileType,
-    ): TConfigFile {
-        if (this.useConfigFile) {
-            const filePath = process.env[key];
+    private readConfig<TConfigFile extends object>(type: ConfigFileType): TConfigFile {
+        const key = `${type.toUpperCase()}_FILE`;
 
-            if (filePath) {
-                const file = fs.readFileSync(filePath).toString().trim();
-                return JSON.parse(file);
-            }
+        const filePath = process.env[key];
+        if (filePath) {
+            const file = fs.readFileSync(filePath).toString().trim();
+            return JSON.parse(file);
         }
 
-        return this.getConfig(type)?.data as TConfigFile;
+        throw new ConfigFileException(type);
     }
 }
