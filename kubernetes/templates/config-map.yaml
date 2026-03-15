@@ -1,16 +1,26 @@
 {{- define "powerpi.config-map" }}
+{{- $name := printf "config-%s" (.Params.File | base | trimSuffix ".json") }}
+{{- $existing := lookup "v1" "ConfigMap" .Release.Namespace $name }}
+
+{{- $checksumAnnotation := printf "checksum/%s" $name }}
+{{- $checksum := dig "metadata" "annotations" $checksumAnnotation "" $existing }}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: config-{{ .Params.File | base | trimSuffix ".json" }}
+  name: {{ $name }}
   {{- include "powerpi.labels.no-version" . }}
-{{- if eq .Values.global.config true }}
+{{- if and .Values.global.config $checksum }}
   annotations:
-    helm.sh/resource-policy: keep
+    {{ $checksumAnnotation }}: {{ $checksum }}
 {{- end }}
 data:
+{{- if and .Values.global.config $existing }}
+{{ $existing.data | toYaml | indent 4 }}
+{{- else }}
   {{ base .Params.File }}: |
 {{ .Params.Content | toString | indent 4 }}
+{{- end }}
 {{- end }}
 
 {{- $exclude := list }}
