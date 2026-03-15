@@ -1,4 +1,4 @@
-import { ConfigFileType, ConfigRetrieverService } from "@powerpi/common";
+import { ConfigFileType } from "@powerpi/common";
 import { DeviceState } from "@powerpi/common-api";
 import { Namespace } from "socket.io";
 import { anyString, anything, capture, instance, mock, resetCalls, verify } from "ts-mockito";
@@ -12,9 +12,7 @@ describe("ApiSocketService", () => {
     beforeEach(() => {
         resetCalls(mockedNamespace);
 
-        const mockedConfigRetrieverService = mock<ConfigRetrieverService>();
-
-        subject = new ApiSocketService(instance(mockedConfigRetrieverService));
+        subject = new ApiSocketService();
     });
 
     test("$onConnection", () => subject?.$onConnection());

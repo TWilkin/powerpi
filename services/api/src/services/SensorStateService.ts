@@ -1,4 +1,4 @@
-import { ConfigRetrieverService, ISensor, MqttService, isDefined } from "@powerpi/common";
+import { ISensor, MqttService } from "@powerpi/common";
 import { Sensor } from "@powerpi/common-api";
 import { Service } from "@tsed/di";
 import ApiSocketService from "./ApiSocketService.js";
@@ -11,11 +11,10 @@ export default class SensorStateService extends SensorStateListener {
 
     constructor(
         private readonly config: ConfigService,
-        configRetriever: ConfigRetrieverService,
         mqttService: MqttService,
         private readonly socket: ApiSocketService,
     ) {
-        super(configRetriever, mqttService);
+        super(mqttService);
 
         this._sensors = undefined;
     }
@@ -25,7 +24,7 @@ export default class SensorStateService extends SensorStateListener {
     }
 
     public async $onInit() {
-        this.initialise();
+        this._sensors = this.config.sensors.map(this.initialiseSensor);
 
         await super.$onInit();
     }
@@ -98,46 +97,6 @@ export default class SensorStateService extends SensorStateListener {
                 timestamp,
             );
         }
-    }
-
-    protected onConfigChange() {
-        // get the new list of sensors
-        const sensors = this.config.sensors;
-
-        // now we want to merge the sensors with the list we already have
-        const updatedSensors: Sensor[] = this.sensors
-            .map((sensor) => {
-                // find the new config
-                const newConfig = sensors.find((config) => config.name === sensor.name);
-
-                // if there is no config this sensor was removed
-                if (!newConfig) {
-                    return undefined;
-                }
-
-                // otherwise merge them
-                return {
-                    ...sensor,
-                    ...this.defaultSensor(newConfig),
-                    display_name: newConfig.displayName ?? sensor.display_name,
-                };
-            })
-            .filter(isDefined);
-
-        // find any new sensors
-        const newSensors = sensors
-            .filter(
-                (sensor) =>
-                    (updatedSensors?.find((updated) => updated.name === sensor.name) ?? -1) === -1,
-            )
-            .map(this.initialiseSensor);
-
-        // finally store the new list
-        this._sensors = updatedSensors.concat(newSensors);
-    }
-
-    private initialise() {
-        this._sensors = this.config.sensors.map(this.initialiseSensor);
     }
 
     /** The options a sensor should have when it's first loaded. */

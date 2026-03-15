@@ -14,8 +14,8 @@ async function bootstrap() {
         });
 
         await platform.listen();
-    } catch (er) {
-        $log.error(er);
+    } catch (error) {
+        $log.error(error);
     }
 }
 

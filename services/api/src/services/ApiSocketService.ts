@@ -1,20 +1,16 @@
-import { ConfigChangeListener, ConfigFileType, ConfigRetrieverService } from "@powerpi/common";
+import { ConfigFileType } from "@powerpi/common";
 import { AdditionalState, Capability, DeviceState, SocketIONamespace } from "@powerpi/common-api";
 import { $log } from "@tsed/common";
 import { Nsp, SocketService } from "@tsed/socketio";
 import { Namespace } from "socket.io";
 
 @SocketService("/api")
-export default class ApiSocketService implements ConfigChangeListener {
+export default class ApiSocketService {
     @Nsp
     namespace?: Namespace;
 
-    constructor(configRetrieverService: ConfigRetrieverService) {
+    constructor() {
         this.namespace = undefined;
-
-        // add config change listeners for the types the services that use the API will be interested in
-        configRetrieverService.addListener(ConfigFileType.Devices, this);
-        configRetrieverService.addListener(ConfigFileType.Floorplan, this);
     }
 
     $onNamespaceInit(namespace: Namespace) {
