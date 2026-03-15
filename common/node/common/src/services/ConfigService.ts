@@ -126,10 +126,6 @@ export class ConfigService {
         return Object.values(ConfigFileType);
     }
 
-    public getUsedConfig(): ConfigFileType[] {
-        throw new Error("Method not implemented.");
-    }
-
     protected getEnv<TValueType>(key: string, defaultValue: TValueType) {
         return process.env[key]?.trim() ?? defaultValue;
     }
