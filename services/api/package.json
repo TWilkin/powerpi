@@ -22,8 +22,8 @@
         "test": "vitest"
     },
     "dependencies": {
-        "@powerpi/common": "^0.2.2",
-        "@powerpi/common-api": "^0.1.9",
+        "@powerpi/common": "*",
+        "@powerpi/common-api": "*",
         "@tsed/common": "^7.34.2",
         "@tsed/core": "^7.34.2",
         "@tsed/di": "^7.34.2",

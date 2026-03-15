@@ -22,7 +22,7 @@
         "test": "vitest"
     },
     "dependencies": {
-        "@powerpi/common": "^0.2.2",
+        "@powerpi/common": "*",
         "pg": "^8.11.2",
         "pg-hstore": "^2.3.4",
         "reflect-metadata": "^0.1.13",

@@ -30,6 +30,6 @@
         "vitest": "^3.0.8"
     },
     "dependencies": {
-        "@powerpi/common": "^0.2.2"
+        "@powerpi/common": "*"
     }
 }

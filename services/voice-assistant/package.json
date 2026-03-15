@@ -36,7 +36,7 @@
         "@jovotech/cli-core": "^4.1.10",
         "@jovotech/db-filedb": "^4.5.15",
         "@jovotech/filebuilder": "^0.0.4",
-        "@powerpi/common-test": "^0.0.13",
+        "@powerpi/common-test": "*",
         "@types/express": "^4.17.11",
         "@types/jest": "^29.5.3",
         "jest": "^29.6.2",
