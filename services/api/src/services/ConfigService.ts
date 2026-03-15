@@ -1,4 +1,4 @@
-import { ConfigService as CommonConfigService, ConfigFileType } from "@powerpi/common";
+import { ConfigService as CommonConfigService } from "@powerpi/common";
 import { Injectable, ProviderScope, ProviderType } from "@tsed/common";
 import { Service } from "typedi";
 import app from "../../package.json" with { type: "json" };
@@ -18,10 +18,6 @@ export default class ConfigService extends CommonConfigService {
 
     get version() {
         return app.version;
-    }
-
-    getUsedConfig(): ConfigFileType[] {
-        return [ConfigFileType.Devices, ConfigFileType.Users];
     }
 
     get configRestart() {

@@ -1,5 +1,4 @@
 import { Service } from "typedi";
-import { ConfigRetrieverService } from "./ConfigRetrieverService.js";
 import { LoggerService } from "./LoggerService.js";
 import { MqttService } from "./MqttService.js";
 
@@ -9,7 +8,6 @@ type AppStart = () => void | Promise<void>;
 export class PowerPiService {
     constructor(
         private readonly mqtt: MqttService,
-        private readonly configRetriever: ConfigRetrieverService,
         private readonly logger: LoggerService,
     ) {}
 
@@ -20,7 +18,6 @@ export class PowerPiService {
 
             // retrieve the config from the queue
             this.logger.info("Starting PowerPi Service");
-            await this.configRetriever.start();
 
             // now the app is ready to start
             this.logger.info("Starting app");

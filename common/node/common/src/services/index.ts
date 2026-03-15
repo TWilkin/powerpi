@@ -1,4 +1,3 @@
-export * from "./ConfigRetrieverService.js";
 export * from "./ConfigService.js";
 export { default as FileService } from "./FileService.js";
 export * from "./IntervalParserService.js";

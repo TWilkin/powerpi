@@ -24,11 +24,6 @@ describe("ConfigService", () => {
 
     test("version", () => expect(subject?.version).not.toBeNull());
 
-    test("getUsedConfig", () =>
-        expect(subject?.getUsedConfig()).toStrictEqual(["devices", "users"]));
-
-    test("configIsNeeded", () => expect(subject?.configIsNeeded).toBeTruthy());
-
     test("externalHostName", () => {
         process.env.EXTERNAL_HOST_NAME = "domain.com";
 
