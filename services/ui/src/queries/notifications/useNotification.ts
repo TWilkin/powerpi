@@ -1,7 +1,6 @@
 import {
     BatteryStatusMessage,
     CapabilityStatusMessage,
-    ConfigFileType,
     ConfigStatusMessage,
     DeviceChangeMessage,
     DeviceState,
@@ -11,7 +10,6 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import useUser from "../../hooks/useUser";
-import QueryKeyFactory from "../QueryKeyFactory";
 import useAPI from "../useAPI";
 import useDevicePatcher from "../useDevicePatcher";
 import useSensorPatcher from "../useSensorPatcher";
@@ -31,13 +29,9 @@ export default function useNotification() {
 
     // handle socket.io updates
     useEffect(() => {
-        async function handleConfigChange(message: ConfigStatusMessage) {
-            if (message.type === ConfigFileType.Devices) {
-                await Promise.all([
-                    queryClient.invalidateQueries({ queryKey: QueryKeyFactory.devices }),
-                    queryClient.invalidateQueries({ queryKey: QueryKeyFactory.sensors }),
-                ]);
-            }
+        async function handleConfigChange(_: ConfigStatusMessage) {
+            // for now this doesn't do anything, but it should patch history
+            // in fact all of these should patch history
         }
 
         function handleDeviceStatusChange(message: DeviceStatusMessage) {
