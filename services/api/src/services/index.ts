@@ -1,4 +1,5 @@
 import ApiSocketService from "./ApiSocketService.js";
+import ConfigChangeService from "./ConfigChangeService.js";
 import ConfigService from "./ConfigService.js";
 import DatabaseService from "./DatabaseService.js";
 import DeviceStateService from "./DeviceStateService.js";
@@ -9,6 +10,7 @@ import "./common.js";
 
 export {
     ApiSocketService,
+    ConfigChangeService,
     ConfigService,
     DatabaseService,
     DeviceStateService,

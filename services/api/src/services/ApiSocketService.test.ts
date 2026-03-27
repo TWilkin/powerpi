@@ -1,4 +1,3 @@
-import { ConfigFileType } from "@powerpi/common";
 import { DeviceState } from "@powerpi/common-api";
 import { Namespace } from "socket.io";
 import { anyString, anything, capture, instance, mock, resetCalls, verify } from "ts-mockito";
@@ -205,19 +204,20 @@ describe("ApiSocketService", () => {
         test("success", () => {
             subject?.$onNamespaceInit(instance(mockedNamespace));
 
-            subject?.onConfigChange(ConfigFileType.Devices);
+            const entity = "MyDevice";
+            subject?.onConfigChange(entity);
 
             verify(mockedNamespace.emit("config", anything())).once();
 
             const payload = capture(mockedNamespace.emit<"config">);
 
             expect(payload.first()[1]).toStrictEqual({
-                type: ConfigFileType.Devices,
+                entity,
             });
         });
 
         test("no namespace", () => {
-            subject?.onConfigChange(ConfigFileType.Devices);
+            subject?.onConfigChange("MyDevice");
 
             verify(mockedNamespace.emit(anyString(), anything())).never();
         });

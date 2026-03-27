@@ -1,4 +1,3 @@
-import { ConfigFileType } from "@powerpi/common";
 import { AdditionalState, Capability, DeviceState, SocketIONamespace } from "@powerpi/common-api";
 import { $log } from "@tsed/common";
 import { Nsp, SocketService } from "@tsed/socketio";
@@ -88,9 +87,9 @@ export default class ApiSocketService {
         });
     }
 
-    onConfigChange(type: ConfigFileType) {
+    onConfigChange(entity: string) {
         this.namespace?.emit(SocketIONamespace.Config, {
-            type,
+            entity,
         });
     }
 
