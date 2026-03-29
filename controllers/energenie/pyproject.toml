@@ -1,6 +1,6 @@
 [project]
 name = "energenie_controller"
-version = "0.3.7-rc.3"
+version = "0.3.7-rc.4"
 description = "PowerPi Energenie Controller"
 license = "GPL-3.0-only"
 authors = [
