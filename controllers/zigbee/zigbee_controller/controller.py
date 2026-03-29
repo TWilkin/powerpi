@@ -1,5 +1,4 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.controller import Controller as CommonController
 from powerpi_common.device import DeviceManager, DeviceStatusChecker
 from powerpi_common.health import HealthService
@@ -17,7 +16,6 @@ class Controller(CommonController):
         self,
         config: ZigbeeConfig,
         logger: Logger,
-        config_retriever: ConfigRetriever,
         device_manager: DeviceManager,
         mqtt_client: MQTTClient,
         device_status_checker: DeviceStatusChecker,
@@ -26,7 +24,7 @@ class Controller(CommonController):
         zigbee_controller: ZigbeeController
     ):
         CommonController.__init__(
-            self, logger, config_retriever, device_manager,
+            self, logger, device_manager,
             mqtt_client, device_status_checker,
             scheduler, health,
             __app_name__, __version__
