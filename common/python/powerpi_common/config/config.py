@@ -76,7 +76,7 @@ class Config(ABC):
         file = os.getenv(f'{prefix}_SECRET_FILE')
 
         with open(file, 'r', encoding='utf8') as secret_file:
-            return secret_file.read()
+            return secret_file.read().strip()
 
     def __read_config(self, key: str):
         path = os.getenv(key)
