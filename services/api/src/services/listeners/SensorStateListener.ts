@@ -1,10 +1,4 @@
-import {
-    ConfigFileType,
-    ConfigRetrieverService,
-    Message,
-    MqttConsumer,
-    MqttService,
-} from "@powerpi/common";
+import { Message, MqttConsumer, MqttService } from "@powerpi/common";
 import BatteryStateListener from "./BatteryStateListener.js";
 
 export interface EventMessage extends Message {
@@ -17,23 +11,12 @@ export default abstract class SensorStateListener
     extends BatteryStateListener
     implements MqttConsumer<EventMessage>
 {
-    constructor(
-        private readonly configRetriever: ConfigRetrieverService,
-        private readonly mqttService: MqttService,
-    ) {
+    constructor(private readonly mqttService: MqttService) {
         super();
     }
 
     public async $onInit() {
         await this.mqttService.subscribe("event", "+", "+", this);
-
-        this.configRetriever.addListener(ConfigFileType.Devices, {
-            onConfigChange: (type: ConfigFileType) => {
-                if (type === ConfigFileType.Devices) {
-                    this.onConfigChange();
-                }
-            },
-        });
     }
 
     public message(_: string, entity: string, action: string, message: EventMessage) {
@@ -80,6 +63,4 @@ export default abstract class SensorStateListener
         timestamp?: number,
         charging?: boolean,
     ): void;
-
-    protected abstract onConfigChange(): void;
 }

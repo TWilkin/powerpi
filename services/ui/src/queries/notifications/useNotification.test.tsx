@@ -1,7 +1,6 @@
 import {
     BatteryStatusMessage,
     CapabilityStatusMessage,
-    ConfigFileType,
     ConfigStatusMessage,
     DeviceChangeMessage,
     DeviceState,
@@ -124,28 +123,7 @@ describe("useNotification", () => {
             expect(mocks.api.addConfigChangeListener).toHaveBeenCalledTimes(1);
 
             const event: ConfigStatusMessage = {
-                type: ConfigFileType.Devices,
-            };
-
-            const handleConfigChange = mocks.api.addConfigChangeListener.mock.calls[0][0];
-            await act(() => handleConfigChange(event));
-
-            expect(mocks.queryClient.invalidateQueries).toHaveBeenCalledTimes(2);
-            expect(mocks.queryClient.invalidateQueries).toHaveBeenCalledWith({
-                queryKey: ["powerpi", "devices"],
-            });
-            expect(mocks.queryClient.invalidateQueries).toHaveBeenCalledWith({
-                queryKey: ["powerpi", "sensors"],
-            });
-        });
-
-        test("floorplan config change", async () => {
-            renderHook(useNotification);
-
-            expect(mocks.api.addConfigChangeListener).toHaveBeenCalledTimes(1);
-
-            const event: ConfigStatusMessage = {
-                type: ConfigFileType.Floorplan,
+                entity: "MyDevice",
             };
 
             const handleConfigChange = mocks.api.addConfigChangeListener.mock.calls[0][0];

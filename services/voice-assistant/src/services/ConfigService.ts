@@ -1,4 +1,4 @@
-import { ConfigService as CommonConfigService, ConfigFileType } from "@powerpi/common";
+import { ConfigService as CommonConfigService } from "@powerpi/common";
 import { Service } from "typedi";
 import app from "../../package.json" with { type: "json" };
 import Container from "../container.js";
@@ -13,14 +13,10 @@ export default class ConfigService extends CommonConfigService {
         return app.version;
     }
 
-    getUsedConfig(): ConfigFileType[] {
-        return [ConfigFileType.Devices];
-    }
-
     get port() {
         const str = process.env["JOVO_PORT"];
         if (str) {
-            return parseInt(str);
+            return Number.parseInt(str);
         }
 
         return 3000;
@@ -32,8 +28,8 @@ export default class ConfigService extends CommonConfigService {
         if (!address) {
             const host = process.env["API_HOST"] ?? "api";
 
-            let port = parseInt(process.env["API_PORT"] ?? "");
-            if (isNaN(port)) {
+            let port = Number.parseInt(process.env["API_PORT"] ?? "");
+            if (Number.isNaN(port)) {
                 port = 80;
             }
 

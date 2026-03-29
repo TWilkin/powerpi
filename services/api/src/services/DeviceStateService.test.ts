@@ -1,10 +1,4 @@
-import {
-    ConfigFileType,
-    ConfigRetrieverService,
-    Message,
-    MqttConsumer,
-    MqttService,
-} from "@powerpi/common";
+import { Message, MqttConsumer, MqttService } from "@powerpi/common";
 import { ChangeMessage, DeviceState } from "@powerpi/common-api";
 import { anything, capture, instance, mock, resetCalls, verify, when } from "ts-mockito";
 import ApiSocketService from "./ApiSocketService.js";
@@ -15,36 +9,28 @@ import { CapabilityMessage } from "./listeners/CapabilityStateListener.js";
 import { StateMessage } from "./listeners/DeviceStateListener.js";
 
 const mockedConfigService = mock<ConfigService>();
-const mockedConfigRetrieverService = mock<ConfigRetrieverService>();
 const mockedMqttService = mock<MqttService>();
 const mockedApiSocketService = mock<ApiSocketService>();
 
-describe("DeviceStateService", () => {
-    let subject: DeviceStateService | undefined;
+function getConsumer<TConsumer extends Message>(action: string) {
+    const subscriptions = capture(mockedMqttService.subscribe);
 
-    function getConsumer<TConsumer extends Message>(action: string) {
-        const subscriptions = capture(mockedMqttService.subscribe);
-
-        for (let i = 0; ; i++) {
-            const subscription = subscriptions.byCallIndex(i);
-            if (!subscription) {
-                break;
-            }
-
-            if (subscription[2] === action) {
-                return subscription[3] as MqttConsumer<TConsumer>;
-            }
+    for (let i = 0; ; i++) {
+        const subscription = subscriptions.byCallIndex(i);
+        if (!subscription) {
+            break;
         }
 
-        return undefined;
+        if (subscription[2] === action) {
+            return subscription[3] as MqttConsumer<TConsumer>;
+        }
     }
 
-    function getConfigListener() {
-        const listeners = capture(mockedConfigRetrieverService.addListener);
+    return undefined;
+}
 
-        const listener = listeners.byCallIndex(0);
-        return listener[1];
-    }
+describe("DeviceStateService", () => {
+    let subject: DeviceStateService | undefined;
 
     beforeEach(() => {
         when(mockedConfigService.devices).thenReturn([
@@ -59,12 +45,10 @@ describe("DeviceStateService", () => {
         ]);
 
         resetCalls(mockedMqttService);
-        resetCalls(mockedConfigRetrieverService);
         resetCalls(mockedApiSocketService);
 
         subject = new DeviceStateService(
             instance(mockedConfigService),
-            instance(mockedConfigRetrieverService),
             instance(mockedMqttService),
             instance(mockedApiSocketService),
         );
@@ -90,7 +74,6 @@ describe("DeviceStateService", () => {
 
             subject = new DeviceStateService(
                 instance(mockedConfigService),
-                instance(mockedConfigRetrieverService),
                 instance(mockedMqttService),
                 instance(mockedApiSocketService),
             );
@@ -110,7 +93,6 @@ describe("DeviceStateService", () => {
         test("none", () => {
             subject = new DeviceStateService(
                 instance(mockedConfigService),
-                instance(mockedConfigRetrieverService),
                 instance(mockedMqttService),
                 instance(mockedApiSocketService),
             );
@@ -280,81 +262,6 @@ describe("DeviceStateService", () => {
         expect(payload.first()[1]).toStrictEqual({
             brightness: true,
             colour: { temperature: true },
-        });
-    });
-
-    describe("onConfigChange", () => {
-        test("updated device", () => {
-            const listener = getConfigListener();
-
-            let device = subject!.devices[0];
-
-            // check the initial config
-            expect(device.display_name).toBe("Hallway Light");
-            expect(device.location).toBe("Hallway");
-            expect(device.categories).toStrictEqual(["Light", "Something"]);
-            expect(device.visible).toBeFalsy();
-
-            // check the initial state
-            expect(device.state).toBe(DeviceState.Unknown);
-            expect(device.since).toBe(-1);
-
-            // change what it'll return
-            when(mockedConfigService.devices).thenReturn([
-                {
-                    name: "HallwayLight",
-                    displayName: "Office Socket",
-                    type: "Socket",
-                    location: "Office",
-                    categories: ["Socket", "Something Else"],
-                },
-            ]);
-
-            listener.onConfigChange(ConfigFileType.Devices);
-
-            expect(subject!.devices).toHaveLength(1);
-            device = subject!.devices[0];
-
-            // check the new config
-            expect(device.display_name).toBe("Office Socket");
-            expect(device.location).toBe("Office");
-            expect(device.categories).toStrictEqual(["Socket", "Something Else"]);
-            expect(device.visible).toBeTruthy();
-
-            // check the state is unchanged
-            expect(device.state).toBe(DeviceState.Unknown);
-            expect(device.since).toBe(-1);
-        });
-
-        test("deleted/added device", () => {
-            const listener = getConfigListener();
-
-            let device = subject!.devices[0];
-
-            // check the initial config
-            expect(device.display_name).toBe("Hallway Light");
-
-            when(mockedConfigService.devices).thenReturn([
-                {
-                    name: "Something Else",
-                    displayName: "Office Socket",
-                    type: "Socket",
-                },
-            ]);
-
-            listener.onConfigChange(ConfigFileType.Devices);
-
-            expect(subject!.devices).toHaveLength(1);
-            device = subject!.devices[0];
-
-            // check the device is new
-            expect(device.name).toBe("Something Else");
-            expect(device.display_name).toBe("Office Socket");
-            expect(device.visible).toBeTruthy();
-
-            // check the state is initialised
-            expect(device.state).toBe(DeviceState.Unknown);
-            expect(device.since).toBe(-1);
         });
     });
 });
