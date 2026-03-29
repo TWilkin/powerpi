@@ -1,9 +1,8 @@
 import json
 import os
-from abc import ABC
 
 
-class Config(ABC):
+class Config:
     '''
     Extend to define a service's configuration parameters.
     '''

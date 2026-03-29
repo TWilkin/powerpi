@@ -2,9 +2,9 @@ from datetime import datetime
 from unittest.mock import patch
 
 import pytest
+from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 
-from event.config import EventConfig
 from event.services.consumer import EventConsumer
 
 
@@ -60,7 +60,7 @@ class TestEventConsumer:
         assert EventHandlerImpl.counter == expected
 
     @pytest.fixture
-    def subject(self, powerpi_config: EventConfig, powerpi_logger: Logger):
+    def subject(self, powerpi_config: Config, powerpi_logger: Logger):
         event = EventHandlerImpl()
 
         return EventConsumer(

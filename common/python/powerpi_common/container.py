@@ -2,6 +2,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dependency_injector import containers, providers
 
 from powerpi_common.condition import ConditionContainer
+from powerpi_common.config import Config
 from powerpi_common.controller import Controller
 from powerpi_common.device import DeviceContainer
 from powerpi_common.health import HealthService
@@ -21,7 +22,9 @@ class Container(containers.DeclarativeContainer):
 
     version = providers.Dependency()
 
-    config = providers.Dependency()
+    config = providers.Singleton(
+        Config
+    )
 
     logger = providers.Singleton(
         Logger,

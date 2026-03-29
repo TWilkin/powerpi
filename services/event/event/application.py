@@ -1,6 +1,5 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from powerpi_common.application import Application as CommonApplication
-from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.health import HealthService
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
@@ -10,18 +9,17 @@ from event.services import EventManager
 
 
 class Application(CommonApplication):
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,disable=too-many-positional-arguments
     def __init__(
         self,
         logger: Logger,
-        config_retriever: ConfigRetriever,
         mqtt_client: MQTTClient,
         scheduler: AsyncIOScheduler,
         health: HealthService,
         event_manager: EventManager
     ):
         CommonApplication.__init__(
-            self, logger, config_retriever, mqtt_client,
+            self, logger, mqtt_client,
             scheduler, health,
             __app_name__, __version__
         )
