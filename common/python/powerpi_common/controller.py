@@ -1,7 +1,6 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from powerpi_common.application import Application
-from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.device import DeviceManager, DeviceStatusChecker
 from powerpi_common.health import HealthService
 from powerpi_common.logger import Logger
@@ -14,7 +13,6 @@ class Controller(Application):
     def __init__(
         self,
         logger: Logger,
-        config_retriever: ConfigRetriever,
         device_manager: DeviceManager,
         mqtt_client: MQTTClient,
         device_status_checker: DeviceStatusChecker,
@@ -24,7 +22,7 @@ class Controller(Application):
         version: str
     ):
         Application.__init__(
-            self, logger, config_retriever, mqtt_client,
+            self, logger, mqtt_client,
             scheduler, health, app_name, version
         )
 
