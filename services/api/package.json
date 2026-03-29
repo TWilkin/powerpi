@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/api",
-    "version": "1.2.2-rc.7",
+    "version": "1.2.2-rc.8",
     "description": "PowerPi API",
     "private": true,
     "type": "module",
