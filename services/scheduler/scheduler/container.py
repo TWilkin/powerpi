@@ -75,7 +75,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
     application = providers.Singleton(
         Application,
         logger=common.logger,
-        config_retriever=common.config_retriever,
         mqtt_client=common.mqtt_client,
         scheduler=common.scheduler,
         health=common.health,
