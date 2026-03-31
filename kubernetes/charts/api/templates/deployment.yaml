@@ -81,7 +81,6 @@
     "Port" 3000
   ))
   "Replicas" 3
-  "UseConfig" true
   "UseDevicesFile" true
   "UseFloorplanFile" true
   "UseUsersFile" true
