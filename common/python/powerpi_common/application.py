@@ -4,7 +4,6 @@ from signal import SIGINT, SIGTERM
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from powerpi_common.config.config_retriever import ConfigRetriever
 from powerpi_common.health import HealthService
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.mqtt import MQTTClient
@@ -19,7 +18,6 @@ class Application(LogMixin):
     def __init__(
         self,
         logger: Logger,
-        config_retriever: ConfigRetriever,
         mqtt_client: MQTTClient,
         scheduler: AsyncIOScheduler,
         health: HealthService,
@@ -27,7 +25,6 @@ class Application(LogMixin):
         version: str
     ):
         self._logger = logger
-        self.__config_retriever = config_retriever
         self.__mqtt_client = mqtt_client
         self.__scheduler = scheduler
         self.__health = health
@@ -65,9 +62,6 @@ class Application(LogMixin):
 
             # initially connect to MQTT
             await self.__mqtt_client.connect()
-
-            # retrieve any config from the queue
-            await self.__config_retriever.start()
 
             # start the health check
             await self.__health.start()

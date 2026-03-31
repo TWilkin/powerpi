@@ -1,26 +1,11 @@
 import json
 import os
-from abc import ABC, abstractmethod
-from enum import StrEnum, unique
-from typing import Any, Dict, List
 
 
-@unique
-class ConfigFileType(StrEnum):
-    DEVICES = 'devices'
-    EVENTS = 'events'
-    SCHEDULES = 'schedules'
-
-
-class Config(ABC):
+class Config:
     '''
     Extend to define a service's configuration parameters.
     '''
-
-    __configs: Dict[ConfigFileType, Dict[str, Any]]
-
-    def __init__(self):
-        self.__configs = {}
 
     @property
     def log_level(self):
@@ -69,49 +54,16 @@ class Config(ABC):
         return cutoff if cutoff is not None else 10
 
     @property
-    def config_wait_time(self):
-        time = as_int(os.getenv('CONFIG_WAIT_TIME'))
-        return time if time is not None else 2 * 60
-
-    @property
-    def config_is_needed(self):
-        return not self.use_config_file
-
-    @property
-    def use_config_file(self):
-        use = os.getenv('USE_CONFIG_FILE')
-        return use.upper() == 'TRUE' if use is not None else False
-
-    @property
     def devices(self):
-        return self.__file_or_config('DEVICES_FILE', ConfigFileType.DEVICES)
+        return self.__read_config('DEVICES_FILE')
 
     @property
     def events(self):
-        return self.__file_or_config('EVENTS_FILE', ConfigFileType.EVENTS)
+        return self.__read_config('EVENTS_FILE')
 
     @property
     def schedules(self):
-        return self.__file_or_config('SCHEDULES_FILE', ConfigFileType.SCHEDULES)
-
-    @property
-    def is_populated(self):
-        types = self.used_config
-        return all((self.__configs.get(fileType) is not None for fileType in types))
-
-    @property
-    @abstractmethod
-    def used_config(self) -> List[ConfigFileType]:
-        '''
-        Extend to define the list of config file types the extending service requires.
-        '''
-        raise NotImplementedError
-
-    def get_config(self, file_type: ConfigFileType):
-        return self.__configs.get(file_type)
-
-    def set_config(self, file_type: ConfigFileType, data: dict):
-        self.__configs[file_type] = data
+        return self.__read_config('SCHEDULES_FILE')
 
     @classmethod
     def __load(cls, file: str):
@@ -123,18 +75,13 @@ class Config(ABC):
         file = os.getenv(f'{prefix}_SECRET_FILE')
 
         with open(file, 'r', encoding='utf8') as secret_file:
-            return secret_file.read()
+            return secret_file.read().strip()
 
-    def __file_or_config(self, key: str, file_type: ConfigFileType):
-        if self.use_config_file:
-            path = os.getenv(key)
+    def __read_config(self, key: str):
+        path = os.getenv(key)
 
-            if path is not None:
-                return Config.__load(path)
-
-        config = self.get_config(file_type.value)
-        if config is not None:
-            return config
+        if path is not None:
+            return Config.__load(path)
 
         return None
 

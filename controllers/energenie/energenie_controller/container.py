@@ -29,7 +29,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
         Controller,
         config=config,
         logger=common.logger,
-        config_retriever=common.config_retriever,
         device_manager=common.device.device_manager,
         mqtt_client=common.mqtt_client,
         device_status_checker=common.device.device_status_checker,

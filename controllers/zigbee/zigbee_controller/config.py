@@ -1,9 +1,9 @@
 import os
 
-from powerpi_common.config import ControllerConfig
+from powerpi_common.config import Config
 
 
-class ZigbeeConfig(ControllerConfig):
+class ZigbeeConfig(Config):
     @property
     def database_path(self):
         value = os.getenv('DATABASE_PATH')

@@ -1,11 +1,11 @@
 import pytest
+from powerpi_common.config import Config
 from powerpi_common.device import DeviceNotFoundException
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import VariableManager
 from pytest_mock import MockerFixture
 
-from event.config import EventConfig
 from event.services.actions import ActionFactory
 from event.services.manager import EventManager
 
@@ -17,7 +17,7 @@ class TestEventManager:
     def test_load_no_content(
         self,
         subject: EventManager,
-        powerpi_config: EventConfig,
+        powerpi_config: Config,
         powerpi_mqtt_client: MQTTClient
     ):
         powerpi_config.events = {
@@ -31,7 +31,7 @@ class TestEventManager:
     def test_load_missing_device(
         self,
         subject: EventManager,
-        powerpi_config: EventConfig,
+        powerpi_config: Config,
         powerpi_mqtt_client: MQTTClient
     ):
         powerpi_config.devices = {
@@ -64,7 +64,7 @@ class TestEventManager:
     def test_load(
         self,
         subject: EventManager,
-        powerpi_config: EventConfig,
+        powerpi_config: Config,
         powerpi_variable_manager: VariableManager
     ):
         powerpi_config.devices = {
@@ -145,7 +145,7 @@ class TestEventManager:
     @pytest.fixture
     def subject(
         self,
-        powerpi_config: EventConfig,
+        powerpi_config: Config,
         powerpi_logger: Logger,
         powerpi_mqtt_client: MQTTClient,
         powerpi_variable_manager: VariableManager,
