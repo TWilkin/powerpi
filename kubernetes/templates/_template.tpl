@@ -200,9 +200,6 @@ template:
       {{- end }}
 
       {{- if eq .Params.UseConfig true }}
-      # For now we're turning this off until config-server updates the ConfigMaps
-      - name: USE_CONFIG_FILE
-        value: {{ (not .Values.global.config) | quote }}
       {{- range $name := $configs }}
       - name: {{ $name | upper}}_FILE
         value: /var/run/config/powerpi_config/{{ $name }}.json
