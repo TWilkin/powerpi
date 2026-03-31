@@ -18,7 +18,6 @@
 {{- end -}}
 
 {{- $name := .Params.Name | default .Chart.Name }}
-{{- $config := .Params.UseConfig }}
 {{- $hasVolumeClaim := eq (empty .Params.PersistentVolumeClaim) false }}
 {{- $hasVolumeClaimEnv := and $hasVolumeClaim (eq (empty .Params.PersistentVolumeClaim.EnvName) false) }}
 {{- $hasConfig := eq (empty .Params.Config) false }}
@@ -32,6 +31,7 @@
 {{- if .Params.UseFloorplanFile }}{{- $configs = append $configs "floorplan" }}{{- end }}
 {{- if .Params.UseSchedulesFile}}{{- $configs = append $configs "schedules" }}{{- end }}
 {{- if .Params.UseUsersFile }}{{- $configs = append $configs "users" }}{{- end }}
+{{- $config := not (empty $configs) }}
 
 template:
   metadata:
@@ -174,7 +174,7 @@ template:
       {{- end }}
       {{- end }}
 
-      {{- if or (eq (empty .Params.Env) false) .Params.UseConfig $hasVolumeClaimEnv $hasSecret }}
+      {{- if or (eq (empty .Params.Env) false) $config $hasVolumeClaimEnv $hasSecret }}
       env:
       {{- if $hasVolumeClaimEnv }}
       - name: {{ .Params.PersistentVolumeClaim.EnvName }}
@@ -199,14 +199,9 @@ template:
       {{- end }}
       {{- end }}
 
-      {{- if eq .Params.UseConfig true }}
-      # For now we're turning this off until config-server updates the ConfigMaps
-      - name: USE_CONFIG_FILE
-        value: {{ (not .Values.global.config) | quote }}
       {{- range $name := $configs }}
       - name: {{ $name | upper}}_FILE
         value: /var/run/config/powerpi_config/{{ $name }}.json
-      {{- end }}
       {{- end }}
 
       {{- if .Values.logLevel }}

@@ -1,5 +1,4 @@
 {{- $data := dict
-  "UseConfig" true
   "UseDevicesFile" true
   "UseEventsFile" true
   "MqttSecret" "mosquitto-event-secret"

@@ -16,7 +16,6 @@
 
 {{- $data := (merge
   (dict
-    "UseConfig" true
     "UseDevicesFile" true
     "RequestMemory" "50Mi"
     "LimitMemory" "100Mi"

@@ -40,8 +40,7 @@ This service expects the following environment variables to be set before it wil
 - **ZIGBEE_BAUDRATE** - The baud rate (connection speed) to use when communicating with a serial coordinator, use _115200_ for the Sonoff Dongle Max.
 - **ZIGBEE_FLOW_CONTROL** - The flow control system used when communicating with a serial coordinator, use _software_ for the Sonoff Dongle Max.
 - **DATABASE_PATH** - The path to the database which contains the ZigBee network configuration (default _/var/data/zigbee.db_).
-- **USE_CONFIG_FILE** - Use local config files instead of the files downloaded from GitHub by [_config-server_](../../services/config-server/README.md) (default _false_).
-- **DEVICES_FILE** - When _USE_CONFIG_FILE_ is true, load the _devices.json_ from this path.
+- **DEVICES_FILE** - Load the _devices.json_ from this path.
 
 ### Configuration Files
 
