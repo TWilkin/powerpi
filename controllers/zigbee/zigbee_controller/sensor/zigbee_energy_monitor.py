@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import NamedTuple
 
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
@@ -13,6 +13,23 @@ from zigbee_controller.zigbee import ZigbeeController, ZigbeeMixin
 from zigbee_controller.zigbee.mixins import ZigbeeReportMixin
 
 
+class MeasurementAttributes(NamedTuple):
+    attribute: str
+    multiplier: str
+    divisor: str
+
+
+ACTIVE_POWER = MeasurementAttributes(
+    'active_power', 'ac_power_multiplier', 'ac_power_divisor'
+)
+RMS_CURRENT = MeasurementAttributes(
+    'rms_current', 'ac_current_multiplier', 'ac_current_divisor'
+)
+RMS_VOLTAGE = MeasurementAttributes(
+    'rms_voltage', 'ac_voltage_multiplier', 'ac_voltage_divisor'
+)
+
+
 class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
     '''
     Add support for ZigBee Energy Monitoring sensors, supporting take periodic
@@ -24,7 +41,7 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         logger: Logger,
         mqtt_client: MQTTClient,
         zigbee_controller: ZigbeeController,
-        metrics: Dict[Metric, MetricValue],
+        metrics: dict[Metric, MetricValue],
         poll_frequency: int | None = 120,
         **kwargs
     ):
@@ -37,7 +54,7 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         self.__poll_frequency = poll_frequency
         self.__metrics = metrics
 
-        self.__divisors = {}
+        self.__scaling_attributes = {}
 
     @property
     def power_enabled(self):
@@ -57,20 +74,24 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
 
         def broadcast_attribute(
             flag: bool,
-            attribute_name: str,
-            divisor_name: str,
+            measurement: MeasurementAttributes,
             invalid: bool,
             name: str,
             unit: str
         ):
-            # pylint: disable=too-many-arguments
-            if flag and attribute.attrid == cluster.attributes_by_name[attribute_name].id:
+            if flag and attribute.attrid == cluster.attributes_by_name[measurement.attribute].id:
                 value = attribute.value.value
 
                 if invalid and value == 0xFFFF:
                     return
 
-                divisor = self.__divisors.get(divisor_name, 1)
+                multiplier = self.__scaling_attributes.get(
+                    measurement.multiplier, 1
+                )
+                if multiplier is not None and multiplier > 0:
+                    value *= multiplier
+
+                divisor = self.__scaling_attributes.get(measurement.divisor, 1)
                 if divisor is not None and divisor > 0:
                     value /= divisor
 
@@ -78,13 +99,25 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
                 self._broadcast(name, message)
 
         broadcast_attribute(
-            self.power_enabled, 'active_power', 'power_divisor', False, 'power', 'W'
+            self.power_enabled,
+            ACTIVE_POWER,
+            False,
+            'power',
+            'W'
         )
         broadcast_attribute(
-            self.current_enabled, 'rms_current', 'ac_current_divisor', True, 'current', 'A'
+            self.current_enabled,
+            RMS_CURRENT,
+            True,
+            'current',
+            'A'
         )
         broadcast_attribute(
-            self.voltage_enabled, 'rms_voltage', 'ac_voltage_divisor', True, 'voltage', 'V'
+            self.voltage_enabled,
+            RMS_VOLTAGE,
+            True,
+            'voltage',
+            'V'
         )
 
     async def initialise(self):
@@ -92,23 +125,27 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
 
         cluster: ElectricalMeasurement = device[1].in_clusters[ElectricalMeasurement.cluster_id]
 
-        report_attributes = []
-        divisor_attributes = []
+        attributes: list[MeasurementAttributes] = []
+        scale_attributes = []
         if self.power_enabled:
-            report_attributes.append('active_power')
-            divisor_attributes.append('power_divisor')
+            attributes.append(ACTIVE_POWER)
         if self.current_enabled:
-            report_attributes.append('rms_current')
-            divisor_attributes.append('ac_current_divisor')
+            attributes.append(RMS_CURRENT)
         if self.voltage_enabled:
-            report_attributes.append('rms_voltage')
-            divisor_attributes.append('ac_voltage_divisor')
+            attributes.append(RMS_VOLTAGE)
 
-        if len(report_attributes) > 0:
+        if len(attributes) > 0:
+            report_attributes = [
+                attribute.attribute for attribute in attributes
+            ]
             await self._register_reports(cluster, report_attributes, self.__poll_frequency)
 
+            scale_attributes = [
+                scale for attribute in attributes
+                for scale in (attribute.multiplier, attribute.divisor)
+            ]
             try:
-                self.__divisors, _ = await cluster.read_attributes(divisor_attributes)
+                self.__scaling_attributes, _ = await cluster.read_attributes(scale_attributes)
             except (DeliveryError, TimeoutError):
                 pass
 

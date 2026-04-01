@@ -12,8 +12,10 @@ This controller service currently supports the following ZigBee devices/sensors:
     - [Innr Smart Bulb Colour](https://www.innr.com/en/product/innr-smart-bulb-colour-b22-uk/) - Innr RGB light bulb.
 - Sockets - Any ZigBee standard compliant socket; the following sockets have been tested and confirmed working:
     - [Innr Smart Plug](https://www.innr.com/en/product/innr-smart-plug-uk/) - Innr Smart Plug
+    - [IKEA Inspelning](https://www.ikea.com/gb/en/p/inspelning-plug-smart-energy-monitor-80569842/) - IKEA Inspelning
 - Energy Monitoring - Any ZigBee standard compliant energy monitoring sensor producing power, current and voltage readings; the following sensors have been tested and confirmed working:
     - [Innr Smart Plug](https://www.innr.com/en/product/innr-smart-plug-uk/) - Innr Smart Plug
+    - [IKEA Inspelning](https://www.ikea.com/gb/en/p/inspelning-plug-smart-energy-monitor-80569842/) - IKEA Inspelning
 - Remotes:
     - IKEA Stybar - ZigBee remote with 4 buttons(up, right, bottom, left) support single and long press (only for up/down).
     - Osram Smart+ Switch Mini - ZigBee remote with 3 buttons (centre, up and down) supporting single and long press as well as battery life.
