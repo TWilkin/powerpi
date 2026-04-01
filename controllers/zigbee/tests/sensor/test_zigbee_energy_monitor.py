@@ -71,7 +71,7 @@ class TestZigbeeEnergyMonitor(SensorTestBase, InitialisableMixinTestBase):
     ):
         future = Future()
         future.set_result(({
-            'power_divisor': 2,
+            'ac_power_divisor': 2,
             'ac_current_divisor': 4,
             'ac_voltage_divisor': 8
         }, 'ignored'))
@@ -107,7 +107,7 @@ class TestZigbeeEnergyMonitor(SensorTestBase, InitialisableMixinTestBase):
     ):
         future = Future()
         future.set_result(({
-            'power_multiplier': 2,
+            'ac_power_multiplier': 2,
             'ac_current_multiplier': 4,
             'ac_voltage_multiplier': 8
         }, 'ignored'))
