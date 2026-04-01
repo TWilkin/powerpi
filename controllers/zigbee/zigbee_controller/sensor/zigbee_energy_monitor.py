@@ -58,17 +58,22 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         def broadcast_attribute(
             flag: bool,
             attribute_name: str,
+            multiplier_name: str,
             divisor_name: str,
             invalid: bool,
             name: str,
             unit: str
         ):
-            # pylint: disable=too-many-arguments
+            # pylint: disable=too-many-arguments,too-many-positional-arguments
             if flag and attribute.attrid == cluster.attributes_by_name[attribute_name].id:
                 value = attribute.value.value
 
                 if invalid and value == 0xFFFF:
                     return
+
+                multiplier = self.__divisors.get(multiplier_name, 1)
+                if multiplier is not None and multiplier > 0:
+                    value *= multiplier
 
                 divisor = self.__divisors.get(divisor_name, 1)
                 if divisor is not None and divisor > 0:
@@ -78,13 +83,22 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
                 self._broadcast(name, message)
 
         broadcast_attribute(
-            self.power_enabled, 'active_power', 'power_divisor', False, 'power', 'W'
+            self.power_enabled,
+            'active_power', 'power_multiplier', 'power_divisor',
+            False,
+            'power', 'W'
         )
         broadcast_attribute(
-            self.current_enabled, 'rms_current', 'ac_current_divisor', True, 'current', 'A'
+            self.current_enabled,
+            'rms_current', 'ac_current_multiplier', 'ac_current_divisor',
+            True,
+            'current', 'A'
         )
         broadcast_attribute(
-            self.voltage_enabled, 'rms_voltage', 'ac_voltage_divisor', True, 'voltage', 'V'
+            self.voltage_enabled,
+            'rms_voltage', 'ac_voltage_multiplier', 'ac_voltage_divisor',
+            True,
+            'voltage', 'V'
         )
 
     async def initialise(self):
@@ -97,12 +111,15 @@ class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         if self.power_enabled:
             report_attributes.append('active_power')
             divisor_attributes.append('power_divisor')
+            divisor_attributes.append('power_multiplier')
         if self.current_enabled:
             report_attributes.append('rms_current')
             divisor_attributes.append('ac_current_divisor')
+            divisor_attributes.append('ac_current_multiplier')
         if self.voltage_enabled:
             report_attributes.append('rms_voltage')
             divisor_attributes.append('ac_voltage_divisor')
+            divisor_attributes.append('ac_voltage_multiplier')
 
         if len(report_attributes) > 0:
             await self._register_reports(cluster, report_attributes, self.__poll_frequency)
