@@ -88,6 +88,42 @@ class TestZigbeeEnergyMonitor(SensorTestBase, InitialisableMixinTestBase):
 
         self.__verify_publish(powerpi_mqtt_producer, action, expected, unit)
 
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('attribute_id,action,unit,expected', [
+        (10, 'power', 'W', 10 * 2),
+        (20, 'current', 'A', 10 * 4),
+        (30, 'voltage', 'V', 10 * 8)
+    ])
+    async def test_on_report_multipliers(
+        self,
+        subject: ZigbeeEnergyMonitorSensor,
+        powerpi_mqtt_producer: MagicMock,
+        cluster: Cluster,
+        mocker: MockerFixture,
+        attribute_id: int,
+        action: str,
+        unit: str,
+        expected: int
+    ):
+        future = Future()
+        future.set_result(({
+            'power_multiplier': 2,
+            'ac_current_multiplier': 4,
+            'ac_voltage_multiplier': 8
+        }, 'ignored'))
+        cluster.read_attributes.return_value = future
+
+        await subject.initialise()
+
+        attribute = mocker.MagicMock()
+        type(attribute).attrid = PropertyMock(return_value=attribute_id)
+        type(attribute).value = PropertyMock(
+            return_value=TypeValue(None, 10))
+
+        subject.on_report(cluster, attribute)
+
+        self.__verify_publish(powerpi_mqtt_producer, action, expected, unit)
+
     @pytest.mark.parametrize('attribute_id,power,current,voltage', [
         (10, 'none', 'read', 'visible'),
         (20, 'read', 'none', 'visible'),
