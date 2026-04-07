@@ -17,28 +17,47 @@ func init() {
 		Sensors: []json.RawMessage{},
 	}
 
-	commonSensorCases := []Case{
-		{"missing type", "type", "remove", nil, false},
+	commonCases := merge(
+		generateMissing("type", false),
 
-		{"missing name", "name", "remove", nil, false},
-		{"invalid name", "name", "replace", ptr(`"123name"`), false},
+		generateMissing("name", false),
+		[]Case{
+			{"invalid name regex", "name", "replace", strPtr(`"123name"`), false},
+		},
 
-		{"missing display_name", "display_name", "remove", nil, true},
-		{"missing location", "location", "remove", nil, false},
+		generateMissing("display_name", true),
+		generateMissing("location", false),
 
-		{"missing categories", "categories", "remove", nil, true},
-		{"invalid categories", "categories", "replace", ptr("[1, 2]"), false},
+		generateMissing("categories", true),
+		[]Case{
+			{"invalid categories", "categories", "replace", strPtr(`[1, 2]`), false},
+		},
 
-		{"missing visible", "visible", "remove", nil, true},
-		{"invalid visible string", "visible", "replace", ptr(`"invalid"`), false},
-		{"invalid visible truthy", "visible", "replace", ptr("1"), false},
-	}
+		generateBoolean("visible", true),
+	)
 
 	suites = append(suites, Suite{
 		file:       "devices/PowerPiSensor.json",
 		configType: models.ConfigTypeDevices,
 		wrapper:    devicesWrapper,
 		path:       "/sensors/0",
-		cases:      commonSensorCases,
+		cases: merge(
+			commonCases,
+			generateObject("metrics", false, false),
+			[]Case{
+				{"invalid metrics key", "metrics", "replace", strPtr(`{"test": "read"}`), false},
+				{"invalid metrics value", "metrics", "replace", strPtr(`{"humidity": "test"}`), false},
+			},
+
+			generateNumeric("poll_delay", true, intPtr(1), nil),
+
+			generateObject("dht22", true, true),
+			generateNumeric("dht22/skip", true, intPtr(1), nil),
+
+			generateObject("pir", true, true),
+			generateNumeric("pir/init_delay", true, intPtr(1), nil),
+			generateNumeric("pir/post_detect_skip", true, intPtr(1), nil),
+			generateNumeric("pir/post_motion_check", true, intPtr(1), nil),
+		),
 	})
 }

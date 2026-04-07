@@ -106,6 +106,68 @@ func patch(t *testing.T, base []byte, path string, operand string, value *string
 	return result
 }
 
-func ptr(str string) *string {
+func strPtr(str string) *string {
 	return &str
+}
+
+func intPtr(n int) *int {
+	return &n
+}
+
+func merge(cases ...[]Case) []Case {
+	var result []Case
+
+	for _, test := range cases {
+		result = append(result, test...)
+	}
+
+	return result
+}
+
+func generateMissing(path string, optional bool) []Case {
+	return []Case{
+		{fmt.Sprintf("missing %s", path), path, "remove", nil, optional},
+	}
+}
+
+func generateNumeric(path string, optional bool, min *int, max *int) []Case {
+	cases := append(
+		generateMissing(path, optional),
+		Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(`"str"`), false},
+	)
+
+	if min != nil {
+		cases = append(
+			cases,
+			Case{fmt.Sprintf("valid %s min", path), path, "replace", strPtr(fmt.Sprintf("%d", *min)), true},
+			Case{fmt.Sprintf("invalid %s min", path), path, "replace", strPtr(fmt.Sprintf("%d", *min-1)), false},
+		)
+	}
+
+	if max != nil {
+		cases = append(
+			cases,
+			Case{fmt.Sprintf("valid %s max", path), path, "replace", strPtr(fmt.Sprintf("%d", *max)), true},
+			Case{fmt.Sprintf("invalid %s max", path), path, "replace", strPtr(fmt.Sprintf("%d", *max+1)), false},
+		)
+	}
+
+	return cases
+}
+
+func generateBoolean(path string, optional bool) []Case {
+	return append(
+		generateMissing(path, optional),
+		Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(`"str"`), false},
+		Case{fmt.Sprintf("invalid %s truthy", path), path, "replace", strPtr(`1`), false},
+	)
+}
+
+func generateObject(path string, optional bool, empty bool) []Case {
+	return append(
+		generateMissing(path, optional),
+		Case{fmt.Sprintf("empty %s", path), path, "replace", strPtr("{}"), empty}, // should this be allowed?
+		Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(`"str"`), false},
+		Case{fmt.Sprintf("invalid %s prop", path), path, "replace", strPtr(`{"some": "prop"}`), false},
+	)
 }
