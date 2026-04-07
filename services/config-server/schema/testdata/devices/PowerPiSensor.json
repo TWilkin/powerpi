@@ -1,25 +1,20 @@
 {
-    "devices": [],
-    "sensors": [
-        {
-            "type": "powerpi",
-            "name": "Test",
-            "display_name": "Testing",
-            "location": "Somewhere",
-            "metrics": {
-                "humidity": "none",
-                "motion": "read",
-                "temperature": "visible"
-            },
-            "poll_delay": 10,
-            "dht22": {
-                "skip": 10
-            },
-            "pir": {
-                "init_delay": 10,
-                "post_detect_skip": 11,
-                "post_motion_check": 12
-            }
-        }
-    ]
+    "type": "powerpi",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "metrics": {
+        "humidity": "none",
+        "motion": "read",
+        "temperature": "visible"
+    },
+    "poll_delay": 10,
+    "dht22": {
+        "skip": 10
+    },
+    "pir": {
+        "init_delay": 10,
+        "post_detect_skip": 11,
+        "post_motion_check": 12
+    }
 }

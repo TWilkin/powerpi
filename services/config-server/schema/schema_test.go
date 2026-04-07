@@ -1,12 +1,15 @@
 package schema
 
 import (
+	"bytes"
 	"embed"
+	"encoding/json"
 	"fmt"
 	"testing"
 
 	"github.com/TWilkin/powerpi/common/models"
 	"github.com/TWilkin/powerpi/config-server/services/validator"
+	jsonpatch "gopkg.in/evanphx/json-patch.v4"
 )
 
 //go:embed testdata
@@ -15,6 +18,8 @@ var testdata embed.FS
 type Suite struct {
 	file       string
 	configType models.ConfigType
+	wrapper    any
+	path       string
 }
 
 var suites []Suite
@@ -29,12 +34,30 @@ func Test(t *testing.T) {
 			if err != nil {
 				t.Fatalf("%s", err.Error())
 			}
+			var buffer bytes.Buffer
+			json.Compact(&buffer, data)
 
-			content := string(data)
+			// read the wrapper JSON
+			base, err := json.Marshal(suite.wrapper)
+			if err != nil {
+				t.Fatalf("%s", err.Error())
+			}
+
+			// patch the test into the wrapper
+			patch, err := jsonpatch.DecodePatch([]byte(
+				fmt.Sprintf(`[{"op": "add", "path": "%s", "value": %s}]`, suite.path, buffer.String()),
+			))
+			if err != nil {
+				t.Fatalf("%s", err.Error())
+			}
+			result, err := patch.Apply(base)
+			if err != nil {
+				t.Fatalf("%s", err.Error())
+			}
 
 			// first we run the positive test
 			t.Run("positive", func(t *testing.T) {
-				_, err := service.Validate(suite.configType, content)
+				_, err := service.Validate(suite.configType, string(result))
 				if err != nil {
 					t.Errorf("Failed validation %s", err.Error())
 				}
