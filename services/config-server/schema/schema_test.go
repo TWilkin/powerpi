@@ -163,6 +163,14 @@ func generateBoolean(path string, optional bool) []Case {
 	)
 }
 
+func generateString(path string, optional bool, empty bool, invalid string) []Case {
+	return append(
+		generateMissing(path, optional),
+		Case{fmt.Sprintf("empty %s", path), path, "replace", strPtr(`""`), empty},
+		Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(invalid), false},
+	)
+}
+
 func generateObject(path string, optional bool, empty bool) []Case {
 	return append(
 		generateMissing(path, optional),

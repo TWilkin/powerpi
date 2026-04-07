@@ -1,0 +1,13 @@
+{
+    "type": "octopus_electricity_meter",
+    "name": "Sensor",
+    "display_name": "Electricity",
+    "location": "Hallway",
+    "categories": ["energy"],
+    "visible": true,
+    "metrics": {
+        "electricity": "visible"
+    },
+    "serial_number": "SN-123",
+    "mpan": "1234567890123"
+}

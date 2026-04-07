@@ -63,6 +63,40 @@ func init() {
 
 	suites = append(
 		suites,
+		// Energy Monitor
+		Suite{
+			file:       "devices/energy-monitor/OctopusElectricityMeter.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       "/sensors/0",
+			cases: merge(
+				commonSensorCases,
+				generateMetrics("electricity"),
+				generateString("serial_number", false, true, "12345"),
+				generateString("mpan", false, false, "12345"),
+			),
+		},
+
+		Suite{
+			file:       "devices/energy-monitor/OctopusGasMeter.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       "/sensors/0",
+			cases: merge(
+				commonSensorCases,
+				generateMetrics("gas"),
+				generateString("serial_number", false, true, "12345"),
+				generateString("mprn", false, false, "12345"),
+				generateMissing("generation", false),
+				[]Case{
+					{"valid generation SMETS1", "generation", "replace", strPtr(`"SMETS1"`), true},
+					{"invalid generation SMETS0", "generation", "replace", strPtr(`"SMETS0"`), false},
+					{"invalid generation numeric", "generation", "replace", strPtr("12345"), false},
+				},
+			),
+		},
+
+		// PowerPi
 		Suite{
 			file:       "devices/PowerPiSensor.json",
 			configType: models.ConfigTypeDevices,
