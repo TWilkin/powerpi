@@ -2,6 +2,7 @@ package schema
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/TWilkin/powerpi/common/models"
 )
@@ -49,7 +50,7 @@ func init() {
 		generateMissing("location", true),
 	)
 
-	commonPollableCases := generateNumeric("poll_delay", true, intPtr(1), nil)
+	commonPollableCases := generateNumeric("poll_frequency", true, nil, nil)
 
 	commonZigBeeCases := merge(
 		generateMissing("ieee", false),
@@ -69,12 +70,9 @@ func init() {
 			path:       "/sensors/0",
 			cases: merge(
 				commonSensorCases,
-				commonPollableCases,
-				generateObject("metrics", false, false),
-				[]Case{
-					{"invalid metrics key", "metrics", "replace", strPtr(`{"test": "read"}`), false},
-					{"invalid metrics value", "metrics", "replace", strPtr(`{"humidity": "test"}`), false},
-				},
+				generateMetrics("humidity"),
+
+				generateNumeric("poll_delay", true, intPtr(1), nil),
 
 				generateObject("dht22", true, true),
 				generateNumeric("dht22/skip", true, intPtr(1), nil),
@@ -97,6 +95,16 @@ func init() {
 				commonZigBeeCases,
 				commonPollableCases,
 			),
+		},
+	)
+}
+
+func generateMetrics(key string) []Case {
+	return merge(
+		generateObject("metrics", false, false),
+		[]Case{
+			{"invalid metrics key", "metrics", "replace", strPtr(`{"test": "read"}`), false},
+			{"invalid metrics value", "metrics", "replace", strPtr(fmt.Sprintf(`{"%s": "test"}`, key)), false},
 		},
 	)
 }
