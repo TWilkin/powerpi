@@ -3,6 +3,8 @@
     "name": "Test",
     "display_name": "Testing",
     "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
     "metrics": {
         "humidity": "none",
         "motion": "read",

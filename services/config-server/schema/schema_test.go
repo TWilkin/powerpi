@@ -20,6 +20,15 @@ type Suite struct {
 	configType models.ConfigType
 	wrapper    any
 	path       string
+	cases      []Case
+}
+
+type Case struct {
+	name     string
+	path     string
+	operand  string
+	value    *string
+	expected bool
 }
 
 var suites []Suite
@@ -44,12 +53,22 @@ func Test(t *testing.T) {
 			}
 
 			// patch the test into the wrapper
-			result := patch(t, base, suite.path, "add", buffer.String())
+			value := buffer.String()
+			result := patch(t, base, suite.path, "add", &value)
 
-			// first we run the positive test
+			// first we run the complete test
 			t.Run("complete", func(t *testing.T) {
 				validate(t, service, suite.configType, result, true)
 			})
+
+			// then the cases
+			for _, test := range suite.cases {
+				t.Run(test.name, func(t *testing.T) {
+					result := patch(t, result, test.path, test.operand, test.value)
+
+					validate(t, service, suite.configType, result, test.expected)
+				})
+			}
 		})
 	}
 }
@@ -64,10 +83,15 @@ func validate(t *testing.T, service validator.ValidatorService, configType model
 	}
 }
 
-func patch(t *testing.T, base []byte, path string, operand string, data string) []byte {
-	patch, err := jsonpatch.DecodePatch(
-		fmt.Appendf(nil, `[{"op": "%s", "path": "%s", "value": %s}]`, operand, path, data),
-	)
+func patch(t *testing.T, base []byte, path string, operand string, value *string) []byte {
+	var patchJSON []byte
+	if value != nil {
+		patchJSON = fmt.Appendf(nil, `[{"op": "%s", "path": "%s", "value": %s}]`, operand, path, *value)
+	} else {
+		patchJSON = fmt.Appendf(nil, `[{"op": "%s", "path": "%s"}]`, operand, path)
+	}
+
+	patch, err := jsonpatch.DecodePatch(patchJSON)
 	if err != nil {
 		t.Fatalf("%s", err.Error())
 	}
@@ -78,4 +102,8 @@ func patch(t *testing.T, base []byte, path string, operand string, data string) 
 	}
 
 	return result
+}
+
+func ptr(str string) *string {
+	return &str
 }
