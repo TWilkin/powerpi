@@ -64,7 +64,9 @@ func Test(t *testing.T) {
 			// then the cases
 			for _, test := range suite.cases {
 				t.Run(test.name, func(t *testing.T) {
-					result := patch(t, result, test.path, test.operand, test.value)
+					fullPath := fmt.Sprintf("%s/%s", suite.path, test.path)
+
+					result := patch(t, result, fullPath, test.operand, test.value)
 
 					validate(t, service, suite.configType, result, test.expected)
 				})

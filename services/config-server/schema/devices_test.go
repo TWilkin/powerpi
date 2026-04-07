@@ -18,20 +18,20 @@ func init() {
 	}
 
 	commonSensorCases := []Case{
-		{"missing type", "/sensors/0/type", "remove", nil, false},
+		{"missing type", "type", "remove", nil, false},
 
-		{"missing name", "/sensors/0/name", "remove", nil, false},
-		{"invalid name", "/sensors/0/name", "replace", ptr(`"123name"`), false},
+		{"missing name", "name", "remove", nil, false},
+		{"invalid name", "name", "replace", ptr(`"123name"`), false},
 
-		{"missing display_name", "/sensors/0/display_name", "remove", nil, true},
-		{"missing location", "/sensors/0/location", "remove", nil, false},
+		{"missing display_name", "display_name", "remove", nil, true},
+		{"missing location", "location", "remove", nil, false},
 
-		{"missing categories", "/sensors/0/categories", "remove", nil, true},
-		{"invalid categories", "/sensors/0/categories", "replace", ptr("[1, 2]"), false},
+		{"missing categories", "categories", "remove", nil, true},
+		{"invalid categories", "categories", "replace", ptr("[1, 2]"), false},
 
-		{"missing visible", "/sensors/0/visible", "remove", nil, true},
-		{"invalid visible", "/sensors/0/visible", "replace", ptr(`"invalid"`), false},
-		{"invalid visible truthy", "/sensors/0/visible", "replace", ptr("1"), false},
+		{"missing visible", "visible", "remove", nil, true},
+		{"invalid visible string", "visible", "replace", ptr(`"invalid"`), false},
+		{"invalid visible truthy", "visible", "replace", ptr("1"), false},
 	}
 
 	suites = append(suites, Suite{
