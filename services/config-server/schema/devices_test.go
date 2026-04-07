@@ -49,6 +49,8 @@ func init() {
 		generateMissing("location", true),
 	)
 
+	commonPollableCases := generateNumeric("poll_delay", true, intPtr(1), nil)
+
 	commonZigBeeCases := merge(
 		generateMissing("ieee", false),
 		generateMissing("nwk", false),
@@ -67,13 +69,12 @@ func init() {
 			path:       "/sensors/0",
 			cases: merge(
 				commonSensorCases,
+				commonPollableCases,
 				generateObject("metrics", false, false),
 				[]Case{
 					{"invalid metrics key", "metrics", "replace", strPtr(`{"test": "read"}`), false},
 					{"invalid metrics value", "metrics", "replace", strPtr(`{"humidity": "test"}`), false},
 				},
-
-				generateNumeric("poll_delay", true, intPtr(1), nil),
 
 				generateObject("dht22", true, true),
 				generateNumeric("dht22/skip", true, intPtr(1), nil),
@@ -94,6 +95,7 @@ func init() {
 			cases: merge(
 				commonDeviceCases,
 				commonZigBeeCases,
+				commonPollableCases,
 			),
 		},
 	)
