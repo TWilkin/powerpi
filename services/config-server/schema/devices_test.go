@@ -26,7 +26,6 @@ func init() {
 		},
 
 		generateMissing("display_name", true),
-		generateMissing("location", false),
 
 		generateMissing("categories", true),
 		[]Case{
@@ -34,30 +33,68 @@ func init() {
 		},
 
 		generateBoolean("visible", true),
+
+		[]Case{
+			{"additional property", "prop", "add", strPtr(`"value"`), false},
+		},
 	)
 
-	suites = append(suites, Suite{
-		file:       "devices/PowerPiSensor.json",
-		configType: models.ConfigTypeDevices,
-		wrapper:    devicesWrapper,
-		path:       "/sensors/0",
-		cases: merge(
-			commonCases,
-			generateObject("metrics", false, false),
-			[]Case{
-				{"invalid metrics key", "metrics", "replace", strPtr(`{"test": "read"}`), false},
-				{"invalid metrics value", "metrics", "replace", strPtr(`{"humidity": "test"}`), false},
-			},
+	commonSensorCases := merge(
+		commonCases,
+		generateMissing("location", false),
+	)
 
-			generateNumeric("poll_delay", true, intPtr(1), nil),
+	commonDeviceCases := merge(
+		commonCases,
+		generateMissing("location", true),
+	)
 
-			generateObject("dht22", true, true),
-			generateNumeric("dht22/skip", true, intPtr(1), nil),
+	commonZigBeeCases := merge(
+		generateMissing("ieee", false),
+		generateMissing("nwk", false),
+		[]Case{
+			{"invalid ieee", "ieee", "replace", strPtr(`"a"`), false},
+			{"invalid nwk", "nwk", "replace", strPtr(`"a"`), false},
+		},
+	)
 
-			generateObject("pir", true, true),
-			generateNumeric("pir/init_delay", true, intPtr(1), nil),
-			generateNumeric("pir/post_detect_skip", true, intPtr(1), nil),
-			generateNumeric("pir/post_motion_check", true, intPtr(1), nil),
-		),
-	})
+	suites = append(
+		suites,
+		Suite{
+			file:       "devices/PowerPiSensor.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       "/sensors/0",
+			cases: merge(
+				commonSensorCases,
+				generateObject("metrics", false, false),
+				[]Case{
+					{"invalid metrics key", "metrics", "replace", strPtr(`{"test": "read"}`), false},
+					{"invalid metrics value", "metrics", "replace", strPtr(`{"humidity": "test"}`), false},
+				},
+
+				generateNumeric("poll_delay", true, intPtr(1), nil),
+
+				generateObject("dht22", true, true),
+				generateNumeric("dht22/skip", true, intPtr(1), nil),
+
+				generateObject("pir", true, true),
+				generateNumeric("pir/init_delay", true, intPtr(1), nil),
+				generateNumeric("pir/post_detect_skip", true, intPtr(1), nil),
+				generateNumeric("pir/post_motion_check", true, intPtr(1), nil),
+			),
+		},
+
+		// ZigBee
+		Suite{
+			file:       "devices/zigbee/ZigBeeSocket.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       "/devices/0",
+			cases: merge(
+				commonDeviceCases,
+				commonZigBeeCases,
+			),
+		},
+	)
 }
