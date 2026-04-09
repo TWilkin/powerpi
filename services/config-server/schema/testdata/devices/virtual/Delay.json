@@ -1,0 +1,10 @@
+{
+    "type": "delay",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "start": 10,
+    "end": 11
+}

@@ -1,0 +1,10 @@
+{
+    "type": "mutex",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "on_devices": ["Device1", "Device2"],
+    "off_devices": ["Device3", "Device4"]
+}

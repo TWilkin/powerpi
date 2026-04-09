@@ -114,6 +114,10 @@ func intPtr(n int) *int {
 	return &n
 }
 
+func floatPtr(n float64) *float64 {
+	return &n
+}
+
 func merge(cases ...[]Case) []Case {
 	var result []Case
 
@@ -130,7 +134,7 @@ func generateMissing(path string, optional bool) []Case {
 	}
 }
 
-func generateNumeric(path string, optional bool, min *int, max *int) []Case {
+func generateNumeric[TNumber int | float64](path string, optional bool, min *TNumber, max *TNumber) []Case {
 	cases := append(
 		generateMissing(path, optional),
 		Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(`"str"`), false},
@@ -139,16 +143,16 @@ func generateNumeric(path string, optional bool, min *int, max *int) []Case {
 	if min != nil {
 		cases = append(
 			cases,
-			Case{fmt.Sprintf("valid %s min", path), path, "replace", strPtr(fmt.Sprintf("%d", *min)), true},
-			Case{fmt.Sprintf("invalid %s min", path), path, "replace", strPtr(fmt.Sprintf("%d", *min-1)), false},
+			Case{fmt.Sprintf("valid %s min", path), path, "replace", strPtr(fmt.Sprintf("%v", *min)), true},
+			Case{fmt.Sprintf("invalid %s min", path), path, "replace", strPtr(fmt.Sprintf("%v", *min-1)), false},
 		)
 	}
 
 	if max != nil {
 		cases = append(
 			cases,
-			Case{fmt.Sprintf("valid %s max", path), path, "replace", strPtr(fmt.Sprintf("%d", *max)), true},
-			Case{fmt.Sprintf("invalid %s max", path), path, "replace", strPtr(fmt.Sprintf("%d", *max+1)), false},
+			Case{fmt.Sprintf("valid %s max", path), path, "replace", strPtr(fmt.Sprintf("%v", *max)), true},
+			Case{fmt.Sprintf("invalid %s max", path), path, "replace", strPtr(fmt.Sprintf("%v", *max+1)), false},
 		)
 	}
 

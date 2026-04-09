@@ -1,0 +1,9 @@
+{
+    "type": "log",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "message": "Test message"
+}

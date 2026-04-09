@@ -53,7 +53,7 @@ func init() {
 		generateMissing("location", true),
 	)
 
-	commonPollableCases := generateNumeric("poll_frequency", true, nil, nil)
+	commonPollableCases := generateNumeric[int]("poll_frequency", true, nil, nil)
 
 	commonZigBeeCases := merge(
 		generateMissing("ieee", false),
@@ -149,6 +149,93 @@ func init() {
 				generateNumeric("pir/post_detect_skip", true, intPtr(1), nil),
 				generateNumeric("pir/post_motion_check", true, intPtr(1), nil),
 			),
+		},
+
+		// Virtual
+		Suite{
+			file:       "devices/virtual/Condition.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateString("device", false, false, nil),
+				generateObject("on_condition", true, false),
+				generateObject("off_condition", true, false),
+				generateNumeric("timeout", true, intPtr(1), nil),
+				generateNumeric("interval", true, intPtr(1), nil),
+			),
+		},
+
+		Suite{
+			file:       "devices/virtual/Delay.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateNumeric("start", true, intPtr(0), nil),
+				generateNumeric("end", true, intPtr(0), nil),
+			),
+		},
+
+		Suite{
+			file:       "devices/virtual/Group.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateArray("devices", false, false, "1"),
+			),
+		},
+
+		Suite{
+			file:       "devices/virtual/Log.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateString("message", false, true, nil),
+			),
+		},
+
+		Suite{
+			file:       "devices/virtual/Mutex.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateArray("on_devices", false, false, "1"),
+				generateArray("off_devices", false, false, "1"),
+			),
+		},
+
+		Suite{
+			file:       "devices/virtual/Scene.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateArray("devices", false, false, "1"),
+				generateString("scene", true, false, nil),
+				generateObject("state", false, false),
+				generateNumeric("state/brightness", true, floatPtr(0), floatPtr(100)),
+				generateNumeric("state/temperature", true, intPtr(1500), intPtr(10000)),
+				generateNumeric("state/hue", true, intPtr(0), intPtr(360)),
+				generateNumeric("state/saturation", true, floatPtr(0), floatPtr(100)),
+			),
+		},
+
+		Suite{
+			file:       "devices/virtual/Variable.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases:      commonDeviceCases,
 		},
 
 		// ZigBee

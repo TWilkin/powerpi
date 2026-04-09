@@ -1,0 +1,17 @@
+{
+    "type": "condition",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "device": "Device1",
+    "on_condition": {
+        "when": [{ "equals": [true, true] }]
+    },
+    "off_condition": {
+        "when": [{ "equals": [false, false] }]
+    },
+    "timeout": 120,
+    "interval": 2
+}
