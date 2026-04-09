@@ -25,10 +25,14 @@ type Suite struct {
 
 type Case struct {
 	name     string
-	path     string
-	operand  string
-	value    *string
+	patches  []Patch
 	expected bool
+}
+
+type Patch struct {
+	path    string
+	operand string
+	value   *string
 }
 
 var suites []Suite
@@ -54,7 +58,7 @@ func Test(t *testing.T) {
 
 			// patch the test into the wrapper
 			value := buffer.String()
-			result := patch(t, base, suite.path, "add", &value)
+			result := applyPatch(t, base, suite.path, Patch{"", "add", &value})
 
 			// first we run the complete test
 			t.Run("complete", func(t *testing.T) {
@@ -64,11 +68,14 @@ func Test(t *testing.T) {
 			// then the cases
 			for _, test := range suite.cases {
 				t.Run(test.name, func(t *testing.T) {
-					fullPath := fmt.Sprintf("%s/%s", suite.path, test.path)
+					var testData = result
+					for _, patch := range test.patches {
+						fullPath := fmt.Sprintf("%s/%s", suite.path, patch.path)
 
-					result := patch(t, result, fullPath, test.operand, test.value)
+						testData = applyPatch(t, testData, fullPath, patch)
+					}
 
-					validate(t, service, suite.configType, result, test.expected)
+					validate(t, service, suite.configType, testData, test.expected)
 				})
 			}
 		})
@@ -85,20 +92,20 @@ func validate(t *testing.T, service validator.ValidatorService, configType model
 	}
 }
 
-func patch(t *testing.T, base []byte, path string, operand string, value *string) []byte {
+func applyPatch(t *testing.T, base []byte, path string, patch Patch) []byte {
 	var patchJSON []byte
-	if value != nil {
-		patchJSON = fmt.Appendf(nil, `[{"op": "%s", "path": "%s", "value": %s}]`, operand, path, *value)
+	if patch.value != nil {
+		patchJSON = fmt.Appendf(nil, `[{"op": "%s", "path": "%s", "value": %s}]`, patch.operand, path, *patch.value)
 	} else {
-		patchJSON = fmt.Appendf(nil, `[{"op": "%s", "path": "%s"}]`, operand, path)
+		patchJSON = fmt.Appendf(nil, `[{"op": "%s", "path": "%s"}]`, patch.operand, path)
 	}
 
-	patch, err := jsonpatch.DecodePatch(patchJSON)
+	patcher, err := jsonpatch.DecodePatch(patchJSON)
 	if err != nil {
 		t.Fatalf("%s", err.Error())
 	}
 
-	result, err := patch.Apply(base)
+	result, err := patcher.Apply(base)
 	if err != nil {
 		t.Fatalf("%s", err.Error())
 	}
@@ -130,29 +137,29 @@ func merge(cases ...[]Case) []Case {
 
 func generateMissing(path string, optional bool) []Case {
 	return []Case{
-		{fmt.Sprintf("missing %s", path), path, "remove", nil, optional},
+		{fmt.Sprintf("missing %s", path), []Patch{{path, "remove", nil}}, optional},
 	}
 }
 
 func generateNumeric[TNumber int | float64](path string, optional bool, min *TNumber, max *TNumber) []Case {
 	cases := append(
 		generateMissing(path, optional),
-		Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(`"str"`), false},
+		Case{fmt.Sprintf("invalid %s", path), []Patch{{path, "replace", strPtr(`"str"`)}}, false},
 	)
 
 	if min != nil {
 		cases = append(
 			cases,
-			Case{fmt.Sprintf("valid %s min", path), path, "replace", strPtr(fmt.Sprintf("%v", *min)), true},
-			Case{fmt.Sprintf("invalid %s min", path), path, "replace", strPtr(fmt.Sprintf("%v", *min-1)), false},
+			Case{fmt.Sprintf("valid %s min", path), []Patch{{path, "replace", strPtr(fmt.Sprintf("%v", *min))}}, true},
+			Case{fmt.Sprintf("invalid %s min", path), []Patch{{path, "replace", strPtr(fmt.Sprintf("%v", *min-1))}}, false},
 		)
 	}
 
 	if max != nil {
 		cases = append(
 			cases,
-			Case{fmt.Sprintf("valid %s max", path), path, "replace", strPtr(fmt.Sprintf("%v", *max)), true},
-			Case{fmt.Sprintf("invalid %s max", path), path, "replace", strPtr(fmt.Sprintf("%v", *max+1)), false},
+			Case{fmt.Sprintf("valid %s max", path), []Patch{{path, "replace", strPtr(fmt.Sprintf("%v", *max))}}, true},
+			Case{fmt.Sprintf("invalid %s max", path), []Patch{{path, "replace", strPtr(fmt.Sprintf("%v", *max+1))}}, false},
 		)
 	}
 
@@ -162,23 +169,22 @@ func generateNumeric[TNumber int | float64](path string, optional bool, min *TNu
 func generateBoolean(path string, optional bool) []Case {
 	return append(
 		generateMissing(path, optional),
-		Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(`"str"`), false},
-		Case{fmt.Sprintf("invalid %s truthy", path), path, "replace", strPtr(`1`), false},
+		Case{fmt.Sprintf("invalid %s", path), []Patch{{path, "replace", strPtr(`"str"`)}}, false},
+		Case{fmt.Sprintf("invalid %s truthy", path), []Patch{{path, "replace", strPtr(`1`)}}, false},
 	)
 }
 
 func generateString(path string, optional bool, empty bool, invalid *string) []Case {
 	cases := append(
 		generateMissing(path, optional),
-		Case{fmt.Sprintf("empty %s", path), path, "replace", strPtr(`""`), empty},
-
-		Case{"invalid type", path, "replace", strPtr("12345"), false},
+		Case{fmt.Sprintf("empty %s", path), []Patch{{path, "replace", strPtr(`""`)}}, empty},
+		Case{"invalid type", []Patch{{path, "replace", strPtr("12345")}}, false},
 	)
 
 	if invalid != nil {
 		cases = append(
 			cases,
-			Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(fmt.Sprintf(`"%s"`, *invalid)), false},
+			Case{fmt.Sprintf("invalid %s", path), []Patch{{path, "replace", strPtr(fmt.Sprintf(`"%s"`, *invalid))}}, false},
 		)
 	}
 
@@ -189,7 +195,7 @@ func generateEnum(path string, optional bool, empty bool, invalid *string, valid
 	cases := generateString(path, optional, empty, invalid)
 
 	for _, value := range valid {
-		cases = append(cases, Case{fmt.Sprintf("valid %s", path), path, "replace", strPtr(fmt.Sprintf(`"%s"`, value)), true})
+		cases = append(cases, Case{fmt.Sprintf("valid %s", path), []Patch{{path, "replace", strPtr(fmt.Sprintf(`"%s"`, value))}}, true})
 	}
 
 	return cases
@@ -198,16 +204,16 @@ func generateEnum(path string, optional bool, empty bool, invalid *string, valid
 func generateObject(path string, optional bool, empty bool) []Case {
 	return append(
 		generateMissing(path, optional),
-		Case{fmt.Sprintf("empty %s", path), path, "replace", strPtr("{}"), empty}, // should this be allowed?
-		Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(`"str"`), false},
-		Case{fmt.Sprintf("invalid %s prop", path), path, "replace", strPtr(`{"some": "prop"}`), false},
+		Case{fmt.Sprintf("empty %s", path), []Patch{{path, "replace", strPtr("{}")}}, empty},
+		Case{fmt.Sprintf("invalid %s", path), []Patch{{path, "replace", strPtr(`"str"`)}}, false},
+		Case{fmt.Sprintf("invalid %s prop", path), []Patch{{path, "replace", strPtr(`{"some": "prop"}`)}}, false},
 	)
 }
 
 func generateArray(path string, optional bool, empty bool, invalid string) []Case {
 	return append(
 		generateMissing(path, optional),
-		Case{fmt.Sprintf("empty %s", path), path, "replace", strPtr("[]"), empty}, // should this be allowed?
-		Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(fmt.Sprintf(`[%s]`, invalid)), false},
+		Case{fmt.Sprintf("empty %s", path), []Patch{{path, "replace", strPtr("[]")}}, empty},
+		Case{fmt.Sprintf("invalid %s", path), []Patch{{path, "replace", strPtr(fmt.Sprintf(`[%s]`, invalid))}}, false},
 	)
 }

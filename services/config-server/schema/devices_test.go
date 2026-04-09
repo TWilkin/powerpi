@@ -26,20 +26,20 @@ func init() {
 
 		generateMissing("name", false),
 		[]Case{
-			{"invalid name regex", "name", "replace", strPtr(`"123name"`), false},
+			{"invalid name regex", []Patch{{"name", "replace", strPtr(`"123name"`)}}, false},
 		},
 
 		generateMissing("display_name", true),
 
 		generateMissing("categories", true),
 		[]Case{
-			{"invalid categories", "categories", "replace", strPtr(`[1, 2]`), false},
+			{"invalid categories", []Patch{{"categories", "replace", strPtr(`[1, 2]`)}}, false},
 		},
 
 		generateBoolean("visible", true),
 
 		[]Case{
-			{"additional property", "prop", "add", strPtr(`"value"`), false},
+			{"additional property", []Patch{{"prop", "add", strPtr(`"value"`)}}, false},
 		},
 	)
 
@@ -59,8 +59,8 @@ func init() {
 		generateMissing("ieee", false),
 		generateMissing("nwk", false),
 		[]Case{
-			{"invalid ieee", "ieee", "replace", strPtr(`"a"`), false},
-			{"invalid nwk", "nwk", "replace", strPtr(`"a"`), false},
+			{"invalid ieee", []Patch{{"ieee", "replace", strPtr(`"a"`)}}, false},
+			{"invalid nwk", []Patch{{"nwk", "replace", strPtr(`"a"`)}}, false},
 		},
 	)
 
@@ -162,6 +162,12 @@ func init() {
 				generateString("device", false, false, nil),
 				generateObject("on_condition", true, false),
 				generateObject("off_condition", true, false),
+				[]Case{
+					{"missing on_condition and off_condition", []Patch{
+						{"on_condition", "remove", nil},
+						{"off_condition", "remove", nil},
+					}, false},
+				},
 				generateNumeric("timeout", true, intPtr(1), nil),
 				generateNumeric("interval", true, intPtr(1), nil),
 			),
@@ -176,6 +182,12 @@ func init() {
 				commonDeviceCases,
 				generateNumeric("start", true, intPtr(0), nil),
 				generateNumeric("end", true, intPtr(0), nil),
+				[]Case{
+					{"missing start and end", []Patch{
+						{"start", "remove", nil},
+						{"end", "remove", nil},
+					}, false},
+				},
 			),
 		},
 
