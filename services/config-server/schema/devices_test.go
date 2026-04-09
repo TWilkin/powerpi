@@ -101,7 +101,7 @@ func init() {
 			path:       sensorPath,
 			cases: merge(
 				commonSensorCases,
-				generateMetrics("humidity"),
+				generateMetrics("humidity", "motion", "temperature"),
 
 				generateNumeric("poll_delay", true, intPtr(1), nil),
 
@@ -130,12 +130,15 @@ func init() {
 	)
 }
 
-func generateMetrics(key string) []Case {
-	return merge(
-		generateObject("metrics", false, false),
-		[]Case{
-			{"invalid metrics key", "metrics", "replace", strPtr(`{"test": "read"}`), false},
-			{"invalid metrics value", "metrics", "replace", strPtr(fmt.Sprintf(`{"%s": "test"}`, key)), false},
-		},
-	)
+func generateMetrics(keys ...string) []Case {
+	cases := generateObject("metrics", false, false)
+
+	for _, key := range keys {
+		cases = merge(
+			cases,
+			generateEnum(fmt.Sprintf("metrics/%s", key), len(keys) > 1, false, strPtr("test"), "none", "read", "visible"),
+		)
+	}
+
+	return cases
 }
