@@ -1,0 +1,10 @@
+{
+    "type": "energenie_socket_group",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "home_id": 1,
+    "devices": ["Socket"]
+}

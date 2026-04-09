@@ -66,6 +66,41 @@ func init() {
 
 	suites = append(
 		suites,
+		// Energenie
+		Suite{
+			file:       "devices/energenie/EnergeniePairing.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateNumeric("timeout", true, intPtr(1), nil),
+			),
+		},
+
+		Suite{
+			file:       "devices/energenie/EnergenieSocket.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateNumeric("device_id", true, intPtr(0), intPtr(4)),
+			),
+		},
+
+		Suite{
+			file:       "devices/energenie/EnergenieSocketGroup.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateNumeric("home_id", false, intPtr(0), intPtr(15)),
+				generateArray("devices", false, false, "1"),
+			),
+		},
+
 		// Energy Monitor
 		Suite{
 			file:       "devices/energy-monitor/OctopusElectricityMeter.json",
@@ -223,7 +258,7 @@ func init() {
 	)
 }
 
-func generateMetrics(invalid string, keys ...string) []Case {
+func generateMetrics(keys ...string) []Case {
 	cases := generateObject("metrics", false, false)
 
 	for _, key := range keys {

@@ -199,3 +199,11 @@ func generateObject(path string, optional bool, empty bool) []Case {
 		Case{fmt.Sprintf("invalid %s prop", path), path, "replace", strPtr(`{"some": "prop"}`), false},
 	)
 }
+
+func generateArray(path string, optional bool, empty bool, invalid string) []Case {
+	return append(
+		generateMissing(path, optional),
+		Case{fmt.Sprintf("empty %s", path), path, "replace", strPtr("[]"), empty}, // should this be allowed?
+		Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(fmt.Sprintf(`[%s]`, invalid)), false},
+	)
+}
