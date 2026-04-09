@@ -18,6 +18,8 @@ func init() {
 		Sensors: []json.RawMessage{},
 	}
 
+	sensorPath := "/sensors/0"
+
 	commonCases := merge(
 		generateMissing("type", false),
 
@@ -68,12 +70,12 @@ func init() {
 			file:       "devices/energy-monitor/OctopusElectricityMeter.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
-			path:       "/sensors/0",
+			path:       sensorPath,
 			cases: merge(
 				commonSensorCases,
 				generateMetrics("electricity"),
-				generateString("serial_number", false, true, "12345"),
-				generateString("mpan", false, false, "12345"),
+				generateString("serial_number", false, true, nil),
+				generateString("mpan", false, false, strPtr("12345")),
 			),
 		},
 
@@ -81,18 +83,13 @@ func init() {
 			file:       "devices/energy-monitor/OctopusGasMeter.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
-			path:       "/sensors/0",
+			path:       sensorPath,
 			cases: merge(
 				commonSensorCases,
 				generateMetrics("gas"),
-				generateString("serial_number", false, true, "12345"),
-				generateString("mprn", false, false, "12345"),
-				generateMissing("generation", false),
-				[]Case{
-					{"valid generation SMETS1", "generation", "replace", strPtr(`"SMETS1"`), true},
-					{"invalid generation SMETS0", "generation", "replace", strPtr(`"SMETS0"`), false},
-					{"invalid generation numeric", "generation", "replace", strPtr("12345"), false},
-				},
+				generateString("serial_number", false, true, nil),
+				generateString("mprn", false, false, strPtr("12345")),
+				generateEnum("generation", false, false, strPtr("SMETS0"), "SMETS1", "SMETS2"),
 			),
 		},
 
@@ -101,7 +98,7 @@ func init() {
 			file:       "devices/PowerPiSensor.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
-			path:       "/sensors/0",
+			path:       sensorPath,
 			cases: merge(
 				commonSensorCases,
 				generateMetrics("humidity"),

@@ -163,12 +163,32 @@ func generateBoolean(path string, optional bool) []Case {
 	)
 }
 
-func generateString(path string, optional bool, empty bool, invalid string) []Case {
-	return append(
+func generateString(path string, optional bool, empty bool, invalid *string) []Case {
+	cases := append(
 		generateMissing(path, optional),
 		Case{fmt.Sprintf("empty %s", path), path, "replace", strPtr(`""`), empty},
-		Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(invalid), false},
+
+		Case{"invalid type", path, "replace", strPtr("12345"), false},
 	)
+
+	if invalid != nil {
+		cases = append(
+			cases,
+			Case{fmt.Sprintf("invalid %s", path), path, "replace", strPtr(fmt.Sprintf(`"%s"`, *invalid)), false},
+		)
+	}
+
+	return cases
+}
+
+func generateEnum(path string, optional bool, empty bool, invalid *string, valid ...string) []Case {
+	cases := generateString(path, optional, empty, invalid)
+
+	for _, value := range valid {
+		cases = append(cases, Case{fmt.Sprintf("valid %s", path), path, "replace", strPtr(fmt.Sprintf(`"%s"`, value)), true})
+	}
+
+	return cases
 }
 
 func generateObject(path string, optional bool, empty bool) []Case {
