@@ -18,6 +18,7 @@ func init() {
 		Sensors: []json.RawMessage{},
 	}
 
+	devicePath := "/devices/0"
 	sensorPath := "/sensors/0"
 
 	commonCases := merge(
@@ -117,10 +118,102 @@ func init() {
 
 		// ZigBee
 		Suite{
+			file:       "devices/zigbee/AqaraDoor.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       sensorPath,
+			cases: merge(
+				commonSensorCases,
+				commonZigBeeCases,
+				generateMetrics("door"),
+			),
+		},
+
+		Suite{
+			file:       "devices/zigbee/AqaraWindow.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       sensorPath,
+			cases: merge(
+				commonSensorCases,
+				commonZigBeeCases,
+				generateMetrics("window"),
+			),
+		},
+
+		Suite{
+			file:       "devices/zigbee/IkeaStyrbar.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       sensorPath,
+			cases: merge(
+				commonSensorCases,
+				commonZigBeeCases,
+			),
+		},
+
+		Suite{
+			file:       "devices/zigbee/OsramSwitchMini.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       sensorPath,
+			cases: merge(
+				commonSensorCases,
+				commonZigBeeCases,
+			),
+		},
+
+		Suite{
+			file:       "devices/zigbee/SonoffSwitch.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       sensorPath,
+			cases: merge(
+				commonSensorCases,
+				commonZigBeeCases,
+			),
+		},
+
+		Suite{
+			file:       "devices/zigbee/ZigBeeEnergyMonitor.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       sensorPath,
+			cases: merge(
+				commonSensorCases,
+				commonZigBeeCases,
+				generateMetrics("power", "current", "voltage"),
+			),
+		},
+
+		Suite{
+			file:       "devices/zigbee/ZigBeeLight.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				commonZigBeeCases,
+				generateNumeric("duration", true, intPtr(0), nil),
+			),
+		},
+
+		Suite{
+			file:       "devices/zigbee/ZigBeePairing.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateNumeric("timeout", true, intPtr(1), nil),
+			),
+		},
+
+		Suite{
 			file:       "devices/zigbee/ZigBeeSocket.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
-			path:       "/devices/0",
+			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
 				commonZigBeeCases,
@@ -130,7 +223,7 @@ func init() {
 	)
 }
 
-func generateMetrics(keys ...string) []Case {
+func generateMetrics(invalid string, keys ...string) []Case {
 	cases := generateObject("metrics", false, false)
 
 	for _, key := range keys {
