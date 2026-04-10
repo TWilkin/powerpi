@@ -130,6 +130,30 @@ func init() {
 			),
 		},
 
+		// Harmony
+		schemaSuite{
+			file:       "devices/harmony/HarmonyActivity.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateString("hub", false, false, nil),
+				generateString("activity_name", true, true, nil),
+			),
+		},
+
+		schemaSuite{
+			file:       "devices/harmony/HarmonyHub.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateHostAddress(),
+			),
+		},
+
 		// LIFX
 		schemaSuite{
 			file:       "devices/lifx/LIFXLight.json",
