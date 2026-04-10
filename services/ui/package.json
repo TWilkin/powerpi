@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/ui",
-    "version": "2.0.2-rc.9",
+    "version": "2.0.2-rc.10",
     "type": "module",
     "description": "PowerPi UI",
     "private": true,
