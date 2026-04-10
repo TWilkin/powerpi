@@ -1,0 +1,11 @@
+{
+    "type": "computer",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "mac": "00:AA:BB:CC:DD:EE",
+    "ip": "192.168.1.100",
+    "delay": 10
+}

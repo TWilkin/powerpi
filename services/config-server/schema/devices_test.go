@@ -130,6 +130,20 @@ func init() {
 			),
 		},
 
+		// Network
+		schemaSuite{
+			file:       "devices/network/Computer.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateMAC("mac", false, false),
+				generateHostAddress(),
+				generateNumeric("delay", true, utils.ToPtr(1), utils.ToPtr(60)),
+			),
+		},
+
 		// PowerPi
 		schemaSuite{
 			file:       "devices/PowerPiSensor.json",

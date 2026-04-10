@@ -119,3 +119,32 @@ func generateArray(path string, optional bool, empty bool, invalid string) []sch
 		schemaCase{fmt.Sprintf("invalid %s", path), []schemaPatch{{path, "replace", utils.ToPtr(fmt.Sprintf(`[%s]`, invalid))}}, false},
 	)
 }
+
+func generateIP(path string, optional bool, empty bool) []schemaCase {
+	return append(
+		generateString(path, optional, empty, utils.ToPtr("not-an-ip")),
+		schemaCase{"invalid", []schemaPatch{{path, "replace", utils.ToPtr(`"A.1.2.3"`)}}, false},
+		schemaCase{"invalid too big", []schemaPatch{{path, "replace", utils.ToPtr(`"256.1.2.3"`)}}, false},
+	)
+}
+
+func generateHostAddress() []schemaCase {
+	ipPath := "ip"
+	hostnamePath := "hostname"
+
+	return append(
+		generateIP(ipPath, false, false),
+		schemaCase{"valid hostname", []schemaPatch{
+			{hostnamePath, "add", utils.ToPtr(`"mydevice.home"`)},
+			{ipPath, "remove", nil},
+		}, true},
+		schemaCase{"missing ip and hostname", []schemaPatch{{ipPath, "remove", nil}}, false},
+	)
+}
+
+func generateMAC(path string, optional bool, empty bool) []schemaCase {
+	return append(
+		generateString(path, optional, empty, utils.ToPtr("not-a-mac")),
+		schemaCase{"invalid too big", []schemaPatch{{path, "replace", utils.ToPtr(`"GF:EE:CC:BB:AA:99"`)}}, false},
+	)
+}
