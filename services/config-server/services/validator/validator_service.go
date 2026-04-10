@@ -33,6 +33,7 @@ func NewValidatorService(schema embed.FS) ValidatorService {
 
 func (validator *validatorService) initialiseCompiler() (*jsonSchema.Compiler, error) {
 	compiler := jsonSchema.NewCompiler()
+	compiler.AssertFormat()
 
 	err := fs.WalkDir(
 		validator.schema,
