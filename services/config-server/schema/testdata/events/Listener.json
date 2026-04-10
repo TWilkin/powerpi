@@ -1,0 +1,16 @@
+{
+    "topic": "Office/motion",
+    "events": [
+        {
+            "action": {
+                "device": "OfficeLight",
+                "state": "on"
+            },
+            "condition": {
+                "when": [
+                    { "equals": [{ "var": "message.state" }, "detected"] }
+                ]
+            }
+        }
+    ]
+}

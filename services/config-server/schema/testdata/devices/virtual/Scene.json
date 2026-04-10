@@ -1,0 +1,17 @@
+{
+    "type": "scene",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "devices": ["Device1", "Device2"],
+    "scene": "movie",
+    "state": {
+        "brightness": 50,
+        "temperature": 9999,
+        "hue": 120,
+        "saturation": 100
+    },
+    "poll_frequency": 10
+}

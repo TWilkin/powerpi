@@ -1,0 +1,9 @@
+{
+    "type": "energenie_pairing",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "timeout": 10
+}

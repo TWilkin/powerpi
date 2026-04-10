@@ -1,0 +1,13 @@
+{
+    "type": "aqara_window",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "ieee": "00:00:00:00:00:00:00:00",
+    "nwk": "0xaaaa",
+    "metrics": {
+        "window": "visible"
+    }
+}

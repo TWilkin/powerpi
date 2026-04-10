@@ -1,0 +1,12 @@
+{
+    "type": "zigbee_light",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "ieee": "00:00:00:00:00:00:00:00",
+    "nwk": "0xaaaa",
+    "duration": 1000,
+    "poll_frequency": 10
+}

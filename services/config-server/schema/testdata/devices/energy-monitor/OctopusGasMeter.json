@@ -1,0 +1,14 @@
+{
+    "type": "octopus_gas_meter",
+    "name": "Sensor",
+    "display_name": "Gas",
+    "location": "Hallway",
+    "categories": ["energy"],
+    "visible": true,
+    "metrics": {
+        "gas": "visible"
+    },
+    "serial_number": "SN-123",
+    "generation": "SMETS2",
+    "mprn": "123456"
+}

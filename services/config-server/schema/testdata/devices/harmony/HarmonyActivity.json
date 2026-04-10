@@ -1,0 +1,10 @@
+{
+    "type": "harmony_activity",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "activity_name": "My Activity",
+    "hub": "Hub"
+}

@@ -1,0 +1,16 @@
+{
+    "type": "zigbee_energy_monitor",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "ieee": "00:00:00:00:00:00:00:00",
+    "nwk": "0xaaaa",
+    "metrics": {
+        "power": "visible",
+        "current": "read",
+        "voltage": "none"
+    },
+    "poll_frequency": 10
+}

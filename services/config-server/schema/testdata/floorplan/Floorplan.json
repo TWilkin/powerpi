@@ -1,0 +1,16 @@
+{
+    "floorplan": {
+        "floors": [
+            {
+                "name": "Ground",
+                "rooms": [
+                    {
+                        "name": "LivingRoom",
+                        "width": 100,
+                        "height": 100
+                    }
+                ]
+            }
+        ]
+    }
+}

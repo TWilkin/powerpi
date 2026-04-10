@@ -1,0 +1,11 @@
+{
+    "type": "energenie_socket",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "device_id": 2,
+    "retries": 3,
+    "delay": 5
+}

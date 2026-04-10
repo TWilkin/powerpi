@@ -1,0 +1,16 @@
+{
+    "device": "BedroomLight",
+    "schedule": "0 1 * * *",
+    "duration": 3600,
+    "interval": 60,
+    "brightness": [10.1, 99.99],
+    "temperature": [2000, 4000],
+    "hue": [0, 100],
+    "saturation": [0, 100],
+    "power": true,
+    "force": true,
+    "condition": {
+        "when": [{ "equals": [{ "var": "device.OfficeLight.state" }, "on"] }]
+    },
+    "scene": "movie"
+}
