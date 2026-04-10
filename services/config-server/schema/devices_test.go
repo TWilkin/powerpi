@@ -130,6 +130,20 @@ func init() {
 			),
 		},
 
+		// LIFX
+		schemaSuite{
+			file:       "devices/lifx/LIFXLight.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateMAC("mac", false, false),
+				generateHostAddress(),
+				generateNumeric("duration", true, utils.ToPtr(0), nil),
+			),
+		},
+
 		// Network
 		schemaSuite{
 			file:       "devices/network/Computer.json",
