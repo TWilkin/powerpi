@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/TWilkin/powerpi/common/models"
+	"github.com/TWilkin/powerpi/common/utils"
 )
 
 type wrapper struct {
@@ -25,21 +26,21 @@ func init() {
 		generateMissing("type", false),
 
 		generateMissing("name", false),
-		[]Case{
-			{"invalid name regex", []Patch{{"name", "replace", strPtr(`"123name"`)}}, false},
+		[]schemaCase{
+			{"invalid name regex", []schemaPatch{{"name", "replace", utils.ToPtr(`"123name"`)}}, false},
 		},
 
 		generateMissing("display_name", true),
 
 		generateMissing("categories", true),
-		[]Case{
-			{"invalid categories", []Patch{{"categories", "replace", strPtr(`[1, 2]`)}}, false},
+		[]schemaCase{
+			{"invalid categories", []schemaPatch{{"categories", "replace", utils.ToPtr(`[1, 2]`)}}, false},
 		},
 
 		generateBoolean("visible", true),
 
-		[]Case{
-			{"additional property", []Patch{{"prop", "add", strPtr(`"value"`)}}, false},
+		[]schemaCase{
+			{"additional property", []schemaPatch{{"prop", "add", utils.ToPtr(`"value"`)}}, false},
 		},
 	)
 
@@ -58,51 +59,51 @@ func init() {
 	commonZigBeeCases := merge(
 		generateMissing("ieee", false),
 		generateMissing("nwk", false),
-		[]Case{
-			{"invalid ieee", []Patch{{"ieee", "replace", strPtr(`"a"`)}}, false},
-			{"invalid nwk", []Patch{{"nwk", "replace", strPtr(`"a"`)}}, false},
+		[]schemaCase{
+			{"invalid ieee", []schemaPatch{{"ieee", "replace", utils.ToPtr(`"a"`)}}, false},
+			{"invalid nwk", []schemaPatch{{"nwk", "replace", utils.ToPtr(`"a"`)}}, false},
 		},
 	)
 
 	suites = append(
 		suites,
 		// Energenie
-		Suite{
+		schemaSuite{
 			file:       "devices/energenie/EnergeniePairing.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
-				generateNumeric("timeout", true, intPtr(1), nil),
+				generateNumeric("timeout", true, utils.ToPtr(1), nil),
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/energenie/EnergenieSocket.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
-				generateNumeric("device_id", true, intPtr(0), intPtr(4)),
+				generateNumeric("device_id", true, utils.ToPtr(0), utils.ToPtr(4)),
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/energenie/EnergenieSocketGroup.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
-				generateNumeric("home_id", false, intPtr(0), intPtr(15)),
+				generateNumeric("home_id", false, utils.ToPtr(0), utils.ToPtr(15)),
 				generateArray("devices", false, false, "1"),
 			),
 		},
 
 		// Energy Monitor
-		Suite{
+		schemaSuite{
 			file:       "devices/energy-monitor/OctopusElectricityMeter.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -111,11 +112,11 @@ func init() {
 				commonSensorCases,
 				generateMetrics("electricity"),
 				generateString("serial_number", false, true, nil),
-				generateString("mpan", false, false, strPtr("12345")),
+				generateString("mpan", false, false, utils.ToPtr("12345")),
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/energy-monitor/OctopusGasMeter.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -124,13 +125,13 @@ func init() {
 				commonSensorCases,
 				generateMetrics("gas"),
 				generateString("serial_number", false, true, nil),
-				generateString("mprn", false, false, strPtr("12345")),
-				generateEnum("generation", false, false, strPtr("SMETS0"), "SMETS1", "SMETS2"),
+				generateString("mprn", false, false, utils.ToPtr("12345")),
+				generateEnum("generation", false, false, utils.ToPtr("SMETS0"), "SMETS1", "SMETS2"),
 			),
 		},
 
 		// PowerPi
-		Suite{
+		schemaSuite{
 			file:       "devices/PowerPiSensor.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -139,20 +140,20 @@ func init() {
 				commonSensorCases,
 				generateMetrics("humidity", "motion", "temperature"),
 
-				generateNumeric("poll_delay", true, intPtr(1), nil),
+				generateNumeric("poll_delay", true, utils.ToPtr(1), nil),
 
 				generateObject("dht22", true, true),
-				generateNumeric("dht22/skip", true, intPtr(1), nil),
+				generateNumeric("dht22/skip", true, utils.ToPtr(1), nil),
 
 				generateObject("pir", true, true),
-				generateNumeric("pir/init_delay", true, intPtr(1), nil),
-				generateNumeric("pir/post_detect_skip", true, intPtr(1), nil),
-				generateNumeric("pir/post_motion_check", true, intPtr(1), nil),
+				generateNumeric("pir/init_delay", true, utils.ToPtr(1), nil),
+				generateNumeric("pir/post_detect_skip", true, utils.ToPtr(1), nil),
+				generateNumeric("pir/post_motion_check", true, utils.ToPtr(1), nil),
 			),
 		},
 
 		// Virtual
-		Suite{
+		schemaSuite{
 			file:       "devices/virtual/Condition.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -162,28 +163,28 @@ func init() {
 				generateString("device", false, false, nil),
 				generateObject("on_condition", true, false),
 				generateObject("off_condition", true, false),
-				[]Case{
-					{"missing on_condition and off_condition", []Patch{
+				[]schemaCase{
+					{"missing on_condition and off_condition", []schemaPatch{
 						{"on_condition", "remove", nil},
 						{"off_condition", "remove", nil},
 					}, false},
 				},
-				generateNumeric("timeout", true, intPtr(1), nil),
-				generateNumeric("interval", true, intPtr(1), nil),
+				generateNumeric("timeout", true, utils.ToPtr(1), nil),
+				generateNumeric("interval", true, utils.ToPtr(1), nil),
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/virtual/Delay.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
-				generateNumeric("start", true, intPtr(0), nil),
-				generateNumeric("end", true, intPtr(0), nil),
-				[]Case{
-					{"missing start and end", []Patch{
+				generateNumeric("start", true, utils.ToPtr(0), nil),
+				generateNumeric("end", true, utils.ToPtr(0), nil),
+				[]schemaCase{
+					{"missing start and end", []schemaPatch{
 						{"start", "remove", nil},
 						{"end", "remove", nil},
 					}, false},
@@ -191,7 +192,7 @@ func init() {
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/virtual/Group.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -202,7 +203,7 @@ func init() {
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/virtual/Log.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -213,7 +214,7 @@ func init() {
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/virtual/Mutex.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -225,7 +226,7 @@ func init() {
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/virtual/Scene.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -235,14 +236,14 @@ func init() {
 				generateArray("devices", false, false, "1"),
 				generateString("scene", true, false, nil),
 				generateObject("state", false, false),
-				generateNumeric("state/brightness", true, floatPtr(0), floatPtr(100)),
-				generateNumeric("state/temperature", true, intPtr(1500), intPtr(10000)),
-				generateNumeric("state/hue", true, intPtr(0), intPtr(360)),
-				generateNumeric("state/saturation", true, floatPtr(0), floatPtr(100)),
+				generateNumeric("state/brightness", true, utils.ToPtr(0), utils.ToPtr(100)),
+				generateNumeric("state/temperature", true, utils.ToPtr(1500), utils.ToPtr(10000)),
+				generateNumeric("state/hue", true, utils.ToPtr(0), utils.ToPtr(360)),
+				generateNumeric("state/saturation", true, utils.ToPtr(0), utils.ToPtr(100)),
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/virtual/Variable.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -251,7 +252,7 @@ func init() {
 		},
 
 		// ZigBee
-		Suite{
+		schemaSuite{
 			file:       "devices/zigbee/AqaraDoor.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -263,7 +264,7 @@ func init() {
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/zigbee/AqaraWindow.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -275,7 +276,7 @@ func init() {
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/zigbee/IkeaStyrbar.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -286,7 +287,7 @@ func init() {
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/zigbee/OsramSwitchMini.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -297,7 +298,7 @@ func init() {
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/zigbee/SonoffSwitch.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -308,7 +309,7 @@ func init() {
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/zigbee/ZigBeeEnergyMonitor.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -320,7 +321,7 @@ func init() {
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/zigbee/ZigBeeLight.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -328,22 +329,22 @@ func init() {
 			cases: merge(
 				commonDeviceCases,
 				commonZigBeeCases,
-				generateNumeric("duration", true, intPtr(0), nil),
+				generateNumeric("duration", true, utils.ToPtr(0), nil),
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/zigbee/ZigBeePairing.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
-				generateNumeric("timeout", true, intPtr(1), nil),
+				generateNumeric("timeout", true, utils.ToPtr(1), nil),
 			),
 		},
 
-		Suite{
+		schemaSuite{
 			file:       "devices/zigbee/ZigBeeSocket.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
@@ -357,13 +358,13 @@ func init() {
 	)
 }
 
-func generateMetrics(keys ...string) []Case {
+func generateMetrics(keys ...string) []schemaCase {
 	cases := generateObject("metrics", false, false)
 
 	for _, key := range keys {
 		cases = merge(
 			cases,
-			generateEnum(fmt.Sprintf("metrics/%s", key), len(keys) > 1, false, strPtr("test"), "none", "read", "visible"),
+			generateEnum(fmt.Sprintf("metrics/%s", key), len(keys) > 1, false, utils.ToPtr("test"), "none", "read", "visible"),
 		)
 	}
 
