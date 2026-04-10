@@ -1,0 +1,10 @@
+{
+    "type": "snapcast_client",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "server": "Snapcast",
+    "mac": "00:AA:BB:CC:DD:EE"
+}

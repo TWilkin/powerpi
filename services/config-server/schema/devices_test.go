@@ -182,6 +182,38 @@ func init() {
 			),
 		},
 
+		// Snapcast
+		schemaSuite{
+			file:       "devices/snapcast/SnapcastClient.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateString("server", false, false, nil),
+				generateMAC("mac", false, false),
+				[]schemaCase{
+					{"valid host_id", []schemaPatch{
+						{"host_id", "add", utils.ToPtr(`"client.home"`)},
+						{"mac", "remove", nil},
+					}, true},
+					{"missing mac and host_id", []schemaPatch{{"mac", "remove", nil}}, false},
+				},
+			),
+		},
+
+		schemaSuite{
+			file:       "devices/snapcast/SnapcastServer.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				generateHostAddress(),
+				generateNumeric("port", true, utils.ToPtr(1), utils.ToPtr(65535)),
+			),
+		},
+
 		// PowerPi
 		schemaSuite{
 			file:       "devices/PowerPiSensor.json",

@@ -1,0 +1,10 @@
+{
+    "type": "snapcast_server",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "ip": "192.168.1.100",
+    "port": 1337
+}
