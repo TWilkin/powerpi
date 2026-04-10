@@ -38,7 +38,12 @@ func Test(t *testing.T) {
 
 			// patch the test into the wrapper
 			value := buffer.String()
-			result := applyPatch(t, base, suite.path, schemaPatch{"", "add", &value})
+			var result []byte
+			if suite.path != "" {
+				result = applyPatch(t, base, suite.path, schemaPatch{"", "add", &value})
+			} else {
+				result = []byte(value)
+			}
 
 			// first we run the complete test
 			t.Run("complete", func(t *testing.T) {
@@ -50,7 +55,7 @@ func Test(t *testing.T) {
 				t.Run(test.name, func(t *testing.T) {
 					var testData = result
 					for _, patch := range test.patches {
-						fullPath := fmt.Sprintf("%s/%s", suite.path, patch.path)
+						fullPath := buildPath(suite.path, patch.path)
 
 						testData = applyPatch(t, testData, fullPath, patch)
 					}
@@ -91,4 +96,12 @@ func applyPatch(t *testing.T, base []byte, path string, patch schemaPatch) []byt
 	}
 
 	return result
+}
+
+func buildPath(base string, child string) string {
+	if base == "" {
+		return fmt.Sprintf("/%s", child)
+	}
+
+	return fmt.Sprintf("%s/%s", base, child)
 }

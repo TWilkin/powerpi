@@ -2,6 +2,7 @@ package schema
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/TWilkin/powerpi/common/models"
 	"github.com/TWilkin/powerpi/common/utils"
@@ -122,6 +123,18 @@ func generateArray(path string, optional bool, empty bool, invalid string) []sch
 		generateMissing(path, optional),
 		schemaCase{fmt.Sprintf("empty %s", path), []schemaPatch{{path, "replace", utils.ToPtr("[]")}}, empty},
 		schemaCase{fmt.Sprintf("invalid %s", path), []schemaPatch{{path, "replace", utils.ToPtr(fmt.Sprintf(`[%s]`, invalid))}}, false},
+	)
+}
+
+func generateTuple[TValue int | float64](path string, optional bool, value TValue, min int, max int, invalid string) []schemaCase {
+	valueStr := fmt.Sprintf("%v", value)
+	tooFew := strings.TrimRight(strings.Repeat(valueStr+", ", min-1), ", ")
+	tooMany := strings.TrimRight(strings.Repeat(valueStr+", ", max+1), ", ")
+
+	return append(
+		generateArray(path, optional, false, invalid),
+		schemaCase{fmt.Sprintf("too few %s", path), []schemaPatch{{path, "replace", utils.ToPtr("[" + tooFew + "]")}}, false},
+		schemaCase{fmt.Sprintf("too many %s", path), []schemaPatch{{path, "replace", utils.ToPtr("[" + tooMany + "]")}}, false},
 	)
 }
 
