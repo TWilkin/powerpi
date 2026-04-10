@@ -328,7 +328,7 @@ func init() {
 				commonDeviceCases,
 				commonPollableCases,
 				generateArray("devices", false, false, "1"),
-				generateString("scene", true, false),
+				generateString("scene", true, false, "123scene"),
 				generateObject("state", false, false),
 				generateNumeric("state/brightness", true, utils.ToPtr(0), utils.ToPtr(100)),
 				generateNumeric("state/temperature", true, utils.ToPtr(1500), utils.ToPtr(10000)),

@@ -148,8 +148,5 @@ func generateHostAddress() []schemaCase {
 }
 
 func generateMAC(path string, optional bool, empty bool) []schemaCase {
-	return append(
-		generateString(path, optional, empty, "not-a-mac"),
-		schemaCase{"invalid too big", []schemaPatch{{path, "replace", utils.ToPtr(`"GF:EE:CC:BB:AA:99"`)}}, false},
-	)
+	return generateString(path, optional, empty, "not-a-mac", "00:11:22:33:44", "00:11:22:33:44:55:66", "00-11-22-33-44-55", "GF:EE:CC:BB:AA:99")
 }
