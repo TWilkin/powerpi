@@ -157,6 +157,7 @@ func init() {
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
+				commonPollableCases,
 				generateHostAddress(),
 			),
 		},
@@ -169,6 +170,7 @@ func init() {
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
+				commonPollableCases,
 				generateMAC("mac", false, false),
 				generateHostAddress(),
 				generateNumeric("duration", true, utils.ToPtr(0), nil),
@@ -183,6 +185,7 @@ func init() {
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
+				commonPollableCases,
 				generateMAC("mac", false, false),
 				generateHostAddress(),
 				generateNumeric("delay", true, utils.ToPtr(1), utils.ToPtr(60)),
@@ -412,6 +415,7 @@ func init() {
 			cases: merge(
 				commonSensorCases,
 				commonZigBeeCases,
+				commonPollableCases,
 				generateMetrics("power", "current", "voltage"),
 			),
 		},
@@ -424,6 +428,7 @@ func init() {
 			cases: merge(
 				commonDeviceCases,
 				commonZigBeeCases,
+				commonPollableCases,
 				generateNumeric("duration", true, utils.ToPtr(0), nil),
 			),
 		},

@@ -11,5 +11,6 @@
         "power": "visible",
         "current": "read",
         "voltage": "none"
-    }
+    },
+    "poll_frequency": 10
 }
