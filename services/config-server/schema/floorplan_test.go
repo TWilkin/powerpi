@@ -112,7 +112,7 @@ func init() {
 			cases: merge(
 				generateString("name", false, false, "123room"),
 				generateString("display_name", true, true),
-				generateTuple("points", false, 0, 3, 4, `"str"`),
+				generateTuple("points", false, `{"x": 0, "y": 0}`, 3, nil, `"str"`),
 				generateNumeric[int]("points/0/x", false, nil, nil),
 				generateNumeric[int]("points/0/y", false, nil, nil),
 				[]schemaCase{

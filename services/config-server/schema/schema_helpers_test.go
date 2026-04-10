@@ -126,16 +126,24 @@ func generateArray(path string, optional bool, empty bool, invalid string) []sch
 	)
 }
 
-func generateTuple[TValue int | float64](path string, optional bool, value TValue, min int, max int, invalid string) []schemaCase {
+func generateTuple[TValue int | float64 | string](path string, optional bool, value TValue, min int, max *int, invalid string) []schemaCase {
 	valueStr := fmt.Sprintf("%v", value)
 	tooFew := strings.TrimRight(strings.Repeat(valueStr+", ", min-1), ", ")
-	tooMany := strings.TrimRight(strings.Repeat(valueStr+", ", max+1), ", ")
 
-	return append(
+	cases := append(
 		generateArray(path, optional, false, invalid),
 		schemaCase{fmt.Sprintf("too few %s", path), []schemaPatch{{path, "replace", utils.ToPtr("[" + tooFew + "]")}}, false},
-		schemaCase{fmt.Sprintf("too many %s", path), []schemaPatch{{path, "replace", utils.ToPtr("[" + tooMany + "]")}}, false},
 	)
+
+	if max != nil {
+		tooMany := strings.TrimRight(strings.Repeat(valueStr+", ", *max+1), ", ")
+
+		cases = append(cases,
+			schemaCase{fmt.Sprintf("too many %s", path), []schemaPatch{{path, "replace", utils.ToPtr("[" + tooMany + "]")}}, false},
+		)
+	}
+
+	return cases
 }
 
 func generateIP(path string, optional bool, empty bool) []schemaCase {
