@@ -76,17 +76,17 @@ func generateBoolean(path string, optional bool) []schemaCase {
 	)
 }
 
-func generateString(path string, optional bool, empty bool, invalid *string) []schemaCase {
+func generateString(path string, optional bool, empty bool, invalid ...string) []schemaCase {
 	cases := append(
 		generateMissing(path, optional),
 		schemaCase{fmt.Sprintf("empty %s", path), []schemaPatch{{path, "replace", utils.ToPtr(`""`)}}, empty},
 		schemaCase{"invalid type", []schemaPatch{{path, "replace", utils.ToPtr("12345")}}, false},
 	)
 
-	if invalid != nil {
+	for _, value := range invalid {
 		cases = append(
 			cases,
-			schemaCase{fmt.Sprintf("invalid %s", path), []schemaPatch{{path, "replace", utils.ToPtr(fmt.Sprintf(`"%s"`, *invalid))}}, false},
+			schemaCase{fmt.Sprintf("invalid %s", path), []schemaPatch{{path, "replace", utils.ToPtr(fmt.Sprintf(`"%s"`, value))}}, false},
 		)
 	}
 
@@ -94,7 +94,12 @@ func generateString(path string, optional bool, empty bool, invalid *string) []s
 }
 
 func generateEnum(path string, optional bool, empty bool, invalid *string, valid ...string) []schemaCase {
-	cases := generateString(path, optional, empty, invalid)
+	var cases []schemaCase
+	if invalid != nil {
+		cases = generateString(path, optional, empty, *invalid)
+	} else {
+		cases = generateString(path, optional, empty)
+	}
 
 	for _, value := range valid {
 		cases = append(cases, schemaCase{fmt.Sprintf("valid %s", path), []schemaPatch{{path, "replace", utils.ToPtr(fmt.Sprintf(`"%s"`, value))}}, true})
@@ -122,7 +127,7 @@ func generateArray(path string, optional bool, empty bool, invalid string) []sch
 
 func generateIP(path string, optional bool, empty bool) []schemaCase {
 	return append(
-		generateString(path, optional, empty, utils.ToPtr("not-an-ip")),
+		generateString(path, optional, empty, "not-an-ip"),
 		schemaCase{"invalid", []schemaPatch{{path, "replace", utils.ToPtr(`"A.1.2.3"`)}}, false},
 		schemaCase{"invalid too big", []schemaPatch{{path, "replace", utils.ToPtr(`"256.1.2.3"`)}}, false},
 	)
@@ -144,7 +149,7 @@ func generateHostAddress() []schemaCase {
 
 func generateMAC(path string, optional bool, empty bool) []schemaCase {
 	return append(
-		generateString(path, optional, empty, utils.ToPtr("not-a-mac")),
+		generateString(path, optional, empty, "not-a-mac"),
 		schemaCase{"invalid too big", []schemaPatch{{path, "replace", utils.ToPtr(`"GF:EE:CC:BB:AA:99"`)}}, false},
 	)
 }

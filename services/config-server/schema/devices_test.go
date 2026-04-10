@@ -62,12 +62,8 @@ func init() {
 	)
 
 	commonZigBeeCases := merge(
-		generateMissing("ieee", false),
-		generateMissing("nwk", false),
-		[]schemaCase{
-			{"invalid ieee", []schemaPatch{{"ieee", "replace", utils.ToPtr(`"a"`)}}, false},
-			{"invalid nwk", []schemaPatch{{"nwk", "replace", utils.ToPtr(`"a"`)}}, false},
-		},
+		generateString("ieee", false, false, "a", "00:11:22:33:44:55:66", "00:11:22:33:44:55:66:77:88", "00:11:22:33:44:55:66:GG"),
+		generateString("nwk", false, false, "a", "0xaaa", "0xaaaaa", "0xabcg"),
 	)
 
 	suites = append(
@@ -118,8 +114,8 @@ func init() {
 			cases: merge(
 				commonSensorCases,
 				generateMetrics("electricity"),
-				generateString("serial_number", false, true, nil),
-				generateString("mpan", false, false, utils.ToPtr("12345")),
+				generateString("serial_number", false, true),
+				generateString("mpan", false, false, "123456789012", "12345678901234"),
 			),
 		},
 
@@ -131,8 +127,8 @@ func init() {
 			cases: merge(
 				commonSensorCases,
 				generateMetrics("gas"),
-				generateString("serial_number", false, true, nil),
-				generateString("mprn", false, false, utils.ToPtr("12345")),
+				generateString("serial_number", false, true),
+				generateString("mprn", false, false, "12345", "12345678901"),
 				generateEnum("generation", false, false, utils.ToPtr("SMETS0"), "SMETS1", "SMETS2"),
 			),
 		},
@@ -145,8 +141,8 @@ func init() {
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
-				generateString("hub", false, false, nil),
-				generateString("activity_name", true, true, nil),
+				generateString("hub", false, false),
+				generateString("activity_name", true, true),
 			),
 		},
 
@@ -200,7 +196,7 @@ func init() {
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
-				generateString("server", false, false, nil),
+				generateString("server", false, false),
 				generateMAC("mac", false, false),
 				[]schemaCase{
 					{"valid host_id", []schemaPatch{
@@ -255,7 +251,7 @@ func init() {
 			cases: merge(
 				commonDeviceCases,
 				commonPollableCases,
-				generateString("device", false, false, nil),
+				generateString("device", false, false),
 				generateObject("on_condition", true, false),
 				generateObject("off_condition", true, false),
 				[]schemaCase{
@@ -306,7 +302,7 @@ func init() {
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
-				generateString("message", false, true, nil),
+				generateString("message", false, true),
 			),
 		},
 
@@ -332,7 +328,7 @@ func init() {
 				commonDeviceCases,
 				commonPollableCases,
 				generateArray("devices", false, false, "1"),
-				generateString("scene", true, false, nil),
+				generateString("scene", true, false),
 				generateObject("state", false, false),
 				generateNumeric("state/brightness", true, utils.ToPtr(0), utils.ToPtr(100)),
 				generateNumeric("state/temperature", true, utils.ToPtr(1500), utils.ToPtr(10000)),
