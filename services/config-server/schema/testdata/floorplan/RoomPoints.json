@@ -1,0 +1,10 @@
+{
+    "name": "LivingRoom",
+    "display_name": "Living Room",
+    "points": [
+        { "x": 0, "y": 0 },
+        { "x": 50, "y": 0 },
+        { "x": 50, "y": 100 },
+        { "x": 0, "y": 100 }
+    ]
+}
