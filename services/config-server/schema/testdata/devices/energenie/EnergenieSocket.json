@@ -5,5 +5,7 @@
     "location": "Somewhere",
     "categories": ["test", "other"],
     "visible": true,
-    "device_id": 2
+    "device_id": 2,
+    "retries": 3,
+    "delay": 5
 }

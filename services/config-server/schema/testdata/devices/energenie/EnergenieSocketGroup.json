@@ -6,5 +6,7 @@
     "categories": ["test", "other"],
     "visible": true,
     "home_id": 1,
-    "devices": ["Socket"]
+    "devices": ["Socket"],
+    "retries": 3,
+    "delay": 5
 }

@@ -56,6 +56,11 @@ func init() {
 
 	commonPollableCases := generateNumeric[int]("poll_frequency", true, nil, nil)
 
+	commonEnergenieCases := merge(
+		generateNumeric("retries", true, utils.ToPtr(1), nil),
+		generateNumeric("delay", true, utils.ToPtr(1), nil),
+	)
+
 	commonZigBeeCases := merge(
 		generateMissing("ieee", false),
 		generateMissing("nwk", false),
@@ -86,6 +91,7 @@ func init() {
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
+				commonEnergenieCases,
 				generateNumeric("device_id", true, utils.ToPtr(0), utils.ToPtr(4)),
 			),
 		},
@@ -97,6 +103,7 @@ func init() {
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
+				commonEnergenieCases,
 				generateNumeric("home_id", false, utils.ToPtr(0), utils.ToPtr(15)),
 				generateArray("devices", false, false, "1"),
 			),
@@ -244,6 +251,7 @@ func init() {
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
+				commonPollableCases,
 				generateString("device", false, false, nil),
 				generateObject("on_condition", true, false),
 				generateObject("off_condition", true, false),
@@ -283,6 +291,7 @@ func init() {
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
+				commonPollableCases,
 				generateArray("devices", false, false, "1"),
 			),
 		},
@@ -305,6 +314,7 @@ func init() {
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
+				commonPollableCases,
 				generateArray("on_devices", false, false, "1"),
 				generateArray("off_devices", false, false, "1"),
 			),
@@ -317,6 +327,7 @@ func init() {
 			path:       devicePath,
 			cases: merge(
 				commonDeviceCases,
+				commonPollableCases,
 				generateArray("devices", false, false, "1"),
 				generateString("scene", true, false, nil),
 				generateObject("state", false, false),

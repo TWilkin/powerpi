@@ -6,5 +6,6 @@
     "categories": ["test", "other"],
     "visible": true,
     "on_devices": ["Device1", "Device2"],
-    "off_devices": ["Device3", "Device4"]
+    "off_devices": ["Device3", "Device4"],
+    "poll_frequency": 10
 }

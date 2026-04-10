@@ -12,5 +12,6 @@
         "temperature": 9999,
         "hue": 120,
         "saturation": 100
-    }
+    },
+    "poll_frequency": 10
 }
