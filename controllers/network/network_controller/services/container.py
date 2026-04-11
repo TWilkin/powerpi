@@ -11,9 +11,12 @@ class ServicesContainer(containers.DeclarativeContainer):
     )
 
     common = providers.DependenciesContainer()
+    device = providers.DependenciesContainer()
 
     arp_factory = providers.Singleton(
         ARPFactory,
+        logger=common.logger,
+        device_manager=device.device_manager,
         service_provider=service_provider
     )
 

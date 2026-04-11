@@ -6,7 +6,7 @@ from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from powerpi_common.device.mixin import PollableMixin
 
-from network_controller.services.arp import ARPFactory, HostAddress
+from network_controller.services.arp import ARPFactory, ARPReader, HostAddress
 
 
 class PresenceSensor(Sensor, PollableMixin):
@@ -30,7 +30,8 @@ class PresenceSensor(Sensor, PollableMixin):
         PollableMixin.__init__(self, config, **kwargs)
 
         self._logger = logger
-        self.__reader = arp_factory.get_arp_service()
+        self.__factory = arp_factory
+        self.__reader: ARPReader | None = None
 
         self.__host_address = HostAddress(mac, ip, hostname)
 
@@ -51,6 +52,13 @@ class PresenceSensor(Sensor, PollableMixin):
 
     async def poll(self):
         pass
+
+    @property
+    def __arp_service(self):
+        if self.__reader is None:
+            self.__reader = self.__factory.get_arp_service()
+
+        return self.__arp
 
     def __get_real_or_cached(self, prop: str):
         value = getattr(self.__host_address, prop)

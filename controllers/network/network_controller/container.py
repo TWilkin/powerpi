@@ -22,7 +22,8 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     services = providers.Container(
         ServicesContainer,
-        common=common
+        common=common,
+        device=common.device
     )
 
     controller = providers.Singleton(

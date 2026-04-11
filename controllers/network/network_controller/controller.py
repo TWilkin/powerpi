@@ -1,5 +1,4 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from powerpi_common.config import Config
 from powerpi_common.controller import Controller as CommonController
 from powerpi_common.device import DeviceManager, DeviceStatusChecker
 from powerpi_common.health import HealthService
@@ -7,7 +6,7 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
 from network_controller.__version__ import __app_name__, __version__
-from network_controller.services.arp import ARPFactory
+from network_controller.services.arp import ARPFactory, ARPReader
 
 
 class Controller(CommonController):
@@ -29,14 +28,18 @@ class Controller(CommonController):
             __app_name__, __version__
         )
 
-        self.__arp_service = arp_factory.get_arp_service()
+        self.__arp_factory = arp_factory
+        self.__arp_service: ARPReader | None
 
     async def _app_start(self):
         await CommonController._app_start(self)
 
-        await self.__arp_service.start()
+        self.__arp_service = self.__arp_factory.get_arp_service()
+        if self.__arp_service is not None:
+            await self.__arp_service.start()
 
     async def _app_stop(self):
-        await self.__arp_service.stop()
+        if self.__arp_service is not None:
+            await self.__arp_service.stop()
 
         await CommonController._app_stop(self)
