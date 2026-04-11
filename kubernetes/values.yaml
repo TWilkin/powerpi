@@ -66,6 +66,8 @@ energenie-controller:
 
 mosquitto:
   # the IP address range of internal networks, used to restrict access from outside to mosquitto
+  # when using the network controller (global.network), include the cluster node subnet(s) as
+  # the network controller uses hostNetwork and its traffic originates from the node IP
   localCIDR:
     - 10.0.0.0/8
     - 172.16.0.0/20

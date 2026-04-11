@@ -27,6 +27,10 @@ This service requires one configuration file, as described in the following [_co
 
 - [devices.json](../../services/config-server/README.md#devicesjson)
 
+### Kubernetes
+
+When running this service in Kubernetes, it uses `hostNetwork` to send Wake-on-LAN magic packets. This means its traffic originates from the node IP rather than a pod IP. To allow the network controller to access MQTT, ensure the cluster node subnet(s) are included in the `mosquitto.localCIDR` configuration.
+
 ## Testing
 
 This service can be tested by executing the following commands.

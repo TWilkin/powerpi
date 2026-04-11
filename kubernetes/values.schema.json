@@ -494,7 +494,7 @@
             "type": "object",
             "properties": {
                 "localCIDR": {
-                    "description": "The CIDR address range(s) for the local network access policy",
+                    "description": "The CIDR address range(s) for the local network access policy. When using the network controller, include the cluster node subnet(s)",
                     "type": "array",
                     "minItems": 1,
                     "items": {
