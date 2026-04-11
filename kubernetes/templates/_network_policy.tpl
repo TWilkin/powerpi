@@ -59,7 +59,7 @@ ports:
 {{- $ingress := .Params.Ingress | default list -}}
 {{- $egress := .Params.Egress | default list -}}
 
-{{- if or .Params.DNS .Params.Mosquitto .Params.ExternalMqtt $database .Params.External -}}
+{{- if or .Params.DNS .Params.Mosquitto .Params.MosquittoExternal $database .Params.External -}}
 {{- $egress = append $egress (dict
     "Namespace" "kube-system"
     "K8sApp" "kube-dns"
@@ -68,14 +68,14 @@ ports:
 ) -}}
 {{- end -}}
 
-{{- if and .Params.Mosquitto (not .Params.ExternalMqtt) -}}
+{{- if and .Params.Mosquitto (not .Params.MosquittoExternal) -}}
 {{- $egress = append $egress (dict
     "Label" "mosquitto"
     "Port" 1883
 ) -}}
 {{- end -}}
 
-{{- if .Params.ExternalMqtt -}}
+{{- if .Params.MosquittoExternal -}}
 {{- $egress = append $egress (dict
     "Label" "mosquitto"
     "Port" 8883
