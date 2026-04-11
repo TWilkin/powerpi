@@ -54,18 +54,12 @@ ports:
 {{- define "powerpi.network-policy" -}}
 {{- if .Values.global.useNetworkPolicies -}}
 
-{{- $ssl := and 
-  (eq .Values.global.useSSL true) 
-  (eq .Values.global.useSensors true) 
-  (not (eq .Values.global.clusterIssuer nil))
--}}
-
 {{- $database := and .Params.Database .Values.global.persistence -}}
 
 {{- $ingress := .Params.Ingress | default list -}}
 {{- $egress := .Params.Egress | default list -}}
 
-{{- if or .Params.DNS .Params.Mosquitto $database .Params.External -}}
+{{- if or .Params.DNS .Params.Mosquitto .Params.ExternalMqtt $database .Params.External -}}
 {{- $egress = append $egress (dict
     "Namespace" "kube-system"
     "K8sApp" "kube-dns"
@@ -74,12 +68,18 @@ ports:
 ) -}}
 {{- end -}}
 
-{{- if .Params.Mosquitto -}}
+{{- if and .Params.Mosquitto (not .Params.ExternalMqtt) -}}
 {{- $egress = append $egress (dict
     "Label" "mosquitto"
     "Port" 1883
 ) -}}
+{{- end -}}
 
+{{- if .Params.ExternalMqtt -}}
+{{- $egress = append $egress (dict
+    "Label" "mosquitto"
+    "Port" 8883
+) -}}
 {{- end -}}
 
 {{- if $database -}}

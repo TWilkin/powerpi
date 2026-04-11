@@ -60,6 +60,20 @@
     ) nil (eq (include "powerpi.external-mqtt" .) "true") 
 -}}
 
+{{/* The network controller uses hostNetwork for Wake-on-LAN. Traffic from hostNetwork pods
+     to cluster services gets MASQUERADE'd to a Calico pod CIDR IP, so podSelector-based ingress
+     rules can't match it. Allow ingress on 8883 from the pod CIDR, looked up from the Calico
+     IPPool at deploy time. MQTT authentication and TLS provide the access control. */}}
+{{- if .Values.global.network -}}
+{{- $podCidr := (lookup "crd.projectcalico.org/v1" "IPPool" "" "default-ipv4-ippool").spec.cidr -}}
+{{- if $podCidr -}}
+{{- $services = append $services (dict
+  "Cidr" $podCidr
+  "Port" 8883
+) -}}
+{{- end -}}
+{{- end -}}
+
 {{- $data := dict
     "Name" "mosquitto-policy"
     "Label" "mosquitto"

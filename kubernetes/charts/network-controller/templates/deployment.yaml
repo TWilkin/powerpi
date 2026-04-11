@@ -1,5 +1,3 @@
-{{- $ssl := eq (include "powerpi.mosquitto-ssl" .) "true" -}}
-
 {{/* Required: Wake-on-LAN needs raw layer-2 socket access to send magic packets,
      which requires hostNetwork and NET_RAW capability. */}}
 {{-
@@ -9,7 +7,7 @@
     "Env" (list
         (dict
             "Name" "MQTT_ADDRESS"
-            "Value" (ternary (print "mqtts://" .Values.global.mosquittoHostName ":8883") "mqtt://mosquitto:1883" $ssl)
+            "Value" (print "mqtts://" .Values.global.mosquittoHostName ":8883")
         )
     )
 -}}
