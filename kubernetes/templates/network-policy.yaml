@@ -21,6 +21,19 @@ spec:
 }}
 {{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
 
+{{ if .Values.global.network }}
+---
+# Allow the network controller to access the message queue via the LoadBalancer IP
+{{- $data = dict
+    "Name" "network-controller-mqtt-policy"
+    "Label" "network-controller"
+    "Egress" (list
+        (dict "Cidr" (printf "%s/32" .Values.mosquitto.loadBalancerIP) "Port" 8883)
+    )
+}}
+{{ include "powerpi.network-policy" (merge (dict "Params" $data) .) }}
+{{- end }}
+
 {{ if .Values.global.reloader }}
 ---
 # Allow Reloader access to the Kubernetes API

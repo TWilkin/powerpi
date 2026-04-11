@@ -1,3 +1,5 @@
+{{/* MQTT egress to the LoadBalancer IP is defined in the parent chart's network-policy.yaml
+     because the loadBalancerIP value belongs to the mosquitto subchart and is not accessible here. */}}
 {{- $data := dict
     "Name" "network-controller-policy"
     "Label" .Chart.Name
