@@ -22,12 +22,12 @@ class ComputerDevice(Device, PollableMixin):
         logger: Logger,
         mqtt_client: MQTTClient,
         mac: str,
-        ip: str = None,
-        hostname: str = None,
+        ip: str | None = None,
+        hostname: str | None = None,
         delay: int = 10,
         **kwargs
     ):
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-positional-arguments
         Device.__init__(self, config, logger, mqtt_client, **kwargs)
         PollableMixin.__init__(self, config, **kwargs)
 
@@ -67,6 +67,12 @@ class ComputerDevice(Device, PollableMixin):
         return False
 
     async def __is_alive(self, count=1):
-        result = await async_ping(self.__network_address, count=count, interval=0.2, timeout=2)
+        result = await async_ping(
+            self.__network_address,
+            count=count,
+            interval=0.2,
+            timeout=2,
+            privileged=False
+        )
 
         return result.is_alive

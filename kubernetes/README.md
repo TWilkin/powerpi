@@ -63,6 +63,7 @@ mosquitto:
     - **storageClass** - The name of a [`StorageClass`](https://kubernetes.io/docs/concepts/storage/storage-classes/) deployed in Kubernetes that should be used when creating persistent storage for services that require this, default is _null_ which will use a custom hostpath class. Can be defined per service instead of globally if different classes are required per service. Effective for `mosquitto`, `database` and [[`zigbee-controller`](../controllers/zigbee/README.md)](../controllers/zigbee/README.md) services. See [Storage](#storage) for more details.
 - **mosquitto**:
     - **hostName** - The hostname to utilise in SSL certificates for outside (i.e. sensors/`shutdown` service) cluster connections to MQTT. Requires the global `clusterIssuer` option to be set. Default is _null_.
+    - **localCIDR** - The CIDR address range(s) permitted to access the message queue from outside the cluster, such as external sensors or computers running the shutdown service.
 
 ## Deploying
 

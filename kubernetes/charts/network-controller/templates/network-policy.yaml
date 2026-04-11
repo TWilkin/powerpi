@@ -1,7 +1,8 @@
 {{- $data := dict
     "Name" "network-controller-policy"
     "Label" .Chart.Name
-    "Local" (dict 
+    "MosquittoExternal" true
+    "Local" (dict
         "Direction" "egress"
         "Cidr" .Values.localCIDR
         "Port" 9

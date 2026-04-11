@@ -27,6 +27,10 @@ This service requires one configuration file, as described in the following [_co
 
 - [devices.json](../../services/config-server/README.md#devicesjson)
 
+### Kubernetes
+
+When running this service in Kubernetes, it uses `hostNetwork` to send Wake-on-LAN magic packets. MQTT access from the network controller is handled automatically by looking up the Calico pod CIDR at deploy time.
+
 ## Testing
 
 This service can be tested by executing the following commands.
