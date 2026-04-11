@@ -79,7 +79,7 @@ class LocalARPListener(ARPReader):
 
     def __get_interface(self):
         for iface in interfaces():
-            if iface.startswith(('lo', 'docker', 'br-', 'veth', 'virbr', 'tun', 'tap')):
+            if iface.startswith(('lo', 'docker', 'br-', 'veth', 'virbr', 'vxlan', 'tun', 'tap')):
                 continue
 
             if AF_INET in ifaddresses(iface):
