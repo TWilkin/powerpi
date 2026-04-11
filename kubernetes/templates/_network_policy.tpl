@@ -80,12 +80,6 @@ ports:
     "Port" 1883
 ) -}}
 
-{{- if and .Values.global.network $ssl -}}
-{{- $egress = append $egress (dict
-    "Label" "mosquitto"
-    "Port" 8883
-) -}}
-{{- end -}}
 {{- end -}}
 
 {{- if $database -}}
