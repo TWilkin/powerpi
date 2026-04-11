@@ -57,7 +57,7 @@
       "Direction" "ingress"
       "Cidr" .Values.localCIDR
       "Port" (ternary 8883 1883 $ssl)
-    ) nil .Values.global.useSensors 
+    ) nil (eq (include "powerpi.external-mqtt" .) "true") 
 -}}
 
 {{- $data := dict

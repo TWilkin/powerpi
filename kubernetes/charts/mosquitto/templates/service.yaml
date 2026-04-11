@@ -1,6 +1,7 @@
 {{- $ssl := eq (include "powerpi.mosquitto-ssl" .) "true" -}}
+{{- $externalMqtt := eq (include "powerpi.external-mqtt" .) "true" -}}
 
-{{- $type := ternary "LoadBalancer" "ClusterIP" (and .Values.global.useSensors (not $ssl)) -}}
+{{- $type := ternary "LoadBalancer" "ClusterIP" (and $externalMqtt (not $ssl)) -}}
 
 {{- $data := dict
   "Type" $type
