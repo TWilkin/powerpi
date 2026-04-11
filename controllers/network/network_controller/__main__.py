@@ -11,5 +11,5 @@ if __name__ == '__main__':
     add_devices(container)
     add_sensors(container)
 
-    controller = container.common().controller()
+    controller = container.controller()
     controller.start()
