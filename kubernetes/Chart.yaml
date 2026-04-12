@@ -22,7 +22,7 @@ dependencies:
   - name: mosquitto
     version: 0.3.4
   - name: persistence
-    version: 0.1.22
+    version: 0.1.23
     condition: global.persistence
   - name: reloader
     version: 2.2.8
