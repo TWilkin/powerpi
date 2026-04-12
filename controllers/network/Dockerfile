@@ -1,11 +1,19 @@
 # create a common base image
 FROM python:3.11.14-slim-bookworm AS base-image
-RUN pip install --upgrade pip==25.3
+RUN pip install --upgrade pip==25.3 \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends libpcap0.8 \
+    && apt-get clean -y
 
 # create a base image for building
 FROM base-image AS build-base-image
 RUN pip3 install --prefer-binary poetry==2.2.1
 RUN poetry config virtualenvs.in-project true
+
+FROM build-base-image AS build-base-image-gcc
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gcc libpcap0.8-dev python3.11-dev \
+    && apt-get clean -y
 
 # build the common library
 FROM build-base-image AS build-common-image
@@ -15,7 +23,7 @@ COPY common/python/powerpi_common ./powerpi_common
 RUN poetry build
 
 # install the controller's dependencies
-FROM build-base-image AS build-image
+FROM build-base-image-gcc AS build-image
 WORKDIR /opt/powerpi/controllers/network
 COPY --from=build-common-image /opt/powerpi/common ./../../common
 COPY controllers/network/poetry.lock controllers/network/pyproject.toml ./
