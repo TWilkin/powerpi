@@ -14,12 +14,17 @@
   "Value" "/tmp/powerpi_health"
 ) -}}
 
+{{- $mqttSecret := "mosquitto-controller-secret" -}}
+{{- if not (empty .Params.MqttSecret) -}}
+{{- $mqttSecret = .Params.MqttSecret -}}
+{{- end -}}
+
 {{- $data := (merge
   (dict
     "UseDevicesFile" true
     "RequestMemory" "50Mi"
     "LimitMemory" "100Mi"
-    "MqttSecret" "mosquitto-controller-secret"
+    "MqttSecret" $mqttSecret
     "Env" $env
     "Probe" (dict
       "Command" (list
