@@ -1,6 +1,6 @@
 from asyncio import ensure_future, sleep, Future
 from dataclasses import dataclass
-from socket import inet_ntoa
+from socket import inet_ntoa, gethostbyaddr, herror
 from time import time
 from threading import RLock
 
@@ -90,6 +90,7 @@ class LocalARPListener(ARPReader):
         src_mac = ':'.join('%02x' % bit for bit in arp.sha)
 
         host_address = HostAddress(src_mac, src_ip)
+        self.__set_hostname(host_address)
         self.log_debug('Received ARP packet %s', host_address)
 
         with self.__lock:
@@ -104,6 +105,7 @@ class LocalARPListener(ARPReader):
             else:
                 entry.mac_address = src_mac
                 entry.ip_address = src_ip
+                entry.hostname = host_address.hostname
 
     def __get_interface(self):
         for iface in interfaces():
@@ -114,6 +116,14 @@ class LocalARPListener(ARPReader):
                 return iface
 
         raise RuntimeError('No suitable network interface found')
+
+    def __set_hostname(self, host_address: HostAddress):
+        try:
+            result = gethostbyaddr(host_address.ip_address)
+
+            host_address.hostname = result[0]
+        except herror:
+            pass
 
     def __prune(self):
         now = int(time())
