@@ -53,7 +53,7 @@ class TestConditionParser:
         ('device.light.brightness', 'light'),
         ('sensor.office.temperature.value', 'office/temperature'),
         ('sensor.office.temperature.unit', 'temperature/office'),
-        {'presence.person.state', 'person'},
+        ('presence.person.state', 'person'),
         ('message.timestamp', 1337),
         ('message.whatever', None),
     ])
