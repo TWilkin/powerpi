@@ -184,6 +184,52 @@ class TestPresenceSensor(SensorTestBase, PollableMixinTestBase):
             {'state': PresenceStatus.PRESENT},
         )
 
+    @pytest.mark.asyncio
+    async def test_poll_absent_recovers_via_ping(
+        self,
+        subject: PresenceSensor,
+        arp_reader: MagicMock,
+        mocker: MockerFixture,
+        powerpi_mqtt_producer: MagicMock,
+    ):
+        arp_reader.find.return_value = None
+
+        host = mocker.Mock()
+        type(host).is_alive = PropertyMock(return_value=False)
+        mocker.patch(
+            'network_controller.sensor.presence.ping',
+            return_value=host,
+        )
+        # absent_delay=10, each poll gap (5s) is less than the delay
+        # 1000: timer starts, ping dead
+        # 1005: within grace period, ping dead
+        # 1011: grace period expired, marked absent
+        # 1016: timer should have reset, new grace period starts, ping alive
+        mocker.patch(
+            'network_controller.sensor.presence.time',
+            side_effect=[1000, 1005, 1011, 1016],
+        )
+
+        await subject.poll()
+        await subject.poll()
+        await subject.poll()
+
+        powerpi_mqtt_producer.assert_called_once_with(
+            'presence/test_presence/status',
+            {'state': PresenceStatus.ABSENT},
+        )
+
+        # device now responds to ping
+        type(host).is_alive = PropertyMock(return_value=True)
+
+        await subject.poll()
+
+        assert powerpi_mqtt_producer.call_count == 2
+        powerpi_mqtt_producer.assert_called_with(
+            'presence/test_presence/status',
+            {'state': PresenceStatus.PRESENT},
+        )
+
     @pytest.fixture
     def arp_reader(self, mocker: MockerFixture):
         reader = mocker.MagicMock()

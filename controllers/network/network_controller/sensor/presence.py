@@ -83,7 +83,7 @@ class PresenceSensor(Sensor, PollableMixin):
             # update the cache of MAC, IP and hostname
             self.__cache = entry
 
-            self.__set_present()
+            self.__set_new_state(PresenceStatus.PRESENT)
 
     async def __check_grace_period(self):
         # first has the period already expired?
@@ -108,7 +108,7 @@ class PresenceSensor(Sensor, PollableMixin):
             # it is actually present
             self.log_debug('Device present after ping')
 
-            self.__set_present()
+            self.__set_new_state(PresenceStatus.PRESENT)
 
     def __broadcast(self, state: PresenceStatus):
         topic = f'presence/{self.entity}/status'
@@ -118,17 +118,14 @@ class PresenceSensor(Sensor, PollableMixin):
         self._producer(topic, message)
 
     def __set_new_state(self, state: PresenceStatus):
+        # reset the grace period timer as the device state is confirmed
+        # if it disappears again we want to allow the grace period again
+        self.__grace_period.timer = 0
+
         if self.__state != state:
             self.__state = state
 
             self.__broadcast(state)
-
-    def __set_present(self):
-        # reset the grace period timer as the device is present
-        # if it disappears again we want to allow the grace period again
-        self.__grace_period.timer = 0
-
-        self.__set_new_state(PresenceStatus.PRESENT)
 
     @property
     def __arp_provider(self):
