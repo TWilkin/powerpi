@@ -80,7 +80,7 @@ class TestPresenceSensor(SensorTestBase, PollableMixinTestBase):
         host = mocker.Mock()
         type(host).is_alive = PropertyMock(return_value=is_alive)
         mocker.patch(
-            'network_controller.sensor.presence.async_ping',
+            'network_controller.sensor.presence.ping',
             return_value=host,
         )
 
@@ -107,7 +107,7 @@ class TestPresenceSensor(SensorTestBase, PollableMixinTestBase):
         host = mocker.Mock()
         type(host).is_alive = PropertyMock(return_value=False)
         mocker.patch(
-            'network_controller.sensor.presence.async_ping',
+            'network_controller.sensor.presence.ping',
             return_value=host,
         )
         mocker.patch(
@@ -141,7 +141,7 @@ class TestPresenceSensor(SensorTestBase, PollableMixinTestBase):
         host = mocker.Mock()
         type(host).is_alive = PropertyMock(return_value=False)
         mocker.patch(
-            'network_controller.sensor.presence.async_ping',
+            'network_controller.sensor.presence.ping',
             return_value=host,
         )
         mocker.patch(

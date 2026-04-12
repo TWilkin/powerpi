@@ -1,13 +1,10 @@
-from os import getenv, getuid
+from os import getenv
 
 from powerpi_common.config import Config
 from powerpi_common.config.config import as_int
 
 
 class NetworkConfig(Config):
-    @property
-    def is_root(self):
-        return getuid() == 0
 
     @property
     def arp_cache_expiry(self):

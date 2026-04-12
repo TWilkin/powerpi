@@ -23,7 +23,7 @@ class TestComputer(DeviceTestBase, PollableMixinTestBase):
         type(host).is_alive = PropertyMock(return_value=True)
 
         mocker.patch(
-            'network_controller.device.computer.async_ping',
+            'network_controller.device.computer.ping',
             return_value=host
         )
 
@@ -47,7 +47,7 @@ class TestComputer(DeviceTestBase, PollableMixinTestBase):
         type(host).is_alive = PropertyMock(return_value=is_alive)
 
         mocker.patch(
-            'network_controller.device.computer.async_ping',
+            'network_controller.device.computer.ping',
             return_value=host
         )
 
@@ -74,7 +74,7 @@ class TestComputer(DeviceTestBase, PollableMixinTestBase):
         type(host).is_alive = PropertyMock(side_effect=is_alive)
 
         mocker.patch(
-            'network_controller.device.computer.async_ping',
+            'network_controller.device.computer.ping',
             return_value=host
         )
 
@@ -114,7 +114,7 @@ class TestComputer(DeviceTestBase, PollableMixinTestBase):
         type(host).is_alive = PropertyMock(return_value=True)
 
         mocker.patch(
-            'network_controller.device.computer.async_ping',
+            'network_controller.device.computer.ping',
             return_value=host
         )
 
