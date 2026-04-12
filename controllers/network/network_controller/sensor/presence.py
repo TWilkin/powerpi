@@ -3,12 +3,12 @@ from enum import StrEnum, unique
 from time import time
 
 from icmplib import async_ping
-from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from powerpi_common.device.mixin import PollableMixin
 
+from network_controller.config import NetworkConfig
 from network_controller.services.arp import ARPFactory, ARPReader, HostAddress
 
 
@@ -33,7 +33,7 @@ class PresenceSensor(Sensor, PollableMixin):
 
     def __init__(
         self,
-        config: Config,
+        config: NetworkConfig,
         logger: Logger,
         mqtt_client: MQTTClient,
         arp_factory: ARPFactory,
@@ -47,6 +47,7 @@ class PresenceSensor(Sensor, PollableMixin):
         Sensor.__init__(self, mqtt_client, **kwargs)
         PollableMixin.__init__(self, config, **kwargs)
 
+        self.__config = config
         self._logger = logger
         self.__factory = arp_factory
         self.__reader: ARPReader | None = None
@@ -151,7 +152,7 @@ class PresenceSensor(Sensor, PollableMixin):
             count=1,
             interval=0.2,
             timeout=2,
-            privileged=False
+            privileged=self.__config.is_root
         )
 
         return result.is_alive

@@ -1,12 +1,13 @@
 from asyncio import sleep
 
 from icmplib import async_ping
-from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import PollableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from wakeonlan import send_magic_packet
+
+from network_controller.config import NetworkConfig
 
 
 class ComputerDevice(Device, PollableMixin):
@@ -18,7 +19,7 @@ class ComputerDevice(Device, PollableMixin):
 
     def __init__(
         self,
-        config: Config,
+        config: NetworkConfig,
         logger: Logger,
         mqtt_client: MQTTClient,
         mac: str,
@@ -30,6 +31,8 @@ class ComputerDevice(Device, PollableMixin):
         # pylint: disable=too-many-arguments,too-many-positional-arguments
         Device.__init__(self, config, logger, mqtt_client, **kwargs)
         PollableMixin.__init__(self, config, **kwargs)
+
+        self.__config = config
 
         self.__mac_address = mac
         self.__network_address = ip if ip is not None else hostname
@@ -72,7 +75,7 @@ class ComputerDevice(Device, PollableMixin):
             count=count,
             interval=0.2,
             timeout=2,
-            privileged=False
+            privileged=self.__config.is_root
         )
 
         return result.is_alive
