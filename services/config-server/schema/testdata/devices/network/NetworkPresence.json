@@ -4,7 +4,6 @@
     "display_name": "Testing",
     "mac": "00:AA:BB:CC:DD:EE",
     "ip": "192.168.1.100",
-    "hostname": "mydevice.home",
     "poll_frequency": 10,
     "absent_delay": 11
 }
