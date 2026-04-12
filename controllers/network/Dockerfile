@@ -2,7 +2,9 @@
 FROM python:3.11.14-slim-bookworm AS base-image
 RUN pip install --upgrade pip==25.3 \
     && apt-get update \
-    && apt-get install -y --no-install-recommends libpcap0.8 \
+    && apt-get install -y --no-install-recommends libpcap0.8 libcap2-bin \
+    && setcap cap_net_raw,cap_net_admin=eip /usr/local/bin/python3.11 \
+    && apt-get remove -y libcap2-bin \
     && apt-get clean -y
 
 # create a base image for building
