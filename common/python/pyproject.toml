@@ -1,6 +1,6 @@
 [project]
 name = "powerpi-common"
-version = "0.7.4"
+version = "0.8.0"
 description = "PowerPi Common Python Library"
 license = "GPL-3.0-only"
 authors = [
