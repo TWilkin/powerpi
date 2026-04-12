@@ -98,8 +98,9 @@ class PresenceSensor(Sensor, PollableMixin):
 
             return
 
-        # start the timer
-        self.__grace_period.timer = now
+        # start the timer, but only if it's not already started
+        if self.__grace_period.timer == 0:
+            self.__grace_period.timer = now
 
         # try to ping
         is_alive = await self.__is_alive()
