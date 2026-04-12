@@ -88,6 +88,10 @@ class ConditionParser:
                     name, action, prop = split[1:]
                     return self.sensor_identifier(identifier, name, action, prop)
 
+                if identifier_type == VariableType.PRESENCE and len(split) == 3:
+                    name, prop = split[1:]
+                    return self.presence_identifier(identifier, name, prop)
+
                 if identifier_type == 'message' and len(split) == 2:
                     prop = split[1]
                     return self.message_identifier(identifier, prop)
@@ -128,6 +132,21 @@ class ConditionParser:
                 return variable.value.value
             if prop == 'unit':
                 return variable.value.unit
+            if prop == 'state':
+                return variable.state
+        except AttributeError:
+            pass
+
+        raise InvalidIdentifierException(identifier)
+
+    def presence_identifier(self, identifier: str, name: str, prop: str):
+        '''
+        Return the value of the presence identifier
+        e.g. {'var': 'presence.Person.state'}
+        '''
+        variable = self.__variable_manager.get_presence(name)
+
+        try:
             if prop == 'state':
                 return variable.state
         except AttributeError:

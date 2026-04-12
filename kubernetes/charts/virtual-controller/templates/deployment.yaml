@@ -1,1 +1,6 @@
-{{- include "powerpi.controller" (merge (dict "Params" dict) . )}}
+{{-
+    $data := dict
+        "MqttSecret" "mosquitto-virtual-controller-secret"
+-}}
+
+{{- include "powerpi.controller" (merge (dict "Params" $data) . ) -}}

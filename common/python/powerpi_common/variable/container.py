@@ -3,6 +3,7 @@ from dependency_injector import containers, providers
 from powerpi_common.variable.device import DeviceVariable
 from powerpi_common.variable.manager import VariableManager
 from powerpi_common.variable.sensor import SensorVariable
+from powerpi_common.variable.presence import PresenceVariable
 
 
 class VariableContainer(containers.DeclarativeContainer):
@@ -36,6 +37,13 @@ class VariableContainer(containers.DeclarativeContainer):
 
     sensor_variable = providers.Factory(
         SensorVariable,
+        config=config,
+        logger=logger,
+        mqtt_client=mqtt_client
+    )
+
+    presence_variable = providers.Factory(
+        PresenceVariable,
         config=config,
         logger=logger,
         mqtt_client=mqtt_client

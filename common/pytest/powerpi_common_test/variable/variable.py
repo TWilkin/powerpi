@@ -14,6 +14,6 @@ class VariableTestBase:
 
     def test_str(self, subject):
         assert bool(re.match(
-            r'^var\.(device|sensor)\..*=\{.*\}$',
+            r'^var\.(device|sensor|presence)\..*=\{.*\}$',
             str(subject)
         )) is True

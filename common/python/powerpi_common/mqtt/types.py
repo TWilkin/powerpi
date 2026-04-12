@@ -1,4 +1,11 @@
-from typing import Any, Dict
+from enum import unique, StrEnum
+
+MQTTMessage = dict[str, any]
 
 
-MQTTMessage = Dict[str, Any]
+@unique
+class MQTTTopic(StrEnum):
+    CONFIG = 'config'
+    DEVICE = 'device'
+    EVENT = 'event'
+    PRESENCE = 'presence'
