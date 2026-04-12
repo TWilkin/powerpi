@@ -3,6 +3,8 @@
 {{-
     $data := dict
     "HostNetwork" (true | quote)
+    "Capabilities" (list "NET_RAW" "NET_ADMIN")
+    "MqttSecret" "mosquitto-network-controller-secret"
     "Env" (list
         (dict
             "Name" "MQTT_ADDRESS"
