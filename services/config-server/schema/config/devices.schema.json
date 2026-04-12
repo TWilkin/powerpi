@@ -88,7 +88,7 @@
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/energy-monitor/OctopusGasMeter.schema.json"
                     },
                     {
-                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/network/Computer.schema.json"
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/network/NetworkPresence.schema.json"
                     },
                     {
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/zigbee/AqaraDoorWindow.schema.json"
