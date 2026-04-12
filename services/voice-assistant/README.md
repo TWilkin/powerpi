@@ -60,9 +60,8 @@ yarn build:voice-assistant:alexa
 
 This service expects the following environment variables to be set before it will start successfully. When using kubernetes these are already configured in the helm chart, however when running locally for testing we need to define these:
 
--   **API_ADDRESS** - The URI to the _API_ instance to use, (default _http://api:3000/api_)
--   **JOVO_PORT** - The port the service runs on (default _3000_).
--   **MQTT_ADDRESS** - The URI to the MQTT instance to use, (default _mqtt://POWERPI_URL:1883_)
+- **API_ADDRESS** - The URI to the _API_ instance to use, (default _http://api:3000/api_)
+- **JOVO_PORT** - The port the service runs on (default _3000_).
 
 ## Testing
 

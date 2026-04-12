@@ -4,19 +4,28 @@ import { MqttService } from "./MqttService.js";
 
 type AppStart = () => void | Promise<void>;
 
+type Options = {
+    mqtt?: boolean;
+};
+
 @Service()
 export class PowerPiService {
+    private useMQTT: boolean = true;
+
     constructor(
         private readonly mqtt: MqttService,
         private readonly logger: LoggerService,
     ) {}
 
-    public async start(appStart: AppStart) {
+    public async start(appStart: AppStart, { mqtt = true }: Options = {}) {
+        this.useMQTT = mqtt;
+
         try {
             // start MQTT
-            await this.mqtt.connect();
+            if (mqtt) {
+                await this.mqtt.connect();
+            }
 
-            // retrieve the config from the queue
             this.logger.info("Starting PowerPi Service");
 
             // now the app is ready to start
@@ -32,6 +41,8 @@ export class PowerPiService {
     }
 
     public async stop() {
-        await this.mqtt.disconnect();
+        if (this.useMQTT) {
+            await this.mqtt.disconnect();
+        }
     }
 }
