@@ -36,4 +36,4 @@ async function start() {
 }
 
 const service = Container.get(PowerPiService);
-service.start(start);
+service.start(start, { mqtt: false });
