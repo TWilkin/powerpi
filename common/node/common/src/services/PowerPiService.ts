@@ -26,7 +26,6 @@ export class PowerPiService {
                 await this.mqtt.connect();
             }
 
-            // retrieve the config from the queue
             this.logger.info("Starting PowerPi Service");
 
             // now the app is ready to start
