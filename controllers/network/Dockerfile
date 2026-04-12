@@ -29,7 +29,7 @@ FROM build-base-image-gcc AS build-image
 WORKDIR /opt/powerpi/controllers/network
 COPY --from=build-common-image /opt/powerpi/common ./../../common
 COPY controllers/network/poetry.lock controllers/network/pyproject.toml ./
-RUN poetry install --compile --only main --no-root --no-directory --no-interaction --no-ansi
+RUN poetry install --compile --only main,runtime --no-root --no-directory --no-interaction --no-ansi
 
 # install the common library
 COPY --from=build-common-image /opt/powerpi/common/python/dist/*.whl .
