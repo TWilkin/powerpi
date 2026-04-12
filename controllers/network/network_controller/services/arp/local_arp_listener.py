@@ -123,7 +123,7 @@ class LocalARPListener(ARPReader):
 
             host_address.hostname = result[0]
         except herror:
-            pass
+            host_address.hostname = None
 
     def __prune(self):
         now = int(time())
