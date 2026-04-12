@@ -2,6 +2,7 @@ from dependency_injector import containers, providers
 from powerpi_common.container import Container as CommonContainer
 
 from network_controller.__version__ import __app_name__, __version__
+from network_controller.config import NetworkConfig
 from network_controller.controller import Controller
 from network_controller.services import ServicesContainer
 
@@ -14,16 +15,22 @@ class ApplicationContainer(containers.DeclarativeContainer):
         __self__
     )
 
+    config = providers.Singleton(
+        NetworkConfig
+    )
+
     common = providers.Container(
         CommonContainer,
         app_name=__app_name__,
-        version=__version__
+        version=__version__,
+        config=config
     )
 
     services = providers.Container(
         ServicesContainer,
         common=common,
-        device=common.device
+        device=common.device,
+        config=config
     )
 
     controller = providers.Singleton(

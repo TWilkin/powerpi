@@ -12,6 +12,7 @@ class ServicesContainer(containers.DeclarativeContainer):
 
     common = providers.DependenciesContainer()
     device = providers.DependenciesContainer()
+    config = providers.Dependency()
 
     arp_factory = providers.Singleton(
         ARPFactory,
@@ -22,5 +23,6 @@ class ServicesContainer(containers.DeclarativeContainer):
 
     local_arp_listener = providers.Singleton(
         LocalARPListener,
+        config=config,
         logger=common.logger
     )

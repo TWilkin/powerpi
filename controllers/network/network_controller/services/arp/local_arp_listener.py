@@ -1,15 +1,16 @@
 from asyncio import ensure_future, sleep, Future
 from dataclasses import dataclass
-from dpkt import ethernet
-from netifaces import interfaces, ifaddresses, AF_INET
-from pcap import pcap
 from socket import inet_ntoa
 from time import time
 from threading import RLock
 
+from dpkt import ethernet
+from netifaces import interfaces, ifaddresses, AF_INET
+from pcap import pcap
 from powerpi_common.logger import Logger
 
-from .arp import ARPReader, HostAddress
+from network_controller.config import NetworkConfig
+from network_controller.services.arp import ARPReader, HostAddress
 
 
 @dataclass
@@ -25,8 +26,10 @@ class LocalARPListener(ARPReader):
 
     def __init__(
         self,
+        config: NetworkConfig,
         logger: Logger
     ):
+        self.__config = config
         self._logger = logger
 
         self.__running = False
@@ -50,7 +53,10 @@ class LocalARPListener(ARPReader):
             return self.__table
 
     async def __sniff(self):
-        self.log_info('Sniffing ARP traffic')
+        self.log_info(
+            'Sniffing ARP traffic, cache expiry after %ds',
+            self.__config.arp_cache_expiry
+        )
 
         try:
             interface = self.__get_interface()
@@ -67,8 +73,8 @@ class LocalARPListener(ARPReader):
 
                 sniffer.dispatch(-1, self.__handle_packet)
 
-                # every 120s we prune anything too old
-                if counter >= 120:
+                # prune anything that hasn't been seen in a while
+                if counter >= self.__config.arp_cache_expiry:
                     counter = 0
 
                     self.__prune()
@@ -111,7 +117,7 @@ class LocalARPListener(ARPReader):
 
     def __prune(self):
         now = int(time())
-        expiry = now - 120
+        expiry = now - self.__config.arp_cache_expiry
 
         with self.__lock:
             count = len(self.__table)
