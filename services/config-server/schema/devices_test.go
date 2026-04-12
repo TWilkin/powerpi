@@ -22,7 +22,7 @@ func init() {
 	devicePath := "/devices/0"
 	sensorPath := "/sensors/0"
 
-	commonCases := merge(
+	commonAbstractDeviceCases := merge(
 		generateMissing("type", false),
 
 		generateMissing("name", false),
@@ -32,25 +32,29 @@ func init() {
 
 		generateMissing("display_name", true),
 
+		[]schemaCase{
+			{"additional property", []schemaPatch{{"prop", "add", utils.ToPtr(`"value"`)}}, false},
+		},
+	)
+
+	commonBaseDeviceCases := merge(
+		commonAbstractDeviceCases,
+
 		generateMissing("categories", true),
 		[]schemaCase{
 			{"invalid categories", []schemaPatch{{"categories", "replace", utils.ToPtr(`[1, 2]`)}}, false},
 		},
 
 		generateBoolean("visible", true),
-
-		[]schemaCase{
-			{"additional property", []schemaPatch{{"prop", "add", utils.ToPtr(`"value"`)}}, false},
-		},
 	)
 
 	commonSensorCases := merge(
-		commonCases,
+		commonBaseDeviceCases,
 		generateMissing("location", false),
 	)
 
 	commonDeviceCases := merge(
-		commonCases,
+		commonBaseDeviceCases,
 		generateMissing("location", true),
 	)
 
@@ -185,6 +189,19 @@ func init() {
 				generateMAC("mac", false, false),
 				generateHostAddress(),
 				generateNumeric("delay", true, utils.ToPtr(1), utils.ToPtr(60)),
+			),
+		},
+		schemaSuite{
+			file:       "devices/network/NetworkPresence.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       sensorPath,
+			cases: merge(
+				commonAbstractDeviceCases,
+				commonPollableCases,
+				generateMAC("mac", false, false),
+				generateHostAddress(),
+				generateNumeric("absent_delay", true, utils.ToPtr(1), utils.ToPtr(60*60)),
 			),
 		},
 

@@ -2,21 +2,14 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/BaseDevice.schema.json",
     "title": "BaseDevice",
-    "description": "The common properties for a device or sensor in PowerPi",
+    "description": "The common properties for most devices or sensors in PowerPi",
     "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/AbstractDevice.schema.json"
+        }
+    ],
     "properties": {
-        "name": {
-            "description": "The name of this device",
-            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/common/Identifier.schema.json"
-        },
-        "display_name": {
-            "description": "The display name of this device",
-            "type": "string"
-        },
-        "type": {
-            "description": "The type of the device or sensor",
-            "type": "string"
-        },
         "visible": {
             "description": "Whether this device should appear in the UI or not",
             "type": "boolean"
@@ -32,6 +25,5 @@
                 "type": "string"
             }
         }
-    },
-    "required": ["name", "type"]
+    }
 }
