@@ -4,12 +4,10 @@ import { StatusCodes } from "http-status-codes";
 import app from "./app.js";
 import Container from "./container.js";
 import ConfigService from "./services/ConfigService.js";
-import HealthService from "./services/HealthService.js";
 
 async function start() {
     const config = Container.get(ConfigService);
     const logger = Container.get(LoggerService);
-    const health = Container.get(HealthService);
 
     await app.initialize();
 
@@ -29,9 +27,7 @@ async function start() {
     Webhook.get("/health", async (_, response: Response) => {
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 
-        const status = health.execute();
-
-        response.status(status ? StatusCodes.OK : StatusCodes.INTERNAL_SERVER_ERROR).send(status);
+        response.status(StatusCodes.OK);
     });
 }
 
