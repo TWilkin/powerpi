@@ -45,6 +45,12 @@ class VariableManager(LogMixin):
         '''
         return self.__get(VariableType.SENSOR, name, action)
 
+    def get_presence(self, name: str) -> 'SensorVariable | SensorType':
+        '''
+        Returns the presence sensor variable if it exists, or the actual sensor if that exists.
+        '''
+        return self.__get(VariableType.PRESENCE, name)
+
     def add(self, variable: Variable):
         variable_type = variable.variable_type
         kwargs = {}
@@ -94,7 +100,7 @@ class VariableManager(LogMixin):
             if variable_type == VariableType.DEVICE:
                 return self.__device_manager.get_device(name)
 
-            if variable_type == VariableType.SENSOR:
+            if variable_type in (VariableType.SENSOR, VariableType.PRESENCE):
                 return self.__device_manager.get_sensor(name)
         except DeviceNotFoundException:
             pass
