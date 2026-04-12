@@ -1,0 +1,43 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/network/NetworkPresence.schema.json",
+    "title": "NetworkPresence",
+    "description": "The network presence sensor allowing detection of a device on the network for presence monitoring",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Sensor.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/PollableDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "network_presence"
+        },
+        "hostname": {
+            "description": "The hostname where the device can be found",
+            "type": "string",
+            "format": "hostname"
+        },
+        "ip": {
+            "description": "The IP address where the device can be found",
+            "type": "string",
+            "format": "ipv4"
+        },
+        "mac": {
+            "description": "The MAC address where the device can be found",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/common/MACAddress.schema.json"
+        },
+        "absent_delay": {
+            "description": "The amount of time (in seconds) to wait before considering the device absent when it cannot be detected",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 3600
+        }
+    },
+    "required": ["mac"],
+    "oneOf": [{ "required": ["hostname"] }, { "required": ["ip"] }],
+    "unevaluatedProperties": false
+}
