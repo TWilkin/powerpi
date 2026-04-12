@@ -1,6 +1,7 @@
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient, MQTTTopic
+from powerpi_common.sensor import PresenceStatus
 from powerpi_common.sensor.consumers import SensorEventConsumer
 from powerpi_common.variable.types import VariableType
 from powerpi_common.variable.variable import Variable
@@ -28,7 +29,7 @@ class PresenceVariable(Variable, SensorEventConsumer):
             logger
         )
 
-        self.__state = None
+        self.__state: PresenceStatus | None = None
 
         mqtt_client.add_consumer(self)
 

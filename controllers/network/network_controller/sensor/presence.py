@@ -1,22 +1,15 @@
 from dataclasses import dataclass
-from enum import StrEnum, unique
 from time import time
 
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
+from powerpi_common.mqtt import MQTTClient, MQTTTopic
 from powerpi_common.sensor import Sensor
 from powerpi_common.device.mixin import PollableMixin
+from powerpi_common.sensor import PresenceStatus
 
 from network_controller.config import NetworkConfig
 from network_controller.services.arp import ARPProviderFactory, ARPProvider, HostAddress
 from network_controller.util import ping
-
-
-@unique
-class PresenceStatus(StrEnum):
-    PRESENT = 'present'
-    ABSENT = 'absent'
-    UNKNOWN = 'unknown'
 
 
 @dataclass
@@ -111,7 +104,7 @@ class PresenceSensor(Sensor, PollableMixin):
             self.__set_new_state(PresenceStatus.PRESENT)
 
     def __broadcast(self, state: PresenceStatus):
-        topic = f'presence/{self.entity}/status'
+        topic = f'{MQTTTopic.PRESENCE}/{self.entity}/status'
 
         message = {'state': state}
 

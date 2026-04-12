@@ -1,6 +1,7 @@
 import pytest
 from powerpi_common_test.variable.variable import VariableTestBase
 
+from powerpi_common.sensor import PresenceStatus
 from powerpi_common.variable.presence import PresenceVariable
 
 
@@ -17,7 +18,7 @@ class TestPresenceVariable(VariableTestBase):
 
         await subject.on_message(message, 'TestPresence', 'status')
 
-        assert subject.state == 'absent'
+        assert subject.state == PresenceStatus.ABSENT
 
     @pytest.fixture
     def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
