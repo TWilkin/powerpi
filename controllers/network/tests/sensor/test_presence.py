@@ -110,12 +110,23 @@ class TestPresenceSensor(SensorTestBase, PollableMixinTestBase):
             'network_controller.sensor.presence.ping',
             return_value=host,
         )
+        # absent_delay=10, each poll gap (5s) is less than the delay
+        # 1000: timer starts
+        # 1005: within grace period, timer must not reset
+        # 1011: 11s since timer started, grace period expired
+        # 1016: still absent, no duplicate broadcast
         mocker.patch(
             'network_controller.sensor.presence.time',
-            side_effect=[1000, 1011, 1022],
+            side_effect=[1000, 1005, 1011, 1016],
         )
 
+        # polls within the grace period should not trigger absent
         await subject.poll()
+        await subject.poll()
+
+        powerpi_mqtt_producer.assert_not_called()
+
+        # poll after the grace period has expired
         await subject.poll()
 
         powerpi_mqtt_producer.assert_called_once_with(
@@ -144,11 +155,16 @@ class TestPresenceSensor(SensorTestBase, PollableMixinTestBase):
             'network_controller.sensor.presence.ping',
             return_value=host,
         )
+        # absent_delay=10, each poll gap (5s) is less than the delay
+        # 1000: timer starts
+        # 1005: within grace period, timer must not reset
+        # 1011: 11s since timer started, grace period expired
         mocker.patch(
             'network_controller.sensor.presence.time',
-            side_effect=[1000, 1011],
+            side_effect=[1000, 1005, 1011],
         )
 
+        await subject.poll()
         await subject.poll()
         await subject.poll()
 
