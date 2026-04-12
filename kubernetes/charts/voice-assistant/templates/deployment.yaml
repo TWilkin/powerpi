@@ -5,7 +5,6 @@
   ))
   "Replicas" 2
   "UseDevicesFile" true
-  "MqttSecret" "mosquitto-voice-secret"
   "Probe" (dict
     "Http" "/health"
     "ReadinessInitialDelay" 10
