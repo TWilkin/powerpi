@@ -187,6 +187,19 @@ func init() {
 				generateNumeric("delay", true, utils.ToPtr(1), utils.ToPtr(60)),
 			),
 		},
+		schemaSuite{
+			file:       "devices/network/NetworkPresence.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       sensorPath,
+			cases: merge(
+				commonSensorCases,
+				commonPollableCases,
+				generateMAC("mac", false, false),
+				generateHostAddress(),
+				generateNumeric("absent_delay", true, utils.ToPtr(1), utils.ToPtr(60*60)),
+			),
+		},
 
 		// Snapcast
 		schemaSuite{
