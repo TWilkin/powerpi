@@ -21,6 +21,11 @@ class SensorVariableImpl:
         self.value = SensorValue(f'{name}/{action}', f'{action}/{name}')
 
 
+class PresenceVariableImpl:
+    def __init__(self, name: str):
+        self.state = name
+
+
 SubjectBuilder = Callable[[dict[str, Any] | None], ConditionParser]
 
 
@@ -48,6 +53,7 @@ class TestConditionParser:
         ('device.light.brightness', 'light'),
         ('sensor.office.temperature.value', 'office/temperature'),
         ('sensor.office.temperature.unit', 'temperature/office'),
+        {'presence.person.state', 'person'},
         ('message.timestamp', 1337),
         ('message.whatever', None),
     ])
@@ -74,6 +80,8 @@ class TestConditionParser:
         'sensor.office',
         'sensor.office.temperature',
         'sensor.office.temperature.whatever',
+        'presence.person',
+        'presence.person.other',
         'message',
         'message.timestamp'
     ])
@@ -242,6 +250,7 @@ class TestConditionParser:
         def build(message: dict[str, Any] | None = None):
             powerpi_variable_manager.get_device = DeviceVariableImpl
             powerpi_variable_manager.get_sensor = SensorVariableImpl
+            powerpi_variable_manager.get_presence = PresenceVariableImpl
 
             return ConditionParser(powerpi_variable_manager, message)
 
