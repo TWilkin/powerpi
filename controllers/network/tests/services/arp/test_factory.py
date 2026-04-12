@@ -4,14 +4,14 @@ import pytest
 from pytest_mock import MockerFixture
 
 from network_controller.sensor.presence import PresenceSensor
-from network_controller.services.arp import ARPFactory
+from network_controller.services.arp import ARPProviderFactory
 
 
-class TestARPFactory:
+class TestARPProviderFactory:
 
     def test_no_sensors(
         self,
-        subject: ARPFactory,
+        subject: ARPProviderFactory,
         powerpi_device_manager: MagicMock,
     ):
         powerpi_device_manager.sensors = {}
@@ -22,7 +22,7 @@ class TestARPFactory:
 
     def test_no_presence_sensors(
         self,
-        subject: ARPFactory,
+        subject: ARPProviderFactory,
         powerpi_device_manager: MagicMock,
         mocker: MockerFixture,
     ):
@@ -36,7 +36,7 @@ class TestARPFactory:
 
     def test_has_presence_sensor(
         self,
-        subject: ARPFactory,
+        subject: ARPProviderFactory,
         powerpi_device_manager: MagicMock,
         powerpi_service_provider: MagicMock,
         mocker: MockerFixture,
@@ -47,7 +47,7 @@ class TestARPFactory:
 
         result = subject.get_arp_service()
 
-        assert result is powerpi_service_provider.local_arp_listener()
+        assert result is powerpi_service_provider.packet_arp_provider()
 
     @pytest.fixture
     def subject(
@@ -55,8 +55,8 @@ class TestARPFactory:
         powerpi_logger,
         powerpi_device_manager,
         powerpi_service_provider,
-    ) -> ARPFactory:
-        return ARPFactory(
+    ) -> ARPProviderFactory:
+        return ARPProviderFactory(
             powerpi_logger,
             powerpi_device_manager,
             powerpi_service_provider,

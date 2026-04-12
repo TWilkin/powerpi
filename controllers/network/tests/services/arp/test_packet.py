@@ -7,20 +7,20 @@ import pytest
 from netifaces import AF_INET
 from pytest_mock import MockerFixture
 
-from network_controller.services.arp.local_arp_listener import LocalARPListener
+from network_controller.services.arp.packet import PacketARPProvider
 
-MODULE = 'network_controller.services.arp.local_arp_listener'
+MODULE = 'network_controller.services.arp.packet'
 
-SubjectFactory = Callable[..., tuple[LocalARPListener, Event]]
+SubjectFactory = Callable[..., tuple[PacketARPProvider, Event]]
 
 
 class _LoopDone(Exception):
     pass
 
 
-class TestLocalARPListener:
+class TestPacketARPProvider:
 
-    def test_table_initially_empty(self, subject: LocalARPListener):
+    def test_table_initially_empty(self, subject: PacketARPProvider):
         assert subject.table == []
 
     @pytest.mark.asyncio
@@ -68,7 +68,7 @@ class TestLocalARPListener:
     @pytest.mark.asyncio
     async def test_no_suitable_interface(
         self,
-        subject: LocalARPListener,
+        subject: PacketARPProvider,
         mocker: MockerFixture,
     ):
         mocker.patch(f'{MODULE}.interfaces', return_value=['lo', 'docker0'])
@@ -83,9 +83,9 @@ class TestLocalARPListener:
         self,
         powerpi_config,
         powerpi_logger,
-    ) -> LocalARPListener:
+    ) -> PacketARPProvider:
         type(powerpi_config).arp_cache_expiry = PropertyMock(return_value=60)
-        return LocalARPListener(powerpi_config, powerpi_logger)
+        return PacketARPProvider(powerpi_config, powerpi_logger)
 
     @pytest.fixture(autouse=True)
     def mock_infrastructure(self, mocker: MockerFixture):
@@ -118,7 +118,7 @@ class TestLocalARPListener:
         def build(
             arp_cache_expiry: int = 60,
             hostname: str | None = 'myhost.local',
-        ) -> tuple[LocalARPListener, Event]:
+        ) -> tuple[PacketARPProvider, Event]:
             sniffer, iteration_complete = mock_infrastructure
 
             type(powerpi_config).arp_cache_expiry = PropertyMock(
@@ -127,7 +127,7 @@ class TestLocalARPListener:
 
             self.__setup_dispatch(sniffer, mocker, hostname=hostname)
 
-            subject = LocalARPListener(powerpi_config, powerpi_logger)
+            subject = PacketARPProvider(powerpi_config, powerpi_logger)
             return subject, iteration_complete
 
         return build

@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from .arp import ARPFactory, LocalARPListener
+from .arp import ARPProviderFactory, PacketARPProvider
 
 
 class ServicesContainer(containers.DeclarativeContainer):
@@ -14,15 +14,15 @@ class ServicesContainer(containers.DeclarativeContainer):
     device = providers.DependenciesContainer()
     config = providers.Dependency()
 
-    arp_factory = providers.Singleton(
-        ARPFactory,
+    arp_provider_factory = providers.Singleton(
+        ARPProviderFactory,
         logger=common.logger,
         device_manager=device.device_manager,
         service_provider=service_provider
     )
 
-    local_arp_listener = providers.Singleton(
-        LocalARPListener,
+    packet_arp_provider = providers.Singleton(
+        PacketARPProvider,
         config=config,
         logger=common.logger
     )

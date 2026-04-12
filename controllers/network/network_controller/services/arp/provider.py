@@ -11,9 +11,9 @@ class HostAddress:
     hostname: str | None = None
 
 
-class ARPReader(LogMixin):
+class ARPProvider(LogMixin):
     '''
-    Abstract class defining the operations an ARP table reading service will provide.
+    Abstract class defining the operations an ARP table providing service will need.
     '''
 
     @property

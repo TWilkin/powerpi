@@ -1,13 +1,13 @@
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.device import DeviceManager
 
-from .arp import ARPReader
+from .provider import ARPProvider
 
 
-class ARPFactory(LogMixin):
+class ARPProviderFactory(LogMixin):
     '''
-    Factory to return the ARPReader that is available.
-    Currently only supports a local ARP listener, which won't with VLANs.
+    Factory to return the ARPProvider that is available.
+    Currently only supports a packet listener, which won't work with VLANs.
     '''
 
     def __init__(
@@ -20,7 +20,7 @@ class ARPFactory(LogMixin):
         self.__device_manager = device_manager
         self.__service_provider = service_provider
 
-    def get_arp_service(self) -> ARPReader | None:
+    def get_arp_service(self) -> ARPProvider | None:
         # first, do we have any presence services?
         from network_controller.sensor.presence import PresenceSensor
         presence = [
@@ -35,6 +35,6 @@ class ARPFactory(LogMixin):
             return None
 
         # for now there is only one service
-        service: ARPReader = self.__service_provider.local_arp_listener()
+        service: ARPProvider = self.__service_provider.packet_arp_provider()
 
         return service

@@ -16,6 +16,6 @@ def add_sensors(container):
             config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
-            arp_factory=services_container.arp_factory
+            arp_provider_factory=services_container.arp_provider_factory
         )
     )

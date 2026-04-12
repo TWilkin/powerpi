@@ -8,7 +8,7 @@ from powerpi_common.sensor import Sensor
 from powerpi_common.device.mixin import PollableMixin
 
 from network_controller.config import NetworkConfig
-from network_controller.services.arp import ARPFactory, ARPReader, HostAddress
+from network_controller.services.arp import ARPProviderFactory, ARPProvider, HostAddress
 from network_controller.util import ping
 
 
@@ -36,7 +36,7 @@ class PresenceSensor(Sensor, PollableMixin):
         config: NetworkConfig,
         logger: Logger,
         mqtt_client: MQTTClient,
-        arp_factory: ARPFactory,
+        arp_provider_factory: ARPProviderFactory,
         mac: str | None = None,
         ip: str | None = None,
         hostname: str | None = None,
@@ -48,8 +48,8 @@ class PresenceSensor(Sensor, PollableMixin):
         PollableMixin.__init__(self, config, **kwargs)
 
         self._logger = logger
-        self.__factory = arp_factory
-        self.__reader: ARPReader | None = None
+        self.__factory = arp_provider_factory
+        self.__provider: ARPProvider | None = None
 
         self.__host_address = HostAddress(mac, ip, hostname)
 
@@ -73,7 +73,7 @@ class PresenceSensor(Sensor, PollableMixin):
         return self.__get_real_or_cached('hostname')
 
     async def poll(self):
-        entry = self.__arp_service.find(self)
+        entry = self.__arp_provider.find(self)
         if entry is None:
             # apply the grace period before marking the device as absent
             await self.__check_grace_period()
@@ -131,11 +131,11 @@ class PresenceSensor(Sensor, PollableMixin):
         self.__set_new_state(PresenceStatus.PRESENT)
 
     @property
-    def __arp_service(self):
-        if self.__reader is None:
-            self.__reader = self.__factory.get_arp_service()
+    def __arp_provider(self):
+        if self.__provider is None:
+            self.__provider = self.__factory.get_arp_service()
 
-        return self.__reader
+        return self.__provider
 
     def __get_real_or_cached(self, prop: str):
         value = getattr(self.__host_address, prop)

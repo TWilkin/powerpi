@@ -1,9 +1,9 @@
 import pytest
 
-from network_controller.services.arp import ARPReader, HostAddress
+from network_controller.services.arp import ARPProvider, HostAddress
 
 
-class ConcreteARPReader(ARPReader):
+class ConcreteARPProvider(ARPProvider):
     def __init__(self, table, logger):
         self._logger = logger
         self._table = table
@@ -13,7 +13,7 @@ class ConcreteARPReader(ARPReader):
         return self._table
 
 
-class TestARPReader:
+class TestARPProvider:
 
     @pytest.mark.parametrize('table,search,expected', [
         pytest.param(
@@ -104,7 +104,7 @@ class TestARPReader:
 
     @pytest.fixture
     def subject(self, powerpi_logger):
-        def build(table: list[HostAddress]) -> ARPReader:
-            return ConcreteARPReader(table, powerpi_logger)
+        def build(table: list[HostAddress]) -> ARPProvider:
+            return ConcreteARPProvider(table, powerpi_logger)
 
         return build

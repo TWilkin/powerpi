@@ -10,7 +10,7 @@ from pcap import pcap
 from powerpi_common.logger import Logger
 
 from network_controller.config import NetworkConfig
-from network_controller.services.arp import ARPReader, HostAddress
+from network_controller.services.arp import ARPProvider, HostAddress
 
 
 @dataclass
@@ -18,9 +18,9 @@ class ARPEntry(HostAddress):
     timestamp: int = 0
 
 
-class LocalARPListener(ARPReader):
+class PacketARPProvider(ARPProvider):
     '''
-    Local ARP listener which listens for ARP events on the local network.
+    Packet ARP provider which listens for ARP events on the local network.
     Will only work if the devices are on the same VLAN as the cluster nodes running the service.
     '''
 

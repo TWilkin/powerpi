@@ -6,11 +6,11 @@ from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
 from network_controller.__version__ import __app_name__, __version__
-from network_controller.services.arp import ARPFactory, ARPReader
+from network_controller.services.arp import ARPProviderFactory, ARPProvider
 
 
 class Controller(CommonController):
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     def __init__(
         self,
         logger: Logger,
@@ -19,7 +19,7 @@ class Controller(CommonController):
         device_status_checker: DeviceStatusChecker,
         scheduler: AsyncIOScheduler,
         health: HealthService,
-        arp_factory: ARPFactory
+        arp_provider_factory: ARPProviderFactory
     ):
         CommonController.__init__(
             self, logger, device_manager,
@@ -28,18 +28,18 @@ class Controller(CommonController):
             __app_name__, __version__
         )
 
-        self.__arp_factory = arp_factory
-        self.__arp_service: ARPReader | None
+        self.__arp_provider_factory = arp_provider_factory
+        self.__arp_provider: ARPProvider | None
 
     async def _app_start(self):
         await CommonController._app_start(self)
 
-        self.__arp_service = self.__arp_factory.get_arp_service()
-        if self.__arp_service is not None:
-            await self.__arp_service.start()
+        self.__arp_provider = self.__arp_provider_factory.get_arp_service()
+        if self.__arp_provider is not None:
+            await self.__arp_provider.start()
 
     async def _app_stop(self):
-        if self.__arp_service is not None:
-            await self.__arp_service.stop()
+        if self.__arp_provider is not None:
+            await self.__arp_provider.stop()
 
         await CommonController._app_stop(self)
