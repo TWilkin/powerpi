@@ -4,6 +4,7 @@ from powerpi_common.device import DeviceManager, DeviceNotFoundException
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.typing import DeviceType, SensorType
 from powerpi_common.variable.device import DeviceVariable
+from powerpi_common.variable.presence import PresenceVariable
 from powerpi_common.variable.sensor import SensorVariable
 from powerpi_common.variable.types import VariableType
 from powerpi_common.variable.variable import Variable
@@ -45,7 +46,7 @@ class VariableManager(LogMixin):
         '''
         return self.__get(VariableType.SENSOR, name, action)
 
-    def get_presence(self, name: str) -> 'SensorVariable | SensorType':
+    def get_presence(self, name: str) -> 'PresenceVariable | SensorType':
         '''
         Returns the presence sensor variable if it exists, or the actual sensor if that exists.
         '''
@@ -110,7 +111,7 @@ class VariableManager(LogMixin):
 
     @classmethod
     def __key(cls, variable_type: VariableType, name: str, action: str | None = None):
-        if variable_type == VariableType.DEVICE:
+        if variable_type in (VariableType.DEVICE, VariableType.PRESENCE):
             return name
         if variable_type == VariableType.SENSOR and action is not None:
             return f'{name}/{action}'

@@ -43,5 +43,8 @@ class VariableContainer(containers.DeclarativeContainer):
     )
 
     presence_variable = providers.Factory(
-        PresenceVariable
+        PresenceVariable,
+        config=config,
+        logger=logger,
+        mqtt_client=mqtt_client
     )

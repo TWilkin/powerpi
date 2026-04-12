@@ -88,7 +88,7 @@ class ConditionParser:
                     name, action, prop = split[1:]
                     return self.sensor_identifier(identifier, name, action, prop)
 
-                if identifier_type == VariableType.PRESENCE and len(split) == 2:
+                if identifier_type == VariableType.PRESENCE and len(split) == 3:
                     name, prop = split[1:]
                     return self.presence_identifier(identifier, name, prop)
 
