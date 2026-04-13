@@ -38,6 +38,9 @@ class ConditionVisitor(ABC):
                     self, f'visit_{lexeme}', self.generic_visit
                 )
                 method(value)
+
+                # and recurse so we see the nested expression too
+                self.visit(value)
         elif isinstance(node, list):
             # call the visitor for each item in the list
             for item in node:
@@ -107,7 +110,7 @@ class ConditionVisitor(ABC):
         Override to consume a divide expression.
         '''
 
-    def visit_var(self, expression: Expression):
+    def visit_var(self, identifier: str):
         '''
         Override to consume a var expression.
         '''
