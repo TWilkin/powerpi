@@ -1,4 +1,4 @@
-from powerpi_common.condition import ConditionParser, Expression
+from powerpi_common.condition import ConditionParser, ConditionVisitor, Expression
 from powerpi_common.device import DeviceStatus
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
@@ -44,6 +44,12 @@ class GeofenceSensor(Sensor, InitialisableMixin):
         return self.__state
 
     async def initialise(self):
+        # we need the list of variables, to register listeners
+        visitor = self._Visitor()
+        visitor.visit(self.__condition)
+        variables = visitor.variables
+        self.log_info('Found variables %s', variables)
+
         # we evaluate the condition during initialisation to ensure
         # the variable manager is monitoring the referenced devices/sensors
         self.__check_condition()
@@ -69,3 +75,17 @@ class GeofenceSensor(Sensor, InitialisableMixin):
         message = {'state': state}
 
         self._producer(topic, message)
+
+    class _Visitor(ConditionVisitor):
+        def __init__(self):
+            self.__variables: dict[str, list[str]] = {}
+
+        @property
+        def variables(self):
+            return self.__variables
+
+        def visit_var(self, identifier: str):
+            split = identifier.split('.')
+            var_type = split[0]
+
+            self.__variables.setdefault(var_type, []).append(split[1:])
