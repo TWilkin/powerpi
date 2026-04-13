@@ -9,3 +9,4 @@ class MQTTTopic(StrEnum):
     DEVICE = 'device'
     EVENT = 'event'
     PRESENCE = 'presence'
+    GEOFENCE = 'geofence'

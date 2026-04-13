@@ -2,7 +2,7 @@ from powerpi_common.condition import ConditionParser, Expression
 from powerpi_common.device import DeviceStatus
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
+from powerpi_common.mqtt import MQTTClient, MQTTTopic
 from powerpi_common.sensor import Sensor
 from powerpi_common.variable import VariableManager
 
@@ -64,7 +64,7 @@ class GeofenceSensor(Sensor, InitialisableMixin):
         return parser.conditional_expression(self.__condition)
 
     def __broadcast(self, state: DeviceStatus):
-        topic = f'geofence/{self.entity}/status'
+        topic = f'{MQTTTopic.GEOFENCE}/{self.entity}/status'
 
         message = {'state': state}
 
