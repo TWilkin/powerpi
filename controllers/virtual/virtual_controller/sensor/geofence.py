@@ -1,12 +1,13 @@
 from powerpi_common.condition import ConditionParser, Expression
 from powerpi_common.device import DeviceStatus
+from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from powerpi_common.variable import VariableManager
 
 
-class GeofenceSensor(Sensor):
+class GeofenceSensor(Sensor, InitialisableMixin):
     '''
     Sensor implementing the conditions to activate, or deactivate a Geofence.
     A Geofence is a conditional sensor which outputs "on" or "off" depending
@@ -41,6 +42,11 @@ class GeofenceSensor(Sensor):
     @property
     def state(self):
         return self.__state
+
+    async def initialise(self):
+        # we evaluate the condition during initialisation to ensure
+        # the variable manager is monitoring the referenced devices/sensors
+        self.__check_condition()
 
     def on_message(self):
         # first we check the condition to identify what state we are in
