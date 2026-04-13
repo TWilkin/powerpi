@@ -78,7 +78,7 @@ class GeofenceSensor(Sensor, InitialisableMixin):
 
     class _Visitor(ConditionVisitor):
         def __init__(self):
-            self.__variables: dict[str, list[str]] = {}
+            self.__variables: dict[tuple[str, str], list[str]] = {}
 
         @property
         def variables(self):
@@ -88,4 +88,15 @@ class GeofenceSensor(Sensor, InitialisableMixin):
             split = identifier.split('.')
             var_type = split[0]
 
-            self.__variables.setdefault(var_type, []).append(split[1:])
+            # messages make no sense for geofence condition
+            if var_type == 'message':
+                return
+
+            entity = split[1]
+            data = split[2:]
+
+            key = (var_type, entity)
+
+            record = self.__variables.setdefault(key, [])
+            if data not in record:
+                record.append(data)
