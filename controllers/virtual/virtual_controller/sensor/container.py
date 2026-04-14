@@ -11,6 +11,7 @@ def add_sensors(container):
         'geofence_sensor',
         providers.Factory(
             GeofenceSensor,
+            config=container.common.config,
             logger=container.common.logger,
             mqtt_client=container.common.mqtt_client,
             variable_manager=container.common.variable.variable_manager

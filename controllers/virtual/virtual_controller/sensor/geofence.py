@@ -1,8 +1,9 @@
 from powerpi_common.condition import ConditionParser, ConditionVisitor, Expression
+from powerpi_common.config import Config
 from powerpi_common.device import DeviceStatus
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient, MQTTTopic
+from powerpi_common.mqtt import MQTTClient, MQTTConsumer, MQTTMessage, MQTTTopic
 from powerpi_common.sensor import Sensor
 from powerpi_common.variable import VariableManager
 
@@ -24,6 +25,7 @@ class GeofenceSensor(Sensor, InitialisableMixin):
 
     def __init__(
         self,
+        config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
         variable_manager: VariableManager,
@@ -32,8 +34,10 @@ class GeofenceSensor(Sensor, InitialisableMixin):
     ):
         Sensor.__init__(self, mqtt_client, **kwargs)
 
+        self._config = config
         self._logger = logger
 
+        self.__mqtt_client = mqtt_client
         self.__variable_manager = variable_manager
         self.__condition = condition
 
@@ -50,11 +54,24 @@ class GeofenceSensor(Sensor, InitialisableMixin):
         variables = visitor.variables
         self.log_info('Found variables %s', variables)
 
+        # now we need to add the listeners
+        consumer: MQTTConsumer | None = None
+        for key, states in variables.items():
+            for state in states:
+                if key[0] == 'device':
+                    consumer = self.__add_device_listener(key[1], state)
+
+                if key[0] == 'presence':
+                    consumer = self.__add_presence_listener(key[1], state)
+
+                if consumer is not None:
+                    self.__mqtt_client.add_consumer(consumer)
+
         # we evaluate the condition during initialisation to ensure
         # the variable manager is monitoring the referenced devices/sensors
         self.__check_condition()
 
-    def on_message(self):
+    def on_message(self, message: MQTTMessage, type: str, entity: str, action: str):
         # first we check the condition to identify what state we are in
         condition = self.__check_condition()
         new_state = DeviceStatus.ON if condition else DeviceStatus.OFF
@@ -75,6 +92,30 @@ class GeofenceSensor(Sensor, InitialisableMixin):
         message = {'state': state}
 
         self._producer(topic, message)
+
+    def __add_device_listener(self, entity: str, value: list[str]):
+        prop = value[0]
+        action: str | None = None
+
+        if prop == 'state':
+            action = 'status'
+
+        if action is not None:
+            return self._EventConsumer(self, MQTTTopic.DEVICE, entity, action)
+
+        return None
+
+    def __add_presence_listener(self, entity: str, value: list[str]):
+        prop = value[0]
+        action: str | None = None
+
+        if prop == 'state':
+            action = 'status'
+
+        if action is not None:
+            return self._EventConsumer(self, MQTTTopic.PRESENCE, entity, action)
+
+        return None
 
     class _Visitor(ConditionVisitor):
         def __init__(self):
@@ -100,3 +141,25 @@ class GeofenceSensor(Sensor, InitialisableMixin):
             record = self.__variables.setdefault(key, [])
             if data not in record:
                 record.append(data)
+
+    class _EventConsumer(MQTTConsumer):
+        def __init__(
+            self,
+            owner: 'GeofenceSensor',
+            entity_type: str,
+            entity: str,
+            action: str,
+        ):
+            topic = f'{entity_type}/{entity}/{action}'
+            MQTTConsumer.__init__(self, topic, owner._config, owner._logger)
+
+            self.__entity_type = entity_type
+            self.__owner = owner
+
+        async def on_message(self, message: MQTTMessage, entity: str, action: str):
+            self.__owner.on_message(
+                message,
+                self.__entity_type,
+                entity,
+                action
+            )
