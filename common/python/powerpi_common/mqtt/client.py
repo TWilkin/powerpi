@@ -51,19 +51,12 @@ class MQTTClient:
     ):
         key = consumer.topic
 
-        new_topic = False
         if key not in self.__consumers:
             self.__consumers[key] = {}
-            new_topic = True
         if priority not in self.__consumers[key]:
             self.__consumers[key][priority] = []
 
         self.__consumers[key][priority].append(consumer)
-
-        if new_topic:
-            topic = f'{self.__config.topic_base}/{key}'
-            self.__logger.info('Subscribing to topic "%s"', topic)
-            self.__client.subscribe(topic)
 
     def remove_consumer(self, consumer: MQTTConsumer):
         key = consumer.topic
@@ -129,6 +122,12 @@ class MQTTClient:
     async def disconnect(self):
         self.__logger.info('Disconnecting from MQTT')
         await self.__client.disconnect()
+
+    def subscribe(self):
+        for key in self.__consumers:
+            topic = f'{self.__config.topic_base}/{key}'
+            self.__logger.info('Subscribing to topic "%s"', topic)
+            self.__client.subscribe(topic)
 
     def __on_connect(self, _, __, result_code: int, ___):
         if result_code == 0:
