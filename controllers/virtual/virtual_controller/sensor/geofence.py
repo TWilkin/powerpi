@@ -3,7 +3,13 @@ from powerpi_common.config import Config
 from powerpi_common.device import DeviceStatus
 from powerpi_common.device.mixin import InitialisableMixin
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient, MQTTConsumer, MQTTMessage, MQTTTopic
+from powerpi_common.mqtt import (
+    MQTTClient,
+    MQTTConsumer,
+    MQTTConsumerPriority,
+    MQTTMessage,
+    MQTTTopic
+)
 from powerpi_common.sensor import Sensor
 from powerpi_common.variable import VariableManager
 
@@ -66,7 +72,8 @@ class GeofenceSensor(Sensor, InitialisableMixin):
                     consumer = self.__add_presence_listener(key[1], state)
 
                 if consumer is not None:
-                    self.__mqtt_client.add_consumer(consumer)
+                    self.__mqtt_client.add_consumer(
+                        consumer, MQTTConsumerPriority.LOGIC)
 
         # we evaluate the condition during initialisation to ensure
         # the variable manager is monitoring the referenced devices/sensors
