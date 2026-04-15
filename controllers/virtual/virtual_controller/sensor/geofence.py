@@ -60,8 +60,9 @@ class GeofenceSensor(Sensor, InitialisableMixin):
             for state in states:
                 if key[0] == 'device':
                     consumer = self.__add_device_listener(key[1], state)
-
-                if key[0] == 'presence':
+                elif key[0] == 'sensor':
+                    consumer = self.__add_sensor_listener(key[1], state)
+                elif key[0] == 'presence':
                     consumer = self.__add_presence_listener(key[1], state)
 
                 if consumer is not None:
@@ -102,6 +103,14 @@ class GeofenceSensor(Sensor, InitialisableMixin):
 
         if action is not None:
             return self._EventConsumer(self, MQTTTopic.DEVICE, entity, action)
+
+        return None
+
+    def __add_sensor_listener(self, entity: str, value: list[str]):
+        action = value[0]
+
+        if action is not None:
+            return self._EventConsumer(self, MQTTTopic.EVENT, entity, action)
 
         return None
 
