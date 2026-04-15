@@ -143,7 +143,8 @@ class GeofenceSensor(Sensor, InitialisableMixin):
                 return
 
             entity = split[1]
-            data = split[2:]
+            data = split[2]  # either the property or the action
+            # we drop the prop for sensors as we don't monitor that granularity
 
             key = (var_type, entity)
 
