@@ -5,11 +5,13 @@ from typing import Awaitable, Callable
 from powerpi_common.config import Config
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
+from powerpi_common.mqtt import MQTTConsumerPriority, MQTTClient
 
 from .base import BaseDevice
-from .consumers import (DeviceChangeEventConsumer,
-                        DeviceInitialStatusEventConsumer)
+from .consumers import (
+    DeviceChangeEventConsumer,
+    DeviceInitialStatusEventConsumer
+)
 
 
 class Device(BaseDevice, DeviceChangeEventConsumer):
@@ -38,7 +40,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         self.__lock = Lock()
 
         if listener:
-            mqtt_client.add_consumer(self)
+            mqtt_client.add_consumer(self, MQTTConsumerPriority.LOGIC)
 
         # add listener to get the initial state from the queue, if there is one
         DeviceInitialStatusEventConsumer(self, config, logger, mqtt_client)
