@@ -79,7 +79,7 @@ class GeofenceSensor(Sensor, InitialisableMixin):
         # the variable manager is monitoring the referenced devices/sensors
         self.__check_condition()
 
-    def on_message(self, message: MQTTMessage, type: str, entity: str, action: str):
+    def on_message(self):
         # first we check the condition to identify what state we are in
         condition = self.__check_condition()
         new_state = DeviceStatus.ON if condition else DeviceStatus.OFF
@@ -175,9 +175,4 @@ class GeofenceSensor(Sensor, InitialisableMixin):
 
         async def on_message(self, message: MQTTMessage, entity: str, action: str):
             if self.is_timestamp_valid(message.timestamp):
-                self.__owner.on_message(
-                    message,
-                    self.__entity_type,
-                    entity,
-                    action
-                )
+                self.__owner.on_message(self.__entity_type)
