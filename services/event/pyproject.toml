@@ -1,6 +1,6 @@
 [project]
 name = "event"
-version = "0.0.4-rc.6"
+version = "0.0.4-rc.7"
 description = "PowerPi Event Service"
 license = "GPL-3.0-only"
 authors = [
