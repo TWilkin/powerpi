@@ -1,6 +1,6 @@
 [project]
 name = "lifx_controller"
-version = "0.6.6-rc.6"
+version = "0.6.6-rc.7"
 description = "PowerPi LIFX Controller"
 license = "GPL-3.0-only"
 authors = [
