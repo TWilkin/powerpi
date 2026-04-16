@@ -301,6 +301,17 @@ func init() {
 		},
 
 		schemaSuite{
+			file:       "devices/virtual/Geofence.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       sensorPath,
+			cases: merge(
+				commonAbstractDeviceCases,
+				generateObject("condition", false, false),
+			),
+		},
+
+		schemaSuite{
 			file:       "devices/virtual/Group.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,

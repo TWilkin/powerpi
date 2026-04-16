@@ -1,0 +1,8 @@
+{
+    "type": "geofence",
+    "name": "Test",
+    "display_name": "Testing",
+    "condition": {
+        "when": [{ "equals": [true, true] }]
+    }
+}
