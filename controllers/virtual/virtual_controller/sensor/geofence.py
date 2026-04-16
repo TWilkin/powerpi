@@ -58,7 +58,6 @@ class GeofenceSensor(Sensor, InitialisableMixin):
         visitor = self._Visitor()
         visitor.visit(self.__condition)
         variables = visitor.variables
-        self.log_info('Found variables %s', variables)
 
         # now we need to add the listeners
         consumer: MQTTConsumer | None = None
