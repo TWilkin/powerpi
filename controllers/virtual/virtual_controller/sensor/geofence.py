@@ -174,9 +174,10 @@ class GeofenceSensor(Sensor, InitialisableMixin):
             self.__owner = owner
 
         async def on_message(self, message: MQTTMessage, entity: str, action: str):
-            self.__owner.on_message(
-                message,
-                self.__entity_type,
-                entity,
-                action
-            )
+            if self.is_timestamp_valid(message.timestamp):
+                self.__owner.on_message(
+                    message,
+                    self.__entity_type,
+                    entity,
+                    action
+                )
