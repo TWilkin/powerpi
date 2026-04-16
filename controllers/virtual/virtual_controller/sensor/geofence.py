@@ -72,7 +72,9 @@ class GeofenceSensor(Sensor, InitialisableMixin):
 
                 if consumer is not None:
                     self.__mqtt_client.add_consumer(
-                        consumer, MQTTConsumerPriority.LOGIC)
+                        consumer,
+                        MQTTConsumerPriority.LOGIC
+                    )
 
         # we evaluate the condition during initialisation to ensure
         # the variable manager is monitoring the referenced devices/sensors

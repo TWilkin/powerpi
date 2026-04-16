@@ -9,7 +9,7 @@ from powerpi_common.device.consumers.status_event_consumer import \
     DeviceStatusEventConsumer
 from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient, MQTTMessage
+from powerpi_common.mqtt import MQTTConsumerPriority, MQTTClient, MQTTMessage
 from powerpi_common.typing import DeviceManagerType, DeviceType
 from powerpi_common.util.data import DataType, Range
 
@@ -165,11 +165,15 @@ class DeviceOrchestratorMixin(InitialisableMixin, CapabilityMixin):
                 self, device, self.__config, self.__logger
             )
 
-            self.__mqtt_client.add_consumer(state_listener)
+            self.__mqtt_client.add_consumer(
+                state_listener, MQTTConsumerPriority.LOGIC
+            )
 
             if self.__capability_enabled:
                 capability_listener = self.ReferencedCapabilityEventListener(
                     self, device, self.__config, self.__logger
                 )
 
-                self.__mqtt_client.add_consumer(capability_listener)
+                self.__mqtt_client.add_consumer(
+                    capability_listener, MQTTConsumerPriority.LOGIC
+                )
