@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/virtual/Geofence.schema.json",
+    "title": "Geofence",
+    "description": "The geofence sensor allowing platform wide conditional disabling of devices",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/AbstractDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "geofence"
+        },
+        "condition": {
+            "description": "The condition to check to determine whether the geofence is active or not",
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/common/Condition.schema.json"
+        }
+    },
+    "required": ["condition"],
+    "unevaluatedProperties": false
+}
