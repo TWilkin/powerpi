@@ -63,7 +63,8 @@ class MQTTClient:
 
         if key in self.__consumers:
             for priority in MQTTConsumerPriority:
-                if priority in self.__consumers[key]:
+                if priority in self.__consumers[key] \
+                        and consumer in self.__consumers[key][priority]:
                     self.__consumers[key][priority].remove(consumer)
 
             if all(len(consumers) == 0 for consumers in self.__consumers[key].values()):
