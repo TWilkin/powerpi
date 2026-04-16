@@ -5,6 +5,7 @@ from powerpi_common_test.device.mixin import DeviceOrchestratorMixinTestBase
 
 from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import DeviceOrchestratorMixin
+from powerpi_common.mqtt import MQTTConsumerPriority
 from powerpi_common.mqtt.consumer import MQTTConsumer
 from powerpi_common.util.data import Range
 
@@ -208,7 +209,10 @@ class TestDeviceOrchestratorMixin(DeviceOrchestratorMixinTestBase):
     def mqtt_client(self, powerpi_mqtt_client):
         self.consumers: Dict[str, MQTTConsumer] = {}
 
-        def add_consumer(consumer: MQTTConsumer):
+        def add_consumer(
+            consumer: MQTTConsumer,
+            _priority: MQTTConsumerPriority = MQTTConsumerPriority.VALUE
+        ):
             self.consumers[consumer.topic] = consumer
 
         powerpi_mqtt_client.add_consumer = add_consumer

@@ -1,9 +1,8 @@
-from datetime import datetime
-from typing import Dict
+from datetime import datetime, timezone
 
 from powerpi_common.config import Config
 from powerpi_common.device import Device
-from powerpi_common.mqtt import MQTTClient, MQTTConsumer
+from powerpi_common.mqtt import MQTTClient, MQTTConsumer, MQTTConsumerPriority
 from pytest_mock import MockerFixture
 
 import pytest
@@ -11,7 +10,7 @@ from powerpi_common_test.device.base import BaseDeviceTestBase
 
 
 class DeviceTestBase(BaseDeviceTestBase):
-    _mqtt_consumers: Dict[str, MQTTConsumer] = {}
+    _mqtt_consumers: dict[str, MQTTConsumer] = {}
 
     @property
     def _initial_state_consumer(self):
@@ -34,7 +33,7 @@ class DeviceTestBase(BaseDeviceTestBase):
     async def test_change_message(self, subject: Device, times: int):
         message = {
             'state': 'on',
-            'timestamp': int(datetime.utcnow().timestamp() * 1000)
+            'timestamp': int(datetime.now(timezone.utc).timestamp() * 1000)
         }
 
         initial_state = 'unknown'
@@ -63,7 +62,7 @@ class DeviceTestBase(BaseDeviceTestBase):
     async def test_wrong_change_message(self, subject: Device):
         message = {
             'state': 'on',
-            'timestamp': int(datetime.utcnow().timestamp() * 1000)
+            'timestamp': int(datetime.now(timezone.utc).timestamp() * 1000)
         }
 
         assert subject.state == 'unknown'
@@ -74,7 +73,7 @@ class DeviceTestBase(BaseDeviceTestBase):
     async def test_bad_state_change_message(self, subject: Device):
         message = {
             'state': 'notastate',
-            'timestamp': int(datetime.utcnow().timestamp() * 1000)
+            'timestamp': int(datetime.now(timezone.utc).timestamp() * 1000)
         }
 
         assert subject.state == 'unknown'
@@ -84,7 +83,7 @@ class DeviceTestBase(BaseDeviceTestBase):
     @pytest.mark.asyncio
     async def test_missing_state_change_message(self, subject: Device):
         message = {
-            'timestamp': int(datetime.utcnow().timestamp() * 1000)
+            'timestamp': int(datetime.now(timezone.utc).timestamp() * 1000)
         }
 
         assert subject.state == 'unknown'
@@ -115,7 +114,10 @@ class DeviceTestBase(BaseDeviceTestBase):
 
     @pytest.fixture(autouse=True)
     def powerpi_mqtt_consumers(self, powerpi_mqtt_client: MQTTClient, mocker: MockerFixture):
-        def add_consumer(consumer: MQTTConsumer):
+        def add_consumer(
+            consumer: MQTTConsumer,
+            _priority: MQTTConsumerPriority = MQTTConsumerPriority.VALUE
+        ):
             split = consumer.topic.split('/')
             self._mqtt_consumers[split[-1]] = consumer
 
