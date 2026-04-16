@@ -51,7 +51,7 @@ class TestEventConsumer:
             message['timestamp'] = timestamp
 
         with patch('powerpi_common.mqtt.consumer.datetime') as mock_datetime:
-            mock_datetime.utcnow.return_value = datetime(
+            mock_datetime.now.return_value = datetime(
                 2023, 6, 4, 20, 35, 8
             )
 
