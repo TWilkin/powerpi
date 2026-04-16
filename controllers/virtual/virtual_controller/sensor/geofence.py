@@ -102,8 +102,7 @@ class GeofenceSensor(Sensor, InitialisableMixin):
 
         self._producer(topic, message)
 
-    def __add_device_listener(self, entity: str, value: list[str]):
-        prop = value[0]
+    def __add_device_listener(self, entity: str, prop: str):
         action: str | None = None
 
         if prop == 'state':
@@ -114,16 +113,13 @@ class GeofenceSensor(Sensor, InitialisableMixin):
 
         return None
 
-    def __add_sensor_listener(self, entity: str, value: list[str]):
-        action = value[0]
-
+    def __add_sensor_listener(self, entity: str, action: str):
         if action is not None:
             return self._EventConsumer(self, MQTTTopic.EVENT, entity, action)
 
         return None
 
-    def __add_presence_listener(self, entity: str, value: list[str]):
-        prop = value[0]
+    def __add_presence_listener(self, entity: str, prop: str):
         action: str | None = None
 
         if prop == 'state':
@@ -171,9 +167,8 @@ class GeofenceSensor(Sensor, InitialisableMixin):
             topic = f'{entity_type}/{entity}/{action}'
             MQTTConsumer.__init__(self, topic, owner._config, owner._logger)
 
-            self.__entity_type = entity_type
             self.__owner = owner
 
         async def on_message(self, message: MQTTMessage, entity: str, action: str):
-            if self.is_timestamp_valid(message.timestamp):
-                self.__owner.on_message(self.__entity_type)
+            if self.is_timestamp_valid(message['timestamp']):
+                self.__owner.on_message()
