@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import datetime, timezone
 
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger, LogMixin
@@ -21,8 +21,8 @@ class MQTTConsumer(ABC, LogMixin):
         raise NotImplementedError
 
     def is_timestamp_valid(self, timestamp: int | None):
-        # check age of message is within cutoff
-        now = int(datetime.utcnow().timestamp() * 1000)
+        # check age of message is within cut-off
+        now = int(datetime.now(timezone.utc).timestamp() * 1000)
         if timestamp < now - (self._config.message_age_cutoff * 1000):
             self._logger.info('Ignoring old message')
             return False
