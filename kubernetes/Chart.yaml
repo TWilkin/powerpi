@@ -29,7 +29,7 @@ dependencies:
     repository: oci://ghcr.io/stakater/charts
     condition: global.reloader
   - name: scheduler
-    version: 0.2.19
+    version: 0.2.20
     condition: global.scheduler
   - name: smarter-device-manager
     version: 0.1.3
