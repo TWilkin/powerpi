@@ -10,7 +10,8 @@ from powerpi_common.mqtt import MQTTMessage
 from powerpi_common.variable import VariableManager, VariableType
 
 Number = int | float
-Expression = dict | list | str | bool | Number
+Constant = str | bool | Number
+Expression = dict | list | Constant
 
 
 class ConditionParser:
@@ -53,14 +54,14 @@ class ConditionParser:
         self.__message = message
 
     @classmethod
-    def constant(cls, constant: str | Number):
+    def constant(cls, constant: Constant):
         '''
         Evaluate and return the constant in the parameter.
         '''
         if constant is None:
             return None
 
-        if isinstance(constant, (bool, str, Number)):
+        if isinstance(constant, Constant):
             return constant
 
         raise UnexpectedTokenException(constant)

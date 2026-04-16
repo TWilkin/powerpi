@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import Any, Dict
+from datetime import datetime, timezone
 from unittest.mock import MagicMock
 
 from powerpi_common.device import AdditionalStateDevice
@@ -34,7 +33,7 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         key = subject._additional_state_keys()[0]
         message = {
             'state': 'on',
-            'timestamp': int(datetime.utcnow().timestamp() * 1000),
+            'timestamp': int(datetime.now(timezone.utc).timestamp() * 1000),
         }
         message[key] = 1
 
@@ -59,7 +58,7 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
         # capture the published messages
         messages = []
 
-        def capture(_: str, message: Dict[str, Any]):
+        def capture(_: str, message: dict[str, any]):
             messages.append(message)
 
         powerpi_mqtt_producer.side_effect = capture

@@ -1,1 +1,2 @@
+from .presence_event_consumer import PresenceEventConsumer
 from .sensor_event_consumer import SensorEventConsumer

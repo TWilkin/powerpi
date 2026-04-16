@@ -3,8 +3,7 @@ import logging
 import socket
 import sys
 import time
-from datetime import datetime
-from typing import Dict, List
+from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 import gmqtt
@@ -14,11 +13,11 @@ from powerpi_common.config import Config
 from powerpi_common.logger import Logger
 
 from .consumer import MQTTConsumer
-from .types import MQTTMessage
+from .types import MQTTConsumerPriority, MQTTMessage
 
 
 class MQTTClient:
-    __consumers: Dict[str, List[MQTTConsumer]]
+    __consumers: dict[str, dict[MQTTConsumerPriority, list[MQTTConsumer]]]
 
     def __init__(
         self,
@@ -44,36 +43,40 @@ class MQTTClient:
     def connected(self):
         return self.__connected
 
-    def add_consumer(self, consumer: MQTTConsumer):
+    def add_consumer(
+        self,
+        consumer: MQTTConsumer,
+        priority: MQTTConsumerPriority = MQTTConsumerPriority.VALUE
+    ):
         key = consumer.topic
 
-        new_topic = False
-        if not key in self.__consumers:
-            self.__consumers[key] = []
-            new_topic = True
+        if key not in self.__consumers:
+            self.__consumers[key] = {}
+        if priority not in self.__consumers[key]:
+            self.__consumers[key][priority] = []
 
-        self.__consumers[key].append(consumer)
-
-        if new_topic:
-            topic = f'{self.__config.topic_base}/{key}'
-            self.__logger.info('Subscribing to topic "%s"', topic)
-            self.__client.subscribe(topic)
+        self.__consumers[key][priority].append(consumer)
 
     def remove_consumer(self, consumer: MQTTConsumer):
         key = consumer.topic
 
         if key in self.__consumers:
-            self.__consumers[key].remove(consumer)
+            for priority in MQTTConsumerPriority:
+                if priority in self.__consumers[key] \
+                        and consumer in self.__consumers[key][priority]:
+                    self.__consumers[key][priority].remove(consumer)
 
-        if len(self.__consumers.get(key, [])) == 0:
-            topic = f'{self.__config.topic_base}/{key}'
-            self.__logger.info('Unsubscribing from topic "%s"', topic)
-            self.__client.unsubscribe(topic)
+            if all(len(consumers) == 0 for consumers in self.__consumers[key].values()):
+                topic = f'{self.__config.topic_base}/{key}'
+                self.__logger.info('Unsubscribing from topic "%s"', topic)
+                self.__client.unsubscribe(topic)
 
     def add_producer(self):
         def publish(topic: str, message: MQTTMessage):
             # add the timestamp to the message
-            message['timestamp'] = int(datetime.utcnow().timestamp() * 1000)
+            message['timestamp'] = int(
+                datetime.now(timezone.utc).timestamp() * 1000
+            )
 
             topic = f'{self.__config.topic_base}/{topic}'
 
@@ -112,7 +115,7 @@ class MQTTClient:
         self.__client.on_message = self.__on_message
 
         await self.__client.connect(
-            url.hostname, 
+            url.hostname,
             url.port,
             ssl=True if url.scheme == 'mqtts' else False,
             version=gmqtt.constants.MQTTv311
@@ -121,6 +124,12 @@ class MQTTClient:
     async def disconnect(self):
         self.__logger.info('Disconnecting from MQTT')
         await self.__client.disconnect()
+
+    def subscribe(self):
+        for key in self.__consumers:
+            topic = f'{self.__config.topic_base}/{key}'
+            self.__logger.info('Subscribing to topic "%s"', topic)
+            self.__client.subscribe(topic)
 
     def __on_connect(self, _, __, result_code: int, ___):
         if result_code == 0:
@@ -131,14 +140,13 @@ class MQTTClient:
                 'MQTT connection failed with code %d',
                 result_code
             )
-            return
 
     def __on_disconnect(self, _, __):
         self.__connected = False
         self.__logger.info('MQTT disconnected')
         sys.exit(-1)
 
-    async def __on_message(self, _, topic: str, payload: Dict, __, ___):
+    async def __on_message(self, _, topic: str, payload: dict, __, ___):
         # read the JSON
         message: MQTTMessage = json.loads(payload)
         self.__logger.debug('Received: %s:%s', topic, json.dumps(message))
@@ -151,14 +159,16 @@ class MQTTClient:
 
         # send the message to the correct consumers
         if listener_key in self.__consumers:
-            for consumer in self.__consumers[listener_key]:
-                # pylint: disable=broad-except
-                try:
-                    await consumer.on_message(message, entity, action)
-                except Exception as ex:
-                    self.__logger.exception(
-                        Exception(f'{type(consumer)}.on_message', ex)
-                    )
+            for priority in MQTTConsumerPriority:
+                if priority in self.__consumers[listener_key]:
+                    for consumer in self.__consumers[listener_key][priority]:
+                        # pylint: disable=broad-except
+                        try:
+                            await consumer.on_message(message, entity, action)
+                        except Exception as ex:
+                            self.__logger.exception(
+                                MQTTMessageException(consumer, ex)
+                            )
 
         return gmqtt.constants.PubRecReasonCode.SUCCESS
 
@@ -178,3 +188,8 @@ class MQTTClient:
             if counter == self.__config.mqtt_connect_timeout:
                 self.__logger.error('Giving up connecting to MQTT')
                 sys.exit(-1)
+
+
+class MQTTMessageException(Exception):
+    def __init__(self, consumer: MQTTConsumer, ex: Exception):
+        Exception.__init__(self, f'{type(consumer)}.on_message', ex)

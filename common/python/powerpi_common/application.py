@@ -1,5 +1,9 @@
-from asyncio import (CancelledError, ensure_future, get_event_loop,
-                     get_running_loop)
+from asyncio import (
+    CancelledError,
+    ensure_future,
+    get_event_loop,
+    get_running_loop
+)
 from signal import SIGINT, SIGTERM
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -69,10 +73,15 @@ class Application(LogMixin):
             # start any custom parts of this app
             await self._app_start()
 
+            # subscriber to all the topics that have been listened to
+            self.__mqtt_client.subscribe()
+
             # loop forever
             await get_running_loop().create_future()
         except CancelledError:
             await self.__cleanup()
+
+            raise
 
     async def __cleanup(self):
         self.__scheduler.shutdown()

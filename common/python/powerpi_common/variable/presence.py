@@ -1,13 +1,13 @@
 from powerpi_common.config import Config
 from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient, MQTTTopic
+from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import PresenceStatus
-from powerpi_common.sensor.consumers import SensorEventConsumer
+from powerpi_common.sensor.consumers import PresenceEventConsumer
 from powerpi_common.variable.types import VariableType
 from powerpi_common.variable.variable import Variable
 
 
-class PresenceVariable(Variable, SensorEventConsumer):
+class PresenceVariable(Variable, PresenceEventConsumer):
     '''
     Variable implementation that will receive presence detection events from the message queue.
     '''
@@ -21,9 +21,9 @@ class PresenceVariable(Variable, SensorEventConsumer):
         **kwargs
     ):
         Variable.__init__(self, name, **kwargs)
-        SensorEventConsumer.__init__(
+        PresenceEventConsumer.__init__(
             self,
-            f'{MQTTTopic.PRESENCE}/{name}/status',
+            name,
             self,
             config,
             logger
