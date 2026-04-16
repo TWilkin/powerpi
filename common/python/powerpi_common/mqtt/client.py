@@ -3,8 +3,7 @@ import logging
 import socket
 import sys
 import time
-from datetime import datetime
-from typing import Dict
+from datetime import datetime, timezone
 from urllib.parse import urlparse
 
 import gmqtt
@@ -75,7 +74,9 @@ class MQTTClient:
     def add_producer(self):
         def publish(topic: str, message: MQTTMessage):
             # add the timestamp to the message
-            message['timestamp'] = int(datetime.utcnow().timestamp() * 1000)
+            message['timestamp'] = int(
+                datetime.now(timezone.utc).timestamp() * 1000
+            )
 
             topic = f'{self.__config.topic_base}/{topic}'
 
@@ -145,7 +146,7 @@ class MQTTClient:
         self.__logger.info('MQTT disconnected')
         sys.exit(-1)
 
-    async def __on_message(self, _, topic: str, payload: Dict, __, ___):
+    async def __on_message(self, _, topic: str, payload: dict, __, ___):
         # read the JSON
         message: MQTTMessage = json.loads(payload)
         self.__logger.debug('Received: %s:%s', topic, json.dumps(message))
@@ -166,7 +167,7 @@ class MQTTClient:
                             await consumer.on_message(message, entity, action)
                         except Exception as ex:
                             self.__logger.exception(
-                                Exception(f'{type(consumer)}.on_message', ex)
+                                MQTTMessageException(consumer, ex)
                             )
 
         return gmqtt.constants.PubRecReasonCode.SUCCESS
@@ -187,3 +188,8 @@ class MQTTClient:
             if counter == self.__config.mqtt_connect_timeout:
                 self.__logger.error('Giving up connecting to MQTT')
                 sys.exit(-1)
+
+
+class MQTTMessageException(Exception):
+    def __init__(self, consumer: MQTTConsumer, ex: Exception):
+        Exception.__init__(self, f'{type(consumer)}.on_message', ex)
