@@ -22,7 +22,7 @@
             "properties": {
                 "var": {
                     "type": "string",
-                    "pattern": "^(device\\.\\w+\\.\\w+)|(sensor\\.\\w+.\\w+.\\w+)|(presence\\.\\w+\\.state)|(message\\.\\w+)$"
+                    "pattern": "^(device\\.\\w+\\.\\w+)|(sensor\\.\\w+.\\w+.\\w+)|(presence\\.\\w+\\.state)|(geofence\\.\\w+\\.state)|(message\\.\\w+)$"
                 }
             },
             "additionalProperties": false
