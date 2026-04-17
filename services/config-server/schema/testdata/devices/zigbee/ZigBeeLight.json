@@ -5,6 +5,7 @@
     "location": "Somewhere",
     "categories": ["test", "other"],
     "visible": true,
+    "geofence": "SomeGeofence",
     "ieee": "00:00:00:00:00:00:00:00",
     "nwk": "0xaaaa",
     "duration": 1000,

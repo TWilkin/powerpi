@@ -56,6 +56,7 @@ func init() {
 	commonDeviceCases := merge(
 		commonBaseDeviceCases,
 		generateMissing("location", true),
+		generateString("geofence", true, false, "123name"),
 	)
 
 	commonPollableCases := generateNumeric[int]("poll_frequency", true, nil, nil)

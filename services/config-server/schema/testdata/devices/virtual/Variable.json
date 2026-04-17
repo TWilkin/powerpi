@@ -4,5 +4,6 @@
     "display_name": "Testing",
     "location": "Somewhere",
     "categories": ["test", "other"],
-    "visible": true
+    "visible": true,
+    "geofence": "SomeGeofence"
 }
