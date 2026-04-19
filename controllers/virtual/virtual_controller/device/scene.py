@@ -32,8 +32,8 @@ class SceneDevice(Device, DeviceOrchestratorMixin, NewPollableMixin):
         )
         DeviceOrchestratorMixin.__init__(
             self,
-            device_manager,
-            devices,
+            device_manager=device_manager,
+            devices=devices,
             capability=False,
             **kwargs
         )

@@ -16,7 +16,10 @@ class MutexDevice(Device, DeviceOrchestratorMixin, PollableMixin):
             self, **kwargs
         )
         DeviceOrchestratorMixin.__init__(
-            self, device_manager, on_devices + off_devices, **kwargs
+            self,
+            device_manager=device_manager,
+            devices=on_devices + off_devices,
+            **kwargs
         )
         PollableMixin.__init__(self, **kwargs)
 

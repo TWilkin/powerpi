@@ -27,7 +27,10 @@ class GroupDevice(AdditionalStateDevice, DeviceOrchestratorMixin, NewPollableMix
             self, **kwargs
         )
         DeviceOrchestratorMixin.__init__(
-            self, device_manager, devices, **kwargs
+            self,
+            device_manager=device_manager,
+            devices=devices,
+            **kwargs
         )
         NewPollableMixin.__init__(self, **kwargs)
 
