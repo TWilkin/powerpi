@@ -30,7 +30,14 @@ class AdditionalStateDevice(Device, AdditionalStateMixin):
     ):
         self.__additional_state = SceneState()
 
-        Device.__init__(self, config, logger, mqtt_client, listener, **kwargs)
+        Device.__init__(
+            self,
+            config=config,
+            logger=logger,
+            mqtt_client=mqtt_client,
+            listener=listener,
+            **kwargs
+        )
 
         if listener:
             # add listener for scene changes
