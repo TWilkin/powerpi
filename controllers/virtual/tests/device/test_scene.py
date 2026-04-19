@@ -110,13 +110,15 @@ class TestSceneDevice(
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
+        powerpi_variable_manager,
         device_manager
     ):
         return SceneDevice(
-            powerpi_config,
-            powerpi_logger,
-            powerpi_mqtt_client,
-            device_manager,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            device_manager=device_manager,
             name='Scene',
             poll_frequency=60,
             devices=['device0', 'device1'],
