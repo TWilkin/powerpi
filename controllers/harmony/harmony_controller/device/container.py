@@ -28,9 +28,6 @@ def add_devices(container):
         'harmony_hub_device',
         providers.Factory(
             HarmonyHubDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             device_manager=container.common.device.device_manager,
             harmony_client=container.device.harmony_client
         )
@@ -41,9 +38,6 @@ def add_devices(container):
         'harmony_activity_device',
         providers.Factory(
             HarmonyActivityDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             device_manager=container.common.device.device_manager
         )
     )

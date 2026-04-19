@@ -1,9 +1,6 @@
 from lazy import lazy
 
-from powerpi_common.config import Config
-from powerpi_common.logger import Logger
 from powerpi_common.device import Device, DeviceManager
-from powerpi_common.mqtt import MQTTClient
 from .harmony_hub import HarmonyHubDevice
 
 
@@ -11,17 +8,12 @@ class HarmonyActivityDevice(Device):
     # pylint: disable=too-many-arguments
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
         device_manager: DeviceManager,
         hub: str,
         activity_name: str = None,
         **kwargs
     ):
-        Device.__init__(
-            self, config, logger, mqtt_client, **kwargs
-        )
+        Device.__init__(self, **kwargs)
 
         self.__device_manager = device_manager
         self.__hub_name = hub
