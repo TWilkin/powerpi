@@ -1,5 +1,10 @@
-from powerpi_common.device import DeviceStatus
-from powerpi_common.variable import VariableManager
+from typing import TYPE_CHECKING
+
+from .types import DeviceStatus
+
+
+if TYPE_CHECKING:
+    from powerpi_common.variable import VariableManager
 
 
 class Geofence:
@@ -10,7 +15,7 @@ class Geofence:
 
     def __init__(
         self,
-        variable_manager: VariableManager,
+        variable_manager: 'VariableManager',
         geofence: str | None = None
     ):
         self.__variable_manager = variable_manager

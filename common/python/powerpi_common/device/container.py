@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
 from dependency_injector import containers, providers
-from powerpi_common.device import Device
 from powerpi_common.sensor import Sensor
 
+from .device import Device
 from .factory import DeviceFactory
 from .manager import DeviceManager
 from .status import DeviceStatusChecker

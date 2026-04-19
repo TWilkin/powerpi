@@ -1,12 +1,10 @@
 from abc import abstractmethod
 from asyncio import Lock
-from typing import Awaitable, Callable
+from typing import Awaitable, Callable, TYPE_CHECKING
 
 from powerpi_common.config import Config
-from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTConsumerPriority, MQTTClient
-from powerpi_common.variable import VariableManager
 
 from .base import BaseDevice
 from .consumers import (
@@ -14,6 +12,10 @@ from .consumers import (
     DeviceInitialStatusEventConsumer
 )
 from .geofence import Geofence
+from .types import DeviceStatus
+
+if TYPE_CHECKING:
+    from powerpi_common.variable import VariableManager
 
 
 class Device(BaseDevice, DeviceChangeEventConsumer):
@@ -28,7 +30,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
-        variable_manager: VariableManager,
+        variable_manager: 'VariableManager',
         listener=True,
         geofence: str | None = None,
         **kwargs
