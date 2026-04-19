@@ -1,13 +1,13 @@
 from typing import Awaitable, Callable, List
 
-from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceManager, DeviceStatus
-from powerpi_common.device.mixin import (AdditionalState, AdditionalStateMixin,
-                                         DeviceOrchestratorMixin,
-                                         NewPollableMixin)
+from powerpi_common.device.mixin import (
+    AdditionalState,
+    AdditionalStateMixin,
+    DeviceOrchestratorMixin,
+    NewPollableMixin
+)
 from powerpi_common.device.scene_state import ReservedScenes
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util import ismixin
 
 
@@ -19,9 +19,6 @@ class SceneDevice(Device, DeviceOrchestratorMixin, NewPollableMixin):
 
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
         device_manager: DeviceManager,
         devices: List[str],
         state: AdditionalState,
@@ -31,13 +28,16 @@ class SceneDevice(Device, DeviceOrchestratorMixin, NewPollableMixin):
         # pylint: disable=too-many-arguments
 
         Device.__init__(
-            self, config, logger, mqtt_client, **kwargs
+            self,  **kwargs
         )
         DeviceOrchestratorMixin.__init__(
-            self, config, logger, mqtt_client, device_manager, devices,
-            capability=False
+            self,
+            device_manager,
+            devices,
+            capability=False,
+            **kwargs
         )
-        NewPollableMixin.__init__(self, config, **kwargs)
+        NewPollableMixin.__init__(self, **kwargs)
 
         self.__state = state
         self.__scene = scene

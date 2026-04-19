@@ -1,13 +1,16 @@
 from typing import List
 
-from powerpi_common.config import Config
-from powerpi_common.device import (AdditionalStateDevice, DeviceManager,
-                                   DeviceStatus)
-from powerpi_common.device.mixin import (AdditionalState, AdditionalStateMixin,
-                                         DeviceOrchestratorMixin,
-                                         NewPollableMixin)
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
+from powerpi_common.device import (
+    AdditionalStateDevice,
+    DeviceManager,
+    DeviceStatus
+)
+from powerpi_common.device.mixin import (
+    AdditionalState,
+    AdditionalStateMixin,
+    DeviceOrchestratorMixin,
+    NewPollableMixin
+)
 from powerpi_common.util import ismixin
 
 
@@ -16,20 +19,17 @@ class GroupDevice(AdditionalStateDevice, DeviceOrchestratorMixin, NewPollableMix
     # pylint: disable=too-many-arguments
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
         device_manager: DeviceManager,
         devices: List[str],
         **kwargs
     ):
         AdditionalStateDevice.__init__(
-            self, config, logger, mqtt_client, **kwargs
+            self, **kwargs
         )
         DeviceOrchestratorMixin.__init__(
-            self, config, logger, mqtt_client, device_manager, devices
+            self, device_manager, devices, **kwargs
         )
-        NewPollableMixin.__init__(self, config, **kwargs)
+        NewPollableMixin.__init__(self, **kwargs)
 
     async def on_referenced_device_status(self, _: str, __: DeviceStatus):
         await self.poll()

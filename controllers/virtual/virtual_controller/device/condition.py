@@ -3,13 +3,13 @@ from asyncio.exceptions import CancelledError as AsyncCancelledError
 from asyncio.exceptions import TimeoutError as AsyncTimeoutError
 from contextlib import suppress
 
-from powerpi_common.condition import (ConditionParser, Expression,
-                                      ParseException)
-from powerpi_common.config import Config
+from powerpi_common.condition import (
+    ConditionParser,
+    Expression,
+    ParseException
+)
 from powerpi_common.device import Device, DeviceManager, DeviceStatus
 from powerpi_common.device.mixin import DeviceOrchestratorMixin, PollableMixin
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
 from powerpi_common.variable import VariableManager
 
 
@@ -18,11 +18,8 @@ class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
     # pylint: disable=too-many-arguments
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
-        device_manager: DeviceManager,
         variable_manager: VariableManager,
+        device_manager: DeviceManager,
         device: str,
         on_condition: Expression | None = None,
         off_condition: Expression | None = None,
@@ -31,12 +28,12 @@ class ConditionDevice(Device, DeviceOrchestratorMixin, PollableMixin):
         **kwargs
     ):
         Device.__init__(
-            self, config, logger, mqtt_client, **kwargs
+            self, variable_manager=variable_manager, **kwargs
         )
         DeviceOrchestratorMixin.__init__(
-            self, config, logger, mqtt_client, device_manager, [device]
+            self, device_manager=device_manager, devices=[device], **kwargs
         )
-        PollableMixin.__init__(self, config, **kwargs)
+        PollableMixin.__init__(self, **kwargs)
 
         self.__variable_manager = variable_manager
 
