@@ -61,6 +61,7 @@ class TestHarmonyActivityDevice(DeviceTestBase):
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
+        powerpi_variable_manager,
         powerpi_device_manager: DeviceManager,
         harmony_hub,
         mocker: MockerFixture
@@ -73,12 +74,13 @@ class TestHarmonyActivityDevice(DeviceTestBase):
         )
 
         return HarmonyActivityDevice(
-            powerpi_config,
-            powerpi_logger,
-            powerpi_mqtt_client,
-            powerpi_device_manager,
-            'hub',
-            'my activity',
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            device_manager=powerpi_device_manager,
+            hub='hub',
+            activity_name='my activity',
             name='testactivity'
         )
 
