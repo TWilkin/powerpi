@@ -20,8 +20,6 @@ def add_sensors(container):
         'zigbee_energy_monitor_sensor',
         providers.Factory(
             ZigbeeEnergyMonitorSensor,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             zigbee_controller=container.zigbee_controller
         )
     )
