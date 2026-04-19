@@ -50,6 +50,11 @@ class Application(LogMixin):
     def _log_start(self):
         pass
 
+    def _register(self):
+        '''
+        Override to perform custom DI registrations.
+        '''
+
     async def _app_start(self):
         raise NotImplementedError('Application start should be implemented')
 
@@ -61,6 +66,9 @@ class Application(LogMixin):
         self._log_start()
 
         try:
+            # perform custom DI registrations
+            self._register()
+
             # start the scheduler
             self.__scheduler.start()
 

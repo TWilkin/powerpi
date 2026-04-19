@@ -81,6 +81,7 @@ class Container(containers.DeclarativeContainer):
         device_status_checker=device.device_status_checker,
         scheduler=scheduler,
         health=health,
+        container=__self__,
         app_name=app_name,
         version=version
     )
