@@ -115,17 +115,19 @@ class TestSnapcastServerDevice(DeviceTestBase, InitialisableMixinTestBase, Polla
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
+        powerpi_variable_manager,
         powerpi_device_manager,
         snapcast_api,
         request: Tuple[str | None, int | None]
     ):
         # pylint: disable=too-many-arguments
         return SnapcastServerDevice(
-            powerpi_config,
-            powerpi_logger,
-            powerpi_mqtt_client,
-            powerpi_device_manager,
-            snapcast_api,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            device_manager=powerpi_device_manager,
+            snapcast_api=snapcast_api,
             ip='127.0.0.1'
             if not hasattr(request, 'param') or request.param[0] is None
             else None,
