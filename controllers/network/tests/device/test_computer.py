@@ -133,10 +133,17 @@ class TestComputer(DeviceTestBase, PollableMixinTestBase):
         self,
         powerpi_config,
         powerpi_logger,
-        powerpi_mqtt_client
+        powerpi_mqtt_client,
+        powerpi_variable_manager
     ):
         return ComputerDevice(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client,
-            mac='00:00:00:00:00', hostname='mycomputer.home', delay=0.1,
-            name='computer', poll_frequency=120
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            mac='00:00:00:00:00',
+            hostname='mycomputer.home',
+            delay=0.1,
+            name='computer',
+            poll_frequency=120
         )

@@ -251,7 +251,10 @@ class TestPresenceSensor(SensorTestBase, PollableMixinTestBase):
         arp_factory,
     ):
         return PresenceSensor(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client, arp_factory,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            arp_provider_factory=arp_factory,
             mac='00:11:22:33:44:55',
             ip='192.168.1.100',
             hostname='mydevice.local',
@@ -269,7 +272,10 @@ class TestPresenceSensor(SensorTestBase, PollableMixinTestBase):
         arp_factory,
     ):
         return PresenceSensor(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client, arp_factory,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            arp_provider_factory=arp_factory,
             mac='00:11:22:33:44:55',
             hostname='mydevice.local',
             absent_delay=10,
