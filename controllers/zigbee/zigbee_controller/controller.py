@@ -22,14 +22,20 @@ class Controller(CommonController):
         device_status_checker: DeviceStatusChecker,
         scheduler: AsyncIOScheduler,
         health: HealthService,
+        container: containers.DeclarativeContainer,
         zigbee_controller: ZigbeeController,
-        container: containers.DeclarativeContainer
     ):
         CommonController.__init__(
-            self, logger, device_manager,
-            mqtt_client, device_status_checker,
-            scheduler, health, container,
-            __app_name__, __version__
+            self,
+            logger,
+            device_manager,
+            mqtt_client,
+            device_status_checker,
+            scheduler,
+            health,
+            container,
+            __app_name__,
+            __version__
         )
 
         self.__config = config
