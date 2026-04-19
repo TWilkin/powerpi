@@ -2,7 +2,6 @@ from powerpi_common.condition import ConditionParser, ConditionVisitor, Expressi
 from powerpi_common.config import Config
 from powerpi_common.device import DeviceStatus
 from powerpi_common.device.mixin import InitialisableMixin
-from powerpi_common.logger import Logger
 from powerpi_common.mqtt import (
     MQTTClient,
     MQTTConsumer,
@@ -32,16 +31,14 @@ class GeofenceSensor(Sensor, InitialisableMixin):
     def __init__(
         self,
         config: Config,
-        logger: Logger,
         mqtt_client: MQTTClient,
         variable_manager: VariableManager,
         condition: Expression,
         **kwargs
     ):
-        Sensor.__init__(self, mqtt_client, **kwargs)
+        Sensor.__init__(self, mqtt_client=mqtt_client, **kwargs)
 
         self._config = config
-        self._logger = logger
 
         self.__mqtt_client = mqtt_client
         self.__variable_manager = variable_manager
