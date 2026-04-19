@@ -44,6 +44,7 @@ class TestZigbeePairingDevice(DeviceTestBase):
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
+        powerpi_variable_manager,
         zigbee_controller,
         mocker: MockerFixture
     ):
@@ -57,8 +58,13 @@ class TestZigbeePairingDevice(DeviceTestBase):
         )
 
         return ZigbeePairingDevice(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client, zigbee_controller,
-            1, name='ZigBeePairing'
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            zigbee_controller=zigbee_controller,
+            timeout=1,
+            name='ZigBeePairing'
         )
 
     @pytest.fixture

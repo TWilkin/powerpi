@@ -10,9 +10,11 @@ from powerpi_common_test.sensor.mixin import BatteryMixinTestBase
 from pytest_mock import MockerFixture
 from zigpy.zcl import Cluster
 
-from zigbee_controller.sensor.osram.switch_mini import (Button,
-                                                        OsramSwitchMiniSensor,
-                                                        PressType)
+from zigbee_controller.sensor.osram.switch_mini import (
+    Button,
+    OsramSwitchMiniSensor,
+    PressType
+)
 
 
 class TestOsramSwitchMiniSensor(SensorTestBase, InitialisableMixinTestBase, BatteryMixinTestBase):
@@ -119,8 +121,12 @@ class TestOsramSwitchMiniSensor(SensorTestBase, InitialisableMixinTestBase, Batt
     @pytest.fixture
     def subject(self, powerpi_logger, zigbee_controller, powerpi_mqtt_client):
         return OsramSwitchMiniSensor(
-            powerpi_logger, zigbee_controller, powerpi_mqtt_client,
-            ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA', name='test'
+            logger=powerpi_logger,
+            zigbee_controller=zigbee_controller,
+            mqtt_client=powerpi_mqtt_client,
+            ieee='00:00:00:00:00:00:00:00',
+            nwk='0xAAAA',
+            name='test'
         )
 
     @pytest.fixture(autouse=True)

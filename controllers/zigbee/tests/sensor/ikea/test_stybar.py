@@ -99,6 +99,10 @@ class TestIKEAStyrbarSensor(SensorTestBase, InitialisableMixinTestBase):
     @pytest.fixture
     def subject(self, powerpi_logger, zigbee_controller, powerpi_mqtt_client):
         return IKEAStyrbarSensor(
-            powerpi_logger, zigbee_controller, powerpi_mqtt_client,
-            ieee=test_ieee, nwk='0xAAAA', name='test'
+            logger=powerpi_logger,
+            zigbee_controller=zigbee_controller,
+            mqtt_client=powerpi_mqtt_client,
+            ieee=test_ieee,
+            nwk='0xAAAA',
+            name='test'
         )
