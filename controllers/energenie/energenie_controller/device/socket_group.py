@@ -1,34 +1,25 @@
 from asyncio import sleep
-from typing import Callable, List
+from typing import Callable
 
 from energenie_controller.energenie import EnergenieInterface
-from powerpi_common.config import Config
-from powerpi_common.logger import Logger
-from powerpi_common.device import Device, DeviceManager, DeviceStatus
+from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import DeviceOrchestratorMixin
-from powerpi_common.mqtt import MQTTClient
 
 
-#pylint: disable=too-many-ancestors
+# pylint: disable=too-many-ancestors
 class SocketGroupDevice(Device, DeviceOrchestratorMixin):
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
-        device_manager: DeviceManager,
         energenie: EnergenieInterface,
-        devices: List[str],
+        devices: list[str],
         home_id=0,  # for ENER314
         retries=2,
         delay=0.2,
         **kwargs
     ):
-        Device.__init__(self, config, logger, mqtt_client, **kwargs)
-        DeviceOrchestratorMixin.__init__(
-            self, config, logger, mqtt_client, device_manager, devices
-        )
+        Device.__init__(self,  **kwargs)
+        DeviceOrchestratorMixin.__init__(self, devices=devices, **kwargs)
 
         self.__energenie = energenie
         self.__retries = retries

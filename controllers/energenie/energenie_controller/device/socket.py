@@ -2,19 +2,13 @@ from asyncio import sleep
 from typing import Callable
 
 from energenie_controller.energenie import EnergenieInterface
-from powerpi_common.config import Config
-from powerpi_common.logger import Logger
 from powerpi_common.device import Device
-from powerpi_common.mqtt import MQTTClient
 
 
 class SocketDevice(Device):
-    #pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
         energenie: EnergenieInterface,
         device_id=0,  # for individual socket in group,
         home_id=0,  # for ENER314
@@ -22,7 +16,7 @@ class SocketDevice(Device):
         delay=0.2,
         **kwargs
     ):
-        Device.__init__(self, config, logger, mqtt_client, **kwargs)
+        Device.__init__(self, **kwargs)
 
         self.__energenie = energenie
         self.__retries = retries
