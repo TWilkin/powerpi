@@ -1,19 +1,12 @@
 import pytest
 from powerpi_common_test.sensor import SensorTestBase
 
-from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 
 
 class SensorImpl(Sensor):
-    def __init__(
-        self,
-        mqtt_client: MQTTClient,
-        entity: str | None,
-        action: str | None,
-        **kwargs
-    ):
-        Sensor.__init__(self, mqtt_client, entity, action, **kwargs)
+    def __init__(self, **kwargs):
+        Sensor.__init__(self, **kwargs)
 
 
 class TestSensor(SensorTestBase):
@@ -65,10 +58,13 @@ class TestSensor(SensorTestBase):
         powerpi_mqtt_producer.assert_called_once_with(topic, message)
 
     @pytest.fixture
-    def subject_builder(self, powerpi_mqtt_client):
+    def subject_builder(self, powerpi_logger, powerpi_mqtt_client):
         def build(entity: str | None = None, action: str | None = None):
             return SensorImpl(
-                powerpi_mqtt_client, entity, action,
+                logger=powerpi_logger,
+                mqtt_client=powerpi_mqtt_client,
+                entity=entity,
+                action=action,
                 name='TestSensor'
             )
 
