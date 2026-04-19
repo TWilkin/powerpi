@@ -2,11 +2,8 @@ from asyncio import sleep
 
 from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import PollableMixin
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
 from wakeonlan import send_magic_packet
 
-from network_controller.config import NetworkConfig
 from network_controller.util import ping
 
 
@@ -19,9 +16,6 @@ class ComputerDevice(Device, PollableMixin):
 
     def __init__(
         self,
-        config: NetworkConfig,
-        logger: Logger,
-        mqtt_client: MQTTClient,
         mac: str,
         ip: str | None = None,
         hostname: str | None = None,
@@ -29,8 +23,8 @@ class ComputerDevice(Device, PollableMixin):
         **kwargs
     ):
         # pylint: disable=too-many-arguments,too-many-positional-arguments
-        Device.__init__(self, config, logger, mqtt_client, **kwargs)
-        PollableMixin.__init__(self, config, **kwargs)
+        Device.__init__(self, **kwargs)
+        PollableMixin.__init__(self, **kwargs)
 
         self.__mac_address = mac
         self.__network_address = ip if ip is not None else hostname

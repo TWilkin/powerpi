@@ -1,13 +1,11 @@
 from dataclasses import dataclass
 from time import time
 
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient, MQTTTopic
+from powerpi_common.mqtt import MQTTTopic
 from powerpi_common.sensor import Sensor
 from powerpi_common.device.mixin import PollableMixin
 from powerpi_common.sensor import PresenceStatus
 
-from network_controller.config import NetworkConfig
 from network_controller.services.arp import ARPProviderFactory, ARPProvider, HostAddress
 from network_controller.util import ping
 
@@ -26,9 +24,6 @@ class PresenceSensor(Sensor, PollableMixin):
 
     def __init__(
         self,
-        config: NetworkConfig,
-        logger: Logger,
-        mqtt_client: MQTTClient,
         arp_provider_factory: ARPProviderFactory,
         mac: str | None = None,
         ip: str | None = None,
@@ -37,10 +32,9 @@ class PresenceSensor(Sensor, PollableMixin):
         **kwargs
     ):
         # pylint: disable=too-many-arguments,too-many-positional-arguments
-        Sensor.__init__(self, mqtt_client, **kwargs)
-        PollableMixin.__init__(self, config, **kwargs)
+        Sensor.__init__(self, **kwargs)
+        PollableMixin.__init__(self, **kwargs)
 
-        self._logger = logger
         self.__factory = arp_provider_factory
         self.__provider: ARPProvider | None = None
 

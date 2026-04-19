@@ -10,10 +10,5 @@ def add_devices(container):
     setattr(
         device_container,
         'computer_device',
-        providers.Factory(
-            ComputerDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client
-        )
+        providers.Factory(ComputerDevice)
     )

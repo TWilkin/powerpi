@@ -41,5 +41,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
         device_status_checker=common.device.device_status_checker,
         scheduler=common.scheduler,
         health=common.health,
+        container=common,
         arp_provider_factory=services.container.arp_provider_factory
     )
