@@ -1,15 +1,15 @@
 from powerpi_common.config import Config
+from powerpi_common.device import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
-from powerpi_common.sensor import PresenceStatus
-from powerpi_common.sensor.consumers import PresenceEventConsumer
+from powerpi_common.sensor.consumers import GeofenceEventConsumer
 from powerpi_common.variable.types import VariableType
 from powerpi_common.variable.variable import Variable
 
 
-class PresenceVariable(Variable, PresenceEventConsumer):
+class GeofenceVariable(Variable, GeofenceEventConsumer):
     '''
-    Variable implementation that will receive presence detection events from the message queue.
+    Variable implementation that will receive geofence activation events from the message queue.
     '''
 
     def __init__(
@@ -21,7 +21,7 @@ class PresenceVariable(Variable, PresenceEventConsumer):
         **kwargs
     ):
         Variable.__init__(self, name, **kwargs)
-        PresenceEventConsumer.__init__(
+        GeofenceEventConsumer.__init__(
             self,
             name,
             self,
@@ -29,7 +29,7 @@ class PresenceVariable(Variable, PresenceEventConsumer):
             logger
         )
 
-        self.__state: PresenceStatus | None = None
+        self.__state: DeviceStatus = DeviceStatus.UNKNOWN
 
         mqtt_client.add_consumer(self)
 
@@ -42,7 +42,7 @@ class PresenceVariable(Variable, PresenceEventConsumer):
         return self.__state
 
     @state.setter
-    def state(self, new_state: PresenceStatus):
+    def state(self, new_state: DeviceStatus):
         self.__state = new_state
 
     @property

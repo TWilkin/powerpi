@@ -4,6 +4,7 @@ from powerpi_common.device import DeviceManager, DeviceNotFoundException
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.typing import DeviceType, SensorType
 from powerpi_common.variable.device import DeviceVariable
+from powerpi_common.variable.geofence import GeofenceVariable
 from powerpi_common.variable.presence import PresenceVariable
 from powerpi_common.variable.sensor import SensorVariable
 from powerpi_common.variable.types import VariableType
@@ -34,23 +35,29 @@ class VariableManager(LogMixin):
         for variable_type in VariableType:
             self.__variables[variable_type] = {}
 
-    def get_device(self, name: str) -> 'DeviceVariable | DeviceType':
+    def get_device(self, name: str) -> DeviceVariable | 'DeviceType':
         '''
         Returns the device variable if it exists, or the actual device if that exists.
         '''
         return self.__get(VariableType.DEVICE, name)
 
-    def get_sensor(self, name: str, action: str) -> 'SensorVariable | SensorType':
+    def get_sensor(self, name: str, action: str) -> SensorVariable | 'SensorType':
         '''
         Returns the sensor variable if it exists, or the actual sensor if that exists.
         '''
         return self.__get(VariableType.SENSOR, name, action)
 
-    def get_presence(self, name: str) -> 'PresenceVariable | SensorType':
+    def get_presence(self, name: str) -> PresenceVariable | 'SensorType':
         '''
         Returns the presence sensor variable if it exists, or the actual sensor if that exists.
         '''
         return self.__get(VariableType.PRESENCE, name)
+
+    def get_geofence(self, name: str) -> GeofenceVariable | 'SensorType':
+        '''
+        Returns the geofence sensor variable if it exists, or the actual sensor if that exists.
+        '''
+        return self.__get(VariableType.GEOFENCE, name)
 
     def add(self, variable: Variable):
         variable_type = variable.variable_type
@@ -101,7 +108,7 @@ class VariableManager(LogMixin):
             if variable_type == VariableType.DEVICE:
                 return self.__device_manager.get_device(name)
 
-            if variable_type in (VariableType.SENSOR, VariableType.PRESENCE):
+            if variable_type in (VariableType.SENSOR, VariableType.PRESENCE, VariableType.GEOFENCE):
                 return self.__device_manager.get_sensor(name)
         except DeviceNotFoundException:
             pass
@@ -111,7 +118,7 @@ class VariableManager(LogMixin):
 
     @classmethod
     def __key(cls, variable_type: VariableType, name: str, action: str | None = None):
-        if variable_type in (VariableType.DEVICE, VariableType.PRESENCE):
+        if variable_type in (VariableType.DEVICE, VariableType.PRESENCE, VariableType.GEOFENCE):
             return name
         if variable_type == VariableType.SENSOR and action is not None:
             return f'{name}/{action}'
