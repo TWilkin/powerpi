@@ -35,25 +35,25 @@ class VariableManager(LogMixin):
         for variable_type in VariableType:
             self.__variables[variable_type] = {}
 
-    def get_device(self, name: str) -> DeviceVariable | 'DeviceType':
+    def get_device(self, name: str) -> 'DeviceVariable | DeviceType':
         '''
         Returns the device variable if it exists, or the actual device if that exists.
         '''
         return self.__get(VariableType.DEVICE, name)
 
-    def get_sensor(self, name: str, action: str) -> SensorVariable | 'SensorType':
+    def get_sensor(self, name: str, action: str) -> 'SensorVariable | SensorType':
         '''
         Returns the sensor variable if it exists, or the actual sensor if that exists.
         '''
         return self.__get(VariableType.SENSOR, name, action)
 
-    def get_presence(self, name: str) -> PresenceVariable | 'SensorType':
+    def get_presence(self, name: str) -> 'PresenceVariable | SensorType':
         '''
         Returns the presence sensor variable if it exists, or the actual sensor if that exists.
         '''
         return self.__get(VariableType.PRESENCE, name)
 
-    def get_geofence(self, name: str) -> GeofenceVariable | 'SensorType':
+    def get_geofence(self, name: str) -> 'GeofenceVariable | SensorType':
         '''
         Returns the geofence sensor variable if it exists, or the actual sensor if that exists.
         '''

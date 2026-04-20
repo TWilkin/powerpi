@@ -30,7 +30,7 @@ class Geofence:
         if self.__geofence is None:
             return False
 
-        sensor = self.__variable_manager.get_sensor(self.__geofence, 'status')
+        sensor = self.__variable_manager.get_geofence(self.__geofence)
         if sensor is None:
             # a misconfigured geofence is always active for security
             return True
