@@ -23,6 +23,12 @@ class PresenceVariableImpl:
         self.variable_type = VariableType.PRESENCE
 
 
+class GeofenceVariableImpl:
+    def __init__(self, name: str):
+        self.name = name
+        self.variable_type = VariableType.GEOFENCE
+
+
 class TestVariableManager:
 
     @pytest.mark.parametrize(
@@ -41,10 +47,12 @@ class TestVariableManager:
         powerpi_device_manager.get_device = not_found
         powerpi_device_manager.get_sensor = not_found
         powerpi_device_manager.get_presence = not_found
+        powerpi_device_manager.get_geofence = not_found
 
         powerpi_service_provider.device_variable = DeviceVariableImpl
         powerpi_service_provider.sensor_variable = SensorVariableImpl
         powerpi_service_provider.presence_variable = PresenceVariableImpl
+        powerpi_service_provider.geofence_variable = GeofenceVariableImpl
 
         name = 'new_variable'
 
@@ -52,6 +60,7 @@ class TestVariableManager:
             VariableType.DEVICE: lambda: subject.get_device(name),
             VariableType.SENSOR: lambda: subject.get_sensor(name, 'action'),
             VariableType.PRESENCE: lambda: subject.get_presence(name),
+            VariableType.GEOFENCE: lambda: subject.get_geofence(name),
         }
 
         result = getters[variable_type]()
@@ -62,7 +71,12 @@ class TestVariableManager:
 
     @pytest.mark.parametrize(
         'variable_type',
-        [VariableType.DEVICE, VariableType.SENSOR, VariableType.PRESENCE]
+        [
+            VariableType.DEVICE,
+            VariableType.SENSOR,
+            VariableType.PRESENCE,
+            VariableType.GEOFENCE
+        ]
     )
     def test_get_x_from_manager(
         self,
@@ -72,9 +86,16 @@ class TestVariableManager:
         variable_type: VariableType
     ):
         powerpi_device_manager.get_device = DeviceVariableImpl
-        powerpi_device_manager.get_sensor = lambda name: SensorVariableImpl(
-            name, 'action'
-        ) if variable_type == VariableType.SENSOR else PresenceVariableImpl(name)
+
+        def get_sensor(name: str):
+            if variable_type == VariableType.SENSOR:
+                return SensorVariableImpl(name, 'action')
+            if variable_type == VariableType.PRESENCE:
+                return PresenceVariableImpl(name)
+            if variable_type == VariableType.GEOFENCE:
+                return GeofenceVariableImpl(name)
+            return None
+        powerpi_device_manager.get_sensor = get_sensor
 
         name = 'found_device'
 
@@ -88,10 +109,16 @@ class TestVariableManager:
         powerpi_service_provider.device_variable.assert_not_called()
         powerpi_service_provider.sensor_variable.assert_not_called()
         powerpi_service_provider.presence_variable.assert_not_called()
+        powerpi_service_provider.geofence_variable.assert_not_called()
 
     @pytest.mark.parametrize(
         'variable_type',
-        [VariableType.DEVICE, VariableType.SENSOR, VariableType.PRESENCE]
+        [
+            VariableType.DEVICE,
+            VariableType.SENSOR,
+            VariableType.PRESENCE,
+            VariableType.GEOFENCE
+        ]
     )
     def test_get_x_exists(
         self,
@@ -106,6 +133,7 @@ class TestVariableManager:
             VariableType.DEVICE: lambda: DeviceVariableImpl(name),
             VariableType.SENSOR: lambda: SensorVariableImpl(name, 'action'),
             VariableType.PRESENCE: lambda: PresenceVariableImpl(name),
+            VariableType.GEOFENCE: lambda: GeofenceVariableImpl(name),
         }
 
         variable = variables[variable_type]()
@@ -117,6 +145,7 @@ class TestVariableManager:
             VariableType.DEVICE: lambda: subject.get_device(name),
             VariableType.SENSOR: lambda: subject.get_sensor(name, 'action'),
             VariableType.PRESENCE: lambda: subject.get_presence(name),
+            VariableType.GEOFENCE: lambda: subject.get_geofence(name),
         }
 
         result = getters[variable_type]()
@@ -126,11 +155,11 @@ class TestVariableManager:
 
         powerpi_device_manager.get_device.assert_not_called()
         powerpi_device_manager.get_sensor.assert_not_called()
-        powerpi_device_manager.get_presence.assert_not_called()
 
         powerpi_service_provider.device_variable.assert_not_called()
         powerpi_service_provider.sensor_variable.assert_not_called()
         powerpi_service_provider.presence_variable.assert_not_called()
+        powerpi_service_provider.geofence_variable.assert_not_called()
 
     @pytest.fixture
     def subject(self, powerpi_logger, powerpi_device_manager, powerpi_service_provider):
