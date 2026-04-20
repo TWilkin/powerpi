@@ -6,6 +6,7 @@ from pytest import raises
 from pytest_mock import MockerFixture
 
 from powerpi_common.device import (
+    Device,
     DeviceConfigType,
     DeviceManager,
     DeviceNotFoundException
@@ -13,7 +14,7 @@ from powerpi_common.device import (
 from powerpi_common.device.mixin import InitialisableMixin
 
 
-class DummyDevice:
+class DummyDevice(Device):
     def __init__(
         self,
         device_type: DeviceConfigType,
@@ -22,18 +23,31 @@ class DummyDevice:
         name: str,
         **kwargs
     ):
+        Device.__init__(
+            self,
+            config=mocker.MagicMock(),
+            logger=mocker.MagicMock(),
+            mqtt_client=mocker.MagicMock(),
+            variable_manager=mocker.MagicMock(),
+            name=name,
+            **kwargs
+        )
+
         self.device_type = device_type
         self.instance_type = instance_type
-        self.name = name
         self.kwargs = kwargs
         self.initialised = False
         self.deinitialised = False
 
-        self.geofence = mocker.MagicMock()
-        self.geofence.initialise = mocker.MagicMock()
+        self.__geofence = mocker.MagicMock()
+        self.__geofence.initialise = mocker.MagicMock()
         future = Future()
         future.set_result(True)
-        self.geofence.initialise.return_value = future
+        self.__geofence.initialise.return_value = future
+
+    @property
+    def geofence(self):
+        return self.__geofence
 
     async def initialise(self):
         # this is implemented here to prove it's not called for the wrong devices
@@ -42,6 +56,12 @@ class DummyDevice:
     async def deinitialise(self):
         # this is implemented here to prove it's not called for the wrong devices
         self.deinitialised = True
+
+    async def _turn_on(self):
+        pass
+
+    async def _turn_off(self):
+        pass
 
 
 class InitialisationDummyDevice(DummyDevice, InitialisableMixin):

@@ -58,7 +58,10 @@ class DeviceManager(InitialisableMixin):
 
     async def initialise(self):
         # initialise the geofences for all the devices
-        for device in self.__devices[DeviceConfigType.DEVICE].values():
+        for device in [
+            device for device in self.__devices[DeviceConfigType.DEVICE].values()
+            if isinstance(device, Device)
+        ]:
             await device.geofence.initialise()
 
         for device_type in DeviceConfigType:
