@@ -44,7 +44,7 @@ class TestGeofence:
     ):
         sensor = mocker.MagicMock()
 
-        powerpi_variable_manager.get_sensor = \
-            lambda name, action: sensor if name == 'TestGeofence' and action == 'status' else None
+        powerpi_variable_manager.get_geofence = \
+            lambda name: sensor if name == 'TestGeofence' else None
 
         return sensor

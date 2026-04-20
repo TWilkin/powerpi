@@ -173,8 +173,8 @@ class DeviceTestBase(BaseDeviceTestBase):
         geofence = mocker.MagicMock()
         type(geofence).state = PropertyMock(return_value='off')
 
-        powerpi_variable_manager.get_sensor = \
-            lambda name, __: geofence if name == 'TestGeofence' else None
+        powerpi_variable_manager.get_geofence = \
+            lambda name: geofence if name == 'TestGeofence' else None
 
         return geofence
 
