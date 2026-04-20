@@ -5,14 +5,17 @@ from unittest.mock import MagicMock, PropertyMock
 import pytest
 from powerpi_common.device import DeviceStatus
 from powerpi_common_test.device import DeviceTestBase
-from powerpi_common_test.device.mixin import (InitialisableMixinTestBase,
-                                              PollableMixinTestBase)
+from powerpi_common_test.device.mixin import (
+    InitialisableMixinTestBase,
+    PollableMixinTestBase
+)
 from pytest_mock import MockerFixture
 
 from snapcast_controller.device.snapcast_server import SnapcastServerDevice
 
 
 class TestSnapcastServerDevice(DeviceTestBase, InitialisableMixinTestBase, PollableMixinTestBase):
+
     @pytest.mark.asyncio
     async def test_turn_off(self, subject: SnapcastServerDevice):
         # override as this device doesn't support off
@@ -21,6 +24,17 @@ class TestSnapcastServerDevice(DeviceTestBase, InitialisableMixinTestBase, Polla
         await subject.turn_off()
 
         assert subject.state == DeviceStatus.UNKNOWN
+
+    @pytest.mark.asyncio
+    async def test_turn_off_geofence(self, subject_geofence: SnapcastServerDevice):
+        # pylint: disable=arguments-differ
+
+        # override as this device doesn't support off
+        assert subject_geofence.state == DeviceStatus.UNKNOWN
+
+        await subject_geofence.turn_off()
+
+        assert subject_geofence.state == DeviceStatus.UNKNOWN
 
     def test_network_address_ip(self, subject: SnapcastServerDevice):
         assert subject.network_address == '127.0.0.1'

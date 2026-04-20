@@ -25,6 +25,17 @@ class TestSnapcastClientDevice(DeviceTestBase, InitialisableMixinTestBase):
 
         assert subject.state == DeviceStatus.UNKNOWN
 
+    @pytest.mark.asyncio
+    async def test_turn_on_geofence(self, subject_geofence: SnapcastClientDevice):
+        # pylint: disable=arguments-differ
+
+        # override as this device doesn't support on
+        assert subject_geofence.state == DeviceStatus.UNKNOWN
+
+        await subject_geofence.turn_on()
+
+        assert subject_geofence.state == DeviceStatus.UNKNOWN
+
     def test_server_name(self, subject: SnapcastClientDevice):
         assert subject.server_name == 'MyServer'
 
