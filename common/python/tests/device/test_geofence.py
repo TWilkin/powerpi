@@ -32,6 +32,20 @@ class TestGeofence:
 
         assert subject.active is False
 
+    @pytest.mark.asyncio
+    async def test_initialise(
+        self,
+        subject: Geofence,
+        powerpi_variable_manager: MagicMock,
+        mocker: MockerFixture
+    ):
+        get_geofence = mocker.MagicMock()
+        powerpi_variable_manager.get_geofence = get_geofence
+
+        await subject.initialise()
+
+        get_geofence.assert_called_once_with('TestGeofence')
+
     @pytest.fixture
     def subject(self, powerpi_variable_manager):
         return Geofence(powerpi_variable_manager, 'TestGeofence')

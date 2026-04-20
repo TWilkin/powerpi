@@ -78,6 +78,13 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         '''
         return self.__lock.locked()
 
+    @property
+    def geofence(self):
+        '''
+        Returns the geofence object for this device.
+        '''
+        return self.__geofence
+
     def update_state_no_broadcast(self, new_state: DeviceStatus):
         '''
         Update this devices' state but do not broadcast to the message queue.

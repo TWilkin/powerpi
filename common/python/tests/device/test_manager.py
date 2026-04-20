@@ -1,21 +1,39 @@
+from asyncio import Future
+
 import pytest
 from powerpi_common_test.device.mixin import InitialisableMixinTestBase
 from pytest import raises
 from pytest_mock import MockerFixture
 
-from powerpi_common.device import (DeviceConfigType, DeviceManager,
-                                   DeviceNotFoundException)
+from powerpi_common.device import (
+    DeviceConfigType,
+    DeviceManager,
+    DeviceNotFoundException
+)
 from powerpi_common.device.mixin import InitialisableMixin
 
 
 class DummyDevice:
-    def __init__(self, device_type: DeviceConfigType, instance_type: str, name: str, **kwargs):
+    def __init__(
+        self,
+        device_type: DeviceConfigType,
+        instance_type: str,
+        mocker: MockerFixture,
+        name: str,
+        **kwargs
+    ):
         self.device_type = device_type
         self.instance_type = instance_type
         self.name = name
         self.kwargs = kwargs
         self.initialised = False
         self.deinitialised = False
+
+        self.geofence = mocker.MagicMock()
+        self.geofence.initialise = mocker.MagicMock()
+        future = Future()
+        future.set_result(True)
+        self.geofence.initialise.return_value = future
 
     async def initialise(self):
         # this is implemented here to prove it's not called for the wrong devices
@@ -87,8 +105,8 @@ class TestDeviceManager(InitialisableMixinTestBase):
     ):
         def build(device_type: DeviceConfigType, instance_type: str, **kwargs):
             if instance_type.startswith('another'):
-                return InitialisationDummyDevice(device_type, instance_type, **kwargs)
-            return DummyDevice(device_type, instance_type, **kwargs)
+                return InitialisationDummyDevice(device_type, instance_type, mocker, **kwargs)
+            return DummyDevice(device_type, instance_type, mocker, **kwargs)
         device_factory.build = build
 
         mocker.patch.object(powerpi_config, 'devices', {
@@ -117,6 +135,7 @@ class TestDeviceManager(InitialisableMixinTestBase):
             assert device.name == device_name
             assert device.initialised == initialised
             assert device.deinitialised is False
+            device.geofence.initialise.assert_called_once()
 
             if additional:
                 assert device.kwargs == {'something': 'else'}
@@ -131,7 +150,8 @@ class TestDeviceManager(InitialisableMixinTestBase):
             assert sensor.instance_type == instance_type
             assert sensor.name == sensor_name
             assert sensor.initialised == initialised
-            assert device.deinitialised is False
+            assert sensor.deinitialised is False
+            sensor.geofence.initialise.assert_not_called()
 
             if additional:
                 assert sensor.kwargs == {'yet_another_arg': 'more'}
@@ -148,8 +168,8 @@ class TestDeviceManager(InitialisableMixinTestBase):
     ):
         def build(device_type: DeviceConfigType, instance_type: str, **kwargs):
             if instance_type.startswith('another'):
-                return InitialisationDummyDevice(device_type, instance_type, **kwargs)
-            return DummyDevice(device_type, instance_type, **kwargs)
+                return InitialisationDummyDevice(device_type, instance_type, mocker, **kwargs)
+            return DummyDevice(device_type, instance_type, mocker, **kwargs)
         device_factory.build = build
 
         mocker.patch.object(powerpi_config, 'devices', {

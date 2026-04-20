@@ -3,11 +3,14 @@ from copy import deepcopy
 from powerpi_common.config import Config
 from powerpi_common.device.types import DeviceConfigType
 from powerpi_common.logger import Logger
-from powerpi_common.typing import DeviceType, SensorType
+from powerpi_common.sensor import Sensor
 from powerpi_common.util import ismixin
 
+from .device import Device
 from .factory import DeviceFactory
 from .mixin import InitialisableMixin
+
+DeviceOrSensor = Device | Sensor
 
 
 class DeviceManager(InitialisableMixin):
@@ -23,28 +26,28 @@ class DeviceManager(InitialisableMixin):
 
         self.__devices: dict[
             DeviceConfigType,
-            dict[str, 'DeviceType | SensorType']
+            dict[str, DeviceOrSensor]
         ] = {}
 
         for device_type in DeviceConfigType:
             self.__devices[device_type] = {}
 
     @property
-    def devices_and_sensors(self) -> list['DeviceType | SensorType']:
+    def devices_and_sensors(self) -> list[DeviceOrSensor]:
         return list(self.devices.values()) + list(self.sensors.values())
 
     @property
-    def devices(self) -> dict[str, DeviceType]:
+    def devices(self) -> dict[str, Device]:
         return self.__devices[DeviceConfigType.DEVICE]
 
     @property
-    def sensors(self) -> dict[str, SensorType]:
+    def sensors(self) -> dict[str, Sensor]:
         return self.__devices[DeviceConfigType.SENSOR]
 
-    def get_device(self, name: str) -> DeviceType:
+    def get_device(self, name: str) -> Device:
         return self.__get(DeviceConfigType.DEVICE, name)
 
-    def get_sensor(self, name: str) -> SensorType:
+    def get_sensor(self, name: str) -> Sensor:
         return self.__get(DeviceConfigType.SENSOR, name)
 
     async def load(self):
@@ -54,6 +57,10 @@ class DeviceManager(InitialisableMixin):
         await self.initialise()
 
     async def initialise(self):
+        # initialise the geofences for all the devices
+        for device in self.__devices[DeviceConfigType.DEVICE].values():
+            await device.geofence.initialise()
+
         for device_type in DeviceConfigType:
             filtered = filter(
                 lambda device: ismixin(device, InitialisableMixin),
