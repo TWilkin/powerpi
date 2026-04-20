@@ -34,6 +34,7 @@ class MQTTClient:
         self.__logger.set_logger_level(gmqtt.__name__, logging.WARNING)
 
         self.__client = Client | None
+        self.__subscribed = False
 
     @property
     def client_id(self):
@@ -50,12 +51,20 @@ class MQTTClient:
     ):
         key = consumer.topic
 
+        new_topic = False
+
         if key not in self.__consumers:
             self.__consumers[key] = {}
+            new_topic = True
         if priority not in self.__consumers[key]:
             self.__consumers[key][priority] = []
 
         self.__consumers[key][priority].append(consumer)
+
+        # if we've already run the subscriptions, and this is a new topic
+        # we also need to subscribe to it
+        if self.__subscribed and new_topic:
+            self.__subscribe(key)
 
     def remove_consumer(self, consumer: MQTTConsumer):
         key = consumer.topic
@@ -126,10 +135,17 @@ class MQTTClient:
         await self.__client.disconnect()
 
     def subscribe(self):
-        for key in self.__consumers:
-            topic = f'{self.__config.topic_base}/{key}'
-            self.__logger.info('Subscribing to topic "%s"', topic)
-            self.__client.subscribe(topic)
+        topics = set(self.__consumers)
+
+        for topic in topics:
+            self.__subscribe(topic)
+
+        self.__subscribed = True
+
+    def __subscribe(self, topic: str):
+        full_topic = f'{self.__config.topic_base}/{topic}'
+        self.__logger.info('Subscribing to topic "%s"', full_topic)
+        self.__client.subscribe(full_topic)
 
     def __on_connect(self, _, __, result_code: int, ___):
         if result_code == 0:
