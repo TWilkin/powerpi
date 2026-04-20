@@ -5,6 +5,7 @@
     "location": "Somewhere",
     "categories": ["test", "other"],
     "visible": true,
+    "geofence": "SomeGeofence",
     "devices": ["Device1", "Device2"],
     "poll_frequency": 10
 }

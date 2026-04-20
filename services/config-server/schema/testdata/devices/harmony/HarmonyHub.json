@@ -5,6 +5,7 @@
     "location": "Somewhere",
     "categories": ["test", "other"],
     "visible": true,
+    "geofence": "SomeGeofence",
     "ip": "192.168.1.100",
     "poll_frequency": 10
 }

@@ -5,6 +5,7 @@
     "location": "Somewhere",
     "categories": ["test", "other"],
     "visible": true,
+    "geofence": "SomeGeofence",
     "device": "Device1",
     "on_condition": {
         "when": [{ "equals": [true, true] }]

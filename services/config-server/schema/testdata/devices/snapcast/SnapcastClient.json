@@ -5,6 +5,7 @@
     "location": "Somewhere",
     "categories": ["test", "other"],
     "visible": true,
+    "geofence": "SomeGeofence",
     "server": "Snapcast",
     "mac": "00:AA:BB:CC:DD:EE"
 }

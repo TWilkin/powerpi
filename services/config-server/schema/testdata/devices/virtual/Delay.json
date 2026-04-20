@@ -5,6 +5,7 @@
     "location": "Somewhere",
     "categories": ["test", "other"],
     "visible": true,
+    "geofence": "SomeGeofence",
     "start": 10,
     "end": 11
 }
