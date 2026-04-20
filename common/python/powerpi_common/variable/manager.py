@@ -1,5 +1,3 @@
-from typing import Dict
-
 from powerpi_common.device import DeviceManager, DeviceNotFoundException
 from powerpi_common.logger import Logger, LogMixin
 from powerpi_common.typing import DeviceType, SensorType
@@ -27,9 +25,9 @@ class VariableManager(LogMixin):
         self.__device_manager = device_manager
         self.__service_provider = service_provider
 
-        self.__variables: Dict[
+        self.__variables: dict[
             VariableType,
-            Dict[str, DeviceVariable | SensorVariable]
+            dict[str, DeviceVariable | SensorVariable]
         ] = {}
 
         for variable_type in VariableType:

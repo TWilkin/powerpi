@@ -1,5 +1,4 @@
 from copy import deepcopy
-from typing import Any, Dict, List
 
 from powerpi_common.config import Config
 from powerpi_common.device.types import DeviceConfigType
@@ -22,24 +21,24 @@ class DeviceManager(InitialisableMixin):
         self.__logger = logger
         self.__factory = factory
 
-        self.__devices: Dict[
+        self.__devices: dict[
             DeviceConfigType,
-            Dict[str, 'DeviceType | SensorType']
+            dict[str, 'DeviceType | SensorType']
         ] = {}
 
         for device_type in DeviceConfigType:
             self.__devices[device_type] = {}
 
     @property
-    def devices_and_sensors(self) -> List['DeviceType | SensorType']:
+    def devices_and_sensors(self) -> list['DeviceType | SensorType']:
         return list(self.devices.values()) + list(self.sensors.values())
 
     @property
-    def devices(self) -> Dict[str, DeviceType]:
+    def devices(self) -> dict[str, DeviceType]:
         return self.__devices[DeviceConfigType.DEVICE]
 
     @property
-    def sensors(self) -> Dict[str, SensorType]:
+    def sensors(self) -> dict[str, SensorType]:
         return self.__devices[DeviceConfigType.SENSOR]
 
     def get_device(self, name: str) -> DeviceType:
@@ -81,7 +80,7 @@ class DeviceManager(InitialisableMixin):
             raise DeviceNotFoundException(device_type, name) from ex
 
     def __load(self, device_type: DeviceConfigType):
-        devices: List[Dict[str, Any]] \
+        devices: list[dict[str, any]] \
             = self.__config.devices[f'{device_type}s']
 
         for device in devices:
