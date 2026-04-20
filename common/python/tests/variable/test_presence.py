@@ -10,6 +10,9 @@ class TestPresenceVariable(VariableTestBase):
     def test_topic(self, subject: PresenceVariable):
         assert subject.topic == 'presence/TestPresence/status'
 
+    def test_variable_type(self, subject: PresenceVariable):
+        assert subject.variable_type == 'presence'
+
     @pytest.mark.asyncio
     async def test_on_message_updates(self, subject: PresenceVariable):
         message = {'state': 'absent'}

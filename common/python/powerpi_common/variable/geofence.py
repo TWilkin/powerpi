@@ -35,7 +35,7 @@ class GeofenceVariable(Variable, GeofenceEventConsumer):
 
     @property
     def variable_type(self):
-        return VariableType.PRESENCE
+        return VariableType.GEOFENCE
 
     @property
     def state(self):

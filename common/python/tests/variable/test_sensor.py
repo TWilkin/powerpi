@@ -9,6 +9,9 @@ class TestSensorVariable(VariableTestBase):
     def test_topic(self, subject: SensorVariable):
         assert subject.topic == 'event/TestSensor/detect'
 
+    def test_variable_type(self, subject: SensorVariable):
+        assert subject.variable_type == 'sensor'
+
     @pytest.mark.asyncio
     async def test_on_message_updates(self, subject: SensorVariable):
         message = {'value': 12.34, 'unit': 'doughnuts'}

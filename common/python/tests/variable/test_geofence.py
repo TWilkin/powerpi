@@ -10,6 +10,9 @@ class TestGeofenceVariable(VariableTestBase):
     def test_topic(self, subject: GeofenceVariable):
         assert subject.topic == 'geofence/TestGeofence/status'
 
+    def test_variable_type(self, subject: GeofenceVariable):
+        assert subject.variable_type == 'geofence'
+
     @pytest.mark.asyncio
     async def test_on_message_updates(self, subject: GeofenceVariable):
         message = {'state': DeviceStatus.OFF}
