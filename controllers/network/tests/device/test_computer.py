@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import PropertyMock, call, patch
 
 import pytest
@@ -101,6 +101,57 @@ class TestComputer(DeviceTestBase, PollableMixinTestBase):
         assert subject.state == DeviceStatus.UNKNOWN
 
     @pytest.mark.asyncio
+    @pytest.mark.parametrize('active', [True, False])
+    async def test_turn_on_geofence(
+        self,
+        subject_geofence: ComputerDevice,
+        geofence,
+        mocker: MockerFixture,
+        active: bool
+    ):
+        # pylint: disable=arguments-differ
+
+        type(geofence).state = PropertyMock(
+            return_value=DeviceStatus.ON if active else DeviceStatus.OFF
+        )
+
+        assert subject_geofence.state == DeviceStatus.UNKNOWN
+
+        host = mocker.MagicMock()
+        type(host).is_alive = PropertyMock(return_value=True)
+
+        mocker.patch(
+            'network_controller.device.computer.ping',
+            return_value=host
+        )
+
+        with patch('network_controller.device.computer.send_magic_packet'):
+            await subject_geofence.turn_on()
+
+        if active:
+            assert subject_geofence.state == DeviceStatus.UNKNOWN
+        else:
+            assert subject_geofence.state == DeviceStatus.ON
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('active', [True, False])
+    async def test_turn_off_geofence(
+        self,
+        subject_geofence: ComputerDevice,
+        geofence,
+        active: bool
+    ):
+        type(geofence).state = PropertyMock(
+            return_value=DeviceStatus.ON if active else DeviceStatus.OFF
+        )
+
+        assert subject_geofence.state == DeviceStatus.UNKNOWN
+
+        await subject_geofence.turn_off()
+
+        assert subject_geofence.state == DeviceStatus.UNKNOWN
+
+    @pytest.mark.asyncio
     async def test_change_message(
         self,
         subject: ComputerDevice,
@@ -120,7 +171,7 @@ class TestComputer(DeviceTestBase, PollableMixinTestBase):
 
         message = {
             'state': 'on',
-            'timestamp': int(datetime.utcnow().timestamp() * 1000)
+            'timestamp': int(datetime.now(timezone.utc).timestamp() * 1000)
         }
 
         with patch('network_controller.device.computer.send_magic_packet'):
