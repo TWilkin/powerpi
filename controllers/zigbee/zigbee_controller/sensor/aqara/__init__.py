@@ -12,6 +12,6 @@ def add_aqara_sensors(container):
             f'aqara_{sensor_type}_sensor',
             providers.Factory(
                 AqaraDoorWindowSensor,
-                controller=container.zigbee_controller
+                zigbee_controller=container.zigbee_controller
             )
         )

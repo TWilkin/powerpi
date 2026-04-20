@@ -11,6 +11,6 @@ def add_ikea_sensors(container):
         'ikea_styrbar_sensor',
         providers.Factory(
             IKEAStyrbarSensor,
-            controller=container.zigbee_controller
+            zigbee_controller=container.zigbee_controller
         )
     )

@@ -41,7 +41,7 @@ def add_devices(container):
         'zigbee_light_device',
         providers.Factory(
             ZigbeeLight,
-            controller=container.zigbee_controller
+            zigbee_controller=container.zigbee_controller
         )
     )
 
@@ -50,6 +50,6 @@ def add_devices(container):
         'zigbee_socket_device',
         providers.Factory(
             ZigbeeSocket,
-            controller=container.zigbee_controller
+            zigbee_controller=container.zigbee_controller
         )
     )

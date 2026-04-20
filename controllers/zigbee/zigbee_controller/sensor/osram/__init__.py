@@ -11,6 +11,6 @@ def add_osram_sensors(container):
         'osram_switch_mini_sensor',
         providers.Factory(
             OsramSwitchMiniSensor,
-            controller=container.zigbee_controller
+            zigbee_controller=container.zigbee_controller
         )
     )
