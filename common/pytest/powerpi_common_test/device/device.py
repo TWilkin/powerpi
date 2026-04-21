@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from unittest.mock import PropertyMock
 
 from powerpi_common.config import Config
-from powerpi_common.device import Device
+from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.geofence import Geofence
 from powerpi_common.mqtt import MQTTClient, MQTTConsumer, MQTTConsumerPriority
 from pytest_mock import MockerFixture
@@ -40,19 +40,22 @@ class DeviceTestBase(BaseDeviceTestBase):
         active: bool
     ):
         type(geofence).state = PropertyMock(
-            return_value='on' if active else 'off'
+            return_value=DeviceStatus.ON if active else DeviceStatus.OFF
         )
 
-        assert subject_geofence.state == 'unknown'
+        assert subject_geofence.state == DeviceStatus.UNKNOWN
         await subject_geofence.turn_on()
 
         if active:
-            assert subject_geofence.state == 'unknown'
+            assert subject_geofence.state == DeviceStatus.UNKNOWN
         else:
-            assert subject_geofence.state == 'on'
+            assert subject_geofence.state == DeviceStatus.ON
 
         # we should broadcast regardless of whether the geofence is active
-        powerpi_mqtt_producer.assert_called_once()
+        powerpi_mqtt_producer.assert_called_with(
+            f'device/{subject_geofence.name}/status',
+            {'state': DeviceStatus.UNKNOWN if active else DeviceStatus.ON}
+        )
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('active', [True, False])
@@ -64,19 +67,22 @@ class DeviceTestBase(BaseDeviceTestBase):
         active: bool
     ):
         type(geofence).state = PropertyMock(
-            return_value='on' if active else 'off'
+            return_value=DeviceStatus.ON if active else DeviceStatus.OFF
         )
 
-        assert subject_geofence.state == 'unknown'
+        assert subject_geofence.state == DeviceStatus.UNKNOWN
         await subject_geofence.turn_off()
 
         if active:
-            assert subject_geofence.state == 'unknown'
+            assert subject_geofence.state == DeviceStatus.UNKNOWN
         else:
-            assert subject_geofence.state == 'off'
+            assert subject_geofence.state == DeviceStatus.OFF
 
         # we should broadcast regardless of whether the geofence is active
-        powerpi_mqtt_producer.assert_called_once()
+        powerpi_mqtt_producer.assert_called_with(
+            f'device/{subject_geofence.name}/status',
+            {'state': DeviceStatus.UNKNOWN if active else DeviceStatus.OFF}
+        )
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('times', [1, 2])

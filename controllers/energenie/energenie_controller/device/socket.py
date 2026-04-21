@@ -27,8 +27,12 @@ class SocketDevice(Device):
     async def _turn_on(self):
         await self._run(self.__energenie.turn_on)
 
+        return True
+
     async def _turn_off(self):
         await self._run(self.__energenie.turn_off)
+
+        return True
 
     async def _run(self, func: Callable):
         for _ in range(0, self.__retries):

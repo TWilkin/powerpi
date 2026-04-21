@@ -40,8 +40,12 @@ class SocketGroupDevice(Device, DeviceOrchestratorMixin):
     async def _turn_on(self):
         await self._run(self.__energenie.turn_on, DeviceStatus.ON)
 
+        return True
+
     async def _turn_off(self):
         await self._run(self.__energenie.turn_off, DeviceStatus.OFF)
+
+        return True
 
     async def _run(self, func: Callable, new_state: DeviceStatus):
         for _ in range(0, self.__retries):
