@@ -183,6 +183,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
                     self.state = new_status
                 else:
                     self.log_info(f'Failed to turn {new_status} device {self}')
+                    self.state = DeviceStatus.UNKNOWN
 
                 return success
         except Exception as ex:

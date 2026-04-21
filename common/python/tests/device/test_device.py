@@ -48,8 +48,10 @@ class BadDeviceImpl(Device):
             logger=logger,
             mqtt_client=mqtt_client,
             variable_manager=variable_manager,
-            name='test'
+            name='Test'
         )
+
+        self.update_state_no_broadcast(DeviceStatus.ON)
 
     async def _turn_on(self):
         return False
@@ -61,20 +63,38 @@ class BadDeviceImpl(Device):
 class TestBadDevice:
 
     @pytest.mark.asyncio
-    async def test_turn_on(self, subject: BadDeviceImpl):
-        assert subject.state == DeviceStatus.UNKNOWN
+    async def test_turn_on(
+        self,
+        subject: BadDeviceImpl,
+        powerpi_mqtt_producer
+    ):
+        assert subject.state == DeviceStatus.ON
 
         await subject.turn_on()
 
         assert subject.state == DeviceStatus.UNKNOWN
 
+        powerpi_mqtt_producer.assert_called_once_with(
+            'device/Test/status',
+            {'state': DeviceStatus.UNKNOWN}
+        )
+
     @pytest.mark.asyncio
-    async def test_turn_off(self, subject: BadDeviceImpl):
-        assert subject.state == DeviceStatus.UNKNOWN
+    async def test_turn_off(
+        self,
+        subject: BadDeviceImpl,
+        powerpi_mqtt_producer
+    ):
+        assert subject.state == DeviceStatus.ON
 
         await subject.turn_off()
 
         assert subject.state == DeviceStatus.UNKNOWN
+
+        powerpi_mqtt_producer.assert_called_once_with(
+            'device/Test/status',
+            {'state': DeviceStatus.UNKNOWN}
+        )
 
     @pytest.fixture
     def subject(
