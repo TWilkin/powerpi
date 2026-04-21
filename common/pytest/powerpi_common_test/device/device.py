@@ -36,6 +36,7 @@ class DeviceTestBase(BaseDeviceTestBase):
         self,
         subject_geofence: Device,
         geofence,
+        powerpi_mqtt_producer,
         active: bool
     ):
         type(geofence).state = PropertyMock(
@@ -50,12 +51,16 @@ class DeviceTestBase(BaseDeviceTestBase):
         else:
             assert subject_geofence.state == 'on'
 
+        # we should broadcast regardless of whether the geofence is active
+        powerpi_mqtt_producer.assert_called_once()
+
     @pytest.mark.asyncio
     @pytest.mark.parametrize('active', [True, False])
     async def test_turn_off_geofence(
         self,
         subject_geofence: Device,
         geofence,
+        powerpi_mqtt_producer,
         active: bool
     ):
         type(geofence).state = PropertyMock(
@@ -69,6 +74,9 @@ class DeviceTestBase(BaseDeviceTestBase):
             assert subject_geofence.state == 'unknown'
         else:
             assert subject_geofence.state == 'off'
+
+        # we should broadcast regardless of whether the geofence is active
+        powerpi_mqtt_producer.assert_called_once()
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('times', [1, 2])

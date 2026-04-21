@@ -166,6 +166,10 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
             self.log_info(
                 f'Geofence blocking state change {new_status} device {self}'
             )
+
+            # we broadcast the state anyway to update any callers
+            self._broadcast_state_change()
+
             return False
 
         # pylint: disable=broad-except
