@@ -97,8 +97,11 @@ class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, Batt
     @pytest.fixture
     def subject(self, powerpi_logger, zigbee_controller, powerpi_mqtt_client):
         return AqaraDoorWindowSensor(
-            powerpi_logger, zigbee_controller, powerpi_mqtt_client,
-            ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA',
+            logger=powerpi_logger,
+            zigbee_controller=zigbee_controller,
+            mqtt_client=powerpi_mqtt_client,
+            ieee='00:00:00:00:00:00:00:00',
+            nwk='0xAAAA',
             name='test',
             metrics={'door': 'visible'},
         )
@@ -106,8 +109,11 @@ class TestAqaraDoorWindowSensor(SensorTestBase, InitialisableMixinTestBase, Batt
     @pytest.fixture
     def subject_window(self, powerpi_logger, zigbee_controller, powerpi_mqtt_client):
         return AqaraDoorWindowSensor(
-            powerpi_logger, zigbee_controller, powerpi_mqtt_client,
-            ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA',
+            logger=powerpi_logger,
+            zigbee_controller=zigbee_controller,
+            mqtt_client=powerpi_mqtt_client,
+            ieee='00:00:00:00:00:00:00:00',
+            nwk='0xAAAA',
             name='test',
             metrics={'window': 'visible'},
         )

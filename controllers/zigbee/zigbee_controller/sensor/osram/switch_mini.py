@@ -2,8 +2,6 @@ from asyncio import ensure_future
 from enum import IntEnum, StrEnum, unique
 from typing import Any, List
 
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from powerpi_common.sensor.mixin import BatteryMixin
 from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
@@ -12,8 +10,11 @@ from zigpy.zcl.clusters.general import \
     PowerConfiguration as PowerConfigurationCluster
 from zigpy.zcl.clusters.lighting import Color as ColorCluster
 
-from zigbee_controller.zigbee import (ClusterAttributeListener,
-                                      ClusterCommandListener, ZigbeeController, ZigbeeMixin)
+from zigbee_controller.zigbee import (
+    ClusterAttributeListener,
+    ClusterCommandListener,
+    ZigbeeMixin
+)
 
 
 @unique
@@ -73,19 +74,10 @@ class OsramSwitchMiniSensor(Sensor, ZigbeeMixin, BatteryMixin):
     # the maximum expected voltage in mV
     MAX_VOLTAGE = 3100
 
-    # pylint: disable=too-many-arguments
-    def __init__(
-        self,
-        logger: Logger,
-        controller: ZigbeeController,
-        mqtt_client: MQTTClient,
-        **kwargs
-    ):
-        Sensor.__init__(self, mqtt_client, **kwargs)
-        ZigbeeMixin.__init__(self, controller, **kwargs)
+    def __init__(self, **kwargs):
+        Sensor.__init__(self, **kwargs)
+        ZigbeeMixin.__init__(self, **kwargs)
         BatteryMixin.__init__(self)
-
-        self._logger = logger
 
     def button_press_handler(self, button: Button, press_type: PressType):
         self.log_info(f'Received {press_type} press of {button}')

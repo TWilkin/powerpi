@@ -1,10 +1,7 @@
 import asyncio
 
-from powerpi_common.config import Config
 from powerpi_common.device import Device
 from powerpi_common.device.mixin import InitialisableMixin
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
 from zigpy.device import Device as ZigPyDevice
 from zigpy.types import EUI64
 
@@ -17,17 +14,13 @@ class ZigbeePairingDevice(Device, InitialisableMixin):
     Device to allow new devices to be paired to the ZigBee controller managed by this service.
     '''
 
-    # pylint: disable=too-many-arguments
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
         zigbee_controller: ZigbeeController,
         timeout: int = 120,
         **kwargs
     ):
-        Device.__init__(self, config, logger, mqtt_client, **kwargs)
+        Device.__init__(self, **kwargs)
 
         self.__zigbee_controller = zigbee_controller
         self.__timeout = timeout

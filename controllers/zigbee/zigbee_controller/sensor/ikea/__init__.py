@@ -11,8 +11,6 @@ def add_ikea_sensors(container):
         'ikea_styrbar_sensor',
         providers.Factory(
             IKEAStyrbarSensor,
-            logger=container.common.logger,
-            controller=container.zigbee_controller,
-            mqtt_client=container.common.mqtt_client
+            zigbee_controller=container.zigbee_controller
         )
     )

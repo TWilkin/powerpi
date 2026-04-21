@@ -13,9 +13,6 @@ def add_sensors(container):
         'network_presence_sensor',
         providers.Factory(
             PresenceSensor,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             arp_provider_factory=services_container.arp_provider_factory
         )
     )

@@ -5,22 +5,18 @@ from typing import Any, Dict, List
 from energenie_controller.config import EnergenieConfig
 from energenie_controller.energenie import EnergenieInterface
 from powerpi_common.device import Device, DeviceStatus
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
 
 
 class EnergeniePairingDevice(Device):
-    #pylint: disable=too-many-arguments
+
     def __init__(
         self,
         config: EnergenieConfig,
-        logger: Logger,
-        mqtt_client: MQTTClient,
         energenie: EnergenieInterface,
         timeout: float = 120,
         **kwargs
     ):
-        Device.__init__(self, config, logger, mqtt_client, **kwargs)
+        Device.__init__(self, config=config, **kwargs)
 
         self.__config = config
         self.__energenie = energenie

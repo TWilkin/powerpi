@@ -26,14 +26,18 @@ class TestSocketDevice(DeviceTestBase):
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
+        powerpi_variable_manager,
         mocker: MockerFixture
     ):
         energenie = mocker.MagicMock()
 
         return SocketDevice(
-            powerpi_config,
-            powerpi_logger,
-            powerpi_mqtt_client,
-            energenie,
-            name='test', retries=2, delay=0
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            energenie=energenie,
+            name='test',
+            retries=2,
+            delay=0
         )

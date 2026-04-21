@@ -131,7 +131,9 @@ class TestZigbeeEnergyMonitor(SensorTestBase, InitialisableMixinTestBase):
     ])
     def test_on_report_disabled(
         self,
-        powerpi_logger, zigbee_controller, powerpi_mqtt_client,
+        powerpi_logger,
+        zigbee_controller,
+        powerpi_mqtt_client,
         powerpi_mqtt_producer: MagicMock,
         cluster: Cluster,
         mocker: MockerFixture,
@@ -141,11 +143,12 @@ class TestZigbeeEnergyMonitor(SensorTestBase, InitialisableMixinTestBase):
         voltage: str
     ):
         subject = ZigbeeEnergyMonitorSensor(
-            powerpi_logger,
-            powerpi_mqtt_client,
-            zigbee_controller,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            zigbee_controller=zigbee_controller,
             metrics={'power': power, 'current': current, 'voltage': voltage},
-            ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA',
+            ieee='00:00:00:00:00:00:00:00',
+            nwk='0xAAAA',
             name='test'
         )
 
@@ -180,11 +183,12 @@ class TestZigbeeEnergyMonitor(SensorTestBase, InitialisableMixinTestBase):
     @pytest.fixture
     def subject(self, powerpi_logger, zigbee_controller, powerpi_mqtt_client):
         return ZigbeeEnergyMonitorSensor(
-            powerpi_logger,
-            powerpi_mqtt_client,
-            zigbee_controller,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            zigbee_controller=zigbee_controller,
             metrics={'power': 'visible', 'current': 'read', 'voltage': 'read'},
-            ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA',
+            ieee='00:00:00:00:00:00:00:00',
+            nwk='0xAAAA',
             name='test'
         )
 

@@ -8,9 +8,19 @@ from powerpi_common.device import AdditionalStateDevice, ReservedScenes
 
 # pylint: disable=too-many-ancestors
 class DeviceImpl(AdditionalStateDevice):
-    def __init__(self, config, logger, mqtt_client):
+    def __init__(
+        self,
+        config,
+        logger,
+        mqtt_client,
+        variable_manager
+    ):
         AdditionalStateDevice.__init__(
-            self, config, logger, mqtt_client,
+            self,
+            config=config,
+            logger=logger,
+            mqtt_client=mqtt_client,
+            variable_manager=variable_manager,
             name='test'
         )
 
@@ -78,5 +88,16 @@ class TestAdditionalStateDevice(AdditionalStateDeviceTestBase):
         assert result.get('brightness', None) == 55
 
     @pytest.fixture
-    def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
-        return DeviceImpl(powerpi_config, powerpi_logger, powerpi_mqtt_client)
+    def subject(
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+        powerpi_variable_manager
+    ):
+        return DeviceImpl(
+            powerpi_config,
+            powerpi_logger,
+            powerpi_mqtt_client,
+            powerpi_variable_manager
+        )

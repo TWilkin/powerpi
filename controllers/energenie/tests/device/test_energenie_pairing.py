@@ -152,14 +152,16 @@ class TestEnergeniePairingDevice(DeviceTestBase):
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
+        powerpi_variable_manager,
         energenie
     ):
         return EnergeniePairingDevice(
-            powerpi_config,
-            powerpi_logger,
-            powerpi_mqtt_client,
-            energenie,
-            self.__timeout,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            energenie=energenie,
+            timeout=self.__timeout,
             name='EnergeniePairing'
         )
 

@@ -1,11 +1,11 @@
 from typing import TypedDict
 
-from powerpi_common.config import Config
 from powerpi_common.device import AdditionalStateDevice, DeviceStatus
-from powerpi_common.device.mixin import (CapabilityMixin, InitialisableMixin,
-                                         PollableMixin)
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
+from powerpi_common.device.mixin import (
+    CapabilityMixin,
+    InitialisableMixin,
+    PollableMixin
+)
 from powerpi_common.util.data import DataType
 
 from lifx_controller.device.lifx_client import LIFXClient
@@ -28,9 +28,6 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin, InitialisableMixin, 
     # pylint: disable=too-many-arguments
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
         lifx_client: LIFXClient,
         mac: str,
         ip: str = None,
@@ -39,9 +36,9 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin, InitialisableMixin, 
         **kwargs
     ):
         AdditionalStateDevice.__init__(
-            self, config, logger, mqtt_client, **kwargs
+            self, **kwargs
         )
-        PollableMixin.__init__(self, config, **kwargs)
+        PollableMixin.__init__(self, **kwargs)
 
         self.__duration = duration
 

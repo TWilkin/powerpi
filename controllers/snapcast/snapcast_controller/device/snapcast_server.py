@@ -1,10 +1,7 @@
 from typing import List, Set
 
-from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceManager, DeviceStatus
 from powerpi_common.device.mixin import InitialisableMixin, NewPollableMixin
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
 
 from snapcast_controller.device.mixin import StreamCapabilityMixin
 from snapcast_controller.snapcast.listener import SnapcastServerListener
@@ -22,9 +19,6 @@ class SnapcastServerDevice(Device, InitialisableMixin, NewPollableMixin, Snapcas
 
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
         device_manager: DeviceManager,
         snapcast_api: SnapcastAPI,
         ip: str | None = None,
@@ -33,8 +27,8 @@ class SnapcastServerDevice(Device, InitialisableMixin, NewPollableMixin, Snapcas
         **kwargs
     ):
         # pylint: disable=too-many-arguments
-        Device.__init__(self, config, logger, mqtt_client, **kwargs)
-        NewPollableMixin.__init__(self, config, **kwargs)
+        Device.__init__(self, **kwargs)
+        NewPollableMixin.__init__(self, **kwargs)
 
         self.__device_manager = device_manager
         self.__api = snapcast_api

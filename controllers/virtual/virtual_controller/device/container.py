@@ -36,23 +36,14 @@ def add_devices(container):
         'condition_device',
         providers.Factory(
             ConditionDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
-            device_manager=container.common.device.device_manager,
-            variable_manager=container.common.variable.variable_manager
+            device_manager=container.common.device.device_manager
         )
     )
 
     setattr(
         device_container,
         'delay_device',
-        providers.Factory(
-            DelayDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client
-        )
+        providers.Factory(DelayDevice)
     )
 
     setattr(
@@ -60,9 +51,6 @@ def add_devices(container):
         'group_device',
         providers.Factory(
             GroupDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             device_manager=container.common.device.device_manager
         )
     )
@@ -70,12 +58,7 @@ def add_devices(container):
     setattr(
         device_container,
         'log_device',
-        providers.Factory(
-            LogDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client
-        )
+        providers.Factory(LogDevice)
     )
 
     setattr(
@@ -83,9 +66,6 @@ def add_devices(container):
         'mutex_device',
         providers.Factory(
             MutexDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             device_manager=container.common.device.device_manager
         )
     )
@@ -106,9 +86,6 @@ def add_devices(container):
         'scene_device',
         providers.Factory(
             SceneDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             device_manager=container.common.device.device_manager
         )
     )
@@ -116,10 +93,5 @@ def add_devices(container):
     setattr(
         device_container,
         'variable_device',
-        providers.Factory(
-            VariableDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client
-        )
+        providers.Factory(VariableDevice)
     )

@@ -5,9 +5,13 @@ from powerpi_common.device import Device, DeviceStatus
 
 
 class DeviceImpl(Device):
-    def __init__(self, config, logger, mqtt_client):
+    def __init__(self, config, logger, mqtt_client, variable_manager):
         Device.__init__(
-            self, config, logger, mqtt_client,
+            self,
+            config=config,
+            logger=logger,
+            mqtt_client=mqtt_client,
+            variable_manager=variable_manager,
             name='test'
         )
 
@@ -21,14 +25,29 @@ class DeviceImpl(Device):
 class TestDevice(DeviceTestBase):
 
     @pytest.fixture
-    def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
-        return DeviceImpl(powerpi_config, powerpi_logger, powerpi_mqtt_client)
+    def subject(
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+        powerpi_variable_manager
+    ):
+        return DeviceImpl(
+            powerpi_config,
+            powerpi_logger,
+            powerpi_mqtt_client,
+            powerpi_variable_manager
+        )
 
 
 class BadDeviceImpl(Device):
-    def __init__(self, config, logger, mqtt_client):
+    def __init__(self, config, logger, mqtt_client, variable_manager):
         Device.__init__(
-            self, config, logger, mqtt_client,
+            self,
+            config=config,
+            logger=logger,
+            mqtt_client=mqtt_client,
+            variable_manager=variable_manager,
             name='test'
         )
 
@@ -58,5 +77,16 @@ class TestBadDevice:
         assert subject.state == DeviceStatus.UNKNOWN
 
     @pytest.fixture
-    def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
-        return BadDeviceImpl(powerpi_config, powerpi_logger, powerpi_mqtt_client)
+    def subject(
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+        powerpi_variable_manager
+    ):
+        return BadDeviceImpl(
+            powerpi_config,
+            powerpi_logger,
+            powerpi_mqtt_client,
+            powerpi_variable_manager
+        )

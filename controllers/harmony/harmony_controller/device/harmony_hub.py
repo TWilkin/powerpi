@@ -1,11 +1,8 @@
 from typing import Dict, NamedTuple
 
 from cache import AsyncTTL
-from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceManager, DeviceStatus
 from powerpi_common.device.mixin import PollableMixin
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
 
 from .harmony_client import HarmonyClient
 
@@ -25,19 +22,14 @@ class HarmonyHubDevice(Device, PollableMixin):
     # pylint: disable=too-many-arguments
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
         device_manager: DeviceManager,
         harmony_client: HarmonyClient,
         ip: str | None = None,
         hostname: str | None = None,
         **kwargs
     ):
-        Device.__init__(
-            self, config, logger, mqtt_client, **kwargs
-        )
-        PollableMixin.__init__(self, config, **kwargs)
+        Device.__init__(self, **kwargs)
+        PollableMixin.__init__(self, **kwargs)
 
         self.__device_manager = device_manager
 

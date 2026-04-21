@@ -1,11 +1,8 @@
-from powerpi_common.config import Config
 from powerpi_common.device import Device, DeviceStatus
 from powerpi_common.device.mixin import NewPollableMixin
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
 from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 
-from zigbee_controller.zigbee import ZigbeeController, ZigbeeMixin
+from zigbee_controller.zigbee import ZigbeeMixin
 from zigbee_controller.zigbee.mixins import ZigbeeOnOffMixin
 from zigbee_controller.zigbee.constants import OnOff
 
@@ -18,15 +15,11 @@ class ZigbeeSocket(Device, NewPollableMixin, ZigbeeMixin, ZigbeeOnOffMixin):
 
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
-        controller: ZigbeeController,
         **kwargs
     ):
-        Device.__init__(self, config, logger, mqtt_client, **kwargs)
-        NewPollableMixin.__init__(self, config, **kwargs)
-        ZigbeeMixin.__init__(self, controller, **kwargs)
+        Device.__init__(self, **kwargs)
+        NewPollableMixin.__init__(self, **kwargs)
+        ZigbeeMixin.__init__(self, **kwargs)
 
     async def _poll(self):
         new_state = await self._read_status()

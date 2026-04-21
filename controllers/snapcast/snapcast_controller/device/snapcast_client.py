@@ -1,17 +1,19 @@
 from typing import TypedDict
 
 from lazy import lazy
-from powerpi_common.config import Config
-from powerpi_common.device import (AdditionalStateDevice, DeviceManager,
-                                   DeviceStatus)
+from powerpi_common.device import (
+    AdditionalStateDevice,
+    DeviceManager,
+    DeviceStatus
+)
 from powerpi_common.device.mixin import InitialisableMixin
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
 
 from snapcast_controller.device.mixin import StreamCapabilityMixin
 from snapcast_controller.device.snapcast_server import SnapcastServerDevice
-from snapcast_controller.snapcast.listener import (SnapcastClientListener,
-                                                   SnapcastGroupListener)
+from snapcast_controller.snapcast.listener import (
+    SnapcastClientListener,
+    SnapcastGroupListener
+)
 from snapcast_controller.snapcast.typing import Client
 
 
@@ -35,9 +37,6 @@ class SnapcastClientDevice(
 
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
         device_manager: DeviceManager,
         server: str,
         mac: str | None = None,
@@ -45,9 +44,7 @@ class SnapcastClientDevice(
         **kwargs
     ):
         # pylint: disable=too-many-arguments
-        AdditionalStateDevice.__init__(
-            self, config, logger, mqtt_client, **kwargs
-        )
+        AdditionalStateDevice.__init__(self, **kwargs)
         StreamCapabilityMixin.__init__(self)
 
         self.__device_manager = device_manager

@@ -211,10 +211,10 @@ class TestGeofence(SensorTestBase):
         powerpi_variable_manager
     ):
         return GeofenceSensor(
-            powerpi_config,
-            powerpi_logger,
-            mqtt_client,
-            powerpi_variable_manager,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=mqtt_client,
+            variable_manager=powerpi_variable_manager,
             name='MyGeofence',
             condition={
                 'when': [

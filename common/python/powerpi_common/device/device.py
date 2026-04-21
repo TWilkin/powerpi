@@ -1,9 +1,8 @@
 from abc import abstractmethod
 from asyncio import Lock
-from typing import Awaitable, Callable
+from typing import Awaitable, Callable, TYPE_CHECKING
 
 from powerpi_common.config import Config
-from powerpi_common.device.types import DeviceStatus
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTConsumerPriority, MQTTClient
 
@@ -12,6 +11,11 @@ from .consumers import (
     DeviceChangeEventConsumer,
     DeviceInitialStatusEventConsumer
 )
+from .geofence import Geofence
+from .types import DeviceStatus
+
+if TYPE_CHECKING:
+    from powerpi_common.variable import VariableManager
 
 
 class Device(BaseDevice, DeviceChangeEventConsumer):
@@ -26,13 +30,18 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         config: Config,
         logger: Logger,
         mqtt_client: MQTTClient,
+        variable_manager: 'VariableManager',
         listener=True,
+        geofence: str | None = None,
         **kwargs
     ):
         BaseDevice.__init__(self, **kwargs)
         DeviceChangeEventConsumer.__init__(self, self, config, logger)
 
         self._logger = logger
+
+        self.__geofence = Geofence(variable_manager, geofence)
+
         self.__state = DeviceStatus.UNKNOWN
 
         self._producer = mqtt_client.add_producer()
@@ -69,6 +78,13 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         '''
         return self.__lock.locked()
 
+    @property
+    def geofence(self):
+        '''
+        Returns the geofence object for this device.
+        '''
+        return self.__geofence
+
     def update_state_no_broadcast(self, new_state: DeviceStatus):
         '''
         Update this devices' state but do not broadcast to the message queue.
@@ -88,13 +104,13 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         '''
         Turn this device on, and broadcast the state change to the message queue if successful.
         '''
-        await self.__change_power_handler(self._turn_on, DeviceStatus.ON)
+        return await self.__change_power_handler(self._turn_on, DeviceStatus.ON)
 
     async def turn_off(self):
         '''
         Turn this device off, and broadcast the state change to the message queue if successful.
         '''
-        await self.__change_power_handler(self._turn_off, DeviceStatus.OFF)
+        return await self.__change_power_handler(self._turn_off, DeviceStatus.OFF)
 
     async def change_power(self, new_state: DeviceStatus):
         '''
@@ -103,9 +119,9 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         '''
         if new_state is not None:
             if new_state == DeviceStatus.ON:
-                await self.turn_on()
-            else:
-                await self.turn_off()
+                return await self.turn_on()
+
+            return await self.turn_off()
 
     @abstractmethod
     async def _turn_on(self) -> bool:
@@ -144,7 +160,14 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         self,
         func: Callable[[], Awaitable[bool]],
         new_status: DeviceStatus
-    ):
+    ) -> bool:
+        # first we check the geofence, if it's active we don't do anything
+        if self.__geofence.active:
+            self.log_info(
+                f'Geofence blocking state change {new_status} device {self}'
+            )
+            return False
+
         # pylint: disable=broad-except
         try:
             async with self.__lock:
@@ -156,9 +179,13 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
                     self.state = new_status
                 else:
                     self.log_info(f'Failed to turn {new_status} device {self}')
+
+                return success
         except Exception as ex:
             self.log_exception(ex)
             self.state = DeviceStatus.UNKNOWN
+
+            return False
 
     def __str__(self):
         return f'{type(self).__name__}({self._display_name}, {self._format_state()})'

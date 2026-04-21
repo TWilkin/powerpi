@@ -8,6 +8,12 @@ from powerpi_common.variable.device import DeviceVariable
 
 class TestDeviceVariable(VariableTestBase):
 
+    def test_topic(self, subject: DeviceVariable):
+        assert subject.topic == 'device/TestVariable/status'
+
+    def test_variable_type(self, subject: DeviceVariable):
+        assert subject.variable_type == 'device'
+
     @pytest.mark.asyncio
     async def test_on_status_change(self, subject: DeviceVariable):
         assert subject.scene == ReservedScenes.DEFAULT

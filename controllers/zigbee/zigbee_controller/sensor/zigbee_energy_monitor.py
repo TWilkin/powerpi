@@ -32,24 +32,19 @@ RMS_VOLTAGE = MeasurementAttributes(
 
 class ZigbeeEnergyMonitorSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
     '''
-    Add support for ZigBee Energy Monitoring sensors, supporting take periodic
+    Add support for ZigBee Energy Monitoring sensors, supporting periodic
     power, current and voltage readings.
     '''
 
     def __init__(
         self,
-        logger: Logger,
-        mqtt_client: MQTTClient,
-        zigbee_controller: ZigbeeController,
         metrics: dict[Metric, MetricValue],
         poll_frequency: int | None = 120,
         **kwargs
     ):
         # pylint: disable=too-many-arguments
-        Sensor.__init__(self, mqtt_client, **kwargs)
-        ZigbeeMixin.__init__(self, zigbee_controller, **kwargs)
-
-        self._logger = logger
+        Sensor.__init__(self, **kwargs)
+        ZigbeeMixin.__init__(self, **kwargs)
 
         self.__poll_frequency = poll_frequency
         self.__metrics = metrics

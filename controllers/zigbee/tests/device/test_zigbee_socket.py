@@ -85,10 +85,22 @@ class TestZigbeeDevice(
         powerpi_mqtt_producer.assert_not_called()
 
     @pytest.fixture
-    def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client, zigbee_controller):
+    def subject(
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+        powerpi_variable_manager,
+        zigbee_controller
+    ):
         return ZigbeeSocket(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client, zigbee_controller,
-            ieee='00:00:00:00:00:00:00:00', nwk='0xAAAA',
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            zigbee_controller=zigbee_controller,
+            ieee='00:00:00:00:00:00:00:00',
+            nwk='0xAAAA',
             name='Socket'
         )
 

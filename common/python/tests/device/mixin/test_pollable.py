@@ -9,9 +9,16 @@ from powerpi_common.device.mixin import PollableMixin
 class DeviceImpl(Device, PollableMixin):
     # pylint: disable=too-many-ancestors
 
-    def __init__(self, config, logger, mqtt_client, name: str, poll_frequency=60):
+    def __init__(self, config, logger, mqtt_client, variable_manager, name: str, poll_frequency=60):
         # pylint: disable=too-many-arguments
-        Device.__init__(self, config, logger, mqtt_client, name=name)
+        Device.__init__(
+            self,
+            config,
+            logger,
+            mqtt_client,
+            variable_manager,
+            name=name
+        )
         PollableMixin.__init__(self, config, poll_frequency)
 
     async def poll(self):
@@ -26,10 +33,20 @@ class DeviceImpl(Device, PollableMixin):
 
 class TestPollableMixin(DeviceTestBase, PollableMixinTestBase):
 
-    def test_poll_frequency_default(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
+    def test_poll_frequency_default(
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+        powerpi_variable_manager
+    ):
         device = DeviceImpl(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client,
-            name='pollable', poll_frequency=120
+            powerpi_config,
+            powerpi_logger,
+            powerpi_mqtt_client,
+            powerpi_variable_manager,
+            name='pollable',
+            poll_frequency=120
         )
 
         assert device.polling_enabled is True
@@ -37,11 +54,20 @@ class TestPollableMixin(DeviceTestBase, PollableMixinTestBase):
 
     @pytest.mark.parametrize('value', [1, 9])
     def test_poll_frequency_too_small(
-        self, powerpi_config, powerpi_logger, powerpi_mqtt_client, value: int
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+        powerpi_variable_manager,
+        value: int
     ):
         device = DeviceImpl(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client,
-            name='pollable', poll_frequency=value
+            powerpi_config,
+            powerpi_logger,
+            powerpi_mqtt_client,
+            powerpi_variable_manager,
+            name='pollable',
+            poll_frequency=value
         )
 
         assert device.polling_enabled is True
@@ -49,18 +75,36 @@ class TestPollableMixin(DeviceTestBase, PollableMixinTestBase):
 
     @pytest.mark.parametrize('value', [-1, 0])
     def test_poll_frequency_disable(
-        self, powerpi_config, powerpi_logger, powerpi_mqtt_client, value: int
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+        powerpi_variable_manager,
+        value: int
     ):
         device = DeviceImpl(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client,
-            name='pollable', poll_frequency=value
+            powerpi_config,
+            powerpi_logger,
+            powerpi_mqtt_client,
+            powerpi_variable_manager,
+            name='pollable',
+            poll_frequency=value
         )
 
         assert device.polling_enabled is False
 
     @pytest.fixture
-    def subject(self, powerpi_config, powerpi_logger, powerpi_mqtt_client):
+    def subject(
+        self,
+        powerpi_config,
+        powerpi_logger,
+        powerpi_mqtt_client,
+        powerpi_variable_manager
+    ):
         return DeviceImpl(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client,
+            powerpi_config,
+            powerpi_logger,
+            powerpi_mqtt_client,
+            powerpi_variable_manager,
             name='pollable'
         )

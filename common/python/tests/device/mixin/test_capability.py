@@ -9,12 +9,13 @@ from powerpi_common.device.mixin import CapabilityMixin
 from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 from powerpi_common.util.data import Range
+from powerpi_common.variable.manager import VariableManager
 
 
 class DeviceImpl(Device, CapabilityMixin):
     # pylint: disable=too-many-ancestors, invalid-overridden-method
-    def __init__(self, *args, **kwargs):
-        Device.__init__(self, *args, **kwargs)
+    def __init__(self, **kwargs):
+        Device.__init__(self, **kwargs)
 
         self.__brightness = False
         self.__temperature = False
@@ -125,9 +126,13 @@ class TestCapabilityMixin:
         self,
         powerpi_config: Config,
         powerpi_logger: Logger,
-        powerpi_mqtt_client: MQTTClient
+        powerpi_mqtt_client: MQTTClient,
+        powerpi_variable_manager: VariableManager
     ):
         return DeviceImpl(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
             name='CapabilityDevice'
         )

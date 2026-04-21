@@ -12,11 +12,9 @@ from powerpi_common.util.data import Range
 
 class DeviceImpl(Device, DeviceOrchestratorMixin):
     # pylint: disable=too-many-ancestors
-    def __init__(self, config, logger, mqtt_client, device_manager, **kwargs):
-        Device.__init__(self, config, logger, mqtt_client, **kwargs)
-        DeviceOrchestratorMixin.__init__(
-            self, config, logger, mqtt_client, device_manager, **kwargs
-        )
+    def __init__(self, **kwargs):
+        Device.__init__(self, **kwargs)
+        DeviceOrchestratorMixin.__init__(self, **kwargs)
 
         self.current_device = None
 
@@ -195,12 +193,17 @@ class TestDeviceOrchestratorMixin(DeviceOrchestratorMixinTestBase):
         powerpi_config,
         powerpi_logger,
         mqtt_client,
+        powerpi_variable_manager,
         device_manager,
         devices,
     ):
         # pylint: disable=too-many-arguments
         return DeviceImpl(
-            powerpi_config, powerpi_logger, mqtt_client, device_manager,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            device_manager=device_manager,
             name='orchestrator',
             devices=devices
         )

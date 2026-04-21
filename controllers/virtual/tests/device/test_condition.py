@@ -188,7 +188,11 @@ class TestCondition(
     ):
         # pylint: disable=too-many-arguments
         return ConditionDevice(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client, device_manager, variable_manager,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=variable_manager,
+            device_manager=device_manager,
             name='condition',
             device='test_device',
             on_condition={
@@ -213,7 +217,11 @@ class TestCondition(
     ):
         # pylint: disable=too-many-arguments
         return ConditionDevice(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client, device_manager, variable_manager,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=variable_manager,
+            device_manager=device_manager,
             name='condition',
             device='test_device',
             poll_frequency=60

@@ -5,8 +5,10 @@ from unittest.mock import MagicMock, PropertyMock
 import pytest
 from powerpi_common.util.data import Range
 from powerpi_common_test.device import AdditionalStateDeviceTestBase
-from powerpi_common_test.device.mixin import (InitialisableMixinTestBase,
-                                              PollableMixinTestBase)
+from powerpi_common_test.device.mixin import (
+    InitialisableMixinTestBase,
+    PollableMixinTestBase
+)
 from pytest_mock import MockerFixture
 
 from lifx_controller.device.lifx_client import LIFXClient
@@ -171,12 +173,19 @@ class TestLIFXLightDevice(
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
+        powerpi_variable_manager,
         lifx_client
     ):
         return LIFXLightDevice(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client, lifx_client,
-            '00:00:00:00:00', 'mylight.home',
-            name='light', poll_frequency=120
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            lifx_client=lifx_client,
+            mac='00:00:00:00:00',
+            hostname='mylight.home',
+            name='light',
+            poll_frequency=120
         )
 
     def __mock_supports(

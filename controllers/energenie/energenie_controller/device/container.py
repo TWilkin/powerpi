@@ -33,9 +33,6 @@ def add_devices(container):
         'energenie_socket_device',
         providers.Factory(
             SocketDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             energenie=container.common.device.energenie
         )
     )
@@ -45,9 +42,6 @@ def add_devices(container):
         'energenie_socket_group_device',
         providers.Factory(
             SocketGroupDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             device_manager=container.common.device.device_manager,
             energenie=container.common.device.energenie
         )
@@ -58,9 +52,6 @@ def add_devices(container):
         'energenie_pairing_device',
         providers.Factory(
             EnergeniePairingDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             energenie=container.common.device.energenie
         )
     )

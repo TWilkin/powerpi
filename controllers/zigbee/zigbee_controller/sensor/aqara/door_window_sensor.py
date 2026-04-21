@@ -1,7 +1,5 @@
 from typing import Any, Dict, List
 
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from powerpi_common.sensor.mixin.battery import BatteryMixin
 from zigpy.zcl.clusters.general import Basic
@@ -9,9 +7,13 @@ from zigpy.zcl.clusters.general import OnOff as OnOffCluster
 from zigpy.zcl.foundation import Attribute, TypeValue
 
 from zigbee_controller.sensor.metrics import Metric, MetricValue
-from zigbee_controller.zigbee import (ClusterAttributeListener,
-                                      ClusterGeneralCommandListener, OnOff,
-                                      OpenClose, ZigbeeController, ZigbeeMixin)
+from zigbee_controller.zigbee import (
+    ClusterAttributeListener,
+    ClusterGeneralCommandListener,
+    OnOff,
+    OpenClose,
+    ZigbeeMixin
+)
 
 
 class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
@@ -41,19 +43,14 @@ class AqaraDoorWindowSensor(Sensor, ZigbeeMixin, BatteryMixin):
     # pylint: disable=too-many-arguments
     def __init__(
         self,
-        logger: Logger,
-        controller: ZigbeeController,
-        mqtt_client: MQTTClient,
-        metrics: Dict[Metric, MetricValue],
+        metrics: dict[Metric, MetricValue],
         **kwargs
     ):
-        Sensor.__init__(self, mqtt_client, **kwargs)
-        ZigbeeMixin.__init__(self, controller, **kwargs)
+        Sensor.__init__(self, **kwargs)
+        ZigbeeMixin.__init__(self, **kwargs)
         BatteryMixin.__init__(self)
 
         self.__metrics = metrics
-
-        self._logger = logger
 
     @property
     def sensor_type(self):

@@ -57,5 +57,6 @@ class ApplicationContainer(containers.DeclarativeContainer):
         device_status_checker=common.device.device_status_checker,
         scheduler=common.scheduler,
         health=common.health,
+        container=common,
         zigbee_controller=zigbee_controller
     )

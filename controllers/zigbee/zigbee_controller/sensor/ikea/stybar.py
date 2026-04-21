@@ -1,5 +1,3 @@
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
 from powerpi_common.sensor import Sensor
 from zigpy.device import Device as ZigPyDevice
 from zigpy.profiles.zha import DeviceType, PROFILE_ID
@@ -18,8 +16,13 @@ from zigpy.zcl.clusters.lightlink import LightLink as LightLinkCluster
 from zigpy.zdo.types import NodeDescriptor, LogicalType, FrequencyBand, MACCapabilityFlags
 
 from zigbee_controller.zigbee.device import ZigbeeMixin
-from zigbee_controller.zigbee.mixins import ButtonMapKey, Button, PressType, ZigbeeSleepyMixin, ZigbeeRemoteMixin
-from zigbee_controller.zigbee import ZigbeeController
+from zigbee_controller.zigbee.mixins import (
+    ButtonMapKey,
+    Button,
+    PressType,
+    ZigbeeSleepyMixin,
+    ZigbeeRemoteMixin
+)
 
 
 class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin, ZigbeeRemoteMixin):
@@ -65,19 +68,11 @@ class IKEAStyrbarSensor(Sensor, ZigbeeMixin, ZigbeeSleepyMixin, ZigbeeRemoteMixi
             (Button.UP, PressType.RELEASE)
     }
 
-    def __init__(
-        self,
-        logger: Logger,
-        controller: ZigbeeController,
-        mqtt_client: MQTTClient,
-        **kwargs
-    ):
-        Sensor.__init__(self, mqtt_client, **kwargs)
-        ZigbeeMixin.__init__(self, controller, **kwargs)
+    def __init__(self, **kwargs):
+        Sensor.__init__(self, **kwargs)
+        ZigbeeMixin.__init__(self, **kwargs)
         ZigbeeSleepyMixin.__init__(self)
         ZigbeeRemoteMixin.__init__(self)
-
-        self._logger = logger
 
     def _configure_device(self, device: ZigPyDevice):
         device.node_desc = NodeDescriptor(

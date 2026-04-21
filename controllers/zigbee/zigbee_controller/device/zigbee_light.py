@@ -2,12 +2,12 @@ import math
 from asyncio import ensure_future
 from typing import List, Tuple
 
-from powerpi_common.config import Config
 from powerpi_common.device import AdditionalStateDevice, DeviceStatus
-from powerpi_common.device.mixin import (AdditionalState, CapabilityMixin,
-                                         NewPollableMixin)
-from powerpi_common.logger import Logger
-from powerpi_common.mqtt import MQTTClient
+from powerpi_common.device.mixin import (
+    AdditionalState,
+    CapabilityMixin,
+    NewPollableMixin
+)
 from powerpi_common.util.data import DataType, Range, Ranges, Standardiser
 from zigpy.device import Device as ZigPyDevice
 from zigpy.exceptions import DeliveryError
@@ -16,7 +16,7 @@ from zigpy.zcl import Cluster
 from zigpy.zcl.clusters.general import LevelControl as LevelControlCluster
 from zigpy.zcl.clusters.lighting import Color as ColorCluster
 
-from zigbee_controller.zigbee import DeviceAnnounceListener, ZigbeeController, ZigbeeMixin
+from zigbee_controller.zigbee import DeviceAnnounceListener, ZigbeeMixin
 from zigbee_controller.zigbee.mixins import ZigbeeOnOffMixin
 
 
@@ -66,21 +66,16 @@ class ZigbeeLight(
         ),
     })
 
-    # pylint: disable=too-many-arguments
     def __init__(
         self,
-        config: Config,
-        logger: Logger,
-        mqtt_client: MQTTClient,
-        controller: ZigbeeController,
         duration: int = 500,
         **kwargs
     ):
         AdditionalStateDevice.__init__(
-            self, config, logger, mqtt_client, **kwargs
+            self, **kwargs
         )
-        NewPollableMixin.__init__(self, config, **kwargs)
-        ZigbeeMixin.__init__(self, controller, **kwargs)
+        NewPollableMixin.__init__(self, **kwargs)
+        ZigbeeMixin.__init__(self, **kwargs)
 
         self.__duration = duration
 

@@ -1,7 +1,9 @@
 from datetime import datetime, timezone
+from unittest.mock import PropertyMock
 
 from powerpi_common.config import Config
 from powerpi_common.device import Device
+from powerpi_common.device.geofence import Geofence
 from powerpi_common.mqtt import MQTTClient, MQTTConsumer, MQTTConsumerPriority
 from pytest_mock import MockerFixture
 
@@ -27,6 +29,46 @@ class DeviceTestBase(BaseDeviceTestBase):
         assert subject.state == 'unknown'
         await subject.turn_off()
         assert subject.state == 'off'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('active', [True, False])
+    async def test_turn_on_geofence(
+        self,
+        subject_geofence: Device,
+        geofence,
+        active: bool
+    ):
+        type(geofence).state = PropertyMock(
+            return_value='on' if active else 'off'
+        )
+
+        assert subject_geofence.state == 'unknown'
+        await subject_geofence.turn_on()
+
+        if active:
+            assert subject_geofence.state == 'unknown'
+        else:
+            assert subject_geofence.state == 'on'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('active', [True, False])
+    async def test_turn_off_geofence(
+        self,
+        subject_geofence: Device,
+        geofence,
+        active: bool
+    ):
+        type(geofence).state = PropertyMock(
+            return_value='on' if active else 'off'
+        )
+
+        assert subject_geofence.state == 'unknown'
+        await subject_geofence.turn_off()
+
+        if active:
+            assert subject_geofence.state == 'unknown'
+        else:
+            assert subject_geofence.state == 'off'
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('times', [1, 2])
@@ -107,6 +149,34 @@ class DeviceTestBase(BaseDeviceTestBase):
         message['state'] = 'off'
         await self._initial_state_consumer.on_message(message, subject.name, 'status')
         assert subject.state == 'on'
+
+    @pytest.fixture()
+    def subject_geofence(
+        self,
+        subject: Device,
+        powerpi_variable_manager
+    ):
+        # pylint:disable=protected-access
+        subject._Device__geofence = Geofence(
+            powerpi_variable_manager,
+            'TestGeofence'
+        )
+
+        return subject
+
+    @pytest.fixture()
+    def geofence(
+        self,
+        powerpi_variable_manager,
+        mocker: MockerFixture
+    ):
+        geofence = mocker.MagicMock()
+        type(geofence).state = PropertyMock(return_value='off')
+
+        powerpi_variable_manager.get_geofence = \
+            lambda name: geofence if name == 'TestGeofence' else None
+
+        return geofence
 
     @pytest.fixture(autouse=True)
     def message_age_cutoff(self, powerpi_config: Config, mocker: MockerFixture):

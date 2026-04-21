@@ -1,14 +1,16 @@
 from copy import deepcopy
-from typing import Any, Dict, List
 
 from powerpi_common.config import Config
 from powerpi_common.device.types import DeviceConfigType
 from powerpi_common.logger import Logger
-from powerpi_common.typing import DeviceType, SensorType
+from powerpi_common.sensor import Sensor
 from powerpi_common.util import ismixin
 
+from .device import Device
 from .factory import DeviceFactory
 from .mixin import InitialisableMixin
+
+DeviceOrSensor = Device | Sensor
 
 
 class DeviceManager(InitialisableMixin):
@@ -22,30 +24,30 @@ class DeviceManager(InitialisableMixin):
         self.__logger = logger
         self.__factory = factory
 
-        self.__devices: Dict[
+        self.__devices: dict[
             DeviceConfigType,
-            Dict[str, 'DeviceType | SensorType']
+            dict[str, DeviceOrSensor]
         ] = {}
 
         for device_type in DeviceConfigType:
             self.__devices[device_type] = {}
 
     @property
-    def devices_and_sensors(self) -> List['DeviceType | SensorType']:
+    def devices_and_sensors(self) -> list[DeviceOrSensor]:
         return list(self.devices.values()) + list(self.sensors.values())
 
     @property
-    def devices(self) -> Dict[str, DeviceType]:
+    def devices(self) -> dict[str, Device]:
         return self.__devices[DeviceConfigType.DEVICE]
 
     @property
-    def sensors(self) -> Dict[str, SensorType]:
+    def sensors(self) -> dict[str, Sensor]:
         return self.__devices[DeviceConfigType.SENSOR]
 
-    def get_device(self, name: str) -> DeviceType:
+    def get_device(self, name: str) -> Device:
         return self.__get(DeviceConfigType.DEVICE, name)
 
-    def get_sensor(self, name: str) -> SensorType:
+    def get_sensor(self, name: str) -> Sensor:
         return self.__get(DeviceConfigType.SENSOR, name)
 
     async def load(self):
@@ -55,6 +57,13 @@ class DeviceManager(InitialisableMixin):
         await self.initialise()
 
     async def initialise(self):
+        # initialise the geofences for all the devices
+        for device in [
+            device for device in self.__devices[DeviceConfigType.DEVICE].values()
+            if isinstance(device, Device)
+        ]:
+            await device.geofence.initialise()
+
         for device_type in DeviceConfigType:
             filtered = filter(
                 lambda device: ismixin(device, InitialisableMixin),
@@ -81,7 +90,7 @@ class DeviceManager(InitialisableMixin):
             raise DeviceNotFoundException(device_type, name) from ex
 
     def __load(self, device_type: DeviceConfigType):
-        devices: List[Dict[str, Any]] \
+        devices: list[dict[str, any]] \
             = self.__config.devices[f'{device_type}s']
 
         for device in devices:

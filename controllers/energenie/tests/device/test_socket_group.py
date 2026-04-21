@@ -11,8 +11,15 @@ from energenie_controller.device.socket_group import SocketGroupDevice
 
 
 class MockSocket(Device):
-    def __init__(self, config, logger, mqtt_client, name):
-        Device.__init__(self, config, logger, mqtt_client, name=name)
+    def __init__(self, config, logger, mqtt_client, variable_manager, name):
+        Device.__init__(
+            self,
+            config=config,
+            logger=logger,
+            mqtt_client=mqtt_client,
+            variable_manager=variable_manager,
+            name=name
+        )
 
     async def _turn_on(self):
         pass
@@ -129,6 +136,7 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
+        powerpi_variable_manager,
         powerpi_device_manager,
         sockets,
         mocker: MockerFixture
@@ -142,11 +150,12 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
         devices = sockets.keys()
 
         return SocketGroupDevice(
-            powerpi_config,
-            powerpi_logger,
-            powerpi_mqtt_client,
-            powerpi_device_manager,
-            energenie,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            device_manager=powerpi_device_manager,
+            energenie=energenie,
             name='socket_group',
             devices=devices,
             retries=2,
@@ -159,7 +168,12 @@ class TestSocketGroupDevice(DeviceTestBase, DeviceOrchestratorMixinTestBase):
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
+        powerpi_variable_manager
     ):
         return {f'socket{i}': MockSocket(
-            powerpi_config, powerpi_logger, powerpi_mqtt_client, f'socket{i}'
+            powerpi_config,
+            powerpi_logger,
+            powerpi_mqtt_client,
+            powerpi_variable_manager,
+            f'socket{i}'
         ) for i in range(0, 4)}

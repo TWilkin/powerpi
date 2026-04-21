@@ -23,9 +23,6 @@ def add_devices(container):
         'snapcast_server_device',
         providers.Factory(
             SnapcastServerDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             device_manager=container.common.device.device_manager,
             snapcast_api=container.common.device.snapcast_api
         )
@@ -36,9 +33,6 @@ def add_devices(container):
         'snapcast_client_device',
         providers.Factory(
             SnapcastClientDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             device_manager=container.common.device.device_manager
         )
     )

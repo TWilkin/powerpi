@@ -27,9 +27,6 @@ def add_devices(container):
         'lifx_light_device',
         providers.Factory(
             LIFXLightDevice,
-            config=container.common.config,
-            logger=container.common.logger,
-            mqtt_client=container.common.mqtt_client,
             lifx_client=container.device.lifx_client
         )
     )

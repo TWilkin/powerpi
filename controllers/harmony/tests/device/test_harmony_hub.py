@@ -215,6 +215,7 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
+        powerpi_variable_manager,
         powerpi_device_manager: DeviceManager,
         harmony_client,
         harmony_config,
@@ -225,11 +226,12 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         # pylint: disable=too-many-arguments
 
         hub = HarmonyHubDevice(
-            powerpi_config,
-            powerpi_logger,
-            powerpi_mqtt_client,
-            powerpi_device_manager,
-            harmony_client,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            device_manager=powerpi_device_manager,
+            harmony_client=harmony_client,
             name=self.__hub_name,
             poll_frequency=120
         )
@@ -267,13 +269,15 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
+        powerpi_variable_manager,
         powerpi_device_manager
     ):
         return [HarmonyActivityDevice(
-            powerpi_config,
-            powerpi_logger,
-            powerpi_mqtt_client,
-            powerpi_device_manager,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            device_manager=powerpi_device_manager,
             name=f'activity{i}',
             activity_name=f'Test Activity {i}',
             hub=self.__hub_name
@@ -285,13 +289,15 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         powerpi_config,
         powerpi_logger,
         powerpi_mqtt_client,
+        powerpi_variable_manager,
         powerpi_device_manager
     ):
         return HarmonyActivityDevice(
-            powerpi_config,
-            powerpi_logger,
-            powerpi_mqtt_client,
-            powerpi_device_manager,
+            config=powerpi_config,
+            logger=powerpi_logger,
+            mqtt_client=powerpi_mqtt_client,
+            variable_manager=powerpi_variable_manager,
+            device_manager=powerpi_device_manager,
             name='wronghubactivity',
             activity_name='Test Activity 0',
             hub='WrongHub'

@@ -1,4 +1,5 @@
 from powerpi_common.device.base import BaseDevice
+from powerpi_common.logger import Logger
 from powerpi_common.mqtt import MQTTClient
 
 
@@ -11,12 +12,15 @@ class Sensor(BaseDevice):
 
     def __init__(
         self,
+        logger: Logger,
         mqtt_client: MQTTClient,
         entity: str | None = None,
         action: str | None = None,
         **kwargs
     ):
         BaseDevice.__init__(self, **kwargs)
+
+        self._logger = logger
 
         self.__entity = entity
         self.__action = action

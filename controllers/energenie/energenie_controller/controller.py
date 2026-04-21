@@ -1,4 +1,5 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from dependency_injector import containers
 from powerpi_common.controller import Controller as CommonController
 from powerpi_common.device import DeviceManager, DeviceStatusChecker
 from powerpi_common.health import HealthService
@@ -19,13 +20,20 @@ class Controller(CommonController):
         mqtt_client: MQTTClient,
         device_status_checker: DeviceStatusChecker,
         scheduler: AsyncIOScheduler,
-        health: HealthService
+        health: HealthService,
+        container: containers.DeclarativeContainer
     ):
         CommonController.__init__(
-            self, logger, device_manager,
-            mqtt_client, device_status_checker,
-            scheduler, health,
-            __app_name__, __version__
+            self,
+            logger,
+            device_manager,
+            mqtt_client,
+            device_status_checker,
+            scheduler,
+            health,
+            container,
+            __app_name__,
+            __version__
         )
 
         self.__config = config
