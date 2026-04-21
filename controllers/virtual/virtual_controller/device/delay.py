@@ -18,8 +18,12 @@ class DelayDevice(Device):
     async def _turn_on(self):
         await self.__delay(self.__start)
 
+        return True
+
     async def _turn_off(self):
         await self.__delay(self.__end)
+
+        return True
 
     async def __delay(self, delay: int):
         self._logger.debug(f'{self.name}: Delay of {delay}s starting')

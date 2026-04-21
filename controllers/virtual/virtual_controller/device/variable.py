@@ -7,8 +7,8 @@ class VariableDevice(Device):
 
     async def _turn_on(self):
         # doesn't have to do anything special, just broadcast the status change
-        pass
+        return True
 
     async def _turn_off(self):
         # doesn't have to do anything special, just broadcast the status change
-        pass
+        return True
