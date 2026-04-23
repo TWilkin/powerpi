@@ -15,7 +15,8 @@ class TestHarmonyActivityDevice(DeviceTestBase):
     async def test_turn_on_hub(self, subject: HarmonyActivityDevice, harmony_hub: MagicMock):
         assert subject.state == 'unknown'
 
-        await subject.turn_on()
+        result = await subject.turn_on()
+        assert result is True
 
         assert subject.state == 'on'
 
@@ -29,7 +30,8 @@ class TestHarmonyActivityDevice(DeviceTestBase):
 
         assert subject.state == 'unknown'
 
-        await subject.turn_on()
+        result = await subject.turn_on()
+        assert result is False
 
         assert subject.state == 'unknown'
 
@@ -37,7 +39,8 @@ class TestHarmonyActivityDevice(DeviceTestBase):
     async def test_turn_off_hub(self, subject: HarmonyActivityDevice, harmony_hub: MagicMock):
         assert subject.state == 'unknown'
 
-        await subject.turn_off()
+        result = await subject.turn_off()
+        assert result is True
 
         assert subject.state == 'off'
 
@@ -51,7 +54,8 @@ class TestHarmonyActivityDevice(DeviceTestBase):
 
         assert subject.state == 'unknown'
 
-        await subject.turn_off()
+        result = await subject.turn_off()
+        assert result is False
 
         assert subject.state == 'unknown'
 
@@ -89,7 +93,7 @@ class TestHarmonyActivityDevice(DeviceTestBase):
         hub = mocker.MagicMock()
 
         future = Future()
-        future.set_result(None)
+        future.set_result(True)
         for method in ['start_activity', 'turn_on', 'turn_off']:
             mocker.patch.object(
                 hub,

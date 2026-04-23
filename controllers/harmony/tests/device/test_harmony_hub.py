@@ -45,7 +45,8 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         assert activities[1].state == 'unknown'
         assert unmatched_activity.state == 'unknown'
 
-        await subject.turn_off()
+        result = await subject.turn_off()
+        assert result is True
 
         harmony_client.power_off.assert_called_once()
 
@@ -72,7 +73,8 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         assert activities[1].state == 'unknown'
         assert unmatched_activity.state == 'unknown'
 
-        await subject.turn_off()
+        result = await subject.turn_off()
+        assert result is False
 
         assert subject.state == 'unknown'
         assert activities[0].state == 'unknown'
@@ -96,10 +98,12 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         assert unmatched_activity.state == 'unknown'
 
         # will be called
-        await subject.start_activity(harmony_config['activity'][1]['label'])
+        result = await subject.start_activity(harmony_config['activity'][1]['label'])
+        assert result is True
 
         # will not be called
-        await subject.start_activity('Not An Activity')
+        result = await subject.start_activity('Not An Activity')
+        assert result is False
 
         harmony_client.start_activity.assert_called_once_with(
             harmony_config['activity'][1]['id']
@@ -131,14 +135,8 @@ class TestHarmonyHubDevice(DeviceTestBase, PollableMixinTestBase):
         assert activities[1].state == 'unknown'
         assert unmatched_activity.state == 'unknown'
 
-        error = None
-        # pylint: disable=broad-except
-        try:
-            await subject.start_activity(harmony_config['activity'][1]['label'])
-        except KeyError as ex:
-            # we're expecting this
-            error = ex
-        assert error is not None
+        result = await subject.start_activity(harmony_config['activity'][1]['label'])
+        assert result is False
 
         assert subject.state == 'unknown'
         assert activities[0].state == 'unknown'

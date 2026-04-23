@@ -32,7 +32,7 @@ class HarmonyActivityDevice(Device):
         return self.__device_manager.get_device(self.__hub_name)
 
     async def _turn_on(self):
-        await self.__hub.start_activity(self.__activity_name)
+        return await self.__hub.start_activity(self.__activity_name)
 
     async def _turn_off(self):
-        await self.__hub.turn_off()
+        return await self.__hub.turn_off()

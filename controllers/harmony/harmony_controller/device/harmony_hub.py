@@ -55,7 +55,9 @@ class HarmonyHubDevice(Device, PollableMixin):
 
             if self.state != new_state:
                 self.state = new_state
-        except Exception:
+        except Exception as ex:
+            self.log_exception(ex)
+
             self.__update_to_unknown()
 
     async def _turn_on(self):
@@ -63,6 +65,7 @@ class HarmonyHubDevice(Device, PollableMixin):
         The hub has no native "on" state, as it's an activity which should be turned on,
         making the hub appear on.
         '''
+        return True
 
     async def _turn_off(self):
         # pylint: disable=broad-except
@@ -71,9 +74,14 @@ class HarmonyHubDevice(Device, PollableMixin):
 
             # update the state to off for all activities
             await self.__update_activity_state(self.__POWER_OFF_ID)
+
+            return True
         except Exception as ex:
+            self.log_exception(ex)
+
             self.__update_to_unknown(False)
-            raise ex
+
+        return False
 
     async def start_activity(self, name: str):
         activities = await self.__activities()
@@ -89,13 +97,18 @@ class HarmonyHubDevice(Device, PollableMixin):
                 new_state = DeviceStatus.ON
                 if self.state != new_state:
                     self.state = new_state
+
+                return True
             except Exception as ex:
+                self.log_exception(ex)
+
                 self.__update_to_unknown()
-                raise ex
         else:
             self._logger.error(
                 f'Activity "{name}" for {self} not found'
             )
+
+        return False
 
     @AsyncTTL(maxsize=1, time_to_live=10 * 60, skip_args=1)
     async def __config(self):
