@@ -82,7 +82,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin, InitialisableMixin, 
         (is_powered, colour) = await self.__light.get_state()
 
         changed = False
-        new_state = self.state
+        new_state: DeviceStatus
         new_additional_state = self.additional_state
 
         if is_powered is not None:
@@ -122,7 +122,7 @@ class LIFXLightDevice(AdditionalStateDevice, PollableMixin, InitialisableMixin, 
         return keys
 
     async def _turn_on(self):
-        await self.__light.set_power(True, self.__duration)
+        return await self.__light.set_power(True, self.__duration)
 
     async def _turn_off(self):
-        await self.__light.set_power(False, self.__duration)
+        return await self.__light.set_power(False, self.__duration)

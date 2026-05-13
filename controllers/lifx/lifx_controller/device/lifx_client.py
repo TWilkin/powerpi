@@ -20,7 +20,7 @@ class LIFXClient:
     ):
         self.__logger = logger
 
-        self.__light = None
+        self.__light: Light | None = None
 
         self.__feature_listener: Callable | None = None
 
@@ -101,7 +101,13 @@ class LIFXClient:
     async def set_power(self, turn_on: bool, duration: int):
         await self.connect()
 
-        await self.__use_callback(self.__light.set_power, value=turn_on, duration=duration)
+        response = await self.__use_callback(
+            self.__light.set_power,
+            value=turn_on,
+            duration=duration
+        )
+
+        return response is not None
 
     async def get_colour(self):
         (_, colour) = await self.get_state()
