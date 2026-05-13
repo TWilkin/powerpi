@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 class Device(BaseDevice, DeviceChangeEventConsumer):
     '''
     Abstract base class for a "device", which supports being turned on/off via
-    change messages from the message queue. Will broadcast status change 
+    change messages from the message queue. Will broadcast status change
     messages once it has moved between the on/off states.
     '''
 
@@ -87,13 +87,13 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
     def update_state_no_broadcast(self, new_state: DeviceStatus):
         '''
-        Update this devices' state but do not broadcast to the message queue.
+        Update this device's state but do not broadcast to the message queue.
         '''
         self.__state = new_state
 
     async def set_new_state(self, new_state: DeviceStatus):
         '''
-        Update this devices' state and broadcast to the message queue 
+        Update this device's state and broadcast to the message queue
         if the new_state is different from the current state.
         '''
         async with self.__lock:
@@ -128,7 +128,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         '''
         Implement this method to turn the concrete device implementation on.
         Must be async.
-        Can optionally return a boolean to indicate if device on was successful.
+        Return a boolean to indicate if device on was successful.
         '''
         raise NotImplementedError
 
@@ -137,7 +137,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         '''
         Implement this method to turn the concrete device implementation off.
         Must be async.
-        Can optionally return a boolean to indicate if device off was successful.
+        Return a boolean to indicate if device off was successful.
         '''
         raise NotImplementedError
 
@@ -156,21 +156,18 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
         self._producer(topic, message)
 
-    async def __change_power_handler(
+    async def _invoke_power_change(
         self,
         func: Callable[[], Awaitable[bool]],
         new_status: DeviceStatus
-    ) -> bool:
+    ) -> DeviceStatus | None:
         # first we check the geofence, if it's active we don't do anything
         if self.__geofence.active:
             self.log_info(
                 f'Geofence blocking state change {new_status} device {self}'
             )
 
-            # we broadcast the state anyway to update any callers
-            self._broadcast_state_change()
-
-            return False
+            return None
 
         # pylint: disable=broad-except
         try:
@@ -179,18 +176,35 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
 
                 success = await func()
 
+                # support for the devices that still return None
+                # once fixed can change this to "if success:"
                 if success is not False:
-                    self.state = new_status
-                else:
-                    self.log_info(f'Failed to turn {new_status} device {self}')
-                    self.state = DeviceStatus.UNKNOWN
+                    return new_status
 
-                return success
+                self.log_info(f'Failed to turn {new_status} device {self}')
+                return DeviceStatus.UNKNOWN
         except Exception as ex:
             self.log_exception(ex)
-            self.state = DeviceStatus.UNKNOWN
+            return DeviceStatus.UNKNOWN
+
+    async def __change_power_handler(
+        self,
+        func: Callable[[], Awaitable[bool]],
+        new_status: DeviceStatus
+    ) -> bool:
+        resultant_state = await self._invoke_power_change(func, new_status)
+
+        if resultant_state is None:
+            # blocked by the geofence
+            # we broadcast the state anyway to update any callers
+            self._broadcast_state_change()
 
             return False
+
+        # update the state and broadcast
+        self.state = resultant_state
+
+        return resultant_state == new_status
 
     def __str__(self):
         return f'{type(self).__name__}({self._display_name}, {self._format_state()})'
