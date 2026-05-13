@@ -159,12 +159,12 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
     async def _invoke_power_change(
         self,
         func: Callable[[], Awaitable[bool]],
-        new_status: DeviceStatus
+        new_state: DeviceStatus
     ) -> DeviceStatus | None:
         # first we check the geofence, if it's active we don't do anything
         if self.__geofence.active:
             self.log_info(
-                f'Geofence blocking state change {new_status} device {self}'
+                f'Geofence blocking state change {new_state} device {self}'
             )
 
             return None
@@ -172,16 +172,16 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         # pylint: disable=broad-except
         try:
             async with self.__lock:
-                self.log_info(f'Turning {new_status} device {self}')
+                self.log_info(f'Turning {new_state} device {self}')
 
                 success = await func()
 
                 # support for the devices that still return None
                 # once fixed can change this to "if success:"
                 if success is not False:
-                    return new_status
+                    return new_state
 
-                self.log_info(f'Failed to turn {new_status} device {self}')
+                self.log_info(f'Failed to turn {new_state} device {self}')
                 return DeviceStatus.UNKNOWN
         except Exception as ex:
             self.log_exception(ex)
@@ -190,9 +190,9 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
     async def __change_power_handler(
         self,
         func: Callable[[], Awaitable[bool]],
-        new_status: DeviceStatus
+        new_state: DeviceStatus
     ) -> bool:
-        resultant_state = await self._invoke_power_change(func, new_status)
+        resultant_state = await self._invoke_power_change(func, new_state)
 
         if resultant_state is None:
             # blocked by the geofence
@@ -204,7 +204,7 @@ class Device(BaseDevice, DeviceChangeEventConsumer):
         # update the state and broadcast
         self.state = resultant_state
 
-        return resultant_state == new_status
+        return resultant_state == new_state
 
     def __str__(self):
         return f'{type(self).__name__}({self._display_name}, {self._format_state()})'

@@ -18,12 +18,14 @@ class AdditionalStateMixin(ABC):
         scene: str | None = None,
         new_state: DeviceStatus | None = None,
         new_additional_state: AdditionalState | None = None
-    ):
+    ) -> bool:
         '''
         Turn this device on or off, depending on the value of new_state
         as well as performing additional action from additional state.
         If new_state and additional_state is none, do nothing.
         '''
+        success: bool = False
+
         # pylint: disable=broad-except
         try:
             # update additional state first
@@ -47,20 +49,32 @@ class AdditionalStateMixin(ABC):
                     )
 
             # then update state
+            resultant_state: DeviceStatus | None = None
             if new_state is not None:
                 self.log_info(f'Turning {new_state} device {self}')
 
                 func = self._turn_on if new_state == DeviceStatus.ON else self._turn_off
-                await func()
+                resultant_state = await self._invoke_power_change(func, new_state)
+
+                if resultant_state is None:
+                    # blocked by the geofence so the state in the broadcast should be unchanged
+                    resultant_state = self.state
+
+                success = resultant_state == new_state
 
             # hide the additional state change if it's for another scene
             update_additional_state = new_additional_state if self._is_current_scene(scene) \
                 else None
 
-            self.set_state_and_additional(new_state, update_additional_state)
+            self.set_state_and_additional(
+                resultant_state,
+                update_additional_state
+            )
+
+            return success
         except Exception as ex:
             self.log_exception(ex)
-            return
+            return False
 
     @property
     @abstractmethod
