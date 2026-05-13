@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, PropertyMock
 
 from powerpi_common.device import AdditionalStateDevice
 from powerpi_common.device.scene_state import ReservedScenes
@@ -48,6 +48,42 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
 
         assert subject.state == 'on'
         assert subject.additional_state.get(key, None) == 1
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('active', [True, False])
+    async def test_change_additional_state_geofence(
+        self,
+        subject_geofence: AdditionalStateDevice,
+        geofence,
+        powerpi_mqtt_producer,
+        active: bool
+    ):
+        type(geofence).state = PropertyMock(
+            return_value='on' if active else 'off'
+        )
+
+        # pylint: disable=protected-access
+        key = subject_geofence._additional_state_keys()[0]
+        message = {
+            'state': 'on',
+            'timestamp': int(datetime.now(timezone.utc).timestamp() * 1000),
+        }
+        message[key] = 1
+
+        assert subject_geofence.state == 'unknown'
+        assert subject_geofence.additional_state == {}
+
+        await subject_geofence.on_message(message, subject_geofence.name, 'change')
+
+        if active:
+            assert subject_geofence.state == 'unknown'
+        else:
+            assert subject_geofence.state == 'on'
+
+        assert subject_geofence.additional_state.get(key, None) == 1
+
+        # we should broadcast regardless of whether the geofence is active
+        powerpi_mqtt_producer.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_state_change_outputs_additional_state(
