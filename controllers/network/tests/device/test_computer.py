@@ -93,12 +93,14 @@ class TestComputer(DeviceTestBase, PollableMixinTestBase):
             assert subject.state == DeviceStatus.UNKNOWN
 
     @pytest.mark.asyncio
-    async def test_turn_off(self, subject: ComputerDevice):
-        assert subject.state == DeviceStatus.UNKNOWN
+    @pytest.mark.parametrize('initial_state', [DeviceStatus.UNKNOWN, DeviceStatus.ON])
+    async def test_turn_off(self, subject: ComputerDevice, initial_state: DeviceStatus):
+        subject.state = initial_state
+        assert subject.state == initial_state
 
         await subject.turn_off()
 
-        assert subject.state == DeviceStatus.UNKNOWN
+        assert subject.state == initial_state
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize('active', [True, False])

@@ -46,6 +46,11 @@ class ComputerDevice(Device, PollableMixin):
         if new_state != self.state:
             self.state = new_state
 
+    async def turn_off(self):
+        # do nothing as this will be handled by the shutdown service running on that computer
+        # we don't rebroadcast or check the geofence so we don't race the shutdown service's message
+        return True
+
     async def _turn_on(self):
         for _ in range(0, 4):
             send_magic_packet(self.__mac_address)
@@ -58,8 +63,8 @@ class ComputerDevice(Device, PollableMixin):
         return False
 
     async def _turn_off(self):
-        # do nothing as this will be handled by the shutdown service running on that computer
-        return False
+        # does nothing as we manually override turn_off to prevent the broadcast
+        pass
 
     async def __is_alive(self, count=1):
         result = await ping(self.__network_address, count)
