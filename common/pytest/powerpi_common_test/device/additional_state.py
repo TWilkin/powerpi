@@ -7,6 +7,7 @@ from powerpi_common.device.scene_state import ReservedScenes
 import pytest
 
 from .device import DeviceTestBase
+from powerpi_common_test.util import SubsetMatcher
 
 
 class AdditionalStateDeviceTestBase(DeviceTestBase):
@@ -75,15 +76,18 @@ class AdditionalStateDeviceTestBase(DeviceTestBase):
 
         await subject_geofence.on_message(message, subject_geofence.name, 'change')
 
-        if active:
-            assert subject_geofence.state == 'unknown'
-        else:
-            assert subject_geofence.state == 'on'
+        expected_state = 'unknown' if active else 'on'
+        assert subject_geofence.state == expected_state
 
         assert subject_geofence.additional_state.get(key, None) == 1
 
         # we should broadcast regardless of whether the geofence is active
-        powerpi_mqtt_producer.assert_called_once()
+        powerpi_mqtt_producer.assert_called_with(
+            f'device/{subject_geofence.name}/status',
+            SubsetMatcher(
+                {'state': expected_state, 'scene': ReservedScenes.DEFAULT, key: 1}
+            )
+        )
 
     @pytest.mark.asyncio
     async def test_state_change_outputs_additional_state(
