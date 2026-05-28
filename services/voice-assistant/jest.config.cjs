@@ -11,6 +11,7 @@ module.exports = {
     },
     extensionsToTreatAsEsm: [".ts"],
     moduleNameMapper: {
+        "^uuid$": "<rootDir>/test/uuid-shim.cjs",
         "^(\\.{1,2}/.*)\\.js$": "$1",
     },
 };
