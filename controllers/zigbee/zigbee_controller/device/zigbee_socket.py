@@ -31,10 +31,10 @@ class ZigbeeSocket(Device, NewPollableMixin, ZigbeeMixin, ZigbeeOnOffMixin):
         '''No need to initialise as the socket has no options.'''
 
     async def _turn_on(self):
-        await self.__set_power_state(DeviceStatus.ON)
+        return await self.__set_power_state(DeviceStatus.ON)
 
     async def _turn_off(self):
-        await self.__set_power_state(DeviceStatus.OFF)
+        return await self.__set_power_state(DeviceStatus.OFF)
 
     async def __set_power_state(self, new_state: DeviceStatus):
         device = self._zigbee_device

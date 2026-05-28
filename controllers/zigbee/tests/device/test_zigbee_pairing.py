@@ -1,5 +1,5 @@
-from asyncio import Future
-from unittest.mock import MagicMock, PropertyMock, call
+from asyncio import Future, create_task, gather
+from unittest.mock import AsyncMock, MagicMock, PropertyMock, call
 
 import pytest
 from powerpi_common_test.device import DeviceTestBase
@@ -11,10 +11,28 @@ from zigbee_controller.device.zigbee_pairing import ZigbeePairingDevice
 
 class TestZigbeePairingDevice(DeviceTestBase):
     @pytest.mark.asyncio
-    async def test_pair(self, subject: ZigbeePairingDevice, zigbee_controller: MagicMock):
+    async def test_pair(
+        self,
+        subject: ZigbeePairingDevice,
+        zigbee_controller: MagicMock,
+        mocker: MockerFixture
+    ):
+        captured_task: Future | None
+
+        def capture(task: Future):
+            nonlocal captured_task
+            captured_task = create_task(task)
+            return captured_task
+
+        mocker.patch(
+            'zigbee_controller.device.zigbee_pairing.create_task',
+            side_effect=capture
+        )
         assert subject.state == 'unknown'
 
-        await subject.pair()
+        await subject.turn_on()
+
+        await gather(captured_task)
 
         # once to turn it on with the timeout (1), then once to turn it off (0)
         zigbee_controller.pair.assert_has_calls([call(1), call(0)])
@@ -50,7 +68,7 @@ class TestZigbeePairingDevice(DeviceTestBase):
     ):
         # pylint: disable=too-many-arguments
         future = Future()
-        future.set_result(None)
+        future.set_result(True)
         mocker.patch.object(
             zigbee_controller,
             'pair',
@@ -77,3 +95,10 @@ class TestZigbeePairingDevice(DeviceTestBase):
         type(device).nwk = PropertyMock(return_value=2748)
 
         return device
+
+    @pytest.fixture(autouse=True)
+    def sleep(self, mocker: MockerFixture):
+        mocker.patch(
+            'zigbee_controller.device.zigbee_pairing.sleep',
+            new_callable=AsyncMock
+        )

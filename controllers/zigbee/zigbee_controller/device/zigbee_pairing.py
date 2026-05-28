@@ -1,8 +1,9 @@
-import asyncio
+from asyncio import create_task, sleep
 
 from powerpi_common.device import Device
 from powerpi_common.device.mixin import InitialisableMixin
 from zigpy.device import Device as ZigPyDevice
+from zigpy.exceptions import DeliveryError
 from zigpy.types import EUI64
 
 from zigbee_controller.zigbee import DeviceJoinListener, ZigbeeController
@@ -31,17 +32,16 @@ class ZigbeePairingDevice(Device, InitialisableMixin):
         )
 
     async def _turn_on(self):
+        success = await self.__pair(self.__timeout)
+
         # run in a separate task so the off state happens after the on
-        _ = asyncio.create_task(self.pair())
+        if success:
+            _ = create_task(self.__auto_off())
+
+        return success
 
     async def _turn_off(self):
-        await self.__zigbee_controller.pair(0)
-
-    async def pair(self):
-        await self.__zigbee_controller.pair(self.__timeout)
-        await asyncio.sleep(self.__timeout)
-
-        await self.turn_off()
+        return await self.__pair(0)
 
     def on_device_join(self, device: ZigPyDevice):
         self.log_info('New device joined network')
@@ -60,3 +60,16 @@ class ZigbeePairingDevice(Device, InitialisableMixin):
         }
 
         self._producer(topic, message)
+
+    async def __auto_off(self):
+        await sleep(self.__timeout)
+
+        await self.turn_off()
+
+    async def __pair(self, timeout: int):
+        try:
+            await self.__zigbee_controller.pair(timeout)
+        except (DeliveryError, TimeoutError):
+            return False
+
+        return True
