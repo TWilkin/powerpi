@@ -36,7 +36,7 @@ dependencies:
   - name: ui
     version: 0.3.20
   - name: voice-assistant
-    version: 0.3.23
+    version: 0.3.24
     condition: global.voiceAssistant
   - name: energenie-controller
     version: 0.1.21
