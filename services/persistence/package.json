@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/persistence",
-    "version": "0.2.12-rc.14",
+    "version": "0.2.12-rc.15",
     "description": "PowerPi database persistence service",
     "private": true,
     "type": "module",
@@ -38,6 +38,7 @@
         "@types/underscore": "^1.11.6",
         "@types/validator": "^13.11.1",
         "ts-node": "^10.9.2",
-        "typescript": "^5.1.6"
+        "typescript": "^5.1.6",
+        "vitest": "^3.2.6"
     }
 }

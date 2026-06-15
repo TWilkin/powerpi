@@ -1,6 +1,6 @@
 {
     "name": "@powerpi/ui",
-    "version": "2.0.2-rc.16",
+    "version": "2.0.2-rc.17",
     "type": "module",
     "description": "PowerPi UI",
     "private": true,
@@ -39,7 +39,7 @@
         "tailwindcss": "^3.4.14",
         "typescript": "^5.6.3",
         "vite": "^6.4.2",
-        "vitest": "^3.0.8"
+        "vitest": "^3.2.6"
     },
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^6.6.0",
