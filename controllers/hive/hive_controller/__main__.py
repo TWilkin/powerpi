@@ -1,7 +1,7 @@
 import sys
 
 from hive_controller.container import ApplicationContainer
-from hive_controller.devices.container import add_devices
+from hive_controller.device.container import add_devices
 
 
 if __name__ == '__main__':
