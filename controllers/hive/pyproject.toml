@@ -11,6 +11,7 @@ readme = "README.md"
 
 requires-python = ">=3.11,<4.0"
 dependencies = [
+    "pyhive-integration (==1.0.9)",
 ]
 
 [tool.poetry.group.powerpi.dependencies]
