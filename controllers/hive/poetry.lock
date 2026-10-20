@@ -1656,14 +1656,14 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "pyhive-integration"
-version = "1.0.9"
+version = "1.0.10"
 description = "A Python library to interface with the Hive API"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "pyhive_integration-1.0.9-py2.py3-none-any.whl", hash = "sha256:d20b94f178fba531c29b2cb7635677f8f67ec023c886bdbe1417e38346fd0f69"},
-    {file = "pyhive_integration-1.0.9.tar.gz", hash = "sha256:0ed58385bdeb58d758517b51281a4536d93899ac2becf1498e2702f8b7a6aed1"},
+    {file = "pyhive_integration-1.0.10-py2.py3-none-any.whl", hash = "sha256:81ad6de2fa8bb99582c042c19c4d70cc76a4f732deed559ca64129c4f026197b"},
+    {file = "pyhive_integration-1.0.10.tar.gz", hash = "sha256:5a5a7b980073529da493a4361bfe3bf224ee48e8f6f59000f5f87791363eeade"},
 ]
 
 [package.dependencies]
@@ -2208,4 +2208,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<4.0"
-content-hash = "19799c0d9c49416cd55df5e7e09a76ea438aed54fa48d4ead7dc6489ed5e9666"
+content-hash = "e8e07a7f3dc8e1c795b4f383f83bc19f15607c03b1ac56193970492d9edbf58e"
