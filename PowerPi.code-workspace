@@ -79,6 +79,10 @@
             "path": "controllers/harmony",
         },
         {
+            "name": "Hive Controller",
+            "path": "controllers/hive",
+        },
+        {
             "name": "LIFX Controller",
             "path": "controllers/lifx",
         },
