@@ -59,14 +59,20 @@ class HiveClient(LogMixin):
             auth = Auth(username=self.user, password=self.password)
             result = AuthenticationResult.from_dict(await auth.login())
 
+            await auth.device_registration()
+            device_data = list((await auth.get_device_data())[:3])
+
             self.__client = Hive(username=self.user, password=self.password)
 
             self.log_info('Starting session')
-            await self.__client.startSession({'tokens': {
-                'token': result.AuthenticationResult.IdToken,
-                'refreshToken': result.AuthenticationResult.RefreshToken,
-                'accessToken': result.AuthenticationResult.AccessToken,
-            }})
+            await self.__client.startSession({
+                'tokens': {
+                    'token': result.AuthenticationResult.IdToken,
+                    'accessToken': result.AuthenticationResult.AccessToken,
+                    'refreshToken': result.AuthenticationResult.RefreshToken
+                },
+                'device_data': device_data
+            })
             self.log_info('Session started')
 
             for device in self.__client.session.data.devices.values():
