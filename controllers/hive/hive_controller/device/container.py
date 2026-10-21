@@ -10,10 +10,13 @@ class DeviceContainer(containers.DeclarativeContainer):
         __self__
     )
 
+    config = providers.Dependency()
+
     logger = providers.Dependency()
 
     hive_client = providers.Factory(
         HiveClient,
+        config=config,
         logger=logger
     )
 

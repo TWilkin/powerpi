@@ -6,6 +6,8 @@ from apyhiveapi import Auth, Hive
 from dacite import from_dict
 from powerpi_common.logger import Logger, LogMixin
 
+from hive_controller.config import HiveConfig
+
 
 @dataclass
 class Tokens:
@@ -30,39 +32,29 @@ class HiveClient(LogMixin):
 
     def __init__(
         self,
+        config: HiveConfig,
         logger: Logger
     ):
         self._logger = logger
         self._logger.add_logger(apyhiveapi.api.hive_api.__name__)
 
+        self.__config = config
+
         self.__client: Hive | None = None
-
-    @property
-    def user(self):
-        return self.__user
-
-    @user.setter
-    def user(self, user: str):
-        self.__user = user
-
-    @property
-    def password(self):
-        return self.__password
-
-    @password.setter
-    def password(self, password: str):
-        self.__password = password
 
     async def connect(self):
         if self.__client is None:
+            username = self.__config.hive_username
+            password = self.__config.hive_password
+
             self.log_info('Logging into Hive')
-            auth = Auth(username=self.user, password=self.password)
+            auth = Auth(username, password)
             result = AuthenticationResult.from_dict(await auth.login())
 
             await auth.device_registration()
             device_data = list((await auth.get_device_data())[:3])
 
-            self.__client = Hive(username=self.user, password=self.password)
+            self.__client = Hive(username, password)
 
             self.log_info('Starting session')
             await self.__client.startSession({

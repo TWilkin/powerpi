@@ -1,3 +1,4 @@
+import asyncio
 import sys
 
 from hive_controller.container import ApplicationContainer
@@ -9,6 +10,9 @@ if __name__ == '__main__':
     container = ApplicationContainer()
     container.wire(modules=[sys.modules[__name__]])
     add_devices(container)
+
+    client = container.device().hive_client()
+    asyncio.run(client.connect())
 
     controller = container.common().controller()
     controller.start()
