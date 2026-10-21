@@ -11,18 +11,22 @@ from hive_controller.config import HiveConfig
 
 @dataclass
 class Tokens:
-    AccessToken: str
-    IdToken: str
-    RefreshToken: str
+    access_token: str
+    id_token: str
+    refresh_token: str
 
 
 @dataclass
 class AuthenticationResult:
-    AuthenticationResult: Tokens
+    result: Tokens
 
-    @classmethod
-    def from_dict(cls, data: dict) -> 'AuthenticationResult':
-        return from_dict(AuthenticationResult, data)
+
+ALIAS_MAP = {
+    'AuthenticationResult': 'result',
+    'AccessToken': 'access_token',
+    'IdToken': 'id_token',
+    'RefreshToken': 'refresh_token'
+}
 
 
 class HiveClient(LogMixin):
@@ -49,7 +53,7 @@ class HiveClient(LogMixin):
 
             self.log_info('Logging into Hive')
             auth = Auth(username, password)
-            result = AuthenticationResult.from_dict(await auth.login())
+            result = self.__parse_tokens(await auth.login())
 
             await auth.device_registration()
             device_data = list((await auth.get_device_data())[:3])
@@ -59,9 +63,9 @@ class HiveClient(LogMixin):
             self.log_info('Starting session')
             await self.__client.startSession({
                 'tokens': {
-                    'token': result.AuthenticationResult.IdToken,
-                    'accessToken': result.AuthenticationResult.AccessToken,
-                    'refreshToken': result.AuthenticationResult.RefreshToken
+                    'token': result.result.id_token,
+                    'accessToken': result.result.access_token,
+                    'refreshToken': result.result.refresh_token
                 },
                 'device_data': device_data
             })
@@ -69,3 +73,20 @@ class HiveClient(LogMixin):
 
             for device in self.__client.session.data.devices.values():
                 self.log_info(device)
+
+    def __parse_tokens(self, result: dict) -> AuthenticationResult:
+        def remap_recursive(data: dict) -> dict | list:
+            if isinstance(data, dict):
+                return {
+                    ALIAS_MAP.get(key, key): remap_recursive(value)
+                    for key, value in data.items()
+                }
+
+            if isinstance(data, list):
+                return [remap_recursive(item) for item in data]
+
+            return data
+
+        aliased = remap_recursive(result)
+
+        return from_dict(AuthenticationResult, aliased)
