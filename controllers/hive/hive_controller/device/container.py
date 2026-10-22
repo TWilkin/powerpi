@@ -1,7 +1,5 @@
 from dependency_injector import containers, providers
 
-from .hive_client import HiveClient
-
 
 class DeviceContainer(containers.DeclarativeContainer):
     __self__ = providers.Self()
@@ -13,12 +11,6 @@ class DeviceContainer(containers.DeclarativeContainer):
     config = providers.Dependency()
 
     logger = providers.Dependency()
-
-    hive_client = providers.Factory(
-        HiveClient,
-        config=config,
-        logger=logger
-    )
 
 
 def add_devices(container):

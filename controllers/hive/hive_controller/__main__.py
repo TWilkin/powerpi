@@ -1,4 +1,3 @@
-import asyncio
 import sys
 
 from hive_controller.container import ApplicationContainer
@@ -13,8 +12,5 @@ if __name__ == '__main__':
     add_devices(container)
     add_sensors(container)
 
-    client = container.device().hive_client()
-    asyncio.run(client.connect())
-
-    controller = container.common().controller()
+    controller = container.controller()
     controller.start()

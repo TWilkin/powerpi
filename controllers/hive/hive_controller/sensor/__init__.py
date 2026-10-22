@@ -12,6 +12,6 @@ def add_sensors(container):
         providers.Factory(
             HiveThermostatSensor,
             config=container.config,
-            hive_client=device_container.hive_client
+            hive_client=container.hive_client
         )
     )
