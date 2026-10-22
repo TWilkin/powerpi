@@ -18,6 +18,10 @@ class HiveThermostatSensor(Sensor, BatteryMixin, NewPollableMixin, HiveDeviceMix
         NewPollableMixin.__init__(self, **kwargs)
         HiveDeviceMixin.__init__(self, **kwargs)
 
+    @property
+    def executing(self):
+        return False
+
     async def _poll(self):
-        sensor = self._hive_client.get_sensor(self.hive_device)
-        print(sensor)
+        device = self.hive_device
+        print(device)

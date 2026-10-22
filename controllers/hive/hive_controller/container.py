@@ -33,7 +33,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
         logger=common.logger
     )
 
-    hive_client = providers.Factory(
+    hive_client = providers.Singleton(
         HiveClient,
         config=config,
         logger=common.logger

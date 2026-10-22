@@ -46,7 +46,7 @@ class HiveClient(LogMixin):
         self.__config = config
 
         self.__client: Hive | None = None
-        self.__devices: list[Device] | None = None
+        self.__devices: list[Device] = []
 
     @property
     def devices(self) -> list[Device]:
@@ -70,7 +70,7 @@ class HiveClient(LogMixin):
             self.__client = Hive(username=username, password=password)
 
             self.log_info('Starting session')
-            self.__devices = await self.__client.startSession({
+            device_list = await self.__client.startSession({
                 'tokens': {
                     'token': result.result.id_token,
                     'accessToken': result.result.access_token,
@@ -79,6 +79,11 @@ class HiveClient(LogMixin):
                 'device_data': device_data
             })
             self.log_info('Session started')
+
+            for _, devices in device_list.items():
+                for device in devices:
+                    self.__devices.append(device)
+            print(self.__devices)
 
     async def disconnect(self):
         if self.__client is not None:
