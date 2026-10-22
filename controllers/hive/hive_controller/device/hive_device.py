@@ -1,7 +1,16 @@
 from dataclasses import dataclass
+from enum import StrEnum, unique
+
 from dacite import from_dict
+from powerpi_common.device import DeviceStatus
 
 from .hive_client import HiveClient
+
+
+@unique
+class Mode(StrEnum):
+    SCHEDULE = 'schedule'
+    MANUAL = 'manual'
 
 
 @dataclass
@@ -13,6 +22,24 @@ class DeviceData:
 class Status:
     current_temperature: float
     target_temperature: float
+    _mode: str
+    _boost: str
+
+    @property
+    def mode(self):
+        if self._mode == 'SCHEDULE':
+            return Mode.SCHEDULE
+        if self._mode == 'MANUAL':
+            return Mode.MANUAL
+        return self._mode
+
+    @property
+    def boost(self):
+        if self._boost == 'ON':
+            return DeviceStatus.ON
+        if self._boost == 'OFF':
+            return DeviceStatus.OFF
+        return DeviceStatus.UNKNOWN
 
 
 @dataclass
@@ -36,7 +63,9 @@ ALIAS_MAP = {
     'hiveType': 'hive_type',
     'deviceData': 'data',
     'battery': 'battery',
-    'temperatureunit': '_temperature_unit'
+    'temperatureunit': '_temperature_unit',
+    'mode': '_mode',
+    'boost': '_boost'
 }
 
 
