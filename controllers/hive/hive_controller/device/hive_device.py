@@ -10,7 +10,8 @@ class HiveDeviceMixin:
 
     def __init__(
         self,
-        hive_client: HiveClient
+        hive_client: HiveClient,
+        **_
     ):
         self._hive_client = hive_client
 

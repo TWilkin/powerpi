@@ -4,7 +4,7 @@ from .hive_thermostat_sensor import HiveThermostatSensor
 
 
 def add_sensors(container):
-    device_container = container.device()
+    device_container = container.common().device()
 
     setattr(
         device_container,
