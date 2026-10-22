@@ -83,7 +83,6 @@ class HiveClient(LogMixin):
             for _, devices in device_list.items():
                 for device in devices:
                     self.__devices.append(device)
-            print(self.__devices)
 
     async def disconnect(self):
         if self.__client is not None:

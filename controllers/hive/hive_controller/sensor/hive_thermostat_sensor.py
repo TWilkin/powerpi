@@ -23,5 +23,7 @@ class HiveThermostatSensor(Sensor, BatteryMixin, NewPollableMixin, HiveDeviceMix
         return False
 
     async def _poll(self):
-        device = self.hive_device
-        print(device)
+        device = self.get_hive_device('Battery')
+
+        if device.data.battery is not None:
+            self.on_battery_change(device.data.battery)
