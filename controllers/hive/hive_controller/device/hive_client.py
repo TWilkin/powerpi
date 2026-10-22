@@ -3,6 +3,7 @@ import apyhiveapi
 from dataclasses import dataclass
 
 from apyhiveapi import Auth, Hive
+from apyhiveapi.helper.hivedataclasses import Device
 from dacite import from_dict
 from powerpi_common.logger import Logger, LogMixin
 
@@ -45,6 +46,14 @@ class HiveClient(LogMixin):
         self.__config = config
 
         self.__client: Hive | None = None
+        self.__devices: list[Device] | None = None
+
+    @property
+    def devices(self) -> list[Device]:
+        '''
+        Returns the list of devices connected to Hive.
+        '''
+        return self.__devices
 
     async def connect(self):
         if self.__client is None:
@@ -61,7 +70,7 @@ class HiveClient(LogMixin):
             self.__client = Hive(username=username, password=password)
 
             self.log_info('Starting session')
-            await self.__client.startSession({
+            self.__devices = await self.__client.startSession({
                 'tokens': {
                     'token': result.result.id_token,
                     'accessToken': result.result.access_token,
@@ -70,9 +79,6 @@ class HiveClient(LogMixin):
                 'device_data': device_data
             })
             self.log_info('Session started')
-
-            for device in self.__client.session.data.devices.values():
-                self.log_info(device)
 
     def __parse_tokens(self, result: dict) -> AuthenticationResult:
         def remap_recursive(data: dict) -> dict | list:
