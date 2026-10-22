@@ -3,6 +3,7 @@ from enum import StrEnum, unique
 
 from dacite import from_dict
 from powerpi_common.device import DeviceStatus
+from powerpi_common.device.mixin import InitialisableMixin
 
 from .hive_client import HiveClient
 
@@ -69,7 +70,7 @@ ALIAS_MAP = {
 }
 
 
-class HiveDeviceMixin:
+class HiveDeviceMixin(InitialisableMixin):
     '''
     Mixin to support common methods for all Hive devices/sensors.
     '''
@@ -93,6 +94,9 @@ class HiveDeviceMixin:
             return self.__parse_device(data)
 
         return None
+
+    async def initialise(self):
+        await self.__hive_client.set_update_interval(self.poll_frequency)
 
     def __get_hive_device(self, hive_type: str) -> HiveDevice | None:
         '''

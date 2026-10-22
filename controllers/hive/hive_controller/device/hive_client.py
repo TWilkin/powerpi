@@ -1,6 +1,7 @@
 import apyhiveapi
 
 from dataclasses import dataclass
+from datetime import timedelta
 
 from apyhiveapi import Auth, Hive
 from apyhiveapi.helper.hivedataclasses import Device
@@ -87,6 +88,15 @@ class HiveClient(LogMixin):
             for _, devices in device_list.items():
                 for device in devices:
                     self.__devices.append(device)
+
+    async def set_update_interval(self, interval: int):
+        '''
+        Override the update interval, if it's less than current so refreshes happen frequently
+        enough for the lowest interval
+        '''
+        if interval < self.__client.config.scanInterval.seconds:
+            self.log_info(f'Setting Hive update interval to {interval}s')
+            await self.__client.updateInterval(timedelta(seconds=interval))
 
     def __parse_tokens(self, result: dict) -> AuthenticationResult:
         def remap_recursive(data: dict) -> dict | list:
