@@ -18,6 +18,3 @@ class Controller(CommonController):
 
     async def _initialise_devices(self):
         await self.__hive_client.connect()
-
-    async def _cleanup_devices(self):
-        await self.__hive_client.disconnect()

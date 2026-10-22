@@ -88,10 +88,6 @@ class HiveClient(LogMixin):
                 for device in devices:
                     self.__devices.append(device)
 
-    async def disconnect(self):
-        if self.__client is not None:
-            await self.__client.close()
-
     def __parse_tokens(self, result: dict) -> AuthenticationResult:
         def remap_recursive(data: dict) -> dict | list:
             if isinstance(data, dict):
