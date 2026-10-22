@@ -21,7 +21,14 @@ class HiveDevice:
     hive_type: str
     data: DeviceData
     status: Status | None
-    temperature_unit: str | None
+    _temperature_unit: str | None
+
+    @property
+    def temperature_unit(self):
+        if self._temperature_unit is None or self._temperature_unit == 'C':
+            return '°C'
+
+        return self._temperature_unit
 
 
 ALIAS_MAP = {
@@ -29,7 +36,7 @@ ALIAS_MAP = {
     'hiveType': 'hive_type',
     'deviceData': 'data',
     'battery': 'battery',
-    'temperatureunit': 'temperature_unit'
+    'temperatureunit': '_temperature_unit'
 }
 
 
