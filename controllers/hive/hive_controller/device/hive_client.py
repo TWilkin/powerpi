@@ -49,6 +49,10 @@ class HiveClient(LogMixin):
         self.__devices: list[Device] = []
 
     @property
+    def client(self):
+        return self.__client
+
+    @property
     def devices(self) -> list[Device]:
         '''
         Returns the list of devices connected to Hive.
