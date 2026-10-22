@@ -58,7 +58,7 @@ class HiveClient(LogMixin):
             await auth.device_registration()
             device_data = list((await auth.get_device_data())[:3])
 
-            self.__client = Hive(username, password)
+            self.__client = Hive(username=username, password=password)
 
             self.log_info('Starting session')
             await self.__client.startSession({
