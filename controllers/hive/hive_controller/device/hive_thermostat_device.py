@@ -1,4 +1,4 @@
-from powerpi_common.device import AdditionalStateDevice, DeviceStatus
+from powerpi_common.device import AdditionalStateDevice
 from powerpi_common.device.mixin import NewPollableMixin
 from powerpi_common.util.data import DataType
 

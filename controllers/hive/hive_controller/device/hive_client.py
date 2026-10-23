@@ -1,34 +1,14 @@
-import apyhiveapi
 
-from dataclasses import dataclass
 from datetime import timedelta
+
+import apyhiveapi
 
 from apyhiveapi import Auth, Hive
 from apyhiveapi.helper.hivedataclasses import Device
-from dacite import from_dict
 from powerpi_common.logger import Logger, LogMixin
 
 from hive_controller.config import HiveConfig
-
-
-@dataclass
-class Tokens:
-    access_token: str
-    id_token: str
-    refresh_token: str
-
-
-@dataclass
-class AuthenticationResult:
-    result: Tokens
-
-
-ALIAS_MAP = {
-    'AuthenticationResult': 'result',
-    'AccessToken': 'access_token',
-    'IdToken': 'id_token',
-    'RefreshToken': 'refresh_token'
-}
+from hive_controller.model import AuthenticationResult
 
 
 class HiveClient(LogMixin):
@@ -67,7 +47,7 @@ class HiveClient(LogMixin):
 
             self.log_info('Logging into Hive')
             auth = Auth(username, password)
-            result = self.__parse_tokens(await auth.login())
+            result = AuthenticationResult.parse(await auth.login())
 
             await auth.device_registration()
             device_data = list((await auth.get_device_data())[:3])
@@ -97,20 +77,3 @@ class HiveClient(LogMixin):
         if interval < self.__client.config.scanInterval.seconds:
             self.log_info(f'Setting Hive update interval to {interval}s')
             await self.__client.updateInterval(timedelta(seconds=interval))
-
-    def __parse_tokens(self, result: dict) -> AuthenticationResult:
-        def remap_recursive(data: dict) -> dict | list:
-            if isinstance(data, dict):
-                return {
-                    ALIAS_MAP.get(key, key): remap_recursive(value)
-                    for key, value in data.items()
-                }
-
-            if isinstance(data, list):
-                return [remap_recursive(item) for item in data]
-
-            return data
-
-        aliased = remap_recursive(result)
-
-        return from_dict(AuthenticationResult, aliased)
