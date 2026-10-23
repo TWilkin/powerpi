@@ -35,7 +35,7 @@ class HiveThermostatDevice(AdditionalStateDevice, NewPollableMixin, HiveDeviceMi
         # read the heating state
         device = await self.heating_device()
         if device.status is not None:
-            new_state = device.status.boost
+            new_state = device.status.state
 
             updated_additional_state[DataType.TEMPERATURE] = device.status.target_temperature
             updated_additional_state['mode'] = device.status.mode

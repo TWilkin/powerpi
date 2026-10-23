@@ -23,8 +23,17 @@ class DeviceData:
 class Status:
     current_temperature: float
     target_temperature: float
+    _state: str | None
     _mode: str
     _boost: str
+
+    @property
+    def state(self):
+        return self.__parse_boolean(self._state)
+
+    @state.setter
+    def state(self, new_state: str):
+        self._state = new_state
 
     @property
     def mode(self):
@@ -36,9 +45,12 @@ class Status:
 
     @property
     def boost(self):
-        if self._boost == 'ON':
+        return self.__parse_boolean(self._boost)
+
+    def __parse_boolean(self, boolean: str):
+        if boolean == 'ON':
             return DeviceStatus.ON
-        if self._boost == 'OFF':
+        if boolean == 'OFF':
             return DeviceStatus.OFF
         return DeviceStatus.UNKNOWN
 
@@ -91,7 +103,11 @@ class HiveDeviceMixin(InitialisableMixin):
 
         if device is not None:
             data = await self.__hive_client.client.heating.getClimate(device)
-            return self.__parse_device(data)
+            result = self.__parse_device(data)
+
+            result.status.state = await self.__hive_client.client.heating.getState(device)
+
+            return result
 
         return None
 
