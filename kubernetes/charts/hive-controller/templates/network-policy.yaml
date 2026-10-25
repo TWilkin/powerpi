@@ -1,0 +1,6 @@
+{{- $data := dict
+    "Name" "hive-controller-policy"
+    "Label" .Chart.Name
+    "External" true
+}}
+{{- include "powerpi.network-policy" (merge (dict "Params" $data) .) -}}
