@@ -29,6 +29,9 @@
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/harmony/HarmonyHub.schema.json"
                     },
                     {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/hive/HiveThermostatDevice.schema.json"
+                    },
+                    {
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/lifx/LIFXLight.schema.json"
                     },
                     {
@@ -78,6 +81,9 @@
             "type": "array",
             "items": {
                 "oneOf": [
+                    {
+                        "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/hive/HiveThermostatSensor.schema.json"
+                    },
                     {
                         "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/PowerPiSensor.schema.json"
                     },
