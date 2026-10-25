@@ -113,19 +113,27 @@ microk8s kubectl create secret generic google-auth-secret --namespace powerpi \
     --from-file=secret=./__SECRET_NAME__
 ```
 
-- **octopus-api-secret** - The Octopus API key for use with _energy-monitor_.
-
-```bash
-microk8s kubectl create secret generic octopus-api-secret --namespace powerpi \
-    --from-file=key=./__SECRET_NAME__
-```
-
 - **github-secret** - A GitHub personal access token which allows _config-server_ to retrieve configuration files from a GitHub repository.
 
 ```bash
 microk8s kubectl create secret generic github-secret --namespace powerpi \
     --from-literal=username=__USERNAME__ \
     --from-file=password=./__SECRET_NAME__
+```
+
+- **hive-secret** - The Hive user credentials for use with _hive_conttroller_.
+
+```bash
+microk8s kubectl create secret generic hive-secret --namespace powerpi \
+    --from-literal=username=__USERNAME__ \
+    --from-file=password=./__SECRET_NAME__
+```
+
+- **octopus-api-secret** - The Octopus API key for use with _energy-monitor_.
+
+```bash
+microk8s kubectl create secret generic octopus-api-secret --namespace powerpi \
+    --from-file=key=./__SECRET_NAME__
 ```
 
 ### Storage
