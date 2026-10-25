@@ -54,7 +54,7 @@ dependencies:
     version: 0.1.24
     condition: global.network
   - name: snapcast-controller
-    version: 0.0.20
+    version: 0.0.21
     condition: global.snapcast
   - name: virtual-controller
     version: 0.2.19
