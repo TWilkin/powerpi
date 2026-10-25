@@ -47,7 +47,7 @@ jobs:
         if: steps.check_yarn.outputs.changed == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 24.x
 
       - name: Install Node.js dependencies
         if: steps.check_yarn.outputs.changed == 'true'
