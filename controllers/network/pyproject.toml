@@ -1,6 +1,6 @@
 [project]
 name = "network_controller"
-version = "0.3.0-rc.6"
+version = "0.3.0-rc.7"
 description = "PowerPi Network Controller"
 license = "GPL-3.0-only"
 authors = [
@@ -9,7 +9,7 @@ authors = [
 repository = "https://github.com/TWilkin/powerpi.git"
 readme = "README.md"
 
-requires-python = ">=3.11,<4.0"
+requires-python = ">=3.11,<3.12"
 dependencies = [
     "dpkt (~=1.9.8)",
     "icmplib (~=3.0.4)",

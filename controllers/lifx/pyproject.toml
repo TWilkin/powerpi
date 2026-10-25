@@ -1,6 +1,6 @@
 [project]
 name = "lifx_controller"
-version = "0.6.6-rc.9"
+version = "0.6.6-rc.10"
 description = "PowerPi LIFX Controller"
 license = "GPL-3.0-only"
 authors = [
@@ -9,7 +9,7 @@ authors = [
 repository = "https://github.com/TWilkin/powerpi.git"
 readme = "README.md"
 
-requires-python = ">=3.11,<4.0"
+requires-python = ">=3.11,<3.12"
 dependencies = [
     "aiolifx (~=1.1.3)"
 ]
