@@ -28,7 +28,7 @@ The project is split into the following services, each of which have their own _
 - **controllers**:
     - [**energenie**](controllers/energenie/README.md) - Allows control of [Energenie MiHome](https://energenie4u.co.uk/catalogue/category/Raspberry-Pi-Accessories) devices using the ENER314 or ENER314-RT Pi module.
     - [**harmony**](controllers/harmony/README.md) - Allows control of [Logitech Harmony](https://www.logitech.com/en-gb/products/harmony.html) Smart Hub devices.
-    - [**hive**](controlers/hive/README.md) - Allows control of Hive devices through the Hive API.
+    - [**hive**](controllers/hive/README.md) - Allows control of Hive devices through the Hive API.
     - [**lifx**](controllers/lifx/README.md) - Allows control of [LIFX](https://www.lifx.com/) light devices.
     - [**network**](controllers/network/README.md) - Allows control of LAN (Local Area Network) devices.
     - [**snapcast**](controllers/snapcast/README.md) - Allows control of [Snapcast](https://github.com/badaix/snapcast) clients and servers.
