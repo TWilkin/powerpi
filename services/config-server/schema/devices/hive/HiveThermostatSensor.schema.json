@@ -15,6 +15,18 @@
     "properties": {
         "type": {
             "const": "hive_thermostat"
+        },
+        "metrics": {
+            "description": "The list of metrics to enable for this sensor",
+            "type": "object",
+            "properties": {
+                "temperature": {
+                    "description": "Whether to capture the temperature reported by the sensor",
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Metric.schema.json"
+                }
+            },
+            "required": ["temperature"],
+            "additionalProperties": false
         }
     },
     "unevaluatedProperties": false
