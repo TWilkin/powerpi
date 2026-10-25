@@ -8,13 +8,13 @@ dependencies:
   - name: api
     version: 0.3.25
   - name: config-server
-    version: 1.0.10
+    version: 1.0.11
     condition: global.config
   - name: database
     version: 0.1.4
     condition: global.persistence
   - name: energy-monitor
-    version: 0.1.17
+    version: 0.1.18
     condition: global.energyMonitor
   - name: event
     version: 0.0.13
