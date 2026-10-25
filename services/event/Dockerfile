@@ -1,6 +1,6 @@
 # create a common base image
 FROM python:3.11.14-slim-bookworm AS base-image
-RUN pip install --upgrade pip==25.3
+RUN pip install --upgrade pip==26.2
 
 # create a base image for building
 FROM base-image AS build-base-image

@@ -1,6 +1,6 @@
 # create a common base image
 FROM python:3.11.14-slim-bookworm AS base-image
-RUN pip install --upgrade pip==25.3 \
+RUN pip install --upgrade pip==26.2 \
     && apt-get update \
     && apt-get install -y --no-install-recommends libpcap0.8 libcap2-bin \
     && setcap cap_net_raw,cap_net_admin=eip /usr/local/bin/python3.11 \
