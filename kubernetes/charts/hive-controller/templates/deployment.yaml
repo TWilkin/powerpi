@@ -1,1 +1,19 @@
-{{- include "powerpi.controller" (merge (dict "Params" dict) . )}}
+{{- $data := dict
+  "Secret" (list
+    (dict
+      "Name" "hive-secret"
+      "Env" (list
+        (dict
+          "Name" "HIVE_SECRET_FILE"
+          "SubPath" "password"
+        )
+        (dict
+          "Name" "HIVE_USER"
+          "Key" "username"
+        )
+      )
+    )
+  )
+-}}
+
+{{- include "powerpi.controller" (merge (dict "Params" $data) . ) -}}
