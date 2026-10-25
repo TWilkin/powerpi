@@ -1,0 +1,21 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/hive/HiveThermostatSensor.schema.json",
+    "title": "HiveThermostatSensor",
+    "description": "The Hive thermostat sensor",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Sensor.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/PollableDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "hive_thermostat"
+        }
+    },
+    "unevaluatedProperties": false
+}
