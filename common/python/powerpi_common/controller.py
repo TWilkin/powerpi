@@ -26,7 +26,8 @@ class Controller(Application):
         health: HealthService,
         container: containers.DeclarativeContainer,
         app_name: str,
-        version: str
+        version: str,
+        **_
     ):
         Application.__init__(
             self, logger, mqtt_client,

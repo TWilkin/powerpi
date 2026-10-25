@@ -108,6 +108,13 @@ controllers:
     dependencies:
       - python-common
 
+  - name: hive
+    directory: controllers/hive
+    chartName: hive-controller
+    type: python
+    dependencies:
+      - python-common
+
   - name: lifx
     directory: controllers/lifx
     chartName: lifx-controller

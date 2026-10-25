@@ -24,7 +24,7 @@ class Config:
     @property
     def mqtt_password(self):
         if self.mqtt_user is not None:
-            return self.__secret('MQTT')
+            return self._secret('MQTT')
 
         return None
 
@@ -66,16 +66,16 @@ class Config:
         return self.__read_config('SCHEDULES_FILE')
 
     @classmethod
-    def __load(cls, file: str):
-        with open(file, 'r', encoding='utf8') as json_file:
-            return json.load(json_file)
-
-    @classmethod
-    def __secret(cls, prefix: str):
+    def _secret(cls, prefix: str):
         file = os.getenv(f'{prefix}_SECRET_FILE')
 
         with open(file, 'r', encoding='utf8') as secret_file:
             return secret_file.read().strip()
+
+    @classmethod
+    def __load(cls, file: str):
+        with open(file, 'r', encoding='utf8') as json_file:
+            return json.load(json_file)
 
     def __read_config(self, key: str):
         path = os.getenv(key)
