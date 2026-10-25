@@ -34,7 +34,7 @@ class HiveThermostatSensor(Sensor, BatteryMixin, NewPollableMixin, HiveDeviceMix
         if device.status is not None:
             # broadcast the current temperature
             message = {
-                'temperature': device.status.current_temperature,
+                'value': device.status.current_temperature,
                 'unit': device.temperature_unit
             }
             self._broadcast('temperature', message)
