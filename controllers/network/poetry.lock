@@ -371,7 +371,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "powerpi-common"
-version = "0.8.0"
+version = "0.8.1"
 description = "PowerPi Common Python Library"
 optional = false
 python-versions = ">=3.11,<4.0"
@@ -534,7 +534,6 @@ description = "Backported and Experimental Type Hints for Python 3.9+"
 optional = false
 python-versions = ">=3.9"
 groups = ["test"]
-markers = "python_version < \"3.13\""
 files = [
     {file = "typing_extensions-4.15.0-py3-none-any.whl", hash = "sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548"},
     {file = "typing_extensions-4.15.0.tar.gz", hash = "sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466"},
@@ -585,5 +584,5 @@ files = [
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.11,<4.0"
-content-hash = "eef679ce9c4d92080a61012df74688a392af596e93dfcda1b3d46d7415658f37"
+python-versions = ">=3.11,<3.12"
+content-hash = "d260864f1525f469745a196a6f34b21e42be04b2a624621f7ed529b3c8d3c431"
