@@ -61,6 +61,9 @@ function getDeviceTypeIcon(type: string): IconType {
         case "socket_group":
             return "deviceSocket";
 
+        case "thermostat":
+            return "deviceThermostat";
+
         case "variable":
             return "deviceVariable";
 

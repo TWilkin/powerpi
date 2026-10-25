@@ -40,6 +40,7 @@ import {
     faSpinner,
     faStopwatch,
     faSun,
+    faTemperatureArrowUp,
     faTemperatureEmpty,
     faTemperatureFull,
     faThermometerHalf,
@@ -114,6 +115,7 @@ const iconLibrary = {
     deviceScene: faPanorama,
     deviceServer: faServer,
     deviceSocket: faPlug,
+    deviceThermostat: faTemperatureArrowUp,
     deviceVariable: faCode,
     deviceUnknown: faQuestion,
 
@@ -128,6 +130,7 @@ const iconLibrary = {
     sensorPower: faBolt,
     sensorSwitch: faMobileRetro,
     sensorTemperature: faThermometerHalf,
+    sensorThermostat: faTemperatureArrowUp,
     sensorVoltage: faBolt,
     sensorWindowOpen: faHouseChimneyWindow,
     sensorWindowClosed: faHouseChimney,

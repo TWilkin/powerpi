@@ -10,6 +10,7 @@ describe("DeviceIcon", () => {
         { type: "computer", expectedIcon: "computer" },
         { type: "delay", expectedIcon: "stopwatch" },
         { type: "group", expectedIcon: "layer-group" },
+        { type: "hive_thermostat", expectedIcon: "temperature-arrow-up" },
         { type: "lifx_light", expectedIcon: "lightbulb" },
         { type: "mutex", expectedIcon: "lock" },
         { type: "zigbee_pairing", expectedIcon: "tower-broadcast" },
