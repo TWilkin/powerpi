@@ -163,6 +163,28 @@ func init() {
 			),
 		},
 
+		// Hive
+		schemaSuite{
+			file:       "devices/hive/HiveThermostatDevice.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       devicePath,
+			cases: merge(
+				commonDeviceCases,
+				commonPollableCases,
+			),
+		},
+		schemaSuite{
+			file:       "devices/hive/HiveThermostatSensor.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       sensorPath,
+			cases: merge(
+				commonSensorCases,
+				commonPollableCases,
+			),
+		},
+
 		// LIFX
 		schemaSuite{
 			file:       "devices/lifx/LIFXLight.json",
