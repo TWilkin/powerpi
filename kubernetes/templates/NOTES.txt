@@ -42,6 +42,12 @@ Your release is named "{{ .Release.Name }}":
         --from-file=key=./__SECRET_NAME__
 {{- end }}
 
+- For the hive-controller service (where __USERNAME__ and __SECRET_NAME__ are replacements for your Hive username and a file containing your GitHub tokenHive password respectively):
+    $ microk8s kubectl create secret generic hive-secret --namespace powerpi \
+        --from-literal username=__USERNAME__ \
+        --from-file=password=./__SECRET_NAME__
+{{- end }}
+
 {{- if .Values.global.useSensors }}
 
 --- 🖥️  CONFIGURE 🖥️  ---
