@@ -42,7 +42,7 @@ dependencies:
     version: 0.1.23
     condition: global.energenie
   - name: harmony-controller
-    version: 0.1.29
+    version: 0.1.30
     condition: global.harmony
   - name: hive-controller
     version: 0.0.2
