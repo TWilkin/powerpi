@@ -38,6 +38,9 @@ global:
   # whether to include Logitech Harmony support
   harmony: false
 
+  # whether to include Hive support
+  hive: false
+
   # whether to include LIFX support
   lifx: false
 

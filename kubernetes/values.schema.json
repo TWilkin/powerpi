@@ -91,6 +91,11 @@
                     "type": "boolean"
                 },
 
+                "hive": {
+                    "description": "Whether to include Hive support",
+                    "type": "boolean"
+                },
+
                 "lifx": {
                     "description": "Whether to include LIFX support",
                     "type": "boolean"
@@ -288,6 +293,13 @@
             "description": "The configuration for the PowerPi Harmony controller Helm chart",
             "type": "object",
             "allOf": [{ "$ref": "#/$defs/controller" }, { "$ref": "#/$defs/local-network" }],
+            "unevaluatedProperties": false
+        },
+
+        "hive-controller": {
+            "description": "The configuration for the PowerPi Hive controller Helm chart",
+            "type": "object",
+            "allOf": [{ "$ref": "#/$defs/controller" }],
             "unevaluatedProperties": false
         },
 
