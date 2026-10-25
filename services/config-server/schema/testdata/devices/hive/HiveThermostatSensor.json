@@ -5,5 +5,8 @@
     "location": "Somewhere",
     "categories": ["test", "other"],
     "visible": true,
+    "metrics": {
+        "temperature": "visible"
+    },
     "poll_frequency": 10
 }
