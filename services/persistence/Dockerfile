@@ -1,5 +1,5 @@
 # build the common library
-FROM --platform=$BUILDPLATFORM node:23.6.1-alpine3.20 AS build-common-image
+FROM --platform=$BUILDPLATFORM node:24.22.1-alpine3.24 AS build-common-image
 LABEL description="Node.js builder for common library"
 WORKDIR /home/node/app
 RUN mkdir -p /home/node/app/common/node/common
@@ -10,7 +10,7 @@ COPY common/node/common ./common/node/common/
 RUN yarn workspace @powerpi/common build
 
 # build the common test library
-FROM --platform=$BUILDPLATFORM node:23.6.1-alpine3.20 AS build-common-test-image
+FROM --platform=$BUILDPLATFORM node:24.22.1-alpine3.24 AS build-common-test-image
 LABEL description="Node.js builder for common-test library"
 WORKDIR /home/node/app
 COPY --from=build-common-image /home/node/app/common/node/common/package.json ./common/node/common/
@@ -23,7 +23,7 @@ COPY common/node/common-test ./common/node/common-test/
 RUN yarn workspace @powerpi/common-test build
 
 # build the service
-FROM --platform=$BUILDPLATFORM node:23.6.1-alpine3.20 AS build-service-image
+FROM --platform=$BUILDPLATFORM node:24.22.1-alpine3.24 AS build-service-image
 LABEL description="Node.js builder for service"
 WORKDIR /home/node/app
 COPY --from=build-common-image /home/node/app/common/node/common/package.json ./common/node/common/
@@ -39,7 +39,7 @@ COPY services/persistence ./services/persistence/
 RUN yarn workspace @powerpi/persistence build
 
 # service image
-FROM node:23.6.1-alpine3.20 AS run-image
+FROM node:24.22.1-alpine3.24 AS run-image
 LABEL description="PowerPi persistence MQTT store service"
 
 # use non-root account
