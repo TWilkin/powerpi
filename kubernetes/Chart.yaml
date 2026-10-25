@@ -48,7 +48,7 @@ dependencies:
     version: 0.0.3
     condition: global.hive
   - name: lifx-controller
-    version: 0.1.22
+    version: 0.1.23
     condition: global.lifx
   - name: network-controller
     version: 0.1.23
