@@ -8,7 +8,7 @@
           "SubPath" "password"
         )
         (dict
-          "Name" "HIVE_USER"
+          "Name" "HIVE_USERNAME"
           "Key" "username"
         )
       )
