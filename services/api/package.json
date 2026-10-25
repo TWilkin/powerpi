@@ -50,7 +50,7 @@
         "passport-local": "^1.0.0",
         "passport-strategy": "^1.0.0",
         "pg": "^8.11.2",
-        "socket.io": "^4.7.2",
+        "socket.io": "^4.8.4",
         "typedi": "^0.10.0",
         "underscore": "^1.13.8"
     },
