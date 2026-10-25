@@ -41,6 +41,7 @@ Your release is named "{{ .Release.Name }}":
     $ microk8s kubectl create secret generic octopus-api-secret --namespace powerpi \
         --from-file=key=./__SECRET_NAME__
 {{- end }}
+{{- if .Values.global.hive }}
 
 - For the hive-controller service (where __USERNAME__ and __SECRET_NAME__ are replacements for your Hive username and a file containing your GitHub tokenHive password respectively):
     $ microk8s kubectl create secret generic hive-secret --namespace powerpi \
