@@ -1,0 +1,9 @@
+{
+    "type": "hive_thermostat",
+    "name": "Test",
+    "display_name": "Testing",
+    "location": "Somewhere",
+    "categories": ["test", "other"],
+    "visible": true,
+    "poll_frequency": 10
+}
