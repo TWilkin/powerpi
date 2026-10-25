@@ -8,6 +8,8 @@ The service is built using python, with dependencies using [poetry](https://pyth
 
 This controller service supports the following Hive devices:
 
+- [Hive Thermostat](https://www.hivehome.com/shop/smart-heating/hive-thermostat) - Hive Thermostat supporting temperature reading, target temperature, heating mode and boost. Currently only reading is supported.
+
 ## Building
 
 The Docker container can be built utilising _buildx_ as described in the [project documentation](../../README.md#Building).
@@ -20,6 +22,8 @@ This service expects the following environment variables to be set before it wil
 
 - **MQTT_ADDRESS** - The URI to the MQTT instance to use, e.g. _mqtt://POWERPI_URL:1883_
 - **DEVICES_FILE** - Load the _devices.json_ from this path.
+- **HIVE_USERNAME** - The email address of the user to authenticate with the Hive API. This needs to be the owner account, not a guest account.
+- **HIVE_SECRET_FILE** - The path to the file containing the password for the Hive user.
 
 ### Configuration Files
 
