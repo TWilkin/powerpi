@@ -45,7 +45,7 @@ dependencies:
     version: 0.1.31
     condition: global.harmony
   - name: hive-controller
-    version: 0.0.4
+    version: 0.0.5
     condition: global.hive
   - name: lifx-controller
     version: 0.1.24
