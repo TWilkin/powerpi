@@ -1,7 +1,7 @@
 import { Device } from "@powerpi/common-api";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import Route from "../../routing/Route";
 import RouteBuilder from "../../routing/RouteBuilder";
 import { buttonStyles } from "../Button";

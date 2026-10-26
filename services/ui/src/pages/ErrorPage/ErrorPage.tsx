@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios";
 import { useTranslation } from "react-i18next";
-import { isRouteErrorResponse, Navigate, useRouteError } from "react-router-dom";
+import { isRouteErrorResponse, Navigate, useRouteError } from "react-router";
 import Route from "../../routing/Route";
 import RouteBuilder from "../../routing/RouteBuilder";
 

@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router";
 import Route from "./Route";
 import RouteBuilder from "./RouteBuilder";
 import useOptionalRoute from "./useOptionalRoute";

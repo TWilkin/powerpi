@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 /** Hook to retrieve the current floor from the URL. */
 export default function useFloor() {

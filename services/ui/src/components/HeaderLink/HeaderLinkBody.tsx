@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { ComponentProps } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import RouteBuilder from "../../routing/RouteBuilder";
 import { buttonStyles } from "../Button";
 import Icon from "../Icon";
