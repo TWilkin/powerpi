@@ -4,8 +4,8 @@ import { MemoryRouter, Route, Routes } from "react-router";
 import { vi } from "vitest";
 import OptionalRoute from "./OptionalRoute";
 
-vi.mock("react-router-dom", async () => ({
-    ...(await vi.importActual("react-router-dom")),
+vi.mock("react-router", async () => ({
+    ...(await vi.importActual("react-router")),
     Navigate: () => <div>Disabled</div>,
 }));
 
