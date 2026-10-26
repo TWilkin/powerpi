@@ -24,7 +24,7 @@ class HiveThermostatSensor(Sensor, BatteryMixin, NewPollableMixin, HiveDeviceMix
 
     async def _poll(self):
         # read the battery level
-        device = self.battery_device
+        device = await self.battery_device()
 
         if device.data.battery is not None:
             self.on_battery_change(device.data.battery)
