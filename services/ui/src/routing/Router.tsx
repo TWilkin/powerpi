@@ -97,5 +97,5 @@ const router = createBrowserRouter([
     },
 ]);
 
-const Router = () => <RouterProvider router={router} />;
+const Router = () => <RouterProvider router={router} useTransitions={false} />;
 export default Router;
