@@ -83,7 +83,7 @@ function reducer(state: HistoryFilterState, action: HistoryFilterAction): Histor
             return action.initialState;
 
         default:
-            throw Error("Unknown action");
+            throw new Error("Unknown action");
     }
 }
 
