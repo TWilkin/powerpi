@@ -17,12 +17,15 @@ class HiveDeviceMixin(InitialisableMixin):
     ):
         self.__hive_client = hive_client
 
-    @property
-    def battery_device(self):
-        return HiveDevice.parse(self.__get_hive_device('Battery'))
+    async def battery_device(self):
+        device = self.__get_hive_device('Battery')
+        await self.__hive_client.update(device)
+
+        return HiveDevice.parse(device)
 
     async def heating_device(self):
         device = self.__get_hive_device('heating')
+        await self.__hive_client.update(device)
 
         if device is not None:
             data = await self.__hive_client.client.heating.getClimate(device)

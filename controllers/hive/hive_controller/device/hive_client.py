@@ -68,6 +68,9 @@ class HiveClient(LogMixin):
                 for device in devices:
                     self.__devices.append(device)
 
+    async def update(self, device: Device):
+        await self.__client.updateData(device)
+
     async def set_update_interval(self, interval: int):
         '''
         Override the update interval, if it's less than current so refreshes happen frequently
