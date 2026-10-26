@@ -19,93 +19,82 @@ const DevicePage = lazy(() => import("../pages/DevicePage"));
 const HistoryPage = lazy(() => import("../pages/HistoryPage"));
 const SettingsPage = lazy(() => import("../pages/SettingsPage"));
 
-const router = createBrowserRouter(
-    [
-        {
-            path: Routes.Root,
-            element: <Layout />,
-            loader: configLoader(queryClient, api),
-            errorElement: <ErrorPage />,
-            children: [
-                {
-                    index: true,
-                    element: <DefaultRoute />,
-                },
-                {
-                    path: Routes.Login,
-                    element: <LoginPage />,
-                },
-                {
-                    element: <ProtectedRoute />,
-                    children: [
-                        {
-                            element: <OptionalRoute />,
-                            children: [
-                                {
-                                    loader: devicesLoader(queryClient, api),
-                                    children: [
-                                        {
-                                            loader: sensorsLoader(queryClient, api),
-                                            children: [
-                                                {
-                                                    path: Routes.Home,
-                                                    loader: floorplanLoader(queryClient, api),
-                                                    children: [
-                                                        {
-                                                            index: true,
-                                                            element: <DefaultHomeRoute />,
-                                                        },
-                                                        {
-                                                            path: ":floor",
-                                                            element: <HomePage />,
-                                                        },
-                                                    ],
-                                                },
-                                            ],
-                                        },
-                                        {
-                                            path: Routes.Device,
-                                            element: <DevicePage />,
-                                        },
-                                    ],
-                                },
-                                {
-                                    path: Routes.History,
-                                    children: [
-                                        {
-                                            index: true,
-                                            element: <HistoryPage />,
-                                            loader: historyLoader(queryClient, api, undefined),
-                                        },
-                                        {
-                                            path: ":entity",
-                                            element: <HistoryPage />,
-                                            loader: ({ params }) =>
-                                                historyLoader(queryClient, api, params.entity),
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                        {
-                            path: Routes.Settings,
-                            element: <SettingsPage />,
-                        },
-                    ],
-                },
-            ],
-        },
-    ],
+const router = createBrowserRouter([
     {
-        future: {
-            v7_relativeSplatPath: true,
-            v7_fetcherPersist: true,
-            v7_normalizeFormMethod: true,
-            v7_partialHydration: true,
-            v7_skipActionErrorRevalidation: true,
-        },
+        path: Routes.Root,
+        element: <Layout />,
+        loader: configLoader(queryClient, api),
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                index: true,
+                element: <DefaultRoute />,
+            },
+            {
+                path: Routes.Login,
+                element: <LoginPage />,
+            },
+            {
+                element: <ProtectedRoute />,
+                children: [
+                    {
+                        element: <OptionalRoute />,
+                        children: [
+                            {
+                                loader: devicesLoader(queryClient, api),
+                                children: [
+                                    {
+                                        loader: sensorsLoader(queryClient, api),
+                                        children: [
+                                            {
+                                                path: Routes.Home,
+                                                loader: floorplanLoader(queryClient, api),
+                                                children: [
+                                                    {
+                                                        index: true,
+                                                        element: <DefaultHomeRoute />,
+                                                    },
+                                                    {
+                                                        path: ":floor",
+                                                        element: <HomePage />,
+                                                    },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        path: Routes.Device,
+                                        element: <DevicePage />,
+                                    },
+                                ],
+                            },
+                            {
+                                path: Routes.History,
+                                children: [
+                                    {
+                                        index: true,
+                                        element: <HistoryPage />,
+                                        loader: historyLoader(queryClient, api, undefined),
+                                    },
+                                    {
+                                        path: ":entity",
+                                        element: <HistoryPage />,
+                                        loader: ({ params }) =>
+                                            historyLoader(queryClient, api, params.entity),
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        path: Routes.Settings,
+                        element: <SettingsPage />,
+                    },
+                ],
+            },
+        ],
     },
-);
+]);
 
-const Router = () => <RouterProvider router={router} future={{ v7_startTransition: true }} />;
+const Router = () => <RouterProvider router={router} />;
 export default Router;
