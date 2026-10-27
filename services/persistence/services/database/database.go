@@ -2,8 +2,10 @@ package database
 
 import (
 	"database/sql"
+	"encoding/json"
 
 	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/mqtt"
 	"github.com/TWilkin/powerpi/persistence/services/config"
 	"github.com/lib/pq"
 	_ "github.com/lib/pq"
@@ -11,6 +13,8 @@ import (
 
 type DatabaseService interface {
 	Connect()
+
+	WriteMessage(typ string, entity string, action string, message mqtt.BaseMqttMessage)
 }
 
 type databaseService struct {
@@ -51,5 +55,40 @@ func (service *databaseService) Connect() {
 	if err != nil {
 		service.logger.Error("Unable to ping database", "error", err)
 		return
+	}
+}
+
+func (service *databaseService) WriteMessage(typ string, entity string, action string, message mqtt.BaseMqttMessage) {
+	record, err := json.Marshal(message)
+	if err != nil {
+		service.logger.Error("Could not encode message as JSON", "error", err)
+		return
+	}
+
+	result, err := service.connection.Exec(
+		`
+		INSERT INTO mqtt
+			(type, entity, action, timestamp, message)
+		VALUES(?, ?, ?, ?, ?)
+		`,
+		typ,
+		entity,
+		action,
+		message.GetTimestamp(),
+		record,
+	)
+	if err != nil {
+		service.logger.Error("Failed to write message", "error", err)
+		return
+	}
+
+	count, err := result.RowsAffected()
+	if err != nil {
+		service.logger.Error("Failed to read inserted row count", "error", err)
+		return
+	}
+
+	if count != 1 {
+		service.logger.Error("Failed to write message")
 	}
 }
