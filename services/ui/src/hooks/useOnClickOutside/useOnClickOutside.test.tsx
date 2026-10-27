@@ -18,11 +18,9 @@ const TestComponent = ({ onClickOutside }: { onClickOutside: () => void }) => {
 
 describe("useOnClickOutside", () => {
     const user = userEvent.setup();
-    let mockHandler: ReturnType<typeof vi.fn>;
-
-    beforeEach(() => (mockHandler = vi.fn()));
 
     test("calls handler when clicking outside the element", async () => {
+        const mockHandler = vi.fn();
         render(<TestComponent onClickOutside={mockHandler} />);
 
         const outsideButton = screen.getByTestId("outside-button");
@@ -34,6 +32,7 @@ describe("useOnClickOutside", () => {
     });
 
     test("does not call handler when clicking inside the element", async () => {
+        const mockHandler = vi.fn();
         render(<TestComponent onClickOutside={mockHandler} />);
 
         const insideButton = screen.getByTestId("inside-button");
@@ -45,6 +44,7 @@ describe("useOnClickOutside", () => {
     });
 
     test("does not call handler when clicking on the target element itself", async () => {
+        const mockHandler = vi.fn();
         render(<TestComponent onClickOutside={mockHandler} />);
 
         const target = screen.getByTestId("target");
@@ -56,6 +56,7 @@ describe("useOnClickOutside", () => {
     });
 
     test("calls handler when clicking on document body", async () => {
+        const mockHandler = vi.fn();
         render(<TestComponent onClickOutside={mockHandler} />);
 
         await user.click(document.body);
