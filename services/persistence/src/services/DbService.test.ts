@@ -4,14 +4,16 @@ import DbService from "./DbService.js";
 
 vi.mock("sequelize-typescript", async () => ({
     ...(await vi.importActual("sequelize-typescript")),
-    Sequelize: vi.fn().mockImplementation(() => ({
-        addModels: vi.fn(),
-        sync: vi.fn(),
-        query: vi
-            .fn()
-            .mockReturnValueOnce(Promise.resolve([[{ value: 1 }], null]))
-            .mockReturnValueOnce(Promise.resolve([[], null])),
-    })),
+    Sequelize: vi.fn().mockImplementation(function () {
+        return {
+            addModels: vi.fn(),
+            sync: vi.fn(),
+            query: vi
+                .fn()
+                .mockReturnValueOnce(Promise.resolve([[{ value: 1 }], null]))
+                .mockReturnValueOnce(Promise.resolve([[], null])),
+        };
+    }),
 }));
 
 describe("DbService", () => {
