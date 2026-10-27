@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { vi } from "vitest";
 import CheckBox from "./CheckBox";
 
 describe("CheckBox", () => {
@@ -12,7 +13,7 @@ describe("CheckBox", () => {
     });
 
     test("checked", () => {
-        render(<CheckBox label="Label" checked />);
+        render(<CheckBox label="Label" checked onChange={vi.fn()} />);
 
         const checkbox = screen.getByLabelText("Label");
         expect(checkbox).toBeInTheDocument();
