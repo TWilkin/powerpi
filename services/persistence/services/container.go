@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/TWilkin/powerpi/common/services"
 	"github.com/TWilkin/powerpi/persistence/services/config"
+	"github.com/TWilkin/powerpi/persistence/services/database"
 )
 
 type PersistenceContainer interface {
@@ -19,6 +20,7 @@ func NewPersistenceContainer() PersistenceContainer {
 	}
 
 	container.Container().Provide(config.NewConfigService)
+	container.Container().Provide(database.NewDatabaseService)
 
 	// Override the common config service with the persistence config service
 	container.SetConfigService(GetService[config.ConfigService](container))

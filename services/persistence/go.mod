@@ -4,6 +4,7 @@ go 1.26.0
 
 require (
 	github.com/TWilkin/powerpi/common v0.0.0
+	github.com/lib/pq v1.12.3
 	github.com/spf13/pflag v1.0.6
 )
 

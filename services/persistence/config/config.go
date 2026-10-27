@@ -2,7 +2,7 @@ package config
 
 type PersistenceConfig struct {
 	Host         string
-	Port         int
+	Port         uint16
 	User         string
 	PasswordFile string
 }
