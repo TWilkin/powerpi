@@ -1,6 +1,5 @@
 import { lazy } from "react";
-import { createBrowserRouter } from "react-router";
-import { RouterProvider } from "react-router/dom";
+import { createBrowserRouter, RouterProvider } from "react-router";
 import ErrorPage from "../pages/ErrorPage";
 import DefaultHomeRoute from "../pages/HomePage/DefaultHomeRoute";
 import Layout, { configLoader } from "../pages/Layout";
