@@ -147,7 +147,8 @@ jobs:
       - name: Test Persistence
         if: steps.check_modified.outputs.persistence
         shell: bash
-        run: "${GITHUB_WORKSPACE}/.github/scripts/test_node.sh persistence"
+        run: "${GITHUB_WORKSPACE}/.github/scripts/test_go.sh persistence"
+        working-directory: services/persistence
 
       - name: Test Scheduler
         if: steps.check_modified.outputs.scheduler
