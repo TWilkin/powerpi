@@ -7,7 +7,7 @@ import (
 	"github.com/TWilkin/powerpi/common/services/mqtt"
 	"github.com/TWilkin/powerpi/persistence/services"
 	"github.com/TWilkin/powerpi/persistence/services/config"
-	"github.com/TWilkin/powerpi/persistence/services/database"
+	"github.com/TWilkin/powerpi/persistence/services/messagewriter"
 )
 
 var Version = "development"
@@ -28,6 +28,13 @@ func main() {
 	mqttService.Connect("persistence")
 
 	// connect to the database
-	dbService := services.GetService[database.DatabaseService](container)
-	dbService.Connect()
+	// dbService := services.GetService[database.DatabaseService](container)
+	// dbService.Connect()
+
+	// start the message writer
+	writer := services.GetService[messagewriter.MessageWriterService](container)
+	err := writer.Start()
+	if err != nil {
+		os.Exit(1)
+	}
 }
