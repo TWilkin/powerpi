@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useReducer } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import Route from "../../routing/Route";
 import RouteBuilder from "../../routing/RouteBuilder";
 import useEntity from "./useEntity";
@@ -83,7 +83,7 @@ function reducer(state: HistoryFilterState, action: HistoryFilterAction): Histor
             return action.initialState;
 
         default:
-            throw Error("Unknown action");
+            throw new Error("Unknown action");
     }
 }
 

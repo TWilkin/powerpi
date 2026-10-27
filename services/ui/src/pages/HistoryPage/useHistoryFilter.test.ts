@@ -8,7 +8,7 @@ const mocks = vi.hoisted(() => ({
     useEntity: vi.fn(),
 }));
 
-vi.mock("react-router-dom", () => ({ useNavigate: mocks.useNavigate }));
+vi.mock("react-router", () => ({ useNavigate: mocks.useNavigate }));
 vi.mock("./useEntity", () => ({ default: mocks.useEntity }));
 
 describe("useHistoryFilter", () => {

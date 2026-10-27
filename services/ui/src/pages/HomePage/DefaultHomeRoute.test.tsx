@@ -1,11 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import { PropsWithChildren } from "react";
-import { MemoryRouter, Route, Routes, To } from "react-router-dom";
+import { MemoryRouter, Route, Routes, To } from "react-router";
 import { vi } from "vitest";
 import DefaultHomeRoute from "./DefaultHomeRoute";
 
-vi.mock("react-router-dom", async () => ({
-    ...(await vi.importActual("react-router-dom")),
+vi.mock("react-router", async () => ({
+    ...(await vi.importActual("react-router")),
     Navigate: ({ to }: { to: To }) => <div>Redirected {to as string}</div>,
 }));
 

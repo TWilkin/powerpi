@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router";
 import useQueryFloorplan from "../../queries/useQueryFloorPlan";
 import RouteBuilder from "../../routing/RouteBuilder";
 
