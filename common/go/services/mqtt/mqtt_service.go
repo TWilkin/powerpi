@@ -128,6 +128,10 @@ func (service mqttService) process() {
 }
 
 func (service mqttService) topic(typ string, entity string, action string) string {
+	if typ == "#" {
+		return fmt.Sprintf("%s/#", service.config.MqttConfig().TopicBase)
+	}
+
 	return fmt.Sprintf("%s/%s/%s/%s", service.config.MqttConfig().TopicBase, typ, entity, action)
 }
 

@@ -33,8 +33,5 @@ func main() {
 
 	// start the message writer
 	writer := services.GetService[messagewriter.MessageWriterService](container)
-	err := writer.Start()
-	if err != nil {
-		os.Exit(1)
-	}
+	writer.Start()
 }
