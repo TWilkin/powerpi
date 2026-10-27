@@ -2,14 +2,16 @@ module github.com/TWilkin/powerpi/persistence
 
 go 1.26.0
 
-require github.com/TWilkin/powerpi/common v0.0.0
+require (
+	github.com/TWilkin/powerpi/common v0.0.0
+	github.com/spf13/pflag v1.0.6
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/eclipse/paho.mqtt.golang v1.5.1 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
 	go.uber.org/dig v1.18.1 // indirect
