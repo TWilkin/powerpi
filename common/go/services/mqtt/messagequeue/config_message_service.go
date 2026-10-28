@@ -18,6 +18,10 @@ type ConfigErrorMessage struct {
 	Message string `json:"message"`
 }
 
+func (message *ConfigErrorMessage) New() mqtt.MqttMessage {
+	return &ConfigErrorMessage{}
+}
+
 type ConfigMessageSubscriber interface {
 	SubscribeChange(config models.ConfigType, channel chan<- *ConfigMessage)
 	SubscribeChange2(device string, channel chan<- *ConfigMessage) // TODO replaces above
@@ -46,11 +50,21 @@ func NewConfigMessageService(mqttService mqtt.MqttService) ConfigMessageService 
 }
 
 func (service configMessageService) SubscribeChange(config models.ConfigType, channel chan<- *ConfigMessage) {
-	mqtt.Subscribe(service.mqttService, string(models.TopicConfig), string(config), string(models.ActionChange), true, channel)
+	wrapper := make(chan mqtt.MqttPayload[*ConfigMessage], 1)
+	//defer close(wrapper)
+
+	mqtt.Subscribe(service.mqttService, string(models.TopicConfig), string(config), string(models.ActionChange), true, wrapper)
+
+	go unwrap(wrapper, channel)
 }
 
 func (service configMessageService) SubscribeChange2(device string, channel chan<- *ConfigMessage) {
-	mqtt.Subscribe(service.mqttService, string(models.TopicConfig), device, string(models.ActionChange), true, channel)
+	wrapper := make(chan mqtt.MqttPayload[*ConfigMessage], 1)
+	defer close(wrapper)
+
+	mqtt.Subscribe(service.mqttService, string(models.TopicConfig), device, string(models.ActionChange), true, wrapper)
+
+	go unwrap(wrapper, channel)
 }
 
 func (service configMessageService) UnsubscribeChange(config models.ConfigType) {

@@ -16,8 +16,6 @@ type messageWriterService struct {
 	logger     logger.LoggerService
 	mqttClient mqtt.MqttService
 	database   database.DatabaseService
-
-	channel chan *mqtt.BaseMqttMessage
 }
 
 func NewMessageWriterService(
@@ -33,14 +31,13 @@ func NewMessageWriterService(
 }
 
 func (writer *messageWriterService) Start() {
-	channel := make(chan *mqtt.BaseMqttMessage, 1)
+	channel := make(chan mqtt.MqttPayload[*mqtt.BaseMqttMessage], 1)
 	defer close(channel)
-	writer.channel = channel
 
 	mqtt.Subscribe(writer.mqttClient, "#", "", "", true, channel)
 
 	for {
-		message := <-writer.channel
+		message := <-channel
 
 		err := writer.process(message)
 		if err != nil {
@@ -49,7 +46,7 @@ func (writer *messageWriterService) Start() {
 	}
 }
 
-func (writer *messageWriterService) process(message *mqtt.BaseMqttMessage) error {
+func (writer *messageWriterService) process(message mqtt.MqttPayload[*mqtt.BaseMqttMessage]) error {
 	raw := *new(map[string]any)
 	if err := json.Unmarshal([]byte(message.GetRaw()), &raw); err != nil {
 		return err
@@ -58,12 +55,13 @@ func (writer *messageWriterService) process(message *mqtt.BaseMqttMessage) error
 	// remove the timestamp so we don't record it twice
 	delete(raw, "timestamp")
 
-	payload, err := json.Marshal(message)
-	if err != nil {
-		return err
-	}
+	// payload, err := json.Marshal(message)
+	// if err != nil {
+	// 	return err
+	// }
 
-	writer.database.WriteMessage("a", "b", "c", message.Timestamp, payload)
+	writer.logger.Info(string(message.Raw))
+	//writer.database.WriteMessage("a", "b", "c", message.Message.GetTimestamp(), payload)
 
 	return nil
 }

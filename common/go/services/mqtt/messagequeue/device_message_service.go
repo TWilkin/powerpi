@@ -43,7 +43,11 @@ func NewDeviceMessageService(mqttService mqtt.MqttService) DeviceMessageService 
 }
 
 func (service deviceMessageService) SubscribeChange(device string, channel chan<- *DeviceMessage) {
-	mqtt.Subscribe(service.mqttService, string(models.TopicDevice), device, string(models.ActionChange), false, channel)
+	wrapper := make(chan mqtt.MqttPayload[*DeviceMessage], 1)
+
+	mqtt.Subscribe(service.mqttService, string(models.TopicDevice), device, string(models.ActionChange), false, wrapper)
+
+	go unwrap(wrapper, channel)
 }
 
 func (service deviceMessageService) UnsubscribeChange(device string) {
