@@ -5,6 +5,7 @@ import (
 
 	"github.com/TWilkin/powerpi/common/services/logger"
 	"github.com/TWilkin/powerpi/common/services/mqtt"
+	"github.com/TWilkin/powerpi/persistence/services/database"
 )
 
 type MessageWriterService interface {
@@ -14,6 +15,7 @@ type MessageWriterService interface {
 type messageWriterService struct {
 	logger     logger.LoggerService
 	mqttClient mqtt.MqttService
+	database   database.DatabaseService
 
 	channel chan *mqtt.BaseMqttMessage
 }
@@ -21,10 +23,12 @@ type messageWriterService struct {
 func NewMessageWriterService(
 	logger logger.LoggerService,
 	mqttClient mqtt.MqttService,
+	database database.DatabaseService,
 ) MessageWriterService {
 	return &messageWriterService{
 		logger:     logger,
 		mqttClient: mqttClient,
+		database:   database,
 	}
 }
 
@@ -38,15 +42,28 @@ func (writer *messageWriterService) Start() {
 	for {
 		message := <-writer.channel
 
-		raw := *new(map[string]any)
-		if err := json.Unmarshal([]byte(message.GetRaw()), &raw); err != nil {
-			writer.logger.Warn("Could not decode JSON message", "error", err)
-			continue
+		err := writer.process(message)
+		if err != nil {
+			writer.logger.Error("Unable to write message", "error", err)
 		}
-
-		// remove the timestamp so we don't record it twice
-		delete(raw, "timestamp")
-
-		writer.logger.Info("Received message", "message", raw)
 	}
+}
+
+func (writer *messageWriterService) process(message *mqtt.BaseMqttMessage) error {
+	raw := *new(map[string]any)
+	if err := json.Unmarshal([]byte(message.GetRaw()), &raw); err != nil {
+		return err
+	}
+
+	// remove the timestamp so we don't record it twice
+	delete(raw, "timestamp")
+
+	payload, err := json.Marshal(message)
+	if err != nil {
+		return err
+	}
+
+	writer.database.WriteMessage("a", "b", "c", message.Timestamp, payload)
+
+	return nil
 }
