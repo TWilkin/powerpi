@@ -186,6 +186,8 @@ func Subscribe[TMessage mqttMessage](service MqttService, typ string, entity str
 			return
 		}
 
+		payload.SetRaw(string(data))
+
 		service.getLogger().Debug("Decoded message", "payload", payload)
 
 		// check if the message is old

@@ -35,6 +35,6 @@ func (writer *messageWriterService) Start() {
 
 	for {
 		message := <-writer.channel
-		writer.logger.Info("Received message", "message", message)
+		writer.logger.Info("Received message", "message", message.GetRaw())
 	}
 }
