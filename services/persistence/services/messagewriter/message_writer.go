@@ -1,6 +1,8 @@
 package messagewriter
 
 import (
+	"encoding/json"
+
 	"github.com/TWilkin/powerpi/common/services/logger"
 	"github.com/TWilkin/powerpi/common/services/mqtt"
 )
@@ -35,6 +37,16 @@ func (writer *messageWriterService) Start() {
 
 	for {
 		message := <-writer.channel
-		writer.logger.Info("Received message", "message", message.GetRaw())
+
+		raw := *new(map[string]any)
+		if err := json.Unmarshal([]byte(message.GetRaw()), &raw); err != nil {
+			writer.logger.Warn("Could not decode JSON message", "error", err)
+			continue
+		}
+
+		// remove the timestamp so we don't record it twice
+		delete(raw, "timestamp")
+
+		writer.logger.Info("Received message", "message", raw)
 	}
 }
