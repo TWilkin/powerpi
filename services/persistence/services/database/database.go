@@ -46,6 +46,7 @@ func (service *databaseService) IsConnected() bool {
 
 func (service *databaseService) Connect() {
 	config := pq.Config{
+		SSLMode:  pq.SSLModeDisable,
 		Host:     service.config.GetPersistenceConfig().Host,
 		Port:     uint16(service.config.GetPersistenceConfig().Port),
 		Database: service.config.GetPersistenceConfig().Schema,
@@ -53,7 +54,12 @@ func (service *databaseService) Connect() {
 		Password: *service.config.GetDatabasePassword(),
 	}
 
-	service.logger.Info("Connecting to database", "host", config.Host, "user", config.User)
+	service.logger.Info(
+		"Connecting to database",
+		"host", config.Host,
+		"user", config.User,
+		"database", config.Database,
+	)
 
 	connector, err := pq.NewConnectorConfig(config)
 	if err != nil {
@@ -62,7 +68,6 @@ func (service *databaseService) Connect() {
 	}
 
 	db := sql.OpenDB(connector)
-	defer db.Close()
 	service.connection = db
 
 	// test the connection
@@ -71,6 +76,8 @@ func (service *databaseService) Connect() {
 		service.logger.Error("Unable to ping database", "error", err)
 		return
 	}
+
+	service.logger.Info("Connected to database")
 }
 
 func (service *databaseService) WriteMessage(

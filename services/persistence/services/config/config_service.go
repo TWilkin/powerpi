@@ -42,7 +42,7 @@ func (service *configService) Parse(args []string) {
 	flagSet.StringVar(&service.persistence.Host, "databaseHost", "db", "The host for the database")
 	flagSet.Uint16Var(&service.persistence.Port, "databasePort", 5432, "The port for the database")
 	flagSet.StringVar(&service.persistence.User, "databaseSchema", "powerpi", "The schema for the database")
-	flagSet.StringVar(&service.persistence.User, "databaseUser", "powerpi", "The username for the database")
+	flagSet.StringVar(&service.persistence.Schema, "databaseUser", "powerpi", "The username for the database")
 	flagSet.StringVar(&service.persistence.PasswordFile, "databasePassword", "undefined", "The file containing the password for the database")
 
 	service.ConfigService.ParseWithFlags(args, *flagSet)
