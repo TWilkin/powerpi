@@ -50,6 +50,7 @@ func (service *databaseService) Connect() {
 		Port:     uint16(service.config.GetPersistenceConfig().Port),
 		Database: service.config.GetPersistenceConfig().Schema,
 		User:     service.config.GetPersistenceConfig().User,
+		Password: *service.config.GetDatabasePassword(),
 	}
 
 	service.logger.Info("Connecting to database", "host", config.Host, "user", config.User)

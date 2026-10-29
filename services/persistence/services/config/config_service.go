@@ -13,6 +13,7 @@ type ConfigService interface {
 	Parse(args []string)
 
 	GetPersistenceConfig() config.PersistenceConfig
+	GetDatabasePassword() *string
 }
 
 type configService struct {
@@ -55,4 +56,14 @@ func (service *configService) Parse(args []string) {
 
 func (service *configService) GetPersistenceConfig() config.PersistenceConfig {
 	return service.persistence
+}
+
+func (service *configService) GetDatabasePassword() *string {
+	password, err := service.ReadPasswordFile(service.persistence.PasswordFile)
+	if err != nil {
+		service.logger.Error("Failed to read database password file", "error", err)
+		panic(err)
+	}
+
+	return password
 }
