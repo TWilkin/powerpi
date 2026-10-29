@@ -51,7 +51,6 @@ func NewConfigMessageService(mqttService mqtt.MqttService) ConfigMessageService 
 
 func (service configMessageService) SubscribeChange(config models.ConfigType, channel chan<- *ConfigMessage) {
 	wrapper := make(chan mqtt.MqttPayload[*ConfigMessage], 1)
-	//defer close(wrapper)
 
 	mqtt.Subscribe(service.mqttService, string(models.TopicConfig), string(config), string(models.ActionChange), true, wrapper)
 
