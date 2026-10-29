@@ -4,5 +4,6 @@ use (
 	./common/go
 	./services/config-server
 	./services/energy-monitor
+	./services/persistence
 	./services/shutdown
 )

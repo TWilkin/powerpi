@@ -17,6 +17,8 @@ import (
 )
 
 type MqttService interface {
+	IsConnected() bool
+
 	Connect(clientIdPrefix string)
 	Join()
 	Unsubscribe(typ string, entity string, action string)
@@ -48,6 +50,14 @@ func NewMqttService(config configService.ConfigService, factory MqttClientFactor
 	go service.process()
 
 	return service
+}
+
+func (service *mqttService) IsConnected() bool {
+	if service.client != nil {
+		return service.client.IsConnected()
+	}
+
+	return false
 }
 
 func (service *mqttService) Connect(clientIdPrefix string) {
@@ -128,6 +138,10 @@ func (service mqttService) process() {
 }
 
 func (service mqttService) topic(typ string, entity string, action string) string {
+	if typ == "#" {
+		return fmt.Sprintf("%s/#", service.config.MqttConfig().TopicBase)
+	}
+
 	return fmt.Sprintf("%s/%s/%s/%s", service.config.MqttConfig().TopicBase, typ, entity, action)
 }
 
@@ -143,7 +157,7 @@ func (service mqttService) getClient() mqtt.Client {
 	return service.client
 }
 
-func Publish[TMessage mqttMessage](service MqttService, typ string, entity string, action string, message TMessage) {
+func Publish[TMessage MqttMessagePointer](service MqttService, typ string, entity string, action string, message TMessage) {
 	topic := service.topic(typ, entity, action)
 
 	// if the message has no timestamp, set it to now
@@ -167,7 +181,14 @@ func Publish[TMessage mqttMessage](service MqttService, typ string, entity strin
 	}
 }
 
-func Subscribe[TMessage mqttMessage](service MqttService, typ string, entity string, action string, allowOld bool, channel chan<- TMessage) {
+func Subscribe[TMessage MqttMessagePointer](
+	service MqttService,
+	typ string,
+	entity string,
+	action string,
+	allowOld bool,
+	channel chan<- MqttPayload[TMessage],
+) {
 	topic := service.topic(typ, entity, action)
 	service.getLogger().Info("Subscribing to", "topic", topic)
 
@@ -175,21 +196,27 @@ func Subscribe[TMessage mqttMessage](service MqttService, typ string, entity str
 		data := []byte(message.Payload())
 		service.getLogger().Info("Received", "topic", message.Topic())
 
-		payload := *new(TMessage)
+		result := *new(TMessage)
 
-		if err := json.Unmarshal(data, &payload); err != nil {
+		if err := json.Unmarshal(data, &result); err != nil {
 			service.getLogger().Warn("Could not decode JSON message", "error", err)
 			return
 		}
 
-		service.getLogger().Debug("Decoded message", "payload", payload)
+		service.getLogger().Debug("Decoded message", "message", result)
 
 		// check if the message is old
 		twoMinsAgo := service.getClock().Now().Unix() - 2*60
-		if !allowOld && twoMinsAgo >= (payload.GetTimestamp()/1000) {
+		if !allowOld && twoMinsAgo >= (result.GetTimestamp()/1000) {
 			service.getLogger().Info("Ignoring old message")
 			return
 		}
+
+		payload := NewMqttPayload(
+			result,
+			data,
+			message.Topic(),
+		)
 
 		channel <- payload
 	})

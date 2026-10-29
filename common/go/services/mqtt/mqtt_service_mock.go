@@ -12,6 +12,11 @@ type MockMqttService struct {
 	mock.Mock
 }
 
+func (service *MockMqttService) IsConnected() bool {
+	args := service.Called()
+	return args.Get(0).(bool)
+}
+
 func (service *MockMqttService) Connect(clientIdPrefix string) {
 	service.Called(clientIdPrefix)
 }

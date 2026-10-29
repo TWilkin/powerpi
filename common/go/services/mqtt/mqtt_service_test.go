@@ -92,6 +92,13 @@ func TestConnect(t *testing.T) {
 
 			subject := NewMqttService(configService, factory, clock.MockClockService{}, logger.SetupMockLoggerService())
 			subject.Connect("test-client")
+
+			client.On("IsConnected").Return(true)
+			assert.Equal(
+				t,
+				true,
+				subject.IsConnected(),
+			)
 		})
 	}
 }
@@ -237,7 +244,7 @@ func TestSubscribe(t *testing.T) {
 				}),
 			).Return(token)
 
-			channel := make(chan *TestMessage, 1)
+			channel := make(chan MqttPayload[*TestMessage], 1)
 
 			Subscribe(subject, "device", "MyDevice", "change", false, channel)
 
@@ -271,7 +278,7 @@ func TestSubscribe(t *testing.T) {
 
 			message.AssertExpectations(t)
 
-			assert.Equal(t, receivedMessage, &TestMessage{
+			assert.Equal(t, receivedMessage.Message, &TestMessage{
 				BaseMqttMessage: BaseMqttMessage{
 					Timestamp: timestamp.Unix() * 1000,
 				},
