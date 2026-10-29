@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/TWilkin/powerpi/common/services/logger"
 	"github.com/TWilkin/powerpi/persistence/services/config"
@@ -91,12 +92,12 @@ func (service *databaseService) WriteMessage(
 		`
 		INSERT INTO mqtt
 			(type, entity, action, timestamp, message)
-		VALUES(?, ?, ?, ?, ?)
+		VALUES ($1, $2, $3, $4, $5)
 		`,
 		typ,
 		entity,
 		action,
-		timestamp,
+		time.UnixMilli(timestamp),
 		message,
 	)
 	if err != nil {

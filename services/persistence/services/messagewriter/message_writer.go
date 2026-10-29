@@ -55,7 +55,7 @@ func (writer *messageWriterService) process(message mqtt.MqttPayload[*mqtt.BaseM
 	// remove the timestamp so we don't record it twice
 	delete(raw, "timestamp")
 
-	payload, err := json.Marshal(message)
+	payload, err := json.Marshal(raw)
 	if err != nil {
 		return err
 	}
