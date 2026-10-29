@@ -17,6 +17,8 @@ import (
 )
 
 type MqttService interface {
+	IsConnected() bool
+
 	Connect(clientIdPrefix string)
 	Join()
 	Unsubscribe(typ string, entity string, action string)
@@ -48,6 +50,14 @@ func NewMqttService(config configService.ConfigService, factory MqttClientFactor
 	go service.process()
 
 	return service
+}
+
+func (service *mqttService) IsConnected() bool {
+	if service.client != nil {
+		return service.client.IsConnected()
+	}
+
+	return false
 }
 
 func (service *mqttService) Connect(clientIdPrefix string) {

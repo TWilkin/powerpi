@@ -10,6 +10,8 @@ import (
 )
 
 type DatabaseService interface {
+	IsConnected() bool
+
 	Connect()
 
 	WriteMessage(typ string, entity string, action string, timestamp int64, message []byte)
@@ -27,6 +29,19 @@ func NewDatabaseService(config config.ConfigService, logger logger.LoggerService
 		config: config,
 		logger: logger,
 	}
+}
+
+func (service *databaseService) IsConnected() bool {
+	if service.connection != nil {
+		err := service.connection.Ping()
+		if err != nil {
+			return false
+		}
+
+		return true
+	}
+
+	return false
 }
 
 func (service *databaseService) Connect() {

@@ -3,6 +3,8 @@ package health
 import (
 	commonHealth "github.com/TWilkin/powerpi/common/services/health"
 	"github.com/TWilkin/powerpi/common/services/logger"
+	"github.com/TWilkin/powerpi/common/services/mqtt"
+	"github.com/TWilkin/powerpi/persistence/services/database"
 )
 
 type PersistenceHealthService interface {
@@ -11,11 +13,19 @@ type PersistenceHealthService interface {
 
 type persistenceHealthService struct {
 	commonHealth.HealthService
+	mqtt     mqtt.MqttService
+	database database.DatabaseService
 }
 
-func NewHealthService(logger logger.LoggerService) PersistenceHealthService {
+func NewHealthService(
+	logger logger.LoggerService,
+	mqtt mqtt.MqttService,
+	database database.DatabaseService,
+) PersistenceHealthService {
 	return persistenceHealthService{
 		HealthService: commonHealth.NewHealthService(logger),
+		mqtt:          mqtt,
+		database:      database,
 	}
 }
 
@@ -24,5 +34,13 @@ func (health persistenceHealthService) Start() {
 }
 
 func (health persistenceHealthService) Check() bool {
+	if !health.mqtt.IsConnected() {
+		return false
+	}
+
+	if !health.database.IsConnected() {
+		return false
+	}
+
 	return true
 }
