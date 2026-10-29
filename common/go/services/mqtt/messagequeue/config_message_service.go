@@ -18,10 +18,6 @@ type ConfigErrorMessage struct {
 	Message string `json:"message"`
 }
 
-func (message *ConfigErrorMessage) New() mqtt.MqttMessage {
-	return &ConfigErrorMessage{}
-}
-
 type ConfigMessageSubscriber interface {
 	SubscribeChange(config models.ConfigType, channel chan<- *ConfigMessage)
 	SubscribeChange2(device string, channel chan<- *ConfigMessage) // TODO replaces above
@@ -59,7 +55,6 @@ func (service configMessageService) SubscribeChange(config models.ConfigType, ch
 
 func (service configMessageService) SubscribeChange2(device string, channel chan<- *ConfigMessage) {
 	wrapper := make(chan mqtt.MqttPayload[*ConfigMessage], 1)
-	defer close(wrapper)
 
 	mqtt.Subscribe(service.mqttService, string(models.TopicConfig), device, string(models.ActionChange), true, wrapper)
 
