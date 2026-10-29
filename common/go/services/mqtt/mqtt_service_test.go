@@ -92,6 +92,13 @@ func TestConnect(t *testing.T) {
 
 			subject := NewMqttService(configService, factory, clock.MockClockService{}, logger.SetupMockLoggerService())
 			subject.Connect("test-client")
+
+			client.On("IsConnected").Return(true)
+			assert.Equal(
+				t,
+				true,
+				subject.IsConnected(),
+			)
 		})
 	}
 }
