@@ -55,13 +55,14 @@ func (writer *messageWriterService) process(message mqtt.MqttPayload[*mqtt.BaseM
 	// remove the timestamp so we don't record it twice
 	delete(raw, "timestamp")
 
-	// payload, err := json.Marshal(message)
-	// if err != nil {
-	// 	return err
-	// }
+	payload, err := json.Marshal(message)
+	if err != nil {
+		return err
+	}
 
-	writer.logger.Info(string(message.Raw))
-	//writer.database.WriteMessage("a", "b", "c", message.Message.GetTimestamp(), payload)
+	typ, entity, action := message.GetTopic()
+
+	writer.database.WriteMessage(typ, entity, action, message.Message.GetTimestamp(), payload)
 
 	return nil
 }
