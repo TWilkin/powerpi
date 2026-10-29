@@ -46,9 +46,10 @@ func (service *databaseService) IsConnected() bool {
 
 func (service *databaseService) Connect() {
 	config := pq.Config{
-		Host: service.config.GetPersistenceConfig().Host,
-		Port: uint16(service.config.GetPersistenceConfig().Port),
-		User: service.config.GetPersistenceConfig().User,
+		Host:     service.config.GetPersistenceConfig().Host,
+		Port:     uint16(service.config.GetPersistenceConfig().Port),
+		Database: service.config.GetPersistenceConfig().Schema,
+		User:     service.config.GetPersistenceConfig().User,
 	}
 
 	service.logger.Info("Connecting to database", "host", config.Host, "user", config.User)

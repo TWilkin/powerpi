@@ -27,6 +27,7 @@ The service takes the following command line arguments:
 --databaseHost string       The host for the database (default "db")
 --databasePassword string   The file containing the password for the database (default "undefined")
 --databasePort int          The port for the database (default 5432)
+--databaseSchema string     The schema for the database (default "powerpi")
 --databaseUser string       The username for the database (default "powerpi")
 --host string               The hostname of the MQTT broker (default "mosquitto")
 --logLevel string           The log level for the application (default "INFO")

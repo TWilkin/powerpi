@@ -40,6 +40,7 @@ func (service *configService) Parse(args []string) {
 
 	flagSet.StringVar(&service.persistence.Host, "databaseHost", "db", "The host for the database")
 	flagSet.Uint16Var(&service.persistence.Port, "databasePort", 5432, "The port for the database")
+	flagSet.StringVar(&service.persistence.User, "databaseSchema", "powerpi", "The schema for the database")
 	flagSet.StringVar(&service.persistence.User, "databaseUser", "powerpi", "The username for the database")
 	flagSet.StringVar(&service.persistence.PasswordFile, "databasePassword", "undefined", "The file containing the password for the database")
 
@@ -47,6 +48,7 @@ func (service *configService) Parse(args []string) {
 
 	service.EnvironmentOverride(flagSet, "databaseHost", "DB_HOST")
 	service.EnvironmentOverride(flagSet, "databasePort", "DB_PORT")
+	service.EnvironmentOverride(flagSet, "databaseSchema", "DB_SCHEMA")
 	service.EnvironmentOverride(flagSet, "databaseUser", "DB_USER")
 	service.EnvironmentOverride(flagSet, "databasePassword", "DB_SECRET_FILE")
 }
