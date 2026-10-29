@@ -16,6 +16,7 @@ type CommonContainer interface {
 	Container() *dig.Container
 
 	SetConfigService(configService config.ConfigService)
+	SetHealthService(healthService health.HealthService)
 }
 
 type commonContainer struct {
@@ -28,8 +29,6 @@ func NewCommonContainer() CommonContainer {
 
 	container.Provide(clock.NewClockService)
 	container.Provide(logger.NewLoggerService)
-
-	container.Provide(health.NewHealthService)
 
 	container.Provide(func() http.HTTPClientFactory {
 		logger := GetService[logger.LoggerService](commonContainer)
@@ -74,8 +73,16 @@ func (container commonContainer) Container() *dig.Container {
 }
 
 func (container commonContainer) SetConfigService(configService config.ConfigService) {
-	err := container.container.Provide(func() config.ConfigService {
-		return configService
+	overrideService(container, configService)
+}
+
+func (container commonContainer) SetHealthService(healthService health.HealthService) {
+	overrideService(container, healthService)
+}
+
+func overrideService[TService any](container commonContainer, service TService) {
+	err := container.container.Provide(func() TService {
+		return service
 	})
 
 	if err != nil {
