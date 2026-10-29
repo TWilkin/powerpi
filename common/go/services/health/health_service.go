@@ -6,10 +6,11 @@ import (
 	"github.com/TWilkin/powerpi/common/services/logger"
 )
 
+type checkFunction func() bool
+
 type HealthService interface {
 	Start()
-
-	Check() bool
+	StartWithCheck(check checkFunction)
 }
 
 type healthService struct {
@@ -23,10 +24,16 @@ func NewHealthService(logger logger.LoggerService) HealthService {
 }
 
 func (health healthService) Start() {
+	health.StartWithCheck(func() bool {
+		return true
+	})
+}
+
+func (health healthService) StartWithCheck(check checkFunction) {
 	go func() {
 		_ = http.ListenAndServe(":8080", http.HandlerFunc(
 			func(writer http.ResponseWriter, request *http.Request) {
-				if health.Check() {
+				if check() {
 					_, _ = writer.Write([]byte("healthy"))
 				} else {
 					writer.WriteHeader(500)
@@ -34,8 +41,4 @@ func (health healthService) Start() {
 			},
 		))
 	}()
-}
-
-func (health healthService) Check() bool {
-	return true
 }

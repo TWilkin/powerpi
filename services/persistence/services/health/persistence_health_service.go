@@ -30,10 +30,12 @@ func NewHealthService(
 }
 
 func (health persistenceHealthService) Start() {
-	health.HealthService.Start()
+	health.HealthService.StartWithCheck(func() bool {
+		return health.check()
+	})
 }
 
-func (health persistenceHealthService) Check() bool {
+func (health persistenceHealthService) check() bool {
 	if !health.mqtt.IsConnected() {
 		return false
 	}
