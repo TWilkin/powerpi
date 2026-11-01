@@ -9,7 +9,7 @@ TARGET_OS?=linux
 TARGET_ARCH?=arm64
 
 # the version of the shutdown service
-VERSION=0.2.2-rc.7
+VERSION=0.2.2-rc.8
 
 .PHONY: all build compile test coverage clean
 
