@@ -3,7 +3,7 @@ BINARY=$(TARGET_DIR)/powerpi_persistence
 VERSION_FLAG=-X main.Version=v$(VERSION)
 
 # the version of the persistence service
-VERSION=1.0.0
+VERSION=1.0.1-rc.1
 
 .PHONY: all build compile test coverage clean
 
