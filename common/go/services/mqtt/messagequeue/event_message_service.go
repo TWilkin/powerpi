@@ -38,7 +38,11 @@ func NewEventMessageService(mqttService mqtt.MqttService) EventMessageService {
 }
 
 func (service eventMessageService) SubscribeValue(sensor string, action string, channel chan<- *EventMessage) {
-	mqtt.Subscribe(service.mqttService, string(models.TopicEvent), sensor, action, true, channel)
+	wrapper := make(chan mqtt.MqttPayload[*EventMessage], 1)
+
+	mqtt.Subscribe(service.mqttService, string(models.TopicEvent), sensor, action, true, wrapper)
+
+	go unwrap(wrapper, channel)
 }
 
 func (service eventMessageService) UnsubscribeValue(sensor string, action string) {

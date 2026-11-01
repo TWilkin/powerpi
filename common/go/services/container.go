@@ -5,6 +5,7 @@ import (
 
 	"github.com/TWilkin/powerpi/common/services/clock"
 	"github.com/TWilkin/powerpi/common/services/config"
+	"github.com/TWilkin/powerpi/common/services/health"
 	"github.com/TWilkin/powerpi/common/services/http"
 	"github.com/TWilkin/powerpi/common/services/logger"
 	"github.com/TWilkin/powerpi/common/services/mqtt"
@@ -15,6 +16,7 @@ type CommonContainer interface {
 	Container() *dig.Container
 
 	SetConfigService(configService config.ConfigService)
+	SetHealthService(healthService health.HealthService)
 }
 
 type commonContainer struct {
@@ -71,8 +73,16 @@ func (container commonContainer) Container() *dig.Container {
 }
 
 func (container commonContainer) SetConfigService(configService config.ConfigService) {
-	err := container.container.Provide(func() config.ConfigService {
-		return configService
+	overrideService(container, configService)
+}
+
+func (container commonContainer) SetHealthService(healthService health.HealthService) {
+	overrideService(container, healthService)
+}
+
+func overrideService[TService any](container commonContainer, service TService) {
+	err := container.container.Provide(func() TService {
+		return service
 	})
 
 	if err != nil {

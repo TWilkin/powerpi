@@ -46,11 +46,19 @@ func NewConfigMessageService(mqttService mqtt.MqttService) ConfigMessageService 
 }
 
 func (service configMessageService) SubscribeChange(config models.ConfigType, channel chan<- *ConfigMessage) {
-	mqtt.Subscribe(service.mqttService, string(models.TopicConfig), string(config), string(models.ActionChange), true, channel)
+	wrapper := make(chan mqtt.MqttPayload[*ConfigMessage], 1)
+
+	mqtt.Subscribe(service.mqttService, string(models.TopicConfig), string(config), string(models.ActionChange), true, wrapper)
+
+	go unwrap(wrapper, channel)
 }
 
 func (service configMessageService) SubscribeChange2(device string, channel chan<- *ConfigMessage) {
-	mqtt.Subscribe(service.mqttService, string(models.TopicConfig), device, string(models.ActionChange), true, channel)
+	wrapper := make(chan mqtt.MqttPayload[*ConfigMessage], 1)
+
+	mqtt.Subscribe(service.mqttService, string(models.TopicConfig), device, string(models.ActionChange), true, wrapper)
+
+	go unwrap(wrapper, channel)
 }
 
 func (service configMessageService) UnsubscribeChange(config models.ConfigType) {

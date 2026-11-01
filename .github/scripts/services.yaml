@@ -65,10 +65,9 @@ services:
   - name: persistence
     directory: services/persistence
     chartName: persistence
-    type: nodejs
+    type: golang
     dependencies:
-      - node-common
-      - node-common-test
+      - go-common
 
   - name: scheduler
     directory: services/scheduler
