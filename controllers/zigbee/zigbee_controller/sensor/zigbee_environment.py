@@ -42,7 +42,7 @@ class ZigbeeEnvironmentSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
             unit: str
         ):
             if flag \
-                    and cluster.id == cluster_id \
+                    and cluster.cluster_id == cluster_id \
                     and attribute.attrid == cluster.attributes_by_name['measured_value'].id:
                 value = attribute.value.value
 
