@@ -40,22 +40,18 @@ class ZigbeeEnvironmentSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
     async def initialise(self):
         device = self._zigbee_device
 
-        humidity_cluster: RelativeHumidity = \
-            device[1].in_clusters[RelativeHumidity.cluster_id]
+        clusters: list[Cluster] = []
 
         if self.humidity_enabled:
-            await self._register_reports(
-                humidity_cluster,
-                ['measured_value'],
-                self.__poll_frequency
+            clusters.append(device[1].in_clusters[RelativeHumidity.cluster_id])
+        if self.temperature_enabled:
+            clusters.append(
+                device[1].in_clusters[TemperatureMeasurement.cluster_id]
             )
 
-        temperature_cluster: TemperatureMeasurement = \
-            device[1].in_clusters[TemperatureMeasurement.cluster_id]
-
-        if self.temperature_enabled:
+        for cluster in clusters:
             await self._register_reports(
-                temperature_cluster,
+                cluster,
                 ['measured_value'],
                 self.__poll_frequency
             )
