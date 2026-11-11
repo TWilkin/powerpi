@@ -20,6 +20,8 @@ This controller service currently supports the following ZigBee devices/sensors:
     - IKEA Stybar - ZigBee remote with 4 buttons(up, right, bottom, left) support single and long press (only for up/down).
     - Osram Smart+ Switch Mini - ZigBee remote with 3 buttons (centre, up and down) supporting single and long press as well as battery life.
     - [Sonoff ZigBee Wireless Switch](https://sonoff.tech/product/gateway-and-sensors/snzb-01p/) - ZigBee single button switch supporting short, long and double press.
+- Temperature/Humidity Sensor - Any ZigBee standard compliant sensor; the following sensor has been tested and confirmed working:
+    - [Sonoff ZigBee Temperature and Humidity Sensor](https://sonoff.tech/products/sonoff-zigbee-temperature-and-humidity-sensor-snzb-02p) - ZigBee temperature and humidity sensor.
 - [Aqara Door and Window Sensor](https://www.aqara.com/en/door_and_window_sensor.html) - Magnetic door and window sensor supporting open and close events as well as battery life.
 
 As well as the following ZigBee coordinator dongles.
