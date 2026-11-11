@@ -2,6 +2,7 @@ from powerpi_common.sensor import Sensor
 from zigpy.zcl import Cluster
 from zigpy.zcl.clusters.measurement import RelativeHumidity, TemperatureMeasurement
 from zigpy.zcl.foundation import Attribute
+from zigpy.types import uint16_t
 
 from zigbee_controller.sensor.metrics import Metric, MetricValue
 from zigbee_controller.zigbee.device import ZigbeeMixin
@@ -34,8 +35,36 @@ class ZigbeeEnvironmentSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         return MetricValue.is_enabled(self.__metrics, Metric.TEMPERATURE)
 
     def on_report(self, cluster: Cluster, attribute: Attribute):
-        self.log_info(cluster)
-        self.log_info(attribute)
+        def broadcast_attribute(
+            flag: bool,
+            cluster_id: uint16_t,
+            name: str,
+            unit: str
+        ):
+            if flag \
+                    and cluster.id == cluster_id \
+                    and attribute.attrid == cluster.attributes_by_name['measured_value'].id:
+                value = attribute.value.value
+
+                # both are in hundredths of a unit
+                value /= 100
+
+                message = {'value': value, 'unit': unit}
+                self._broadcast(name, message)
+
+        broadcast_attribute(
+            self.humidity_enabled,
+            RelativeHumidity.cluster_id,
+            'humidity',
+            '%'
+        )
+
+        broadcast_attribute(
+            self.temperature_enabled,
+            TemperatureMeasurement.cluster_id,
+            'temperature',
+            '°C'
+        )
 
     async def initialise(self):
         device = self._zigbee_device
