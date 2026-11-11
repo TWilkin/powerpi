@@ -7,6 +7,8 @@ class Metric(StrEnum):
     DOOR = 'door'
     POWER = 'power'
     CURRENT = 'current'
+    HUMIDITY = 'humidity'
+    TEMPERATURE = 'temperature'
     VOLTAGE = 'voltage'
     WINDOW = 'window'
 
