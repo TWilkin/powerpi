@@ -5,6 +5,7 @@ from .ikea import add_ikea_sensors
 from .osram import add_osram_sensors
 from .sonoff import add_sonoff_sensors
 from .zigbee_energy_monitor import ZigbeeEnergyMonitorSensor
+from .zigbee_environment import ZigbeeEnvironmentSensor
 
 
 def add_sensors(container):
@@ -20,6 +21,15 @@ def add_sensors(container):
         'zigbee_energy_monitor_sensor',
         providers.Factory(
             ZigbeeEnergyMonitorSensor,
+            zigbee_controller=container.zigbee_controller
+        )
+    )
+
+    setattr(
+        device_container,
+        'zigbee_environment_sensor',
+        providers.Factory(
+            ZigbeeEnvironmentSensor,
             zigbee_controller=container.zigbee_controller
         )
     )
