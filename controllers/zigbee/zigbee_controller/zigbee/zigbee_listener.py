@@ -2,6 +2,7 @@ from abc import ABC
 from typing import Callable
 
 from zigpy.device import Device as ZigPyDevice
+from zigpy.zcl.clusters import Cluster
 
 
 class ZigBeeListener(ABC):
@@ -31,6 +32,20 @@ class DeviceJoinListener(ZigBeeListener):
 
     def device_joined(self, device: ZigPyDevice):
         self._listener(device)
+
+
+class AttributeListener(ZigBeeListener):
+    def __init__(self, method: Callable[[ZigPyDevice, Cluster, int, any], None]):
+        ZigBeeListener.__init__(self, method)
+
+    def device_attribute_updated(
+        self,
+        device: ZigPyDevice,
+        cluster: Cluster,
+        attribute_id: int,
+        value: any
+    ):
+        self._listener(device, cluster, attribute_id, value)
 
 
 class HandleMessageListener(ZigBeeListener):

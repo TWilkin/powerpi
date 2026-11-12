@@ -9,7 +9,7 @@ from zigpy.zcl.clusters import Cluster
 from zigpy.zcl.foundation import Attribute, GeneralCommand, Status, ZCLAttributeDef, ZCLHeader
 from zigpy.zcl.helpers import ReportingConfig
 
-from zigbee_controller.zigbee import DeviceJoinListener, ClusterGeneralCommandListener
+from zigbee_controller.zigbee import AttributeListener, DeviceJoinListener, ClusterGeneralCommandListener
 
 
 @dataclass
@@ -77,7 +77,7 @@ class ZigbeeReportMixin(ABC):
                     'Bind failed, likely the device is not on, will try again when it rejoins'
                 )
 
-        def on_device_join(device: ZigPyDevice):
+        def on_device_appear(device: ZigPyDevice):
             nonlocal registered
 
             ieee = EUI64(device.ieee)
@@ -88,7 +88,10 @@ class ZigbeeReportMixin(ABC):
                 loop.run_until_complete(register())
 
         self._zigbee_controller.add_listener(
-            DeviceJoinListener(on_device_join)
+            DeviceJoinListener(on_device_appear)
+        )
+        self._zigbee_controller.add_listener(
+            AttributeListener(on_device_appear)
         )
 
         self.__add_report_listener(cluster)
