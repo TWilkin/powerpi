@@ -468,6 +468,19 @@ func init() {
 		},
 
 		schemaSuite{
+			file:       "devices/zigbee/ZigBeeEnvironment.json",
+			configType: models.ConfigTypeDevices,
+			wrapper:    devicesWrapper,
+			path:       sensorPath,
+			cases: merge(
+				commonSensorCases,
+				commonZigBeeCases,
+				commonPollableCases,
+				generateMetrics("humidity", "temperature"),
+			),
+		},
+
+		schemaSuite{
 			file:       "devices/zigbee/ZigBeeLight.json",
 			configType: models.ConfigTypeDevices,
 			wrapper:    devicesWrapper,
