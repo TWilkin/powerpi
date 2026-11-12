@@ -6,10 +6,10 @@ from zigpy.types import uint16_t
 
 from zigbee_controller.sensor.metrics import Metric, MetricValue
 from zigbee_controller.zigbee.device import ZigbeeMixin
-from zigbee_controller.zigbee.mixins import ZigbeeReportMixin
+from zigbee_controller.zigbee.mixins import ZigbeeBatteryMixin, ZigbeeReportMixin
 
 
-class ZigbeeEnvironmentSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
+class ZigbeeEnvironmentSensor(Sensor, ZigbeeBatteryMixin, ZigbeeReportMixin, ZigbeeMixin):
     '''
     Adds support for ZigBee temperature and humidity combined sensors.
     '''
@@ -35,6 +35,8 @@ class ZigbeeEnvironmentSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         return MetricValue.is_enabled(self.__metrics, Metric.TEMPERATURE)
 
     def on_report(self, cluster: Cluster, attribute: Attribute):
+        ZigbeeBatteryMixin.on_report(self, cluster, attribute)
+
         def broadcast_attribute(
             flag: bool,
             cluster_id: uint16_t,
@@ -67,6 +69,8 @@ class ZigbeeEnvironmentSensor(Sensor, ZigbeeReportMixin, ZigbeeMixin):
         )
 
     async def initialise(self):
+        await ZigbeeBatteryMixin.initialise(self)
+
         device = self._zigbee_device
 
         clusters: list[Cluster] = []
