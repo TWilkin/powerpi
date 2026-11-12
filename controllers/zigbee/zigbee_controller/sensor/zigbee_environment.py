@@ -41,12 +41,17 @@ class ZigbeeEnvironmentSensor(Sensor, ZigbeeBatteryMixin, ZigbeeReportMixin, Zig
             flag: bool,
             cluster_id: uint16_t,
             name: str,
-            unit: str
+            unit: str,
+            invalid: int
         ):
             if flag \
                     and cluster.cluster_id == cluster_id \
                     and attribute.attrid == cluster.attributes_by_name['measured_value'].id:
                 value = attribute.value.value
+
+                # is the value the invalid value for this measure?
+                if value == invalid:
+                    return
 
                 # both are in hundredths of a unit
                 value /= 100
@@ -58,14 +63,16 @@ class ZigbeeEnvironmentSensor(Sensor, ZigbeeBatteryMixin, ZigbeeReportMixin, Zig
             self.humidity_enabled,
             RelativeHumidity.cluster_id,
             'humidity',
-            '%'
+            '%',
+            0xFFFF
         )
 
         broadcast_attribute(
             self.temperature_enabled,
             TemperatureMeasurement.cluster_id,
             'temperature',
-            '°C'
+            '°C',
+            0x8000
         )
 
     async def initialise(self):
