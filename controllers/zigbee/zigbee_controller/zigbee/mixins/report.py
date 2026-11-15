@@ -45,6 +45,7 @@ class ZigbeeReportMixin(ABC):
         message_listener: HandleMessageListener | None
 
         async def register():
+            nonlocal lock
             async with lock:
                 nonlocal registered
                 if registered:
