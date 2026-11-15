@@ -86,6 +86,9 @@ class ZigbeeController(LogMixin):
 
         self.__controller.add_listener(listener)
 
+    def remove_listener(self, listener):
+        self.__controller.remove_listener(listener)
+
     def purge_unknown_devices(self):
         self.log_info('Purging unknown devices')
 

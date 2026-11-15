@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from asyncio import get_event_loop
 from dataclasses import dataclass
-from typing import List
 
 from zigpy.device import Device as ZigPyDevice
 from zigpy.types import EUI64
@@ -9,12 +8,16 @@ from zigpy.zcl.clusters import Cluster
 from zigpy.zcl.foundation import Attribute, GeneralCommand, Status, ZCLAttributeDef, ZCLHeader
 from zigpy.zcl.helpers import ReportingConfig
 
-from zigbee_controller.zigbee import AttributeListener, DeviceJoinListener, ClusterGeneralCommandListener
+from zigbee_controller.zigbee import (
+    AttributeListener,
+    DeviceJoinListener,
+    ClusterGeneralCommandListener
+)
 
 
 @dataclass
 class AttributeReport:
-    attribute_reports: List[Attribute]
+    attribute_reports: list[Attribute]
 
 
 class ZigbeeReportMixin(ABC):
@@ -29,7 +32,7 @@ class ZigbeeReportMixin(ABC):
         Override this method to listen to the attribute values registered in the reports.
         '''
 
-    async def _register_reports(self, cluster: Cluster, attributes: List[str], frequency: int):
+    async def _register_reports(self, cluster: Cluster, attributes: list[str], frequency: int):
         '''
         Register for reports for the specified cluster attributes at the specified frequency.
         '''
@@ -37,6 +40,8 @@ class ZigbeeReportMixin(ABC):
             return
 
         registered = False
+        attribute_listener: AttributeListener | None
+        join_listener: DeviceJoinListener | None
 
         async def register():
             try:
@@ -60,7 +65,7 @@ class ZigbeeReportMixin(ABC):
                 )
                 if success != len(reports):
                     self.log_warning(
-                        'Registered %d of %d report(s), will try again later',
+                        'Registered %d of %d report(s), will try again when it reappears',
                         success,
                         len(reports)
                     )
@@ -71,14 +76,24 @@ class ZigbeeReportMixin(ABC):
                 nonlocal registered
                 registered = True
 
+                nonlocal attribute_listener
+                if attribute_listener is not None:
+                    self._zigbee_controller.remove_listener(attribute_listener)
+
+                nonlocal join_listener
+                if join_listener is not None:
+                    self._zigbee_controller.remove_listener(join_listener)
+
                 return
             except TimeoutError:
                 self.log_warning(
-                    'Bind failed, likely the device is not on, will try again when it rejoins'
+                    'Bind failed, likely the device is not on, will try again when it reappears'
                 )
 
         def on_device_appear(device: ZigPyDevice):
             nonlocal registered
+
+            self.log_info('Device appeared, re-attempting bind')
 
             ieee = EUI64(device.ieee)
 
@@ -87,12 +102,11 @@ class ZigbeeReportMixin(ABC):
                 loop = get_event_loop()
                 loop.run_until_complete(register())
 
-        self._zigbee_controller.add_listener(
-            DeviceJoinListener(on_device_appear)
-        )
-        self._zigbee_controller.add_listener(
-            AttributeListener(on_device_appear)
-        )
+        attribute_listener = AttributeListener(on_device_appear)
+        join_listener = DeviceJoinListener(on_device_appear)
+
+        self._zigbee_controller.add_listener(attribute_listener)
+        self._zigbee_controller.add_listener(join_listener)
 
         self.__add_report_listener(cluster)
 
