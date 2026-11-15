@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from asyncio import get_event_loop
+from asyncio import Lock, get_event_loop
 from dataclasses import dataclass
 
 from zigpy.device import Device as ZigPyDevice
@@ -40,55 +40,63 @@ class ZigbeeReportMixin(ABC):
             return
 
         registered = False
+        lock = Lock()
         join_listener: DeviceJoinListener | None
         message_listener: HandleMessageListener | None
 
         async def register():
-            try:
-                await cluster.bind()
-
-                reports: dict[ZCLAttributeDef, ReportingConfig] = {}
-                for attribute in attributes:
-                    attribute_def = getattr(cluster.AttributeDefs, attribute)
-
-                    reports[attribute_def] = ReportingConfig(
-                        min_interval=frequency,
-                        max_interval=frequency,
-                        reportable_change=0
-                    )
-
-                result = await cluster.configure_reporting_multiple(reports)
-
-                success = sum(
-                    1 for record in result
-                    if record.status == Status.SUCCESS
-                )
-                if success != len(reports):
-                    self.log_warning(
-                        'Registered %d of %d report(s), will try again when it reappears',
-                        success,
-                        len(reports)
-                    )
+            async with lock:
+                nonlocal registered
+                if registered:
                     return
 
-                self.log_info('Registered %d report(s)', len(reports))
+                try:
+                    await cluster.bind()
 
-                nonlocal registered
-                registered = True
+                    reports: dict[ZCLAttributeDef, ReportingConfig] = {}
+                    for attribute in attributes:
+                        attribute_def = getattr(
+                            cluster.AttributeDefs, attribute)
 
-                nonlocal join_listener
-                if join_listener is not None:
-                    self._zigbee_controller.remove_listener(join_listener)
+                        reports[attribute_def] = ReportingConfig(
+                            min_interval=frequency,
+                            max_interval=frequency,
+                            reportable_change=0
+                        )
 
-                nonlocal message_listener
-                if message_listener is not None:
-                    self._zigbee_controller.remove_listener(message_listener)
+                    result = await cluster.configure_reporting_multiple(reports)
 
-                return
-            except TimeoutError:
-                self.log_warning(
-                    'Bind failed, likely the device is not on, will try again when it reappears'
-                )
+                    success = sum(
+                        1 for record in result
+                        if record.status == Status.SUCCESS
+                    )
+                    if success != len(reports):
+                        self.log_warning(
+                            'Registered %d of %d report(s), will try again when it reappears',
+                            success,
+                            len(reports)
+                        )
+                        return
+
+                    self.log_info('Registered %d report(s)', len(reports))
+
+                    registered = True
+
+                    nonlocal join_listener
+                    if join_listener is not None:
+                        self._zigbee_controller.remove_listener(join_listener)
+
+                    nonlocal message_listener
+                    if message_listener is not None:
+                        self._zigbee_controller.remove_listener(
+                            message_listener
+                        )
+
+                    return
+                except TimeoutError:
+                    self.log_warning(
+                        'Bind failed, likely the device is not on, will try again when it reappears'
+                    )
 
         def on_device_appear(device: ZigPyDevice):
             nonlocal registered
