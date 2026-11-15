@@ -2,26 +2,11 @@ from abc import ABC
 from typing import Callable
 
 from zigpy.device import Device as ZigPyDevice
-from zigpy.zcl.clusters import Cluster
 
 
 class ZigBeeListener(ABC):
     def __init__(self, method: Callable):
         self._listener = method
-
-
-class AttributeListener(ZigBeeListener):
-    def __init__(self, method: Callable[[ZigPyDevice, Cluster, int, any], None]):
-        ZigBeeListener.__init__(self, method)
-
-    def device_attribute_updated(
-        self,
-        device: ZigPyDevice,
-        cluster: Cluster,
-        attribute_id: int,
-        value: any
-    ):
-        self._listener(device, cluster, attribute_id, value)
 
 
 class ConnectionLostListener(ZigBeeListener):

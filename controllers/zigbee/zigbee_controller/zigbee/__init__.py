@@ -7,7 +7,6 @@ from .constants import OnOff, OpenClose
 from .device import ZigbeeMixin
 from .zigbee_controller import ZigbeeController, ZigbeeControllerNotRunningError
 from .zigbee_listener import (
-    AttributeListener,
     ConnectionLostListener,
     DeviceAnnounceListener,
     DeviceJoinListener,

@@ -9,9 +9,9 @@ from zigpy.zcl.foundation import Attribute, GeneralCommand, Status, ZCLAttribute
 from zigpy.zcl.helpers import ReportingConfig
 
 from zigbee_controller.zigbee import (
-    AttributeListener,
+    ClusterGeneralCommandListener,
     DeviceJoinListener,
-    ClusterGeneralCommandListener
+    HandleMessageListener
 )
 
 
@@ -40,8 +40,8 @@ class ZigbeeReportMixin(ABC):
             return
 
         registered = False
-        attribute_listener: AttributeListener | None
         join_listener: DeviceJoinListener | None
+        message_listener: HandleMessageListener | None
 
         async def register():
             try:
@@ -76,13 +76,13 @@ class ZigbeeReportMixin(ABC):
                 nonlocal registered
                 registered = True
 
-                nonlocal attribute_listener
-                if attribute_listener is not None:
-                    self._zigbee_controller.remove_listener(attribute_listener)
-
                 nonlocal join_listener
                 if join_listener is not None:
                     self._zigbee_controller.remove_listener(join_listener)
+
+                nonlocal message_listener
+                if message_listener is not None:
+                    self._zigbee_controller.remove_listener(message_listener)
 
                 return
             except TimeoutError:
@@ -93,20 +93,19 @@ class ZigbeeReportMixin(ABC):
         def on_device_appear(device: ZigPyDevice):
             nonlocal registered
 
-            self.log_info('Device appeared, re-attempting bind')
-
             ieee = EUI64(device.ieee)
 
             if not registered and ieee == self.ieee and device.nwk == self.nwk:
                 # this is the current device, so we can call register again
+                self.log_info('Device appeared, re-attempting bind')
                 loop = get_event_loop()
                 loop.run_until_complete(register())
 
-        attribute_listener = AttributeListener(on_device_appear)
         join_listener = DeviceJoinListener(on_device_appear)
+        message_listener = HandleMessageListener(on_device_appear)
 
-        self._zigbee_controller.add_listener(attribute_listener)
         self._zigbee_controller.add_listener(join_listener)
+        self._zigbee_controller.add_listener(message_listener)
 
         self.__add_report_listener(cluster)
 
