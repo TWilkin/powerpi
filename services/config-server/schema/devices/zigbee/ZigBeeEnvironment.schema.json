@@ -1,0 +1,41 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/zigbee/ZigBeeEnvironment.schema.json",
+    "title": "ZigBeeEnvironment",
+    "description": "The ZigBee Environment (temperature/humidity) sensor",
+    "type": "object",
+    "allOf": [
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Sensor.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/PollableDevice.schema.json"
+        },
+        {
+            "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/zigbee/ZigBeeDevice.schema.json"
+        }
+    ],
+    "properties": {
+        "type": {
+            "const": "zigbee_environment"
+        },
+        "metrics": {
+            "description": "The list of metrics to enable for this sensor",
+            "type": "object",
+            "properties": {
+                "humidity": {
+                    "description": "Whether to capture the humidity reported by the sensor",
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Metric.schema.json"
+                },
+                "temperature": {
+                    "description": "Whether to capture the temperature reported by the sensor",
+                    "$ref": "https://raw.githubusercontent.com/TWilkin/powerpi/main/services/config-server/schema/devices/Metric.schema.json"
+                }
+            },
+            "anyOf": [{ "required": ["humidity"] }, { "required": ["temperature"] }],
+            "additionalProperties": false
+        }
+    },
+    "required": ["metrics"],
+    "unevaluatedProperties": false
+}
